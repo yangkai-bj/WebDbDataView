@@ -50,6 +50,12 @@ var __ECHARTS__ = {
          reportFontSize:{name:"报表字号",value: "100%",options: ["100%", "110%", "120%", "130%", "140%", "150%"], type: "select"},
          groupwith: {name: "每行序列数", value: 2, type: "input"},
          seriesLoopPlayInterval: {name: "多序列播放间隔(秒)", value: 3, type: "input"},
+         legendTextColor:{name:"图例文字颜色", value:"#e6e6e6",type : "color"},
+         axisColor: {name:"坐标轴颜色",value:"#e6e6e6",type : "color"},
+         splitXLineShow:{name:"显示X轴分隔线", value:"NO", options: ["YES", "NO"], type: "select"},
+         splitYLineShow:{name:"显示Y轴分隔线", value:"NO", options: ["YES", "NO"], type: "select"},
+         labelTextColor:{name:"标签文字颜色", value:"auto", type: "color"},
+
          barLabelShow: {name: "柱状图显示标签", value: 'NO', options: ["YES", "NO"], type: "select"},
          barLabelPosition: {
              name: "柱状图标签位置",
@@ -928,7 +934,10 @@ function getEchartsConfigs(container) {
     if (config != null){
         config = JSON.parse(config);
         for(key in config){
-            __ECHARTS__.configs[key].value = config[key];
+            try {
+                __ECHARTS__.configs[key].value = config[key];
+            }catch (e) {
+            }
         }
     }
     var m = document.createElement("div");
@@ -1159,7 +1168,7 @@ function getBar(container, themes) {
                     formatter: '{value|{c}}',
                     rich: {
                         value: {
-                            textBorderColor: '#fff',
+                            color: __ECHARTS__.configs.labelTextColor.value,
                             fontSize: __ECHARTS__.configs.barLabelFontSize.value,
                         }
                     }
@@ -1217,20 +1226,58 @@ function getBar(container, themes) {
         },
         legend: {
             left: 20,
-            data: columns.slice(1, columns.length)
-        },
-        xAxis: {
-            data: xAxis,
-            axisLabel: {
-                interval: "auto",
-                textStyle: {
-                    fontSize: 12
-                },
-                margin: 8,
-                rotate: xAxis.length > 15 ? -45 : 0,
+            data: columns.slice(1, columns.length),
+            textStyle: {
+                color: __ECHARTS__.configs.legendTextColor.value
             },
         },
-        yAxis: {},
+
+        xAxis: {
+            data: xAxis,
+            axisLine: {
+                show: true,
+                lineStyle: {
+                    color: __ECHARTS__.configs.axisColor.value
+                },
+            },
+            axisLabel: {
+                interval: "auto",
+                margin: 8,
+                rotate: xAxis.length > 15 ? -45 : 0,
+                textStyle: {
+                    color: __ECHARTS__.configs.axisColor.value
+                }
+            },
+            splitLine: {
+                show: __ECHARTS__.configs.splitXLineShow.value=="YES"?true:false,
+                lineStyle: {
+                    color: [
+                        __ECHARTS__.configs.axisColor.value
+                    ]
+                },
+            },
+        },
+        yAxis: {
+            axisLine: {
+                show: true,
+                lineStyle: {
+                    color: __ECHARTS__.configs.axisColor.value
+                },
+            },
+            axisLabel: {
+                textStyle: {
+                    color: __ECHARTS__.configs.axisColor.value
+                }
+            },
+            splitLine: {
+                show: __ECHARTS__.configs.splitYLineShow.value=="YES"?true:false,
+                lineStyle: {
+                    color: [
+                        __ECHARTS__.configs.axisColor.value
+                    ]
+                },
+            },
+        },
         dataZoom: [{
             type: 'inside',
             start: 0,
@@ -1274,7 +1321,7 @@ function getTransversBar(container, themes) {
                 formatter: '{value|{c}}',
                 rich: {
                     value: {
-                        textBorderColor: '#fff',
+                        color: __ECHARTS__.configs.labelTextColor.value,
                         fontSize: __ECHARTS__.configs.barLabelFontSize.value,
                     }
                 }
@@ -1325,14 +1372,58 @@ function getTransversBar(container, themes) {
         tooltip: {},
         legend: {
             left: 20,
-            data: columns.slice(1, columns.length)
+            data: columns.slice(1, columns.length),
+            textStyle: {
+                color: __ECHARTS__.configs.legendTextColor.value
+            },
         },
         xAxis: {
-        type: 'value'
+            type: 'value',
+            axisLine: {
+                show: true,
+                lineStyle: {
+                    color: __ECHARTS__.configs.axisColor.value
+                },
+            },
+            axisLabel: {
+                interval: "auto",
+                margin: 8,
+                rotate: xAxis.length > 15 ? -45 : 0,
+                textStyle: {
+                    color: __ECHARTS__.configs.axisColor.value
+                }
+            },
+            splitLine: {
+                show: __ECHARTS__.configs.splitXLineShow.value=="YES"?true:false,
+                lineStyle: {
+                    color: [
+                        __ECHARTS__.configs.axisColor.value
+                    ]
+                },
+            },
         },
         yAxis: {
             type: 'category',
-            data: xAxis
+            data: xAxis,
+            axisLine: {
+                show: true,
+                lineStyle: {
+                    color: __ECHARTS__.configs.axisColor.value
+                },
+            },
+            axisLabel: {
+                textStyle: {
+                    color: __ECHARTS__.configs.axisColor.value
+                }
+            },
+            splitLine: {
+                show: __ECHARTS__.configs.splitYLineShow.value=="YES"?true:false,
+                lineStyle: {
+                    color: [
+                        __ECHARTS__.configs.axisColor.value
+                    ]
+                },
+            },
         },
         dataZoom: [{
             type: 'inside',
@@ -1433,20 +1524,57 @@ function getLine(container, themes) {
         tooltip: {},
         legend: {
             left: 20,
-            data: columns.slice(1, columns.length)
+            data: columns.slice(1, columns.length),
+            textStyle: {
+                color: __ECHARTS__.configs.legendTextColor.value
+            },
         },
         xAxis: {
             data: xAxis,
+            axisLine: {
+                show: true,
+                lineStyle: {
+                    color: __ECHARTS__.configs.axisColor.value
+                },
+            },
             axisLabel: {
                 interval: "auto",
-                textStyle: {
-                    fontSize: 12
-                },
                 margin: 8,
-                rotate: xAxis.length>15?-45:0,
+                rotate: xAxis.length > 15 ? -45 : 0,
+                textStyle: {
+                    color: __ECHARTS__.configs.axisColor.value
+                }
+            },
+            splitLine: {
+                show: __ECHARTS__.configs.splitXLineShow.value=="YES"?true:false,
+                lineStyle: {
+                    color: [
+                        __ECHARTS__.configs.axisColor.value
+                    ]
+                },
             },
         },
-        yAxis: {},
+        yAxis: {
+            axisLine: {
+                show: true,
+                lineStyle: {
+                    color: __ECHARTS__.configs.axisColor.value
+                },
+            },
+            axisLabel: {
+                textStyle: {
+                    color: __ECHARTS__.configs.axisColor.value
+                }
+            },
+            splitLine: {
+                show: __ECHARTS__.configs.splitYLineShow.value=="YES"?true:false,
+                lineStyle: {
+                    color: [
+                        __ECHARTS__.configs.axisColor.value
+                    ]
+                },
+            },
+        },
         dataZoom: [{
             type: 'inside',
             start: 0,
@@ -1549,7 +1677,7 @@ function getBarAndLine(container, themes) {
                         formatter: '{value|{c}}',
                         rich: {
                             value: {
-                                textBorderColor: '#fff',
+                                color: __ECHARTS__.configs.labelTextColor.value,
                                 fontSize: __ECHARTS__.configs.barLabelFontSize.value,
                             }
                         }
@@ -1602,20 +1730,57 @@ function getBarAndLine(container, themes) {
         tooltip: {},
         legend: {
             left: 20,
-            data: columns.slice(1, columns.length)
+            data: columns.slice(1, columns.length),
+            textStyle: {
+                color: __ECHARTS__.configs.legendTextColor.value
+            },
         },
         xAxis: {
             data: xAxis,
+            axisLine: {
+                show: true,
+                lineStyle: {
+                    color: __ECHARTS__.configs.axisColor.value
+                },
+            },
             axisLabel: {
                 interval: "auto",
-                textStyle: {
-                    fontSize: 12
-                },
                 margin: 8,
-                rotate: xAxis.length>15?-45:0,
+                rotate: xAxis.length > 15 ? -45 : 0,
+                textStyle: {
+                    color: __ECHARTS__.configs.axisColor.value
+                }
+            },
+            splitLine: {
+                show: __ECHARTS__.configs.splitXLineShow.value=="YES"?true:false,
+                lineStyle: {
+                    color: [
+                        __ECHARTS__.configs.axisColor.value
+                    ]
+                },
             },
         },
-        yAxis: {},
+        yAxis: {
+            axisLine: {
+                show: true,
+                lineStyle: {
+                    color: __ECHARTS__.configs.axisColor.value
+                },
+            },
+            axisLabel: {
+                textStyle: {
+                    color: __ECHARTS__.configs.axisColor.value
+                }
+            },
+            splitLine: {
+                show: __ECHARTS__.configs.splitYLineShow.value=="YES"?true:false,
+                lineStyle: {
+                    color: [
+                        __ECHARTS__.configs.axisColor.value
+                    ]
+                },
+            },
+        },
         dataZoom: [{
             type: 'inside',
             start: 0,
@@ -1756,20 +1921,57 @@ function getAreaStyle(container, themes) {
         },
         legend: {
             left: 20,
-            data: columns.slice(1, columns.length)
+            data: columns.slice(1, columns.length),
+            textStyle: {
+                color: __ECHARTS__.configs.legendTextColor.value
+            },
         },
         xAxis: {
             data: xAxis,
+            axisLine: {
+                show: true,
+                lineStyle: {
+                    color: __ECHARTS__.configs.axisColor.value
+                },
+            },
             axisLabel: {
                 interval: "auto",
-                textStyle: {
-                    fontSize: 12
-                },
                 margin: 8,
-                rotate: xAxis.length>15?-45:0,
+                rotate: xAxis.length > 15 ? -45 : 0,
+                textStyle: {
+                    color: __ECHARTS__.configs.axisColor.value
+                }
+            },
+            splitLine: {
+                show: __ECHARTS__.configs.splitXLineShow.value=="YES"?true:false,
+                lineStyle: {
+                    color: [
+                        __ECHARTS__.configs.axisColor.value
+                    ]
+                },
             },
         },
-        yAxis: {},
+        yAxis: {
+            axisLine: {
+                show: true,
+                lineStyle: {
+                    color: __ECHARTS__.configs.axisColor.value
+                },
+            },
+            axisLabel: {
+                textStyle: {
+                    color: __ECHARTS__.configs.axisColor.value
+                }
+            },
+            splitLine: {
+                show: __ECHARTS__.configs.splitYLineShow.value=="YES"?true:false,
+                lineStyle: {
+                    color: [
+                        __ECHARTS__.configs.axisColor.value
+                    ]
+                },
+            },
+        },
         dataZoom: [{
             type: 'inside',
             start: 0,
@@ -1820,7 +2022,12 @@ function getPolarBar(container, themes) {
                 xAxis.push(r[columns[c]].value);
             }
         } else {
-            var series = {name: columns[c], type: "bar", coordinateSystem: 'polar', data: []};
+            var series = {
+                name: columns[c],
+                type: "bar",
+                coordinateSystem: 'polar',
+                data: []
+            };
             //series.stack = "true";
             series.animationDelay = function (idx) {
                 return idx * 5 + 100;
@@ -1850,29 +2057,36 @@ function getPolarBar(container, themes) {
             right: "10",
             orient: "vertical",
             top: "top",
-            emphasis:{
-            iconStyle:{
-                textPosition: 'left'
+            emphasis: {
+                iconStyle: {
+                    textPosition: 'left'
                 }
             },
         },
-        angleAxis: {},
+        angleAxis: {
+
+        },
         radiusAxis: {
             type: 'category',
             data: xAxis,
-            z: 10
+            z: 10,
+
         },
         polar: {},
         series: yAxis_series,
         legend: {
             left: 20,
             show: true,
-            data: columns.slice(1, columns.length)
+            data: columns.slice(1, columns.length),
+            textStyle: {
+                color: __ECHARTS__.configs.legendTextColor.value
+            },
         },
         tooltip: {
             trigger: 'item',
             formatter: '{a} <br/>{b}: {c}'
         },
+
         animationEasing: 'elasticOut',
         animationDelayUpdate: function (idx) {
             return idx * 3;
@@ -1897,7 +2111,12 @@ function getPolarArea(container, themes) {
                 xAxis.push(r[columns[c]].value);
             }
         } else {
-            var series = {name: columns[c], type: "bar", coordinateSystem: 'polar', data: []};
+            var series = {
+                name: columns[c],
+                type: "bar",
+                coordinateSystem: 'polar',
+                data: []
+            };
             //series.stack = "true";
             series.animationDelay = function (idx) {
                 return idx * 5 + 100;
@@ -1937,13 +2156,18 @@ function getPolarArea(container, themes) {
             type: 'category',
             data: xAxis
         },
-        radiusAxis: {},
+        radiusAxis: {
+
+        },
         polar: {},
         series: yAxis_series,
         legend: {
             left: 20,
             show: true,
-            data: columns.slice(1, columns.length)
+            data: columns.slice(1, columns.length),
+            textStyle: {
+                color: __ECHARTS__.configs.legendTextColor.value
+            },
         },
         tooltip: {
             trigger: 'item',
@@ -2040,7 +2264,10 @@ function getPie(container,themes) {
         },
         legend: {
             left: 20,
-            data: legends
+            data: legends,
+            textStyle: {
+                color: __ECHARTS__.configs.legendTextColor.value
+            },
         },
         series: series,
         label: {},
@@ -2185,6 +2412,9 @@ function getRing(container,themes) {
         legend: {
             left: 20,
             data: legends,//columns.slice(1, columns.length)
+            textStyle: {
+                color: __ECHARTS__.configs.legendTextColor.value
+            },
         },
         tooltip: {
             trigger: 'item',
@@ -2327,6 +2557,9 @@ function getRose(container,themes) {
         legend: {
             left: 20,
             data: legends,//columns.slice(1, columns.length)
+            textStyle: {
+                color: __ECHARTS__.configs.legendTextColor.value
+            },
         },
         tooltip: {
             trigger: 'item',
@@ -2440,7 +2673,10 @@ function getRadar(container, themes) {
     var option = {
         legend: {
             left: 20,
-            data: columns.slice(1, columns.length)
+            data: columns.slice(1, columns.length),
+            textStyle: {
+                color: __ECHARTS__.configs.legendTextColor.value
+            },
         },
         tooltip: {},
         toolbox: {
@@ -2689,7 +2925,10 @@ function getRegression(container, themes) {
         },
         legend: {
             left: 20,
-            data: columns.slice(1, columns.length).concat(columns_add)
+            data: columns.slice(1, columns.length).concat(columns_add),
+            textStyle: {
+                color: __ECHARTS__.configs.legendTextColor.value
+            },
         },
         tooltip: {
             trigger: 'axis',
@@ -2699,17 +2938,17 @@ function getRegression(container, themes) {
         },
         xAxis: {
             data: xAxis,
-            //type: 'value',
-            splitLine: {
+            axisLine: {
+                show: true,
                 lineStyle: {
-                    type: 'dashed'
-                }
+                    color: __ECHARTS__.configs.axisColor.value
+                },
             },
             splitNumber: 20,
             axisLabel: {
                 interval: "auto",
                 textStyle: {
-                    fontSize: 12
+                    color:__ECHARTS__.configs.axisColor.value,
                 },
                 margin: 8,
                 rotate: xAxis.length > 15 ? -45 : 0,
@@ -2717,11 +2956,25 @@ function getRegression(container, themes) {
         },
         yAxis: {
             type: 'value',
-            splitLine: {
+            axisLine: {
+                show: true,
                 lineStyle: {
-                    type: 'dashed'
+                    color: __ECHARTS__.configs.axisColor.value
+                },
+            },
+            axisLabel: {
+                textStyle: {
+                    color: __ECHARTS__.configs.axisColor.value
                 }
-            }
+            },
+            splitLine: {
+                show: __ECHARTS__.configs.splitYLineShow.value=="YES"?true:false,
+                lineStyle: {
+                    color: [
+                        __ECHARTS__.configs.axisColor.value
+                    ]
+                },
+            },
         },
         dataZoom: [{
             type: 'inside',
@@ -2815,7 +3068,8 @@ function  getRelationship(container, themes) {
         roam: true,
         label: {
             show: true,
-            fontSize: 12
+            fontSize: 12,
+            color: __ECHARTS__.configs.labelTextColor.value,
         },
         edgeSymbol: ['circle', 'arrow'],
         edgeSymbolSize: [4, 10],
@@ -3110,7 +3364,10 @@ function  getOrganizationStructure(container, themes) {
             left: '3%',
             orient: 'vertical',
             data: legends,
-            borderColor: '#c23531'
+            borderColor: '#c23531',
+            textStyle: {
+                color: __ECHARTS__.configs.legendTextColor.value
+            },
         },
         series:series,
         draggable: true,
@@ -3190,11 +3447,14 @@ function getWebkitDep(container, themes) {
     var option = {
         legend: {
             left: 20,
-            data: columns
+            data: columns,
+            textStyle: {
+                color: __ECHARTS__.configs.legendTextColor.value
+            },
         },
         toolbox: {
             show: true,
-            feature:{
+            feature: {
                 saveAsImage: {show: true},
                 restore: {show: true},
                 dataView: {show: true, readOnly: true},
@@ -3202,9 +3462,9 @@ function getWebkitDep(container, themes) {
             right: "10",
             orient: "vertical",
             top: "top",
-            emphasis:{
-            iconStyle:{
-                textPosition: 'left'
+            emphasis: {
+                iconStyle: {
+                    textPosition: 'left'
                 }
             },
         },
@@ -3214,7 +3474,8 @@ function getWebkitDep(container, themes) {
             animation: false,
             label: {
                 position: 'right',
-                formatter: '{b}'
+                formatter: '{b}',
+                color: __ECHARTS__.configs.labelTextColor.value,
             },
             draggable: true,
             data: webkitDep.nodes.map(function (node, idx) {
@@ -3382,7 +3643,7 @@ function getScatter(container, themes) {
                     show: true,
                     position: 'left',
                     formatter: myRegression.expression,
-                    color: '#333',
+                    color: __ECHARTS__.configs.labelTextColor.value,
                     fontSize: 10
                 },
                 data: [{
@@ -3401,7 +3662,10 @@ function getScatter(container, themes) {
     var option = {
         legend: {
             left: 20,
-            data: columns.slice().concat(columns_add)
+            data: columns.slice().concat(columns_add),
+            textStyle: {
+                color: __ECHARTS__.configs.legendTextColor.value
+            },
         },
         toolbox: {
             show: true,
@@ -3426,19 +3690,49 @@ function getScatter(container, themes) {
             }
         },
         xAxis: {
-            splitLine: {
+            axisLine: {
+                show: true,
                 lineStyle: {
-                    type: 'dashed'
+                    color: __ECHARTS__.configs.axisColor.value
+                },
+            },
+            axisLabel: {
+                textStyle: {
+                    color: __ECHARTS__.configs.axisColor.value
+                }
+            },
+            splitLine: {
+                show: __ECHARTS__.configs.splitXLineShow.value=="YES"?true:false,
+                lineStyle: {
+                    type: 'dashed',
+                    color: [
+                        __ECHARTS__.configs.axisColor.value
+                    ]
                 }
             }
         },
         yAxis: {
-            splitLine: {
+            scale: true,
+            axisLine: {
+                show: true,
                 lineStyle: {
-                    type: 'dashed'
+                    color: __ECHARTS__.configs.axisColor.value
+                },
+            },
+            axisLabel: {
+                textStyle: {
+                    color: __ECHARTS__.configs.axisColor.value
                 }
             },
-            scale: true
+            splitLine: {
+                show: __ECHARTS__.configs.splitYLineShow.value=="YES"?true:false,
+                lineStyle: {
+                    type: 'dashed',
+                    color: [
+                        __ECHARTS__.configs.axisColor.value
+                    ]
+                },
+            },
         },
         dataZoom: [{
             type: 'inside',
@@ -3503,7 +3797,8 @@ function getFunnel(container, themes) {
                     //gap: 2,
                     label: {
                         show: true,
-                        position: 'inside'
+                        position: 'inside',
+                        color: __ECHARTS__.configs.labelTextColor.value,
                     },
                     labelLine: {
                         length: 10,
@@ -3587,6 +3882,9 @@ function getFunnel(container, themes) {
             orient: 'vertical',
             left: 'left',
             data: legends,//columns.slice(1),
+            textStyle: {
+                color: __ECHARTS__.configs.legendTextColor.value
+            },
         },
         series: series
     };
@@ -3692,6 +3990,9 @@ function getWordCloud(container, themes) {
             orient: 'vertical',
             left: 'left',
             data: columns.slice(1),
+            textStyle: {
+                color: __ECHARTS__.configs.legendTextColor.value
+            },
         },
         toolbox: {
             show: true,
@@ -3775,7 +4076,7 @@ function getLiqiud(container, themes) {
 
                 label: {
                     show: true,
-                    color: '#294D99',
+                    color: __ECHARTS__.configs.labelTextColor.value,
                     insideColor: '#fff',
                     fontSize: __ECHARTS__.configs.liqiudFontSize.value,
                     fontWeight: 'bold',
@@ -3825,6 +4126,9 @@ function getLiqiud(container, themes) {
             orient: 'vertical',
             left: 'left',
             data: legends,
+            textStyle: {
+                color: __ECHARTS__.configs.legendTextColor.value
+            },
         },
         toolbox: {
             show: true,
@@ -3972,7 +4276,10 @@ function getGaugeWithAll(container, themes) {
         legend: {
             left: 10,
             orient: 'vertical',
-            data: legends
+            data: legends,
+            textStyle: {
+                color: __ECHARTS__.configs.legendTextColor.value
+            },
         },
         tooltip: {
             formatter: '{b} : {c}%'
@@ -4896,6 +5203,7 @@ function getBar3D(container, themes) {
                 label: {
                     show: __ECHARTS__.configs.LabelShowFor3D.value == "YES",
                     textStyle: {
+                        color: __ECHARTS__.configs.labelTextColor.value,
                         fontSize: __ECHARTS__.configs.LabelFontSizeFor3D.value,
                         borderWidth: 1
                     },
@@ -4941,7 +5249,10 @@ function getBar3D(container, themes) {
     var option = {
         legend: {
             left: 10,
-            data: columns.slice(1, columns.length)
+            data: columns.slice(1, columns.length),
+            textStyle: {
+                color: __ECHARTS__.configs.legendTextColor.value
+            },
         },
         tooltip: {
             show: false
@@ -5051,6 +5362,7 @@ function getLine3D(container, themes) {
                 label: {
                     show: __ECHARTS__.configs.LabelShowFor3D.value == "YES",
                     textStyle: {
+                        color: __ECHARTS__.configs.labelTextColor.value,
                         fontSize: __ECHARTS__.configs.LabelFontSizeFor3D.value,
                         borderWidth: 1
                     },
@@ -5097,7 +5409,10 @@ function getLine3D(container, themes) {
     var option = {
         legend: {
             left: 10,
-            data: columns.slice(1, columns.length)
+            data: columns.slice(1, columns.length),
+            textStyle: {
+                color: __ECHARTS__.configs.legendTextColor.value
+            },
         },
         tooltip: {
             show: false
@@ -5198,6 +5513,7 @@ function getScatter3D(container, themes) {
                 label: {
                     show: __ECHARTS__.configs.LabelShowFor3D.value == "YES",
                     textStyle: {
+                        color: __ECHARTS__.configs.labelTextColor.value,
                         fontSize: __ECHARTS__.configs.LabelFontSizeFor3D.value,
                         borderWidth: 1
                     },
@@ -5244,7 +5560,10 @@ function getScatter3D(container, themes) {
     var option = {
         legend: {
             left: 10,
-            data: columns.slice(1, columns.length)
+            data: columns.slice(1, columns.length),
+            textStyle: {
+                color: __ECHARTS__.configs.legendTextColor.value
+            },
         },
         tooltip: {
             show: false
@@ -5346,7 +5665,7 @@ function getCategoryLine(container, themes) {
                 formatter: '{value|{c}}',
                 rich: {
                     value: {
-                        textBorderColor: '#fff',
+                        color: __ECHARTS__.configs.labelTextColor.value,
                         fontSize: __ECHARTS__.configs.barLabelFontSize.value,
                     }
                 }
@@ -5769,6 +6088,9 @@ function getGeoMigrateLinesOfChinaCity(container, themes) {
                 //    color: 'white'
                 //},
                 //selectedMode: 'single'
+                textStyle: {
+                    color: __ECHARTS__.configs.legendTextColor.value
+                },
             },
             geo: {
                 map: 'china',

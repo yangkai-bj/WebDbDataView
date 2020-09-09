@@ -1955,6 +1955,18 @@ function init() {
         $("footer").style.display = getUserConfig("help");
         $("themes").setAttribute("href", getUserConfig("pagethemes") == null ? "themes/default.css" : getUserConfig("pagethemes"));
 
+        let config = getUserConfig("echartsconfig");
+        if (config != null) {
+            config = JSON.parse(config);
+            for (key in config) {
+                try {
+                    __ECHARTS__.configs[key].value = config[key];
+                }catch (e) {
+                    
+                }
+            }
+        }
+
         let map = getUserConfig("localMap");
         if (map != null) {
             geoCoordMap.LocalMap = map;

@@ -784,4 +784,9 @@ hr {
     margin: 0px;
 }
 
+#echarts-full-screen{
+    background-color: var(--main-background-color);
+    background-image: var(--main-background-image);
+}
+
 
