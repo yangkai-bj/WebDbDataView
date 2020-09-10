@@ -1,8 +1,10 @@
 # WebDbDataView（数据视图）
 <div style="background-image: url('https://repository-images.githubusercontent.com/280654590/7a4ee380-ca7b-11ea-85fe-72ff2ef8ada9')">
-<img src="https://images.gitee.com/uploads/images/2020/0821/132747_6a4b1080_7951851.png">
-<img src="https://images.gitee.com/uploads/images/2020/0821/132955_c7dd5ff8_7951851.png">
-<img src="https://images.gitee.com/uploads/images/2020/0822/210321_c1a3b247_7951851.png">
+<img src="https://images.gitee.com/uploads/images/2020/0910/191716_0b2536b3_7951851.png">
+<img src="https://images.gitee.com/uploads/images/2020/0910/191750_d537322e_7951851.png">
+<img src="https://images.gitee.com/uploads/images/2020/0910/191816_0bf5ed54_7951851.png">
+<img src="https://images.gitee.com/uploads/images/2020/0910/191844_8e3d1abf_7951851.png">
+<img src="https://images.gitee.com/uploads/images/2020/0910/192009_83133c02_7951851.png">
 </div>
 
 
