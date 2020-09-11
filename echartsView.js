@@ -841,9 +841,9 @@ function getMapConfig() {
     b.className = "button";
     b.innerHTML = "退出";
     b.onclick = function () {
-        let citychanged = JSON.parse(getUserConfig("geoCoordMapCity") == null ? "{}" : getUserConfig("geoCoordMapCity")) != geoCoordMap.City;
-        let customchanged = JSON.parse(getUserConfig("geoCoordMapCustom") == null ? "{}" : getUserConfig("geoCoordMapCustom")) != geoCoordMap.Custom;
-        if (citychanged || customchanged) {
+        let citychanged = Compare(JSON.parse(getUserConfig("geoCoordMapCity") == null ? "{}" : getUserConfig("geoCoordMapCity")),geoCoordMap.City);
+        let customchanged = Compare(JSON.parse(getUserConfig("geoCoordMapCustom") == null ? "{}" : getUserConfig("geoCoordMapCustom")),geoCoordMap.Custom);
+        if (citychanged && customchanged) {
             let r = confirm("地图数据已修改,您需要保存吗?");
             if (r == true) {
                 setUserConfig("geoCoordMapCity", JSON.stringify(geoCoordMap.City));
