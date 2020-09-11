@@ -1083,7 +1083,8 @@ function getEcharts(type, width, height, themes) {
             return getRose(container, themes);
             break;
         case "Gauge":
-            return getGaugeWithOne(container, themes);
+            //return getGaugeWithOne(container, themes);
+            return getCategoryLineForGauge(container, themes);
             break;
         case "Radar":
             return getRadar(container, themes);
@@ -1110,7 +1111,8 @@ function getEcharts(type, width, height, themes) {
             return getWordCloud(container, themes);
             break;
         case "Liqiud":
-            return getLiqiud(container, themes);
+            //return getLiqiud(container, themes);
+            return getCategoryLineForLiqiud(container, themes);
             break;
         case "Calendar":
             return getCalendar(container, themes);
@@ -6122,6 +6124,297 @@ function getGeoMigrateLinesOfChinaCity(container, themes) {
     } else {
         alert("该视图需要[源城市]、[目标城市]和[详细信息]等三个数据指标.")
     }
+    myChart.setOption(option);
+    return container;
+}
+
+function getCategoryLineForGauge(container, themes) {
+    var myChart = echarts.init(container, themes);
+    var containerWidth = Number(container.style.width.slice(0).replace(/px/i, ""));
+    var containerHeight = Number(container.style.height.slice(0).replace(/px/i, ""));
+
+    var dataset = __DATASET__["result"][__DATASET__.default.sheet];
+    var columns = [];
+    var times = [];
+    var options = [];
+    for (var i = 0; i < dataset["columns"].length; i++) {
+        columns.push(dataset["columns"][i].name);
+    }
+
+    for (var i = 0; i < dataset["data"].length; i++) {
+        var opt = {
+            series: []
+        };
+        var row = dataset["data"][i];
+        times.push(row[columns[0]].value);
+        for (var c = 1; c < columns.length; c++) {
+            var serie = {
+                name: row[columns[0]].value,
+                type: "gauge",
+                title: {
+                    fontWeight: 'bolder',
+                    fontSize: __ECHARTS__.configs.gaugeTitleFontSize.value,
+                    color: 'gray',
+                    textShadowColor: 'rgba(0, 0, 0, 0.5)',
+                    textShadowBlur: 10,
+                },
+                axisLine: {
+                    lineStyle: {
+                        width: __ECHARTS__.configs.gaugeAxisLineWidth.value,//10, //圆X轴宽度
+                        shadowColor: 'rgba(0, 0, 0, 0.5)',
+                        shadowBlur: 10,
+                        color: [[0.2, '#3CB371'], [0.8, '#6388ae'], [1, '#DB7093']]
+                        //默认[[0.2, '#91c7ae'], [0.8, '#63869e'], [1, '#c23531']]
+                    }
+                },
+                axisLabel: {
+                    fontSize: __ECHARTS__.configs.gaugeAxisLabelFontSize.value,
+                    textShadowColor: 'rgba(0, 0, 0, 0.5)',
+                    textShadowBlur: 10,
+                },
+                splitLine: {
+                    length: 15,
+                },
+                pointer: {
+                    width: 5, //指针宽度
+                    length: '60%'  //指针长度
+                },
+                detail: {
+                    formatter: ['{value}%', ''].join("\n"),
+                    fontSize: __ECHARTS__.configs.gaugeLabelFontSize.value,
+                    textShadowColor: 'rgba(0, 0, 0, 0.5)',
+                    textShadowBlur: 10,
+                },
+                data: []
+            };
+            serie.data.push({
+                "name": row[columns[0]].value + "\n\n" + columns[c],
+                "value": row[columns[c]].value,
+                itemStyle: {
+                    shadowColor: 'rgba(0, 0, 0, 0.5)',
+                    shadowBlur: 10
+                }
+            });
+            serie.animationDelay = function (idx) {
+                return idx * 5 + 100;
+            };
+            serie.center = [(c*2/3*100/(columns.length-1)) + "%", "50%"];
+            opt.series.push(serie);
+        }
+
+        options.push(opt);
+    }
+
+    var option = {
+        baseOption: {
+            timeline: {
+                axisType: 'category',
+                //考虑数据通用性，使用类目轴
+                //'value' 数值轴，适用于连续数据。
+                // 'category' 类目轴，适用于离散的类目数据。
+                // 'time' 时间轴，适用于连续的时序数据，与数值轴相比时间轴带有时间的格式化，在刻度计算上也有所不同，例如会根据跨度的范围来决定使用月，星期，日还是小时范围的刻度。
+                realtime: true,
+                //事实时更新数据
+                loop: true,
+                //循环播放
+                autoPlay: true,
+                //自动播放
+                // currentIndex: 2,
+                playInterval: __ECHARTS__.configs.seriesLoopPlayInterval.value * 1000,
+                // controlStyle: {
+                //     position: 'left'
+                // },
+                symbol: 'emptyCircle',
+                //'circle', 'rect', 'roundRect', 'triangle', 'diamond', 'pin', 'arrow', 'none'
+                symbolSize: 2,
+                data: times,
+                label: {
+                    formatter: function (s) {
+                        return s;
+                    }
+                },
+                bottom: 15
+            },
+            tooltip: {},
+            toolbox: {
+                show: true,
+                feature: {
+                    saveAsImage: {show: true},
+                    restore: {show: true},
+                    dataView: {show: true, readOnly: true},
+                },
+                right: "10",
+                orient: "vertical",
+                top: "top",
+                emphasis: {
+                    iconStyle: {
+                        textPosition: 'left'
+                    }
+                },
+            },
+            series: {
+                type: "gauge",
+            },
+            animationEasing: 'elasticOut',
+            animationDelayUpdate: function (idx) {
+                return idx * 3;
+            }
+        },
+        options: options
+    };
+    myChart.setOption(option);
+    return container;
+}
+
+function getCategoryLineForLiqiud(container, themes) {
+    var myChart = echarts.init(container, themes);
+    var containerWidth = Number(container.style.width.slice(0).replace(/px/i, ""));
+    var containerHeight = Number(container.style.height.slice(0).replace(/px/i, ""));
+
+    var dataset = __DATASET__["result"][__DATASET__.default.sheet];
+    var columns = [];
+    var times = [];
+    var options = [];
+    for (var i = 0; i < dataset["columns"].length; i++) {
+        columns.push(dataset["columns"][i].name);
+    }
+
+    for (var i = 0; i < dataset["data"].length; i++) {
+        var opt = {
+            series: []
+        };
+        var row = dataset["data"][i];
+        times.push(row[columns[0]].value);
+        for (var c = 1; c < columns.length; c++) {
+            var serie = {
+                name: row[columns[0]].value,
+                type: 'liquidFill',
+                data: [],
+                color: ['#294D99', '#156ACF', '#1598ED', '#45BDFF'],
+                //center: ['50%', '50%'],
+                //radius: '50%',
+                amplitude: '8%',
+                waveLength: '80%',
+                phase: 'auto',
+                period: 'auto',
+                direction: 'right',
+                smooth: true,
+
+                shape: __ECHARTS__.configs.liqiudShape.value,
+
+                waveAnimation: true,
+                animationEasing: 'linear',
+                animationEasingUpdate: 'linear',
+                animationDuration: 2000,
+                animationDurationUpdate: 1000,
+
+                outline: {
+                    show: true,
+                    borderDistance: 3,
+                    itemStyle: {
+                        color: '#1598ED',//'none',
+                        borderColor: '#294D99',
+                        borderWidth: 2,
+                        shadowBlur: 10,
+                        shadowColor: 'rgba(0, 0, 0, 0.25)'
+                    }
+                },
+
+                backgroundStyle: {
+                    color: '#E3F7FF'
+                },
+
+                itemStyle: {
+                    opacity: 0.6,
+                    shadowBlur: 50,
+                    shadowColor: 'rgba(0, 0, 0, 0.4)'
+                },
+
+                label: {
+                    show: true,
+                    color: __ECHARTS__.configs.labelTextColor.value,
+                    insideColor: '#fff',
+                    fontSize: __ECHARTS__.configs.liqiudFontSize.value,
+                    fontWeight: 'bold',
+                    align: 'center',
+                    baseline: 'middle',
+                    position: 'inside'
+                },
+
+                emphasis: {
+                    itemStyle: {
+                        opacity: 0.8
+                    }
+                }
+            };
+            serie.data.push({
+                name: columns[c],
+                value: row[columns[c]].value
+            });
+            serie.animationDelay = function (idx) {
+                return idx * 5 + 100;
+            };
+            serie.center = [(c*2/3*100/(columns.length-1)) + "%", "50%"];
+            opt.series.push(serie);
+        }
+
+        options.push(opt);
+    }
+
+    var option = {
+        baseOption: {
+            timeline: {
+                axisType: 'category',
+                //考虑数据通用性，使用类目轴
+                //'value' 数值轴，适用于连续数据。
+                // 'category' 类目轴，适用于离散的类目数据。
+                // 'time' 时间轴，适用于连续的时序数据，与数值轴相比时间轴带有时间的格式化，在刻度计算上也有所不同，例如会根据跨度的范围来决定使用月，星期，日还是小时范围的刻度。
+                realtime: true,
+                //事实时更新数据
+                loop: true,
+                //循环播放
+                autoPlay: true,
+                //自动播放
+                // currentIndex: 2,
+                playInterval: __ECHARTS__.configs.seriesLoopPlayInterval.value * 1000,
+                // controlStyle: {
+                //     position: 'left'
+                // },
+                symbol: 'emptyCircle',
+                //'circle', 'rect', 'roundRect', 'triangle', 'diamond', 'pin', 'arrow', 'none'
+                symbolSize: 2,
+                data: times,
+                label: {
+                    formatter: function (s) {
+                        return s;
+                    }
+                },
+                bottom: 15
+            },
+            tooltip: {},
+            toolbox: {
+                show: true,
+                feature: {
+                    saveAsImage: {show: true},
+                    restore: {show: true},
+                    dataView: {show: true, readOnly: true},
+                },
+                right: "10",
+                orient: "vertical",
+                top: "top",
+                emphasis: {
+                    iconStyle: {
+                        textPosition: 'left'
+                    }
+                },
+            },
+            animationEasing: 'elasticOut',
+            animationDelayUpdate: function (idx) {
+                return idx * 3;
+            }
+        },
+        options: options
+    };
     myChart.setOption(option);
     return container;
 }
