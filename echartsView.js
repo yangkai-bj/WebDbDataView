@@ -28,7 +28,7 @@ var __ECHARTS__ = {
          "类目轴": "CategoryLine",
          "全国地图": "GeoOfChina",
          "本地地图": "GeoOfLocal",
-         "城市数据迁徙": "GeoMigrateLinesOfChinaCity"
+         "迁徙地图": "GeoMigrateLinesOfChinaCity"
      },
      themes: {
          "Default": "",
@@ -100,7 +100,7 @@ var __ECHARTS__ = {
          calendarType: {name: "日历图类型", value: "heatmap", options: ['heatmap', 'scatter', 'effectScatter'], type: "select"},
          calendarOrient: {name: "日历图方向", value: 'vertical', options: ["vertical", "horizontal"], type: "select"},
          categoryLineType: {name: "类目轴图形类别", value: "bar", options:["bar", "line", "areaStyle","pie"], type: "select"},
-         geoBackgroundColor: {value: "#404a59", name: "地图背景颜色", type: "color"},
+         //geoBackgroundColor: {value: "#404a59", name: "地图背景颜色", type: "color"},
          geoAreaColor: {value: "#323c48", name: "地图区域颜色", type: "color"},
          geoBorderColor: {value: "#404a59", name: "地图边界颜色", type: "color"},
          geoHotAreaColor: {value: "#2a333d", name: "地图热点区域颜色", type: "color"},
@@ -1118,10 +1118,12 @@ function getEcharts(type, width, height, themes) {
             return getCalendar(container, themes);
             break;
         case "GeoOfChina":
-            return getGeoOfChina(container, themes);
+            //return getGeoOfChina(container, themes);
+            return getCategoryLineForGeoOfChina(container, themes);
             break;
         case "GeoOfLocal":
-            return getGeoOfLocal(container, themes);
+            //return getGeoOfLocal(container, themes);
+            return getCategoryLineForGeoOfLocal(container, themes);
             break;
         case "Bar3D":
             return getBar3D(container, themes);
@@ -4726,7 +4728,7 @@ function getGeoOfChina(container, themes) {
     init();
 
     var option = {
-        backgroundColor: __ECHARTS__.configs.geoBackgroundColor.value,
+        //backgroundColor: __ECHARTS__.configs.geoBackgroundColor.value,
         toolbox: {
             show: true,
             feature: {
@@ -4972,7 +4974,7 @@ function getGeoOfLocal(container, themes) {
     init();
 
     var option = {
-        backgroundColor: __ECHARTS__.configs.geoBackgroundColor.value,
+        //backgroundColor: __ECHARTS__.configs.geoBackgroundColor.value,
         toolbox: {
             show: true,
             feature: {
@@ -6052,7 +6054,7 @@ function getGeoMigrateLinesOfChinaCity(container, themes) {
         });
 
         var option = {
-            backgroundColor: __ECHARTS__.configs.geoBackgroundColor.value,
+            //backgroundColor: __ECHARTS__.configs.geoBackgroundColor.value,
             toolbox: {
                 show: true,
                 feature: {
@@ -6418,6 +6420,517 @@ function getCategoryLineForLiqiud(container, themes) {
     myChart.setOption(option);
     return container;
 }
+
+function getCategoryLineForGeoOfChina(container, themes) {
+    var myChart = echarts.init(container, themes);
+    var dataset = __DATASET__["result"][__DATASET__.default.sheet];
+    var columns = [];
+    for (var i = 0; i < dataset["columns"].length; i++) {
+        columns.push(dataset["columns"][i].name);
+    }
+
+    var containerWidth = Number(container.style.width.slice(0).replace(/px/i, ""));
+    var containerHeight = Number(container.style.height.slice(0).replace(/px/i, ""));
+    var times = [];
+
+    var options = [];
+
+    var getMapRegions = function (name) {
+        let Regions = {};
+        let features = echarts.getMap(name).geoJson.features;
+        for (var i = 0; i < features.length; i++) {
+            Regions[features[i].properties.name] = features[i].properties.cp;
+        }
+        return Regions;
+    };
+    geoCoordMap.Region = getMapRegions("china");
+
+    var convertData = function (data) {
+        var res = [];
+        for (var i = 0; i < data.length; i++) {
+            let geoRegion = geoCoordMap.Region[data[i].name];
+            let geoCity = geoCoordMap.City[data[i].name];
+            if (geoRegion) {
+                //默认到地区,不用处理
+            } else if (geoCity) {
+                //到城市
+                res.push({
+                    name: data[i].name,
+                    value: geoCity.concat(data[i].value)
+                });
+            } else {
+                //模糊查找,可能匹配错误
+                for (coord in geoCoordMap.City) {
+                    if (coord.includes(data[i].name)) {
+                        let geoCoord = geoCoordMap.City[coord];
+                        res.push({
+                            name: data[i].name + "(" + coord + ")",
+                            value: geoCoord.concat(data[i].value)
+                        });
+                        break;
+                    }
+                }
+            }
+        }
+        return res;
+    };
+
+    function init() {
+        for (var c = 0; c < columns.length; c++) {
+            if (c > 0) {
+                times.push(columns[c]);
+                let data = [];
+                let min = null;
+                let max = null;
+                for (var i = 0; i < dataset["data"].length; i++) {
+                    var r = dataset["data"][i];
+                    if (r[columns[c]].value != "" && r[columns[c]].value != null && !isNaN(Number(r[columns[c]].value))) {
+                        data.push({name: r[columns[0]].value, value: r[columns[c]].value});
+                        if (min == null || max == null) {
+                            min = Number(r[columns[c]].value);
+                            max = Number(r[columns[c]].value);
+                        } else {
+                            if (Number(r[columns[c]].value) < min)
+                                min = Number(r[columns[c]].value);
+                            if (Number(r[columns[c]].value) > max)
+                                max = Number(r[columns[c]].value);
+                        }
+                    }
+                }
+                let opt = {
+                    //backgroundColor: __ECHARTS__.configs.geoBackgroundColor.value,
+                    toolbox: {
+                        show: true,
+                        feature: {
+                            saveAsImage: {show: true},
+                            restore: {show: true},
+                            dataView: {show: true, readOnly: true},
+                        },
+                        right: "10",
+                        orient: "vertical",
+                        top: "top",
+                        emphasis: {
+                            iconStyle: {
+                                textPosition: 'left'
+                            }
+                        },
+                    },
+                    tooltip: {
+                        show: true,
+                        formatter: function (params) {
+                            var value = "";
+                            try {
+                                value = params.name + '<br>' + params.seriesName + ': ' + ((params['value'].length == 3) ? params.data['value'][2] : params.data['value'])
+                            } catch (e) {
+                            }
+                            return value
+                        },
+                    },
+                    visualMap: {
+                        min: min,
+                        max: max,
+                        //type: 'piecewise',
+                        calculable: true,
+                        orient: 'vertical',//'horizontal'
+                        left: 10,
+                        top: 10,
+                        itemWidth: 15,
+                        itemHeight: containerHeight / 3,
+                        textStyle: {
+                            color: 'gray'
+                        },
+                    },
+                    geo: {
+                        map: "china",
+                        roam: true,
+                        scaleLimit: {
+                            min: 1,
+                            max: 10
+                        },
+                        label: {
+                            normal: {
+                                show: __ECHARTS__.configs.geoShowAreaName.value == "YES" ? true : false,
+                                color: "gray",
+                            },
+                            emphasis: {
+                                show: true,
+                                color: "gray",
+                            }
+                        },
+                        itemStyle: {
+                            normal: {
+                                areaColor: __ECHARTS__.configs.geoAreaColor.value,
+                                borderColor: __ECHARTS__.configs.geoBorderColor.value,
+                                shadowBlur: 50,
+                                shadowColor: 'rgba(0, 0, 0, 0.2)',
+                            },
+                            emphasis: {
+                                areaColor: __ECHARTS__.configs.geoHotAreaColor.value
+                            }
+                        },
+                    },
+                    series: [
+                        {
+                            name: columns[c],
+                            type: "map",
+                            geoIndex: 0,
+                            data: data,
+                        },
+                        {
+                            name: columns[c],
+                            type: 'effectScatter',//'scatter',//'effectScatter'
+                            coordinateSystem: 'geo',
+                            data: convertData(data.sort(function (a, b) {
+                                return b.value - a.value;
+                            })),
+                            symbolSize: function (val) {
+                                var value = val[2] / (max / __ECHARTS__.configs.scatterSymbolSize.value);
+                                return value < 5 ? 5 : value;
+                            },
+                            showEffectOn: 'render',
+                            rippleEffect: {
+                                brushType: 'stroke'
+                            },
+                            hoverAnimation: true,
+                            label: {
+                                normal: {
+                                    formatter: '{b}',
+                                    position: 'top',
+                                    show: true,
+                                    color: "gray"
+                                }
+                            },
+                            itemStyle: {
+                                normal: {
+                                    color: __ECHARTS__.configs.geoAreaColor.value,
+                                    shadowBlur: 10,
+                                    shadowColor: 'rgba(0, 0, 0, 0.2)',
+                                }
+                            },
+                            zlevel: 1
+                        }
+                    ],
+
+                    animationDurationUpdate: 3000,
+                    animationEasingUpdate: 'quinticInOut',
+                };
+                options.push(opt);
+            }
+        }
+    }
+
+    init();
+
+    var option = {
+        baseOption: {
+            timeline: {
+                axisType: 'category',
+                //考虑数据通用性，使用类目轴
+                //'value' 数值轴，适用于连续数据。
+                // 'category' 类目轴，适用于离散的类目数据。
+                // 'time' 时间轴，适用于连续的时序数据，与数值轴相比时间轴带有时间的格式化，在刻度计算上也有所不同，例如会根据跨度的范围来决定使用月，星期，日还是小时范围的刻度。
+                realtime: true,
+                //事实时更新数据
+                loop: true,
+                //循环播放
+                autoPlay: true,
+                //自动播放
+                // currentIndex: 2,
+                playInterval: __ECHARTS__.configs.seriesLoopPlayInterval.value * 1000,
+                // controlStyle: {
+                //     position: 'left'
+                // },
+                symbol: 'emptyCircle',
+                //'circle', 'rect', 'roundRect', 'triangle', 'diamond', 'pin', 'arrow', 'none'
+                symbolSize: 2,
+                data: times,
+                label: {
+                    formatter: function (s) {
+                        return s;
+                    }
+                },
+                bottom: 15
+            },
+            tooltip: {},
+            toolbox: {
+                show: true,
+                feature: {
+                    saveAsImage: {show: true},
+                    restore: {show: true},
+                    dataView: {show: true, readOnly: true},
+                },
+                right: "10",
+                orient: "vertical",
+                top: "top",
+                emphasis: {
+                    iconStyle: {
+                        textPosition: 'left'
+                    }
+                },
+            },
+            animationEasing: 'elasticOut',
+            animationDelayUpdate: function (idx) {
+                return idx * 3;
+            }
+        },
+        options: options
+    };
+    myChart.setOption(option);
+    return container;
+}
+
+function getCategoryLineForGeoOfLocal(container, themes) {
+    var myChart = echarts.init(container, themes);
+    var dataset = __DATASET__["result"][__DATASET__.default.sheet];
+    var columns = [];
+    for (var i = 0; i < dataset["columns"].length; i++) {
+        columns.push(dataset["columns"][i].name);
+    }
+
+    var containerWidth = Number(container.style.width.slice(0).replace(/px/i, ""));
+    var containerHeight = Number(container.style.height.slice(0).replace(/px/i, ""));
+    let times = [];
+    let options = []
+
+    var getMapRegions = function (name) {
+        let Regions = {};
+        try {
+            let features = echarts.getMap(name).geoJson.features;
+            for (var i = 0; i < features.length; i++) {
+                Regions[features[i].properties.name] = features[i].properties.cp;
+            }
+        } catch (e) {
+            console.log(e);
+        }
+        return Regions;
+    };
+
+    geoCoordMap.Region = getMapRegions(geoCoordMap.LocalMap);
+
+    var convertData = function (data) {
+        var res = [];
+        for (var i = 0; i < data.length; i++) {
+            let geoRegion = geoCoordMap.Region[data[i].name];
+            let geoCoord = geoCoordMap.Custom[data[i].name];
+
+            if (geoRegion) {
+                //区域数据,默认
+            } else if (geoCoord) {
+                res.push({
+                    name: data[i].name,
+                    value: geoCoord.concat(data[i].value)
+                });
+            }
+        }
+        return res;
+    };
+
+    function init() {
+        for (var c = 0; c < columns.length; c++) {
+            if (c > 0) {
+                times.push(columns[c]);
+                var data = [];
+                var min = null;
+                var max = null;
+                for (var i = 0; i < dataset["data"].length; i++) {
+                    var r = dataset["data"][i];
+                    if (r[columns[c]].value != "" && r[columns[c]].value != null && !isNaN(Number(r[columns[c]].value))) {
+                        data.push({name: r[columns[0]].value, value: r[columns[c]].value});
+                        if (min == null || max == null) {
+                            min = Number(r[columns[c]].value);
+                            max = Number(r[columns[c]].value);
+                        } else {
+                            if (Number(r[columns[c]].value) < min)
+                                min = Number(r[columns[c]].value);
+                            if (Number(r[columns[c]].value) > max)
+                                max = Number(r[columns[c]].value);
+                        }
+                    }
+                }
+
+                let opt = {
+                    //backgroundColor: __ECHARTS__.configs.geoBackgroundColor.value,
+                    toolbox: {
+                        show: true,
+                        feature: {
+                            saveAsImage: {show: true},
+                            restore: {show: true},
+                            dataView: {show: true, readOnly: true},
+                        },
+                        right: "10",
+                        orient: "vertical",
+                        top: "top",
+                        emphasis: {
+                            iconStyle: {
+                                textPosition: 'left'
+                            }
+                        },
+                    },
+
+                    tooltip: {
+                        show: true,
+                        formatter: function (params) {
+                            var value = "";
+                            try {
+                                value = params.name + '<br>' + params.seriesName + ': ' + ((params['value'].length == 3) ? params.data['value'][2] : params.data['value'])
+                            } catch (e) {
+                            }
+                            return value
+                        },
+                    },
+                    visualMap: {
+                        min: min,
+                        max: max,
+                        //type: 'piecewise',
+                        calculable: true,
+                        orient: 'vertical',//'horizontal'
+                        left: 10,
+                        top: 10,
+                        itemWidth: 15,
+                        itemHeight: containerHeight / 3,
+                        textStyle: {
+                            color: 'gray'
+                        },
+                    },
+                    //backgroundColor: '#013954',
+                    geo: {
+                        map: geoCoordMap.LocalMap,
+                        roam: true,
+                        scaleLimit: {
+                            min: 1,
+                            max: 10
+                        },
+                        label: {
+                            normal: {
+                                show: __ECHARTS__.configs.geoShowAreaName.value == "YES" ? true : false,
+                                color: "gray",
+                            },
+                            emphasis: {
+                                show: true,
+                                color: "gray",
+                            }
+                        },
+                        itemStyle: {
+                            normal: {
+                                areaColor: __ECHARTS__.configs.geoAreaColor.value,
+                                borderColor: __ECHARTS__.configs.geoBorderColor.value,
+                                shadowBlur: 50,
+                                shadowColor: 'rgba(0, 0, 0, 0.2)',
+                            },
+                            emphasis: {
+                                areaColor: __ECHARTS__.configs.geoHotAreaColor.value
+                            }
+                        },
+                    },
+                    series: [
+                        {
+                            name: columns[c],
+                            type: "map",
+                            geoIndex: 0,
+                            data: data,
+                        },
+                        {
+                            name: columns[c],
+                            type: 'effectScatter',//'scatter',//'effectScatter'
+                            coordinateSystem: 'geo',
+                            data: convertData(data.sort(function (a, b) {
+                                return b.value - a.value;
+                            })),
+                            symbolSize: function (val) {
+                                var value = val[2] / (max / __ECHARTS__.configs.scatterSymbolSize.value);
+                                return value < 5 ? 5 : value;
+                            },
+                            showEffectOn: 'render',
+                            rippleEffect: {
+                                brushType: 'stroke'
+                            },
+                            hoverAnimation: true,
+                            label: {
+                                normal: {
+                                    formatter: '{b}',
+                                    position: 'top',
+                                    show: true,
+                                    color: "gray"
+                                }
+                            },
+                            itemStyle: {
+                                normal: {
+                                    color: __ECHARTS__.configs.geoAreaColor.value,
+                                    shadowBlur: 10,
+                                    shadowColor: 'rgba(0, 0, 0, 0.2)',
+                                }
+                            },
+                            zlevel: 1
+                        }
+                    ],
+
+                    animationDurationUpdate: 3000,
+                    animationEasingUpdate: 'quinticInOut',
+                };
+                options.push(opt);
+            }
+        }
+    }
+
+    init();
+    var option = {
+        baseOption: {
+            timeline: {
+                axisType: 'category',
+                //考虑数据通用性，使用类目轴
+                //'value' 数值轴，适用于连续数据。
+                // 'category' 类目轴，适用于离散的类目数据。
+                // 'time' 时间轴，适用于连续的时序数据，与数值轴相比时间轴带有时间的格式化，在刻度计算上也有所不同，例如会根据跨度的范围来决定使用月，星期，日还是小时范围的刻度。
+                realtime: true,
+                //事实时更新数据
+                loop: true,
+                //循环播放
+                autoPlay: true,
+                //自动播放
+                // currentIndex: 2,
+                playInterval: __ECHARTS__.configs.seriesLoopPlayInterval.value * 1000,
+                // controlStyle: {
+                //     position: 'left'
+                // },
+                symbol: 'emptyCircle',
+                //'circle', 'rect', 'roundRect', 'triangle', 'diamond', 'pin', 'arrow', 'none'
+                symbolSize: 2,
+                data: times,
+                label: {
+                    formatter: function (s) {
+                        return s;
+                    }
+                },
+                bottom: 15
+            },
+            tooltip: {},
+            toolbox: {
+                show: true,
+                feature: {
+                    saveAsImage: {show: true},
+                    restore: {show: true},
+                    dataView: {show: true, readOnly: true},
+                },
+                right: "10",
+                orient: "vertical",
+                top: "top",
+                emphasis: {
+                    iconStyle: {
+                        textPosition: 'left'
+                    }
+                },
+            },
+            animationEasing: 'elasticOut',
+            animationDelayUpdate: function (idx) {
+                return idx * 3;
+            }
+        },
+        options: options
+    };
+    myChart.setOption(option);
+    return container;
+}
+
 
 
 
