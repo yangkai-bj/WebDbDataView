@@ -2047,10 +2047,11 @@ function init() {
     dbinfo.className = "button";
     dbinfo.id = "test-button";
     dbinfo.innerText = "测试";
-    dbinfo.style.display = "none";
+    //dbinfo.style.display = "none";
     dbinfo.onclick = function () {
-        var ob = "8";
-        console.log(typeof ob);
+        var oba = {name:"a",value:[1,2.111111111111],par:{x:1}};
+        var obb = {name:"a",value:[1,2],par:{x:1}};
+        alert(Compare(oba,obb));
     };
     dbstools.appendChild(dbinfo);
     setTooltip(dbinfo, "功能测试");
@@ -3804,6 +3805,64 @@ function setCenterPosition(parent, obj) {
     let left = (parentposi.width - objposi.width) / 2;
     obj.style.top = top + "px";
     obj.style.left = left + "px";
+}
+
+function isObj(object) {
+    return object && typeof (object) == 'object' && Object.prototype.toString.call(object).toLowerCase() == "[object object]";
+}
+
+function isArray(object) {
+    return object && typeof (object) == 'object' && object.constructor == Array;
+}
+
+function getLength(object) {
+    var count = 0;
+    for (var i in object) count++;
+    return count;
+}
+
+function Compare(objA, objB) {
+    if (!isObj(objA) || !isObj(objB)) return false; //判断类型是否正确
+    if (getLength(objA) != getLength(objB)) return false; //判断长度是否一致
+    return CompareObj(objA, objB, true);//默认为true
+}
+
+function CompareObj(objA, objB, flag) {
+    if (!isObj(objA)&&!isObj(objB)){
+        flag = objA==objB;
+    }
+    else {
+        for (var key in objA) {
+            if (!flag) //跳出整个循环
+                break;
+            if (!objB.hasOwnProperty(key)) {
+                flag = false;
+                break;
+            }
+            if (!isArray(objA[key])) { //子级不是数组时,比较属性值
+                if (objB[key] != objA[key]) {
+                    flag = false;
+                    break;
+                }
+            } else {
+                if (!isArray(objB[key])) {
+                    flag = false;
+                    break;
+                }
+                var oA = objA[key], oB = objB[key];
+                if (oA.length != oB.length) {
+                    flag = false;
+                    break;
+                }
+                for (var k in oA) {
+                    if (!flag) //这里跳出循环是为了不让递归继续
+                        break;
+                    flag = CompareObj(oA[k], oB[k], flag);
+                }
+            }
+        }
+    }
+    return flag;
 }
 
 
