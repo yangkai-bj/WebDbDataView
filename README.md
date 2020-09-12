@@ -7,16 +7,6 @@
 <img src="https://images.gitee.com/uploads/images/2020/0910/192009_83133c02_7951851.png">
 </div>
 
-
-1. 采用HTML5技术开发，开发和测试环境使用Google Chrome浏览器，其他浏览器未测试。
-2. SQL编辑由CodeMirror提供支持,详细见https://codemirror.net。
-3. 数据视图由Apache Echarts提供支持，详细见https://echarts.apache.org/zh/index.html。
-4. 回归曲线计算由Echarts-stat提供支持,详细见https://github.com/ecomfe/echarts-stat。
-5. 8.Xlsx文件处理由SheetJS提供支持,详细见http://sheetjs.com。
-
-
-
-#功能
 1. 创建数据库
 2. 删除数据库
 3. 创建表
