@@ -36,7 +36,9 @@
 
     --table-border-color:#98bf21;
     --table-background-color:#FFFACD;
-    --table-th-background-color: #79d2a6;
+    --table-th-before-color:#DCDCDC;
+    --table-td-before-color:black;
+    --table-th-background-color: #2F4F4F;
     --table-tr-background-color:#FFFACD;
     --table-alt-tr-background-color:#c2f0c2;
     --table-tr-hover-background-color:#79d2a6;

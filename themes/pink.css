@@ -38,6 +38,8 @@
 
     --table-border-color:#C71585;
     --table-background-color:#F5F5DC;
+    --table-th-before-color:#DCDCDC;
+    --table-td-before-color:black;
     --table-th-background-color: #F08080;
     --table-tr-background-color:#F5F5DC;
     --table-alt-tr-background-color:#FFB6C1;

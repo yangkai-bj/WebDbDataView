@@ -35,8 +35,10 @@
     --footer-color:whitesmoke;
     --footer-dt-hover-color:sandybrown;
 
-   --table-border-color:#F0F8FF;
+    --table-border-color:#F0F8FF;
     --table-background-color:#DCDCDC;
+    --table-th-before-color:#DCDCDC;
+    --table-td-before-color:black;
     --table-th-background-color: #696969;
     --table-tr-background-color:#DCDCDC;
     --table-alt-tr-background-color:#A9A9A9;
