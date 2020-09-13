@@ -6217,7 +6217,7 @@ function getCategoryLineForGauge(container, themes) {
             serie.animationDelay = function (idx) {
                 return idx * 5 + 100;
             };
-            serie.center = [(c*2/3*100/(columns.length-1)) + "%", "50%"];
+            serie.center = [(c*50/(columns.length-1)) + 50/(columns.length-1)*(c-1) + "%", "50%"];
             opt.series.push(serie);
         }
 
@@ -6373,7 +6373,7 @@ function getCategoryLineForLiqiud(container, themes) {
             serie.animationDelay = function (idx) {
                 return idx * 5 + 100;
             };
-            serie.center = [(c*2/3*100/(columns.length-1)) + "%", "50%"];
+            serie.center = [(c*50/(columns.length-1)) + 50/(columns.length-1)*(c-1) + "%", "50%"];
             opt.series.push(serie);
         }
 
