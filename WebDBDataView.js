@@ -6,42 +6,48 @@ var __CONFIGS__ = {
         DATASET: "__WEB_SQLITE_DATASET__",
         CONFIGS: "__WEB_SQLITE_USER_CONFIGS"
     },
-    DATABASES:[],
+    DATABASES: [],
     CURRENT_DATABASE: {index: 0, value: null, connect: null},
-    TABLES:[],
-    CURRENT_TABLE: {name: "", sql: "", structure:{}, type:""},
-    MAXLOGS:1000,
-    Charset: {value: 1, name: "字符集", type: "select", options: ["GBK", "UTF-8"]},
+    TABLES: [],
+    CURRENT_TABLE: {name: "", sql: "", structure: {}, type: ""},
+    MAXLOGS: 1000
 };
 
  var __IMPORT__ = {
-    Table: {value: "", name: "数据表", type: "view"},
-    Charset: {value: 1, name: "字符集", type: "select", options: ["GBK", "UTF-8"]},
-    Separator: {value: 0, name: "分隔符", type: "select", options: [",","|", "\t"]},
-    SourceFile:{value: "", name: "源文件", type: "file",data: null, total:0, count: 0, imported:0, failed:0}
+     Table: {value: "", name: "数据表", type: "view"},
+     Charset: {value: 1, name: "字符集", type: "select", options: ["GBK", "UTF-8"]},
+     Separator: {value: 0, name: "分隔符", type: "select", options: [",", "|", "\t"]},
+     SourceFile: {value: "", name: "源文件", type: "file", data: [], total: 0, count: 0, imported: 0, failed: 0},
+     SelectedDataSet: {value: -1, name: "数据集", type: "select", options: []}
  };
 
  var __DATABASE__ = {
-    Name: {value: "", name: "库名称", type: "text"},
-    Version: {value: 1.0, name: "版本号", type: "text"},
-    Description: {value: "", name: "库描述", type: "text"},
-    Size: {value: "1024*1024*1024", name: "库容量", type: "text"}
+     Name: {value: "", name: "库名称", type: "text"},
+     Version: {value: 1.0, name: "版本号", type: "text"},
+     Description: {value: "", name: "库描述", type: "text"},
+     Size: {value: "1024*1024*1024", name: "库容量", type: "text"}
  };
 
  var __COLUMN__ = {
-     check: {value: true, name: "选择", type: "checkbox",width: "50px"},
-     name: {value: "", name: "名称", type: "input",width: "100px"},
-     type: {value: 0, name: "类型", type: "select", options: ["int","varchar", "nvarchar", "decimal","float", "date", "datetime", "boolean", "blob"], width: "75px"},
-     length: {value: 0, name: "长度", type: "input",width: "25px"},
-     scale: {value: 0, name: "小数位数", type: "input",width: "50px"},
-     allowNull:{value: true, name: "允许空值", type: "select", options: ["Y", "N"], width: "50px"},
-     index: {value: false, name: "索引", type: "checkbox",width: "50px"},
+     check: {value: true, name: "选择", type: "checkbox", width: "50px"},
+     name: {value: "", name: "名称", type: "input", width: "100px"},
+     type: {
+         value: 0,
+         name: "类型",
+         type: "select",
+         options: ["int", "varchar", "nvarchar", "decimal", "float", "date", "datetime", "boolean", "blob"],
+         width: "75px"
+     },
+     length: {value: 0, name: "长度", type: "input", width: "25px"},
+     scale: {value: 0, name: "小数位数", type: "input", width: "50px"},
+     allowNull: {value: true, name: "允许空值", type: "select", options: ["Y", "N"], width: "50px"},
+     index: {value: false, name: "索引", type: "checkbox", width: "50px"},
  };
  var __DATASET__ = {
      sql: "",
      time: "",
      result: [],
-     default: {sheet: 0, column: null, cell:[]},
+     default: {sheet: 0, column: null, cell: []},
      pages: {size: 200, total: 0, default: 1},
      echarts: {
          type: "Bar",
@@ -54,6 +60,7 @@ var __CONFIGS__ = {
              this.entity = tb;
              this.entity.style.fontSize = __ECHARTS__.configs.reportFontSize.value;
              let table = this;
+
              function setEvent(ob) {
                  for (var i = 0; i < ob.length; i++) {
                      if (ob[i].type == "td") {
@@ -113,7 +120,7 @@ var __CONFIGS__ = {
                                  table.tomove.style.height = table.tomove.height;
                                  table.tomove.style.cursor = 'row-resize';
                                  let cell = table.tomove.parentNode.getElementsByTagName("td");
-                                 for (var r=0;r<cell.length;r++) {
+                                 for (var r = 0; r < cell.length; r++) {
                                      cell[r].height = table.tomove.height;
                                  }
                                  table.entity.offsetHeight += (event.y - table.tomove.oldY);
@@ -147,6 +154,7 @@ var __CONFIGS__ = {
      title: null,
      codeMirror: null,
      parameter: null,
+     charset: {value: 1, name: "字符集", type: "select", options: ["GBK", "UTF-8"]},
      themes: {
          默认: {name: "default", href: "codemirror/theme/default.css"},
          黑色: {name: "black", href: "codemirror/theme/black.css"},
@@ -391,9 +399,9 @@ function importData(){
     __CONFIGS__.CURRENT_DATABASE.connect.transaction(function (tx) {
         try {
             var sep = __IMPORT__.Separator.options[__IMPORT__.Separator.value];
-            var lines = __IMPORT__.SourceFile.data.split("\r\n");
+            var lines = __IMPORT__.SourceFile.data[__IMPORT__.SelectedDataSet.value].split("\r\n");
             if (lines.length == 1)
-                lines = __IMPORT__.SourceFile.data.split("\n");
+                lines = __IMPORT__.SourceFile.data[__IMPORT__.SelectedDataSet.value].split("\n");
             var table = __CONFIGS__.CURRENT_TABLE.name;
             __IMPORT__.SourceFile.total = lines.length - 1;
             //不含表头
@@ -541,10 +549,10 @@ function structInspect(data,sep){
 }
 
 function getStructFromData() {
-    var sep = __IMPORT__.Separator.options[__IMPORT__.Separator.value];
-    var lines = __IMPORT__.SourceFile.data.split("\r\n");
+    let sep = __IMPORT__.Separator.options[__IMPORT__.Separator.value];
+    var lines = __IMPORT__.SourceFile.data[__IMPORT__.SelectedDataSet.value].split("\r\n");
     if (lines.length == 1)
-        lines = __IMPORT__.SourceFile.data.split("\n");
+        lines = __IMPORT__.SourceFile.data[__IMPORT__.SelectedDataSet.value].split("\n");
 
     let start = structInspect(lines.slice(0,lines.length>1000?1000:lines.length),sep);
     //检测样本为前1000条数据
@@ -989,22 +997,29 @@ function getImportContent() {
             input.id = name;
             try {
                 input.type = __IMPORT__[name].type;
-                if (input.type == "file"){
-                    input.accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,text/plain,.csv";
+                if (input.type == "file") {
+                    input.accept = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,text/plain,.csv";
                     input.onchange = function () {
                         if (window.FileReader) {
                             try {
                                 var file = this.files[0];
                                 var filetype = file.name.split(".")[1];
                                 __IMPORT__.SourceFile.value = file.name;
+                                __IMPORT__.SourceFile.data = [];
+                                let selectDataSet = $("SelectedDataSet");
+                                for (var i = selectDataSet.length - 1; i >= 0; i--) {
+                                    selectDataSet.remove(i);
+                                }
                                 if (filetype.toUpperCase() == "TXT" || filetype.toUpperCase() == "CSV") {
                                     var reader = new FileReader();
                                     reader.onload = function () {
-                                        __IMPORT__.SourceFile.data = this.result;
+                                        __IMPORT__.SourceFile.data.push(this.result);
+                                        selectDataSet.options.add(new Option("默认", 0));
+                                        __IMPORT__.SelectedDataSet.value = selectDataSet.selectedIndex = 0;
                                     };
                                     reader.readAsText(file, __IMPORT__.Charset.options[__IMPORT__.Charset.value]);
                                 } else if (filetype.toUpperCase() == "XLS" || filetype.toUpperCase() == "XLSX") {
-                                     readWorkbookFromLocalFile(file);
+                                    readWorkbookFromLocalFile(file);
                                 } else {
                                     showMessage("仅适用于XLSX、XLS、TXT和CSV文件。");
                                     return;
@@ -1050,7 +1065,11 @@ function getImportContent() {
             if (this.parentNode.firstChild.id == "progress")
                 this.parentNode.removeChild(this.parentNode.firstChild);
             this.parentNode.insertBefore(getImportProgress(), this);
-            importData();
+            console.log($("SelectedDataSet").length);
+            if ($("SelectedDataSet").length > 0)
+                importData();
+            else
+                alert("请选择需要导入的文件及数据集合.");
             //var container =$("import-Content");
             //container.parentNode.removeChild(m);
         }
@@ -2202,9 +2221,9 @@ function init() {
                     __SQLEDITOR__.codeMirror.setValue(this.result);
                     __SQLEDITOR__.title = null;
                 };
-                reader.readAsText(file, __CONFIGS__.Charset.options[__CONFIGS__.Charset.value]);
+                reader.readAsText(file, __SQLEDITOR__.charset.options[__SQLEDITOR__.charset.value]);
             } catch (e) {
-                alert("请选择需要导入的文件.")
+                alert("请选择需要导入的脚本文件.")
             }
         } else {
             showMessage("本应用适用于Chrome浏览器或IE10及以上版本。")
@@ -2314,6 +2333,28 @@ function init() {
         __SQLEDITOR__.codeMirror.setOption("fullScreen", !__SQLEDITOR__.codeMirror.getOption("fullScreen"));
     };
     setTooltip(tofull, "全屏幕编<br>辑窗口");
+
+    var editorCharset = document.createElement("select");
+    editorCharset.type = "select";
+    editorCharset.id = "set-editer-chartset";
+    for (var i=0;i<__SQLEDITOR__.charset.options.length;i++) {
+        editorCharset.options.add(new Option(__SQLEDITOR__.charset.options[i], i));
+    }
+    try {
+        let charset = getUserConfig("editercharset");
+        if (charset != null) {
+            __SQLEDITOR__.charset.value = editorCharset.selectedIndex = charset;
+        } else
+            editorCharset.selectedIndex = 0;
+    }catch (e) {
+        console.log(e);
+    }
+    editorCharset.onchange = function () {
+        __SQLEDITOR__.charset.value = this.value;
+        setUserConfig("editercharset",this.value);
+    };
+    sqltools.appendChild(editorCharset);
+    setTooltip(editorCharset, "导入脚本<br>字符编码");
 
     //#######################################
     //必须先行实体化编辑器,否则不能预埋参数
@@ -2911,18 +2952,23 @@ function readWorkbookFromLocalFile(file) {
     var reader = new FileReader();
     var rABS = true;
     reader.onload = function (e) {
-        var data = e.target.result;
-        var workbook;
+        let data = e.target.result;
+        let workbook;
         if (rABS) {
             workbook = XLSX.read(data, {type: "binary"});
         } else {
             workbook = XLSX.read(btoa(fixData(data)), {type: "base64"});
         }
-        var sheetNames = workbook.SheetNames;
-        var worksheet = workbook.Sheets[sheetNames[0]];//默认第一个sheet
-        var csv = XLSX.utils.sheet_to_csv(worksheet);
-        __IMPORT__.SourceFile.data = csv;
-        //return csv;
+        let sheetNames = workbook.SheetNames;
+        let selectDataSet = $("SelectedDataSet");
+        for (var i = 0; i < sheetNames.length; i++) {
+            let worksheet = workbook.Sheets[sheetNames[i]];
+            let csv = XLSX.utils.sheet_to_csv(worksheet);
+            __IMPORT__.SourceFile.data.push(csv);
+            selectDataSet.options.add(new Option(sheetNames[i], i));
+            //return csv;
+        }
+        __IMPORT__.SelectedDataSet.value = selectDataSet.selectedIndex = 0;
     };
     try {
         reader.readAsBinaryString(file);
