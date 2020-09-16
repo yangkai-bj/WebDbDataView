@@ -1,5 +1,5 @@
 function storageSqlDialog(sql, editer, type){
-    var sqldialog = document.createElement("div");
+    let sqldialog = document.createElement("div");
     sqldialog.id = "sql-dialog";
     sqldialog.className = "sql-dialog";
 
@@ -8,29 +8,51 @@ function storageSqlDialog(sql, editer, type){
     let span = document.createElement("span");
     span.innerHTML = "脚本管理 : ";
     d.appendChild(span);
+    var input = document.createElement("input");
+    input.id = input.className = "sql-dialog-name";
+    input.placeholder="请输入脚本名称.";
+    d.appendChild(input);
+
     sqldialog.appendChild(d);
     sqldialog.innerHTML += "<hr>";
 
-    var input = document.createElement("input");
-    input.id = input.className = "sql-dialog-name";
-    input.placeholder="请输入检索名称.";
-    sqldialog.appendChild(input);
+    d = document.createElement("div");
+    d.className = "toolbar";
+    let b = document.createElement("a");
+    b.className = "button";
+    b.innerHTML = "列表";
+    b.onclick = function () {
+        $("table-container").style.display = "block";
+        $("edit-container").style.display = "none";
+    };
+    d.appendChild(b);
+    b = document.createElement("a");
+    b.className = "button";
+    b.innerHTML = "详细";
+    b.onclick = function () {
+        $("table-container").style.display = "none";
+        $("edit-container").style.display = "block";
+    };
+    d.appendChild(b);
+    sqldialog.appendChild(d);
 
     var div = document.createElement("div");
-    div.className ="table-container";
+    div.className = "table-container";
+    div.id = "table-container";
     sqldialog.appendChild(div);
-
     var table = document.createElement("table");
     div.appendChild(table);
     table.id = "sql-dialog-table";
     table.className = "table";
     table.style.width = "100%";
-
     getSQLList(table);
 
     var div  = document.createElement("div");
     div.className ="edit-container";
+    div.id = "edit-container";
+    div.style.display = "none";
     sqldialog.appendChild(div);
+
     var edit = document.createElement("textarea");
     edit.id = "sql-dialog-sql";
     edit.className = "sql-dialog-sql";
@@ -196,6 +218,8 @@ function getSQLList(table){
                 this.getElementsByClassName("check")[0].removeAttribute("checked");
             else
                 this.getElementsByClassName("check")[0].setAttribute("checked", "checked");
+            $("table-container").style.display = "none";
+            $("edit-container").style.display = "block";
         };
         table.appendChild(tr);
 
