@@ -10,11 +10,11 @@
     color: var(--toolbar-background-color);
     border-bottom-left-radius: 20px;
     border-top-right-radius: 20px;
-    box-shadow: 5px 5px 3px #888888;
+    box-shadow: 2px 2px 3px #aaaaaa;
     line-height: 20px;
     z-index: 99;
-    -webkit-animation: content-show 2s 1;
-    animation: content-show 2s 1;
+    -webkit-animation: content-show 1s 1;
+    animation: content-show 1s 1;
 }
 
 .sql-dialog .table-container{

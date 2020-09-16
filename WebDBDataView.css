@@ -125,22 +125,6 @@ a:active {color:#FF00FF;}
     overflow:hidden
 }
 
-.main input[type=file] {
-    width: 300px;
-    padding: 0px;
-    margin: 0px;
-    cursor: pointer;
-    color: #FF8000;
-    height: 100%;
-    line-height: 20px;
-    float: left;
-}
-
-.main input[type=file]:hover {
-    color:sandybrown;
-    background-color: seashell;
-}
-
 .databases{
     width:100%;
     height: 250px;
@@ -186,8 +170,8 @@ a:active {color:#FF00FF;}
     padding: 5px 0;
     z-index: 99;
     font-size: 10px;
-    -webkit-animation: content-show 2s 1;/*infinite; /* Chrome, Safari, Opera */
-    animation: content-show 2s 1;/*infinite;*/
+    -webkit-animation: content-show 1s 1;/*infinite; /* Chrome, Safari, Opera */
+    animation: content-show 1s 1;/*infinite;*/
 }
 
 .tooltip::after {
@@ -257,8 +241,8 @@ a:active {color:#FF00FF;}
     background-color: var(--table-background-color);
     opacity: 0.8;
     transition: opacity 2s;
-    -webkit-animation: content-show 2s 1;/*infinite; /* Chrome, Safari, Opera */
-    animation: content-show 2s 1;/*infinite;*/
+    -webkit-animation: content-show 1s 1;/*infinite; /* Chrome, Safari, Opera */
+    animation: content-show 1s 1;/*infinite;*/
 }
 .table:hover{
     opacity: 1;
@@ -429,8 +413,8 @@ a:active {color:#FF00FF;}
     box-shadow: 2px 2px 3px #aaaaaa;
     line-height: 20px;
     z-index: 99;
-    -webkit-animation: content-show 2s 1;
-    animation: content-show 2s 1;
+    -webkit-animation: content-show 1s 1;
+    animation: content-show 1s 1;
 }
 
 .import-Content select ,input{
@@ -458,11 +442,11 @@ a:active {color:#FF00FF;}
     color: var(--toolbar-background-color);
     border-bottom-left-radius: 20px;
     border-top-right-radius: 20px;
-    box-shadow: 5px 5px 3px #888888;
+    box-shadow: 2px 2px 3px #aaaaaa;
     line-height: 20px;
     z-index: 99;
-    -webkit-animation: content-show 2s 1;
-    animation: content-show 2s 1;
+    -webkit-animation: content-show 1s 1;
+    animation: content-show 1s 1;
 }
 
 .create-database-Content input{
@@ -491,11 +475,11 @@ a:active {color:#FF00FF;}
     background-color: whitesmoke;
     border-bottom-left-radius: 20px;
     border-top-right-radius: 20px;
-    box-shadow: 5px 5px 3px #888888;
+    box-shadow: 2px 2px 3px #aaaaaa;
     line-height: 20px;
     z-index: 99;
-    -webkit-animation: content-show 2s 1;
-    animation: content-show 2s 1;
+    -webkit-animation: content-show 12s 1;
+    animation: content-show 1s 1;
 }
 
 .create-table-Content .table-container {
@@ -549,15 +533,15 @@ a:active {color:#FF00FF;}
     border-radius: 4px;
     box-sizing: border-box;
     line-height: 20px;
-    box-shadow: 3px 3px 3px #888888;
+    box-shadow: 2px 2px 3px #aaaaaa;
     z-index: 99;
-    -webkit-animation: content-show 2s 1;
-    animation: content-show 2s 1;
+    -webkit-animation: content-show 1s 1;
+    animation: content-show 1s 1;
 }
 
 .echarts-container {
-    -webkit-animation: content-show 2s 1;
-    animation: content-show 2s 1;
+    -webkit-animation: content-show 1s 1;
+    animation: content-show 1s 1;
 }
 
 .echarts-configs-Content {
@@ -572,12 +556,12 @@ a:active {color:#FF00FF;}
     background-color: whitesmoke;
     border-bottom-left-radius: 20px;
     border-top-right-radius: 20px;
-    box-shadow: 5px 5px 3px #888888;
+    box-shadow: 2px 2px 3px #aaaaaa;
     line-height: 20px;
     color: var(--toolbar-background-color);
     z-index: 99;
-    -webkit-animation: content-show 2s 1;
-    animation: content-show 2s 1;
+    -webkit-animation: content-show 1s 1;
+    animation: content-show 1s 1;
 }
 
 .echarts-configs-Content .echarts-configs-container{
@@ -633,17 +617,22 @@ a:active {color:#FF00FF;}
     color: var(--toolbar-background-color);
     border-bottom-left-radius: 20px;
     border-top-right-radius: 20px;
-    box-shadow: 5px 5px 3px #888888;
+    box-shadow: 2px 2px 3px #aaaaaa;
     line-height: 20px;
     z-index: 99;
-    -webkit-animation: content-show 2s 1;
-    animation: content-show 2s 1;
+    -webkit-animation: content-show 1s 1;
+    animation: content-show 1s 1;
 }
 .subtotal-Content select ,input {
     font-size: 90%;
-    padding: 0px;
-    margin: 1px;
     width: 110px;
+    padding: 0px;
+    margin: 0px;
+    background-color: transparent;
+    color: var(--toolbar-background-color);
+    outline-style: none;
+    border: 0px;
+    border-bottom: 1px solid var(--main-border-color);
 }
 
 .subtotal-Content .subtotal-dialog-table {
@@ -692,17 +681,22 @@ a:active {color:#FF00FF;}
     color: var(--toolbar-background-color);
     border-bottom-left-radius: 20px;
     border-top-right-radius: 20px;
-    box-shadow: 5px 5px 3px #888888;
+    box-shadow: 2px 2px 3px #aaaaaa;
     line-height: 20px;
     z-index: 99;
-    -webkit-animation: content-show 2s 1;
-    animation: content-show 2s 1;
+    -webkit-animation: content-show 1s 1;
+    animation: content-show 1s 1;
 }
 .sql-param-dialog select ,input {
     font-size: 90%;
-    padding: 0px;
-    margin: 1px;
     width: 180px;
+    padding: 0px;
+    margin: 0px;
+    background-color: transparent;
+    color: var(--toolbar-background-color);
+    outline-style: none;
+    border: 0px;
+    border-bottom: 1px solid var(--main-border-color);
 }
 
 .data-slice-Content {
@@ -718,17 +712,23 @@ a:active {color:#FF00FF;}
     color: var(--toolbar-background-color);
     border-bottom-left-radius: 20px;
     border-top-right-radius: 20px;
-    box-shadow: 5px 5px 3px #888888;
+    box-shadow: 2px 2px 3px #aaaaaa;
     line-height: 20px;
     z-index: 99;
-    -webkit-animation: content-show 2s 1;
-    animation: content-show 2s 1;
+    -webkit-animation: content-show 1s 1;
+    animation: content-show 1s 1;
 }
 .data-slice-Content select ,input {
     font-size: 90%;
-    padding: 0px;
     margin: 1px;
     width: 180px;
+    padding: 0px;
+    margin: 0px;
+    background-color: transparent;
+    color: var(--toolbar-background-color);
+    outline-style: none;
+    border: 0px;
+    border-bottom: 1px solid var(--main-border-color);
 }
 
 .data-filter-Content {
@@ -744,18 +744,24 @@ a:active {color:#FF00FF;}
     color: var(--toolbar-background-color);
     border-bottom-left-radius: 20px;
     border-top-right-radius: 20px;
-    box-shadow: 5px 5px 3px #888888;
+    box-shadow: 2px 2px 3px #aaaaaa;
     line-height: 20px;
     z-index: 99;
-    -webkit-animation: content-show 2s 1;
-    animation: content-show 2s 1;
+    -webkit-animation: content-show 1s 1;
+    animation: content-show 1s 1;
 }
 .data-filter-Content select ,input {
     font-size: 90%;
-    padding: 0px;
-    margin: 1px;
     width: 180px;
+    padding: 0px;
+    margin: 0px;
+    background-color: transparent;
+    color: var(--toolbar-background-color);
+    outline-style: none;
+    border: 0px;
+    border-bottom: 1px solid var(--main-border-color);
 }
+
 .data-filter-Content .data_filter_table_Content{
     font-size: 95%;
     width: 100%;
@@ -778,11 +784,11 @@ a:active {color:#FF00FF;}
     color: var(--toolbar-background-color);
     border-bottom-left-radius: 20px;
     border-top-right-radius: 20px;
-    box-shadow: 5px 5px 3px #888888;
+    box-shadow: 2px 2px 3px #aaaaaa;
     line-height: 20px;
     z-index: 99;
-    -webkit-animation: content-show 2s 1;
-    animation: content-show 2s 1;
+    -webkit-animation: content-show 1s 1;
+    animation: content-show 1s 1;
 }
 .table-data-format-item {
     height: 28px;
@@ -828,11 +834,11 @@ hr {
     color: var(--toolbar-background-color);
     border-bottom-left-radius: 20px;
     border-top-right-radius: 20px;
-    box-shadow: 5px 5px 3px #888888;
+    box-shadow: 2px 2px 3px #aaaaaa;
     line-height: 20px;
     z-index: 99;
-    -webkit-animation: content-show 2s 1;
-    animation: content-show 2s 1;
+    -webkit-animation: content-show 1s 1;
+    animation: content-show 1s 1;
 }
 
 .local-map-config-Content .map-config-table-container {

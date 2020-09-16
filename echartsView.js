@@ -874,7 +874,7 @@ function getMapConfig() {
     return container;
 
     function AddGeoCoord(table, coords) {
-        let city = prompt("请输入(经纬度)名称:");
+        let city = prompt("请输入城市或地区名称: ");
         let ex = false;
         for (coord in coords) {
             if (coord == city) {
@@ -883,8 +883,8 @@ function getMapConfig() {
             }
         }
         if (ex)
-            alert(city + " 已经存在!不能设置相同的(经纬度)名称");
-        else {
+            alert(city + "的地理坐标已经设置，同一城市或地区不能重复设置。");
+        else if (city.trim() != "") {
             coords[city] = [0, 0];
             let tr = document.createElement("tr");
             tr.className = "tr";
@@ -941,7 +941,6 @@ function getMapConfig() {
                     this.parentNode.innerText = this.value;
                 };
             };
-
         }
     }
 }
