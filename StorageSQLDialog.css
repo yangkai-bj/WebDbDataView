@@ -1,10 +1,10 @@
-.sql-dialog {
+.sql-Manager-Content {
     font-size: 90%;
     position: absolute;
     margin: 20px;
     padding: 10px;
     width: 550px;
-    height: 370px;
+
     border:1px solid var(--main-border-color);
     background-color: whitesmoke;
     color: var(--toolbar-background-color);
@@ -17,47 +17,54 @@
     animation: content-show 1s 1;
 }
 
-.sql-dialog .table-container{
+.sql-Manager-Content .content-container{
     width: 100%;
     height: 250px;
+}
+
+.sql-Manager-Content .table-container{
+    width: 100%;
+    height: 100%;
     overflow: scroll;
     position: relative;
     float: left;
 }
 
-.sql-dialog .edit-container{
+.sql-Manager-Content .edit-container{
     width: 100%;
-    height: 250px;
+    height: 100%;
     position: relative;
     float: left;
 }
 
-.sql-dialog .tools-container{
+.sql-Manager-Content .tools-container{
     width: 100%;
     height: 36px;
     position: relative;
     float: left;
 }
 
-.sql-dialog .sql-dialog-sql {
-    width: 98.9%;
-    height: 98.0%;
+.sql-Manager-Content .sql-Manager-Content-sql {
+    position: relative;
+    float: left;
+    width: 99%;
+    height: 97.5%;
     resize: none;
     font-size: 90%;
     color: var(--toolbar-background-color);
-    padding-right: -30px;
+    border-radius: 5px;
 }
 
-.sql-dialog .sql-dialog-sql:hover {
+.sql-Manager-Content .sql-Manager-Content-sql:hover {
     outline-style: none;
     border:1px solid var(--main-border-color);
 }
-.sql-dialog .sql-dialog-sql:enabled {
+.sql-Manager-Content .sql-Manager-Content-sql:enabled {
     outline-style: none;
     border:1px solid var(--main-border-color);
 }
 
-.sql-dialog-name {
+.sql-Manager-Content-name {
     width: 70%;
     cursor: pointer;
     background-color: transparent;
@@ -66,9 +73,9 @@
     border:0px;
     border-bottom:1px solid var(--main-border-color);
 }
-.sql-dialog-name:hover{
+.sql-Manager-Content-name:hover{
     outline-style: none;
 }
-.sql-dialog-name:enabled{
+.sql-Manager-Content-name:enabled{
     outline-style: none;
 }

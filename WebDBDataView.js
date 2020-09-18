@@ -16,7 +16,7 @@ var __CONFIGS__ = {
  var __IMPORT__ = {
      Table: {value: "", name: "数据表", type: "view"},
      Charset: {value: 1, name: "字符集", type: "select", options: ["GBK", "UTF-8"]},
-     Separator: {value: 0, name: "分隔符", type: "select", options: [",", "|", "\t"]},
+     Separator: {value: ",", name: "分隔符", type: "select", options: [["逗号",","], ["竖线","|"], ["Tab","\t"]]},
      SourceFile: {value: "", name: "源文件", type: "file", data: [], total: 0, count: 0, imported: 0, failed: 0},
      SelectedDataSet: {value: -1, name: "数据集", type: "select", options: []}
  };
@@ -398,7 +398,7 @@ function importData(){
     //#######################################
     __CONFIGS__.CURRENT_DATABASE.connect.transaction(function (tx) {
         try {
-            var sep = __IMPORT__.Separator.options[__IMPORT__.Separator.value];
+            var sep = __IMPORT__.Separator.value;
             var lines = __IMPORT__.SourceFile.data[__IMPORT__.SelectedDataSet.value].split("\r\n");
             if (lines.length == 1)
                 lines = __IMPORT__.SourceFile.data[__IMPORT__.SelectedDataSet.value].split("\n");
@@ -549,7 +549,7 @@ function structInspect(data,sep){
 }
 
 function getStructFromData() {
-    let sep = __IMPORT__.Separator.options[__IMPORT__.Separator.value];
+    let sep = __IMPORT__.Separator.value;
     var lines = __IMPORT__.SourceFile.data[__IMPORT__.SelectedDataSet.value].split("\r\n");
     if (lines.length == 1)
         lines = __IMPORT__.SourceFile.data[__IMPORT__.SelectedDataSet.value].split("\n");
@@ -626,7 +626,9 @@ function createTable(structure) {
     span.innerHTML = "创建数据表 : ";
     d.appendChild(span);
     container.appendChild(d);
-    container.innerHTML += "<hr>";
+
+    let hr = document.createElement("hr");
+    container.appendChild(hr);
 
     var title = document.createElement("input");
     title.id = "table-Title";
@@ -712,8 +714,12 @@ function createTable(structure) {
         }
     }
 
+    let br = document.createElement("hr");
+    br.className = "br";
+    container.appendChild(br);
+
     var tool = document.createElement("div");
-    tool.className = "tools-container";
+    tool.className = "groupbar";
     tool.style.cssFloat = "left";
     container.appendChild(tool);
 
@@ -891,7 +897,9 @@ function createDatabase(){
     span.innerHTML = "创建数据库 : ";
     d.appendChild(span);
     container.appendChild(d);
-    container.innerHTML += "<hr>";
+
+    let hr = document.createElement("hr");
+    container.appendChild(hr);
 
     for (var name in __DATABASE__) {
         d = document.createElement("div");
@@ -910,8 +918,13 @@ function createDatabase(){
             d.appendChild(input);
         }
     }
+
+    let br = document.createElement("hr");
+    br.className = "br";
+    container.appendChild(br);
+
     var tool = document.createElement("div");
-    tool.className = "tools-container";
+    tool.className = "groupbar";
     tool.style.cssFloat= "left";
     container.appendChild(tool);
 
@@ -920,7 +933,7 @@ function createDatabase(){
     b.innerHTML = "创建";
     b.onclick = function(){
         if (checkStorage()) {
-            if (__DATABASE__.Name != "") {
+            if (__DATABASE__.Name.value.trim() != "") {
                 var db = {"name": __DATABASE__.Name.value,"version" : __DATABASE__.Version.value, "description": __DATABASE__.Description.value, "size": __DATABASE__.Size.value};
                 var storage = window.localStorage;
                 var dbs = JSON.parse(storage.getItem(__CONFIGS__.STORAGE.DATABASES));
@@ -942,7 +955,8 @@ function createDatabase(){
                 viewDatabases();
                 var container =$("create-database-Content");
                 container.parentNode.removeChild(container);
-            }
+            } else
+                alert("请输入数据库名称.");
         }
     };
     tool.appendChild(b);
@@ -968,7 +982,9 @@ function getImportContent() {
     span.innerHTML = "导入数据 :";
     d.appendChild(span);
     container.appendChild(d);
-    container.innerHTML += "<hr>";
+
+    let hr = document.createElement("hr");
+    container.appendChild(hr);
 
     for (var name in __IMPORT__) {
         d = document.createElement("div");
@@ -985,7 +1001,10 @@ function getImportContent() {
             var input = document.createElement("select");
             input.id = name;
             for (var i = 0; i < __IMPORT__[name].options.length; i++) {
-                input.options.add(new Option(__IMPORT__[name].options[i], i));
+                if (isArray(__IMPORT__[name].options[i]))
+                    input.options.add(new Option(__IMPORT__[name].options[i][0], __IMPORT__[name].options[i][1]));
+                else
+                    input.options.add(new Option(__IMPORT__[name].options[i], i));
             }
             input.value = __IMPORT__[name].value;
             input.onchange = function(){
@@ -1038,8 +1057,13 @@ function getImportContent() {
             d.appendChild(input);
         }
     }
+
+    let br = document.createElement("hr");
+    br.className = "br";
+    container.appendChild(br);
+
     var tool = document.createElement("div");
-    tool.className = "tools-container";
+    tool.className = "groupbar";
     tool.style.cssFloat= "left";
     tool.style.width = "100%";
     container.appendChild(tool);
@@ -1980,8 +2004,8 @@ function init() {
             for (key in config) {
                 try {
                     __ECHARTS__.configs[key].value = config[key];
-                }catch (e) {
-                    
+                } catch (e) {
+
                 }
             }
         }
@@ -2018,10 +2042,10 @@ function init() {
     let help_crdb = $("help-create-database");
     crdb.onclick = help_crdb.onclick = function () {
         var db = createDatabase();
-        setCenterPosition($("page"),db);
+        setCenterPosition($("page"), db);
     };
     dbstools.appendChild(crdb);
-    setTooltip(crdb, "创建新的<br>数据库");
+    setTooltip(crdb, "创建数<br>据库");
 
     var rmdb = document.createElement("div");
     rmdb.type = "div";
@@ -2059,7 +2083,7 @@ function init() {
         }
     };
     dbstools.appendChild(rmdb);
-    setTooltip(rmdb, "删除当前<br>数据库");
+    setTooltip(rmdb, "删除数<br>据库");
 
     var dbinfo = document.createElement("div");
     dbinfo.type = "div";
@@ -2068,9 +2092,9 @@ function init() {
     dbinfo.innerText = "测试";
     dbinfo.style.display = "none";
     dbinfo.onclick = function () {
-        var oba = {name:"a",value:[1,2.111111111111],par:{x:1}};
-        var obb = {name:"a",value:[1,2],par:{x:1}};
-        alert(Compare(oba,obb));
+        var oba = {name: "a", value: [1, 2.111111111111], par: {x: 1}};
+        var obb = {name: "a", value: [1, 2], par: {x: 1}};
+        alert(Compare(oba, obb));
     };
     dbstools.appendChild(dbinfo);
     setTooltip(dbinfo, "功能测试");
@@ -2089,11 +2113,11 @@ function init() {
                 $("footer").style.display = "block";
         } else
             $("footer").style.display = "none";
-        setUserConfig("help",$("footer").style.display);
+        setUserConfig("help", $("footer").style.display);
         resize()
     };
     dbstools.appendChild(about);
-    setTooltip(about, "显示或关闭帮<br>助和技术说明");
+    setTooltip(about, "显示或关<br>闭帮助");
 
 
     //#######################################
@@ -2109,10 +2133,10 @@ function init() {
     let help_crtb = $("help-create-table");
     crtb.onclick = help_crtb.onclick = function () {
         var tb = createTable(null);
-        setCenterPosition($("page"),tb);
+        setCenterPosition($("page"), tb);
     };
     tbstools.appendChild(crtb);
-    setTooltip(crtb, "创建一个新<br>的数据表");
+    setTooltip(crtb, "创建数<br>据表");
 
     var importtb = document.createElement("div");
     importtb.type = "div";
@@ -2122,10 +2146,10 @@ function init() {
     let help_importtb = $("help-import-data");
     importtb.onclick = help_importtb.onclick = function () {
         var im = getImportContent();
-        setCenterPosition($("page"),im);
+        setCenterPosition($("page"), im);
     };
     tbstools.appendChild(importtb);
-    setTooltip(importtb, "导入外部数据<br>(CSV/Excel)");
+    setTooltip(importtb, "导入外<br>部数据");
 
     var exConstr = document.createElement("div");
     exConstr.type = "div";
@@ -2145,7 +2169,7 @@ function init() {
 
     };
     tbstools.appendChild(exConstr);
-    setTooltip(exConstr, "显示当前数<br>据表结构");
+    setTooltip(exConstr, "显示数据<br>表结构");
 
     var rmtb = document.createElement("div");
     rmtb.type = "div";
@@ -2183,7 +2207,7 @@ function init() {
         }
     };
     tbstools.appendChild(rmtb);
-    setTooltip(rmtb, "从数据库中删<br>除当前数据表");
+    setTooltip(rmtb, "删除数<br>据表");
 
     //#######################################
     //初始化SQL菜单
@@ -2201,7 +2225,7 @@ function init() {
         openfile.value = "";
         __SQLEDITOR__.title = null;
         __SQLEDITOR__.codeMirror.setValue("");
-        if (this.id == "help-create-sql" )
+        if (this.id == "help-create-sql")
             __SQLEDITOR__.codeMirror.setValue("/*大括号中是用户参数*/\nSELECT * \nFROM \n{数据表}\nORDER BY 1");
     };
     sqltools.appendChild(newsql);
@@ -2239,10 +2263,10 @@ function init() {
     let help_opensql = $("help-open-sql");
     opensql.onclick = help_opensql.onclick = function () {
         var tb = storageSqlDialog("", __SQLEDITOR__);
-        setCenterPosition($("page"),tb)
+        setCenterPosition($("page"), tb)
     };
     sqltools.appendChild(opensql);
-    setTooltip(opensql, "从浏览器存储<br>中打开脚本");
+    setTooltip(opensql, "打开本<br>地脚本");
 
     var saveto = document.createElement("div");
     saveto.type = "div";
@@ -2254,7 +2278,7 @@ function init() {
         if (__SQLEDITOR__.title == null) {
             var sql = __SQLEDITOR__.codeMirror.getValue();
             var tb = storageSqlDialog(sql, __SQLEDITOR__, "_TO_SAVE_");
-            setCenterPosition($("page"),tb)
+            setCenterPosition($("page"), tb)
         } else {
             var name = __SQLEDITOR__.title;
             var res = confirm("您确定覆盖保存脚本 " + name + " 吗?");
@@ -2271,7 +2295,7 @@ function init() {
         }
     };
     sqltools.appendChild(saveto);
-    setTooltip(saveto, "保存脚本到<br>浏览器存储");
+    setTooltip(saveto, "保存脚本<br>到本地");
 
     var loadfile = document.createElement("div");
     loadfile.type = "div";
@@ -2283,7 +2307,7 @@ function init() {
         $("openfile").click();
     };
     sqltools.appendChild(loadfile);
-    setTooltip(loadfile, "导入外部<br>脚本文件");
+    setTooltip(loadfile, "导入外<br>部脚本");
 
     var saveas = document.createElement("div");
     saveas.type = "div";
@@ -2296,7 +2320,7 @@ function init() {
         openDownloadDialog(blob, "WebSQLiteDataView.sql");
     };
     sqltools.appendChild(saveas);
-    setTooltip(saveas, "脚本另存为<br>文本文件");
+    setTooltip(saveas, "脚本<br>导出");
 
     var execsql = document.createElement("div");
     execsql.type = "div";
@@ -2313,14 +2337,14 @@ function init() {
                 selection = __SQLEDITOR__.codeMirror.getValue();
             var paramdialog = getParamDialog(__SQLEDITOR__.title, selection);
             if (paramdialog != null) {
-                setCenterPosition($("page"),paramdialog)
+                setCenterPosition($("page"), paramdialog)
             } else {
                 execute();
             }
         }
     };
     sqltools.appendChild(execsql);
-    setTooltip(execsql, "执行脚本并<br>获取数据");
+    setTooltip(execsql, "执行脚本<br>获取数据");
 
     var tofull = document.createElement("div");
     sqltools.appendChild(tofull);
@@ -2337,7 +2361,7 @@ function init() {
     var editorCharset = document.createElement("select");
     editorCharset.type = "select";
     editorCharset.id = "set-editer-chartset";
-    for (var i=0;i<__SQLEDITOR__.charset.options.length;i++) {
+    for (var i = 0; i < __SQLEDITOR__.charset.options.length; i++) {
         editorCharset.options.add(new Option(__SQLEDITOR__.charset.options[i], i));
     }
     try {
@@ -2346,12 +2370,12 @@ function init() {
             __SQLEDITOR__.charset.value = editorCharset.selectedIndex = charset;
         } else
             editorCharset.selectedIndex = 0;
-    }catch (e) {
+    } catch (e) {
         console.log(e);
     }
     editorCharset.onchange = function () {
         __SQLEDITOR__.charset.value = this.value;
-        setUserConfig("editercharset",this.value);
+        setUserConfig("editercharset", this.value);
     };
     sqltools.appendChild(editorCharset);
     setTooltip(editorCharset, "导入脚本<br>字符编码");
@@ -2376,9 +2400,9 @@ function init() {
             setFontSize.value = getUserConfig("editerfontsize");
             let editor = document.getElementsByClassName("CodeMirror")[0];
             editor.style.fontSize = setFontSize.value
-        }else
+        } else
             setFontSize.selectedIndex = 0;
-    }catch (e) {
+    } catch (e) {
         console.log(e);
     }
     setFontSize.onchange = function () {
@@ -2404,14 +2428,14 @@ function init() {
             __SQLEDITOR__.codeMirror.setOption("theme", theme.name);
         } else
             editorThemes.selectedIndex = 0;
-    }catch (e) {
+    } catch (e) {
         console.log(e);
     }
     editorThemes.onchange = function () {
         let theme = __SQLEDITOR__.themes[this.value];
         $("sqlediterTheme").setAttribute("href", theme.href);
         __SQLEDITOR__.codeMirror.setOption("theme", theme.name);
-        setUserConfig("editerthemes",this.value);
+        setUserConfig("editerthemes", this.value);
     };
     sqltools.appendChild(editorThemes);
     setTooltip(editorThemes, "调整编辑<br>器主题");
@@ -2430,7 +2454,7 @@ function init() {
         msgbox.innerHTML = "";
     };
     detailtools.appendChild(clean);
-    setTooltip(clean, "清除所有终<br>端日志记录");
+    setTooltip(clean, "清除终端<br>日志记录");
 
     var logs = document.createElement("select");
     logs.type = "select";
@@ -2439,13 +2463,13 @@ function init() {
     logs.options.add(new Option("5000条", 5000));
     logs.options.add(new Option("10000条", 10000));
     logs.options.add(new Option("全部", 0));
-    try{
+    try {
         let re = getUserConfig("pagelogs");
         if (re != null)
             logs.value = getUserConfig("pagelogs");
         else
             logs.selectedIndex = 0;
-    }catch (e) {
+    } catch (e) {
         console.log(e);
     }
     logs.onchange = function () {
@@ -2486,7 +2510,7 @@ function init() {
             viewDataset(__DATASET__.default.sheet);
         }
     };
-    setTooltip(toup, "显示上一<br>个数据集");
+    setTooltip(toup, "上一个<br>数据集");
 
     var to = document.createElement("div");
     datatools.appendChild(to);
@@ -2504,7 +2528,7 @@ function init() {
             viewDataset(__DATASET__.default.sheet);
         }
     };
-    setTooltip(to, "显示当前<br>数据集");
+    setTooltip(to, "当前数<br>据集");
 
     var todown = document.createElement("div");
     datatools.appendChild(todown);
@@ -2526,7 +2550,7 @@ function init() {
             viewDataset(__DATASET__.default.sheet);
         }
     };
-    setTooltip(todown, "显示下一<br>个数据集");
+    setTooltip(todown, "下一个<br>数据集");
 
     var datatran = document.createElement("div");
     datatools.appendChild(datatran);
@@ -2544,7 +2568,7 @@ function init() {
             viewDataset(__DATASET__.default.sheet);
         }
     };
-    setTooltip(datatran, "转置当前<br>数据集");
+    setTooltip(datatran, "转置数<br>据集");
 
     var dataslice = document.createElement("div");
     datatools.appendChild(dataslice);
@@ -2556,10 +2580,10 @@ function init() {
     dataslice.onclick = help_datasetslice.onclick = function () {
         if (__DATASET__.result.length > 0) {
             var dataslice = getDataSlice();
-            setCenterPosition($("page"),dataslice);
+            setCenterPosition($("page"), dataslice);
         }
     };
-    setTooltip(dataslice, "对当前数据<br>集进行切片");
+    setTooltip(dataslice, "数据集<br>切片");
 
     var subtotal = document.createElement("div");
     datatools.appendChild(subtotal);
@@ -2586,10 +2610,10 @@ function init() {
                 data.push(row);
             }
             var subtotal = getSubtotal(columns, data);
-            setCenterPosition($("page"),subtotal);
+            setCenterPosition($("page"), subtotal);
         }
     };
-    setTooltip(subtotal, "对当前数据<br>集分类汇总");
+    setTooltip(subtotal, "数据集分<br>类汇总");
 
     var download = document.createElement("div");
     datatools.appendChild(download);
@@ -2620,7 +2644,7 @@ function init() {
             openDownloadDialog(sheet2blob(sheet), 'WebSQLiteDataView.xlsx');
         }
     };
-    setTooltip(download, "导出当前<br>数据集");
+    setTooltip(download, "导出数<br>据集");
 
     var remove = document.createElement("div");
     datatools.appendChild(remove);
@@ -2632,7 +2656,7 @@ function init() {
     let help_datasetremove = $("help-dataset-remove");
     remove.onclick = help_datasetremove.onclick = function () {
         if (__DATASET__["result"].length > 0) {
-            __DATASET__["result"].splice(__DATASET__.default.sheet,1);
+            __DATASET__["result"].splice(__DATASET__.default.sheet, 1);
             if (__DATASET__.default.sheet >= __DATASET__["result"].length)
                 __DATASET__.default.sheet = __DATASET__["result"].length - 1;
 
@@ -2649,7 +2673,7 @@ function init() {
             }
         }
     };
-    setTooltip(remove, "删除当前<br>数据集");
+    setTooltip(remove, "删除数<br>据集");
 
     var pageup = document.createElement("div");
     datatools.appendChild(pageup);
@@ -2666,7 +2690,7 @@ function init() {
             viewDataset(__DATASET__.default.sheet);
         }
     };
-    setTooltip(pageup, "显示当前数据<br>集的上一页");
+    setTooltip(pageup, "当前数据集<br>的上一页");
 
     var pagecurrent = document.createElement("div");
     datatools.appendChild(pagecurrent);
@@ -2680,7 +2704,7 @@ function init() {
             viewDataset(__DATASET__.default.sheet);
         }
     };
-    setTooltip(pagecurrent, "显示当前数据<br>集的当前页");
+    setTooltip(pagecurrent, "当前数据集<br>的当前页");
 
     var pagedown = document.createElement("div");
     datatools.appendChild(pagedown);
@@ -2697,7 +2721,7 @@ function init() {
             viewDataset(__DATASET__.default.sheet);
         }
     };
-    setTooltip(pagedown, "显示当前数据<br>集的下一页");
+    setTooltip(pagedown, "当前数据集<br>的下一页");
 
     var analysis = document.createElement("div");
     analysis.style.display = "none";
@@ -2775,7 +2799,7 @@ function init() {
     let help_echartsConfigs = $("help-select-echarts-configs");
     toconfigs.onclick = help_echartsConfigs.onclick = function () {
         var configs = getEchartsConfigs($("tableContainer"));
-        setCenterPosition($("page"),configs);
+        setCenterPosition($("page"), configs);
     };
     setTooltip(toconfigs, "更多图<br>形参数");
 
@@ -2788,7 +2812,7 @@ function init() {
         echartsThemes.options.add(new Option(theme, __ECHARTS__.themes[theme]));
         help_echartsThemes.options.add(new Option(theme, __ECHARTS__.themes[theme]));
     }
-    try{
+    try {
         let theme = getUserConfig("echartsthemes");
         if (theme != null)
             echartsThemes.value = theme;
@@ -2811,7 +2835,7 @@ function init() {
         }
     };
     datatools.appendChild(echartsThemes);
-    setTooltip(echartsThemes, "选择数据视<br>图主题");
+    setTooltip(echartsThemes, "数据视<br>图主题");
 
     var echartsType = document.createElement("select");
     echartsType.type = "select";
@@ -2834,7 +2858,7 @@ function init() {
         }
     };
     datatools.appendChild(echartsType);
-    setTooltip(echartsType, "选择数据视<br>图类别");
+    setTooltip(echartsType, "数据视<br>图类别");
 
     var echarts = document.createElement("div");
     datatools.appendChild(echarts);
@@ -2854,9 +2878,9 @@ function init() {
             console.log(e);
         }
     };
-    setTooltip(echarts, "绘制当前数<br>据集的视图");
+    setTooltip(echarts, "绘制数据<br>集的视图");
 
-   setPageThemes();
+    setPageThemes();
 
 
     window.onresize = function () {
@@ -3011,7 +3035,8 @@ function getSubtotal(columns) {
 
     container.appendChild(d);
 
-    container.innerHTML += "<hr>";
+    let hr = document.createElement("hr");
+    container.appendChild(hr);
 
     var table = document.createElement("table");
     container.appendChild(table);
@@ -3039,9 +3064,13 @@ function getSubtotal(columns) {
 
     table.appendChild(addSubtotal(columns, 0));
 
+    let br = document.createElement("hr");
+    br.className = "br";
+    container.appendChild(br);
+
     var tool = document.createElement("div");
+    tool.className = "groupbar";
     container.appendChild(tool);
-    tool.className = "tools-container";
 
     var add = document.createElement("div");
     add.className = "button";
@@ -3212,7 +3241,9 @@ function getParamDialog(title, sql) {
         span.innerHTML = (title == null?"[ ]":"[ " + title + " ]");
         d.appendChild(span);
         container.appendChild(d);
-        container.innerHTML += "<hr>";
+
+        let hr = document.createElement("hr");
+        container.appendChild(hr);
 
         for (var i = 0; i < params.length; i++) {
             d = document.createElement("div");
@@ -3232,9 +3263,13 @@ function getParamDialog(title, sql) {
             container.appendChild(d);
         }
 
+        let br = document.createElement("hr");
+        br.className = "br";
+        container.appendChild(br);
+
         var tool = document.createElement("div");
+        tool.className = "groupbar";
         container.appendChild(tool);
-        tool.className = "tools-container";
 
         var confirm = document.createElement("div");
         confirm.className = "button";
@@ -3275,7 +3310,8 @@ function getDataSlice() {
     d.appendChild(span);
     container.appendChild(d);
 
-    container.innerHTML += "<hr>";
+    let hr = document.createElement("hr");
+    container.appendChild(hr);
 
     var table = document.createElement("table");
     container.appendChild(table);
@@ -3329,8 +3365,6 @@ function getDataSlice() {
         tr.appendChild(td);
     }
 
-    container.innerHTML += "<br>";
-
     d = document.createElement("div");
     container.appendChild(d);
     span = document.createElement("span");
@@ -3352,10 +3386,13 @@ function getDataSlice() {
     range_end.value = __DATASET__.result[__DATASET__.default.sheet].data.length;
     d.appendChild(range_end);
 
-    var tool = document.createElement("div");
-    container.appendChild(tool);
-    tool.className = "tools-container";
+    let br = document.createElement("hr");
+    br.className = "br";
+    container.appendChild(br);
 
+    var tool = document.createElement("div");
+    tool.className = "groupbar";
+    container.appendChild(tool);
     var confirm = document.createElement("div");
     confirm.className = "button";
     confirm.innerText = "确定";
@@ -3434,7 +3471,8 @@ function getDataFilter(colid) {
     d.appendChild(span);
     container.appendChild(d);
 
-    container.innerHTML += "<hr>";
+    let hr = document.createElement("hr");
+    container.appendChild(hr);
 
     var tableContent =document.createElement("div");
     tableContent.className = "data_filter_table_Content";
@@ -3509,11 +3547,13 @@ function getDataFilter(colid) {
         tr.appendChild(td);
     }
 
-    container.innerHTML += "<br>";
+    let br = document.createElement("hr");
+    br.className = "br";
+    container.appendChild(br);
 
     var tool = document.createElement("div");
+    tool.className = "groupbar";
     container.appendChild(tool);
-    tool.className = "tools-container";
 
     var checkall = document.createElement("div");
     checkall.className = "button";
@@ -3647,7 +3687,9 @@ function getFormat(colid) {
     span.innerHTML = "格式设置 : [ " + columns[Number(colid)].name + " ]";
     d.appendChild(span);
     container.appendChild(d);
-    container.innerHTML += "<hr>";
+
+    let hr = document.createElement("hr");
+    container.appendChild(hr);
 
     let items = document.createElement("div");
     items.className = "table-data-format-items";
@@ -3753,10 +3795,13 @@ function getFormat(colid) {
     item.appendChild(param);
     items.appendChild(item);
 
+    let br = document.createElement("hr");
+    br.className = "br";
+    container.appendChild(br);
 
     var tool = document.createElement("div");
+    tool.className = "groupbar";
     container.appendChild(tool);
-    tool.className = "tools-container";
 
     var confirm = document.createElement("div");
     confirm.className = "button";
@@ -3799,8 +3844,8 @@ function setTooltip(parent, text) {
         tip.innerHTML = text;
         let posi = getAbsolutePosition(parent);
         tip.style.top = (posi.top - 41) + "px";
-        tip.style.left = (posi.left - 10) + "px";
-        tip.style.width = (posi.width + 20) + "px";
+        tip.style.left = posi.left + "px";
+        tip.style.width = posi.width + "px";
         tip.style.height = (posi.height - 5) + "px";
         $("page").appendChild(tip);
     };

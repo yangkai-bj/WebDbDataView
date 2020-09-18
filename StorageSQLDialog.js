@@ -1,20 +1,21 @@
 function storageSqlDialog(sql, editer, type){
-    let sqldialog = document.createElement("div");
-    sqldialog.id = "sql-dialog";
-    sqldialog.className = "sql-dialog";
+    let container = document.createElement("div");
+    container.id = "sql-Manager-Content";
+    container.className = "sql-Manager-Content";
 
     let d = document.createElement("div");
     d.style.width = "100%";
     let span = document.createElement("span");
     span.innerHTML = "脚本管理 : ";
     d.appendChild(span);
-    var input = document.createElement("input");
-    input.id = input.className = "sql-dialog-name";
-    input.placeholder="请输入脚本名称.";
-    d.appendChild(input);
+    let sqlname = document.createElement("input");
+    sqlname.id = sqlname.className = "sql-Manager-Content-name";
+    sqlname.placeholder="请输入脚本名称.";
+    d.appendChild(sqlname);
+    container.appendChild(d);
 
-    sqldialog.appendChild(d);
-    sqldialog.innerHTML += "<hr>";
+    let hr = document.createElement("hr");
+    container.appendChild(hr);
 
     d = document.createElement("div");
     d.className = "toolbar";
@@ -34,45 +35,49 @@ function storageSqlDialog(sql, editer, type){
         $("edit-container").style.display = "block";
     };
     d.appendChild(b);
-    sqldialog.appendChild(d);
+    container.appendChild(d);
 
-    var div = document.createElement("div");
-    div.className = "table-container";
-    div.id = "table-container";
-    sqldialog.appendChild(div);
-    var table = document.createElement("table");
-    div.appendChild(table);
-    table.id = "sql-dialog-table";
-    table.className = "table";
-    table.style.width = "100%";
-    getSQLList(table);
+    let contentContainer = document.createElement("div");
+    contentContainer.className = contentContainer.id = "content-container";
+    container.appendChild(contentContainer);
 
-    var div  = document.createElement("div");
-    div.className ="edit-container";
-    div.id = "edit-container";
-    div.style.display = "none";
-    sqldialog.appendChild(div);
+    let tablecontainer = document.createElement("div");
+    tablecontainer.className = tablecontainer.id = "table-container";
+    contentContainer.appendChild(tablecontainer);
+    let sqltable = document.createElement("table");
+    tablecontainer.appendChild(sqltable);
+    sqltable.id = "sql-Manager-Content-table";
+    sqltable.className = "table";
+    sqltable.style.width = "100%";
+    getSQLList(sqltable);
 
-    var edit = document.createElement("textarea");
-    edit.id = "sql-dialog-sql";
-    edit.className = "sql-dialog-sql";
+    let editcontainer = document.createElement("div");
+    editcontainer.className = editcontainer.id = "edit-container";
+    editcontainer.style.display = "none";
+    contentContainer.appendChild(editcontainer);
+
+    let edit = document.createElement("textarea");
+    edit.className = edit.id = "sql-Manager-Content-sql";
     edit.type = "textarea";
     edit.setAttribute("readonly","readonly");
     edit.value = sql;
-    div.appendChild(edit);
+    editcontainer.appendChild(edit);
 
-    var tool = document.createElement("div");
-    sqldialog.appendChild(tool);
-    tool.className = "tools-container";
+    let br = document.createElement("hr");
+    br.className = "br";
+    container.appendChild(br);
 
-    var open = document.createElement("div");
+    let tool = document.createElement("div");
+    tool.className = "groupbar";
+    container.appendChild(tool);
+
+    let open = document.createElement("div");
     open.className = "button";
     open.innerText = "打开";
     open.onclick = function(){
-        editer.title = $("sql-dialog-name").value;
-        editer.codeMirror.setValue($("sql-dialog-sql").value);
-        $("sql-dialog").parentNode.removeChild($("sql-dialog"));
-
+        editer.title = $("sql-Manager-Content-name").value;
+        editer.codeMirror.setValue($("sql-Manager-Content-sql").value);
+        $("sql-Manager-Content").parentNode.removeChild($("sql-Manager-Content"));
     };
     tool.appendChild(open);
 
@@ -80,30 +85,30 @@ function storageSqlDialog(sql, editer, type){
     add.className = "button";
     add.innerText = "保存";
     add.onclick = function(){
-        var name = $("sql-dialog-name");
-        var sql = $("sql-dialog-sql");
+        var name = $("sql-Manager-Content-name");
+        var sql = $("sql-Manager-Content-sql");
         if (name.value !="" && sql.value != "") {
             var storage = window.localStorage;
             var sqllist = JSON.parse(storage.getItem(__CONFIGS__.STORAGE.SCRIPTS));
             sqllist[name.value] = messageEncode(sql.value);
             storage.setItem(__CONFIGS__.STORAGE.SCRIPTS, JSON.stringify(sqllist));
-            getSQLList($("sql-dialog-table"))
+            getSQLList($("sql-Manager-Content-table"))
         }
         if (type == "_TO_SAVE_")
-            editer.title = $("sql-dialog-name").value;
+            editer.title = $("sql-Manager-Content-name").value;
     };
     tool.appendChild(add);
     var del = document.createElement("div");
     del.className = "button";
     del.innerText = "删除";
     del.onclick = function(){
-        var name = $("sql-dialog-name");
+        var name = $("sql-Manager-Content-name");
         if (name.value !="") {
             var storage = window.localStorage;
             var sqllist = JSON.parse(storage.getItem(__CONFIGS__.STORAGE.SCRIPTS));
             delete sqllist[name.value];
             storage.setItem(__CONFIGS__.STORAGE.SCRIPTS, JSON.stringify(sqllist));
-            getSQLList($("sql-dialog-table"))
+            getSQLList($("sql-Manager-Content-table"))
         }
     };
     tool.appendChild(del);
@@ -124,7 +129,7 @@ function storageSqlDialog(sql, editer, type){
                         var storage = window.localStorage;
                         var sqllist = JSON.parse(this.result);
                         storage.setItem(__CONFIGS__.STORAGE.SCRIPTS, JSON.stringify(sqllist));
-                        getSQLList($("sql-dialog-table"));
+                        getSQLList($("sql-Manager-Content-table"));
                     }
                 };
                 reader.readAsText(file, __CONFIGS__.Charset.options[__CONFIGS__.Charset.value]);
@@ -167,10 +172,10 @@ function storageSqlDialog(sql, editer, type){
     exit.className = "button";
     exit.innerText = "取消";
     exit.onclick = function(){
-        $("sql-dialog").parentNode.removeChild($("sql-dialog"));
+        $("sql-Manager-Content").parentNode.removeChild($("sql-Manager-Content"));
     };
     tool.appendChild(exit);
-    return sqldialog;
+    return container;
 }
 
 function getSQLList(table){
@@ -208,8 +213,8 @@ function getSQLList(table){
         tr.setAttribute("name", name);
         tr.setAttribute("sql", sqllist[name]);
         tr.onclick = function() {
-            var name = $("sql-dialog-name");
-            var sql = $("sql-dialog-sql");
+            var name = $("sql-Manager-Content-name");
+            var sql = $("sql-Manager-Content-sql");
             name.value = this.getAttribute("name");
             var _sql = messageDecode(this.getAttribute("sql"));
             _sql = _sql.substring(0, _sql.length - 1);

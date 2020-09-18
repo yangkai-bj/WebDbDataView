@@ -8,9 +8,10 @@ body{
 body ::-webkit-scrollbar {
     width: 5px;
     height: 4px;
+    background: transparent;
 }
 body ::-webkit-scrollbar-thumb {
-  border-radius: 1px;
+  border-radius: 3px;
   background-color: var(--toolbar-background-color);
   background-image: -webkit-linear-gradient(
           45deg,
@@ -25,8 +26,8 @@ body ::-webkit-scrollbar-thumb {
 }
 body ::-webkit-scrollbar-track {
     box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
-    background: none;
-    border-radius: 1px;
+    background: transparent;
+    border-radius: 3px;
 }
 
 .header{
@@ -122,7 +123,8 @@ a:active {color:#FF00FF;}
     margin: 0px;
     position: relative;
     white-space: nowrap;
-    overflow:hidden
+    overflow:hidden;
+    border-radius: 5px;
 }
 
 .databases{
@@ -141,7 +143,7 @@ a:active {color:#FF00FF;}
     color: var(--toolbar-background-color);
 }
 
-.button{
+.toolbar .button{
     height: 100%;
     width: 60px;
     text-align: center;
@@ -150,12 +152,29 @@ a:active {color:#FF00FF;}
     cursor: pointer;
     float:left;
     position: relative;
-    border-bottom-left-radius: 10px;
-    border-top-right-radius: 10px;
+    border-bottom-right-radius: 15px;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 5px;
 }
 
-.button:hover{
+.toolbar .button:hover{
     color:var(--toolbar-button-hover-color);
+    background-color: var(--toolbar-button-hover-background-color);
+}
+
+.toolbar select {
+    background-color: var(--toolbar-background-color);
+    float: right;
+    height: 100%;
+    color: var(--toolbar-color);
+    outline-style: none;
+    border: 0px;
+    border-bottom-right-radius: 10px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 5px;
+}
+
+.toolbar select:hover {
     background-color: var(--toolbar-button-hover-background-color);
 }
 
@@ -163,18 +182,46 @@ a:active {color:#FF00FF;}
     display: block;
     position: fixed;
     line-height: 14px;
-    background-color: var(--toolbar-button-tooltip-background-color);
+    background-color: var(--toolbar-button-hover-background-color);
     color: var(--toolbar-button-tooltip-color);
     text-align: center;
-    border-radius: 6px;
     padding: 5px 0;
     z-index: 99;
-    font-size: 10px;
+    font-size: 6px;
+
     -webkit-animation: content-show 1s 1;/*infinite; /* Chrome, Safari, Opera */
     animation: content-show 1s 1;/*infinite;*/
+
+    border-bottom-left-radius: 15px;
+    border-top-right-radius: 15px;
+    border-bottom-right-radius: 5px;
 }
 
-.tooltip::after {
+.groupbar .button{
+    height: 100%;
+    width: 60px;
+    text-align: center;
+    line-height: 36px;
+    margin: 0px;
+    cursor: pointer;
+    float:left;
+    position: relative;
+    border-bottom-right-radius: 15px;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 5px;
+}
+
+.groupbar .button:hover{
+    color:var(--toolbar-button-hover-color);
+    background-color: var(--toolbar-button-hover-background-color);
+}
+
+
+/*上边-右边-下边-左边*/
+/*
+原理:取得是border的角部分
+三角在下面居中
+.tooltip:after {
     content: "";
     position: absolute;
     top: 100%;
@@ -184,6 +231,7 @@ a:active {color:#FF00FF;}
     border-style: solid;
     border-color: var(--toolbar-button-tooltip-background-color) transparent transparent transparent;
 }
+*/
 
 .list {
     color:var(--list-color);
@@ -194,21 +242,6 @@ a:active {color:#FF00FF;}
 
 .list:hover {
     color:var(--list-hover-color);
-}
-
-.toolbar select {
-    background-color: var(--toolbar-background-color);
-    float: right;
-    height: 100%;
-    color: var(--toolbar-color);
-    outline-style: none;
-    border: 0px;
-    border-bottom-left-radius: 10px;
-    border-top-right-radius: 10px;
-}
-
-.toolbar select:hover {
-    background-color: var(--toolbar-button-hover-background-color);
 }
 
 .sqlContainer{
@@ -238,6 +271,7 @@ a:active {color:#FF00FF;}
     min-width: 50%;
     max-width: 200%;
     border:2px solid var(--table-border-color);
+    border-radius: 5px;
     background-color: var(--table-background-color);
     opacity: 0.8;
     transition: opacity 2s;
@@ -360,11 +394,9 @@ a:active {color:#FF00FF;}
     -moz-column-count: 3; /* Firefox */
     column-count: 3;
     column-fill: auto; /*balance;*/
-
-    margin-left: 10px;
-    margin-right: 10px;
+    padding-left: 3px;
+    padding-right: 3px;
     width: 100%;
-
     -webkit-animation: content-show 2s 1;
     animation: content-show 2s 1;
 }
@@ -469,7 +501,6 @@ a:active {color:#FF00FF;}
     top:10px;
     left:10px;
     width: 485px;
-    height: 450px;
     border:1px solid var(--main-border-color);
     color: var(--toolbar-background-color);
     background-color: whitesmoke;
@@ -516,7 +547,7 @@ a:active {color:#FF00FF;}
     text-align: center;
     font-size: 80%;
     line-height: 18px;
-    color: var(--main-title-color);
+    color: var(--toolbar-button-tooltip-color);
     white-space: nowrap;
 }
 
@@ -718,6 +749,7 @@ a:active {color:#FF00FF;}
     -webkit-animation: content-show 1s 1;
     animation: content-show 1s 1;
 }
+
 .data-slice-Content select ,input {
     font-size: 90%;
     margin: 1px;
@@ -750,6 +782,7 @@ a:active {color:#FF00FF;}
     -webkit-animation: content-show 1s 1;
     animation: content-show 1s 1;
 }
+
 .data-filter-Content select ,input {
     font-size: 90%;
     width: 180px;
@@ -818,7 +851,22 @@ a:active {color:#FF00FF;}
 }
 
 hr {
-    height:1px;border-width:0;color:gray;background-color:#00A7AA
+    height:1px;
+    border-width:0;
+    color:gray;
+    background-color:#00A7AA;
+    width: 100%;
+    position: static;
+}
+
+hr.br{
+    /*空白行*/
+    height:10px;
+    border-width: 0;
+    color:transparent;
+    background-color:transparent;
+    width: 100%;
+    position: static;
 }
 
 .local-map-config-Content {
@@ -867,18 +915,24 @@ hr {
 
 /* Chrome, Safari, Opera */
 @-webkit-keyframes content-show {
-    0% {opacity: 0;}
-    20% {opacity: 0.2;}
-    40% {opacity: 0.4;}
-    60% {opacity: 0.6;}
-    80% {opacity: 0.8;}
-    100% {opacity: 1;}
+    0% {
+        opacity: 0;
+        color: whitesmoke;
+    }
+    100% {
+        opacity: 1;
+    }
 }
 
 /* Standard syntax */
 @keyframes content-show {
-    0% {opacity: 0;}
-    100% {opacity: 1;}
+    0% {
+        opacity: 0;
+        color: transparent;
+    }
+    100% {
+        opacity: 1;
+    }
 }
 
 

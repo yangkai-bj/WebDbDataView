@@ -535,7 +535,8 @@ function getMapConfig() {
     d.appendChild(span);
     container.appendChild(d);
 
-    container.innerHTML += "<hr>";
+    let hr = document.createElement("hr");
+    container.appendChild(hr);
 
     d = document.createElement("div");
     d.className = "toolbar";
@@ -781,7 +782,11 @@ function getMapConfig() {
         };
     }
 
+    let br = document.createElement("p");
+    container.appendChild(br);
+
     d = document.createElement("div");
+    d.className = "groupbar";
     container.appendChild(d);
     b = document.createElement("a");
     b.className = "button";
@@ -967,7 +972,8 @@ function getEchartsConfigs(container) {
     d.appendChild(span);
     m.appendChild(d);
 
-    m.innerHTML += "<hr>";
+    let hr = document.createElement("hr");
+    m.appendChild(hr);
 
     var itemcontainer =document.createElement("div");
     itemcontainer.className = "echarts-configs-container";
@@ -1020,7 +1026,13 @@ function getEchartsConfigs(container) {
         }
 
     }
+
+    let br = document.createElement("hr");
+    br.className = "br";
+    m.appendChild(br);
+
     var c = document.createElement("div");
+    c.className = "groupbar";
     m.appendChild(c);
     var b = document.createElement("a");
     b.className = "button";
