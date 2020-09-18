@@ -2083,7 +2083,7 @@ function init() {
         }
     };
     dbstools.appendChild(rmdb);
-    setTooltip(rmdb, "删除数<br>据库");
+    setTooltip(rmdb, "删除<br>数据库");
 
     var dbinfo = document.createElement("div");
     dbinfo.type = "div";
@@ -2136,7 +2136,7 @@ function init() {
         setCenterPosition($("page"), tb);
     };
     tbstools.appendChild(crtb);
-    setTooltip(crtb, "创建数<br>据表");
+    setTooltip(crtb, "创建<br>数据表");
 
     var importtb = document.createElement("div");
     importtb.type = "div";
@@ -2149,7 +2149,7 @@ function init() {
         setCenterPosition($("page"), im);
     };
     tbstools.appendChild(importtb);
-    setTooltip(importtb, "导入外<br>部数据");
+    setTooltip(importtb, "导入<br>外部数据");
 
     var exConstr = document.createElement("div");
     exConstr.type = "div";
@@ -2169,7 +2169,7 @@ function init() {
 
     };
     tbstools.appendChild(exConstr);
-    setTooltip(exConstr, "显示数据<br>表结构");
+    setTooltip(exConstr, "获取数据<br>表结构");
 
     var rmtb = document.createElement("div");
     rmtb.type = "div";
@@ -2207,7 +2207,7 @@ function init() {
         }
     };
     tbstools.appendChild(rmtb);
-    setTooltip(rmtb, "删除数<br>据表");
+    setTooltip(rmtb, "删除当前<br>数据表");
 
     //#######################################
     //初始化SQL菜单
@@ -2229,7 +2229,7 @@ function init() {
             __SQLEDITOR__.codeMirror.setValue("/*大括号中是用户参数*/\nSELECT * \nFROM \n{数据表}\nORDER BY 1");
     };
     sqltools.appendChild(newsql);
-    setTooltip(newsql, "新建数据<br>库脚本");
+    setTooltip(newsql, "新建<br>脚本");
 
     var input = document.createElement("input");
     input.type = "file";
@@ -2266,7 +2266,7 @@ function init() {
         setCenterPosition($("page"), tb)
     };
     sqltools.appendChild(opensql);
-    setTooltip(opensql, "打开本<br>地脚本");
+    setTooltip(opensql, "打开<br>脚本");
 
     var saveto = document.createElement("div");
     saveto.type = "div";
@@ -2295,7 +2295,7 @@ function init() {
         }
     };
     sqltools.appendChild(saveto);
-    setTooltip(saveto, "保存脚本<br>到本地");
+    setTooltip(saveto, "保存<br>脚本");
 
     var loadfile = document.createElement("div");
     loadfile.type = "div";
@@ -2307,7 +2307,7 @@ function init() {
         $("openfile").click();
     };
     sqltools.appendChild(loadfile);
-    setTooltip(loadfile, "导入外<br>部脚本");
+    setTooltip(loadfile, "导入<br>脚本");
 
     var saveas = document.createElement("div");
     saveas.type = "div";
@@ -2320,7 +2320,7 @@ function init() {
         openDownloadDialog(blob, "WebSQLiteDataView.sql");
     };
     sqltools.appendChild(saveas);
-    setTooltip(saveas, "脚本<br>导出");
+    setTooltip(saveas, "导出<br>脚本");
 
     var execsql = document.createElement("div");
     execsql.type = "div";
@@ -2356,7 +2356,7 @@ function init() {
     tofull.onclick = function () {
         __SQLEDITOR__.codeMirror.setOption("fullScreen", !__SQLEDITOR__.codeMirror.getOption("fullScreen"));
     };
-    setTooltip(tofull, "全屏幕编<br>辑窗口");
+    setTooltip(tofull, "全屏<br>编辑");
 
     var editorCharset = document.createElement("select");
     editorCharset.type = "select";
@@ -2411,7 +2411,7 @@ function init() {
         setUserConfig("editerfontsize", this.value);
     };
     sqltools.appendChild(setFontSize);
-    setTooltip(setFontSize, "调整编辑<br>器字号");
+    setTooltip(setFontSize, "编辑器<br>字号");
 
     var editorThemes = document.createElement("select");
     editorThemes.type = "select";
@@ -2438,7 +2438,7 @@ function init() {
         setUserConfig("editerthemes", this.value);
     };
     sqltools.appendChild(editorThemes);
-    setTooltip(editorThemes, "调整编辑<br>器主题");
+    setTooltip(editorThemes, "编辑器<br>主题");
 
     //#######################################
     //初始化消息菜单
@@ -2454,7 +2454,7 @@ function init() {
         msgbox.innerHTML = "";
     };
     detailtools.appendChild(clean);
-    setTooltip(clean, "清除终端<br>日志记录");
+    setTooltip(clean, "清除终<br>端日志");
 
     var logs = document.createElement("select");
     logs.type = "select";
@@ -2483,7 +2483,7 @@ function init() {
         }
     };
     detailtools.appendChild(logs);
-    setTooltip(logs, "日志保留<br>最多条数");
+    setTooltip(logs, "保留日志<br>记录数");
 
     //#######################################
     //初始化数据菜单
@@ -2528,7 +2528,7 @@ function init() {
             viewDataset(__DATASET__.default.sheet);
         }
     };
-    setTooltip(to, "当前数<br>据集");
+    setTooltip(to, "当前<br>数据集");
 
     var todown = document.createElement("div");
     datatools.appendChild(todown);
@@ -2568,7 +2568,7 @@ function init() {
             viewDataset(__DATASET__.default.sheet);
         }
     };
-    setTooltip(datatran, "转置数<br>据集");
+    setTooltip(datatran, "转置<br>数据");
 
     var dataslice = document.createElement("div");
     datatools.appendChild(dataslice);
@@ -2583,7 +2583,7 @@ function init() {
             setCenterPosition($("page"), dataslice);
         }
     };
-    setTooltip(dataslice, "数据集<br>切片");
+    setTooltip(dataslice, "数据<br>切片");
 
     var subtotal = document.createElement("div");
     datatools.appendChild(subtotal);
@@ -2613,7 +2613,7 @@ function init() {
             setCenterPosition($("page"), subtotal);
         }
     };
-    setTooltip(subtotal, "数据集分<br>类汇总");
+    setTooltip(subtotal, "分类<br>汇总");
 
     var download = document.createElement("div");
     datatools.appendChild(download);
@@ -2644,7 +2644,7 @@ function init() {
             openDownloadDialog(sheet2blob(sheet), 'WebSQLiteDataView.xlsx');
         }
     };
-    setTooltip(download, "导出数<br>据集");
+    setTooltip(download, "下载<br>数据集");
 
     var remove = document.createElement("div");
     datatools.appendChild(remove);
@@ -2673,7 +2673,7 @@ function init() {
             }
         }
     };
-    setTooltip(remove, "删除数<br>据集");
+    setTooltip(remove, "删除<br>数据集");
 
     var pageup = document.createElement("div");
     datatools.appendChild(pageup);
@@ -2690,7 +2690,7 @@ function init() {
             viewDataset(__DATASET__.default.sheet);
         }
     };
-    setTooltip(pageup, "当前数据集<br>的上一页");
+    setTooltip(pageup, "数据集<br>上一页");
 
     var pagecurrent = document.createElement("div");
     datatools.appendChild(pagecurrent);
@@ -2704,7 +2704,7 @@ function init() {
             viewDataset(__DATASET__.default.sheet);
         }
     };
-    setTooltip(pagecurrent, "当前数据集<br>的当前页");
+    setTooltip(pagecurrent, "数据集<br>当前页");
 
     var pagedown = document.createElement("div");
     datatools.appendChild(pagedown);
@@ -2721,7 +2721,7 @@ function init() {
             viewDataset(__DATASET__.default.sheet);
         }
     };
-    setTooltip(pagedown, "当前数据集<br>的下一页");
+    setTooltip(pagedown, "数据集<br>下一页");
 
     var analysis = document.createElement("div");
     analysis.style.display = "none";
@@ -2787,7 +2787,7 @@ function init() {
             console.log(e);
         }
     };
-    setTooltip(toecharts, "重绘并显<br>示大视图");
+    setTooltip(toecharts, "显示<br>大视图");
 
     var toconfigs = document.createElement("div");
     datatools.appendChild(toconfigs);
@@ -2835,7 +2835,7 @@ function init() {
         }
     };
     datatools.appendChild(echartsThemes);
-    setTooltip(echartsThemes, "数据视<br>图主题");
+    setTooltip(echartsThemes, "视图<br>主题");
 
     var echartsType = document.createElement("select");
     echartsType.type = "select";
@@ -2858,7 +2858,7 @@ function init() {
         }
     };
     datatools.appendChild(echartsType);
-    setTooltip(echartsType, "数据视<br>图类别");
+    setTooltip(echartsType, "视图<br>类别");
 
     var echarts = document.createElement("div");
     datatools.appendChild(echarts);
@@ -2878,7 +2878,7 @@ function init() {
             console.log(e);
         }
     };
-    setTooltip(echarts, "绘制数据<br>集的视图");
+    setTooltip(echarts, "绘制<br>视图");
 
     setPageThemes();
 
@@ -3843,7 +3843,7 @@ function setTooltip(parent, text) {
         tip.id = "tooltip-" + parent.id;
         tip.innerHTML = text;
         let posi = getAbsolutePosition(parent);
-        tip.style.top = (posi.top - 41) + "px";
+        tip.style.top = (posi.top - 42) + "px";
         tip.style.left = posi.left + "px";
         tip.style.width = posi.width + "px";
         tip.style.height = (posi.height - 5) + "px";

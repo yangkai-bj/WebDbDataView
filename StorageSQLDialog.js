@@ -164,7 +164,7 @@ function storageSqlDialog(sql, editer, type){
             sqllist = JSON.parse(storage.getItem(__CONFIGS__.STORAGE.SCRIPTS));
         }
         var blob = new Blob([str2ab(JSON.stringify(sqllist))], {type: "application/octet-stream"});
-        openDownloadDialog(blob, "WebSQLiteDataView.json");
+        openDownloadDialog(blob, "WebDataView-SQL-backup.json");
     };
     tool.appendChild(saveas);
 
