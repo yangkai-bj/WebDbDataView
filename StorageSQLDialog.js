@@ -12,6 +12,12 @@ function storageSqlDialog(sql, editer, type){
     sqlname.id = sqlname.className = "sql-Manager-Content-name";
     sqlname.placeholder="请输入脚本名称.";
     d.appendChild(sqlname);
+    let close = document.createElement("img");
+    close.className = "title_close_button";
+    close.src = __SYS_IMAGES__.close.image;
+    close.width = __SYS_IMAGES__.close.width;
+    close.height = __SYS_IMAGES__.close.height;
+    d.appendChild(close);
     container.appendChild(d);
 
     let hr = document.createElement("hr");
@@ -171,7 +177,7 @@ function storageSqlDialog(sql, editer, type){
     var exit = document.createElement("div");
     exit.className = "button";
     exit.innerText = "取消";
-    exit.onclick = function(){
+    exit.onclick = close.onclick = function(){
         $("sql-Manager-Content").parentNode.removeChild($("sql-Manager-Content"));
     };
     tool.appendChild(exit);

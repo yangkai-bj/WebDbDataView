@@ -625,6 +625,12 @@ function createTable(structure) {
     let span = document.createElement("span");
     span.innerHTML = "创建数据表 : ";
     d.appendChild(span);
+    let close = document.createElement("img");
+    close.className = "title_close_button";
+    close.src = __SYS_IMAGES__.close.image;
+    close.width = __SYS_IMAGES__.close.width;
+    close.height = __SYS_IMAGES__.close.height;
+    d.appendChild(close);
     container.appendChild(d);
 
     let hr = document.createElement("hr");
@@ -846,7 +852,7 @@ function createTable(structure) {
     b = document.createElement("a");
     b.className = "button";
     b.innerHTML = "退出";
-    b.onclick = function () {
+    b.onclick = close.onclick = function () {
         var container = $("create-table-Content");
         container.parentNode.removeChild(container);
     };
@@ -896,6 +902,12 @@ function createDatabase(){
     let span = document.createElement("span");
     span.innerHTML = "创建数据库 : ";
     d.appendChild(span);
+    let close = document.createElement("img");
+    close.className = "title_close_button";
+    close.src = __SYS_IMAGES__.close.image;
+    close.width = __SYS_IMAGES__.close.width;
+    close.height = __SYS_IMAGES__.close.height;
+    d.appendChild(close);
     container.appendChild(d);
 
     let hr = document.createElement("hr");
@@ -963,7 +975,7 @@ function createDatabase(){
     b = document.createElement("a");
     b.className = "button";
     b.innerHTML = "退出";
-    b.onclick = function(){
+    b.onclick = close.onclick = function(){
         var container=$("create-database-Content");
         container.parentNode.removeChild(container);
     };
@@ -981,6 +993,12 @@ function getImportContent() {
     let span = document.createElement("span");
     span.innerHTML = "导入数据 :";
     d.appendChild(span);
+    let close = document.createElement("img");
+    close.className = "title_close_button";
+    close.src = __SYS_IMAGES__.close.image;
+    close.width = __SYS_IMAGES__.close.width;
+    close.height = __SYS_IMAGES__.close.height;
+    d.appendChild(close);
     container.appendChild(d);
 
     let hr = document.createElement("hr");
@@ -1102,7 +1120,7 @@ function getImportContent() {
     b = document.createElement("a");
     b.className = "button";
     b.innerHTML = "退出";
-    b.onclick = function(){
+    b.onclick = close.onclick = function(){
         let container =$("import-Content");
         container.parentNode.removeChild(container);
     };
@@ -1994,6 +2012,13 @@ function sheet2blob(sheet, sheetName) {
 }
 
 function init() {
+    try {
+        $("logo").src = __SYS_IMAGES__.logo_sqlite.image;
+        $("logo").width = __SYS_IMAGES__.logo_sqlite.width;
+        $("logo").height = __SYS_IMAGES__.logo_sqlite.height;
+    }catch (e) {
+
+    }
     if (checkStorage()) {
         $("footer").style.display = getUserConfig("help");
         $("themes").setAttribute("href", getUserConfig("pagethemes") == null ? "themes/default.css" : getUserConfig("pagethemes"));
@@ -3019,6 +3044,12 @@ function getSubtotal(columns) {
         cols.options.add(new Option(columns[c], columns[c]));
     }
     d.appendChild(cols);
+    let close = document.createElement("img");
+    close.className = "title_close_button";
+    close.src = __SYS_IMAGES__.close.image;
+    close.width = __SYS_IMAGES__.close.width;
+    close.height = __SYS_IMAGES__.close.height;
+    d.appendChild(close);
 
     span = document.createElement("span");
     span.innerHTML = "合并结果";
@@ -3156,7 +3187,7 @@ function getSubtotal(columns) {
     var cancel = document.createElement("div");
     cancel.className = "button";
     cancel.innerText = "退出";
-    cancel.onclick = function () {
+    cancel.onclick = close.onclick = function () {
         $("subtotal-Content").parentNode.removeChild($("subtotal-Content"));
     };
     tool.appendChild(cancel);
@@ -3240,6 +3271,12 @@ function getParamDialog(title, sql) {
         var span = document.createElement("span");
         span.innerHTML = (title == null?"[ ]":"[ " + title + " ]");
         d.appendChild(span);
+        let close = document.createElement("img");
+        close.className = "title_close_button";
+        close.src = __SYS_IMAGES__.close.image;
+        close.width = __SYS_IMAGES__.close.width;
+        close.height = __SYS_IMAGES__.close.height;
+        d.appendChild(close);
         container.appendChild(d);
 
         let hr = document.createElement("hr");
@@ -3290,7 +3327,7 @@ function getParamDialog(title, sql) {
         var cancel = document.createElement("div");
         cancel.className = "button";
         cancel.innerText = "退出";
-        cancel.onclick = function () {
+        cancel.onclick= close.onclick = function () {
             $("sql-param-dialog").parentNode.removeChild($("sql-param-dialog"));
         };
         tool.appendChild(cancel);
@@ -3308,6 +3345,12 @@ function getDataSlice() {
     var span = document.createElement("span");
     span.innerHTML = "数据切片 : ";
     d.appendChild(span);
+    let close = document.createElement("img");
+    close.className = "title_close_button";
+    close.src = __SYS_IMAGES__.close.image;
+    close.width = __SYS_IMAGES__.close.width;
+    close.height = __SYS_IMAGES__.close.height;
+    d.appendChild(close);
     container.appendChild(d);
 
     let hr = document.createElement("hr");
@@ -3450,7 +3493,7 @@ function getDataSlice() {
     var cancel = document.createElement("div");
     cancel.className = "button";
     cancel.innerText = "退出";
-    cancel.onclick = function () {
+    cancel.onclick = close.onclick = function () {
         $("data-slice-Content").parentNode.removeChild($("data-slice-Content"));
     };
     tool.appendChild(cancel);
@@ -3469,6 +3512,12 @@ function getDataFilter(colid) {
     var span = document.createElement("span");
     span.innerHTML = "筛选字段 :[ " + columns[Number(colid)].name + " ]";
     d.appendChild(span);
+    let close = document.createElement("img");
+    close.className = "title_close_button";
+    close.src = __SYS_IMAGES__.close.image;
+    close.width = __SYS_IMAGES__.close.width;
+    close.height = __SYS_IMAGES__.close.height;
+    d.appendChild(close);
     container.appendChild(d);
 
     let hr = document.createElement("hr");
@@ -3634,7 +3683,7 @@ function getDataFilter(colid) {
     var cancel = document.createElement("div");
     cancel.className = "button";
     cancel.innerText = "退出";
-    cancel.onclick = function () {
+    cancel.onclick = close.onclick = function () {
         $("data-filter-Content").parentNode.removeChild($("data-filter-Content"));
     };
     tool.appendChild(cancel);
@@ -3686,6 +3735,12 @@ function getFormat(colid) {
     let span = document.createElement("span");
     span.innerHTML = "格式设置 : [ " + columns[Number(colid)].name + " ]";
     d.appendChild(span);
+    let close = document.createElement("img");
+    close.className = "title_close_button";
+    close.src = __SYS_IMAGES__.close.image;
+    close.width = __SYS_IMAGES__.close.width;
+    close.height = __SYS_IMAGES__.close.height;
+    d.appendChild(close);
     container.appendChild(d);
 
     let hr = document.createElement("hr");
@@ -3828,7 +3883,7 @@ function getFormat(colid) {
     var cancel = document.createElement("div");
     cancel.className = "button";
     cancel.innerText = "退出";
-    cancel.onclick = function () {
+    cancel.onclick = close.onclick = function () {
         $("table-data-format").parentNode.removeChild($("table-data-format"));
     };
     tool.appendChild(cancel);

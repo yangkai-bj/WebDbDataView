@@ -533,6 +533,12 @@ function getMapConfig() {
     let span = document.createElement("span");
     span.innerHTML = "地图设置 : ";
     d.appendChild(span);
+    let close = document.createElement("img");
+    close.className = "title_close_button";
+    close.src = __SYS_IMAGES__.close.image;
+    close.width = __SYS_IMAGES__.close.width;
+    close.height = __SYS_IMAGES__.close.height;
+    d.appendChild(close);
     container.appendChild(d);
 
     let hr = document.createElement("hr");
@@ -850,7 +856,7 @@ function getMapConfig() {
     b = document.createElement("a");
     b.className = "button";
     b.innerHTML = "退出";
-    b.onclick = function () {
+    b.onclick = close.onclick = function () {
         let citychanged = Compare(JSON.parse(getUserConfig("geoCoordMapCity") == null ? "{}" : getUserConfig("geoCoordMapCity")),geoCoordMap.City);
         let customchanged = Compare(JSON.parse(getUserConfig("geoCoordMapCustom") == null ? "{}" : getUserConfig("geoCoordMapCustom")),geoCoordMap.Custom);
         let localmapchanged = getUserConfig("localMap") == geoCoordMap.LocalMap;
@@ -970,6 +976,13 @@ function getEchartsConfigs(container) {
     var span = document.createElement("span");
     span.innerHTML = "报表及图形参数: ";
     d.appendChild(span);
+
+    let close = document.createElement("img");
+    close.className = "title_close_button";
+    close.src = __SYS_IMAGES__.close.image;
+    close.width = __SYS_IMAGES__.close.width;
+    close.height = __SYS_IMAGES__.close.height;
+    d.appendChild(close);
     m.appendChild(d);
 
     let hr = document.createElement("hr");
@@ -1062,7 +1075,7 @@ function getEchartsConfigs(container) {
     b = document.createElement("a");
     b.className = "button";
     b.innerHTML = "退出";
-    b.onclick = function () {
+    b.onclick= close.onclick = function () {
         var m = $("echarts-configs-Content");
         m.parentNode.removeChild(m);
     };
