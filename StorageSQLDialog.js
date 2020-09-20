@@ -12,11 +12,7 @@ function storageSqlDialog(sql, editer, type){
     sqlname.id = sqlname.className = "sql-Manager-Content-name";
     sqlname.placeholder="请输入脚本名称.";
     d.appendChild(sqlname);
-    let close = document.createElement("img");
-    close.className = "title_close_button";
-    close.src = __SYS_IMAGES__.close.image;
-    close.width = __SYS_IMAGES__.close.width;
-    close.height = __SYS_IMAGES__.close.height;
+    let close = __SYS_IMAGES__.getImg(__SYS_IMAGES__.close);
     d.appendChild(close);
     container.appendChild(d);
 

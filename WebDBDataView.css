@@ -44,7 +44,6 @@ a:hover {color:#FF00FF;}
 a:active {color:#FF00FF;}
 
 #logo{
-    src:var(--logo-image);
     float: left;
     margin-right: 20px;
     margin-left: 20px;

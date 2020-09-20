@@ -533,11 +533,7 @@ function getMapConfig() {
     let span = document.createElement("span");
     span.innerHTML = "地图设置 : ";
     d.appendChild(span);
-    let close = document.createElement("img");
-    close.className = "title_close_button";
-    close.src = __SYS_IMAGES__.close.image;
-    close.width = __SYS_IMAGES__.close.width;
-    close.height = __SYS_IMAGES__.close.height;
+    let close = __SYS_IMAGES__.getImg(__SYS_IMAGES__.close);
     d.appendChild(close);
     container.appendChild(d);
 
@@ -956,7 +952,7 @@ function getMapConfig() {
     }
 }
 
-function getEchartsConfigs(container) {
+function getEchartsConfigs(parent) {
     let config = getUserConfig("echartsconfig");
     if (config != null){
         config = JSON.parse(config);
@@ -967,30 +963,25 @@ function getEchartsConfigs(container) {
             }
         }
     }
-    var m = document.createElement("div");
-    m.type = "div";
-    m.className = "echarts-configs-Content";
-    m.id = "echarts-configs-Content";
+    var container = document.createElement("div");
+    container.type = "div";
+    container.className = "echarts-configs-Content";
+    container.id = "echarts-configs-Content";
 
     var d = document.createElement("div");
     var span = document.createElement("span");
     span.innerHTML = "报表及图形参数: ";
     d.appendChild(span);
-
-    let close = document.createElement("img");
-    close.className = "title_close_button";
-    close.src = __SYS_IMAGES__.close.image;
-    close.width = __SYS_IMAGES__.close.width;
-    close.height = __SYS_IMAGES__.close.height;
+    let close = __SYS_IMAGES__.getImg(__SYS_IMAGES__.close);
     d.appendChild(close);
-    m.appendChild(d);
+    container.appendChild(d);
 
     let hr = document.createElement("hr");
-    m.appendChild(hr);
+    container.appendChild(hr);
 
     var itemcontainer =document.createElement("div");
     itemcontainer.className = "echarts-configs-container";
-    m.appendChild(itemcontainer);
+    container.appendChild(itemcontainer);
 
     for (var name in __ECHARTS__.configs) {
         var d = document.createElement("div");
@@ -1042,11 +1033,11 @@ function getEchartsConfigs(container) {
 
     let br = document.createElement("hr");
     br.className = "br";
-    m.appendChild(br);
+    container.appendChild(br);
 
     var c = document.createElement("div");
     c.className = "groupbar";
-    m.appendChild(c);
+    container.appendChild(c);
     var b = document.createElement("a");
     b.className = "button";
     b.innerHTML = "确定";
@@ -1060,10 +1051,10 @@ function getEchartsConfigs(container) {
         setUserConfig("echartsconfig", JSON.stringify(config));
         try {
             //var container = $("tableContainer");
-            var _width = (getAbsolutePosition(container).width * 0.985) + "px";
-            var _height = (getAbsolutePosition(container).height * 0.965) + "px";
-            container.innerHTML = "";
-            container.appendChild(getEcharts(__DATASET__.echarts.type, _width, _height, __DATASET__.echarts.theme));
+            var _width = (getAbsolutePosition(parent).width * 0.985) + "px";
+            var _height = (getAbsolutePosition(parent).height * 0.965) + "px";
+            parent.innerHTML = "";
+            parent.appendChild(getEcharts(__DATASET__.echarts.type, _width, _height, __DATASET__.echarts.theme));
         } catch (e) {
 
         }
@@ -1080,7 +1071,7 @@ function getEchartsConfigs(container) {
         m.parentNode.removeChild(m);
     };
     c.appendChild(b);
-    return m;
+    return container;
 }
 
 function getEcharts(type, width, height, themes) {

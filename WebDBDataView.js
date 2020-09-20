@@ -625,11 +625,7 @@ function createTable(structure) {
     let span = document.createElement("span");
     span.innerHTML = "创建数据表 : ";
     d.appendChild(span);
-    let close = document.createElement("img");
-    close.className = "title_close_button";
-    close.src = __SYS_IMAGES__.close.image;
-    close.width = __SYS_IMAGES__.close.width;
-    close.height = __SYS_IMAGES__.close.height;
+    let close = __SYS_IMAGES__.getImg(__SYS_IMAGES__.close);
     d.appendChild(close);
     container.appendChild(d);
 
@@ -902,11 +898,7 @@ function createDatabase(){
     let span = document.createElement("span");
     span.innerHTML = "创建数据库 : ";
     d.appendChild(span);
-    let close = document.createElement("img");
-    close.className = "title_close_button";
-    close.src = __SYS_IMAGES__.close.image;
-    close.width = __SYS_IMAGES__.close.width;
-    close.height = __SYS_IMAGES__.close.height;
+    let close = __SYS_IMAGES__.getImg(__SYS_IMAGES__.close);
     d.appendChild(close);
     container.appendChild(d);
 
@@ -993,11 +985,7 @@ function getImportContent() {
     let span = document.createElement("span");
     span.innerHTML = "导入数据 :";
     d.appendChild(span);
-    let close = document.createElement("img");
-    close.className = "title_close_button";
-    close.src = __SYS_IMAGES__.close.image;
-    close.width = __SYS_IMAGES__.close.width;
-    close.height = __SYS_IMAGES__.close.height;
+    let close = __SYS_IMAGES__.getImg(__SYS_IMAGES__.close);
     d.appendChild(close);
     container.appendChild(d);
 
@@ -2064,6 +2052,7 @@ function init() {
     crdb.className = "button";
     crdb.innerText = "新增";
     crdb.id = "create-database";
+    crdb.appendChild(__SYS_IMAGES__.getImg(__SYS_IMAGES__.create_database));
     let help_crdb = $("help-create-database");
     crdb.onclick = help_crdb.onclick = function () {
         var db = createDatabase();
@@ -2077,6 +2066,7 @@ function init() {
     rmdb.className = "button";
     rmdb.innerText = "删除";
     rmdb.id = "delete-database";
+    rmdb.appendChild(__SYS_IMAGES__.getImg(__SYS_IMAGES__.drop_database));
     rmdb.onclick = function () {
         if (__CONFIGS__.CURRENT_DATABASE.connect == null) {
             alert("请选择数据库.");
@@ -2130,6 +2120,7 @@ function init() {
     about.id = "about-and-help";
     about.innerText = "帮助";
     about.style.cssFloat = "right";
+    about.appendChild(__SYS_IMAGES__.getImg(__SYS_IMAGES__.help));
     about.onclick = function () {
         if ($("footer").style.display) {
             if ($("footer").style.display == "block")
@@ -2155,6 +2146,7 @@ function init() {
     crtb.className = "button";
     crtb.id = "create-table";
     crtb.innerText = "新增";
+    crtb.appendChild(__SYS_IMAGES__.getImg(__SYS_IMAGES__.create_table));
     let help_crtb = $("help-create-table");
     crtb.onclick = help_crtb.onclick = function () {
         var tb = createTable(null);
@@ -2168,6 +2160,7 @@ function init() {
     importtb.className = "button";
     importtb.innerText = "导入";
     importtb.id = "import-to-table";
+    importtb.appendChild(__SYS_IMAGES__.getImg(__SYS_IMAGES__.import));
     let help_importtb = $("help-import-data");
     importtb.onclick = help_importtb.onclick = function () {
         var im = getImportContent();
@@ -2181,6 +2174,7 @@ function init() {
     exConstr.className = "button";
     exConstr.innerText = "结构";
     exConstr.id = "show-table-construct";
+    exConstr.appendChild(__SYS_IMAGES__.getImg(__SYS_IMAGES__.table_construct));
     exConstr.onclick = function () {
         __DATASET__["sql"] = __CONFIGS__.CURRENT_TABLE.sql;
         __DATASET__["time"] = getNow();
@@ -2201,6 +2195,7 @@ function init() {
     rmtb.className = "button";
     rmtb.innerText = "删除";
     rmtb.id = "drop-table";
+    rmtb.appendChild(__SYS_IMAGES__.getImg(__SYS_IMAGES__.drop_table));
     rmtb.onclick = function () {
         var r = confirm("确定要删除数据表(视图) " + __CONFIGS__.CURRENT_TABLE.name + " 吗?");
         if (r == true) {
@@ -2244,6 +2239,7 @@ function init() {
     newsql.className = "button";
     newsql.innerText = "新建";
     newsql.id = "create-new-sql";
+    newsql.appendChild(__SYS_IMAGES__.getImg(__SYS_IMAGES__.create_sql));
     let help_createsql = $("help-create-sql");
     newsql.onclick = help_createsql.onclick = function () {
         var openfile = $("openfile");
@@ -2285,6 +2281,7 @@ function init() {
     opensql.className = "button";
     opensql.innerText = "打开";
     opensql.id = "open-sql";
+    opensql.appendChild(__SYS_IMAGES__.getImg(__SYS_IMAGES__.open_sql));
     let help_opensql = $("help-open-sql");
     opensql.onclick = help_opensql.onclick = function () {
         var tb = storageSqlDialog("", __SQLEDITOR__);
@@ -2298,6 +2295,7 @@ function init() {
     saveto.className = "button";
     saveto.innerText = "保存";
     saveto.id = "sql-save-to";
+    saveto.appendChild(__SYS_IMAGES__.getImg(__SYS_IMAGES__.save_sql));
     let help_savesql = $("help-save-sql");
     saveto.onclick = help_savesql.onclick = function () {
         if (__SQLEDITOR__.title == null) {
@@ -2327,6 +2325,7 @@ function init() {
     loadfile.className = "button";
     loadfile.innerText = "导入";
     loadfile.id = "load-sql-file";
+    loadfile.appendChild(__SYS_IMAGES__.getImg(__SYS_IMAGES__.load_sql));
     let help_loadsql = $("help-load-sql");
     loadfile.onclick = help_loadsql.onclick = function () {
         $("openfile").click();
@@ -2339,6 +2338,7 @@ function init() {
     saveas.className = "button";
     saveas.innerText = "导出";
     saveas.id = "sql-save-as";
+    saveas.appendChild(__SYS_IMAGES__.getImg(__SYS_IMAGES__.unload_sql));
     let help_downloadsql = $("help-download-sql");
     saveas.onclick = help_downloadsql.onclick = function () {
         var blob = new Blob([str2ab(__SQLEDITOR__.codeMirror.getValue())], {type: "application/octet-stream"});
@@ -2352,6 +2352,7 @@ function init() {
     execsql.className = "button";
     execsql.innerText = "提交";
     execsql.id = "exec-sql";
+    execsql.appendChild(__SYS_IMAGES__.getImg(__SYS_IMAGES__.execute_sql));
     let help_execsql = $("help-execute-sql");
     execsql.onclick = help_execsql.onclick = function () {
         if (checkStorage()) {
@@ -2474,6 +2475,7 @@ function init() {
     clean.className = "button";
     clean.innerText = "清空";
     clean.id = "clean-log";
+    clean.appendChild(__SYS_IMAGES__.getImg(__SYS_IMAGES__.clear_logs));
     clean.onclick = function () {
         var msgbox = $("messageBox");
         msgbox.innerHTML = "";
@@ -2891,6 +2893,7 @@ function init() {
     echarts.innerText = "视图";
     echarts.style.cssFloat = "right";
     echarts.id = "dataset-to-charts";
+    echarts.appendChild(__SYS_IMAGES__.getImg(__SYS_IMAGES__.echarts));
     let help_echarts = $("help-dataset-echarts");
     echarts.onclick = help_echarts.onclick = function () {
         try {
@@ -3044,11 +3047,8 @@ function getSubtotal(columns) {
         cols.options.add(new Option(columns[c], columns[c]));
     }
     d.appendChild(cols);
-    let close = document.createElement("img");
-    close.className = "title_close_button";
-    close.src = __SYS_IMAGES__.close.image;
-    close.width = __SYS_IMAGES__.close.width;
-    close.height = __SYS_IMAGES__.close.height;
+
+    let close = __SYS_IMAGES__.getImg(__SYS_IMAGES__.close);
     d.appendChild(close);
 
     span = document.createElement("span");
@@ -3345,11 +3345,7 @@ function getDataSlice() {
     var span = document.createElement("span");
     span.innerHTML = "数据切片 : ";
     d.appendChild(span);
-    let close = document.createElement("img");
-    close.className = "title_close_button";
-    close.src = __SYS_IMAGES__.close.image;
-    close.width = __SYS_IMAGES__.close.width;
-    close.height = __SYS_IMAGES__.close.height;
+    let close = __SYS_IMAGES__.getImg(__SYS_IMAGES__.close);
     d.appendChild(close);
     container.appendChild(d);
 
@@ -3512,11 +3508,7 @@ function getDataFilter(colid) {
     var span = document.createElement("span");
     span.innerHTML = "筛选字段 :[ " + columns[Number(colid)].name + " ]";
     d.appendChild(span);
-    let close = document.createElement("img");
-    close.className = "title_close_button";
-    close.src = __SYS_IMAGES__.close.image;
-    close.width = __SYS_IMAGES__.close.width;
-    close.height = __SYS_IMAGES__.close.height;
+    let close = __SYS_IMAGES__.getImg(__SYS_IMAGES__.close);
     d.appendChild(close);
     container.appendChild(d);
 
@@ -3735,11 +3727,7 @@ function getFormat(colid) {
     let span = document.createElement("span");
     span.innerHTML = "格式设置 : [ " + columns[Number(colid)].name + " ]";
     d.appendChild(span);
-    let close = document.createElement("img");
-    close.className = "title_close_button";
-    close.src = __SYS_IMAGES__.close.image;
-    close.width = __SYS_IMAGES__.close.width;
-    close.height = __SYS_IMAGES__.close.height;
+    let close = __SYS_IMAGES__.getImg(__SYS_IMAGES__.close);
     d.appendChild(close);
     container.appendChild(d);
 
