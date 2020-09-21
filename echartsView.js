@@ -59,7 +59,7 @@ var __ECHARTS__ = {
          legendDisplay: {name: "显示图例", value: "YES", options: ["YES", "NO"], type: "select"},
          legendPositionTop: {name: "图例上下位置(%)", value: "1%", type: "input"},
          legendPositionLeft: {name: "图例左右位置(%)", value: "50%", type: "input"},
-         legendOrient: {name: "图例布局", value: "top", options: ["horizontal", "vertical"], type: "select"},
+         legendOrient: {name: "图例布局", value: "horizontal", options: ["horizontal", "vertical"], type: "select"},
          legendTextColor: {name: "图例文字颜色", value: "#e6e6e6", type: "color"},
          hr: {name: "", value: "", type: "hr"},
          axisColor: {name: "坐标轴颜色", value: "#e6e6e6", type: "color"},
@@ -81,7 +81,7 @@ var __ECHARTS__ = {
 
          hr_3: {name: "", value: "", type: "hr"},
 
-         lineStyleWidth: {name: "线形图线条宽度", value: 2, type: "input"},
+         lineStyleWidth: {name: "线形图线条宽度(px)", value: 2, type: "input"},
          lineSmooth:{name: "使用平滑线", value: 'YES', options: ["YES", "NO"], type: "select"},
 
          hr_4: {name: "", value: "", type: "hr"},
@@ -100,12 +100,13 @@ var __ECHARTS__ = {
          regressionForwardPeroids: {name: "趋势/回归前推周期", value: 0, type: "input"},
 
          hr_6: {name: "", value: "", type: "hr"},
-
+         outRadius:{name: "外半径(%)", value: "70%", type: "input"},
+         inRadius:{name: "内半径(%)", value: "35%", type: "input"},
          richTextLabel: {name: "富文本标签", value: 'NO', options: ["YES", "NO"], type: "select"},
 
          hr_7: {name: "", value: "", type: "hr"},
 
-         scatterSymbolSize: {name: "散点图数据点大小", value: 6, type: "input"},
+         scatterSymbolSize: {name: "散点图数据点大小(px)", value: 6, type: "input"},
          scatterSymbolShape: {
              name: "散点图数据点形状",
              value: "circle",
@@ -138,7 +139,7 @@ var __ECHARTS__ = {
          gaugeAxisLabelFontSize: {name: "仪表盘刻度字号(px)", value: 10, type: "input"},
          gaugeTitleFontSize: {name: "仪表盘标题字号(px)", value: 14, type: "input"},
          gaugeLabelFontSize: {name: "仪表盘标签字号(px)", value: 18, type: "input"},
-         gaugeAxisLineWidth: {name: "仪表盘圆轴宽度", value: 10, type: "input"},
+         gaugeAxisLineWidth: {name: "仪表盘圆轴宽度(px)", value: 10, type: "input"},
 
          hr_11: {name: "", value: "", type: "hr"},
 
@@ -148,7 +149,7 @@ var __ECHARTS__ = {
              options: ['heatmap', 'scatter', 'effectScatter'],
              type: "select"
          },
-         calendarOrient: {name: "日历图方向", value: 'vertical', options: ["vertical", "horizontal"], type: "select"},
+         calendarOrient: {name: "日历图方向", value: 'vertical', options: ["horizontal","vertical"], type: "select"},
 
          hr_12: {name: "", value: "", type: "hr"},
 
@@ -162,14 +163,14 @@ var __ECHARTS__ = {
 
          timelineDisplay:{name: "显示时间(类目)轴", value: "YES", options: ["YES", "NO"], type: "select"},
          categoryLineType: {
-             name: "时间(类目)轴图形类别",
+             name: "时间(类目)轴序列图形",
              value: "bar",
              options: ["bar", "line", "areaStyle", "pie"],
              type: "select"
          },
+         seriesLoopPlayInterval: {name: "多序列循环时间(秒)", value: 3, type: "input"},
 
          hr_14: {name: "", value: "", type: "hr"},
-         seriesLoopPlayInterval: {name: "多序列播放间隔(秒)", value: 3, type: "input"},
          visualMapDisplay:{name: "显示数据影射", value: "NO", options: ["YES", "NO"], type: "select"},
          dataZoomBarDisplay:{name: "显示缩放控制", value: "NO", options: ["YES", "NO"], type: "select"},
          toolboxDisplay:{name: "显示图形工具", value: "YES", options: ["YES", "NO"], type: "select"},
@@ -2308,13 +2309,37 @@ function getPolarBar(container, themes) {
             },
         },
         angleAxis: {
-
+            axisLabel:{
+                show: __ECHARTS__.configs.splitYLineShow.value=="YES",
+            },
+            axisLine: {
+                show: __ECHARTS__.configs.splitYLineShow.value=="YES",
+                lineStyle: {
+                    color: __ECHARTS__.configs.axisColor.value,
+                },
+            },
+            splitLine: {
+                show: __ECHARTS__.configs.splitYLineShow.value=="YES",
+                lineStyle: {
+                    color: __ECHARTS__.configs.axisColor.value
+                },
+            },
+            z:10
         },
         radiusAxis: {
+            axisLabel:{
+                show: __ECHARTS__.configs.splitXLineShow.value=="YES",
+            },
+            axisLine: {
+                show: __ECHARTS__.configs.splitXLineShow.value=="YES",
+                lineStyle: {
+                    color: __ECHARTS__.configs.axisColor.value
+                },
+            },
+            splitArea:{show:true},
             type: 'category',
             data: xAxis,
             z: 10,
-
         },
         polar: {},
         series: yAxis_series,
@@ -2362,7 +2387,7 @@ function getPolarArea(container, themes) {
                 name: columns[c],
                 type: "bar",
                 coordinateSystem: 'polar',
-                data: []
+                data: [],
             };
             //series.stack = "true";
             series.animationDelay = function (idx) {
@@ -2413,11 +2438,37 @@ function getPolarArea(container, themes) {
             },
         },
         angleAxis: {
+            axisLabel:{
+                show: __ECHARTS__.configs.splitXLineShow.value=="YES",
+            },
+            axisLine: {
+                show: __ECHARTS__.configs.splitXLineShow.value=="YES",
+                lineStyle: {
+                    color: __ECHARTS__.configs.axisColor.value
+                },
+            },
+            splitArea:{show:true},
             type: 'category',
-            data: xAxis
+            data: xAxis,
+            z:10
         },
         radiusAxis: {
-
+            axisLabel:{
+                show: __ECHARTS__.configs.splitYLineShow.value=="YES",
+            },
+            axisLine: {
+                show: __ECHARTS__.configs.splitYLineShow.value=="YES",
+                lineStyle: {
+                    color: __ECHARTS__.configs.axisColor.value
+                },
+            },
+            splitLine: {
+                show: __ECHARTS__.configs.splitXLineShow.value=="YES",
+                lineStyle: {
+                    color: __ECHARTS__.configs.axisColor.value
+                },
+            },
+            z:10
         },
         polar: {},
         series: yAxis_series,
@@ -2463,7 +2514,7 @@ function getPie(container,themes) {
             var serie = {
                 name: columns[c],
                 type: "pie",
-                radius: "70%",
+                radius: __ECHARTS__.configs.outRadius.value,
                 label: {
                     show: true,
                     //控制label是否显示
@@ -2624,7 +2675,7 @@ function getRing(container,themes) {
             var serie = {
                 name: columns[c],
                 type: "pie",
-                radius: ['50%', '70%'],
+                radius: [__ECHARTS__.configs.inRadius.value, __ECHARTS__.configs.outRadius.value],
                 avoidLabelOverlap: false,
                 label: {
                     show: true,
@@ -2793,7 +2844,7 @@ function getRose(container,themes) {
             var serie = {
                 name: columns[c],
                 type: "pie",
-                radius: ['35%', '70%'],
+                radius: [__ECHARTS__.configs.inRadius.value, __ECHARTS__.configs.outRadius.value],
                 center: ['50%', '50%'],
                 roseType: 'area',
                 label: {
