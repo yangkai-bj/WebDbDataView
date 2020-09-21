@@ -47,25 +47,43 @@ var __ECHARTS__ = {
          "Wonderland": "Wonderland"
      },
      configs: {
-         reportFontSize:{name:"报表字号",value: "100%",options: ["100%", "110%", "120%", "130%", "140%", "150%"], type: "select"},
-         groupwith: {name: "每行序列数", value: 2, type: "input"},
-         seriesLoopPlayInterval: {name: "多序列播放间隔(秒)", value: 3, type: "input"},
-         legendTextColor:{name:"图例文字颜色", value:"#e6e6e6",type : "color"},
-         axisColor: {name:"坐标轴颜色",value:"#e6e6e6",type : "color"},
-         splitXLineShow:{name:"显示X轴分隔线", value:"NO", options: ["YES", "NO"], type: "select"},
-         splitYLineShow:{name:"显示Y轴分隔线", value:"NO", options: ["YES", "NO"], type: "select"},
-         labelTextColor:{name:"标签文字颜色", value:"auto", type: "color"},
+         titleDisplay: {name: "显示标题", value: "YES", options: ["YES", "NO"], type: "select"},
+         titlePosition: {name: "标题位置", value: "left", options: ["left", "center", "right"], type: "select"},
+         titleText: {name: "主标题名称", value: "", type: "input"},
+         titleTextColor: {value: "#e6e6e6", name: "主标题颜色", type: "color"},
+         titleSubText: {name: "副标题名称", value: "", type: "input"},
+         titleSubTextColor: {value: "#e6e6e6", name: "副标题颜色", type: "color"},
+
+         hr_1: {name: "", value: "", type: "hr"},
+
+         legendDisplay: {name: "显示图例", value: "YES", options: ["YES", "NO"], type: "select"},
+         legendPositionTop: {name: "图例上下位置(%)", value: "1%", type: "input"},
+         legendPositionLeft: {name: "图例左右位置(%)", value: "50%", type: "input"},
+         legendOrient: {name: "图例布局", value: "top", options: ["horizontal", "vertical"], type: "select"},
+         legendTextColor: {name: "图例文字颜色", value: "#e6e6e6", type: "color"},
+         hr: {name: "", value: "", type: "hr"},
+         axisColor: {name: "坐标轴颜色", value: "#e6e6e6", type: "color"},
+         splitXLineShow: {name: "显示X轴分隔线", value: "NO", options: ["YES", "NO"], type: "select"},
+         splitYLineShow: {name: "显示Y轴分隔线", value: "NO", options: ["YES", "NO"], type: "select"},
+         labelTextColor: {name: "标签文字颜色", value: "auto", type: "color"},
+
+         hr_2: {name: "", value: "", type: "hr"},
 
          barLabelShow: {name: "柱状图显示标签", value: 'NO', options: ["YES", "NO"], type: "select"},
          barLabelPosition: {
              name: "柱状图标签位置",
              value: 'top',
-             options: ["top", "left", "right", "bottom", "insideTop", "insideLeft", "insideRight", "insideBottom"], type: "select"
+             options: ["top", "left", "right", "bottom", "insideTop", "insideLeft", "insideRight", "insideBottom"],
+             type: "select"
          },
          barLabelFontSize: {name: "柱状图标签字号(px)", value: 12, type: "input"},
          barLabelRotate: {name: "柱状图标签旋转度数", value: 0, type: "input"},
 
+         hr_3: {name: "", value: "", type: "hr"},
+
          lineStyleWidth: {name: "线形图线条宽度", value: 2, type: "input"},
+
+         hr_4: {name: "", value: "", type: "hr"},
 
          BoxWidthFor3D: {name: "3D图形宽度(X轴)", value: 200, type: "input"},
          BoxDepthFor3D: {name: "3D图形深度(Y轴)", value: 80, type: "input"},
@@ -74,37 +92,88 @@ var __ECHARTS__ = {
          LabelFontSizeFor3D: {name: "3D图形标签字号(px)", value: 12, type: "input"},
          ItemStyleOpacityFor3D: {name: "3D图形透明度", value: 1, type: "input"},
 
+         hr_5: {name: "", value: "", type: "hr"},
+
          regressionType: {name: "趋势/回归类型", value: '直线', options: ["直线", "指数", "对数", "多项式"], type: "select"},
          regressionPolynomialOrder: {name: "多项式阶数", value: 2, type: "input"},
          regressionForwardPeroids: {name: "趋势/回归前推周期", value: 0, type: "input"},
+
+         hr_6: {name: "", value: "", type: "hr"},
+
          richTextLabel: {name: "富文本标签", value: 'NO', options: ["YES", "NO"], type: "select"},
+
+         hr_7: {name: "", value: "", type: "hr"},
+
          scatterSymbolSize: {name: "散点图数据点大小", value: 6, type: "input"},
-         scatterSymbolShape: {name: "散点图数据点形状", value: "circle", options:['circle', 'rect', 'roundRect', 'triangle', 'diamond', 'pin', 'arrow', 'none'], type: "select"},
+         scatterSymbolShape: {
+             name: "散点图数据点形状",
+             value: "circle",
+             options: ['circle', 'rect', 'roundRect', 'triangle', 'diamond', 'pin', 'arrow', 'none'],
+             type: "select"
+         },
+
+         hr_8: {name: "", value: "", type: "hr"},
+
          wordCloudShape: {
              name: "词云图形状",
              value: "circle",
-             options: ["circle", "cardioid", "diamond", "triangle-forward", "triangle", "pentagon", "star"], type: "select"
+             options: ["circle", "cardioid", "diamond", "triangle-forward", "triangle", "pentagon", "star"],
+             type: "select"
          },
          wordCloudMinFontSize: {name: "词云图最小字号(px)", value: 12, type: "input"},
          wordCloudMaxFontSize: {name: "词云图最大字号(px)", value: 60, type: "input"},
+
+         hr_9: {name: "", value: "", type: "hr"},
+
          liqiudShape: {
              name: "水球图形状",
              value: "circle",
              options: ["circle", "rect", "roundRect", "triangle", "diamond", "pin", "arrow"], type: "select"
          },
          liqiudFontSize: {name: "水球图标题字号(px)", value: 16, type: "input"},
+
+         hr_10: {name: "", value: "", type: "hr"},
+
          gaugeAxisLabelFontSize: {name: "仪表盘刻度字号(px)", value: 10, type: "input"},
          gaugeTitleFontSize: {name: "仪表盘标题字号(px)", value: 14, type: "input"},
          gaugeLabelFontSize: {name: "仪表盘标签字号(px)", value: 18, type: "input"},
          gaugeAxisLineWidth: {name: "仪表盘圆轴宽度", value: 10, type: "input"},
-         calendarType: {name: "日历图类型", value: "heatmap", options: ['heatmap', 'scatter', 'effectScatter'], type: "select"},
+
+         hr_11: {name: "", value: "", type: "hr"},
+
+         calendarType: {
+             name: "日历图类型",
+             value: "heatmap",
+             options: ['heatmap', 'scatter', 'effectScatter'],
+             type: "select"
+         },
          calendarOrient: {name: "日历图方向", value: 'vertical', options: ["vertical", "horizontal"], type: "select"},
-         categoryLineType: {name: "类目轴图形类别", value: "bar", options:["bar", "line", "areaStyle","pie"], type: "select"},
+
+         hr_12: {name: "", value: "", type: "hr"},
+
          //geoBackgroundColor: {value: "#404a59", name: "地图背景颜色", type: "color"},
          geoAreaColor: {value: "#323c48", name: "地图区域颜色", type: "color"},
          geoBorderColor: {value: "#404a59", name: "地图边界颜色", type: "color"},
          geoHotAreaColor: {value: "#2a333d", name: "地图热点区域颜色", type: "color"},
          geoShowAreaName: {name: "显示地区名称", value: "NO", options: ["YES", "NO"], type: "select"},
+
+         hr_13: {name: "", value: "", type: "hr"},
+
+         categoryLineType: {
+             name: "类目轴图形类别",
+             value: "bar",
+             options: ["bar", "line", "areaStyle", "pie"],
+             type: "select"
+         },
+         hr_14: {name: "", value: "", type: "hr"},
+         seriesLoopPlayInterval: {name: "多序列播放间隔(秒)", value: 3, type: "input"},
+         groupwith: {name: "每行序列数", value: 2, type: "input"},
+         reportFontSize: {
+             name: "报表字号",
+             value: "100%",
+             options: ["100%", "110%", "120%", "130%", "140%", "150%"],
+             type: "select"
+         },
      }
  };
 
@@ -533,7 +602,7 @@ function getMapConfig() {
     let span = document.createElement("span");
     span.innerHTML = "地图设置 : ";
     d.appendChild(span);
-    let close = __SYS_IMAGES__.getImg(__SYS_IMAGES__.close);
+    let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
     d.appendChild(close);
     container.appendChild(d);
 
@@ -972,7 +1041,7 @@ function getEchartsConfigs(parent) {
     var span = document.createElement("span");
     span.innerHTML = "报表及图形参数: ";
     d.appendChild(span);
-    let close = __SYS_IMAGES__.getImg(__SYS_IMAGES__.close);
+    let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
     d.appendChild(close);
     container.appendChild(d);
 
@@ -1027,8 +1096,11 @@ function getEchartsConfigs(parent) {
                 __ECHARTS__.configs[this.id].value = this.value;
             };
             d.appendChild(input);
+        } else if (__ECHARTS__.configs[name].type == "hr"){
+            let h = document.createElement("hr");
+            d.innerHTML = "";
+            d.appendChild(h);
         }
-
     }
 
     let br = document.createElement("hr");
@@ -1249,23 +1321,34 @@ function getBar(container, themes) {
             },
         },
         title: {
-            text: "",
-            link: "",
-            subtext: "",
-            sublink: ""
+            show:__ECHARTS__.configs.titleDisplay.value =="YES",
+            text: __ECHARTS__.configs.titleText.value,
+            subtext: __ECHARTS__.configs.titleSubText.value,
+            top:"top",
+            left:__ECHARTS__.configs.titlePosition.value,
+            textStyle:{
+                color:__ECHARTS__.configs.titleTextColor.value,
+            },
+            subtextStyle:{
+                color:__ECHARTS__.configs.titleSubTextColor.value,
+            }
         },
+        legend: {
+            show:__ECHARTS__.configs.legendDisplay.value =="YES",
+            top: __ECHARTS__.configs.legendPositionTop.value,
+            left: __ECHARTS__.configs.legendPositionLeft.value,
+            orient:__ECHARTS__.configs.legendOrient.value,
+            data: columns.slice(1, columns.length),
+            textStyle: {
+                color: __ECHARTS__.configs.legendTextColor.value
+            },
+        },
+
         tooltip: {
             trigger: 'axis',
             axisPointer: {
                 type: 'shadow'
             }
-        },
-        legend: {
-            left: 20,
-            data: columns.slice(1, columns.length),
-            textStyle: {
-                color: __ECHARTS__.configs.legendTextColor.value
-            },
         },
 
         xAxis: {
@@ -1402,12 +1485,24 @@ function getTransversBar(container, themes) {
             },
         },
         title: {
-            text: "",
-            subtext: "",
+            show:__ECHARTS__.configs.titleDisplay.value =="YES",
+            text: __ECHARTS__.configs.titleText.value,
+            subtext: __ECHARTS__.configs.titleSubText.value,
+            top:"top",
+            left:__ECHARTS__.configs.titlePosition.value,
+            textStyle:{
+                color:__ECHARTS__.configs.titleTextColor.value,
+            },
+            subtextStyle:{
+                color:__ECHARTS__.configs.titleSubTextColor.value,
+            }
         },
         tooltip: {},
         legend: {
-            left: 20,
+            show:__ECHARTS__.configs.legendDisplay.value =="YES",
+            top: __ECHARTS__.configs.legendPositionTop.value,
+            left: __ECHARTS__.configs.legendPositionLeft.value,
+            orient:__ECHARTS__.configs.legendOrient.value,
             data: columns.slice(1, columns.length),
             textStyle: {
                 color: __ECHARTS__.configs.legendTextColor.value
@@ -1555,11 +1650,24 @@ function getLine(container, themes) {
             },
         },
         title: {
-            text: ''
+            show:__ECHARTS__.configs.titleDisplay.value =="YES",
+            text: __ECHARTS__.configs.titleText.value,
+            subtext: __ECHARTS__.configs.titleSubText.value,
+            top:"top",
+            left:__ECHARTS__.configs.titlePosition.value,
+            textStyle:{
+                color:__ECHARTS__.configs.titleTextColor.value,
+            },
+            subtextStyle:{
+                color:__ECHARTS__.configs.titleSubTextColor.value,
+            }
         },
         tooltip: {},
         legend: {
-            left: 20,
+            show:__ECHARTS__.configs.legendDisplay.value =="YES",
+            top: __ECHARTS__.configs.legendPositionTop.value,
+            left: __ECHARTS__.configs.legendPositionLeft.value,
+            orient:__ECHARTS__.configs.legendOrient.value,
             data: columns.slice(1, columns.length),
             textStyle: {
                 color: __ECHARTS__.configs.legendTextColor.value
@@ -1761,11 +1869,24 @@ function getBarAndLine(container, themes) {
             },
         },
         title: {
-            text: ''
+            show:__ECHARTS__.configs.titleDisplay.value =="YES",
+            text: __ECHARTS__.configs.titleText.value,
+            subtext: __ECHARTS__.configs.titleSubText.value,
+            top:"top",
+            left:__ECHARTS__.configs.titlePosition.value,
+            textStyle:{
+                color:__ECHARTS__.configs.titleTextColor.value,
+            },
+            subtextStyle:{
+                color:__ECHARTS__.configs.titleSubTextColor.value,
+            }
         },
         tooltip: {},
         legend: {
-            left: 20,
+            show:__ECHARTS__.configs.legendDisplay.value =="YES",
+            top: __ECHARTS__.configs.legendPositionTop.value,
+            left: __ECHARTS__.configs.legendPositionLeft.value,
+            orient:__ECHARTS__.configs.legendOrient.value,
             data: columns.slice(1, columns.length),
             textStyle: {
                 color: __ECHARTS__.configs.legendTextColor.value
@@ -1946,7 +2067,17 @@ function getAreaStyle(container, themes) {
             },
         },
         title: {
-            text: ''
+            show:__ECHARTS__.configs.titleDisplay.value =="YES",
+            text: __ECHARTS__.configs.titleText.value,
+            subtext: __ECHARTS__.configs.titleSubText.value,
+            top:"top",
+            left:__ECHARTS__.configs.titlePosition.value,
+            textStyle:{
+                color:__ECHARTS__.configs.titleTextColor.value,
+            },
+            subtextStyle:{
+                color:__ECHARTS__.configs.titleSubTextColor.value,
+            }
         },
         tooltip: {
             //显示活动标尺线.
@@ -1956,7 +2087,10 @@ function getAreaStyle(container, themes) {
             }
         },
         legend: {
-            left: 20,
+            show:__ECHARTS__.configs.legendDisplay.value =="YES",
+            top: __ECHARTS__.configs.legendPositionTop.value,
+            left: __ECHARTS__.configs.legendPositionLeft.value,
+            orient:__ECHARTS__.configs.legendOrient.value,
             data: columns.slice(1, columns.length),
             textStyle: {
                 color: __ECHARTS__.configs.legendTextColor.value
@@ -2079,6 +2213,19 @@ function getPolarBar(container, themes) {
     var myChart = echarts.init(container, themes);
     //主题:dark,light
     var option = {
+        title: {
+            show:__ECHARTS__.configs.titleDisplay.value =="YES",
+            text: __ECHARTS__.configs.titleText.value,
+            subtext: __ECHARTS__.configs.titleSubText.value,
+            top:"top",
+            left:__ECHARTS__.configs.titlePosition.value,
+            textStyle:{
+                color:__ECHARTS__.configs.titleTextColor.value,
+            },
+            subtextStyle:{
+                color:__ECHARTS__.configs.titleSubTextColor.value,
+            }
+        },
         toolbox: {
             show: true,
             feature:{
@@ -2111,8 +2258,10 @@ function getPolarBar(container, themes) {
         polar: {},
         series: yAxis_series,
         legend: {
-            left: 20,
-            show: true,
+            show:__ECHARTS__.configs.legendDisplay.value =="YES",
+            top: __ECHARTS__.configs.legendPositionTop.value,
+            left: __ECHARTS__.configs.legendPositionLeft.value,
+            orient:__ECHARTS__.configs.legendOrient.value,
             data: columns.slice(1, columns.length),
             textStyle: {
                 color: __ECHARTS__.configs.legendTextColor.value
@@ -2168,6 +2317,19 @@ function getPolarArea(container, themes) {
     var myChart = echarts.init(container, themes);
     //主题:dark,light
     var option = {
+        title: {
+            show:__ECHARTS__.configs.titleDisplay.value =="YES",
+            text: __ECHARTS__.configs.titleText.value,
+            subtext: __ECHARTS__.configs.titleSubText.value,
+            top:"top",
+            left:__ECHARTS__.configs.titlePosition.value,
+            textStyle:{
+                color:__ECHARTS__.configs.titleTextColor.value,
+            },
+            subtextStyle:{
+                color:__ECHARTS__.configs.titleSubTextColor.value,
+            }
+        },
         toolbox: {
             show: true,
             feature:{
@@ -2198,8 +2360,10 @@ function getPolarArea(container, themes) {
         polar: {},
         series: yAxis_series,
         legend: {
-            left: 20,
-            show: true,
+            show:__ECHARTS__.configs.legendDisplay.value =="YES",
+            top: __ECHARTS__.configs.legendPositionTop.value,
+            left: __ECHARTS__.configs.legendPositionLeft.value,
+            orient:__ECHARTS__.configs.legendOrient.value,
             data: columns.slice(1, columns.length),
             textStyle: {
                 color: __ECHARTS__.configs.legendTextColor.value
@@ -2273,6 +2437,19 @@ function getPie(container,themes) {
 
     var myChart = echarts.init(container, themes);
     var option = {
+        title: {
+            show:__ECHARTS__.configs.titleDisplay.value =="YES",
+            text: __ECHARTS__.configs.titleText.value,
+            subtext: __ECHARTS__.configs.titleSubText.value,
+            top:"top",
+            left:__ECHARTS__.configs.titlePosition.value,
+            textStyle:{
+                color:__ECHARTS__.configs.titleTextColor.value,
+            },
+            subtextStyle:{
+                color:__ECHARTS__.configs.titleSubTextColor.value,
+            }
+        },
         toolbox: {
             show: true,
             feature: {
@@ -2299,7 +2476,10 @@ function getPie(container,themes) {
             formatter: '{a} <br/>{b}: {c} ({d}%)'
         },
         legend: {
-            left: 20,
+            show:__ECHARTS__.configs.legendDisplay.value =="YES",
+            top: __ECHARTS__.configs.legendPositionTop.value,
+            left: __ECHARTS__.configs.legendPositionLeft.value,
+            orient:__ECHARTS__.configs.legendOrient.value,
             data: legends,
             textStyle: {
                 color: __ECHARTS__.configs.legendTextColor.value
@@ -2424,6 +2604,19 @@ function getRing(container,themes) {
 
     var myChart = echarts.init(container, themes);
     var option = {
+        title: {
+            show:__ECHARTS__.configs.titleDisplay.value =="YES",
+            text: __ECHARTS__.configs.titleText.value,
+            subtext: __ECHARTS__.configs.titleSubText.value,
+            top:"top",
+            left:__ECHARTS__.configs.titlePosition.value,
+            textStyle:{
+                color:__ECHARTS__.configs.titleTextColor.value,
+            },
+            subtextStyle:{
+                color:__ECHARTS__.configs.titleSubTextColor.value,
+            }
+        },
         toolbox: {
             show: true,
             feature: {
@@ -2446,8 +2639,11 @@ function getRing(container,themes) {
             },
         },
         legend: {
-            left: 20,
-            data: legends,//columns.slice(1, columns.length)
+            show:__ECHARTS__.configs.legendDisplay.value =="YES",
+            top: __ECHARTS__.configs.legendPositionTop.value,
+            left: __ECHARTS__.configs.legendPositionLeft.value,
+            orient:__ECHARTS__.configs.legendOrient.value,
+            data: legends,
             textStyle: {
                 color: __ECHARTS__.configs.legendTextColor.value
             },
@@ -2569,6 +2765,19 @@ function getRose(container,themes) {
 
     var myChart = echarts.init(container, themes);
     var option = {
+        title: {
+            show:__ECHARTS__.configs.titleDisplay.value =="YES",
+            text: __ECHARTS__.configs.titleText.value,
+            subtext: __ECHARTS__.configs.titleSubText.value,
+            top:"top",
+            left:__ECHARTS__.configs.titlePosition.value,
+            textStyle:{
+                color:__ECHARTS__.configs.titleTextColor.value,
+            },
+            subtextStyle:{
+                color:__ECHARTS__.configs.titleSubTextColor.value,
+            }
+        },
         toolbox: {
             show: true,
             feature:{
@@ -2591,8 +2800,11 @@ function getRose(container,themes) {
             },
         },
         legend: {
-            left: 20,
-            data: legends,//columns.slice(1, columns.length)
+            show:__ECHARTS__.configs.legendDisplay.value =="YES",
+            top: __ECHARTS__.configs.legendPositionTop.value,
+            left: __ECHARTS__.configs.legendPositionLeft.value,
+            orient:__ECHARTS__.configs.legendOrient.value,
+            data: legends,
             textStyle: {
                 color: __ECHARTS__.configs.legendTextColor.value
             },
@@ -2707,9 +2919,25 @@ function getRadar(container, themes) {
 
     var myChart = echarts.init(container, themes);
     var option = {
+        title: {
+            show:__ECHARTS__.configs.titleDisplay.value =="YES",
+            text: __ECHARTS__.configs.titleText.value,
+            subtext: __ECHARTS__.configs.titleSubText.value,
+            top:"top",
+            left:__ECHARTS__.configs.titlePosition.value,
+            textStyle:{
+                color:__ECHARTS__.configs.titleTextColor.value,
+            },
+            subtextStyle:{
+                color:__ECHARTS__.configs.titleSubTextColor.value,
+            }
+        },
         legend: {
-            left: 20,
-            data: columns.slice(1, columns.length),
+            show:__ECHARTS__.configs.legendDisplay.value =="YES",
+            top: __ECHARTS__.configs.legendPositionTop.value,
+            left: __ECHARTS__.configs.legendPositionLeft.value,
+            orient:__ECHARTS__.configs.legendOrient.value,
+            data: columns.slice(1),
             textStyle: {
                 color: __ECHARTS__.configs.legendTextColor.value
             },
@@ -2954,13 +3182,23 @@ function getRegression(container, themes) {
             },
         },
         title: {
-            text: '',
-            subtext: '',
-            sublink: '',
-            left: 'center'
+            show:__ECHARTS__.configs.titleDisplay.value =="YES",
+            text: __ECHARTS__.configs.titleText.value,
+            subtext: __ECHARTS__.configs.titleSubText.value,
+            top:"top",
+            left:__ECHARTS__.configs.titlePosition.value,
+            textStyle:{
+                color:__ECHARTS__.configs.titleTextColor.value,
+            },
+            subtextStyle:{
+                color:__ECHARTS__.configs.titleSubTextColor.value,
+            }
         },
         legend: {
-            left: 20,
+            show:__ECHARTS__.configs.legendDisplay.value =="YES",
+            top: __ECHARTS__.configs.legendPositionTop.value,
+            left: __ECHARTS__.configs.legendPositionLeft.value,
+            orient:__ECHARTS__.configs.legendOrient.value,
             data: columns.slice(1, columns.length).concat(columns_add),
             textStyle: {
                 color: __ECHARTS__.configs.legendTextColor.value
@@ -3162,7 +3400,17 @@ function  getRelationship(container, themes) {
             },
         },
         title: {
-            text: ''
+            show:__ECHARTS__.configs.titleDisplay.value =="YES",
+            text: __ECHARTS__.configs.titleText.value,
+            subtext: __ECHARTS__.configs.titleSubText.value,
+            top:"top",
+            left:__ECHARTS__.configs.titlePosition.value,
+            textStyle:{
+                color:__ECHARTS__.configs.titleTextColor.value,
+            },
+            subtextStyle:{
+                color:__ECHARTS__.configs.titleSubTextColor.value,
+            }
         },
         tooltip: {
         },
@@ -3375,6 +3623,19 @@ function  getOrganizationStructure(container, themes) {
     }
 
     var option = {
+        title: {
+            show:__ECHARTS__.configs.titleDisplay.value =="YES",
+            text: __ECHARTS__.configs.titleText.value,
+            subtext: __ECHARTS__.configs.titleSubText.value,
+            top:"top",
+            left:__ECHARTS__.configs.titlePosition.value,
+            textStyle:{
+                color:__ECHARTS__.configs.titleTextColor.value,
+            },
+            subtextStyle:{
+                color:__ECHARTS__.configs.titleSubTextColor.value,
+            }
+        },
         toolbox: {
             show: true,
             feature:{
@@ -3396,11 +3657,11 @@ function  getOrganizationStructure(container, themes) {
             triggerOn: 'mousemove'
         },
         legend: {
-            top: '2%',
-            left: '3%',
-            orient: 'vertical',
+            show:__ECHARTS__.configs.legendDisplay.value =="YES",
+            top: __ECHARTS__.configs.legendPositionTop.value,
+            left: __ECHARTS__.configs.legendPositionLeft.value,
+            orient:__ECHARTS__.configs.legendOrient.value,
             data: legends,
-            borderColor: '#c23531',
             textStyle: {
                 color: __ECHARTS__.configs.legendTextColor.value
             },
@@ -3481,8 +3742,24 @@ function getWebkitDep(container, themes) {
     };
 
     var option = {
+        title: {
+            show:__ECHARTS__.configs.titleDisplay.value =="YES",
+            text: __ECHARTS__.configs.titleText.value,
+            subtext: __ECHARTS__.configs.titleSubText.value,
+            top:"top",
+            left:__ECHARTS__.configs.titlePosition.value,
+            textStyle:{
+                color:__ECHARTS__.configs.titleTextColor.value,
+            },
+            subtextStyle:{
+                color:__ECHARTS__.configs.titleSubTextColor.value,
+            }
+        },
         legend: {
-            left: 20,
+            show:__ECHARTS__.configs.legendDisplay.value =="YES",
+            top: __ECHARTS__.configs.legendPositionTop.value,
+            left: __ECHARTS__.configs.legendPositionLeft.value,
+            orient:__ECHARTS__.configs.legendOrient.value,
             data: columns,
             textStyle: {
                 color: __ECHARTS__.configs.legendTextColor.value
@@ -3696,8 +3973,24 @@ function getScatter(container, themes) {
     init();
 
     var option = {
+        title: {
+            show:__ECHARTS__.configs.titleDisplay.value =="YES",
+            text: __ECHARTS__.configs.titleText.value,
+            subtext: __ECHARTS__.configs.titleSubText.value,
+            top:"top",
+            left:__ECHARTS__.configs.titlePosition.value,
+            textStyle:{
+                color:__ECHARTS__.configs.titleTextColor.value,
+            },
+            subtextStyle:{
+                color:__ECHARTS__.configs.titleSubTextColor.value,
+            }
+        },
         legend: {
-            left: 20,
+            show:__ECHARTS__.configs.legendDisplay.value =="YES",
+            top: __ECHARTS__.configs.legendPositionTop.value,
+            left: __ECHARTS__.configs.legendPositionLeft.value,
+            orient:__ECHARTS__.configs.legendOrient.value,
             data: columns.slice().concat(columns_add),
             textStyle: {
                 color: __ECHARTS__.configs.legendTextColor.value
@@ -3894,6 +4187,19 @@ function getFunnel(container, themes) {
     init();
 
     var option = {
+        title: {
+            show:__ECHARTS__.configs.titleDisplay.value =="YES",
+            text: __ECHARTS__.configs.titleText.value,
+            subtext: __ECHARTS__.configs.titleSubText.value,
+            top:"top",
+            left:__ECHARTS__.configs.titlePosition.value,
+            textStyle:{
+                color:__ECHARTS__.configs.titleTextColor.value,
+            },
+            subtextStyle:{
+                color:__ECHARTS__.configs.titleSubTextColor.value,
+            }
+        },
         tooltip: {
             trigger: 'item',
             formatter: "{a} <br/>{b} : {c}"
@@ -3915,8 +4221,10 @@ function getFunnel(container, themes) {
             },
         },
         legend: {
-            orient: 'vertical',
-            left: 'left',
+            show:__ECHARTS__.configs.legendDisplay.value =="YES",
+            top: __ECHARTS__.configs.legendPositionTop.value,
+            left: __ECHARTS__.configs.legendPositionLeft.value,
+            orient:__ECHARTS__.configs.legendOrient.value,
             data: legends,//columns.slice(1),
             textStyle: {
                 color: __ECHARTS__.configs.legendTextColor.value
@@ -3937,7 +4245,7 @@ function getWordCloud(container, themes) {
     var columns = [];
     var legends = [];
     var maskImage = new Image();
-    maskImage.src = 'logo.png';
+    maskImage.src = __SYS_IMAGES__.logo_echarts;
 
     function init() {
         for (var i = 0; i < dataset["columns"].length; i++) {
@@ -3959,6 +4267,7 @@ function getWordCloud(container, themes) {
                     rotationRange: [-90, 90],//[旋转角度,旋转角度]
                     shape: __ECHARTS__.configs.wordCloudShape.value,
                     //'circle', 'cardioid', 'diamond', 'triangle-forward', 'triangle', 'pentagon', 'star'
+                    //maskImage: maskImage,
                     drawOutOfBound: true,
                     textStyle: {
                         normal: {
@@ -4016,6 +4325,19 @@ function getWordCloud(container, themes) {
     init();
 
     var option = {
+        title: {
+            show:__ECHARTS__.configs.titleDisplay.value =="YES",
+            text: __ECHARTS__.configs.titleText.value,
+            subtext: __ECHARTS__.configs.titleSubText.value,
+            top:"top",
+            left:__ECHARTS__.configs.titlePosition.value,
+            textStyle:{
+                color:__ECHARTS__.configs.titleTextColor.value,
+            },
+            subtextStyle:{
+                color:__ECHARTS__.configs.titleSubTextColor.value,
+            }
+        },
         tooltip: {
             formatter: function (param) {
                 return param.name + '<br>' + param.seriesName + ':'
@@ -4023,8 +4345,10 @@ function getWordCloud(container, themes) {
             }
         },
         legend: {
-            orient: 'vertical',
-            left: 'left',
+            show:__ECHARTS__.configs.legendDisplay.value =="YES",
+            top: __ECHARTS__.configs.legendPositionTop.value,
+            left: __ECHARTS__.configs.legendPositionLeft.value,
+            orient:__ECHARTS__.configs.legendOrient.value,
             data: columns.slice(1),
             textStyle: {
                 color: __ECHARTS__.configs.legendTextColor.value
@@ -4158,9 +4482,24 @@ function getLiqiud(container, themes) {
     init();
     var option = {
         //tooltip: {},
+        title: {
+            show:__ECHARTS__.configs.titleDisplay.value =="YES",
+            text: __ECHARTS__.configs.titleText.value,
+            subtext: __ECHARTS__.configs.titleSubText.value,
+            top:"top",
+            left:__ECHARTS__.configs.titlePosition.value,
+            textStyle:{
+                color:__ECHARTS__.configs.titleTextColor.value,
+            },
+            subtextStyle:{
+                color:__ECHARTS__.configs.titleSubTextColor.value,
+            }
+        },
         legend: {
-            orient: 'vertical',
-            left: 'left',
+            show:__ECHARTS__.configs.legendDisplay.value =="YES",
+            top: __ECHARTS__.configs.legendPositionTop.value,
+            left: __ECHARTS__.configs.legendPositionLeft.value,
+            orient:__ECHARTS__.configs.legendOrient.value,
             data: legends,
             textStyle: {
                 color: __ECHARTS__.configs.legendTextColor.value
@@ -4309,9 +4648,24 @@ function getGaugeWithAll(container, themes) {
 
     var myChart = echarts.init(container, themes);
     var option = {
+        title: {
+            show:__ECHARTS__.configs.titleDisplay.value =="YES",
+            text: __ECHARTS__.configs.titleText.value,
+            subtext: __ECHARTS__.configs.titleSubText.value,
+            top:"top",
+            left:__ECHARTS__.configs.titlePosition.value,
+            textStyle:{
+                color:__ECHARTS__.configs.titleTextColor.value,
+            },
+            subtextStyle:{
+                color:__ECHARTS__.configs.titleSubTextColor.value,
+            }
+        },
         legend: {
-            left: 10,
-            orient: 'vertical',
+            show:__ECHARTS__.configs.legendDisplay.value =="YES",
+            top: __ECHARTS__.configs.legendPositionTop.value,
+            left: __ECHARTS__.configs.legendPositionLeft.value,
+            orient:__ECHARTS__.configs.legendOrient.value,
             data: legends,
             textStyle: {
                 color: __ECHARTS__.configs.legendTextColor.value
@@ -4461,11 +4815,29 @@ function getGaugeWithOne(container, themes) {
 
     var myChart = echarts.init(container, themes);
     var option = {
-        //legend: {
-        //    left: 10,
-        //    orient: 'vertical',
-        //    data: legends
-        //},
+        title: {
+            show:__ECHARTS__.configs.titleDisplay.value =="YES",
+            text: __ECHARTS__.configs.titleText.value,
+            subtext: __ECHARTS__.configs.titleSubText.value,
+            top:"top",
+            left:__ECHARTS__.configs.titlePosition.value,
+            textStyle:{
+                color:__ECHARTS__.configs.titleTextColor.value,
+            },
+            subtextStyle:{
+                color:__ECHARTS__.configs.titleSubTextColor.value,
+            }
+        },
+        legend: {
+            show: __ECHARTS__.configs.legendDisplay.value == "YES",
+            top: __ECHARTS__.configs.legendPositionTop.value,
+            left: __ECHARTS__.configs.legendPositionLeft.value,
+            orient: __ECHARTS__.configs.legendOrient.value,
+            data: legends,
+            textStyle: {
+                color: __ECHARTS__.configs.legendTextColor.value
+            },
+        },
         tooltip: {
             formatter: '{b} : {c}%'
         },
@@ -4647,6 +5019,19 @@ function getCalendar(container, themes) {
 
     init();
     var option = {
+        title: {
+            show:__ECHARTS__.configs.titleDisplay.value =="YES",
+            text: __ECHARTS__.configs.titleText.value,
+            subtext: __ECHARTS__.configs.titleSubText.value,
+            top:"top",
+            left:__ECHARTS__.configs.titlePosition.value,
+            textStyle:{
+                color:__ECHARTS__.configs.titleTextColor.value,
+            },
+            subtextStyle:{
+                color:__ECHARTS__.configs.titleSubTextColor.value,
+            }
+        },
         tooltip: {
             position: 'top',
             formatter: function (p) {
@@ -4761,6 +5146,19 @@ function getGeoOfChina(container, themes) {
 
     var option = {
         //backgroundColor: __ECHARTS__.configs.geoBackgroundColor.value,
+        title: {
+            show:__ECHARTS__.configs.titleDisplay.value =="YES",
+            text: __ECHARTS__.configs.titleText.value,
+            subtext: __ECHARTS__.configs.titleSubText.value,
+            top:"top",
+            left:__ECHARTS__.configs.titlePosition.value,
+            textStyle:{
+                color:__ECHARTS__.configs.titleTextColor.value,
+            },
+            subtextStyle:{
+                color:__ECHARTS__.configs.titleSubTextColor.value,
+            }
+        },
         toolbox: {
             show: true,
             feature: {
@@ -5007,6 +5405,19 @@ function getGeoOfLocal(container, themes) {
 
     var option = {
         //backgroundColor: __ECHARTS__.configs.geoBackgroundColor.value,
+        title: {
+            show:__ECHARTS__.configs.titleDisplay.value =="YES",
+            text: __ECHARTS__.configs.titleText.value,
+            subtext: __ECHARTS__.configs.titleSubText.value,
+            top:"top",
+            left:__ECHARTS__.configs.titlePosition.value,
+            textStyle:{
+                color:__ECHARTS__.configs.titleTextColor.value,
+            },
+            subtextStyle:{
+                color:__ECHARTS__.configs.titleSubTextColor.value,
+            }
+        },
         toolbox: {
             show: true,
             feature: {
@@ -5283,8 +5694,24 @@ function getBar3D(container, themes) {
     }
 
     var option = {
+        title: {
+            show:__ECHARTS__.configs.titleDisplay.value =="YES",
+            text: __ECHARTS__.configs.titleText.value,
+            subtext: __ECHARTS__.configs.titleSubText.value,
+            top:"top",
+            left:__ECHARTS__.configs.titlePosition.value,
+            textStyle:{
+                color:__ECHARTS__.configs.titleTextColor.value,
+            },
+            subtextStyle:{
+                color:__ECHARTS__.configs.titleSubTextColor.value,
+            }
+        },
         legend: {
-            left: 10,
+            show: __ECHARTS__.configs.legendDisplay.value == "YES",
+            top: __ECHARTS__.configs.legendPositionTop.value,
+            left: __ECHARTS__.configs.legendPositionLeft.value,
+            orient: __ECHARTS__.configs.legendOrient.value,
             data: columns.slice(1, columns.length),
             textStyle: {
                 color: __ECHARTS__.configs.legendTextColor.value
@@ -5443,8 +5870,24 @@ function getLine3D(container, themes) {
     }
 
     var option = {
+        title: {
+            show:__ECHARTS__.configs.titleDisplay.value =="YES",
+            text: __ECHARTS__.configs.titleText.value,
+            subtext: __ECHARTS__.configs.titleSubText.value,
+            top:"top",
+            left:__ECHARTS__.configs.titlePosition.value,
+            textStyle:{
+                color:__ECHARTS__.configs.titleTextColor.value,
+            },
+            subtextStyle:{
+                color:__ECHARTS__.configs.titleSubTextColor.value,
+            }
+        },
         legend: {
-            left: 10,
+            show: __ECHARTS__.configs.legendDisplay.value == "YES",
+            top: __ECHARTS__.configs.legendPositionTop.value,
+            left: __ECHARTS__.configs.legendPositionLeft.value,
+            orient: __ECHARTS__.configs.legendOrient.value,
             data: columns.slice(1, columns.length),
             textStyle: {
                 color: __ECHARTS__.configs.legendTextColor.value
@@ -5594,8 +6037,24 @@ function getScatter3D(container, themes) {
     }
 
     var option = {
+        title: {
+            show:__ECHARTS__.configs.titleDisplay.value =="YES",
+            text: __ECHARTS__.configs.titleText.value,
+            subtext: __ECHARTS__.configs.titleSubText.value,
+            top:"top",
+            left:__ECHARTS__.configs.titlePosition.value,
+            textStyle:{
+                color:__ECHARTS__.configs.titleTextColor.value,
+            },
+            subtextStyle:{
+                color:__ECHARTS__.configs.titleSubTextColor.value,
+            }
+        },
         legend: {
-            left: 10,
+            show: __ECHARTS__.configs.legendDisplay.value == "YES",
+            top: __ECHARTS__.configs.legendPositionTop.value,
+            left: __ECHARTS__.configs.legendPositionLeft.value,
+            orient: __ECHARTS__.configs.legendOrient.value,
             data: columns.slice(1, columns.length),
             textStyle: {
                 color: __ECHARTS__.configs.legendTextColor.value
@@ -5778,6 +6237,19 @@ function getCategoryLine(container, themes) {
 
     var option = {
         baseOption: {
+            title: {
+                show: __ECHARTS__.configs.titleDisplay.value == "YES",
+                text: __ECHARTS__.configs.titleText.value,
+                subtext: __ECHARTS__.configs.titleSubText.value,
+                top: "top",
+                left: __ECHARTS__.configs.titlePosition.value,
+                textStyle: {
+                    color: __ECHARTS__.configs.titleTextColor.value,
+                },
+                subtextStyle: {
+                    color: __ECHARTS__.configs.titleSubTextColor.value,
+                }
+            },
             timeline: {
                 axisType: 'category',
                 //考虑数据通用性，使用类目轴
@@ -6087,6 +6559,19 @@ function getGeoMigrateLinesOfChinaCity(container, themes) {
 
         var option = {
             //backgroundColor: __ECHARTS__.configs.geoBackgroundColor.value,
+            title: {
+                show: __ECHARTS__.configs.titleDisplay.value == "YES",
+                text: __ECHARTS__.configs.titleText.value,
+                subtext: __ECHARTS__.configs.titleSubText.value,
+                top: "top",
+                left: __ECHARTS__.configs.titlePosition.value,
+                textStyle: {
+                    color: __ECHARTS__.configs.titleTextColor.value,
+                },
+                subtextStyle: {
+                    color: __ECHARTS__.configs.titleSubTextColor.value,
+                }
+            },
             toolbox: {
                 show: true,
                 feature: {
@@ -6117,13 +6602,11 @@ function getGeoMigrateLinesOfChinaCity(container, themes) {
                 },
             },
             legend: {
-                show: true,
-                left: 20,
+                show: __ECHARTS__.configs.legendDisplay.value == "YES",
+                top: __ECHARTS__.configs.legendPositionTop.value,
+                left: __ECHARTS__.configs.legendPositionLeft.value,
+                orient: __ECHARTS__.configs.legendOrient.value,
                 data: getSerieNames(seriedata),
-                //textStyle: {
-                //    color: 'white'
-                //},
-                //selectedMode: 'single'
                 textStyle: {
                     color: __ECHARTS__.configs.legendTextColor.value
                 },
@@ -6241,6 +6724,19 @@ function getCategoryLineForGauge(container, themes) {
 
     var option = {
         baseOption: {
+            title: {
+                show: __ECHARTS__.configs.titleDisplay.value == "YES",
+                text: __ECHARTS__.configs.titleText.value,
+                subtext: __ECHARTS__.configs.titleSubText.value,
+                top: "top",
+                left: __ECHARTS__.configs.titlePosition.value,
+                textStyle: {
+                    color: __ECHARTS__.configs.titleTextColor.value,
+                },
+                subtextStyle: {
+                    color: __ECHARTS__.configs.titleSubTextColor.value,
+                }
+            },
             timeline: {
                 axisType: 'category',
                 //考虑数据通用性，使用类目轴
@@ -6397,6 +6893,19 @@ function getCategoryLineForLiqiud(container, themes) {
 
     var option = {
         baseOption: {
+            title: {
+                show: __ECHARTS__.configs.titleDisplay.value == "YES",
+                text: __ECHARTS__.configs.titleText.value,
+                subtext: __ECHARTS__.configs.titleSubText.value,
+                top: "top",
+                left: __ECHARTS__.configs.titlePosition.value,
+                textStyle: {
+                    color: __ECHARTS__.configs.titleTextColor.value,
+                },
+                subtextStyle: {
+                    color: __ECHARTS__.configs.titleSubTextColor.value,
+                }
+            },
             timeline: {
                 axisType: 'category',
                 //考虑数据通用性，使用类目轴
@@ -6655,6 +7164,19 @@ function getCategoryLineForGeoOfChina(container, themes) {
 
     var option = {
         baseOption: {
+            title: {
+                show: __ECHARTS__.configs.titleDisplay.value == "YES",
+                text: __ECHARTS__.configs.titleText.value,
+                subtext: __ECHARTS__.configs.titleSubText.value,
+                top: "top",
+                left: __ECHARTS__.configs.titlePosition.value,
+                textStyle: {
+                    color: __ECHARTS__.configs.titleTextColor.value,
+                },
+                subtextStyle: {
+                    color: __ECHARTS__.configs.titleSubTextColor.value,
+                }
+            },
             timeline: {
                 axisType: 'category',
                 //考虑数据通用性，使用类目轴
@@ -6907,6 +7429,19 @@ function getCategoryLineForGeoOfLocal(container, themes) {
     init();
     var option = {
         baseOption: {
+            title: {
+                show: __ECHARTS__.configs.titleDisplay.value == "YES",
+                text: __ECHARTS__.configs.titleText.value,
+                subtext: __ECHARTS__.configs.titleSubText.value,
+                top: "top",
+                left: __ECHARTS__.configs.titlePosition.value,
+                textStyle: {
+                    color: __ECHARTS__.configs.titleTextColor.value,
+                },
+                subtextStyle: {
+                    color: __ECHARTS__.configs.titleSubTextColor.value,
+                }
+            },
             timeline: {
                 axisType: 'category',
                 //考虑数据通用性，使用类目轴
