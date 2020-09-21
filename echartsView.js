@@ -82,6 +82,7 @@ var __ECHARTS__ = {
          hr_3: {name: "", value: "", type: "hr"},
 
          lineStyleWidth: {name: "线形图线条宽度", value: 2, type: "input"},
+         lineSmooth:{name: "使用平滑线", value: 'YES', options: ["YES", "NO"], type: "select"},
 
          hr_4: {name: "", value: "", type: "hr"},
 
@@ -159,14 +160,20 @@ var __ECHARTS__ = {
 
          hr_13: {name: "", value: "", type: "hr"},
 
+         timelineDisplay:{name: "显示时间(类目)轴", value: "YES", options: ["YES", "NO"], type: "select"},
          categoryLineType: {
-             name: "类目轴图形类别",
+             name: "时间(类目)轴图形类别",
              value: "bar",
              options: ["bar", "line", "areaStyle", "pie"],
              type: "select"
          },
+
          hr_14: {name: "", value: "", type: "hr"},
          seriesLoopPlayInterval: {name: "多序列播放间隔(秒)", value: 3, type: "input"},
+         visualMapDisplay:{name: "显示数据影射", value: "NO", options: ["YES", "NO"], type: "select"},
+         dataZoomBarDisplay:{name: "显示缩放控制", value: "NO", options: ["YES", "NO"], type: "select"},
+         toolboxDisplay:{name: "显示图形工具", value: "YES", options: ["YES", "NO"], type: "select"},
+         tooltipDisplay:{name: "显示提示组件", value: "YES", options: ["YES", "NO"], type: "select"},
          groupwith: {name: "每行序列数", value: 2, type: "input"},
          reportFontSize: {
              name: "报表字号",
@@ -1300,7 +1307,7 @@ function getBar(container, themes) {
             xAxisIndex: 0
         },
         toolbox: {
-            show: true,
+            show: __ECHARTS__.configs.toolboxDisplay.value =="YES",
             feature: {
                 saveAsImage: {show: true},
                 restore: {show: true},
@@ -1345,6 +1352,7 @@ function getBar(container, themes) {
         },
 
         tooltip: {
+            show:__ECHARTS__.configs.tooltipDisplay.value == "YES",
             trigger: 'axis',
             axisPointer: {
                 type: 'shadow'
@@ -1368,7 +1376,7 @@ function getBar(container, themes) {
                 }
             },
             splitLine: {
-                show: __ECHARTS__.configs.splitXLineShow.value=="YES"?true:false,
+                show: __ECHARTS__.configs.splitXLineShow.value=="YES",
                 lineStyle: {
                     color: [
                         __ECHARTS__.configs.axisColor.value
@@ -1389,7 +1397,7 @@ function getBar(container, themes) {
                 }
             },
             splitLine: {
-                show: __ECHARTS__.configs.splitYLineShow.value=="YES"?true:false,
+                show: __ECHARTS__.configs.splitYLineShow.value=="YES",
                 lineStyle: {
                     color: [
                         __ECHARTS__.configs.axisColor.value
@@ -1401,6 +1409,26 @@ function getBar(container, themes) {
             type: 'inside',
             start: 0,
             end: 100
+        },{
+            show:__ECHARTS__.configs.dataZoomBarDisplay.value=="YES",
+            type: 'slider',
+            yAxisIndex: 0,
+            start: 0,
+            end: 100,
+            left: 10,
+            width: 15,
+            height: 100,
+            bottom: 35
+        },{
+            show:__ECHARTS__.configs.dataZoomBarDisplay.value=="YES",
+            type: 'slider',
+            xAxisIndex: 0,
+            start: 0,
+            end: 100,
+            width: 100,
+            height: 15,
+            left: 30,
+            bottom: 10
         }],
         series: yAxis_series,
         animationEasing: 'elasticOut',
@@ -1463,7 +1491,7 @@ function getTransversBar(container, themes) {
                 xAxisIndex: 0
             },
         toolbox: {
-            show: true,
+            show: __ECHARTS__.configs.toolboxDisplay.value =="YES",
             feature:{
                 //mark: {show: true},
                 saveAsImage: {show: true},
@@ -1497,7 +1525,9 @@ function getTransversBar(container, themes) {
                 color:__ECHARTS__.configs.titleSubTextColor.value,
             }
         },
-        tooltip: {},
+        tooltip: {
+            show:__ECHARTS__.configs.tooltipDisplay.value == "YES",
+        },
         legend: {
             show:__ECHARTS__.configs.legendDisplay.value =="YES",
             top: __ECHARTS__.configs.legendPositionTop.value,
@@ -1525,7 +1555,7 @@ function getTransversBar(container, themes) {
                 }
             },
             splitLine: {
-                show: __ECHARTS__.configs.splitXLineShow.value=="YES"?true:false,
+                show: __ECHARTS__.configs.splitXLineShow.value=="YES",
                 lineStyle: {
                     color: [
                         __ECHARTS__.configs.axisColor.value
@@ -1548,7 +1578,7 @@ function getTransversBar(container, themes) {
                 }
             },
             splitLine: {
-                show: __ECHARTS__.configs.splitYLineShow.value=="YES"?true:false,
+                show: __ECHARTS__.configs.splitYLineShow.value=="YES",
                 lineStyle: {
                     color: [
                         __ECHARTS__.configs.axisColor.value
@@ -1560,6 +1590,26 @@ function getTransversBar(container, themes) {
             type: 'inside',
             start: 0,
             end: 100
+        },{
+            show:__ECHARTS__.configs.dataZoomBarDisplay.value=="YES",
+            type: 'slider',
+            yAxisIndex: 0,
+            start: 0,
+            end: 100,
+            left: 10,
+            width: 15,
+            height: 100,
+            bottom: 35
+        },{
+            show:__ECHARTS__.configs.dataZoomBarDisplay.value=="YES",
+            type: 'slider',
+            xAxisIndex: 0,
+            start: 0,
+            end: 100,
+            width: 100,
+            height: 15,
+            left: 30,
+            bottom: 10
         }],
         series: yAxis_series,
         animationEasing: 'elasticOut',
@@ -1592,7 +1642,7 @@ function getLine(container, themes) {
             var series = {
                 name: columns[c],
                 type: "line",
-                smooth: true,
+                smooth: __ECHARTS__.configs.lineSmooth.value == "YES",
                 //平滑线
                 data: [],
                 lineStyle: {
@@ -1628,7 +1678,7 @@ function getLine(container, themes) {
                 xAxisIndex: 0
         },
         toolbox: {
-            show: true,
+            show: __ECHARTS__.configs.toolboxDisplay.value =="YES",
             feature: {
                 //mark: {show: true},
                 saveAsImage: {show: true},
@@ -1662,7 +1712,9 @@ function getLine(container, themes) {
                 color:__ECHARTS__.configs.titleSubTextColor.value,
             }
         },
-        tooltip: {},
+        tooltip: {
+            show:__ECHARTS__.configs.tooltipDisplay.value == "YES",
+        },
         legend: {
             show:__ECHARTS__.configs.legendDisplay.value =="YES",
             top: __ECHARTS__.configs.legendPositionTop.value,
@@ -1690,7 +1742,7 @@ function getLine(container, themes) {
                 }
             },
             splitLine: {
-                show: __ECHARTS__.configs.splitXLineShow.value=="YES"?true:false,
+                show: __ECHARTS__.configs.splitXLineShow.value=="YES",
                 lineStyle: {
                     color: [
                         __ECHARTS__.configs.axisColor.value
@@ -1711,7 +1763,7 @@ function getLine(container, themes) {
                 }
             },
             splitLine: {
-                show: __ECHARTS__.configs.splitYLineShow.value=="YES"?true:false,
+                show: __ECHARTS__.configs.splitYLineShow.value=="YES",
                 lineStyle: {
                     color: [
                         __ECHARTS__.configs.axisColor.value
@@ -1724,6 +1776,7 @@ function getLine(container, themes) {
             start: 0,
             end: 100
         },{
+            show:__ECHARTS__.configs.dataZoomBarDisplay.value=="YES",
             type: 'slider',
             yAxisIndex: 0,
             start: 0,
@@ -1733,6 +1786,7 @@ function getLine(container, themes) {
             height: 100,
             bottom: 35
         },{
+            show:__ECHARTS__.configs.dataZoomBarDisplay.value=="YES",
             type: 'slider',
             xAxisIndex: 0,
             start: 0,
@@ -1784,7 +1838,7 @@ function getBarAndLine(container, themes) {
                 serie = {
                     name: columns[c],
                     type: "line",
-                    smooth: true,
+                    smooth: __ECHARTS__.configs.lineSmooth.value == "YES",
                     //平滑线
                     data: [],
                     lineStyle: {
@@ -1847,7 +1901,7 @@ function getBarAndLine(container, themes) {
             xAxisIndex: 0
         },
         toolbox: {
-            show: true,
+            show: __ECHARTS__.configs.toolboxDisplay.value =="YES",
             feature:{
                 //mark: {show: true},
                 saveAsImage: {show: true},
@@ -1881,7 +1935,9 @@ function getBarAndLine(container, themes) {
                 color:__ECHARTS__.configs.titleSubTextColor.value,
             }
         },
-        tooltip: {},
+        tooltip: {
+            show:__ECHARTS__.configs.tooltipDisplay.value == "YES",
+        },
         legend: {
             show:__ECHARTS__.configs.legendDisplay.value =="YES",
             top: __ECHARTS__.configs.legendPositionTop.value,
@@ -1909,7 +1965,7 @@ function getBarAndLine(container, themes) {
                 }
             },
             splitLine: {
-                show: __ECHARTS__.configs.splitXLineShow.value=="YES"?true:false,
+                show: __ECHARTS__.configs.splitXLineShow.value=="YES",
                 lineStyle: {
                     color: [
                         __ECHARTS__.configs.axisColor.value
@@ -1930,7 +1986,7 @@ function getBarAndLine(container, themes) {
                 }
             },
             splitLine: {
-                show: __ECHARTS__.configs.splitYLineShow.value=="YES"?true:false,
+                show: __ECHARTS__.configs.splitYLineShow.value=="YES",
                 lineStyle: {
                     color: [
                         __ECHARTS__.configs.axisColor.value
@@ -1943,6 +1999,7 @@ function getBarAndLine(container, themes) {
             start: 0,
             end: 100
         },{
+            show:__ECHARTS__.configs.dataZoomBarDisplay.value=="YES",
             type: 'slider',
             yAxisIndex: 0,
             start: 0,
@@ -1952,6 +2009,7 @@ function getBarAndLine(container, themes) {
             height: 100,
             bottom: 35
         },{
+            show:__ECHARTS__.configs.dataZoomBarDisplay.value=="YES",
             type: 'slider',
             xAxisIndex: 0,
             start: 0,
@@ -1991,7 +2049,7 @@ function getAreaStyle(container, themes) {
             var series = {
                 name: columns[c],
                 type: "line",
-                smooth: true,
+                smooth: __ECHARTS__.configs.lineSmooth.value == "YES",
                 //平滑线
                 areaStyle: {
                     //可指定渐变颜色
@@ -2045,7 +2103,7 @@ function getAreaStyle(container, themes) {
             xAxisIndex: 0
         },
         toolbox: {
-            show: true,
+            show: __ECHARTS__.configs.toolboxDisplay.value =="YES",
             feature:{
                 //mark: {show: true},
                 saveAsImage: {show: true},
@@ -2080,6 +2138,7 @@ function getAreaStyle(container, themes) {
             }
         },
         tooltip: {
+            show:__ECHARTS__.configs.tooltipDisplay.value == "YES",
             //显示活动标尺线.
             trigger: 'axis',
             position: function (pt) {
@@ -2113,7 +2172,7 @@ function getAreaStyle(container, themes) {
                 }
             },
             splitLine: {
-                show: __ECHARTS__.configs.splitXLineShow.value=="YES"?true:false,
+                show: __ECHARTS__.configs.splitXLineShow.value=="YES",
                 lineStyle: {
                     color: [
                         __ECHARTS__.configs.axisColor.value
@@ -2134,7 +2193,7 @@ function getAreaStyle(container, themes) {
                 }
             },
             splitLine: {
-                show: __ECHARTS__.configs.splitYLineShow.value=="YES"?true:false,
+                show: __ECHARTS__.configs.splitYLineShow.value=="YES",
                 lineStyle: {
                     color: [
                         __ECHARTS__.configs.axisColor.value
@@ -2147,6 +2206,7 @@ function getAreaStyle(container, themes) {
             start: 0,
             end: 100
         },{
+            show:__ECHARTS__.configs.dataZoomBarDisplay.value=="YES",
             type: 'slider',
             yAxisIndex: 0,
             start: 0,
@@ -2156,6 +2216,7 @@ function getAreaStyle(container, themes) {
             height: 100,
             bottom: 35
         },{
+            show:__ECHARTS__.configs.dataZoomBarDisplay.value=="YES",
             type: 'slider',
             xAxisIndex: 0,
             start: 0,
@@ -2227,7 +2288,7 @@ function getPolarBar(container, themes) {
             }
         },
         toolbox: {
-            show: true,
+            show: __ECHARTS__.configs.toolboxDisplay.value =="YES",
             feature:{
                 saveAsImage: {show: true},
                 restore: {show: true},
@@ -2268,6 +2329,7 @@ function getPolarBar(container, themes) {
             },
         },
         tooltip: {
+            show:__ECHARTS__.configs.tooltipDisplay.value == "YES",
             trigger: 'item',
             formatter: '{a} <br/>{b}: {c}'
         },
@@ -2331,7 +2393,7 @@ function getPolarArea(container, themes) {
             }
         },
         toolbox: {
-            show: true,
+            show: __ECHARTS__.configs.toolboxDisplay.value =="YES",
             feature:{
                 saveAsImage: {show: true},
                 restore: {show: true},
@@ -2370,6 +2432,7 @@ function getPolarArea(container, themes) {
             },
         },
         tooltip: {
+            show:__ECHARTS__.configs.tooltipDisplay.value == "YES",
             trigger: 'item',
             formatter: '{a} <br/>{b}: {c}'
         },
@@ -2451,7 +2514,7 @@ function getPie(container,themes) {
             }
         },
         toolbox: {
-            show: true,
+            show: __ECHARTS__.configs.toolboxDisplay.value =="YES",
             feature: {
                 saveAsImage: {show: true},
                 restore: {show: true},
@@ -2472,6 +2535,7 @@ function getPie(container,themes) {
             },
         },
         tooltip: {
+            show:__ECHARTS__.configs.tooltipDisplay.value == "YES",
             trigger: 'item',
             formatter: '{a} <br/>{b}: {c} ({d}%)'
         },
@@ -2618,7 +2682,7 @@ function getRing(container,themes) {
             }
         },
         toolbox: {
-            show: true,
+            show: __ECHARTS__.configs.toolboxDisplay.value =="YES",
             feature: {
                 saveAsImage: {show: true},
                 restore: {show: true},
@@ -2649,6 +2713,7 @@ function getRing(container,themes) {
             },
         },
         tooltip: {
+            show:__ECHARTS__.configs.tooltipDisplay.value == "YES",
             trigger: 'item',
             formatter: '{a} <br/>{b}: {c} ({d}%)'
         },
@@ -2779,7 +2844,7 @@ function getRose(container,themes) {
             }
         },
         toolbox: {
-            show: true,
+            show: __ECHARTS__.configs.toolboxDisplay.value =="YES",
             feature:{
                 saveAsImage: {show: true},
                 restore: {show: true},
@@ -2810,6 +2875,7 @@ function getRose(container,themes) {
             },
         },
         tooltip: {
+            show:__ECHARTS__.configs.tooltipDisplay.value == "YES",
             trigger: 'item',
             formatter: '{a} <br/>{b}: {c} ({d}%)'
         },
@@ -2942,8 +3008,11 @@ function getRadar(container, themes) {
                 color: __ECHARTS__.configs.legendTextColor.value
             },
         },
-        tooltip: {},
+        tooltip: {
+            show:__ECHARTS__.configs.tooltipDisplay.value == "YES",
+        },
         toolbox: {
+            show: __ECHARTS__.configs.toolboxDisplay.value =="YES",
             feature: {
                 saveAsImage: {},
                 restore: {},
@@ -3020,7 +3089,7 @@ function getRegression(container, themes) {
                             fontSize: 12
                         }
                     },
-                    smooth: true,
+                    smooth: __ECHARTS__.configs.lineSmooth.value == "YES",
                     data: []
                 };
                 serie.animationDelay = function (idx) {
@@ -3057,7 +3126,7 @@ function getRegression(container, themes) {
             name: type + "(" + column + ")",
             type: 'line',
             showSymbol: false,
-            smooth: true,
+            smooth: __ECHARTS__.configs.lineSmooth.value == "YES",
             data: data,
             lineStyle: {
                 type: 'dotted',     //'solid/dashed/dotted'
@@ -3160,7 +3229,7 @@ function getRegression(container, themes) {
             xAxisIndex: 0
         },
         toolbox: {
-            show: true,
+            show: __ECHARTS__.configs.toolboxDisplay.value =="YES",
             feature: {
                 //mark: {show: true},
                 saveAsImage: {show: true},
@@ -3205,6 +3274,7 @@ function getRegression(container, themes) {
             },
         },
         tooltip: {
+            show:__ECHARTS__.configs.tooltipDisplay.value == "YES",
             trigger: 'axis',
             axisPointer: {
                 type: 'cross'
@@ -3242,7 +3312,7 @@ function getRegression(container, themes) {
                 }
             },
             splitLine: {
-                show: __ECHARTS__.configs.splitYLineShow.value=="YES"?true:false,
+                show: __ECHARTS__.configs.splitYLineShow.value=="YES",
                 lineStyle: {
                     color: [
                         __ECHARTS__.configs.axisColor.value
@@ -3254,7 +3324,8 @@ function getRegression(container, themes) {
             type: 'inside',
             start: 0,
             end: 100
-        }, {
+        },{
+            show:__ECHARTS__.configs.dataZoomBarDisplay.value=="YES",
             type: 'slider',
             yAxisIndex: 0,
             start: 0,
@@ -3263,7 +3334,8 @@ function getRegression(container, themes) {
             width: 15,
             height: 100,
             bottom: 35
-        }, {
+        },{
+            show:__ECHARTS__.configs.dataZoomBarDisplay.value=="YES",
             type: 'slider',
             xAxisIndex: 0,
             start: 0,
@@ -3384,7 +3456,7 @@ function  getRelationship(container, themes) {
 
     var option = {
         toolbox: {
-            show: true,
+            show: __ECHARTS__.configs.toolboxDisplay.value =="YES",
             feature:{
                 saveAsImage: {show: true},
                 restore: {show: true},
@@ -3413,6 +3485,7 @@ function  getRelationship(container, themes) {
             }
         },
         tooltip: {
+            show:__ECHARTS__.configs.tooltipDisplay.value == "YES",
         },
         series: [serie],
         lineStyle: {
@@ -3637,7 +3710,7 @@ function  getOrganizationStructure(container, themes) {
             }
         },
         toolbox: {
-            show: true,
+            show: __ECHARTS__.configs.toolboxDisplay.value =="YES",
             feature:{
                 saveAsImage: {show: true},
                 restore: {show: true},
@@ -3653,6 +3726,7 @@ function  getOrganizationStructure(container, themes) {
             },
         },
         tooltip: {
+            show:__ECHARTS__.configs.tooltipDisplay.value == "YES",
             trigger: 'item',
             triggerOn: 'mousemove'
         },
@@ -3766,7 +3840,7 @@ function getWebkitDep(container, themes) {
             },
         },
         toolbox: {
-            show: true,
+            show: __ECHARTS__.configs.toolboxDisplay.value =="YES",
             feature: {
                 saveAsImage: {show: true},
                 restore: {show: true},
@@ -3943,7 +4017,7 @@ function getScatter(container, themes) {
             name: type + "(" + column + ")",
             type: 'line',
             showSymbol: false,
-            smooth: true,
+            smooth: __ECHARTS__.configs.lineSmooth.value == "YES",
             data: data,
             lineStyle: {
                 type: 'dotted',     //'solid/dashed/dotted'
@@ -3997,7 +4071,7 @@ function getScatter(container, themes) {
             },
         },
         toolbox: {
-            show: true,
+            show: __ECHARTS__.configs.toolboxDisplay.value =="YES",
             feature: {
                 saveAsImage: {show: true},
                 restore: {show: true},
@@ -4013,6 +4087,7 @@ function getScatter(container, themes) {
             },
         },
         tooltip: {
+            show:__ECHARTS__.configs.tooltipDisplay.value == "YES",
             trigger: 'axis',
             axisPointer: {
                 type: 'cross'
@@ -4031,7 +4106,7 @@ function getScatter(container, themes) {
                 }
             },
             splitLine: {
-                show: __ECHARTS__.configs.splitXLineShow.value=="YES"?true:false,
+                show: __ECHARTS__.configs.splitXLineShow.value=="YES",
                 lineStyle: {
                     type: 'dashed',
                     color: [
@@ -4054,7 +4129,7 @@ function getScatter(container, themes) {
                 }
             },
             splitLine: {
-                show: __ECHARTS__.configs.splitYLineShow.value=="YES"?true:false,
+                show: __ECHARTS__.configs.splitYLineShow.value=="YES",
                 lineStyle: {
                     type: 'dashed',
                     color: [
@@ -4067,7 +4142,8 @@ function getScatter(container, themes) {
             type: 'inside',
             start: 0,
             end: 100
-        }, {
+        },{
+            show:__ECHARTS__.configs.dataZoomBarDisplay.value=="YES",
             type: 'slider',
             yAxisIndex: 0,
             start: 0,
@@ -4076,7 +4152,8 @@ function getScatter(container, themes) {
             width: 15,
             height: 100,
             bottom: 35
-        }, {
+        },{
+            show:__ECHARTS__.configs.dataZoomBarDisplay.value=="YES",
             type: 'slider',
             xAxisIndex: 0,
             start: 0,
@@ -4201,11 +4278,12 @@ function getFunnel(container, themes) {
             }
         },
         tooltip: {
+            show:__ECHARTS__.configs.tooltipDisplay.value == "YES",
             trigger: 'item',
             formatter: "{a} <br/>{b} : {c}"
         },
         toolbox: {
-            show: true,
+            show: __ECHARTS__.configs.toolboxDisplay.value =="YES",
             feature: {
                 saveAsImage: {show: true},
                 restore: {show: true},
@@ -4339,6 +4417,7 @@ function getWordCloud(container, themes) {
             }
         },
         tooltip: {
+            show:__ECHARTS__.configs.tooltipDisplay.value == "YES",
             formatter: function (param) {
                 return param.name + '<br>' + param.seriesName + ':'
                     + param.value;
@@ -4355,7 +4434,7 @@ function getWordCloud(container, themes) {
             },
         },
         toolbox: {
-            show: true,
+            show: __ECHARTS__.configs.toolboxDisplay.value =="YES",
             feature: {
                 saveAsImage: {show: true},
                 restore: {show: true},
@@ -4402,7 +4481,7 @@ function getLiqiud(container, themes) {
                 phase: 'auto',
                 period: 'auto',
                 direction: 'right',
-                smooth: true,
+                smooth: __ECHARTS__.configs.lineSmooth.value == "YES",
 
                 shape: __ECHARTS__.configs.liqiudShape.value,
 
@@ -4481,7 +4560,9 @@ function getLiqiud(container, themes) {
 
     init();
     var option = {
-        //tooltip: {},
+        tooltip: {
+            show:__ECHARTS__.configs.tooltipDisplay.value == "YES",
+        },
         title: {
             show:__ECHARTS__.configs.titleDisplay.value =="YES",
             text: __ECHARTS__.configs.titleText.value,
@@ -4506,7 +4587,7 @@ function getLiqiud(container, themes) {
             },
         },
         toolbox: {
-            show: true,
+            show: __ECHARTS__.configs.toolboxDisplay.value =="YES",
             feature: {
                 saveAsImage: {show: true},
                 restore: {show: true},
@@ -4672,9 +4753,11 @@ function getGaugeWithAll(container, themes) {
             },
         },
         tooltip: {
+            show:__ECHARTS__.configs.tooltipDisplay.value == "YES",
             formatter: '{b} : {c}%'
         },
         toolbox: {
+            show: __ECHARTS__.configs.toolboxDisplay.value =="YES",
             feature: {
                 saveAsImage: {},
                 restore: {},
@@ -4839,9 +4922,11 @@ function getGaugeWithOne(container, themes) {
             },
         },
         tooltip: {
+            show:__ECHARTS__.configs.tooltipDisplay.value == "YES",
             formatter: '{b} : {c}%'
         },
         toolbox: {
+            show: __ECHARTS__.configs.toolboxDisplay.value =="YES",
             feature: {
                 saveAsImage: {},
                 restore: {},
@@ -4934,6 +5019,7 @@ function getCalendar(container, themes) {
                 };
                 var visualMap = {
                     //type: 'piecewise',
+                    show:__ECHARTS__.configs.visualMapDisplay.value == "YES",
                     calculable: true,
                     //orient: 'vertical',//'horizontal'
                     //left: 10,
@@ -4981,6 +5067,7 @@ function getCalendar(container, themes) {
                 }
                 visualMap.min = valueMin;
                 visualMap.max = valueMax;
+                visualMap.show = __ECHARTS__.configs.visualMapDisplay.value == "YES",
                 calendar.range = [rangeMin, rangeMax];
                 serie.animationDelay = function (idx) {
                     return idx * 5 + 100;
@@ -5033,6 +5120,7 @@ function getCalendar(container, themes) {
             }
         },
         tooltip: {
+            show:__ECHARTS__.configs.tooltipDisplay.value == "YES",
             position: 'top',
             formatter: function (p) {
                 var format = echarts.format.formatTime('yyyy-MM-dd', p.data[0]);
@@ -5040,6 +5128,7 @@ function getCalendar(container, themes) {
             }
         },
         toolbox: {
+            show: __ECHARTS__.configs.toolboxDisplay.value =="YES",
             feature: {
                 saveAsImage: {},
                 restore: {},
@@ -5160,7 +5249,7 @@ function getGeoOfChina(container, themes) {
             }
         },
         toolbox: {
-            show: true,
+            show: __ECHARTS__.configs.toolboxDisplay.value =="YES",
             feature: {
                 saveAsImage: {show: true},
                 restore: {show: true},
@@ -5176,7 +5265,7 @@ function getGeoOfChina(container, themes) {
             },
         },
         tooltip: {
-            show: true,
+            show:__ECHARTS__.configs.tooltipDisplay.value == "YES",
             formatter: function (params) {
                 var value = "";
                 try {
@@ -5187,13 +5276,14 @@ function getGeoOfChina(container, themes) {
             },
         },
         visualMap: {
+            show:__ECHARTS__.configs.visualMapDisplay.value == "YES",
             min: series[index].min,
             max: series[index].max,
             //type: 'piecewise',
             calculable: true,
             orient: 'vertical',//'horizontal'
             left: 10,
-            top: 10,
+            top: 80,
             itemWidth: 15,
             itemHeight: containerHeight / 3,
             textStyle: {
@@ -5294,13 +5384,14 @@ function getGeoOfChina(container, themes) {
         option.series[0].name = series[index].name;
         option.series[1].name = series[index].name;
         option.visualMap = {
+            show:__ECHARTS__.configs.visualMapDisplay.value == "YES",
             min: series[index].min,
             max: series[index].max,
             //type: 'piecewise',
             calculable: true,
             orient: 'vertical',//'horizontal'
             left: 10,
-            top: 10,
+            top: 80,
             itemWidth: 15,
             itemHeight: containerHeight/3,
             textStyle: {
@@ -5419,7 +5510,7 @@ function getGeoOfLocal(container, themes) {
             }
         },
         toolbox: {
-            show: true,
+            show: __ECHARTS__.configs.toolboxDisplay.value =="YES",
             feature: {
                 saveAsImage: {show: true},
                 restore: {show: true},
@@ -5436,7 +5527,7 @@ function getGeoOfLocal(container, themes) {
         },
 
         tooltip: {
-            show: true,
+            show:__ECHARTS__.configs.tooltipDisplay.value == "YES",
             formatter: function (params) {
                 var value = "";
                 try {
@@ -5447,13 +5538,14 @@ function getGeoOfLocal(container, themes) {
             },
         },
         visualMap: {
+            show:__ECHARTS__.configs.visualMapDisplay.value == "YES",
             min: series[index].min,
             max: series[index].max,
             //type: 'piecewise',
             calculable: true,
             orient: 'vertical',//'horizontal'
             left: 10,
-            top: 10,
+            top: 80,
             itemWidth: 15,
             itemHeight: containerHeight / 3,
             textStyle: {
@@ -5556,13 +5648,14 @@ function getGeoOfLocal(container, themes) {
         option.series[0].name = series[index].name;
         option.series[1].name = series[index].name;
         option.visualMap = {
+            show:__ECHARTS__.configs.visualMapDisplay.value == "YES",
             min: series[index].min,
             max: series[index].max,
             //type: 'piecewise',
             calculable: true,
             orient: 'vertical',//'horizontal'
             left: 10,
-            top: 10,
+            top: 80,
             itemWidth: 15,
             itemHeight: containerHeight / 3,
             textStyle: {
@@ -5718,10 +5811,10 @@ function getBar3D(container, themes) {
             },
         },
         tooltip: {
-            show: false
+            show:__ECHARTS__.configs.tooltipDisplay.value == "YES",
         },
         toolbox: {
-            show: true,
+            show: __ECHARTS__.configs.toolboxDisplay.value =="YES",
             feature: {
                 saveAsImage: {show: true},
                 restore: {show: true},
@@ -5737,13 +5830,14 @@ function getBar3D(container, themes) {
             },
         },
         visualMap: {
+            show:__ECHARTS__.configs.visualMapDisplay.value == "YES",
             min: valueMin,
             max: valueMax,
             //type: 'piecewise',
             calculable: true,
             orient: 'vertical',//'horizontal'
             left: 10,
-            top: 50,
+            top: 80,
             itemWidth: 15,
             itemHeight: containerHeight / 3,
             textStyle: {
@@ -5816,7 +5910,7 @@ function getLine3D(container, themes) {
                 name: columns[c],
                 type: "line3D",
                 data: [],
-                smooth: true,//平滑线
+                smooth: __ECHARTS__.configs.lineSmooth.value == "YES",
                 lineStyle: {
                     opacity: __ECHARTS__.configs.ItemStyleOpacityFor3D.value,
                     width: __ECHARTS__.configs.lineStyleWidth.value,
@@ -5894,10 +5988,10 @@ function getLine3D(container, themes) {
             },
         },
         tooltip: {
-            show: false
+            show:__ECHARTS__.configs.tooltipDisplay.value == "YES",
         },
         toolbox: {
-            show: true,
+            show: __ECHARTS__.configs.toolboxDisplay.value =="YES",
             feature: {
                 saveAsImage: {show: true},
                 restore: {show: true},
@@ -5913,13 +6007,14 @@ function getLine3D(container, themes) {
             },
         },
         visualMap: {
+            show:__ECHARTS__.configs.visualMapDisplay.value == "YES",
             min: valueMin,
             max: valueMax,
             //type: 'piecewise',
             calculable: true,
             orient: 'vertical',//'horizontal'
             left: 10,
-            top: 50,
+            top: 80,
             itemWidth: 15,
             itemHeight: containerHeight / 3,
             textStyle: {
@@ -6061,10 +6156,10 @@ function getScatter3D(container, themes) {
             },
         },
         tooltip: {
-            show: false
+           show:__ECHARTS__.configs.tooltipDisplay.value == "YES",
         },
         toolbox: {
-            show: true,
+            show: __ECHARTS__.configs.toolboxDisplay.value =="YES",
             feature: {
                 saveAsImage: {show: true},
                 restore: {show: true},
@@ -6080,13 +6175,14 @@ function getScatter3D(container, themes) {
             },
         },
         visualMap: {
+            show:__ECHARTS__.configs.visualMapDisplay.value == "YES",
             min: valueMin,
             max: valueMax,
             //type: 'piecewise',
             calculable: true,
             orient: 'vertical',//'horizontal'
             left: 10,
-            top: 50,
+            top: 80,
             itemWidth: 15,
             itemHeight: containerHeight / 3,
             textStyle: {
@@ -6220,7 +6316,7 @@ function getCategoryLine(container, themes) {
             };
         }
         if (__ECHARTS__.configs.categoryLineType.value == "line" || __ECHARTS__.configs.categoryLineType.value == "areaStyle") {
-            serie.smooth = true;
+            serie.smooth = __ECHARTS__.configs.lineSmooth.value == "YES";
             serie.lineStyle = {
                 width: Number(__ECHARTS__.configs.lineStyleWidth.value),
             };
@@ -6251,6 +6347,7 @@ function getCategoryLine(container, themes) {
                 }
             },
             timeline: {
+                show:__ECHARTS__.configs.timelineDisplay.value=="YES",
                 axisType: 'category',
                 //考虑数据通用性，使用类目轴
                 //'value' 数值轴，适用于连续数据。
@@ -6278,9 +6375,11 @@ function getCategoryLine(container, themes) {
                 },
                 bottom: 15
             },
-            tooltip: {},
+            tooltip: {
+                show:__ECHARTS__.configs.tooltipDisplay.value == "YES",
+            },
             toolbox: {
-                show: true,
+                show: __ECHARTS__.configs.toolboxDisplay.value =="YES",
                 feature: {
                     saveAsImage: {show: true},
                     restore: {show: true},
@@ -6300,7 +6399,7 @@ function getCategoryLine(container, themes) {
                 top: 80,
                 bottom: 100,
                 tooltip: {
-                    show: __ECHARTS__.configs.categoryLineType.value != "pie",
+                    show:__ECHARTS__.configs.tooltipDisplay.value == "YES",
                     trigger: 'axis',
                     axisPointer: {
                         type: 'shadow',
@@ -6573,7 +6672,7 @@ function getGeoMigrateLinesOfChinaCity(container, themes) {
                 }
             },
             toolbox: {
-                show: true,
+                show: __ECHARTS__.configs.toolboxDisplay.value =="YES",
                 feature: {
                     saveAsImage: {show: true},
                     restore: {show: true},
@@ -6590,7 +6689,7 @@ function getGeoMigrateLinesOfChinaCity(container, themes) {
             },
             tooltip: {
                 //trigger: 'item'
-                show: true,
+                show:__ECHARTS__.configs.tooltipDisplay.value == "YES",
                 formatter: function (params) {
                     var value = "";
                     if (params.seriesType == "lines")
@@ -6738,6 +6837,7 @@ function getCategoryLineForGauge(container, themes) {
                 }
             },
             timeline: {
+                show:__ECHARTS__.configs.timelineDisplay.value=="YES",
                 axisType: 'category',
                 //考虑数据通用性，使用类目轴
                 //'value' 数值轴，适用于连续数据。
@@ -6765,9 +6865,11 @@ function getCategoryLineForGauge(container, themes) {
                 },
                 bottom: 15
             },
-            tooltip: {},
+            tooltip: {
+                show:__ECHARTS__.configs.tooltipDisplay.value == "YES",
+            },
             toolbox: {
-                show: true,
+                show: __ECHARTS__.configs.toolboxDisplay.value =="YES",
                 feature: {
                     saveAsImage: {show: true},
                     restore: {show: true},
@@ -6828,7 +6930,7 @@ function getCategoryLineForLiqiud(container, themes) {
                 phase: 'auto',
                 period: 'auto',
                 direction: 'right',
-                smooth: true,
+                smooth: __ECHARTS__.configs.lineSmooth.value == "YES",
 
                 shape: __ECHARTS__.configs.liqiudShape.value,
 
@@ -6907,6 +7009,7 @@ function getCategoryLineForLiqiud(container, themes) {
                 }
             },
             timeline: {
+                show:__ECHARTS__.configs.timelineDisplay.value=="YES",
                 axisType: 'category',
                 //考虑数据通用性，使用类目轴
                 //'value' 数值轴，适用于连续数据。
@@ -6934,9 +7037,11 @@ function getCategoryLineForLiqiud(container, themes) {
                 },
                 bottom: 15
             },
-            tooltip: {},
+            tooltip: {
+                show:__ECHARTS__.configs.tooltipDisplay.value == "YES",
+            },
             toolbox: {
-                show: true,
+                show: __ECHARTS__.configs.toolboxDisplay.value =="YES",
                 feature: {
                     saveAsImage: {show: true},
                     restore: {show: true},
@@ -7041,7 +7146,7 @@ function getCategoryLineForGeoOfChina(container, themes) {
                 let opt = {
                     //backgroundColor: __ECHARTS__.configs.geoBackgroundColor.value,
                     toolbox: {
-                        show: true,
+                        show: __ECHARTS__.configs.toolboxDisplay.value =="YES",
                         feature: {
                             saveAsImage: {show: true},
                             restore: {show: true},
@@ -7057,7 +7162,7 @@ function getCategoryLineForGeoOfChina(container, themes) {
                         },
                     },
                     tooltip: {
-                        show: true,
+                        show:__ECHARTS__.configs.tooltipDisplay.value == "YES",
                         formatter: function (params) {
                             var value = "";
                             try {
@@ -7068,13 +7173,14 @@ function getCategoryLineForGeoOfChina(container, themes) {
                         },
                     },
                     visualMap: {
+                        show:__ECHARTS__.configs.visualMapDisplay.value == "YES",
                         min: min,
                         max: max,
                         //type: 'piecewise',
                         calculable: true,
                         orient: 'vertical',//'horizontal'
                         left: 10,
-                        top: 10,
+                        top: 80,
                         itemWidth: 15,
                         itemHeight: containerHeight / 3,
                         textStyle: {
@@ -7178,6 +7284,7 @@ function getCategoryLineForGeoOfChina(container, themes) {
                 }
             },
             timeline: {
+                show:__ECHARTS__.configs.timelineDisplay.value=="YES",
                 axisType: 'category',
                 //考虑数据通用性，使用类目轴
                 //'value' 数值轴，适用于连续数据。
@@ -7205,9 +7312,11 @@ function getCategoryLineForGeoOfChina(container, themes) {
                 },
                 bottom: 15
             },
-            tooltip: {},
+            tooltip: {
+                show:__ECHARTS__.configs.tooltipDisplay.value == "YES",
+            },
             toolbox: {
-                show: true,
+                show: __ECHARTS__.configs.toolboxDisplay.value =="YES",
                 feature: {
                     saveAsImage: {show: true},
                     restore: {show: true},
@@ -7305,7 +7414,7 @@ function getCategoryLineForGeoOfLocal(container, themes) {
                 let opt = {
                     //backgroundColor: __ECHARTS__.configs.geoBackgroundColor.value,
                     toolbox: {
-                        show: true,
+                        show: __ECHARTS__.configs.toolboxDisplay.value =="YES",
                         feature: {
                             saveAsImage: {show: true},
                             restore: {show: true},
@@ -7322,7 +7431,7 @@ function getCategoryLineForGeoOfLocal(container, themes) {
                     },
 
                     tooltip: {
-                        show: true,
+                        show:__ECHARTS__.configs.tooltipDisplay.value == "YES",
                         formatter: function (params) {
                             var value = "";
                             try {
@@ -7333,13 +7442,14 @@ function getCategoryLineForGeoOfLocal(container, themes) {
                         },
                     },
                     visualMap: {
+                        show:__ECHARTS__.configs.visualMapDisplay.value == "YES",
                         min: min,
                         max: max,
                         //type: 'piecewise',
                         calculable: true,
                         orient: 'vertical',//'horizontal'
                         left: 10,
-                        top: 10,
+                        top: 80,
                         itemWidth: 15,
                         itemHeight: containerHeight / 3,
                         textStyle: {
@@ -7443,6 +7553,7 @@ function getCategoryLineForGeoOfLocal(container, themes) {
                 }
             },
             timeline: {
+                show:__ECHARTS__.configs.timelineDisplay.value=="YES",
                 axisType: 'category',
                 //考虑数据通用性，使用类目轴
                 //'value' 数值轴，适用于连续数据。
@@ -7470,9 +7581,11 @@ function getCategoryLineForGeoOfLocal(container, themes) {
                 },
                 bottom: 15
             },
-            tooltip: {},
+            tooltip: {
+                show:__ECHARTS__.configs.tooltipDisplay.value == "YES",
+            },
             toolbox: {
-                show: true,
+                show: __ECHARTS__.configs.toolboxDisplay.value =="YES",
                 feature: {
                     saveAsImage: {show: true},
                     restore: {show: true},
