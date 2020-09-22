@@ -2241,7 +2241,7 @@ function init() {
     newsql.onclick = help_createsql.onclick = function () {
         var openfile = $("openfile");
         openfile.value = "";
-        __SQLEDITOR__.title = null;
+         __SQLEDITOR__.title =  __ECHARTS__.configs.titleText.value = __ECHARTS__.configs.titleSubText.value = null;
         __SQLEDITOR__.codeMirror.setValue("");
         if (this.id == "help-create-sql")
             __SQLEDITOR__.codeMirror.setValue("/*大括号中是用户参数*/\nSELECT * \nFROM \n{数据表}\nORDER BY 1");
@@ -2261,7 +2261,7 @@ function init() {
                 var reader = new FileReader();
                 reader.onload = function () {
                     __SQLEDITOR__.codeMirror.setValue(this.result);
-                    __SQLEDITOR__.title = null;
+                    __SQLEDITOR__.title =  __ECHARTS__.configs.titleText.value = __ECHARTS__.configs.titleSubText.value = null;
                 };
                 reader.readAsText(file, __SQLEDITOR__.charset.options[__SQLEDITOR__.charset.value]);
             } catch (e) {
@@ -2353,15 +2353,24 @@ function init() {
     let help_execsql = $("help-execute-sql");
     execsql.onclick = help_execsql.onclick = function () {
         if (checkStorage()) {
-            var selection = "";
+            let selection = "";
             if (__SQLEDITOR__.codeMirror.somethingSelected())
                 selection = __SQLEDITOR__.codeMirror.getSelection();
             else
                 selection = __SQLEDITOR__.codeMirror.getValue();
-            var paramdialog = getParamDialog(__SQLEDITOR__.title, selection);
+            let paramdialog = getParamDialog(__SQLEDITOR__.title, selection);
             if (paramdialog != null) {
                 setCenterPosition($("page"), paramdialog)
             } else {
+                if (__SQLEDITOR__.title != null) {
+                    let title = __SQLEDITOR__.title.split("_");
+                    __ECHARTS__.configs.titleText.value = title[0];
+                    if (title.length > 1) {
+                        __ECHARTS__.configs.titleSubText.value = title[1];
+                    } else {
+                        __ECHARTS__.configs.titleSubText.value = "";
+                    }
+                }
                 execute();
             }
         }

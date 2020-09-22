@@ -65,6 +65,7 @@ var __ECHARTS__ = {
          axisColor: {name: "坐标轴颜色", value: "#e6e6e6", type: "color"},
          splitXLineShow: {name: "显示X轴分隔线", value: "NO", options: ["YES", "NO"], type: "select"},
          splitYLineShow: {name: "显示Y轴分隔线", value: "NO", options: ["YES", "NO"], type: "select"},
+         axisTextColor: {name: "坐标轴文字颜色", value: "#e6e6e6", type: "color"},
          labelTextColor: {name: "标签文字颜色", value: "auto", type: "color"},
 
          hr_2: {name: "", value: "", type: "hr"},
@@ -100,8 +101,11 @@ var __ECHARTS__ = {
          regressionForwardPeroids: {name: "趋势/回归前推周期", value: 0, type: "input"},
 
          hr_6: {name: "", value: "", type: "hr"},
-         outRadius:{name: "外半径(%)", value: "70%", type: "input"},
-         inRadius:{name: "内半径(%)", value: "35%", type: "input"},
+
+         outRadius:{name: "饼图外半径(%)", value: "70%", type: "input"},
+         inRadius:{name: "饼图内半径(%)", value: "35%", type: "input"},
+         pieLabelDisplay:{name: "显示标签", value: 'YES', options: ["YES", "NO"], type: "select"},
+         pieLabelAlignTo:{name: "标签对齐方式", value: 'none', options: ["none", "labelLine", "edge"], type: "select"},
          richTextLabel: {name: "富文本标签", value: 'NO', options: ["YES", "NO"], type: "select"},
 
          hr_7: {name: "", value: "", type: "hr"},
@@ -911,7 +915,6 @@ function getMapConfig() {
                     console.log(e);
                 }
             }
-
         }
     };
     d.appendChild(b);
@@ -1040,6 +1043,17 @@ function getEchartsConfigs(parent) {
             }
         }
     }
+    //报表名称取编辑器文档名称
+    if (__SQLEDITOR__.title != null) {
+        let title = __SQLEDITOR__.title.split("_");
+        __ECHARTS__.configs.titleText.value = title[0];
+        if (title.length > 1) {
+            __ECHARTS__.configs.titleSubText.value = title[1];
+        } else {
+            __ECHARTS__.configs.titleSubText.value = "";
+        }
+    }
+
     var container = document.createElement("div");
     container.type = "div";
     container.className = "echarts-configs-Content";
@@ -1373,7 +1387,7 @@ function getBar(container, themes) {
                 margin: 8,
                 rotate: xAxis.length > 15 ? -45 : 0,
                 textStyle: {
-                    color: __ECHARTS__.configs.axisColor.value
+                    color: __ECHARTS__.configs.axisTextColor.value
                 }
             },
             splitLine: {
@@ -1394,7 +1408,7 @@ function getBar(container, themes) {
             },
             axisLabel: {
                 textStyle: {
-                    color: __ECHARTS__.configs.axisColor.value
+                    color: __ECHARTS__.configs.axisTextColor.value
                 }
             },
             splitLine: {
@@ -1552,7 +1566,7 @@ function getTransversBar(container, themes) {
                 margin: 8,
                 rotate: xAxis.length > 15 ? -45 : 0,
                 textStyle: {
-                    color: __ECHARTS__.configs.axisColor.value
+                    color: __ECHARTS__.configs.axisTextColor.value
                 }
             },
             splitLine: {
@@ -1575,7 +1589,7 @@ function getTransversBar(container, themes) {
             },
             axisLabel: {
                 textStyle: {
-                    color: __ECHARTS__.configs.axisColor.value
+                    color: __ECHARTS__.configs.axisTextColor.value
                 }
             },
             splitLine: {
@@ -1739,7 +1753,7 @@ function getLine(container, themes) {
                 margin: 8,
                 rotate: xAxis.length > 15 ? -45 : 0,
                 textStyle: {
-                    color: __ECHARTS__.configs.axisColor.value
+                    color: __ECHARTS__.configs.axisTextColor.value
                 }
             },
             splitLine: {
@@ -1760,7 +1774,7 @@ function getLine(container, themes) {
             },
             axisLabel: {
                 textStyle: {
-                    color: __ECHARTS__.configs.axisColor.value
+                    color: __ECHARTS__.configs.axisTextColor.value
                 }
             },
             splitLine: {
@@ -1962,7 +1976,7 @@ function getBarAndLine(container, themes) {
                 margin: 8,
                 rotate: xAxis.length > 15 ? -45 : 0,
                 textStyle: {
-                    color: __ECHARTS__.configs.axisColor.value
+                    color: __ECHARTS__.configs.axisTextColor.value
                 }
             },
             splitLine: {
@@ -1983,7 +1997,7 @@ function getBarAndLine(container, themes) {
             },
             axisLabel: {
                 textStyle: {
-                    color: __ECHARTS__.configs.axisColor.value
+                    color: __ECHARTS__.configs.axisTextColor.value
                 }
             },
             splitLine: {
@@ -2169,7 +2183,7 @@ function getAreaStyle(container, themes) {
                 margin: 8,
                 rotate: xAxis.length > 15 ? -45 : 0,
                 textStyle: {
-                    color: __ECHARTS__.configs.axisColor.value
+                    color: __ECHARTS__.configs.axisTextColor.value
                 }
             },
             splitLine: {
@@ -2190,7 +2204,7 @@ function getAreaStyle(container, themes) {
             },
             axisLabel: {
                 textStyle: {
-                    color: __ECHARTS__.configs.axisColor.value
+                    color: __ECHARTS__.configs.axisTextColor.value
                 }
             },
             splitLine: {
@@ -2310,16 +2324,19 @@ function getPolarBar(container, themes) {
         },
         angleAxis: {
             axisLabel:{
-                show: __ECHARTS__.configs.splitYLineShow.value=="YES",
+                show: true,
+                textStyle: {
+                    color: __ECHARTS__.configs.axisTextColor.value
+                }
             },
             axisLine: {
-                show: __ECHARTS__.configs.splitYLineShow.value=="YES",
+                show: true,
                 lineStyle: {
                     color: __ECHARTS__.configs.axisColor.value,
                 },
             },
             splitLine: {
-                show: __ECHARTS__.configs.splitYLineShow.value=="YES",
+                show: true,
                 lineStyle: {
                     color: __ECHARTS__.configs.axisColor.value
                 },
@@ -2328,10 +2345,13 @@ function getPolarBar(container, themes) {
         },
         radiusAxis: {
             axisLabel:{
-                show: __ECHARTS__.configs.splitXLineShow.value=="YES",
+                show: true,
+                textStyle: {
+                    color: __ECHARTS__.configs.axisTextColor.value
+                }
             },
             axisLine: {
-                show: __ECHARTS__.configs.splitXLineShow.value=="YES",
+                show: true,
                 lineStyle: {
                     color: __ECHARTS__.configs.axisColor.value
                 },
@@ -2439,31 +2459,40 @@ function getPolarArea(container, themes) {
         },
         angleAxis: {
             axisLabel:{
-                show: __ECHARTS__.configs.splitXLineShow.value=="YES",
+                show: true,
+                textStyle:{
+                    color: __ECHARTS__.configs.axisTextColor.value,
+                }
             },
             axisLine: {
-                show: __ECHARTS__.configs.splitXLineShow.value=="YES",
+                show: true,
                 lineStyle: {
                     color: __ECHARTS__.configs.axisColor.value
                 },
             },
-            splitArea:{show:true},
+            splitArea: {
+                show: true,
+                interval:1
+            },
             type: 'category',
             data: xAxis,
             z:10
         },
         radiusAxis: {
             axisLabel:{
-                show: __ECHARTS__.configs.splitYLineShow.value=="YES",
+                show: true,
+                textStyle:{
+                    color: __ECHARTS__.configs.axisTextColor.value,
+                }
             },
             axisLine: {
-                show: __ECHARTS__.configs.splitYLineShow.value=="YES",
+                show: true,
                 lineStyle: {
                     color: __ECHARTS__.configs.axisColor.value
                 },
             },
             splitLine: {
-                show: __ECHARTS__.configs.splitXLineShow.value=="YES",
+                show: true,
                 lineStyle: {
                     color: __ECHARTS__.configs.axisColor.value
                 },
@@ -2516,13 +2545,32 @@ function getPie(container,themes) {
                 type: "pie",
                 radius: __ECHARTS__.configs.outRadius.value,
                 label: {
-                    show: true,
+                    show: __ECHARTS__.configs.pieLabelDisplay.value == "YES",
                     //控制label是否显示
-                    //position: 'center'
+                    // position: 'center'
+                    alignTo: __ECHARTS__.configs.pieLabelAlignTo.value,
+                    bleedMargin: 5,
+                    margin: 20
                 },
                 labelLine: {
-                    show: true
+                    show: __ECHARTS__.configs.pieLabelDisplay.value == "YES",
                 },
+                emphasis: {
+                    label: {
+                        show: true,
+                        fontSize: '30',
+                        fontWeight: 'bold'
+                    }
+                },
+                itemStyle: {
+                    label: {
+                        show: true,
+                    }
+                },
+                hoverOffset: 10,
+                selectedOffset: 10,
+                avoidLabelOverlap:true,
+                hoverAnimation:true,
                 data: []
             };
             serie.animationDelay = function (idx) {
@@ -2678,11 +2726,14 @@ function getRing(container,themes) {
                 radius: [__ECHARTS__.configs.inRadius.value, __ECHARTS__.configs.outRadius.value],
                 avoidLabelOverlap: false,
                 label: {
-                    show: true,
+                    show: __ECHARTS__.configs.pieLabelDisplay.value == "YES",
                     //position: 'center'
+                    alignTo: __ECHARTS__.configs.pieLabelAlignTo.value,
+                    bleedMargin: 5,
+                    margin: 20,
                 },
                 labelLine: {
-                    show: true
+                    show: __ECHARTS__.configs.pieLabelDisplay.value == "YES",
                 },
                 emphasis: {
                     label: {
@@ -2691,6 +2742,15 @@ function getRing(container,themes) {
                         fontWeight: 'bold'
                     }
                 },
+               itemStyle: {
+                    label: {
+                        show: true,
+                    }
+                },
+                hoverOffset: 10,
+                selectedOffset: 10,
+                avoidLabelOverlap:true,
+                hoverAnimation:true,
                 data: []
             };
             serie.animationDelay = function (idx) {
@@ -2848,12 +2908,31 @@ function getRose(container,themes) {
                 center: ['50%', '50%'],
                 roseType: 'area',
                 label: {
-                    show: true,
+                    show: __ECHARTS__.configs.pieLabelDisplay.value == "YES",
                     //position: 'center'
+                    alignTo: __ECHARTS__.configs.pieLabelAlignTo.value,
+                    bleedMargin: 5,
+                    margin: 20
                 },
                 labelLine: {
-                    show: true
+                    show: __ECHARTS__.configs.pieLabelDisplay.value == "YES",
                 },
+                emphasis: {
+                    label: {
+                        show: true,
+                        fontSize: '30',
+                        fontWeight: 'bold'
+                    }
+                },
+                itemStyle: {
+                    label: {
+                        show: true,
+                    }
+                },
+                hoverOffset: 10,
+                selectedOffset: 10,
+                avoidLabelOverlap:true,
+                hoverAnimation:true,
                 data: []
             };
             serie.animationDelay = function (idx) {
@@ -3343,7 +3422,7 @@ function getRegression(container, themes) {
             axisLabel: {
                 interval: "auto",
                 textStyle: {
-                    color:__ECHARTS__.configs.axisColor.value,
+                    color: __ECHARTS__.configs.axisTextColor.value
                 },
                 margin: 8,
                 rotate: xAxis.length > 15 ? -45 : 0,
@@ -3359,7 +3438,7 @@ function getRegression(container, themes) {
             },
             axisLabel: {
                 textStyle: {
-                    color: __ECHARTS__.configs.axisColor.value
+                    color: __ECHARTS__.configs.axisTextColor.value
                 }
             },
             splitLine: {
@@ -4153,7 +4232,7 @@ function getScatter(container, themes) {
             },
             axisLabel: {
                 textStyle: {
-                    color: __ECHARTS__.configs.axisColor.value
+                    color: __ECHARTS__.configs.axisTextColor.value
                 }
             },
             splitLine: {
@@ -4176,7 +4255,7 @@ function getScatter(container, themes) {
             },
             axisLabel: {
                 textStyle: {
-                    color: __ECHARTS__.configs.axisColor.value
+                    color: __ECHARTS__.configs.axisTextColor.value
                 }
             },
             splitLine: {
@@ -6287,7 +6366,8 @@ function getCategoryLine(container, themes) {
 
     for (var i = 0; i < dataset["data"].length; i++) {
         var opt = {
-            series: []
+            series: [
+            ]
         };
         var row = dataset["data"][i];
         times.push(row[columns[0]].value);
@@ -6295,7 +6375,10 @@ function getCategoryLine(container, themes) {
         for (var c = 1; c < columns.length; c++) {
             data.push({name: columns[c], value: row[columns[c]].value});
         }
-        var serie = {name: row[columns[0]].value, data: data};
+        var serie = {
+            name: row[columns[0]].value,
+            data: data ,
+        };
         if (__ECHARTS__.configs.categoryLineType.value == "bar") {
             serie.label = {
                 show: __ECHARTS__.configs.barLabelShow.value == "YES",
@@ -6314,9 +6397,12 @@ function getCategoryLine(container, themes) {
             };
         }
         if (__ECHARTS__.configs.categoryLineType.value == "pie") {
-            serie.radius = "70%";
+            serie.radius = __ECHARTS__.configs.outRadius.value;
             serie.label = {
                 show: true,
+                alignTo: __ECHARTS__.configs.pieLabelAlignTo.value,
+                bleedMargin: 5,
+                margin: 20
             };
             if (__ECHARTS__.configs.richTextLabel.value == "YES") {
                 serie.label = {
@@ -6398,7 +6484,7 @@ function getCategoryLine(container, themes) {
                 }
             },
             timeline: {
-                show:__ECHARTS__.configs.timelineDisplay.value=="YES",
+                show: __ECHARTS__.configs.timelineDisplay.value == "YES",
                 axisType: 'category',
                 //考虑数据通用性，使用类目轴
                 //'value' 数值轴，适用于连续数据。
@@ -6424,13 +6510,13 @@ function getCategoryLine(container, themes) {
                         return s;
                     }
                 },
-                bottom: 15
+                //bottom: 10
             },
             tooltip: {
-                show:__ECHARTS__.configs.tooltipDisplay.value == "YES",
+                show: __ECHARTS__.configs.tooltipDisplay.value == "YES",
             },
             toolbox: {
-                show: __ECHARTS__.configs.toolboxDisplay.value =="YES",
+                show: __ECHARTS__.configs.toolboxDisplay.value == "YES",
                 feature: {
                     saveAsImage: {show: true},
                     restore: {show: true},
@@ -6445,34 +6531,52 @@ function getCategoryLine(container, themes) {
                     }
                 },
             },
-            calculable: __ECHARTS__.configs.categoryLineType.value != "pie",
-            grid: {
-                top: 80,
-                bottom: 100,
-                tooltip: {
-                    show:__ECHARTS__.configs.tooltipDisplay.value == "YES",
-                    trigger: 'axis',
-                    axisPointer: {
-                        type: 'shadow',
-                        label: {
-                            show: __ECHARTS__.configs.categoryLineType.value != "pie",
-                            formatter: function (params) {
-                                return params.value;
-                            }
-                        }
-                    }
-                }
-            },
             xAxis: {
-                show: __ECHARTS__.configs.categoryLineType.value != "pie",
-                'type': 'category',
-                'axisLabel': {'interval': 0},
-                'data': columns.slice(1),
-                splitLine: {show: false}
+                type: 'category',
+                data: columns.slice(1),
+                axisLine: {
+                    show: __ECHARTS__.configs.categoryLineType.value != "pie",
+                    lineStyle: {
+                        color: __ECHARTS__.configs.axisColor.value
+                    },
+                },
+                axisLabel: {
+                    show: __ECHARTS__.configs.categoryLineType.value != "pie",
+                    textStyle: {
+                        color: __ECHARTS__.configs.axisTextColor.value
+                    }
+                },
+                splitLine: {
+                    show: __ECHARTS__.configs.splitXLineShow.value == "YES" && __ECHARTS__.configs.categoryLineType.value != "pie",
+                    lineStyle: {
+                        color: [
+                            __ECHARTS__.configs.axisColor.value
+                        ]
+                    },
+                },
             },
             yAxis: {
-                show: __ECHARTS__.configs.categoryLineType.value != "pie",
                 type: 'value',
+                axisLine: {
+                    show: __ECHARTS__.configs.categoryLineType.value != "pie",
+                    lineStyle: {
+                        color: __ECHARTS__.configs.axisColor.value
+                    },
+                },
+                axisLabel: {
+                    show: __ECHARTS__.configs.categoryLineType.value != "pie",
+                    textStyle: {
+                        color: __ECHARTS__.configs.axisTextColor.value
+                    }
+                },
+                splitLine: {
+                    show: __ECHARTS__.configs.splitYLineShow.value == "YES" && __ECHARTS__.configs.categoryLineType.value != "pie",
+                    lineStyle: {
+                        color: [
+                            __ECHARTS__.configs.axisColor.value
+                        ]
+                    },
+                },
             },
             series: {
                 type: __ECHARTS__.configs.categoryLineType.value == "areaStyle" ? "line" : __ECHARTS__.configs.categoryLineType.value,
