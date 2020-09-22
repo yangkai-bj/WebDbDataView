@@ -175,8 +175,11 @@ var __ECHARTS__ = {
          seriesLoopPlayInterval: {name: "多序列循环时间(秒)", value: 3, type: "input"},
 
          hr_14: {name: "", value: "", type: "hr"},
+         dataZoomBarDisplay:{name: "显示过滤控制", value: "NO", options: ["YES", "NO"], type: "select"},
+         dataZoomFilterMode:{name: "数据过滤模式", value: "filter", options: ["filter", "weakFilter","empty","none"], type: "select"},
+
+         hr_15: {name: "", value: "", type: "hr"},
          visualMapDisplay:{name: "显示数据影射", value: "NO", options: ["YES", "NO"], type: "select"},
-         dataZoomBarDisplay:{name: "显示缩放控制", value: "NO", options: ["YES", "NO"], type: "select"},
          toolboxDisplay:{name: "显示图形工具", value: "YES", options: ["YES", "NO"], type: "select"},
          tooltipDisplay:{name: "显示提示组件", value: "YES", options: ["YES", "NO"], type: "select"},
          groupwith: {name: "每行序列数", value: 2, type: "input"},
@@ -1422,28 +1425,31 @@ function getBar(container, themes) {
         },
         dataZoom: [{
             type: 'inside',
+            filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
             start: 0,
             end: 100
         },{
             show:__ECHARTS__.configs.dataZoomBarDisplay.value=="YES",
             type: 'slider',
+            filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
             yAxisIndex: 0,
             start: 0,
             end: 100,
-            left: 10,
+            right: "5%",
             width: 15,
-            height: 100,
-            bottom: 35
+            height: "80%",
+            bottom: "10%"
         },{
             show:__ECHARTS__.configs.dataZoomBarDisplay.value=="YES",
             type: 'slider',
+            filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
             xAxisIndex: 0,
             start: 0,
             end: 100,
-            width: 100,
+            width: "80%",
             height: 15,
-            left: 30,
-            bottom: 10
+            left: "10%",
+            bottom: 5,
         }],
         series: yAxis_series,
         animationEasing: 'elasticOut',
@@ -1603,28 +1609,31 @@ function getTransversBar(container, themes) {
         },
         dataZoom: [{
             type: 'inside',
+            filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
             start: 0,
             end: 100
         },{
             show:__ECHARTS__.configs.dataZoomBarDisplay.value=="YES",
             type: 'slider',
+            filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
             yAxisIndex: 0,
             start: 0,
             end: 100,
-            left: 10,
+            right: "5%",
             width: 15,
-            height: 100,
-            bottom: 35
+            height: "80%",
+            bottom: "10%"
         },{
             show:__ECHARTS__.configs.dataZoomBarDisplay.value=="YES",
             type: 'slider',
+            filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
             xAxisIndex: 0,
             start: 0,
             end: 100,
-            width: 100,
+            width: "80%",
             height: 15,
-            left: 30,
-            bottom: 10
+            left: "10%",
+            bottom: 5,
         }],
         series: yAxis_series,
         animationEasing: 'elasticOut',
@@ -1788,28 +1797,31 @@ function getLine(container, themes) {
         },
         dataZoom: [{
             type: 'inside',
+            filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
             start: 0,
             end: 100
         },{
             show:__ECHARTS__.configs.dataZoomBarDisplay.value=="YES",
             type: 'slider',
+            filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
             yAxisIndex: 0,
             start: 0,
             end: 100,
-            left: 10,
+            right: "5%",
             width: 15,
-            height: 100,
-            bottom: 35
+            height: "80%",
+            bottom: "10%"
         },{
             show:__ECHARTS__.configs.dataZoomBarDisplay.value=="YES",
             type: 'slider',
+            filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
             xAxisIndex: 0,
             start: 0,
             end: 100,
-            width: 100,
+            width: "80%",
             height: 15,
-            left: 30,
-            bottom: 10
+            left: "10%",
+            bottom: 5,
         }],
         series: yAxis_series,
         animationEasing: 'elasticOut',
@@ -2011,28 +2023,31 @@ function getBarAndLine(container, themes) {
         },
         dataZoom: [{
             type: 'inside',
+            filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
             start: 0,
             end: 100
         },{
             show:__ECHARTS__.configs.dataZoomBarDisplay.value=="YES",
             type: 'slider',
+            filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
             yAxisIndex: 0,
             start: 0,
             end: 100,
-            left: 10,
+            right: "5%",
             width: 15,
-            height: 100,
-            bottom: 35
+            height: "80%",
+            bottom: "10%"
         },{
             show:__ECHARTS__.configs.dataZoomBarDisplay.value=="YES",
             type: 'slider',
+            filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
             xAxisIndex: 0,
             start: 0,
             end: 100,
-            width: 100,
+            width: "80%",
             height: 15,
-            left: 30,
-            bottom: 10
+            left: "10%",
+            bottom: 5,
         }],
         series: yAxis_series,
         animationEasing: 'elasticOut',
@@ -2218,28 +2233,31 @@ function getAreaStyle(container, themes) {
         },
         dataZoom: [{
             type: 'inside',
+            filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
             start: 0,
             end: 100
         },{
             show:__ECHARTS__.configs.dataZoomBarDisplay.value=="YES",
             type: 'slider',
+            filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
             yAxisIndex: 0,
             start: 0,
             end: 100,
-            left: 10,
+            right: "5%",
             width: 15,
-            height: 100,
-            bottom: 35
+            height: "80%",
+            bottom: "10%"
         },{
             show:__ECHARTS__.configs.dataZoomBarDisplay.value=="YES",
             type: 'slider',
+            filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
             xAxisIndex: 0,
             start: 0,
             end: 100,
-            width: 100,
+            width: "80%",
             height: 15,
-            left: 30,
-            bottom: 10
+            left: "10%",
+            bottom: 5,
         }],
         series: yAxis_series,
         animationEasing: 'elasticOut',
@@ -3452,28 +3470,31 @@ function getRegression(container, themes) {
         },
         dataZoom: [{
             type: 'inside',
+            filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
             start: 0,
             end: 100
         },{
             show:__ECHARTS__.configs.dataZoomBarDisplay.value=="YES",
             type: 'slider',
+            filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
             yAxisIndex: 0,
             start: 0,
             end: 100,
-            left: 10,
+            right: "5%",
             width: 15,
-            height: 100,
-            bottom: 35
+            height: "80%",
+            bottom: "10%"
         },{
             show:__ECHARTS__.configs.dataZoomBarDisplay.value=="YES",
             type: 'slider',
+            filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
             xAxisIndex: 0,
             start: 0,
             end: 100,
-            width: 100,
+            width: "80%",
             height: 15,
-            left: 30,
-            bottom: 10
+            left: "10%",
+            bottom: 5,
         }],
         series: series,
         animationEasing: 'elasticOut',
@@ -4270,28 +4291,31 @@ function getScatter(container, themes) {
         },
         dataZoom: [{
             type: 'inside',
+            filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
             start: 0,
             end: 100
         },{
             show:__ECHARTS__.configs.dataZoomBarDisplay.value=="YES",
             type: 'slider',
+            filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
             yAxisIndex: 0,
             start: 0,
             end: 100,
-            left: 10,
+            right: "5%",
             width: 15,
-            height: 100,
-            bottom: 35
+            height: "80%",
+            bottom: "10%"
         },{
             show:__ECHARTS__.configs.dataZoomBarDisplay.value=="YES",
             type: 'slider',
+            filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
             xAxisIndex: 0,
             start: 0,
             end: 100,
-            width: 100,
+            width: "80%",
             height: 15,
-            left: 30,
-            bottom: 10
+            left: "10%",
+            bottom: 5,
         }],
         series: series,
         animationDurationUpdate: 1500,
