@@ -6434,7 +6434,6 @@ function getBar3D(container, themes) {
         zAxis3D: {
             type: 'value',
             axisLine: {
-                show: true,
                 lineStyle: {
                     color: __ECHARTS__.configs.axisColor.value
                 },
@@ -6676,6 +6675,27 @@ function getLine3D(container, themes) {
                 //animationDurationUpdate: 1000,
                 //animationEasingUpdate: "cubicInOut"
             },
+            axisLine: {
+                show:__ECHARTS__.configs.axisLineDisplay.value == "YES",
+                lineStyle: {
+                    color: __ECHARTS__.configs.axisColor.value
+                },
+            },
+            splitLine: {
+                show: __ECHARTS__.configs.splitXLineDisplay.value == "YES" || __ECHARTS__.configs.splitYLineDisplay.value == "YES",
+                lineStyle: {
+                    color: __ECHARTS__.configs.axisColor.value
+                },
+            },
+            splitArea: {
+                show: __ECHARTS__.configs.splitXAreaDisplay.value == "YES" || __ECHARTS__.configs.splitYAreaDisplay.value == "YES",
+            },
+            axisPointer: {
+                show: __ECHARTS__.configs.axisPointerDisplay.value == "YES",
+                lineStyle: {
+                    color: __ECHARTS__.configs.axisColor.value
+                },
+            },
         },
         series: series,
     };
@@ -6871,6 +6891,27 @@ function getScatter3D(container, themes) {
                 animationEasingUpdate: "cubicInOut",
                 animationDelay: function (idx) {
                     return idx * 5 + 100;
+                },
+            },
+            axisLine: {
+                show:__ECHARTS__.configs.axisLineDisplay.value == "YES",
+                lineStyle: {
+                    color: __ECHARTS__.configs.axisColor.value
+                },
+            },
+            splitLine: {
+                show: __ECHARTS__.configs.splitXLineDisplay.value == "YES" || __ECHARTS__.configs.splitYLineDisplay.value == "YES",
+                lineStyle: {
+                    color: __ECHARTS__.configs.axisColor.value
+                },
+            },
+            splitArea: {
+                show: __ECHARTS__.configs.splitXAreaDisplay.value == "YES" || __ECHARTS__.configs.splitYAreaDisplay.value == "YES",
+            },
+            axisPointer: {
+                show: __ECHARTS__.configs.axisPointerDisplay.value == "YES",
+                lineStyle: {
+                    color: __ECHARTS__.configs.axisColor.value
                 },
             },
         },
