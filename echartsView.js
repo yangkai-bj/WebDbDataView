@@ -47,6 +47,20 @@ var __ECHARTS__ = {
          "Wonderland": "Wonderland"
      },
      configs: {
+
+         grid_left: {name: "图像左边距", value: "10%", type: "input"},
+         grid_right: {name: "图像右边距", value: "10%", type: "input"},
+         grid_top: {name: "图像上边距", value: "10%", type: "input"},
+         grid_bottom: {name: "图像下边距", value: "10%", type: "input"},
+         grid_containLabel:{name: "包含轴标签", value: "YES", options: ["YES", "NO"], type: "select"},
+
+         hr_0: {name: "标题", value: "", type: "hr"},
+
+         toolboxDisplay: {name: "显示图形工具", value: "YES", options: ["YES", "NO"], type: "select"},
+         tooltipDisplay: {name: "显示提示组件", value: "YES", options: ["YES", "NO"], type: "select"},
+
+         hr_1: {name: "标题", value: "", type: "hr"},
+
          titleDisplay: {name: "显示标题", value: "YES", options: ["YES", "NO"], type: "select"},
          titlePosition: {name: "标题位置", value: "left", options: ["left", "center", "right"], type: "select"},
          titleText: {name: "主标题名称", value: "", type: "input"},
@@ -54,23 +68,29 @@ var __ECHARTS__ = {
          titleSubText: {name: "副标题名称", value: "", type: "input"},
          titleSubTextColor: {value: "#e6e6e6", name: "副标题颜色", type: "color"},
 
-         hr_1: {name: "", value: "", type: "hr"},
+         hr_2: {name: "", value: "", type: "hr"},
 
          legendDisplay: {name: "显示图例", value: "YES", options: ["YES", "NO"], type: "select"},
          legendPositionTop: {name: "图例上下位置(%)", value: "1%", type: "input"},
          legendPositionLeft: {name: "图例左右位置(%)", value: "50%", type: "input"},
          legendOrient: {name: "图例布局", value: "horizontal", options: ["horizontal", "vertical"], type: "select"},
          legendTextColor: {name: "图例文字颜色", value: "#e6e6e6", type: "color"},
+
          hr: {name: "", value: "", type: "hr"},
+
+         axisLineDisplay: {name: "显示坐标轴", value: "YES", options: ["YES", "NO"], type: "select"},
          axisColor: {name: "坐标轴颜色", value: "#e6e6e6", type: "color"},
-         splitXLineShow: {name: "显示X轴分隔线", value: "NO", options: ["YES", "NO"], type: "select"},
-         splitYLineShow: {name: "显示Y轴分隔线", value: "NO", options: ["YES", "NO"], type: "select"},
+         splitXLineDisplay: {name: "显示X轴分隔线", value: "NO", options: ["YES", "NO"], type: "select"},
+         splitYLineDisplay: {name: "显示Y轴分隔线", value: "NO", options: ["YES", "NO"], type: "select"},
+         splitXAreaDisplay :{name: "显示X轴分割区", value: "NO", options: ["YES", "NO"], type: "select"},
+         splitYAreaDisplay :{name: "显示Y轴分割区", value: "NO", options: ["YES", "NO"], type: "select"},
+         axisPointerType :{name: "坐标轴指示器类型", value: "shadow", options: ["shadow", "line", "cross", "none"], type: "select"},
          axisTextColor: {name: "坐标轴文字颜色", value: "#e6e6e6", type: "color"},
          labelTextColor: {name: "标签文字颜色", value: "auto", type: "color"},
 
-         hr_2: {name: "", value: "", type: "hr"},
+         hr_3: {name: "", value: "", type: "hr"},
 
-         barLabelShow: {name: "柱状图显示标签", value: 'NO', options: ["YES", "NO"], type: "select"},
+         barLabelDisplay: {name: "柱状图显示标签", value: 'NO', options: ["YES", "NO"], type: "select"},
          barLabelPosition: {
              name: "柱状图标签位置",
              value: 'top',
@@ -80,35 +100,37 @@ var __ECHARTS__ = {
          barLabelFontSize: {name: "柱状图标签字号(px)", value: 12, type: "input"},
          barLabelRotate: {name: "柱状图标签旋转度数", value: 0, type: "input"},
 
-         hr_3: {name: "", value: "", type: "hr"},
+         hr_4: {name: "", value: "", type: "hr"},
 
          lineStyleWidth: {name: "线形图线条宽度(px)", value: 2, type: "input"},
-         lineSmooth:{name: "使用平滑线", value: 'YES', options: ["YES", "NO"], type: "select"},
+         lineSmooth: {name: "使用平滑线", value: 'YES', options: ["YES", "NO"], type: "select"},
 
-         hr_4: {name: "", value: "", type: "hr"},
+         hr_5: {name: "", value: "", type: "hr"},
 
          BoxWidthFor3D: {name: "3D图形宽度(X轴)", value: 200, type: "input"},
          BoxDepthFor3D: {name: "3D图形深度(Y轴)", value: 80, type: "input"},
          AutoRotateFor3D: {name: "3D图形自动旋转", value: "YES", options: ["YES", "NO"], type: "select"},
-         LabelShowFor3D: {name: "3D图形显示标签", value: "NO", options: ["YES", "NO"], type: "select"},
+         LabelOf3DDisplay: {name: "3D图形显示标签", value: "NO", options: ["YES", "NO"], type: "select"},
          LabelFontSizeFor3D: {name: "3D图形标签字号(px)", value: 12, type: "input"},
          ItemStyleOpacityFor3D: {name: "3D图形透明度", value: 1, type: "input"},
+         axisPointerDisplay:{name: "显示坐标轴指示器", value: "NO", options: ["YES", "NO"], type: "select"},
 
-         hr_5: {name: "", value: "", type: "hr"},
+         hr_6: {name: "", value: "", type: "hr"},
 
          regressionType: {name: "趋势/回归类型", value: '直线', options: ["直线", "指数", "对数", "多项式"], type: "select"},
          regressionPolynomialOrder: {name: "多项式阶数", value: 2, type: "input"},
          regressionForwardPeroids: {name: "趋势/回归前推周期", value: 0, type: "input"},
 
-         hr_6: {name: "", value: "", type: "hr"},
-
-         outRadius:{name: "饼图外半径(%)", value: "70%", type: "input"},
-         inRadius:{name: "饼图内半径(%)", value: "35%", type: "input"},
-         pieLabelDisplay:{name: "显示标签", value: 'YES', options: ["YES", "NO"], type: "select"},
-         pieLabelAlignTo:{name: "标签对齐方式", value: 'none', options: ["none", "labelLine", "edge"], type: "select"},
-         richTextLabel: {name: "富文本标签", value: 'NO', options: ["YES", "NO"], type: "select"},
-
          hr_7: {name: "", value: "", type: "hr"},
+
+         outRadius: {name: "饼图外半径(%)", value: "70%", type: "input"},
+         inRadius: {name: "饼图内半径(%)", value: "35%", type: "input"},
+         pieLabelDisplay: {name: "显示标签", value: 'YES', options: ["YES", "NO"], type: "select"},
+         pieLabelAlignTo: {name: "标签对齐方式", value: 'none', options: ["none", "labelLine", "edge"], type: "select"},
+         richTextLabel: {name: "富文本标签", value: 'NO', options: ["YES", "NO"], type: "select"},
+         groupwith: {name: "每行序列数", value: 2, type: "input"},
+
+         hr_8: {name: "", value: "", type: "hr"},
 
          scatterSymbolSize: {name: "散点图数据点大小(px)", value: 6, type: "input"},
          scatterSymbolShape: {
@@ -118,7 +140,7 @@ var __ECHARTS__ = {
              type: "select"
          },
 
-         hr_8: {name: "", value: "", type: "hr"},
+         hr_9: {name: "", value: "", type: "hr"},
 
          wordCloudShape: {
              name: "词云图形状",
@@ -129,7 +151,7 @@ var __ECHARTS__ = {
          wordCloudMinFontSize: {name: "词云图最小字号(px)", value: 12, type: "input"},
          wordCloudMaxFontSize: {name: "词云图最大字号(px)", value: 60, type: "input"},
 
-         hr_9: {name: "", value: "", type: "hr"},
+         hr_10: {name: "", value: "", type: "hr"},
 
          liqiudShape: {
              name: "水球图形状",
@@ -138,14 +160,14 @@ var __ECHARTS__ = {
          },
          liqiudFontSize: {name: "水球图标题字号(px)", value: 16, type: "input"},
 
-         hr_10: {name: "", value: "", type: "hr"},
+         hr_11: {name: "", value: "", type: "hr"},
 
          gaugeAxisLabelFontSize: {name: "仪表盘刻度字号(px)", value: 10, type: "input"},
          gaugeTitleFontSize: {name: "仪表盘标题字号(px)", value: 14, type: "input"},
          gaugeLabelFontSize: {name: "仪表盘标签字号(px)", value: 18, type: "input"},
          gaugeAxisLineWidth: {name: "仪表盘圆轴宽度(px)", value: 10, type: "input"},
 
-         hr_11: {name: "", value: "", type: "hr"},
+         hr_12: {name: "", value: "", type: "hr"},
 
          calendarType: {
              name: "日历图类型",
@@ -153,19 +175,20 @@ var __ECHARTS__ = {
              options: ['heatmap', 'scatter', 'effectScatter'],
              type: "select"
          },
-         calendarOrient: {name: "日历图方向", value: 'vertical', options: ["horizontal","vertical"], type: "select"},
+         calendarOrient: {name: "日历图方向", value: 'vertical', options: ["horizontal", "vertical"], type: "select"},
 
-         hr_12: {name: "", value: "", type: "hr"},
+         hr_13: {name: "", value: "", type: "hr"},
 
          //geoBackgroundColor: {value: "#404a59", name: "地图背景颜色", type: "color"},
          geoAreaColor: {value: "#323c48", name: "地图区域颜色", type: "color"},
          geoBorderColor: {value: "#404a59", name: "地图边界颜色", type: "color"},
          geoHotAreaColor: {value: "#2a333d", name: "地图热点区域颜色", type: "color"},
-         geoShowAreaName: {name: "显示地区名称", value: "NO", options: ["YES", "NO"], type: "select"},
+         geoAreaNameDisplay: {name: "显示地区名称", value: "NO", options: ["YES", "NO"], type: "select"},
+         visualMapDisplay: {name: "显示数据影射", value: "NO", options: ["YES", "NO"], type: "select"},
 
-         hr_13: {name: "", value: "", type: "hr"},
+         hr_14: {name: "", value: "", type: "hr"},
 
-         timelineDisplay:{name: "显示时间(类目)轴", value: "YES", options: ["YES", "NO"], type: "select"},
+         timelineDisplay: {name: "显示时间(类目)轴", value: "YES", options: ["YES", "NO"], type: "select"},
          categoryLineType: {
              name: "时间(类目)轴序列图形",
              value: "bar",
@@ -174,15 +197,19 @@ var __ECHARTS__ = {
          },
          seriesLoopPlayInterval: {name: "多序列循环时间(秒)", value: 3, type: "input"},
 
-         hr_14: {name: "", value: "", type: "hr"},
-         dataZoomBarDisplay:{name: "显示过滤控制", value: "NO", options: ["YES", "NO"], type: "select"},
-         dataZoomFilterMode:{name: "数据过滤模式", value: "filter", options: ["filter", "weakFilter","empty","none"], type: "select"},
-
          hr_15: {name: "", value: "", type: "hr"},
-         visualMapDisplay:{name: "显示数据影射", value: "NO", options: ["YES", "NO"], type: "select"},
-         toolboxDisplay:{name: "显示图形工具", value: "YES", options: ["YES", "NO"], type: "select"},
-         tooltipDisplay:{name: "显示提示组件", value: "YES", options: ["YES", "NO"], type: "select"},
-         groupwith: {name: "每行序列数", value: 2, type: "input"},
+
+         dataZoomBarDisplay: {name: "显示过滤控制", value: "NO", options: ["YES", "NO"], type: "select"},
+         dataZoomBarWidth: {name: "过滤器宽度(px)", value: 45, type: "input"},
+         dataZoomFilterMode: {
+             name: "数据过滤模式",
+             value: "filter",
+             options: ["filter", "weakFilter", "empty", "none"],
+             type: "select"
+         },
+
+         hr_16: {name: "", value: "", type: "hr"},
+
          reportFontSize: {
              name: "报表字号",
              value: "100%",
@@ -608,6 +635,10 @@ var geoCoordMap = {
         "平谷支行": [117.11137734722138, 40.13446326684633],
     }
 };
+
+function toPoint(percent) {
+    return Number(percent.replace("%",""));
+}
 
 function getMapConfig() {
     let container = document.createElement("div");
@@ -1273,16 +1304,16 @@ function getEcharts(type, width, height, themes) {
 }
 
 function getBar(container, themes) {
-    var dataset =  __DATASET__["result"][__DATASET__.default.sheet];
+    var dataset = __DATASET__["result"][__DATASET__.default.sheet];
     var columns = [];
-    for (var i=0; i<dataset["columns"].length;i++){
+    for (var i = 0; i < dataset["columns"].length; i++) {
         columns.push(dataset["columns"][i].name);
     }
     var xAxis = [];
     var yAxis_series = [];
-    for (var c=0;c<columns.length;c++) {
-        if ( c==0 ){
-           for (var i = 0; i < dataset["data"].length; i++) {
+    for (var c = 0; c < columns.length; c++) {
+        if (c == 0) {
+            for (var i = 0; i < dataset["data"].length; i++) {
                 var r = dataset["data"][i];
                 xAxis.push(r[columns[c]].value);
             }
@@ -1292,7 +1323,7 @@ function getBar(container, themes) {
                 type: "bar",
                 data: [],
                 label: {
-                    show: __ECHARTS__.configs.barLabelShow.value == "NO"?false:true,
+                    show: __ECHARTS__.configs.barLabelDisplay.value == "YES",
                     rotate: __ECHARTS__.configs.barLabelRotate.value,
                     align: 'center',
                     verticalAlign: 'middle',
@@ -1305,7 +1336,8 @@ function getBar(container, themes) {
                             fontSize: __ECHARTS__.configs.barLabelFontSize.value,
                         }
                     }
-                }
+                },
+                smooth: __ECHARTS__.configs.lineSmooth.value == "YES",
             };
             series.animationDelay = function (idx) {
                 return idx * 5 + 100;
@@ -1320,12 +1352,20 @@ function getBar(container, themes) {
     var myChart = echarts.init(container, themes);
     //主题:dark,light
     var option = {
+        grid: {
+            x: __ECHARTS__.configs.grid_left.value,
+            y: __ECHARTS__.configs.grid_top.value,
+            x2: __ECHARTS__.configs.grid_right.value,
+            y2: __ECHARTS__.configs.grid_bottom.value,
+            containLabel: __ECHARTS__.configs.grid_containLabel.value == "YES",
+            backgroundColor: 'transparent'
+        },
         brush: {
             toolbox: ['rect', 'polygon', 'lineX', 'lineY', 'keep', 'clear'],
             xAxisIndex: 0
         },
         toolbox: {
-            show: __ECHARTS__.configs.toolboxDisplay.value =="YES",
+            show: __ECHARTS__.configs.toolboxDisplay.value == "YES",
             feature: {
                 saveAsImage: {show: true},
                 restore: {show: true},
@@ -1346,23 +1386,23 @@ function getBar(container, themes) {
             },
         },
         title: {
-            show:__ECHARTS__.configs.titleDisplay.value =="YES",
+            show: __ECHARTS__.configs.titleDisplay.value == "YES",
             text: __ECHARTS__.configs.titleText.value,
             subtext: __ECHARTS__.configs.titleSubText.value,
-            top:"top",
-            left:__ECHARTS__.configs.titlePosition.value,
-            textStyle:{
-                color:__ECHARTS__.configs.titleTextColor.value,
+            top: "top",
+            left: __ECHARTS__.configs.titlePosition.value,
+            textStyle: {
+                color: __ECHARTS__.configs.titleTextColor.value,
             },
-            subtextStyle:{
-                color:__ECHARTS__.configs.titleSubTextColor.value,
+            subtextStyle: {
+                color: __ECHARTS__.configs.titleSubTextColor.value,
             }
         },
         legend: {
-            show:__ECHARTS__.configs.legendDisplay.value =="YES",
+            show: __ECHARTS__.configs.legendDisplay.value == "YES",
             top: __ECHARTS__.configs.legendPositionTop.value,
             left: __ECHARTS__.configs.legendPositionLeft.value,
-            orient:__ECHARTS__.configs.legendOrient.value,
+            orient: __ECHARTS__.configs.legendOrient.value,
             data: columns.slice(1, columns.length),
             textStyle: {
                 color: __ECHARTS__.configs.legendTextColor.value
@@ -1370,22 +1410,26 @@ function getBar(container, themes) {
         },
 
         tooltip: {
-            show:__ECHARTS__.configs.tooltipDisplay.value == "YES",
+            show: __ECHARTS__.configs.tooltipDisplay.value == "YES",
             trigger: 'axis',
             axisPointer: {
-                type: 'shadow'
-            }
+                type: __ECHARTS__.configs.axisPointerType.value,
+            },
         },
 
         xAxis: {
             data: xAxis,
             axisLine: {
-                show: true,
+                show: __ECHARTS__.configs.axisLineDisplay.value == "YES",
                 lineStyle: {
                     color: __ECHARTS__.configs.axisColor.value
                 },
             },
+            axisTick:{
+                show: __ECHARTS__.configs.axisLineDisplay.value == "YES",
+            },
             axisLabel: {
+                show: __ECHARTS__.configs.axisLineDisplay.value == "YES",
                 interval: "auto",
                 margin: 8,
                 rotate: xAxis.length > 15 ? -45 : 0,
@@ -1394,63 +1438,80 @@ function getBar(container, themes) {
                 }
             },
             splitLine: {
-                show: __ECHARTS__.configs.splitXLineShow.value=="YES",
+                show: __ECHARTS__.configs.splitXLineDisplay.value == "YES",
                 lineStyle: {
                     color: [
                         __ECHARTS__.configs.axisColor.value
                     ]
                 },
             },
+            splitArea: {
+                show: __ECHARTS__.configs.splitXAreaDisplay.value == "YES",
+            }
         },
         yAxis: {
             axisLine: {
-                show: true,
+                show: __ECHARTS__.configs.axisLineDisplay.value == "YES",
                 lineStyle: {
                     color: __ECHARTS__.configs.axisColor.value
                 },
             },
+            axisTick:{
+                show: __ECHARTS__.configs.axisLineDisplay.value == "YES",
+            },
             axisLabel: {
+                show: __ECHARTS__.configs.axisLineDisplay.value == "YES",
                 textStyle: {
                     color: __ECHARTS__.configs.axisTextColor.value
                 }
             },
             splitLine: {
-                show: __ECHARTS__.configs.splitYLineShow.value=="YES",
+                show: __ECHARTS__.configs.splitYLineDisplay.value == "YES",
                 lineStyle: {
                     color: [
                         __ECHARTS__.configs.axisColor.value
                     ]
                 },
             },
+            splitArea: {
+                show: __ECHARTS__.configs.splitYAreaDisplay.value == "YES",
+            }
         },
         dataZoom: [{
-            type: 'inside',
-            filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
-            start: 0,
-            end: 100
-        },{
-            show:__ECHARTS__.configs.dataZoomBarDisplay.value=="YES",
-            type: 'slider',
-            filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
-            yAxisIndex: 0,
-            start: 0,
-            end: 100,
-            right: "5%",
-            width: 15,
-            height: "80%",
-            bottom: "10%"
-        },{
-            show:__ECHARTS__.configs.dataZoomBarDisplay.value=="YES",
-            type: 'slider',
-            filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
-            xAxisIndex: 0,
-            start: 0,
-            end: 100,
-            width: "80%",
-            height: 15,
-            left: "10%",
-            bottom: 5,
-        }],
+                type: 'inside',
+                filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
+                start: 0,
+                xAxisIndex: 0,
+                end: 100
+            },{
+                type: 'inside',
+                filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
+                start: 0,
+                yAxisIndex: 0,
+                end: 100
+            },{
+                show: __ECHARTS__.configs.dataZoomBarDisplay.value == "YES",
+                type: 'slider',
+                filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
+                yAxisIndex: 0,
+                start: 0,
+                end: 100,
+                width: __ECHARTS__.configs.dataZoomBarWidth.value,
+                height: (100 - toPoint(__ECHARTS__.configs.grid_top.value) - toPoint(__ECHARTS__.configs.grid_bottom.value)) + "%",
+                top: __ECHARTS__.configs.grid_top.value,
+                right: (100 - toPoint(__ECHARTS__.configs.grid_right.value)) + "%",
+            },{
+                show: __ECHARTS__.configs.dataZoomBarDisplay.value == "YES",
+                type: 'slider',
+                filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
+                xAxisIndex: 0,
+                start: 0,
+                end: 100,
+                width: (100 - toPoint(__ECHARTS__.configs.grid_left.value) - toPoint(__ECHARTS__.configs.grid_right.value)) + "%",
+                height: __ECHARTS__.configs.dataZoomBarWidth.value,
+                left: __ECHARTS__.configs.grid_left.value,
+                top: (100 - toPoint(__ECHARTS__.configs.grid_bottom.value)) + "%",
+            }],
         series: yAxis_series,
         animationEasing: 'elasticOut',
         animationDelayUpdate: function (idx) {
@@ -1458,7 +1519,6 @@ function getBar(container, themes) {
         }
     };
     myChart.setOption(option);
-
     return container;
 }
 
@@ -1480,7 +1540,7 @@ function getTransversBar(container, themes) {
             var series = {name: columns[c], type: "bar", data: []};
             //series.stack = "true";
             series.label = {
-                show: __ECHARTS__.configs.barLabelShow.value == "NO" ? false : true,
+                show: __ECHARTS__.configs.barLabelDisplay.value == "NO" ? false : true,
                 rotate: __ECHARTS__.configs.barLabelRotate.value,
                 align: 'center',
                 verticalAlign: 'middle',
@@ -1507,13 +1567,21 @@ function getTransversBar(container, themes) {
     var myChart = echarts.init(container, themes);
     //主题:dark,light
     var option = {
+        grid: {
+            x: __ECHARTS__.configs.grid_left.value,
+            y: __ECHARTS__.configs.grid_top.value,
+            x2: __ECHARTS__.configs.grid_right.value,
+            y2: __ECHARTS__.configs.grid_bottom.value,
+            containLabel: __ECHARTS__.configs.grid_containLabel.value == "YES",
+            backgroundColor: 'transparent'
+        },
         brush: {
-                toolbox: ['rect', 'polygon', 'lineX', 'lineY', 'keep', 'clear'],
-                xAxisIndex: 0
-            },
+            toolbox: ['rect', 'polygon', 'lineX', 'lineY', 'keep', 'clear'],
+            xAxisIndex: 0
+        },
         toolbox: {
-            show: __ECHARTS__.configs.toolboxDisplay.value =="YES",
-            feature:{
+            show: __ECHARTS__.configs.toolboxDisplay.value == "YES",
+            feature: {
                 //mark: {show: true},
                 saveAsImage: {show: true},
                 restore: {show: true},
@@ -1521,39 +1589,43 @@ function getTransversBar(container, themes) {
                 dataZoom: {show: true},
                 magicType: {
                     show: true,
-                    type:['stack', 'tiled']
+                    type: ['stack', 'tiled']
                 },
             },
             right: "10",
             orient: "vertical",
             top: "top",
-            emphasis:{
-            iconStyle:{
-                textPosition: 'left'
+            emphasis: {
+                iconStyle: {
+                    textPosition: 'left'
                 }
             },
         },
         title: {
-            show:__ECHARTS__.configs.titleDisplay.value =="YES",
+            show: __ECHARTS__.configs.titleDisplay.value == "YES",
             text: __ECHARTS__.configs.titleText.value,
             subtext: __ECHARTS__.configs.titleSubText.value,
-            top:"top",
-            left:__ECHARTS__.configs.titlePosition.value,
-            textStyle:{
-                color:__ECHARTS__.configs.titleTextColor.value,
+            top: "top",
+            left: __ECHARTS__.configs.titlePosition.value,
+            textStyle: {
+                color: __ECHARTS__.configs.titleTextColor.value,
             },
-            subtextStyle:{
-                color:__ECHARTS__.configs.titleSubTextColor.value,
+            subtextStyle: {
+                color: __ECHARTS__.configs.titleSubTextColor.value,
             }
         },
         tooltip: {
-            show:__ECHARTS__.configs.tooltipDisplay.value == "YES",
+            show: __ECHARTS__.configs.tooltipDisplay.value == "YES",
+            trigger: 'axis',
+            axisPointer: {
+                type: __ECHARTS__.configs.axisPointerType.value,
+            },
         },
         legend: {
-            show:__ECHARTS__.configs.legendDisplay.value =="YES",
+            show: __ECHARTS__.configs.legendDisplay.value == "YES",
             top: __ECHARTS__.configs.legendPositionTop.value,
             left: __ECHARTS__.configs.legendPositionLeft.value,
-            orient:__ECHARTS__.configs.legendOrient.value,
+            orient: __ECHARTS__.configs.legendOrient.value,
             data: columns.slice(1, columns.length),
             textStyle: {
                 color: __ECHARTS__.configs.legendTextColor.value
@@ -1562,10 +1634,13 @@ function getTransversBar(container, themes) {
         xAxis: {
             type: 'value',
             axisLine: {
-                show: true,
+                show: __ECHARTS__.configs.axisLineDisplay.value == "YES",
                 lineStyle: {
                     color: __ECHARTS__.configs.axisColor.value
                 },
+            },
+            axisTick:{
+                show: __ECHARTS__.configs.axisLineDisplay.value == "YES",
             },
             axisLabel: {
                 interval: "auto",
@@ -1576,64 +1651,81 @@ function getTransversBar(container, themes) {
                 }
             },
             splitLine: {
-                show: __ECHARTS__.configs.splitXLineShow.value=="YES",
+                show: __ECHARTS__.configs.splitXLineDisplay.value == "YES",
                 lineStyle: {
                     color: [
                         __ECHARTS__.configs.axisColor.value
                     ]
                 },
             },
+            splitArea: {
+                show: __ECHARTS__.configs.splitXAreaDisplay.value == "YES",
+            }
         },
         yAxis: {
             type: 'category',
             data: xAxis,
             axisLine: {
-                show: true,
+                show: __ECHARTS__.configs.axisLineDisplay.value == "YES",
                 lineStyle: {
                     color: __ECHARTS__.configs.axisColor.value
                 },
             },
+            axisTick:{
+                show: __ECHARTS__.configs.axisLineDisplay.value == "YES",
+            },
             axisLabel: {
+                show: __ECHARTS__.configs.axisLineDisplay.value == "YES",
                 textStyle: {
                     color: __ECHARTS__.configs.axisTextColor.value
                 }
             },
             splitLine: {
-                show: __ECHARTS__.configs.splitYLineShow.value=="YES",
+                show: __ECHARTS__.configs.splitYLineDisplay.value == "YES",
                 lineStyle: {
                     color: [
                         __ECHARTS__.configs.axisColor.value
                     ]
                 },
             },
+            splitArea: {
+                show: __ECHARTS__.configs.splitYAreaDisplay.value == "YES",
+            }
         },
         dataZoom: [{
             type: 'inside',
             filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
             start: 0,
+            xAxisIndex: 0,
             end: 100
-        },{
-            show:__ECHARTS__.configs.dataZoomBarDisplay.value=="YES",
+        }, {
+            type: 'inside',
+            filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
+            start: 0,
+            yAxisIndex: 0,
+            end: 100
+        }, {
+            show: __ECHARTS__.configs.dataZoomBarDisplay.value == "YES",
             type: 'slider',
             filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
             yAxisIndex: 0,
             start: 0,
             end: 100,
-            right: "5%",
-            width: 15,
-            height: "80%",
-            bottom: "10%"
-        },{
-            show:__ECHARTS__.configs.dataZoomBarDisplay.value=="YES",
+            width: __ECHARTS__.configs.dataZoomBarWidth.value,
+            height: (100 - toPoint(__ECHARTS__.configs.grid_top.value) - toPoint(__ECHARTS__.configs.grid_bottom.value)) + "%",
+            top: __ECHARTS__.configs.grid_top.value,
+            right: (100 - toPoint(__ECHARTS__.configs.grid_right.value)) + "%",
+        }, {
+            show: __ECHARTS__.configs.dataZoomBarDisplay.value == "YES",
             type: 'slider',
             filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
             xAxisIndex: 0,
             start: 0,
             end: 100,
-            width: "80%",
-            height: 15,
-            left: "10%",
-            bottom: 5,
+            width: (100 - toPoint(__ECHARTS__.configs.grid_left.value) - toPoint(__ECHARTS__.configs.grid_right.value)) + "%",
+            height: __ECHARTS__.configs.dataZoomBarWidth.value,
+            left: __ECHARTS__.configs.grid_left.value,
+            top: (100 - toPoint(__ECHARTS__.configs.grid_bottom.value)) + "%",
         }],
         series: yAxis_series,
         animationEasing: 'elasticOut',
@@ -1697,12 +1789,20 @@ function getLine(container, themes) {
     }
     var myChart = echarts.init(container, themes);
     var option = {
+        grid: {
+            x: __ECHARTS__.configs.grid_left.value,
+            y: __ECHARTS__.configs.grid_top.value,
+            x2: __ECHARTS__.configs.grid_right.value,
+            y2: __ECHARTS__.configs.grid_bottom.value,
+            containLabel: __ECHARTS__.configs.grid_containLabel.value == "YES",
+            backgroundColor: 'transparent'
+        },
         brush: {
-                toolbox: ['rect', 'polygon', 'lineX', 'lineY', 'keep', 'clear'],
-                xAxisIndex: 0
+            toolbox: ['rect', 'polygon', 'lineX', 'lineY', 'keep', 'clear'],
+            xAxisIndex: 0
         },
         toolbox: {
-            show: __ECHARTS__.configs.toolboxDisplay.value =="YES",
+            show: __ECHARTS__.configs.toolboxDisplay.value == "YES",
             feature: {
                 //mark: {show: true},
                 saveAsImage: {show: true},
@@ -1724,26 +1824,31 @@ function getLine(container, themes) {
             },
         },
         title: {
-            show:__ECHARTS__.configs.titleDisplay.value =="YES",
+            show: __ECHARTS__.configs.titleDisplay.value == "YES",
             text: __ECHARTS__.configs.titleText.value,
             subtext: __ECHARTS__.configs.titleSubText.value,
-            top:"top",
-            left:__ECHARTS__.configs.titlePosition.value,
-            textStyle:{
-                color:__ECHARTS__.configs.titleTextColor.value,
+            top: "top",
+            left: __ECHARTS__.configs.titlePosition.value,
+            textStyle: {
+                color: __ECHARTS__.configs.titleTextColor.value,
             },
-            subtextStyle:{
-                color:__ECHARTS__.configs.titleSubTextColor.value,
+            subtextStyle: {
+                color: __ECHARTS__.configs.titleSubTextColor.value,
             }
         },
         tooltip: {
-            show:__ECHARTS__.configs.tooltipDisplay.value == "YES",
+            show: __ECHARTS__.configs.tooltipDisplay.value == "YES",
+            trigger: 'axis',
+            axisPointer: {
+                type: __ECHARTS__.configs.axisPointerType.value,
+            },
         },
+
         legend: {
-            show:__ECHARTS__.configs.legendDisplay.value =="YES",
+            show: __ECHARTS__.configs.legendDisplay.value == "YES",
             top: __ECHARTS__.configs.legendPositionTop.value,
             left: __ECHARTS__.configs.legendPositionLeft.value,
-            orient:__ECHARTS__.configs.legendOrient.value,
+            orient: __ECHARTS__.configs.legendOrient.value,
             data: columns.slice(1, columns.length),
             textStyle: {
                 color: __ECHARTS__.configs.legendTextColor.value
@@ -1752,12 +1857,16 @@ function getLine(container, themes) {
         xAxis: {
             data: xAxis,
             axisLine: {
-                show: true,
+                show: __ECHARTS__.configs.axisLineDisplay.value == "YES",
                 lineStyle: {
                     color: __ECHARTS__.configs.axisColor.value
                 },
             },
+            axisTick:{
+                show: __ECHARTS__.configs.axisLineDisplay.value == "YES",
+            },
             axisLabel: {
+                show: __ECHARTS__.configs.axisLineDisplay.value == "YES",
                 interval: "auto",
                 margin: 8,
                 rotate: xAxis.length > 15 ? -45 : 0,
@@ -1766,62 +1875,79 @@ function getLine(container, themes) {
                 }
             },
             splitLine: {
-                show: __ECHARTS__.configs.splitXLineShow.value=="YES",
+                show: __ECHARTS__.configs.splitXLineDisplay.value == "YES",
                 lineStyle: {
                     color: [
                         __ECHARTS__.configs.axisColor.value
                     ]
                 },
             },
+            splitArea: {
+                show: __ECHARTS__.configs.splitXAreaDisplay.value == "YES",
+            }
         },
         yAxis: {
             axisLine: {
-                show: true,
+                show: __ECHARTS__.configs.axisLineDisplay.value == "YES",
                 lineStyle: {
                     color: __ECHARTS__.configs.axisColor.value
                 },
             },
+            axisTick:{
+                show: __ECHARTS__.configs.axisLineDisplay.value == "YES",
+            },
             axisLabel: {
+                show: __ECHARTS__.configs.axisLineDisplay.value == "YES",
                 textStyle: {
                     color: __ECHARTS__.configs.axisTextColor.value
                 }
             },
             splitLine: {
-                show: __ECHARTS__.configs.splitYLineShow.value=="YES",
+                show: __ECHARTS__.configs.splitYLineDisplay.value == "YES",
                 lineStyle: {
                     color: [
                         __ECHARTS__.configs.axisColor.value
                     ]
                 },
             },
+            splitArea: {
+                show: __ECHARTS__.configs.splitYAreaDisplay.value == "YES",
+            }
         },
         dataZoom: [{
             type: 'inside',
             filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
             start: 0,
+            xAxisIndex: 0,
             end: 100
-        },{
-            show:__ECHARTS__.configs.dataZoomBarDisplay.value=="YES",
+        }, {
+            type: 'inside',
+            filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
+            start: 0,
+            yAxisIndex: 0,
+            end: 100
+        }, {
+            show: __ECHARTS__.configs.dataZoomBarDisplay.value == "YES",
             type: 'slider',
             filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
             yAxisIndex: 0,
             start: 0,
             end: 100,
-            right: "5%",
-            width: 15,
-            height: "80%",
-            bottom: "10%"
-        },{
-            show:__ECHARTS__.configs.dataZoomBarDisplay.value=="YES",
+            width: __ECHARTS__.configs.dataZoomBarWidth.value,
+            height: (100 - toPoint(__ECHARTS__.configs.grid_top.value) - toPoint(__ECHARTS__.configs.grid_bottom.value)) + "%",
+            top: __ECHARTS__.configs.grid_top.value,
+            right: (100 - toPoint(__ECHARTS__.configs.grid_right.value)) + "%",
+        }, {
+            show: __ECHARTS__.configs.dataZoomBarDisplay.value == "YES",
             type: 'slider',
             filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
             xAxisIndex: 0,
             start: 0,
             end: 100,
-            width: "80%",
-            height: 15,
-            left: "10%",
-            bottom: 5,
+            width: (100 - toPoint(__ECHARTS__.configs.grid_left.value) - toPoint(__ECHARTS__.configs.grid_right.value)) + "%",
+            height: __ECHARTS__.configs.dataZoomBarWidth.value,
+            left: __ECHARTS__.configs.grid_left.value,
+            top: (100 - toPoint(__ECHARTS__.configs.grid_bottom.value)) + "%",
         }],
         series: yAxis_series,
         animationEasing: 'elasticOut',
@@ -1893,7 +2019,7 @@ function getBarAndLine(container, themes) {
                     type: "bar",
                     data: [],
                     label: {
-                        show: __ECHARTS__.configs.barLabelShow.value == "NO" ? false : true,
+                        show: __ECHARTS__.configs.barLabelDisplay.value == "NO" ? false : true,
                         rotate: __ECHARTS__.configs.barLabelRotate.value,
                         align: 'center',
                         verticalAlign: 'middle',
@@ -1923,13 +2049,21 @@ function getBarAndLine(container, themes) {
     var myChart = echarts.init(container, themes);
     //主题:dark,light
     var option = {
+        grid: {
+            x: __ECHARTS__.configs.grid_left.value,
+            y: __ECHARTS__.configs.grid_top.value,
+            x2: __ECHARTS__.configs.grid_right.value,
+            y2: __ECHARTS__.configs.grid_bottom.value,
+            containLabel: __ECHARTS__.configs.grid_containLabel.value == "YES",
+            backgroundColor: 'transparent'
+        },
         brush: {
             toolbox: ['rect', 'polygon', 'lineX', 'lineY', 'keep', 'clear'],
             xAxisIndex: 0
         },
         toolbox: {
-            show: __ECHARTS__.configs.toolboxDisplay.value =="YES",
-            feature:{
+            show: __ECHARTS__.configs.toolboxDisplay.value == "YES",
+            feature: {
                 //mark: {show: true},
                 saveAsImage: {show: true},
                 restore: {show: true},
@@ -1937,39 +2071,43 @@ function getBarAndLine(container, themes) {
                 dataZoom: {show: true},
                 magicType: {
                     show: true,
-                    type:['stack', 'tiled']
+                    type: ['stack', 'tiled']
                 },
             },
             right: "10",
             orient: "vertical",
             top: "top",
-            emphasis:{
-            iconStyle:{
-                textPosition: 'left'
+            emphasis: {
+                iconStyle: {
+                    textPosition: 'left'
                 }
             },
         },
         title: {
-            show:__ECHARTS__.configs.titleDisplay.value =="YES",
+            show: __ECHARTS__.configs.titleDisplay.value == "YES",
             text: __ECHARTS__.configs.titleText.value,
             subtext: __ECHARTS__.configs.titleSubText.value,
-            top:"top",
-            left:__ECHARTS__.configs.titlePosition.value,
-            textStyle:{
-                color:__ECHARTS__.configs.titleTextColor.value,
+            top: "top",
+            left: __ECHARTS__.configs.titlePosition.value,
+            textStyle: {
+                color: __ECHARTS__.configs.titleTextColor.value,
             },
-            subtextStyle:{
-                color:__ECHARTS__.configs.titleSubTextColor.value,
+            subtextStyle: {
+                color: __ECHARTS__.configs.titleSubTextColor.value,
             }
         },
         tooltip: {
-            show:__ECHARTS__.configs.tooltipDisplay.value == "YES",
+            show: __ECHARTS__.configs.tooltipDisplay.value == "YES",
+            trigger: 'axis',
+            axisPointer: {
+                type: __ECHARTS__.configs.axisPointerType.value,
+            },
         },
         legend: {
-            show:__ECHARTS__.configs.legendDisplay.value =="YES",
+            show: __ECHARTS__.configs.legendDisplay.value == "YES",
             top: __ECHARTS__.configs.legendPositionTop.value,
             left: __ECHARTS__.configs.legendPositionLeft.value,
-            orient:__ECHARTS__.configs.legendOrient.value,
+            orient: __ECHARTS__.configs.legendOrient.value,
             data: columns.slice(1, columns.length),
             textStyle: {
                 color: __ECHARTS__.configs.legendTextColor.value
@@ -1978,12 +2116,16 @@ function getBarAndLine(container, themes) {
         xAxis: {
             data: xAxis,
             axisLine: {
-                show: true,
+                show: __ECHARTS__.configs.axisLineDisplay.value == "YES",
                 lineStyle: {
                     color: __ECHARTS__.configs.axisColor.value
                 },
             },
+            axisTick:{
+                show: __ECHARTS__.configs.axisLineDisplay.value == "YES",
+            },
             axisLabel: {
+                show: __ECHARTS__.configs.axisLineDisplay.value == "YES",
                 interval: "auto",
                 margin: 8,
                 rotate: xAxis.length > 15 ? -45 : 0,
@@ -1992,62 +2134,79 @@ function getBarAndLine(container, themes) {
                 }
             },
             splitLine: {
-                show: __ECHARTS__.configs.splitXLineShow.value=="YES",
+                show: __ECHARTS__.configs.splitXLineDisplay.value == "YES",
                 lineStyle: {
                     color: [
                         __ECHARTS__.configs.axisColor.value
                     ]
                 },
             },
+            splitArea: {
+                show: __ECHARTS__.configs.splitXAreaDisplay.value == "YES",
+            }
         },
         yAxis: {
             axisLine: {
-                show: true,
+                show: __ECHARTS__.configs.axisLineDisplay.value == "YES",
                 lineStyle: {
                     color: __ECHARTS__.configs.axisColor.value
                 },
             },
+            axisTick:{
+                show: __ECHARTS__.configs.axisLineDisplay.value == "YES",
+            },
             axisLabel: {
+                show: __ECHARTS__.configs.axisLineDisplay.value == "YES",
                 textStyle: {
                     color: __ECHARTS__.configs.axisTextColor.value
                 }
             },
             splitLine: {
-                show: __ECHARTS__.configs.splitYLineShow.value=="YES",
+                show: __ECHARTS__.configs.splitYLineDisplay.value == "YES",
                 lineStyle: {
                     color: [
                         __ECHARTS__.configs.axisColor.value
                     ]
                 },
             },
+            splitArea: {
+                show: __ECHARTS__.configs.splitYAreaDisplay.value == "YES",
+            }
         },
         dataZoom: [{
             type: 'inside',
             filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
             start: 0,
+            xAxisIndex: 0,
             end: 100
-        },{
-            show:__ECHARTS__.configs.dataZoomBarDisplay.value=="YES",
+        }, {
+            type: 'inside',
+            filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
+            start: 0,
+            yAxisIndex: 0,
+            end: 100
+        }, {
+            show: __ECHARTS__.configs.dataZoomBarDisplay.value == "YES",
             type: 'slider',
             filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
             yAxisIndex: 0,
             start: 0,
             end: 100,
-            right: "5%",
-            width: 15,
-            height: "80%",
-            bottom: "10%"
-        },{
-            show:__ECHARTS__.configs.dataZoomBarDisplay.value=="YES",
+            width: __ECHARTS__.configs.dataZoomBarWidth.value,
+            height: (100 - toPoint(__ECHARTS__.configs.grid_top.value) - toPoint(__ECHARTS__.configs.grid_bottom.value)) + "%",
+            top: __ECHARTS__.configs.grid_top.value,
+            right: (100 - toPoint(__ECHARTS__.configs.grid_right.value)) + "%",
+        }, {
+            show: __ECHARTS__.configs.dataZoomBarDisplay.value == "YES",
             type: 'slider',
             filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
             xAxisIndex: 0,
             start: 0,
             end: 100,
-            width: "80%",
-            height: 15,
-            left: "10%",
-            bottom: 5,
+            width: (100 - toPoint(__ECHARTS__.configs.grid_left.value) - toPoint(__ECHARTS__.configs.grid_right.value)) + "%",
+            height: __ECHARTS__.configs.dataZoomBarWidth.value,
+            left: __ECHARTS__.configs.grid_left.value,
+            top: (100 - toPoint(__ECHARTS__.configs.grid_bottom.value)) + "%",
         }],
         series: yAxis_series,
         animationEasing: 'elasticOut',
@@ -2128,13 +2287,21 @@ function getAreaStyle(container, themes) {
     var myChart = echarts.init(container, themes);
     //主题:dark,light
     var option = {
+        grid: {
+            x: __ECHARTS__.configs.grid_left.value,
+            y: __ECHARTS__.configs.grid_top.value,
+            x2: __ECHARTS__.configs.grid_right.value,
+            y2: __ECHARTS__.configs.grid_bottom.value,
+            containLabel: __ECHARTS__.configs.grid_containLabel.value == "YES",
+            backgroundColor: 'transparent'
+        },
         brush: {
             toolbox: ['rect', 'polygon', 'lineX', 'lineY', 'keep', 'clear'],
             xAxisIndex: 0
         },
         toolbox: {
-            show: __ECHARTS__.configs.toolboxDisplay.value =="YES",
-            feature:{
+            show: __ECHARTS__.configs.toolboxDisplay.value == "YES",
+            feature: {
                 //mark: {show: true},
                 saveAsImage: {show: true},
                 restore: {show: true},
@@ -2142,33 +2309,33 @@ function getAreaStyle(container, themes) {
                 dataZoom: {show: true},
                 magicType: {
                     show: true,
-                    type:['stack', 'tiled']
+                    type: ['stack', 'tiled']
                 },
             },
             right: "10",
             orient: "vertical",
             top: "top",
-            emphasis:{
-            iconStyle:{
-                textPosition: 'left'
+            emphasis: {
+                iconStyle: {
+                    textPosition: 'left'
                 }
             },
         },
         title: {
-            show:__ECHARTS__.configs.titleDisplay.value =="YES",
+            show: __ECHARTS__.configs.titleDisplay.value == "YES",
             text: __ECHARTS__.configs.titleText.value,
             subtext: __ECHARTS__.configs.titleSubText.value,
-            top:"top",
-            left:__ECHARTS__.configs.titlePosition.value,
-            textStyle:{
-                color:__ECHARTS__.configs.titleTextColor.value,
+            top: "top",
+            left: __ECHARTS__.configs.titlePosition.value,
+            textStyle: {
+                color: __ECHARTS__.configs.titleTextColor.value,
             },
-            subtextStyle:{
-                color:__ECHARTS__.configs.titleSubTextColor.value,
+            subtextStyle: {
+                color: __ECHARTS__.configs.titleSubTextColor.value,
             }
         },
         tooltip: {
-            show:__ECHARTS__.configs.tooltipDisplay.value == "YES",
+            show: __ECHARTS__.configs.tooltipDisplay.value == "YES",
             //显示活动标尺线.
             trigger: 'axis',
             position: function (pt) {
@@ -2176,10 +2343,10 @@ function getAreaStyle(container, themes) {
             }
         },
         legend: {
-            show:__ECHARTS__.configs.legendDisplay.value =="YES",
+            show: __ECHARTS__.configs.legendDisplay.value == "YES",
             top: __ECHARTS__.configs.legendPositionTop.value,
             left: __ECHARTS__.configs.legendPositionLeft.value,
-            orient:__ECHARTS__.configs.legendOrient.value,
+            orient: __ECHARTS__.configs.legendOrient.value,
             data: columns.slice(1, columns.length),
             textStyle: {
                 color: __ECHARTS__.configs.legendTextColor.value
@@ -2188,12 +2355,16 @@ function getAreaStyle(container, themes) {
         xAxis: {
             data: xAxis,
             axisLine: {
-                show: true,
+                show: __ECHARTS__.configs.axisLineDisplay.value == "YES",
                 lineStyle: {
                     color: __ECHARTS__.configs.axisColor.value
                 },
             },
+            axisTick:{
+                show: __ECHARTS__.configs.axisLineDisplay.value == "YES",
+            },
             axisLabel: {
+                show: __ECHARTS__.configs.axisLineDisplay.value == "YES",
                 interval: "auto",
                 margin: 8,
                 rotate: xAxis.length > 15 ? -45 : 0,
@@ -2202,62 +2373,79 @@ function getAreaStyle(container, themes) {
                 }
             },
             splitLine: {
-                show: __ECHARTS__.configs.splitXLineShow.value=="YES",
+                show: __ECHARTS__.configs.splitXLineDisplay.value == "YES",
                 lineStyle: {
                     color: [
                         __ECHARTS__.configs.axisColor.value
                     ]
                 },
             },
+            splitArea: {
+                show: __ECHARTS__.configs.splitXAreaDisplay.value == "YES",
+            }
         },
         yAxis: {
             axisLine: {
-                show: true,
+                show: __ECHARTS__.configs.axisLineDisplay.value == "YES",
                 lineStyle: {
                     color: __ECHARTS__.configs.axisColor.value
                 },
             },
+            axisTick:{
+                show: __ECHARTS__.configs.axisLineDisplay.value == "YES",
+            },
             axisLabel: {
+                show: __ECHARTS__.configs.axisLineDisplay.value == "YES",
                 textStyle: {
                     color: __ECHARTS__.configs.axisTextColor.value
                 }
             },
             splitLine: {
-                show: __ECHARTS__.configs.splitYLineShow.value=="YES",
+                show: __ECHARTS__.configs.splitYLineDisplay.value == "YES",
                 lineStyle: {
                     color: [
                         __ECHARTS__.configs.axisColor.value
                     ]
                 },
             },
+            splitArea: {
+                show: __ECHARTS__.configs.splitYAreaDisplay.value == "YES",
+            }
         },
         dataZoom: [{
             type: 'inside',
             filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
             start: 0,
+            xAxisIndex: 0,
             end: 100
-        },{
-            show:__ECHARTS__.configs.dataZoomBarDisplay.value=="YES",
+        }, {
+            type: 'inside',
+            filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
+            start: 0,
+            yAxisIndex: 0,
+            end: 100
+        }, {
+            show: __ECHARTS__.configs.dataZoomBarDisplay.value == "YES",
             type: 'slider',
             filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
             yAxisIndex: 0,
             start: 0,
             end: 100,
-            right: "5%",
-            width: 15,
-            height: "80%",
-            bottom: "10%"
-        },{
-            show:__ECHARTS__.configs.dataZoomBarDisplay.value=="YES",
+            width: __ECHARTS__.configs.dataZoomBarWidth.value,
+            height: (100 - toPoint(__ECHARTS__.configs.grid_top.value) - toPoint(__ECHARTS__.configs.grid_bottom.value)) + "%",
+            top: __ECHARTS__.configs.grid_top.value,
+            right: (100 - toPoint(__ECHARTS__.configs.grid_right.value)) + "%",
+        }, {
+            show: __ECHARTS__.configs.dataZoomBarDisplay.value == "YES",
             type: 'slider',
             filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
             xAxisIndex: 0,
             start: 0,
             end: 100,
-            width: "80%",
-            height: 15,
-            left: "10%",
-            bottom: 5,
+            width: (100 - toPoint(__ECHARTS__.configs.grid_left.value) - toPoint(__ECHARTS__.configs.grid_right.value)) + "%",
+            height: __ECHARTS__.configs.dataZoomBarWidth.value,
+            left: __ECHARTS__.configs.grid_left.value,
+            top: (100 - toPoint(__ECHARTS__.configs.grid_bottom.value)) + "%",
         }],
         series: yAxis_series,
         animationEasing: 'elasticOut',
@@ -2307,28 +2495,36 @@ function getPolarBar(container, themes) {
     var myChart = echarts.init(container, themes);
     //主题:dark,light
     var option = {
+        grid: {
+            x: __ECHARTS__.configs.grid_left.value,
+            y: __ECHARTS__.configs.grid_top.value,
+            x2: __ECHARTS__.configs.grid_right.value,
+            y2: __ECHARTS__.configs.grid_bottom.value,
+            containLabel: __ECHARTS__.configs.grid_containLabel.value == "YES",
+            backgroundColor: 'transparent'
+        },
         title: {
-            show:__ECHARTS__.configs.titleDisplay.value =="YES",
+            show: __ECHARTS__.configs.titleDisplay.value == "YES",
             text: __ECHARTS__.configs.titleText.value,
             subtext: __ECHARTS__.configs.titleSubText.value,
-            top:"top",
-            left:__ECHARTS__.configs.titlePosition.value,
-            textStyle:{
-                color:__ECHARTS__.configs.titleTextColor.value,
+            top: "top",
+            left: __ECHARTS__.configs.titlePosition.value,
+            textStyle: {
+                color: __ECHARTS__.configs.titleTextColor.value,
             },
-            subtextStyle:{
-                color:__ECHARTS__.configs.titleSubTextColor.value,
+            subtextStyle: {
+                color: __ECHARTS__.configs.titleSubTextColor.value,
             }
         },
         toolbox: {
-            show: __ECHARTS__.configs.toolboxDisplay.value =="YES",
-            feature:{
+            show: __ECHARTS__.configs.toolboxDisplay.value == "YES",
+            feature: {
                 saveAsImage: {show: true},
                 restore: {show: true},
                 dataView: {show: true, readOnly: true},
                 magicType: {
                     show: true,
-                    type:['stack', 'tiled']
+                    type: ['stack', 'tiled']
                 },
             },
             right: "10",
@@ -2341,7 +2537,7 @@ function getPolarBar(container, themes) {
             },
         },
         angleAxis: {
-            axisLabel:{
+            axisLabel: {
                 show: true,
                 textStyle: {
                     color: __ECHARTS__.configs.axisTextColor.value
@@ -2359,10 +2555,10 @@ function getPolarBar(container, themes) {
                     color: __ECHARTS__.configs.axisColor.value
                 },
             },
-            z:10
+            z: 10
         },
         radiusAxis: {
-            axisLabel:{
+            axisLabel: {
                 show: true,
                 textStyle: {
                     color: __ECHARTS__.configs.axisTextColor.value
@@ -2374,7 +2570,7 @@ function getPolarBar(container, themes) {
                     color: __ECHARTS__.configs.axisColor.value
                 },
             },
-            splitArea:{show:true},
+            splitArea: {show: true},
             type: 'category',
             data: xAxis,
             z: 10,
@@ -2382,20 +2578,33 @@ function getPolarBar(container, themes) {
         polar: {},
         series: yAxis_series,
         legend: {
-            show:__ECHARTS__.configs.legendDisplay.value =="YES",
+            show: __ECHARTS__.configs.legendDisplay.value == "YES",
             top: __ECHARTS__.configs.legendPositionTop.value,
             left: __ECHARTS__.configs.legendPositionLeft.value,
-            orient:__ECHARTS__.configs.legendOrient.value,
+            orient: __ECHARTS__.configs.legendOrient.value,
             data: columns.slice(1, columns.length),
             textStyle: {
                 color: __ECHARTS__.configs.legendTextColor.value
             },
         },
         tooltip: {
-            show:__ECHARTS__.configs.tooltipDisplay.value == "YES",
+            show: __ECHARTS__.configs.tooltipDisplay.value == "YES",
             trigger: 'item',
             formatter: '{a} <br/>{b}: {c}'
         },
+        dataZoom: [{
+            type: 'inside',
+            filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
+            start: 0,
+            end: 100,
+            angleAxis: 0,
+        }, {
+            type: 'inside',
+            filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
+            start: 0,
+            end: 100,
+            radiusAxis: 0
+        }],
 
         animationEasing: 'elasticOut',
         animationDelayUpdate: function (idx) {
@@ -2442,6 +2651,14 @@ function getPolarArea(container, themes) {
     var myChart = echarts.init(container, themes);
     //主题:dark,light
     var option = {
+        grid: {
+            x: __ECHARTS__.configs.grid_left.value,
+            y: __ECHARTS__.configs.grid_top.value,
+            x2: __ECHARTS__.configs.grid_right.value,
+            y2: __ECHARTS__.configs.grid_bottom.value,
+            containLabel: __ECHARTS__.configs.grid_containLabel.value == "YES",
+            backgroundColor: 'transparent'
+        },
         title: {
             show:__ECHARTS__.configs.titleDisplay.value =="YES",
             text: __ECHARTS__.configs.titleText.value,
@@ -2534,6 +2751,20 @@ function getPolarArea(container, themes) {
             trigger: 'item',
             formatter: '{a} <br/>{b}: {c}'
         },
+        dataZoom: [{
+            type: 'inside',
+            filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
+            start: 0,
+            end: 100,
+            angleAxis: 0,
+        },{
+            type: 'inside',
+            filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
+            start: 0,
+            end: 100,
+            radiusAxis:0
+        }],
+
         animationEasing: 'elasticOut',
         animationDelayUpdate: function (idx) {
             return idx * 3;
@@ -2617,6 +2848,14 @@ function getPie(container,themes) {
 
     var myChart = echarts.init(container, themes);
     var option = {
+        grid: {
+            x: __ECHARTS__.configs.grid_left.value,
+            y: __ECHARTS__.configs.grid_top.value,
+            x2: __ECHARTS__.configs.grid_right.value,
+            y2: __ECHARTS__.configs.grid_bottom.value,
+            containLabel: __ECHARTS__.configs.grid_containLabel.value == "YES",
+            backgroundColor: 'transparent'
+        },
         title: {
             show:__ECHARTS__.configs.titleDisplay.value =="YES",
             text: __ECHARTS__.configs.titleText.value,
@@ -2797,6 +3036,14 @@ function getRing(container,themes) {
 
     var myChart = echarts.init(container, themes);
     var option = {
+        grid: {
+            x: __ECHARTS__.configs.grid_left.value,
+            y: __ECHARTS__.configs.grid_top.value,
+            x2: __ECHARTS__.configs.grid_right.value,
+            y2: __ECHARTS__.configs.grid_bottom.value,
+            containLabel: __ECHARTS__.configs.grid_containLabel.value == "YES",
+            backgroundColor: 'transparent'
+        },
         title: {
             show:__ECHARTS__.configs.titleDisplay.value =="YES",
             text: __ECHARTS__.configs.titleText.value,
@@ -2978,6 +3225,14 @@ function getRose(container,themes) {
 
     var myChart = echarts.init(container, themes);
     var option = {
+        grid: {
+            x: __ECHARTS__.configs.grid_left.value,
+            y: __ECHARTS__.configs.grid_top.value,
+            x2: __ECHARTS__.configs.grid_right.value,
+            y2: __ECHARTS__.configs.grid_bottom.value,
+            containLabel: __ECHARTS__.configs.grid_containLabel.value == "YES",
+            backgroundColor: 'transparent'
+        },
         title: {
             show:__ECHARTS__.configs.titleDisplay.value =="YES",
             text: __ECHARTS__.configs.titleText.value,
@@ -3133,6 +3388,14 @@ function getRadar(container, themes) {
 
     var myChart = echarts.init(container, themes);
     var option = {
+        grid: {
+            x: __ECHARTS__.configs.grid_left.value,
+            y: __ECHARTS__.configs.grid_top.value,
+            x2: __ECHARTS__.configs.grid_right.value,
+            y2: __ECHARTS__.configs.grid_bottom.value,
+            containLabel: __ECHARTS__.configs.grid_containLabel.value == "YES",
+            backgroundColor: 'transparent'
+        },
         title: {
             show:__ECHARTS__.configs.titleDisplay.value =="YES",
             text: __ECHARTS__.configs.titleText.value,
@@ -3372,12 +3635,20 @@ function getRegression(container, themes) {
     init();
 
     var option = {
+        grid: {
+            x: __ECHARTS__.configs.grid_left.value,
+            y: __ECHARTS__.configs.grid_top.value,
+            x2: __ECHARTS__.configs.grid_right.value,
+            y2: __ECHARTS__.configs.grid_bottom.value,
+            containLabel: __ECHARTS__.configs.grid_containLabel.value == "YES",
+            backgroundColor: 'transparent'
+        },
         brush: {
             toolbox: ['rect', 'polygon', 'lineX', 'lineY', 'keep', 'clear'],
             xAxisIndex: 0
         },
         toolbox: {
-            show: __ECHARTS__.configs.toolboxDisplay.value =="YES",
+            show: __ECHARTS__.configs.toolboxDisplay.value == "YES",
             feature: {
                 //mark: {show: true},
                 saveAsImage: {show: true},
@@ -3399,45 +3670,49 @@ function getRegression(container, themes) {
             },
         },
         title: {
-            show:__ECHARTS__.configs.titleDisplay.value =="YES",
+            show: __ECHARTS__.configs.titleDisplay.value == "YES",
             text: __ECHARTS__.configs.titleText.value,
             subtext: __ECHARTS__.configs.titleSubText.value,
-            top:"top",
-            left:__ECHARTS__.configs.titlePosition.value,
-            textStyle:{
-                color:__ECHARTS__.configs.titleTextColor.value,
+            top: "top",
+            left: __ECHARTS__.configs.titlePosition.value,
+            textStyle: {
+                color: __ECHARTS__.configs.titleTextColor.value,
             },
-            subtextStyle:{
-                color:__ECHARTS__.configs.titleSubTextColor.value,
+            subtextStyle: {
+                color: __ECHARTS__.configs.titleSubTextColor.value,
             }
         },
         legend: {
-            show:__ECHARTS__.configs.legendDisplay.value =="YES",
+            show: __ECHARTS__.configs.legendDisplay.value == "YES",
             top: __ECHARTS__.configs.legendPositionTop.value,
             left: __ECHARTS__.configs.legendPositionLeft.value,
-            orient:__ECHARTS__.configs.legendOrient.value,
+            orient: __ECHARTS__.configs.legendOrient.value,
             data: columns.slice(1, columns.length).concat(columns_add),
             textStyle: {
                 color: __ECHARTS__.configs.legendTextColor.value
             },
         },
         tooltip: {
-            show:__ECHARTS__.configs.tooltipDisplay.value == "YES",
+            show: __ECHARTS__.configs.tooltipDisplay.value == "YES",
             trigger: 'axis',
             axisPointer: {
-                type: 'cross'
+                type: __ECHARTS__.configs.axisPointerType.value,
             }
         },
         xAxis: {
             data: xAxis,
             axisLine: {
-                show: true,
+                show: __ECHARTS__.configs.axisLineDisplay.value == "YES",
                 lineStyle: {
                     color: __ECHARTS__.configs.axisColor.value
                 },
             },
             splitNumber: 20,
+            axisTick:{
+                show: __ECHARTS__.configs.axisLineDisplay.value == "YES",
+            },
             axisLabel: {
+                show: __ECHARTS__.configs.axisLineDisplay.value == "YES",
                 interval: "auto",
                 textStyle: {
                     color: __ECHARTS__.configs.axisTextColor.value
@@ -3445,56 +3720,81 @@ function getRegression(container, themes) {
                 margin: 8,
                 rotate: xAxis.length > 15 ? -45 : 0,
             },
-        },
-        yAxis: {
-            type: 'value',
-            axisLine: {
-                show: true,
-                lineStyle: {
-                    color: __ECHARTS__.configs.axisColor.value
-                },
-            },
-            axisLabel: {
-                textStyle: {
-                    color: __ECHARTS__.configs.axisTextColor.value
-                }
-            },
             splitLine: {
-                show: __ECHARTS__.configs.splitYLineShow.value=="YES",
+                show: __ECHARTS__.configs.splitXLineDisplay.value == "YES",
                 lineStyle: {
                     color: [
                         __ECHARTS__.configs.axisColor.value
                     ]
                 },
             },
+            splitArea: {
+                show: __ECHARTS__.configs.splitXAreaDisplay.value == "YES",
+            }
+        },
+        yAxis: {
+            type: 'value',
+            axisLine: {
+                show: __ECHARTS__.configs.axisLineDisplay.value == "YES",
+                lineStyle: {
+                    color: __ECHARTS__.configs.axisColor.value
+                },
+            },
+            axisTick:{
+                show: __ECHARTS__.configs.axisLineDisplay.value == "YES",
+            },
+            axisLabel: {
+                show: __ECHARTS__.configs.axisLineDisplay.value == "YES",
+                textStyle: {
+                    color: __ECHARTS__.configs.axisTextColor.value
+                }
+            },
+            splitLine: {
+                show: __ECHARTS__.configs.splitYLineDisplay.value == "YES",
+                lineStyle: {
+                    color: [
+                        __ECHARTS__.configs.axisColor.value
+                    ]
+                },
+            },
+            splitArea: {
+                show: __ECHARTS__.configs.splitYAreaDisplay.value == "YES",
+            }
         },
         dataZoom: [{
             type: 'inside',
             filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
             start: 0,
+            xAxisIndex: 0,
             end: 100
-        },{
-            show:__ECHARTS__.configs.dataZoomBarDisplay.value=="YES",
+        }, {
+            type: 'inside',
+            filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
+            start: 0,
+            yAxisIndex: 0,
+            end: 100
+        }, {
+            show: __ECHARTS__.configs.dataZoomBarDisplay.value == "YES",
             type: 'slider',
             filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
             yAxisIndex: 0,
             start: 0,
             end: 100,
-            right: "5%",
-            width: 15,
-            height: "80%",
-            bottom: "10%"
-        },{
-            show:__ECHARTS__.configs.dataZoomBarDisplay.value=="YES",
+            width: __ECHARTS__.configs.dataZoomBarWidth.value,
+            height: (100 - toPoint(__ECHARTS__.configs.grid_top.value) - toPoint(__ECHARTS__.configs.grid_bottom.value)) + "%",
+            top: __ECHARTS__.configs.grid_top.value,
+            right: (100 - toPoint(__ECHARTS__.configs.grid_right.value)) + "%",
+        }, {
+            show: __ECHARTS__.configs.dataZoomBarDisplay.value == "YES",
             type: 'slider',
             filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
             xAxisIndex: 0,
             start: 0,
             end: 100,
-            width: "80%",
-            height: 15,
-            left: "10%",
-            bottom: 5,
+            width: (100 - toPoint(__ECHARTS__.configs.grid_left.value) - toPoint(__ECHARTS__.configs.grid_right.value)) + "%",
+            height: __ECHARTS__.configs.dataZoomBarWidth.value,
+            left: __ECHARTS__.configs.grid_left.value,
+            top: (100 - toPoint(__ECHARTS__.configs.grid_bottom.value)) + "%",
         }],
         series: series,
         animationEasing: 'elasticOut',
@@ -3606,6 +3906,14 @@ function  getRelationship(container, themes) {
     };
 
     var option = {
+        grid: {
+            x: __ECHARTS__.configs.grid_left.value,
+            y: __ECHARTS__.configs.grid_top.value,
+            x2: __ECHARTS__.configs.grid_right.value,
+            y2: __ECHARTS__.configs.grid_bottom.value,
+            containLabel: __ECHARTS__.configs.grid_containLabel.value == "YES",
+            backgroundColor: 'transparent'
+        },
         toolbox: {
             show: __ECHARTS__.configs.toolboxDisplay.value =="YES",
             feature:{
@@ -3847,6 +4155,14 @@ function  getOrganizationStructure(container, themes) {
     }
 
     var option = {
+        grid: {
+            x: __ECHARTS__.configs.grid_left.value,
+            y: __ECHARTS__.configs.grid_top.value,
+            x2: __ECHARTS__.configs.grid_right.value,
+            y2: __ECHARTS__.configs.grid_bottom.value,
+            containLabel: __ECHARTS__.configs.grid_containLabel.value == "YES",
+            backgroundColor: 'transparent'
+        },
         title: {
             show:__ECHARTS__.configs.titleDisplay.value =="YES",
             text: __ECHARTS__.configs.titleText.value,
@@ -3967,6 +4283,14 @@ function getWebkitDep(container, themes) {
     };
 
     var option = {
+        grid: {
+            x: __ECHARTS__.configs.grid_left.value,
+            y: __ECHARTS__.configs.grid_top.value,
+            x2: __ECHARTS__.configs.grid_right.value,
+            y2: __ECHARTS__.configs.grid_bottom.value,
+            containLabel: __ECHARTS__.configs.grid_containLabel.value == "YES",
+            backgroundColor: 'transparent'
+        },
         title: {
             show:__ECHARTS__.configs.titleDisplay.value =="YES",
             text: __ECHARTS__.configs.titleText.value,
@@ -4198,31 +4522,39 @@ function getScatter(container, themes) {
     init();
 
     var option = {
+        grid: {
+            x: __ECHARTS__.configs.grid_left.value,
+            y: __ECHARTS__.configs.grid_top.value,
+            x2: __ECHARTS__.configs.grid_right.value,
+            y2: __ECHARTS__.configs.grid_bottom.value,
+            containLabel: __ECHARTS__.configs.grid_containLabel.value == "YES",
+            backgroundColor: 'transparent'
+        },
         title: {
-            show:__ECHARTS__.configs.titleDisplay.value =="YES",
+            show: __ECHARTS__.configs.titleDisplay.value == "YES",
             text: __ECHARTS__.configs.titleText.value,
             subtext: __ECHARTS__.configs.titleSubText.value,
-            top:"top",
-            left:__ECHARTS__.configs.titlePosition.value,
-            textStyle:{
-                color:__ECHARTS__.configs.titleTextColor.value,
+            top: "top",
+            left: __ECHARTS__.configs.titlePosition.value,
+            textStyle: {
+                color: __ECHARTS__.configs.titleTextColor.value,
             },
-            subtextStyle:{
-                color:__ECHARTS__.configs.titleSubTextColor.value,
+            subtextStyle: {
+                color: __ECHARTS__.configs.titleSubTextColor.value,
             }
         },
         legend: {
-            show:__ECHARTS__.configs.legendDisplay.value =="YES",
+            show: __ECHARTS__.configs.legendDisplay.value == "YES",
             top: __ECHARTS__.configs.legendPositionTop.value,
             left: __ECHARTS__.configs.legendPositionLeft.value,
-            orient:__ECHARTS__.configs.legendOrient.value,
+            orient: __ECHARTS__.configs.legendOrient.value,
             data: columns.slice().concat(columns_add),
             textStyle: {
                 color: __ECHARTS__.configs.legendTextColor.value
             },
         },
         toolbox: {
-            show: __ECHARTS__.configs.toolboxDisplay.value =="YES",
+            show: __ECHARTS__.configs.toolboxDisplay.value == "YES",
             feature: {
                 saveAsImage: {show: true},
                 restore: {show: true},
@@ -4238,49 +4570,60 @@ function getScatter(container, themes) {
             },
         },
         tooltip: {
-            show:__ECHARTS__.configs.tooltipDisplay.value == "YES",
+            show: __ECHARTS__.configs.tooltipDisplay.value == "YES",
             trigger: 'axis',
             axisPointer: {
-                type: 'cross'
+                type: __ECHARTS__.configs.axisPointerType.value,
             }
         },
         xAxis: {
             axisLine: {
-                show: true,
+                show: __ECHARTS__.configs.axisLineDisplay.value == "YES",
                 lineStyle: {
                     color: __ECHARTS__.configs.axisColor.value
                 },
             },
+            axisTick:{
+                show: __ECHARTS__.configs.axisLineDisplay.value == "YES",
+            },
             axisLabel: {
+                show: __ECHARTS__.configs.axisLineDisplay.value == "YES",
                 textStyle: {
                     color: __ECHARTS__.configs.axisTextColor.value
                 }
             },
             splitLine: {
-                show: __ECHARTS__.configs.splitXLineShow.value=="YES",
+                show: __ECHARTS__.configs.splitXLineDisplay.value == "YES",
                 lineStyle: {
                     type: 'dashed',
                     color: [
                         __ECHARTS__.configs.axisColor.value
                     ]
                 }
+            },
+            splitArea: {
+                show: __ECHARTS__.configs.splitXAreaDisplay.value == "YES",
             }
         },
         yAxis: {
             scale: true,
             axisLine: {
-                show: true,
+                show: __ECHARTS__.configs.axisLineDisplay.value == "YES",
                 lineStyle: {
                     color: __ECHARTS__.configs.axisColor.value
                 },
             },
+            axisTick:{
+                show: __ECHARTS__.configs.axisLineDisplay.value == "YES",
+            },
             axisLabel: {
+                show: __ECHARTS__.configs.axisLineDisplay.value == "YES",
                 textStyle: {
                     color: __ECHARTS__.configs.axisTextColor.value
                 }
             },
             splitLine: {
-                show: __ECHARTS__.configs.splitYLineShow.value=="YES",
+                show: __ECHARTS__.configs.splitYLineDisplay.value == "YES",
                 lineStyle: {
                     type: 'dashed',
                     color: [
@@ -4288,34 +4631,44 @@ function getScatter(container, themes) {
                     ]
                 },
             },
+            splitArea: {
+                show: __ECHARTS__.configs.splitYAreaDisplay.value == "YES",
+            }
         },
         dataZoom: [{
             type: 'inside',
             filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
             start: 0,
+            xAxisIndex: 0,
             end: 100
-        },{
-            show:__ECHARTS__.configs.dataZoomBarDisplay.value=="YES",
+        }, {
+            type: 'inside',
+            filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
+            start: 0,
+            yAxisIndex: 0,
+            end: 100
+        }, {
+            show: __ECHARTS__.configs.dataZoomBarDisplay.value == "YES",
             type: 'slider',
             filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
             yAxisIndex: 0,
             start: 0,
             end: 100,
-            right: "5%",
-            width: 15,
-            height: "80%",
-            bottom: "10%"
-        },{
-            show:__ECHARTS__.configs.dataZoomBarDisplay.value=="YES",
+            width: __ECHARTS__.configs.dataZoomBarWidth.value,
+            height: (100 - toPoint(__ECHARTS__.configs.grid_top.value) - toPoint(__ECHARTS__.configs.grid_bottom.value)) + "%",
+            top: __ECHARTS__.configs.grid_top.value,
+            right: (100 - toPoint(__ECHARTS__.configs.grid_right.value)) + "%",
+        }, {
+            show: __ECHARTS__.configs.dataZoomBarDisplay.value == "YES",
             type: 'slider',
             filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
             xAxisIndex: 0,
             start: 0,
             end: 100,
-            width: "80%",
-            height: 15,
-            left: "10%",
-            bottom: 5,
+            width: (100 - toPoint(__ECHARTS__.configs.grid_left.value) - toPoint(__ECHARTS__.configs.grid_right.value)) + "%",
+            height: __ECHARTS__.configs.dataZoomBarWidth.value,
+            left: __ECHARTS__.configs.grid_left.value,
+            top: (100 - toPoint(__ECHARTS__.configs.grid_bottom.value)) + "%",
         }],
         series: series,
         animationDurationUpdate: 1500,
@@ -4418,6 +4771,14 @@ function getFunnel(container, themes) {
     init();
 
     var option = {
+        grid: {
+            x: __ECHARTS__.configs.grid_left.value,
+            y: __ECHARTS__.configs.grid_top.value,
+            x2: __ECHARTS__.configs.grid_right.value,
+            y2: __ECHARTS__.configs.grid_bottom.value,
+            containLabel: __ECHARTS__.configs.grid_containLabel.value == "YES",
+            backgroundColor: 'transparent'
+        },
         title: {
             show:__ECHARTS__.configs.titleDisplay.value =="YES",
             text: __ECHARTS__.configs.titleText.value,
@@ -4557,6 +4918,14 @@ function getWordCloud(container, themes) {
     init();
 
     var option = {
+        grid: {
+            x: __ECHARTS__.configs.grid_left.value,
+            y: __ECHARTS__.configs.grid_top.value,
+            x2: __ECHARTS__.configs.grid_right.value,
+            y2: __ECHARTS__.configs.grid_bottom.value,
+            containLabel: __ECHARTS__.configs.grid_containLabel.value == "YES",
+            backgroundColor: 'transparent'
+        },
         title: {
             show:__ECHARTS__.configs.titleDisplay.value =="YES",
             text: __ECHARTS__.configs.titleText.value,
@@ -4714,6 +5083,14 @@ function getLiqiud(container, themes) {
 
     init();
     var option = {
+        grid: {
+            x: __ECHARTS__.configs.grid_left.value,
+            y: __ECHARTS__.configs.grid_top.value,
+            x2: __ECHARTS__.configs.grid_right.value,
+            y2: __ECHARTS__.configs.grid_bottom.value,
+            containLabel: __ECHARTS__.configs.grid_containLabel.value == "YES",
+            backgroundColor: 'transparent'
+        },
         tooltip: {
             show:__ECHARTS__.configs.tooltipDisplay.value == "YES",
         },
@@ -4883,6 +5260,14 @@ function getGaugeWithAll(container, themes) {
 
     var myChart = echarts.init(container, themes);
     var option = {
+        grid: {
+            x: __ECHARTS__.configs.grid_left.value,
+            y: __ECHARTS__.configs.grid_top.value,
+            x2: __ECHARTS__.configs.grid_right.value,
+            y2: __ECHARTS__.configs.grid_bottom.value,
+            containLabel: __ECHARTS__.configs.grid_containLabel.value == "YES",
+            backgroundColor: 'transparent'
+        },
         title: {
             show:__ECHARTS__.configs.titleDisplay.value =="YES",
             text: __ECHARTS__.configs.titleText.value,
@@ -5052,6 +5437,14 @@ function getGaugeWithOne(container, themes) {
 
     var myChart = echarts.init(container, themes);
     var option = {
+        grid: {
+            x: __ECHARTS__.configs.grid_left.value,
+            y: __ECHARTS__.configs.grid_top.value,
+            x2: __ECHARTS__.configs.grid_right.value,
+            y2: __ECHARTS__.configs.grid_bottom.value,
+            containLabel: __ECHARTS__.configs.grid_containLabel.value == "YES",
+            backgroundColor: 'transparent'
+        },
         title: {
             show:__ECHARTS__.configs.titleDisplay.value =="YES",
             text: __ECHARTS__.configs.titleText.value,
@@ -5260,6 +5653,14 @@ function getCalendar(container, themes) {
 
     init();
     var option = {
+        grid: {
+            x: __ECHARTS__.configs.grid_left.value,
+            y: __ECHARTS__.configs.grid_top.value,
+            x2: __ECHARTS__.configs.grid_right.value,
+            y2: __ECHARTS__.configs.grid_bottom.value,
+            containLabel: __ECHARTS__.configs.grid_containLabel.value == "YES",
+            backgroundColor: 'transparent'
+        },
         title: {
             show:__ECHARTS__.configs.titleDisplay.value =="YES",
             text: __ECHARTS__.configs.titleText.value,
@@ -5388,6 +5789,14 @@ function getGeoOfChina(container, themes) {
     init();
 
     var option = {
+        grid: {
+            x: __ECHARTS__.configs.grid_left.value,
+            y: __ECHARTS__.configs.grid_top.value,
+            x2: __ECHARTS__.configs.grid_right.value,
+            y2: __ECHARTS__.configs.grid_bottom.value,
+            containLabel: __ECHARTS__.configs.grid_containLabel.value == "YES",
+            backgroundColor: 'transparent'
+        },
         //backgroundColor: __ECHARTS__.configs.geoBackgroundColor.value,
         title: {
             show:__ECHARTS__.configs.titleDisplay.value =="YES",
@@ -5453,7 +5862,7 @@ function getGeoOfChina(container, themes) {
             },
             label: {
                 normal: {
-                    show: __ECHARTS__.configs.geoShowAreaName.value == "YES" ? true : false,
+                    show: __ECHARTS__.configs.geoAreaNameDisplay.value == "YES" ? true : false,
                     color: "gray",
                 },
                 emphasis: {
@@ -5649,6 +6058,14 @@ function getGeoOfLocal(container, themes) {
     init();
 
     var option = {
+        grid: {
+            x: __ECHARTS__.configs.grid_left.value,
+            y: __ECHARTS__.configs.grid_top.value,
+            x2: __ECHARTS__.configs.grid_right.value,
+            y2: __ECHARTS__.configs.grid_bottom.value,
+            containLabel: __ECHARTS__.configs.grid_containLabel.value == "YES",
+            backgroundColor: 'transparent'
+        },
         //backgroundColor: __ECHARTS__.configs.geoBackgroundColor.value,
         title: {
             show:__ECHARTS__.configs.titleDisplay.value =="YES",
@@ -5716,7 +6133,7 @@ function getGeoOfLocal(container, themes) {
             },
             label: {
                 normal: {
-                    show: __ECHARTS__.configs.geoShowAreaName.value == "YES" ? true : false,
+                    show: __ECHARTS__.configs.geoAreaNameDisplay.value == "YES" ? true : false,
                     color: "gray",
                 },
                 emphasis: {
@@ -5895,7 +6312,7 @@ function getBar3D(container, themes) {
                 },
 
                 label: {
-                    show: __ECHARTS__.configs.LabelShowFor3D.value == "YES",
+                    show: __ECHARTS__.configs.LabelOf3DDisplay.value == "YES",
                     textStyle: {
                         color: __ECHARTS__.configs.labelTextColor.value,
                         fontSize: __ECHARTS__.configs.LabelFontSizeFor3D.value,
@@ -5941,17 +6358,25 @@ function getBar3D(container, themes) {
     }
 
     var option = {
+        grid: {
+            x: __ECHARTS__.configs.grid_left.value,
+            y: __ECHARTS__.configs.grid_top.value,
+            x2: __ECHARTS__.configs.grid_right.value,
+            y2: __ECHARTS__.configs.grid_bottom.value,
+            containLabel: __ECHARTS__.configs.grid_containLabel.value == "YES",
+            backgroundColor: 'transparent'
+        },
         title: {
-            show:__ECHARTS__.configs.titleDisplay.value =="YES",
+            show: __ECHARTS__.configs.titleDisplay.value == "YES",
             text: __ECHARTS__.configs.titleText.value,
             subtext: __ECHARTS__.configs.titleSubText.value,
-            top:"top",
-            left:__ECHARTS__.configs.titlePosition.value,
-            textStyle:{
-                color:__ECHARTS__.configs.titleTextColor.value,
+            top: "top",
+            left: __ECHARTS__.configs.titlePosition.value,
+            textStyle: {
+                color: __ECHARTS__.configs.titleTextColor.value,
             },
-            subtextStyle:{
-                color:__ECHARTS__.configs.titleSubTextColor.value,
+            subtextStyle: {
+                color: __ECHARTS__.configs.titleSubTextColor.value,
             }
         },
         legend: {
@@ -5965,10 +6390,10 @@ function getBar3D(container, themes) {
             },
         },
         tooltip: {
-            show:__ECHARTS__.configs.tooltipDisplay.value == "YES",
+            show: __ECHARTS__.configs.tooltipDisplay.value == "YES",
         },
         toolbox: {
-            show: __ECHARTS__.configs.toolboxDisplay.value =="YES",
+            show: __ECHARTS__.configs.toolboxDisplay.value == "YES",
             feature: {
                 saveAsImage: {show: true},
                 restore: {show: true},
@@ -5984,7 +6409,7 @@ function getBar3D(container, themes) {
             },
         },
         visualMap: {
-            show:__ECHARTS__.configs.visualMapDisplay.value == "YES",
+            show: __ECHARTS__.configs.visualMapDisplay.value == "YES",
             min: valueMin,
             max: valueMax,
             //type: 'piecewise',
@@ -6007,7 +6432,13 @@ function getBar3D(container, themes) {
             data: columns.slice(1),
         },
         zAxis3D: {
-            type: 'value'
+            type: 'value',
+            axisLine: {
+                show: true,
+                lineStyle: {
+                    color: __ECHARTS__.configs.axisColor.value
+                },
+            },
         },
         grid3D: {
             boxWidth: __ECHARTS__.configs.BoxWidthFor3D.value,
@@ -6022,6 +6453,27 @@ function getBar3D(container, themes) {
                     return idx * 5 + 100;
                 },
             },
+            axisLine: {
+                show:__ECHARTS__.configs.axisLineDisplay.value == "YES",
+                lineStyle: {
+                    color: __ECHARTS__.configs.axisColor.value
+                },
+            },
+            splitLine: {
+                show: __ECHARTS__.configs.splitXLineDisplay.value == "YES" || __ECHARTS__.configs.splitYLineDisplay.value == "YES",
+                lineStyle: {
+                    color: __ECHARTS__.configs.axisColor.value
+                },
+            },
+            splitArea: {
+                show: __ECHARTS__.configs.splitXAreaDisplay.value == "YES" || __ECHARTS__.configs.splitYAreaDisplay.value == "YES",
+            },
+            axisPointer: {
+                show: __ECHARTS__.configs.axisPointerDisplay.value == "YES",
+                lineStyle: {
+                    color: __ECHARTS__.configs.axisColor.value
+                },
+            },
             light: {
                 main: {
                     intensity: 1.2,
@@ -6034,6 +6486,7 @@ function getBar3D(container, themes) {
         },
         series: series,
     };
+    console.log(option);
     myChart.setOption(option);
     return container;
 }
@@ -6071,7 +6524,7 @@ function getLine3D(container, themes) {
                 },
                 itemStyle : {},
                 label: {
-                    show: __ECHARTS__.configs.LabelShowFor3D.value == "YES",
+                    show: __ECHARTS__.configs.LabelOf3DDisplay.value == "YES",
                     textStyle: {
                         color: __ECHARTS__.configs.labelTextColor.value,
                         fontSize: __ECHARTS__.configs.LabelFontSizeFor3D.value,
@@ -6118,6 +6571,14 @@ function getLine3D(container, themes) {
     }
 
     var option = {
+        grid: {
+            x: __ECHARTS__.configs.grid_left.value,
+            y: __ECHARTS__.configs.grid_top.value,
+            x2: __ECHARTS__.configs.grid_right.value,
+            y2: __ECHARTS__.configs.grid_bottom.value,
+            containLabel: __ECHARTS__.configs.grid_containLabel.value == "YES",
+            backgroundColor: 'transparent'
+        },
         title: {
             show:__ECHARTS__.configs.titleDisplay.value =="YES",
             text: __ECHARTS__.configs.titleText.value,
@@ -6179,13 +6640,31 @@ function getLine3D(container, themes) {
         xAxis3D: {
             type: 'category',
             data: rows,
+            axisLine: {
+                show: true,
+                lineStyle: {
+                    color: __ECHARTS__.configs.axisColor.value
+                },
+            },
         },
         yAxis3D: {
             type: 'category',
             data: columns.slice(1),
+            axisLine: {
+                show: true,
+                lineStyle: {
+                    color: __ECHARTS__.configs.axisColor.value
+                },
+            },
         },
         zAxis3D: {
-            type: 'value'
+            type: 'value',
+            axisLine: {
+                show: true,
+                lineStyle: {
+                    color: __ECHARTS__.configs.axisColor.value
+                },
+            },
         },
         grid3D: {
             boxWidth: __ECHARTS__.configs.BoxWidthFor3D.value,
@@ -6239,7 +6718,7 @@ function getScatter3D(container, themes) {
                     opacity: __ECHARTS__.configs.ItemStyleOpacityFor3D.value,
                 },
                 label: {
-                    show: __ECHARTS__.configs.LabelShowFor3D.value == "YES",
+                    show: __ECHARTS__.configs.LabelOf3DDisplay.value == "YES",
                     textStyle: {
                         color: __ECHARTS__.configs.labelTextColor.value,
                         fontSize: __ECHARTS__.configs.LabelFontSizeFor3D.value,
@@ -6286,6 +6765,14 @@ function getScatter3D(container, themes) {
     }
 
     var option = {
+        grid: {
+            x: __ECHARTS__.configs.grid_left.value,
+            y: __ECHARTS__.configs.grid_top.value,
+            x2: __ECHARTS__.configs.grid_right.value,
+            y2: __ECHARTS__.configs.grid_bottom.value,
+            containLabel: __ECHARTS__.configs.grid_containLabel.value == "YES",
+            backgroundColor: 'transparent'
+        },
         title: {
             show:__ECHARTS__.configs.titleDisplay.value =="YES",
             text: __ECHARTS__.configs.titleText.value,
@@ -6347,13 +6834,31 @@ function getScatter3D(container, themes) {
         xAxis3D: {
             type: 'category',
             data: rows,
+            axisLine: {
+                show: true,
+                lineStyle: {
+                    color: __ECHARTS__.configs.axisColor.value
+                },
+            },
         },
         yAxis3D: {
             type: 'category',
             data: columns.slice(1),
+            axisLine: {
+                show: true,
+                lineStyle: {
+                    color: __ECHARTS__.configs.axisColor.value
+                },
+            },
         },
         zAxis3D: {
-            type: 'value'
+            type: 'value',
+            axisLine: {
+                show: true,
+                lineStyle: {
+                    color: __ECHARTS__.configs.axisColor.value
+                },
+            },
         },
         grid3D: {
             boxWidth: __ECHARTS__.configs.BoxWidthFor3D.value,
@@ -6390,8 +6895,7 @@ function getCategoryLine(container, themes) {
 
     for (var i = 0; i < dataset["data"].length; i++) {
         var opt = {
-            series: [
-            ]
+            series: []
         };
         var row = dataset["data"][i];
         times.push(row[columns[0]].value);
@@ -6405,7 +6909,7 @@ function getCategoryLine(container, themes) {
         };
         if (__ECHARTS__.configs.categoryLineType.value == "bar") {
             serie.label = {
-                show: __ECHARTS__.configs.barLabelShow.value == "YES",
+                show: __ECHARTS__.configs.barLabelDisplay.value == "YES",
                 rotate: __ECHARTS__.configs.barLabelRotate.value,
                 align: 'center',
                 verticalAlign: 'middle',
@@ -6494,6 +6998,14 @@ function getCategoryLine(container, themes) {
 
     var option = {
         baseOption: {
+            grid: {
+                x: __ECHARTS__.configs.grid_left.value,
+                y: __ECHARTS__.configs.grid_top.value,
+                x2: __ECHARTS__.configs.grid_right.value,
+                y2: __ECHARTS__.configs.grid_bottom.value,
+                containLabel: __ECHARTS__.configs.grid_containLabel.value == "YES",
+                backgroundColor: 'transparent'
+            },
             title: {
                 show: __ECHARTS__.configs.titleDisplay.value == "YES",
                 text: __ECHARTS__.configs.titleText.value,
@@ -6538,6 +7050,10 @@ function getCategoryLine(container, themes) {
             },
             tooltip: {
                 show: __ECHARTS__.configs.tooltipDisplay.value == "YES",
+                trigger: 'axis',
+                axisPointer: {
+                    type: __ECHARTS__.configs.categoryLineType.value != "pie"?__ECHARTS__.configs.axisPointerType.value:"none",
+                },
             },
             toolbox: {
                 show: __ECHARTS__.configs.toolboxDisplay.value == "YES",
@@ -6559,48 +7075,60 @@ function getCategoryLine(container, themes) {
                 type: 'category',
                 data: columns.slice(1),
                 axisLine: {
-                    show: __ECHARTS__.configs.categoryLineType.value != "pie",
+                    show: __ECHARTS__.configs.axisLineDisplay.value == "YES" && __ECHARTS__.configs.categoryLineType.value != "pie",
                     lineStyle: {
                         color: __ECHARTS__.configs.axisColor.value
                     },
                 },
+                axisTick: {
+                    show: __ECHARTS__.configs.axisLineDisplay.value == "YES" && __ECHARTS__.configs.categoryLineType.value != "pie",
+                },
                 axisLabel: {
-                    show: __ECHARTS__.configs.categoryLineType.value != "pie",
+                    show: __ECHARTS__.configs.axisLineDisplay.value == "YES" && __ECHARTS__.configs.categoryLineType.value != "pie",
                     textStyle: {
                         color: __ECHARTS__.configs.axisTextColor.value
                     }
                 },
                 splitLine: {
-                    show: __ECHARTS__.configs.splitXLineShow.value == "YES" && __ECHARTS__.configs.categoryLineType.value != "pie",
+                    show: __ECHARTS__.configs.splitXLineDisplay.value == "YES" && __ECHARTS__.configs.categoryLineType.value != "pie",
                     lineStyle: {
                         color: [
                             __ECHARTS__.configs.axisColor.value
                         ]
                     },
                 },
+                splitArea: {
+                    show: __ECHARTS__.configs.splitXAreaDisplay.value == "YES" && __ECHARTS__.configs.categoryLineType.value != "pie",
+                }
             },
             yAxis: {
                 type: 'value',
                 axisLine: {
-                    show: __ECHARTS__.configs.categoryLineType.value != "pie",
+                    show: __ECHARTS__.configs.axisLineDisplay.value == "YES" && __ECHARTS__.configs.categoryLineType.value != "pie",
                     lineStyle: {
                         color: __ECHARTS__.configs.axisColor.value
                     },
                 },
+                axisTick: {
+                    show: __ECHARTS__.configs.axisLineDisplay.value == "YES" && __ECHARTS__.configs.categoryLineType.value != "pie",
+                },
                 axisLabel: {
-                    show: __ECHARTS__.configs.categoryLineType.value != "pie",
+                    show: __ECHARTS__.configs.axisLineDisplay.value == "YES" && __ECHARTS__.configs.categoryLineType.value != "pie",
                     textStyle: {
                         color: __ECHARTS__.configs.axisTextColor.value
                     }
                 },
                 splitLine: {
-                    show: __ECHARTS__.configs.splitYLineShow.value == "YES" && __ECHARTS__.configs.categoryLineType.value != "pie",
+                    show: __ECHARTS__.configs.splitYLineDisplay.value == "YES" && __ECHARTS__.configs.categoryLineType.value != "pie",
                     lineStyle: {
                         color: [
                             __ECHARTS__.configs.axisColor.value
                         ]
                     },
                 },
+                splitArea: {
+                    show: __ECHARTS__.configs.splitYAreaDisplay.value == "YES" && __ECHARTS__.configs.categoryLineType.value != "pie",
+                }
             },
             series: {
                 type: __ECHARTS__.configs.categoryLineType.value == "areaStyle" ? "line" : __ECHARTS__.configs.categoryLineType.value,
@@ -6836,6 +7364,14 @@ function getGeoMigrateLinesOfChinaCity(container, themes) {
         });
 
         var option = {
+            grid: {
+                x: __ECHARTS__.configs.grid_left.value,
+                y: __ECHARTS__.configs.grid_top.value,
+                x2: __ECHARTS__.configs.grid_right.value,
+                y2: __ECHARTS__.configs.grid_bottom.value,
+                containLabel: __ECHARTS__.configs.grid_containLabel.value == "YES",
+                backgroundColor: 'transparent'
+            },
             //backgroundColor: __ECHARTS__.configs.geoBackgroundColor.value,
             title: {
                 show: __ECHARTS__.configs.titleDisplay.value == "YES",
@@ -6851,7 +7387,7 @@ function getGeoMigrateLinesOfChinaCity(container, themes) {
                 }
             },
             toolbox: {
-                show: __ECHARTS__.configs.toolboxDisplay.value =="YES",
+                show: __ECHARTS__.configs.toolboxDisplay.value == "YES",
                 feature: {
                     saveAsImage: {show: true},
                     restore: {show: true},
@@ -6868,7 +7404,7 @@ function getGeoMigrateLinesOfChinaCity(container, themes) {
             },
             tooltip: {
                 //trigger: 'item'
-                show:__ECHARTS__.configs.tooltipDisplay.value == "YES",
+                show: __ECHARTS__.configs.tooltipDisplay.value == "YES",
                 formatter: function (params) {
                     var value = "";
                     if (params.seriesType == "lines")
@@ -6893,7 +7429,7 @@ function getGeoMigrateLinesOfChinaCity(container, themes) {
                 map: 'china',
                 label: {
                     normal: {
-                        show: __ECHARTS__.configs.geoShowAreaName.value == "YES" ? true : false,
+                        show: __ECHARTS__.configs.geoAreaNameDisplay.value == "YES" ? true : false,
                         color: "gray",
                     },
                     emphasis: {
@@ -7002,6 +7538,14 @@ function getCategoryLineForGauge(container, themes) {
 
     var option = {
         baseOption: {
+            grid: {
+                x: __ECHARTS__.configs.grid_left.value,
+                y: __ECHARTS__.configs.grid_top.value,
+                x2: __ECHARTS__.configs.grid_right.value,
+                y2: __ECHARTS__.configs.grid_bottom.value,
+                containLabel: __ECHARTS__.configs.grid_containLabel.value == "YES",
+                backgroundColor: 'transparent'
+            },
             title: {
                 show: __ECHARTS__.configs.titleDisplay.value == "YES",
                 text: __ECHARTS__.configs.titleText.value,
@@ -7016,7 +7560,7 @@ function getCategoryLineForGauge(container, themes) {
                 }
             },
             timeline: {
-                show:__ECHARTS__.configs.timelineDisplay.value=="YES",
+                show: __ECHARTS__.configs.timelineDisplay.value == "YES",
                 axisType: 'category',
                 //考虑数据通用性，使用类目轴
                 //'value' 数值轴，适用于连续数据。
@@ -7045,10 +7589,10 @@ function getCategoryLineForGauge(container, themes) {
                 bottom: 15
             },
             tooltip: {
-                show:__ECHARTS__.configs.tooltipDisplay.value == "YES",
+                show: __ECHARTS__.configs.tooltipDisplay.value == "YES",
             },
             toolbox: {
-                show: __ECHARTS__.configs.toolboxDisplay.value =="YES",
+                show: __ECHARTS__.configs.toolboxDisplay.value == "YES",
                 feature: {
                     saveAsImage: {show: true},
                     restore: {show: true},
@@ -7174,6 +7718,14 @@ function getCategoryLineForLiqiud(container, themes) {
 
     var option = {
         baseOption: {
+            grid: {
+                x: __ECHARTS__.configs.grid_left.value,
+                y: __ECHARTS__.configs.grid_top.value,
+                x2: __ECHARTS__.configs.grid_right.value,
+                y2: __ECHARTS__.configs.grid_bottom.value,
+                containLabel: __ECHARTS__.configs.grid_containLabel.value == "YES",
+                backgroundColor: 'transparent'
+            },
             title: {
                 show: __ECHARTS__.configs.titleDisplay.value == "YES",
                 text: __ECHARTS__.configs.titleText.value,
@@ -7188,7 +7740,7 @@ function getCategoryLineForLiqiud(container, themes) {
                 }
             },
             timeline: {
-                show:__ECHARTS__.configs.timelineDisplay.value=="YES",
+                show: __ECHARTS__.configs.timelineDisplay.value == "YES",
                 axisType: 'category',
                 //考虑数据通用性，使用类目轴
                 //'value' 数值轴，适用于连续数据。
@@ -7217,10 +7769,10 @@ function getCategoryLineForLiqiud(container, themes) {
                 bottom: 15
             },
             tooltip: {
-                show:__ECHARTS__.configs.tooltipDisplay.value == "YES",
+                show: __ECHARTS__.configs.tooltipDisplay.value == "YES",
             },
             toolbox: {
-                show: __ECHARTS__.configs.toolboxDisplay.value =="YES",
+                show: __ECHARTS__.configs.toolboxDisplay.value == "YES",
                 feature: {
                     saveAsImage: {show: true},
                     restore: {show: true},
@@ -7323,9 +7875,17 @@ function getCategoryLineForGeoOfChina(container, themes) {
                     }
                 }
                 let opt = {
+                    grid: {
+                        x: __ECHARTS__.configs.grid_left.value,
+                        y: __ECHARTS__.configs.grid_top.value,
+                        x2: __ECHARTS__.configs.grid_right.value,
+                        y2: __ECHARTS__.configs.grid_bottom.value,
+                        containLabel: __ECHARTS__.configs.grid_containLabel.value == "YES",
+                        backgroundColor: 'transparent'
+                    },
                     //backgroundColor: __ECHARTS__.configs.geoBackgroundColor.value,
                     toolbox: {
-                        show: __ECHARTS__.configs.toolboxDisplay.value =="YES",
+                        show: __ECHARTS__.configs.toolboxDisplay.value == "YES",
                         feature: {
                             saveAsImage: {show: true},
                             restore: {show: true},
@@ -7341,7 +7901,7 @@ function getCategoryLineForGeoOfChina(container, themes) {
                         },
                     },
                     tooltip: {
-                        show:__ECHARTS__.configs.tooltipDisplay.value == "YES",
+                        show: __ECHARTS__.configs.tooltipDisplay.value == "YES",
                         formatter: function (params) {
                             var value = "";
                             try {
@@ -7352,7 +7912,7 @@ function getCategoryLineForGeoOfChina(container, themes) {
                         },
                     },
                     visualMap: {
-                        show:__ECHARTS__.configs.visualMapDisplay.value == "YES",
+                        show: __ECHARTS__.configs.visualMapDisplay.value == "YES",
                         min: min,
                         max: max,
                         //type: 'piecewise',
@@ -7375,7 +7935,7 @@ function getCategoryLineForGeoOfChina(container, themes) {
                         },
                         label: {
                             normal: {
-                                show: __ECHARTS__.configs.geoShowAreaName.value == "YES" ? true : false,
+                                show: __ECHARTS__.configs.geoAreaNameDisplay.value == "YES" ? true : false,
                                 color: "gray",
                             },
                             emphasis: {
@@ -7449,6 +8009,14 @@ function getCategoryLineForGeoOfChina(container, themes) {
 
     var option = {
         baseOption: {
+            grid: {
+                x: __ECHARTS__.configs.grid_left.value,
+                y: __ECHARTS__.configs.grid_top.value,
+                x2: __ECHARTS__.configs.grid_right.value,
+                y2: __ECHARTS__.configs.grid_bottom.value,
+                containLabel: __ECHARTS__.configs.grid_containLabel.value == "YES",
+                backgroundColor: 'transparent'
+            },
             title: {
                 show: __ECHARTS__.configs.titleDisplay.value == "YES",
                 text: __ECHARTS__.configs.titleText.value,
@@ -7463,7 +8031,7 @@ function getCategoryLineForGeoOfChina(container, themes) {
                 }
             },
             timeline: {
-                show:__ECHARTS__.configs.timelineDisplay.value=="YES",
+                show: __ECHARTS__.configs.timelineDisplay.value == "YES",
                 axisType: 'category',
                 //考虑数据通用性，使用类目轴
                 //'value' 数值轴，适用于连续数据。
@@ -7492,10 +8060,10 @@ function getCategoryLineForGeoOfChina(container, themes) {
                 bottom: 15
             },
             tooltip: {
-                show:__ECHARTS__.configs.tooltipDisplay.value == "YES",
+                show: __ECHARTS__.configs.tooltipDisplay.value == "YES",
             },
             toolbox: {
-                show: __ECHARTS__.configs.toolboxDisplay.value =="YES",
+                show: __ECHARTS__.configs.toolboxDisplay.value == "YES",
                 feature: {
                     saveAsImage: {show: true},
                     restore: {show: true},
@@ -7591,9 +8159,17 @@ function getCategoryLineForGeoOfLocal(container, themes) {
                 }
 
                 let opt = {
+                    grid: {
+                        x: __ECHARTS__.configs.grid_left.value,
+                        y: __ECHARTS__.configs.grid_top.value,
+                        x2: __ECHARTS__.configs.grid_right.value,
+                        y2: __ECHARTS__.configs.grid_bottom.value,
+                        containLabel: __ECHARTS__.configs.grid_containLabel.value == "YES",
+                        backgroundColor: 'transparent'
+                    },
                     //backgroundColor: __ECHARTS__.configs.geoBackgroundColor.value,
                     toolbox: {
-                        show: __ECHARTS__.configs.toolboxDisplay.value =="YES",
+                        show: __ECHARTS__.configs.toolboxDisplay.value == "YES",
                         feature: {
                             saveAsImage: {show: true},
                             restore: {show: true},
@@ -7610,7 +8186,7 @@ function getCategoryLineForGeoOfLocal(container, themes) {
                     },
 
                     tooltip: {
-                        show:__ECHARTS__.configs.tooltipDisplay.value == "YES",
+                        show: __ECHARTS__.configs.tooltipDisplay.value == "YES",
                         formatter: function (params) {
                             var value = "";
                             try {
@@ -7621,7 +8197,7 @@ function getCategoryLineForGeoOfLocal(container, themes) {
                         },
                     },
                     visualMap: {
-                        show:__ECHARTS__.configs.visualMapDisplay.value == "YES",
+                        show: __ECHARTS__.configs.visualMapDisplay.value == "YES",
                         min: min,
                         max: max,
                         //type: 'piecewise',
@@ -7645,7 +8221,7 @@ function getCategoryLineForGeoOfLocal(container, themes) {
                         },
                         label: {
                             normal: {
-                                show: __ECHARTS__.configs.geoShowAreaName.value == "YES" ? true : false,
+                                show: __ECHARTS__.configs.geoAreaNameDisplay.value == "YES" ? true : false,
                                 color: "gray",
                             },
                             emphasis: {
@@ -7718,6 +8294,14 @@ function getCategoryLineForGeoOfLocal(container, themes) {
     init();
     var option = {
         baseOption: {
+            grid: {
+                x: __ECHARTS__.configs.grid_left.value,
+                y: __ECHARTS__.configs.grid_top.value,
+                x2: __ECHARTS__.configs.grid_right.value,
+                y2: __ECHARTS__.configs.grid_bottom.value,
+                containLabel: __ECHARTS__.configs.grid_containLabel.value == "YES",
+                backgroundColor: 'transparent'
+            },
             title: {
                 show: __ECHARTS__.configs.titleDisplay.value == "YES",
                 text: __ECHARTS__.configs.titleText.value,
@@ -7732,7 +8316,7 @@ function getCategoryLineForGeoOfLocal(container, themes) {
                 }
             },
             timeline: {
-                show:__ECHARTS__.configs.timelineDisplay.value=="YES",
+                show: __ECHARTS__.configs.timelineDisplay.value == "YES",
                 axisType: 'category',
                 //考虑数据通用性，使用类目轴
                 //'value' 数值轴，适用于连续数据。
@@ -7761,10 +8345,10 @@ function getCategoryLineForGeoOfLocal(container, themes) {
                 bottom: 15
             },
             tooltip: {
-                show:__ECHARTS__.configs.tooltipDisplay.value == "YES",
+                show: __ECHARTS__.configs.tooltipDisplay.value == "YES",
             },
             toolbox: {
-                show: __ECHARTS__.configs.toolboxDisplay.value =="YES",
+                show: __ECHARTS__.configs.toolboxDisplay.value == "YES",
                 feature: {
                     saveAsImage: {show: true},
                     restore: {show: true},

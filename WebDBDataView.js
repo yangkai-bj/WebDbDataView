@@ -2102,11 +2102,10 @@ function init() {
     dbinfo.className = "button";
     dbinfo.id = "test-button";
     dbinfo.innerText = "测试";
-    dbinfo.style.display = "none";
+    //dbinfo.style.display = "none";
     dbinfo.onclick = function () {
-        var oba = {name: "a", value: [1, 2.111111111111], par: {x: 1}};
-        var obb = {name: "a", value: [1, 2], par: {x: 1}};
-        alert(Compare(oba, obb));
+        let a = "100%";
+        alert(Number("100%"));
     };
     dbstools.appendChild(dbinfo);
     setTooltip(dbinfo, "功能测试");
