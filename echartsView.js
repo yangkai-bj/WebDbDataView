@@ -184,7 +184,6 @@ var __ECHARTS__ = {
          geoBorderColor: {value: "#404a59", name: "地图边界颜色", type: "color"},
          geoHotAreaColor: {value: "#2a333d", name: "地图热点区域颜色", type: "color"},
          geoAreaNameDisplay: {name: "显示地区名称", value: "NO", options: ["YES", "NO"], type: "select"},
-         visualMapDisplay: {name: "显示数据影射", value: "NO", options: ["YES", "NO"], type: "select"},
 
          hr_14: {name: "", value: "", type: "hr"},
 
@@ -199,6 +198,7 @@ var __ECHARTS__ = {
 
          hr_15: {name: "", value: "", type: "hr"},
 
+         visualMapDisplay: {name: "显示数据影射", value: "NO", options: ["YES", "NO"], type: "select"},
          dataZoomBarDisplay: {name: "显示过滤控制", value: "NO", options: ["YES", "NO"], type: "select"},
          dataZoomBarWidth: {name: "过滤器宽度(px)", value: 45, type: "input"},
          dataZoomFilterMode: {
