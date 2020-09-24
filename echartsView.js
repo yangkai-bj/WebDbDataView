@@ -48,170 +48,180 @@ var __ECHARTS__ = {
      },
      configs: {
 
-         grid_left: {name: "图像左边距", value: "10%", type: "input"},
-         grid_right: {name: "图像右边距", value: "10%", type: "input"},
-         grid_top: {name: "图像上边距", value: "10%", type: "input"},
-         grid_bottom: {name: "图像下边距", value: "10%", type: "input"},
-         grid_containLabel:{name: "包含轴标签", value: "YES", options: ["YES", "NO"], type: "select"},
+         hr_grid: {name: "[ 图像位置 ]", value: "", type: "hr"},
+         grid_left: {name: "左边距(%)", value: "10%", type: "input"},
+         grid_right: {name: "右边距(%)", value: "10%", type: "input"},
+         grid_top: {name: "上边距(%)", value: "10%", type: "input"},
+         grid_bottom: {name: "下边距(%)", value: "10%", type: "input"},
+         grid_containLabel: {name: "包含轴标签", value: "YES", options: ["YES", "NO"], type: "select"},
 
-         hr_0: {name: "标题", value: "", type: "hr"},
+         hr_toolbox: {name: "[ 图形工具 ]", value: "", type: "hr"},
+         toolboxDisplay: {name: "是否显示", value: "YES", options: ["YES", "NO"], type: "select"},
+         toolbox_top: {name: "上边距(%)", value: "1%", type: "input"},
+         toolbox_left: {name: "左边距(%)", value: "", type: "input"},
+         toolbox_orient: {name: "布局方向", value: "vertical", options: ["horizontal", "vertical"], type: "select"},
+         toolbox_textPosition: {
+             name: "文字位置",
+             value: "left",
+             options: ["top", "bottom", "left", "right"],
+             type: "select"
+         },
 
-         toolboxDisplay: {name: "显示图形工具", value: "YES", options: ["YES", "NO"], type: "select"},
-         tooltipDisplay: {name: "显示提示组件", value: "YES", options: ["YES", "NO"], type: "select"},
+         hr_tooltip: {name: "[ 提示组件 ]", value: "", type: "hr"},
+         tooltipDisplay: {name: "是否显示", value: "YES", options: ["YES", "NO"], type: "select"},
 
-         hr_1: {name: "标题", value: "", type: "hr"},
-
-         titleDisplay: {name: "显示标题", value: "YES", options: ["YES", "NO"], type: "select"},
+         hr_title: {name: "[ 标题 ]", value: "", type: "hr"},
+         titleDisplay: {name: "是否显示", value: "YES", options: ["YES", "NO"], type: "select"},
          titlePosition: {name: "标题位置", value: "left", options: ["left", "center", "right"], type: "select"},
          titleText: {name: "主标题名称", value: "", type: "input"},
          titleTextColor: {value: "#e6e6e6", name: "主标题颜色", type: "color"},
          titleSubText: {name: "副标题名称", value: "", type: "input"},
          titleSubTextColor: {value: "#e6e6e6", name: "副标题颜色", type: "color"},
 
-         hr_2: {name: "", value: "", type: "hr"},
+         hr_legend: {name: "[ 图例 ]", value: "", type: "hr"},
+         legendDisplay: {name: "是否显示", value: "YES", options: ["YES", "NO"], type: "select"},
+         legendPositionTop: {name: "上边距(%)", value: "1%", type: "input"},
+         legendPositionLeft: {name: "左边距(%)", value: "50%", type: "input"},
+         legendOrient: {name: "布局方向", value: "horizontal", options: ["horizontal", "vertical"], type: "select"},
+         legendTextColor: {name: "文字颜色", value: "#e6e6e6", type: "color"},
 
-         legendDisplay: {name: "显示图例", value: "YES", options: ["YES", "NO"], type: "select"},
-         legendPositionTop: {name: "图例上下位置(%)", value: "1%", type: "input"},
-         legendPositionLeft: {name: "图例左右位置(%)", value: "50%", type: "input"},
-         legendOrient: {name: "图例布局", value: "horizontal", options: ["horizontal", "vertical"], type: "select"},
-         legendTextColor: {name: "图例文字颜色", value: "#e6e6e6", type: "color"},
-
-         hr: {name: "", value: "", type: "hr"},
-
-         axisLineDisplay: {name: "显示坐标轴", value: "YES", options: ["YES", "NO"], type: "select"},
-         axisColor: {name: "坐标轴颜色", value: "#e6e6e6", type: "color"},
+         hr_axis: {name: "[ 坐标轴 ]", value: "", type: "hr"},
+         axisLineDisplay: {name: "是否显示", value: "YES", options: ["YES", "NO"], type: "select"},
+         axisColor: {name: "颜色", value: "#e6e6e6", type: "color"},
          splitXLineDisplay: {name: "显示X轴分隔线", value: "NO", options: ["YES", "NO"], type: "select"},
          splitYLineDisplay: {name: "显示Y轴分隔线", value: "NO", options: ["YES", "NO"], type: "select"},
-         splitXAreaDisplay :{name: "显示X轴分割区", value: "NO", options: ["YES", "NO"], type: "select"},
-         splitYAreaDisplay :{name: "显示Y轴分割区", value: "NO", options: ["YES", "NO"], type: "select"},
-         axisPointerType :{name: "坐标轴指示器类型", value: "shadow", options: ["shadow", "line", "cross", "none"], type: "select"},
-         axisTextColor: {name: "坐标轴文字颜色", value: "#e6e6e6", type: "color"},
-         labelTextColor: {name: "标签文字颜色", value: "auto", type: "color"},
+         splitXAreaDisplay: {name: "显示X轴分割区", value: "NO", options: ["YES", "NO"], type: "select"},
+         splitYAreaDisplay: {name: "显示Y轴分割区", value: "NO", options: ["YES", "NO"], type: "select"},
+         axisPointerType: {
+             name: "指示器类型",
+             value: "shadow",
+             options: ["shadow", "line", "cross", "none"],
+             type: "select"
+         },
+         axisTextColor: {name: "文字颜色", value: "#e6e6e6", type: "color"},
 
-         hr_3: {name: "", value: "", type: "hr"},
+         hr_label: {name: "[ 标签 ]", value: "", type: "hr"},
+         labelTextColor: {name: "文字颜色", value: "auto", type: "color"},
+         labelFontSize: {name: "标签字号(px)", value: 12, type: "input"},
 
-         barLabelDisplay: {name: "柱状图显示标签", value: 'NO', options: ["YES", "NO"], type: "select"},
+         hr_bar: {name: "[ 柱状图 ]", value: "", type: "hr"},
+         barLabelDisplay: {name: "显示标签", value: 'NO', options: ["YES", "NO"], type: "select"},
          barLabelPosition: {
-             name: "柱状图标签位置",
+             name: "标签位置",
              value: 'top',
              options: ["top", "left", "right", "bottom", "insideTop", "insideLeft", "insideRight", "insideBottom"],
              type: "select"
          },
-         barLabelFontSize: {name: "柱状图标签字号(px)", value: 12, type: "input"},
-         barLabelRotate: {name: "柱状图标签旋转度数", value: 0, type: "input"},
+         barLabelRotate: {name: "标签旋转度数", value: 0, type: "input"},
 
-         hr_4: {name: "", value: "", type: "hr"},
-
-         lineStyleWidth: {name: "线形图线条宽度(px)", value: 2, type: "input"},
+         hr_line: {name: "[ 线形图 ]", value: "", type: "hr"},
+         lineStyleWidth: {name: "线条宽度(px)", value: 2, type: "input"},
          lineSmooth: {name: "使用平滑线", value: 'YES', options: ["YES", "NO"], type: "select"},
 
-         hr_5: {name: "", value: "", type: "hr"},
+         hr_3D: {name: "[ 3D图形 ]", value: "", type: "hr"},
+         BoxWidthFor3D: {name: "宽度(X轴)", value: 200, type: "input"},
+         BoxDepthFor3D: {name: "深度(Y轴)", value: 80, type: "input"},
+         AutoRotateFor3D: {name: "自动旋转", value: "YES", options: ["YES", "NO"], type: "select"},
+         LabelOf3DDisplay: {name: "显示标签", value: "NO", options: ["YES", "NO"], type: "select"},
+         ItemStyleOpacityFor3D: {name: "透明度", value: 1, type: "input"},
+         axisPointerDisplay: {name: "坐标轴指示器", value: "NO", options: ["YES", "NO"], type: "select"},
 
-         BoxWidthFor3D: {name: "3D图形宽度(X轴)", value: 200, type: "input"},
-         BoxDepthFor3D: {name: "3D图形深度(Y轴)", value: 80, type: "input"},
-         AutoRotateFor3D: {name: "3D图形自动旋转", value: "YES", options: ["YES", "NO"], type: "select"},
-         LabelOf3DDisplay: {name: "3D图形显示标签", value: "NO", options: ["YES", "NO"], type: "select"},
-         LabelFontSizeFor3D: {name: "3D图形标签字号(px)", value: 12, type: "input"},
-         ItemStyleOpacityFor3D: {name: "3D图形透明度", value: 1, type: "input"},
-         axisPointerDisplay:{name: "显示坐标轴指示器", value: "NO", options: ["YES", "NO"], type: "select"},
-
-         hr_6: {name: "", value: "", type: "hr"},
-
+         hr_regression: {name: "[ 趋势/回归 ]", value: "", type: "hr"},
          regressionType: {name: "趋势/回归类型", value: '直线', options: ["直线", "指数", "对数", "多项式"], type: "select"},
          regressionPolynomialOrder: {name: "多项式阶数", value: 2, type: "input"},
          regressionForwardPeroids: {name: "趋势/回归前推周期", value: 0, type: "input"},
 
-         hr_7: {name: "", value: "", type: "hr"},
-
-         outRadius: {name: "饼图外半径(%)", value: "70%", type: "input"},
-         inRadius: {name: "饼图内半径(%)", value: "35%", type: "input"},
+         hr_pie: {name: "[ 饼图 ] ", value: "", type: "hr"},
+         outRadius: {name: "外半径(%)", value: "70%", type: "input"},
+         inRadius: {name: "内半径(%)", value: "35%", type: "input"},
          pieLabelDisplay: {name: "显示标签", value: 'YES', options: ["YES", "NO"], type: "select"},
          pieLabelAlignTo: {name: "标签对齐方式", value: 'none', options: ["none", "labelLine", "edge"], type: "select"},
          richTextLabel: {name: "富文本标签", value: 'NO', options: ["YES", "NO"], type: "select"},
          groupwith: {name: "每行序列数", value: 2, type: "input"},
 
-         hr_8: {name: "", value: "", type: "hr"},
-
-         scatterSymbolSize: {name: "散点图数据点大小(px)", value: 6, type: "input"},
+         hr_scatter: {name: "[ 散点图 ]", value: "", type: "hr"},
+         scatterSymbolSize: {name: "数据点大小(px)", value: 6, type: "input"},
          scatterSymbolShape: {
-             name: "散点图数据点形状",
+             name: "数据点形状",
              value: "circle",
              options: ['circle', 'rect', 'roundRect', 'triangle', 'diamond', 'pin', 'arrow', 'none'],
              type: "select"
          },
 
-         hr_9: {name: "", value: "", type: "hr"},
-
+         hr_wordCloud: {name: "[ 词云图 ]", value: "", type: "hr"},
          wordCloudShape: {
-             name: "词云图形状",
+             name: "形状",
              value: "circle",
              options: ["circle", "cardioid", "diamond", "triangle-forward", "triangle", "pentagon", "star"],
              type: "select"
          },
-         wordCloudMinFontSize: {name: "词云图最小字号(px)", value: 12, type: "input"},
-         wordCloudMaxFontSize: {name: "词云图最大字号(px)", value: 60, type: "input"},
+         wordCloudMinFontSize: {name: "最小字号(px)", value: 12, type: "input"},
+         wordCloudMaxFontSize: {name: "最大字号(px)", value: 60, type: "input"},
 
-         hr_10: {name: "", value: "", type: "hr"},
-
+         hr_liqiud: {name: "[ 水球图 ]", value: "", type: "hr"},
          liqiudShape: {
-             name: "水球图形状",
+             name: "形状",
              value: "circle",
              options: ["circle", "rect", "roundRect", "triangle", "diamond", "pin", "arrow"], type: "select"
          },
-         liqiudFontSize: {name: "水球图标题字号(px)", value: 16, type: "input"},
+         liqiudFontSize: {name: "标题字号(px)", value: 16, type: "input"},
 
-         hr_11: {name: "", value: "", type: "hr"},
+         hr_gauge: {name: "[ 仪表盘 ]", value: "", type: "hr"},
+         gaugeAxisLabelFontSize: {name: "刻度字号(px)", value: 10, type: "input"},
+         gaugeTitleFontSize: {name: "标题字号(px)", value: 14, type: "input"},
+         gaugeLabelFontSize: {name: "标签字号(px)", value: 18, type: "input"},
+         gaugeAxisLineWidth: {name: "圆轴宽度(px)", value: 10, type: "input"},
 
-         gaugeAxisLabelFontSize: {name: "仪表盘刻度字号(px)", value: 10, type: "input"},
-         gaugeTitleFontSize: {name: "仪表盘标题字号(px)", value: 14, type: "input"},
-         gaugeLabelFontSize: {name: "仪表盘标签字号(px)", value: 18, type: "input"},
-         gaugeAxisLineWidth: {name: "仪表盘圆轴宽度(px)", value: 10, type: "input"},
-
-         hr_12: {name: "", value: "", type: "hr"},
-
+         hr_calendar: {name: "[ 日历图 ]", value: "", type: "hr"},
          calendarType: {
-             name: "日历图类型",
+             name: "类型",
              value: "heatmap",
              options: ['heatmap', 'scatter', 'effectScatter'],
              type: "select"
          },
-         calendarOrient: {name: "日历图方向", value: 'vertical', options: ["horizontal", "vertical"], type: "select"},
+         calendarOrient: {name: "布局方向", value: 'vertical', options: ["horizontal", "vertical"], type: "select"},
 
-         hr_13: {name: "", value: "", type: "hr"},
-
+         hr_geo: {name: "[ 地图 ]", value: "", type: "hr"},
          //geoBackgroundColor: {value: "#404a59", name: "地图背景颜色", type: "color"},
-         geoAreaColor: {value: "#323c48", name: "地图区域颜色", type: "color"},
-         geoBorderColor: {value: "#404a59", name: "地图边界颜色", type: "color"},
-         geoHotAreaColor: {value: "#2a333d", name: "地图热点区域颜色", type: "color"},
+         geoAreaColor: {value: "#323c48", name: "区域颜色", type: "color"},
+         geoBorderColor: {value: "#404a59", name: "边界颜色", type: "color"},
+         geoHotAreaColor: {value: "#2a333d", name: "热点区域颜色", type: "color"},
          geoAreaNameDisplay: {name: "显示地区名称", value: "NO", options: ["YES", "NO"], type: "select"},
 
-         hr_14: {name: "", value: "", type: "hr"},
-
-         timelineDisplay: {name: "显示时间(类目)轴", value: "YES", options: ["YES", "NO"], type: "select"},
+         hr_timeline: {name: "[ 时间/类目轴 ]", value: "", type: "hr"},
+         timelineDisplay: {name: "是否显示", value: "YES", options: ["YES", "NO"], type: "select"},
          categoryLineType: {
-             name: "时间(类目)轴序列图形",
+             name: "序列图形",
              value: "bar",
              options: ["bar", "line", "areaStyle", "pie"],
              type: "select"
          },
-         seriesLoopPlayInterval: {name: "多序列循环时间(秒)", value: 3, type: "input"},
+         seriesLoopPlayInterval: {name: "间隔(秒)", value: 3, type: "input"},
 
-         hr_15: {name: "", value: "", type: "hr"},
-
-         visualMapDisplay: {name: "显示数据影射", value: "NO", options: ["YES", "NO"], type: "select"},
-         dataZoomBarDisplay: {name: "显示过滤控制", value: "NO", options: ["YES", "NO"], type: "select"},
-         dataZoomBarWidth: {name: "过滤器宽度(px)", value: 45, type: "input"},
+         hr_dataZoom: {name: "[ 数据缩放 ]", value: "", type: "hr"},
+         dataZoomBarDisplay: {name: "是否显示", value: "NO", options: ["YES", "NO"], type: "select"},
+         dataZoomBarWidth: {name: "宽度(px)", value: 45, type: "input"},
          dataZoomFilterMode: {
-             name: "数据过滤模式",
+             name: "模式",
              value: "filter",
              options: ["filter", "weakFilter", "empty", "none"],
              type: "select"
          },
 
-         hr_16: {name: "", value: "", type: "hr"},
+         hr_visualMap: {name: "[ 视觉映射 ]", value: "", type: "hr"},
+         visualMapDisplay: {name: "是否显示", value: "NO", options: ["YES", "NO"], type: "select"},
+         visualMap_type: {name: "类型", value: "vertical", options: ["continuous", "piecewise"], type: "select"},
+         visualMap_top: {name: "上边距(%)", value: "10%", type: "input"},
+         visualMap_left: {name: "左边距(%)", value: "1%", type: "input"},
+         visualMap_orient: {name: "布局方向", value: "vertical", options: ["horizontal", "vertical"], type: "select"},
+         visualMap_width: {name: "宽度", value: "15", type: "input"},
+         visualMap_height: {name: "高度", value: "30%", type: "input"},
+         visualMap_textColor: {name: "文字颜色", value: "#e6e6e6", type: "color"},
+         visualMap_piecewise_splitNumber: {name: "分段", value: "5", type: "input"},
 
+         hr_report: {name: "[ 报表设置 ]", value: "", type: "hr"},
          reportFontSize: {
-             name: "报表字号",
+             name: "字号",
              value: "100%",
              options: ["100%", "110%", "120%", "130%", "140%", "150%"],
              type: "select"
@@ -1109,10 +1119,10 @@ function getEchartsConfigs(parent) {
     container.appendChild(itemcontainer);
 
     for (var name in __ECHARTS__.configs) {
-        var d = document.createElement("div");
+        let d = document.createElement("div");
         d.className = "echarts-configs-item";
         itemcontainer.appendChild(d);
-        var s = document.createElement("span");
+        let s = document.createElement("span");
         s.className = "echarts-config-name";
         s.innerHTML = __ECHARTS__.configs[name].name + ":";
         d.appendChild(s);
@@ -1153,9 +1163,17 @@ function getEchartsConfigs(parent) {
             };
             d.appendChild(input);
         } else if (__ECHARTS__.configs[name].type == "hr"){
+            s.innerHTML = __ECHARTS__.configs[name].name;
+            s.style.color = "var(--main-title-color)";
+            let c = document.createElement("div");
+            c.style.width = "70%";
+            c.style.cssFloat = "right";
+            d.appendChild(c);
             let h = document.createElement("hr");
-            d.innerHTML = "";
-            d.appendChild(h);
+            h.style.marginTop = "10px";
+            c.appendChild(h)
+            //d.innerHTML = "";
+            //d.appendChild(h);
         }
     }
 
@@ -1324,16 +1342,16 @@ function getBar(container, themes) {
                 data: [],
                 label: {
                     show: __ECHARTS__.configs.barLabelDisplay.value == "YES",
-                    rotate: __ECHARTS__.configs.barLabelRotate.value,
                     align: 'center',
                     verticalAlign: 'middle',
                     position: __ECHARTS__.configs.barLabelPosition.value,
                     distance: 15,
                     formatter: '{value|{c}}',
+                    rotate: __ECHARTS__.configs.barLabelRotate.value,
                     rich: {
                         value: {
                             color: __ECHARTS__.configs.labelTextColor.value,
-                            fontSize: __ECHARTS__.configs.barLabelFontSize.value,
+                            fontSize: __ECHARTS__.configs.labelFontSize.value,
                         }
                     }
                 },
@@ -1376,12 +1394,12 @@ function getBar(container, themes) {
                     type: ['line', 'bar', 'stack', 'tiled']
                 },
             },
-            right: "10",
-            orient: "vertical",
-            top: "top",
+            top: __ECHARTS__.configs.toolbox_top.value,
+            left:__ECHARTS__.configs.toolbox_left.value,
+            orient: __ECHARTS__.configs.toolbox_orient.value,
             emphasis: {
                 iconStyle: {
-                    textPosition: 'left'
+                    textPosition: __ECHARTS__.configs.toolbox_textPosition.value,
                 }
             },
         },
@@ -1550,7 +1568,7 @@ function getTransversBar(container, themes) {
                 rich: {
                     value: {
                         color: __ECHARTS__.configs.labelTextColor.value,
-                        fontSize: __ECHARTS__.configs.barLabelFontSize.value,
+                        fontSize: __ECHARTS__.configs.labelFontSizevalue,
                     }
                 }
             };
@@ -1592,12 +1610,12 @@ function getTransversBar(container, themes) {
                     type: ['stack', 'tiled']
                 },
             },
-            right: "10",
-            orient: "vertical",
-            top: "top",
+            top: __ECHARTS__.configs.toolbox_top.value,
+            left:__ECHARTS__.configs.toolbox_left.value,
+            orient: __ECHARTS__.configs.toolbox_orient.value,
             emphasis: {
                 iconStyle: {
-                    textPosition: 'left'
+                    textPosition: __ECHARTS__.configs.toolbox_textPosition.value,
                 }
             },
         },
@@ -1814,12 +1832,12 @@ function getLine(container, themes) {
                     type: ['line', 'bar', 'stack', 'tiled']
                 },
             },
-            right: "10",
-            orient: "vertical",
-            top: "top",
+            top: __ECHARTS__.configs.toolbox_top.value,
+            left:__ECHARTS__.configs.toolbox_left.value,
+            orient: __ECHARTS__.configs.toolbox_orient.value,
             emphasis: {
                 iconStyle: {
-                    textPosition: 'left'
+                    textPosition: __ECHARTS__.configs.toolbox_textPosition.value,
                 }
             },
         },
@@ -2009,7 +2027,10 @@ function getBarAndLine(container, themes) {
                             {type: 'average', name: '平均值'}
                         ]
                     },
-                    label: {}
+                    label: {
+                        rotate: __ECHARTS__.configs.barLabelRotate.value,
+                        fontSize: __ECHARTS__.configs.labelFontSize.value,
+                    }
                 };
 
             }
@@ -2019,17 +2040,17 @@ function getBarAndLine(container, themes) {
                     type: "bar",
                     data: [],
                     label: {
-                        show: __ECHARTS__.configs.barLabelDisplay.value == "NO" ? false : true,
-                        rotate: __ECHARTS__.configs.barLabelRotate.value,
+                        show: __ECHARTS__.configs.barLabelDisplay.value == "YES",
                         align: 'center',
                         verticalAlign: 'middle',
                         position: __ECHARTS__.configs.barLabelPosition.value,
                         distance: 15,
                         formatter: '{value|{c}}',
+                        rotate: __ECHARTS__.configs.barLabelRotate.value,
                         rich: {
                             value: {
                                 color: __ECHARTS__.configs.labelTextColor.value,
-                                fontSize: __ECHARTS__.configs.barLabelFontSize.value,
+                                fontSize: __ECHARTS__.configs.labelFontSize.value,
                             }
                         }
                     }
@@ -2074,12 +2095,12 @@ function getBarAndLine(container, themes) {
                     type: ['stack', 'tiled']
                 },
             },
-            right: "10",
-            orient: "vertical",
-            top: "top",
+            top: __ECHARTS__.configs.toolbox_top.value,
+            left:__ECHARTS__.configs.toolbox_left.value,
+            orient: __ECHARTS__.configs.toolbox_orient.value,
             emphasis: {
                 iconStyle: {
-                    textPosition: 'left'
+                    textPosition: __ECHARTS__.configs.toolbox_textPosition.value,
                 }
             },
         },
@@ -2312,12 +2333,12 @@ function getAreaStyle(container, themes) {
                     type: ['stack', 'tiled']
                 },
             },
-            right: "10",
-            orient: "vertical",
-            top: "top",
+            top: __ECHARTS__.configs.toolbox_top.value,
+            left:__ECHARTS__.configs.toolbox_left.value,
+            orient: __ECHARTS__.configs.toolbox_orient.value,
             emphasis: {
                 iconStyle: {
-                    textPosition: 'left'
+                    textPosition: __ECHARTS__.configs.toolbox_textPosition.value,
                 }
             },
         },
@@ -2527,12 +2548,12 @@ function getPolarBar(container, themes) {
                     type: ['stack', 'tiled']
                 },
             },
-            right: "10",
-            orient: "vertical",
-            top: "top",
+            top: __ECHARTS__.configs.toolbox_top.value,
+            left:__ECHARTS__.configs.toolbox_left.value,
+            orient: __ECHARTS__.configs.toolbox_orient.value,
             emphasis: {
                 iconStyle: {
-                    textPosition: 'left'
+                    textPosition: __ECHARTS__.configs.toolbox_textPosition.value,
                 }
             },
         },
@@ -2683,12 +2704,12 @@ function getPolarArea(container, themes) {
                     type:['stack', 'tiled']
                 },
             },
-            right: "10",
-            orient: "vertical",
-            top: "top",
-            emphasis:{
-            iconStyle:{
-                textPosition: 'left'
+            top: __ECHARTS__.configs.toolbox_top.value,
+            left:__ECHARTS__.configs.toolbox_left.value,
+            orient: __ECHARTS__.configs.toolbox_orient.value,
+            emphasis: {
+                iconStyle: {
+                    textPosition: __ECHARTS__.configs.toolbox_textPosition.value,
                 }
             },
         },
@@ -2799,7 +2820,7 @@ function getPie(container,themes) {
                     // position: 'center'
                     alignTo: __ECHARTS__.configs.pieLabelAlignTo.value,
                     bleedMargin: 5,
-                    margin: 20
+                    margin: 20,
                 },
                 labelLine: {
                     show: __ECHARTS__.configs.pieLabelDisplay.value == "YES",
@@ -2857,20 +2878,20 @@ function getPie(container,themes) {
             backgroundColor: 'transparent'
         },
         title: {
-            show:__ECHARTS__.configs.titleDisplay.value =="YES",
+            show: __ECHARTS__.configs.titleDisplay.value == "YES",
             text: __ECHARTS__.configs.titleText.value,
             subtext: __ECHARTS__.configs.titleSubText.value,
-            top:"top",
-            left:__ECHARTS__.configs.titlePosition.value,
-            textStyle:{
-                color:__ECHARTS__.configs.titleTextColor.value,
+            top: "top",
+            left: __ECHARTS__.configs.titlePosition.value,
+            textStyle: {
+                color: __ECHARTS__.configs.titleTextColor.value,
             },
-            subtextStyle:{
-                color:__ECHARTS__.configs.titleSubTextColor.value,
+            subtextStyle: {
+                color: __ECHARTS__.configs.titleSubTextColor.value,
             }
         },
         toolbox: {
-            show: __ECHARTS__.configs.toolboxDisplay.value =="YES",
+            show: __ECHARTS__.configs.toolboxDisplay.value == "YES",
             feature: {
                 saveAsImage: {show: true},
                 restore: {show: true},
@@ -2881,32 +2902,34 @@ function getPie(container,themes) {
                     type: ['pie', 'funnel']
                 },
             },
-            right: "10",
-            orient: "vertical",
-            top: "top",
+            top: __ECHARTS__.configs.toolbox_top.value,
+            left: __ECHARTS__.configs.toolbox_left.value,
+            orient: __ECHARTS__.configs.toolbox_orient.value,
             emphasis: {
                 iconStyle: {
-                    textPosition: 'left'
+                    textPosition: __ECHARTS__.configs.toolbox_textPosition.value,
                 }
             },
         },
         tooltip: {
-            show:__ECHARTS__.configs.tooltipDisplay.value == "YES",
+            show: __ECHARTS__.configs.tooltipDisplay.value == "YES",
             trigger: 'item',
             formatter: '{a} <br/>{b}: {c} ({d}%)'
         },
         legend: {
-            show:__ECHARTS__.configs.legendDisplay.value =="YES",
+            show: __ECHARTS__.configs.legendDisplay.value == "YES",
             top: __ECHARTS__.configs.legendPositionTop.value,
             left: __ECHARTS__.configs.legendPositionLeft.value,
-            orient:__ECHARTS__.configs.legendOrient.value,
+            orient: __ECHARTS__.configs.legendOrient.value,
             data: legends,
             textStyle: {
                 color: __ECHARTS__.configs.legendTextColor.value
             },
         },
         series: series,
-        label: {},
+        label: {
+            fontSize: __ECHARTS__.configs.labelFontSize.value,
+        },
         animationEasing: 'elasticOut',
         animationDelayUpdate: function (idx) {
             return idx * 3;
@@ -3069,12 +3092,12 @@ function getRing(container,themes) {
                     type: ['pie', 'funnel']
                 },
             },
-            right: "10",
-            orient: "vertical",
-            top: "top",
+            top: __ECHARTS__.configs.toolbox_top.value,
+            left:__ECHARTS__.configs.toolbox_left.value,
+            orient: __ECHARTS__.configs.toolbox_orient.value,
             emphasis: {
                 iconStyle: {
-                    textPosition: 'left'
+                    textPosition: __ECHARTS__.configs.toolbox_textPosition.value,
                 }
             },
         },
@@ -3094,7 +3117,9 @@ function getRing(container,themes) {
             formatter: '{a} <br/>{b}: {c} ({d}%)'
         },
         series: series,
-        label: {},
+        label: {
+            fontSize: __ECHARTS__.configs.labelFontSize.value,
+        },
         animationEasing: 'elasticOut',
         animationDelayUpdate: function (idx) {
             return idx * 3;
@@ -3177,7 +3202,7 @@ function getRose(container,themes) {
                     //position: 'center'
                     alignTo: __ECHARTS__.configs.pieLabelAlignTo.value,
                     bleedMargin: 5,
-                    margin: 20
+                    margin: 20,
                 },
                 labelLine: {
                     show: __ECHARTS__.configs.pieLabelDisplay.value == "YES",
@@ -3258,12 +3283,12 @@ function getRose(container,themes) {
                     type:['pie','funnel']
                 },
             },
-            right: "10",
-            orient: "vertical",
-            top: "top",
-            emphasis:{
-            iconStyle:{
-                textPosition: 'left'
+            top: __ECHARTS__.configs.toolbox_top.value,
+            left:__ECHARTS__.configs.toolbox_left.value,
+            orient: __ECHARTS__.configs.toolbox_orient.value,
+            emphasis: {
+                iconStyle: {
+                    textPosition: __ECHARTS__.configs.toolbox_textPosition.value,
                 }
             },
         },
@@ -3283,7 +3308,9 @@ function getRose(container,themes) {
             formatter: '{a} <br/>{b}: {c} ({d}%)'
         },
         series: series,
-        label: {},
+        label: {
+            fontSize: __ECHARTS__.configs.labelFontSize.value,
+        },
         animationEasing: 'elasticOut',
         animationDelayUpdate: function (idx) {
             return idx * 3;
@@ -3429,12 +3456,12 @@ function getRadar(container, themes) {
                 restore: {},
                 dataView: {show: true, readOnly: true}
             },
-            right: "10",
-            orient: "vertical",
-            top: "top",
-            emphasis:{
-            iconStyle:{
-                textPosition: 'left'
+            top: __ECHARTS__.configs.toolbox_top.value,
+            left:__ECHARTS__.configs.toolbox_left.value,
+            orient: __ECHARTS__.configs.toolbox_orient.value,
+            emphasis: {
+                iconStyle: {
+                    textPosition: __ECHARTS__.configs.toolbox_textPosition.value,
                 }
             },
         },
@@ -3660,12 +3687,12 @@ function getRegression(container, themes) {
                     type: ['line', 'bar']
                 },
             },
-            right: "10",
-            orient: "vertical",
-            top: "top",
+            top: __ECHARTS__.configs.toolbox_top.value,
+            left:__ECHARTS__.configs.toolbox_left.value,
+            orient: __ECHARTS__.configs.toolbox_orient.value,
             emphasis: {
                 iconStyle: {
-                    textPosition: 'left'
+                    textPosition: __ECHARTS__.configs.toolbox_textPosition.value,
                 }
             },
         },
@@ -3867,6 +3894,7 @@ function  getRelationship(container, themes) {
             show: true,
             fontSize: 12,
             color: __ECHARTS__.configs.labelTextColor.value,
+            fontSize: __ECHARTS__.configs.labelFontSize.value,
         },
         edgeSymbol: ['circle', 'arrow'],
         edgeSymbolSize: [4, 10],
@@ -3921,12 +3949,12 @@ function  getRelationship(container, themes) {
                 restore: {show: true},
                 dataView: {show: true, readOnly: true},
             },
-            right: "10px",
-            orient: "vertical",
-            top: "top",
-            emphasis:{
-            iconStyle:{
-                textPosition: 'left'
+            top: __ECHARTS__.configs.toolbox_top.value,
+            left:__ECHARTS__.configs.toolbox_left.value,
+            orient: __ECHARTS__.configs.toolbox_orient.value,
+            emphasis: {
+                iconStyle: {
+                    textPosition: __ECHARTS__.configs.toolbox_textPosition.value,
                 }
             },
         },
@@ -4183,12 +4211,12 @@ function  getOrganizationStructure(container, themes) {
                 restore: {show: true},
                 dataView: {show: true, readOnly: true},
             },
-            right: "10",
-            orient: "vertical",
-            top: "top",
-            emphasis:{
-            iconStyle:{
-                textPosition: 'left'
+            top: __ECHARTS__.configs.toolbox_top.value,
+            left:__ECHARTS__.configs.toolbox_left.value,
+            orient: __ECHARTS__.configs.toolbox_orient.value,
+            emphasis: {
+                iconStyle: {
+                    textPosition: __ECHARTS__.configs.toolbox_textPosition.value,
                 }
             },
         },
@@ -4321,12 +4349,12 @@ function getWebkitDep(container, themes) {
                 restore: {show: true},
                 dataView: {show: true, readOnly: true},
             },
-            right: "10",
-            orient: "vertical",
-            top: "top",
+            top: __ECHARTS__.configs.toolbox_top.value,
+            left:__ECHARTS__.configs.toolbox_left.value,
+            orient: __ECHARTS__.configs.toolbox_orient.value,
             emphasis: {
                 iconStyle: {
-                    textPosition: 'left'
+                    textPosition: __ECHARTS__.configs.toolbox_textPosition.value,
                 }
             },
         },
@@ -4560,12 +4588,12 @@ function getScatter(container, themes) {
                 restore: {show: true},
                 dataView: {show: true, readOnly: true},
             },
-            right: "10",
-            orient: "vertical",
-            top: "top",
+            top: __ECHARTS__.configs.toolbox_top.value,
+            left:__ECHARTS__.configs.toolbox_left.value,
+            orient: __ECHARTS__.configs.toolbox_orient.value,
             emphasis: {
                 iconStyle: {
-                    textPosition: 'left'
+                    textPosition: __ECHARTS__.configs.toolbox_textPosition.value,
                 }
             },
         },
@@ -4804,12 +4832,12 @@ function getFunnel(container, themes) {
                 restore: {show: true},
                 dataView: {show: true, readOnly: true},
             },
-            right: "10",
-            orient: "vertical",
-            top: "top",
+            top: __ECHARTS__.configs.toolbox_top.value,
+            left:__ECHARTS__.configs.toolbox_left.value,
+            orient: __ECHARTS__.configs.toolbox_orient.value,
             emphasis: {
                 iconStyle: {
-                    textPosition: 'left'
+                    textPosition: __ECHARTS__.configs.toolbox_textPosition.value,
                 }
             },
         },
@@ -4963,12 +4991,12 @@ function getWordCloud(container, themes) {
                 restore: {show: true},
                 dataView: {show: true, readOnly: true},
             },
-            right: "10",
-            orient: "vertical",
-            top: "top",
+            top: __ECHARTS__.configs.toolbox_top.value,
+            left:__ECHARTS__.configs.toolbox_left.value,
+            orient: __ECHARTS__.configs.toolbox_orient.value,
             emphasis: {
                 iconStyle: {
-                    textPosition: 'left'
+                    textPosition: __ECHARTS__.configs.toolbox_textPosition.value,
                 }
             },
         },
@@ -5124,12 +5152,12 @@ function getLiqiud(container, themes) {
                 restore: {show: true},
                 dataView: {show: true, readOnly: true},
             },
-            right: "10",
-            orient: "vertical",
-            top: "top",
+            top: __ECHARTS__.configs.toolbox_top.value,
+            left:__ECHARTS__.configs.toolbox_left.value,
+            orient: __ECHARTS__.configs.toolbox_orient.value,
             emphasis: {
                 iconStyle: {
-                    textPosition: 'left'
+                    textPosition: __ECHARTS__.configs.toolbox_textPosition.value,
                 }
             },
         },
@@ -5479,12 +5507,12 @@ function getGaugeWithOne(container, themes) {
                 restore: {},
                 dataView: {show: true, readOnly: true}
             },
-            right: "10",
-            orient: "vertical",
-            top: "top",
+            top: __ECHARTS__.configs.toolbox_top.value,
+            left:__ECHARTS__.configs.toolbox_left.value,
+            orient: __ECHARTS__.configs.toolbox_orient.value,
             emphasis: {
                 iconStyle: {
-                    textPosition: 'left'
+                    textPosition: __ECHARTS__.configs.toolbox_textPosition.value,
                 }
             },
         },
@@ -5689,12 +5717,12 @@ function getCalendar(container, themes) {
                 restore: {},
                 dataView: {show: true, readOnly: true}
             },
-            right: "10",
-            orient: "vertical",
-            top: "top",
+            top: __ECHARTS__.configs.toolbox_top.value,
+            left:__ECHARTS__.configs.toolbox_left.value,
+            orient: __ECHARTS__.configs.toolbox_orient.value,
             emphasis: {
                 iconStyle: {
-                    textPosition: 'left'
+                    textPosition: __ECHARTS__.configs.toolbox_textPosition.value,
                 }
             },
         },
@@ -5818,12 +5846,12 @@ function getGeoOfChina(container, themes) {
                 restore: {show: true},
                 dataView: {show: true, readOnly: true},
             },
-            right: "10",
-            orient: "vertical",
-            top: "top",
+            top: __ECHARTS__.configs.toolbox_top.value,
+            left:__ECHARTS__.configs.toolbox_left.value,
+            orient: __ECHARTS__.configs.toolbox_orient.value,
             emphasis: {
                 iconStyle: {
-                    textPosition: 'left'
+                    textPosition: __ECHARTS__.configs.toolbox_textPosition.value,
                 }
             },
         },
@@ -5842,16 +5870,17 @@ function getGeoOfChina(container, themes) {
             show:__ECHARTS__.configs.visualMapDisplay.value == "YES",
             min: series[index].min,
             max: series[index].max,
-            //type: 'piecewise',
+            type: __ECHARTS__.configs.visualMap_type.value,
             calculable: true,
-            orient: 'vertical',//'horizontal'
-            left: 10,
-            top: 80,
-            itemWidth: 15,
-            itemHeight: containerHeight / 3,
+            top: __ECHARTS__.configs.visualMap_top.value,
+            left: __ECHARTS__.configs.visualMap_left.value,
+            itemWidth: __ECHARTS__.configs.visualMap_width.value,
+            orient:__ECHARTS__.configs.visualMap_orient.value,
+            itemHeight: __ECHARTS__.configs.visualMap_height.value,
             textStyle: {
-                color: 'gray'
+                color: __ECHARTS__.configs.visualMap_textColor.value,
             },
+            splitNumber:__ECHARTS__.configs.visualMap_piecewise_splitNumber.value,
         },
         geo: {
             map: "china",
@@ -6087,12 +6116,12 @@ function getGeoOfLocal(container, themes) {
                 restore: {show: true},
                 dataView: {show: true, readOnly: true},
             },
-            right: "10",
-            orient: "vertical",
-            top: "top",
+            top: __ECHARTS__.configs.toolbox_top.value,
+            left:__ECHARTS__.configs.toolbox_left.value,
+            orient: __ECHARTS__.configs.toolbox_orient.value,
             emphasis: {
                 iconStyle: {
-                    textPosition: 'left'
+                    textPosition: __ECHARTS__.configs.toolbox_textPosition.value,
                 }
             },
         },
@@ -6112,16 +6141,17 @@ function getGeoOfLocal(container, themes) {
             show:__ECHARTS__.configs.visualMapDisplay.value == "YES",
             min: series[index].min,
             max: series[index].max,
-            //type: 'piecewise',
+            type: __ECHARTS__.configs.visualMap_type.value,
             calculable: true,
-            orient: 'vertical',//'horizontal'
-            left: 10,
-            top: 80,
-            itemWidth: 15,
-            itemHeight: containerHeight / 3,
+            top: __ECHARTS__.configs.visualMap_top.value,
+            left: __ECHARTS__.configs.visualMap_left.value,
+            itemWidth: __ECHARTS__.configs.visualMap_width.value,
+            orient:__ECHARTS__.configs.visualMap_orient.value,
+            itemHeight: __ECHARTS__.configs.visualMap_height.value,
             textStyle: {
-                color: 'gray'
+                color: __ECHARTS__.configs.visualMap_textColor.value,
             },
+            splitNumber:__ECHARTS__.configs.visualMap_piecewise_splitNumber.value,
         },
         //backgroundColor: '#013954',
         geo: {
@@ -6315,7 +6345,7 @@ function getBar3D(container, themes) {
                     show: __ECHARTS__.configs.LabelOf3DDisplay.value == "YES",
                     textStyle: {
                         color: __ECHARTS__.configs.labelTextColor.value,
-                        fontSize: __ECHARTS__.configs.LabelFontSizeFor3D.value,
+                        fontSize: __ECHARTS__.configs.labelFontSize.value,
                         borderWidth: 1
                     },
                     formatter: function (params) {
@@ -6325,12 +6355,12 @@ function getBar3D(container, themes) {
                 emphasis: {
                     label: {
                         textStyle: {
-                            fontSize: __ECHARTS__.configs.LabelFontSizeFor3D.value,
-                            color: '#900'
+                            fontSize: __ECHARTS__.configs.labelFontSize.value,
+                            //color: __ECHARTS__.configs.labelTextColor.value,
                         }
                     },
                     itemStyle: {
-                        color: '#900'
+                        //color: __ECHARTS__.configs.labelTextColor.value,
                     }
                 },
                 animation: true,
@@ -6399,12 +6429,12 @@ function getBar3D(container, themes) {
                 restore: {show: true},
                 dataView: {show: true, readOnly: true},
             },
-            right: "10",
-            orient: "vertical",
-            top: "top",
+            top: __ECHARTS__.configs.toolbox_top.value,
+            left:__ECHARTS__.configs.toolbox_left.value,
+            orient: __ECHARTS__.configs.toolbox_orient.value,
             emphasis: {
                 iconStyle: {
-                    textPosition: 'left'
+                    textPosition: __ECHARTS__.configs.toolbox_textPosition.value,
                 }
             },
         },
@@ -6412,16 +6442,17 @@ function getBar3D(container, themes) {
             show: __ECHARTS__.configs.visualMapDisplay.value == "YES",
             min: valueMin,
             max: valueMax,
-            //type: 'piecewise',
+            type: __ECHARTS__.configs.visualMap_type.value,
             calculable: true,
-            orient: 'vertical',//'horizontal'
-            left: 10,
-            top: 80,
-            itemWidth: 15,
-            itemHeight: containerHeight / 3,
+            top: __ECHARTS__.configs.visualMap_top.value,
+            left: __ECHARTS__.configs.visualMap_left.value,
+            itemWidth: __ECHARTS__.configs.visualMap_width.value,
+            orient:__ECHARTS__.configs.visualMap_orient.value,
+            itemHeight: __ECHARTS__.configs.visualMap_height.value,
             textStyle: {
-                color: 'gray'
+                color: __ECHARTS__.configs.visualMap_textColor.value,
             },
+            splitNumber:__ECHARTS__.configs.visualMap_piecewise_splitNumber.value,
         },
         xAxis3D: {
             type: 'category',
@@ -6526,7 +6557,7 @@ function getLine3D(container, themes) {
                     show: __ECHARTS__.configs.LabelOf3DDisplay.value == "YES",
                     textStyle: {
                         color: __ECHARTS__.configs.labelTextColor.value,
-                        fontSize: __ECHARTS__.configs.LabelFontSizeFor3D.value,
+                        fontSize: __ECHARTS__.configs.labelFontSize.value,
                         borderWidth: 1
                     },
                     formatter: function (params) {
@@ -6536,12 +6567,12 @@ function getLine3D(container, themes) {
                 emphasis: {
                     label: {
                         textStyle: {
-                            fontSize: __ECHARTS__.configs.LabelFontSizeFor3D.value,
-                            color: '#900'
+                            fontSize: __ECHARTS__.configs.labelFontSize.value,
+                            //color: '#900'
                         }
                     },
                     itemStyle: {
-                        color: '#900'
+
                     }
                 },
                 animation: true,
@@ -6611,12 +6642,12 @@ function getLine3D(container, themes) {
                 restore: {show: true},
                 dataView: {show: true, readOnly: true},
             },
-            right: "10",
-            orient: "vertical",
-            top: "top",
+            top: __ECHARTS__.configs.toolbox_top.value,
+            left:__ECHARTS__.configs.toolbox_left.value,
+            orient: __ECHARTS__.configs.toolbox_orient.value,
             emphasis: {
                 iconStyle: {
-                    textPosition: 'left'
+                    textPosition: __ECHARTS__.configs.toolbox_textPosition.value,
                 }
             },
         },
@@ -6624,16 +6655,17 @@ function getLine3D(container, themes) {
             show:__ECHARTS__.configs.visualMapDisplay.value == "YES",
             min: valueMin,
             max: valueMax,
-            //type: 'piecewise',
+            type: __ECHARTS__.configs.visualMap_type.value,
             calculable: true,
-            orient: 'vertical',//'horizontal'
-            left: 10,
-            top: 80,
-            itemWidth: 15,
-            itemHeight: containerHeight / 3,
+            top: __ECHARTS__.configs.visualMap_top.value,
+            left: __ECHARTS__.configs.visualMap_left.value,
+            itemWidth: __ECHARTS__.configs.visualMap_width.value,
+            orient:__ECHARTS__.configs.visualMap_orient.value,
+            itemHeight: __ECHARTS__.configs.visualMap_height.value,
             textStyle: {
-                color: 'gray'
+                color: __ECHARTS__.configs.visualMap_textColor.value,
             },
+            splitNumber:__ECHARTS__.configs.visualMap_piecewise_splitNumber.value,
         },
 
         xAxis3D: {
@@ -6741,7 +6773,7 @@ function getScatter3D(container, themes) {
                     show: __ECHARTS__.configs.LabelOf3DDisplay.value == "YES",
                     textStyle: {
                         color: __ECHARTS__.configs.labelTextColor.value,
-                        fontSize: __ECHARTS__.configs.LabelFontSizeFor3D.value,
+                        fontSize: __ECHARTS__.configs.labelFontSize.value,
                         borderWidth: 1
                     },
                     formatter: function (params) {
@@ -6751,12 +6783,12 @@ function getScatter3D(container, themes) {
                 emphasis: {
                     label: {
                         textStyle: {
-                            fontSize: __ECHARTS__.configs.LabelFontSizeFor3D.value,
-                            color: '#900'
+                            fontSize: __ECHARTS__.configs.labelFontSize.value,
+                            //color: '#900'
                         }
                     },
                     itemStyle: {
-                        color: '#900'
+                        //color: '#900'
                     }
                 },
                 animation: true,
@@ -6826,12 +6858,12 @@ function getScatter3D(container, themes) {
                 restore: {show: true},
                 dataView: {show: true, readOnly: true},
             },
-            right: "10",
-            orient: "vertical",
-            top: "top",
+            top: __ECHARTS__.configs.toolbox_top.value,
+            left:__ECHARTS__.configs.toolbox_left.value,
+            orient: __ECHARTS__.configs.toolbox_orient.value,
             emphasis: {
                 iconStyle: {
-                    textPosition: 'left'
+                    textPosition: __ECHARTS__.configs.toolbox_textPosition.value,
                 }
             },
         },
@@ -6839,16 +6871,17 @@ function getScatter3D(container, themes) {
             show:__ECHARTS__.configs.visualMapDisplay.value == "YES",
             min: valueMin,
             max: valueMax,
-            //type: 'piecewise',
+            type: __ECHARTS__.configs.visualMap_type.value,
             calculable: true,
-            orient: 'vertical',//'horizontal'
-            left: 10,
-            top: 80,
-            itemWidth: 15,
-            itemHeight: containerHeight / 3,
+            top: __ECHARTS__.configs.visualMap_top.value,
+            left: __ECHARTS__.configs.visualMap_left.value,
+            itemWidth: __ECHARTS__.configs.visualMap_width.value,
+            orient:__ECHARTS__.configs.visualMap_orient.value,
+            itemHeight: __ECHARTS__.configs.visualMap_height.value,
             textStyle: {
-                color: 'gray'
+                color: __ECHARTS__.configs.visualMap_textColor.value,
             },
+            splitNumber:__ECHARTS__.configs.visualMap_piecewise_splitNumber.value,
         },
 
         xAxis3D: {
@@ -6960,7 +6993,7 @@ function getCategoryLine(container, themes) {
                 rich: {
                     value: {
                         color: __ECHARTS__.configs.labelTextColor.value,
-                        fontSize: __ECHARTS__.configs.barLabelFontSize.value,
+                        fontSize: __ECHARTS__.configs.labelFontSizevalue,
                     }
                 }
             };
@@ -7103,12 +7136,12 @@ function getCategoryLine(container, themes) {
                     restore: {show: true},
                     dataView: {show: true, readOnly: true},
                 },
-                right: "10",
-                orient: "vertical",
-                top: "top",
+                top: __ECHARTS__.configs.toolbox_top.value,
+                left: __ECHARTS__.configs.toolbox_left.value,
+                orient: __ECHARTS__.configs.toolbox_orient.value,
                 emphasis: {
                     iconStyle: {
-                        textPosition: 'left'
+                        textPosition: __ECHARTS__.configs.toolbox_textPosition.value,
                     }
                 },
             },
@@ -7434,12 +7467,12 @@ function getGeoMigrateLinesOfChinaCity(container, themes) {
                     restore: {show: true},
                     dataView: {show: true, readOnly: true},
                 },
-                right: "10",
-                orient: "vertical",
-                top: "top",
+                top: __ECHARTS__.configs.toolbox_top.value,
+                left: __ECHARTS__.configs.toolbox_left.value,
+                orient: __ECHARTS__.configs.toolbox_orient.value,
                 emphasis: {
                     iconStyle: {
-                        textPosition: 'left'
+                        textPosition: __ECHARTS__.configs.toolbox_textPosition.value,
                     }
                 },
             },
@@ -7470,7 +7503,7 @@ function getGeoMigrateLinesOfChinaCity(container, themes) {
                 map: 'china',
                 label: {
                     normal: {
-                        show: __ECHARTS__.configs.geoAreaNameDisplay.value == "YES" ? true : false,
+                        show: __ECHARTS__.configs.geoAreaNameDisplay.value == "YES",
                         color: "gray",
                     },
                     emphasis: {
@@ -7639,12 +7672,12 @@ function getCategoryLineForGauge(container, themes) {
                     restore: {show: true},
                     dataView: {show: true, readOnly: true},
                 },
-                right: "10",
-                orient: "vertical",
-                top: "top",
+                top: __ECHARTS__.configs.toolbox_top.value,
+                left: __ECHARTS__.configs.toolbox_left.value,
+                orient: __ECHARTS__.configs.toolbox_orient.value,
                 emphasis: {
                     iconStyle: {
-                        textPosition: 'left'
+                        textPosition: __ECHARTS__.configs.toolbox_textPosition.value,
                     }
                 },
             },
@@ -7819,12 +7852,12 @@ function getCategoryLineForLiqiud(container, themes) {
                     restore: {show: true},
                     dataView: {show: true, readOnly: true},
                 },
-                right: "10",
-                orient: "vertical",
-                top: "top",
+                top: __ECHARTS__.configs.toolbox_top.value,
+                left: __ECHARTS__.configs.toolbox_left.value,
+                orient: __ECHARTS__.configs.toolbox_orient.value,
                 emphasis: {
                     iconStyle: {
-                        textPosition: 'left'
+                        textPosition: __ECHARTS__.configs.toolbox_textPosition.value,
                     }
                 },
             },
@@ -7932,12 +7965,12 @@ function getCategoryLineForGeoOfChina(container, themes) {
                             restore: {show: true},
                             dataView: {show: true, readOnly: true},
                         },
-                        right: "10",
-                        orient: "vertical",
-                        top: "top",
+                        top: __ECHARTS__.configs.toolbox_top.value,
+                        left: __ECHARTS__.configs.toolbox_left.value,
+                        orient: __ECHARTS__.configs.toolbox_orient.value,
                         emphasis: {
                             iconStyle: {
-                                textPosition: 'left'
+                                textPosition: __ECHARTS__.configs.toolbox_textPosition.value,
                             }
                         },
                     },
@@ -7956,16 +7989,17 @@ function getCategoryLineForGeoOfChina(container, themes) {
                         show: __ECHARTS__.configs.visualMapDisplay.value == "YES",
                         min: min,
                         max: max,
-                        //type: 'piecewise',
+                        type: __ECHARTS__.configs.visualMap_type.value,
                         calculable: true,
-                        orient: 'vertical',//'horizontal'
-                        left: 10,
-                        top: 80,
-                        itemWidth: 15,
-                        itemHeight: containerHeight / 3,
+                        top: __ECHARTS__.configs.visualMap_top.value,
+                        left: __ECHARTS__.configs.visualMap_left.value,
+                        itemWidth: __ECHARTS__.configs.visualMap_width.value,
+                        orient: __ECHARTS__.configs.visualMap_orient.value,
+                        itemHeight: __ECHARTS__.configs.visualMap_height.value,
                         textStyle: {
-                            color: 'gray'
+                            color: __ECHARTS__.configs.visualMap_textColor.value,
                         },
+                        splitNumber: __ECHARTS__.configs.visualMap_piecewise_splitNumber.value,
                     },
                     geo: {
                         map: "china",
@@ -7976,7 +8010,7 @@ function getCategoryLineForGeoOfChina(container, themes) {
                         },
                         label: {
                             normal: {
-                                show: __ECHARTS__.configs.geoAreaNameDisplay.value == "YES" ? true : false,
+                                show: __ECHARTS__.configs.geoAreaNameDisplay.value == "YES",
                                 color: "gray",
                             },
                             emphasis: {
@@ -8110,12 +8144,12 @@ function getCategoryLineForGeoOfChina(container, themes) {
                     restore: {show: true},
                     dataView: {show: true, readOnly: true},
                 },
-                right: "10",
-                orient: "vertical",
-                top: "top",
+                top: __ECHARTS__.configs.toolbox_top.value,
+                left: __ECHARTS__.configs.toolbox_left.value,
+                orient: __ECHARTS__.configs.toolbox_orient.value,
                 emphasis: {
                     iconStyle: {
-                        textPosition: 'left'
+                        textPosition: __ECHARTS__.configs.toolbox_textPosition.value,
                     }
                 },
             },
@@ -8216,12 +8250,12 @@ function getCategoryLineForGeoOfLocal(container, themes) {
                             restore: {show: true},
                             dataView: {show: true, readOnly: true},
                         },
-                        right: "10",
-                        orient: "vertical",
-                        top: "top",
+                        top: __ECHARTS__.configs.toolbox_top.value,
+                        left: __ECHARTS__.configs.toolbox_left.value,
+                        orient: __ECHARTS__.configs.toolbox_orient.value,
                         emphasis: {
                             iconStyle: {
-                                textPosition: 'left'
+                                textPosition: __ECHARTS__.configs.toolbox_textPosition.value,
                             }
                         },
                     },
@@ -8241,16 +8275,17 @@ function getCategoryLineForGeoOfLocal(container, themes) {
                         show: __ECHARTS__.configs.visualMapDisplay.value == "YES",
                         min: min,
                         max: max,
-                        //type: 'piecewise',
+                        type: __ECHARTS__.configs.visualMap_type.value,
                         calculable: true,
-                        orient: 'vertical',//'horizontal'
-                        left: 10,
-                        top: 80,
-                        itemWidth: 15,
-                        itemHeight: containerHeight / 3,
+                        top: __ECHARTS__.configs.visualMap_top.value,
+                        left: __ECHARTS__.configs.visualMap_left.value,
+                        itemWidth: __ECHARTS__.configs.visualMap_width.value,
+                        orient: __ECHARTS__.configs.visualMap_orient.value,
+                        itemHeight: __ECHARTS__.configs.visualMap_height.value,
                         textStyle: {
-                            color: 'gray'
+                            color: __ECHARTS__.configs.visualMap_textColor.value,
                         },
+                        splitNumber: __ECHARTS__.configs.visualMap_piecewise_splitNumber.value,
                     },
                     //backgroundColor: '#013954',
                     geo: {
@@ -8262,7 +8297,7 @@ function getCategoryLineForGeoOfLocal(container, themes) {
                         },
                         label: {
                             normal: {
-                                show: __ECHARTS__.configs.geoAreaNameDisplay.value == "YES" ? true : false,
+                                show: __ECHARTS__.configs.geoAreaNameDisplay.value == "YES",
                                 color: "gray",
                             },
                             emphasis: {
@@ -8395,12 +8430,12 @@ function getCategoryLineForGeoOfLocal(container, themes) {
                     restore: {show: true},
                     dataView: {show: true, readOnly: true},
                 },
-                right: "10",
-                orient: "vertical",
-                top: "top",
+                top: __ECHARTS__.configs.toolbox_top.value,
+                left: __ECHARTS__.configs.toolbox_left.value,
+                orient: __ECHARTS__.configs.toolbox_orient.value,
                 emphasis: {
                     iconStyle: {
-                        textPosition: 'left'
+                        textPosition: __ECHARTS__.configs.toolbox_textPosition.value,
                     }
                 },
             },
