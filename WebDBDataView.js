@@ -2102,7 +2102,7 @@ function init() {
     dbinfo.className = "button";
     dbinfo.id = "test-button";
     dbinfo.innerText = "测试";
-    //dbinfo.style.display = "none";
+    dbinfo.style.display = "none";
     dbinfo.onclick = function () {
         let a = "100%";
         alert(Number("100%"));
