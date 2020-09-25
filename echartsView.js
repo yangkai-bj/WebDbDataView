@@ -87,7 +87,8 @@ var __ECHARTS__ = {
 
          hr_axis: {name: "[ 坐标轴 ]", value: "", type: "hr"},
          axisLineDisplay: {name: "是否显示", value: "YES", options: ["YES", "NO"], type: "select"},
-         axisColor: {name: "颜色", value: "#e6e6e6", type: "color"},
+         axisColor: {name: "轴线颜色", value: "#e6e6e6", type: "color"},
+         axisTextColor: {name: "标签颜色", value: "#e6e6e6", type: "color"},
          splitXLineDisplay: {name: "显示X轴分隔线", value: "NO", options: ["YES", "NO"], type: "select"},
          splitYLineDisplay: {name: "显示Y轴分隔线", value: "NO", options: ["YES", "NO"], type: "select"},
          splitXAreaDisplay: {name: "显示X轴分割区", value: "NO", options: ["YES", "NO"], type: "select"},
@@ -98,14 +99,11 @@ var __ECHARTS__ = {
              options: ["shadow", "line", "cross", "none"],
              type: "select"
          },
-         axisTextColor: {name: "文字颜色", value: "#e6e6e6", type: "color"},
-
-         hr_label: {name: "[ 标签 ]", value: "", type: "hr"},
-         labelTextColor: {name: "文字颜色", value: "auto", type: "color"},
-         labelFontSize: {name: "标签字号(px)", value: 12, type: "input"},
 
          hr_bar: {name: "[ 柱状图 ]", value: "", type: "hr"},
          barLabelDisplay: {name: "显示标签", value: 'NO', options: ["YES", "NO"], type: "select"},
+         labelBarTextColor: {name: "标签颜色", value: "auto", type: "color"},
+         labelBarFontSize: {name: "标签字号(px)", value: 12, type: "input"},
          barLabelPosition: {
              name: "标签位置",
              value: 'top',
@@ -123,6 +121,8 @@ var __ECHARTS__ = {
          BoxDepthFor3D: {name: "深度(Y轴)", value: 80, type: "input"},
          AutoRotateFor3D: {name: "自动旋转", value: "YES", options: ["YES", "NO"], type: "select"},
          LabelOf3DDisplay: {name: "显示标签", value: "NO", options: ["YES", "NO"], type: "select"},
+         label3DTextColor: {name: "标签颜色", value: "auto", type: "color"},
+         label3DFontSize: {name: "标签字号(px)", value: 12, type: "input"},
          ItemStyleOpacityFor3D: {name: "透明度", value: 1, type: "input"},
          axisPointerDisplay: {name: "坐标轴指示器", value: "NO", options: ["YES", "NO"], type: "select"},
 
@@ -135,6 +135,7 @@ var __ECHARTS__ = {
          outRadius: {name: "外半径(%)", value: "70%", type: "input"},
          inRadius: {name: "内半径(%)", value: "35%", type: "input"},
          pieLabelDisplay: {name: "显示标签", value: 'YES', options: ["YES", "NO"], type: "select"},
+         labelPieFontSize: {name: "标签字号(px)", value: 12, type: "input"},
          pieLabelAlignTo: {name: "标签对齐方式", value: 'none', options: ["none", "labelLine", "edge"], type: "select"},
          richTextLabel: {name: "富文本标签", value: 'NO', options: ["YES", "NO"], type: "select"},
          groupwith: {name: "每行序列数", value: 2, type: "input"},
@@ -187,6 +188,7 @@ var __ECHARTS__ = {
          geoBorderColor: {value: "#404a59", name: "边界颜色", type: "color"},
          geoHotAreaColor: {value: "#2a333d", name: "热点区域颜色", type: "color"},
          geoAreaNameDisplay: {name: "显示地区名称", value: "NO", options: ["YES", "NO"], type: "select"},
+         geoAreaNameColor: {name: "地区名称颜色", value: "auto", type: "color"},
 
          hr_timeline: {name: "[ 时间/类目轴 ]", value: "", type: "hr"},
          timelineDisplay: {name: "是否显示", value: "YES", options: ["YES", "NO"], type: "select"},
@@ -210,13 +212,13 @@ var __ECHARTS__ = {
 
          hr_visualMap: {name: "[ 视觉映射 ]", value: "", type: "hr"},
          visualMapDisplay: {name: "是否显示", value: "NO", options: ["YES", "NO"], type: "select"},
-         visualMap_type: {name: "类型", value: "vertical", options: ["continuous", "piecewise"], type: "select"},
+         visualMap_type: {name: "类型", value: "continuous", options: ["continuous", "piecewise"], type: "select"},
          visualMap_top: {name: "上边距(%)", value: "10%", type: "input"},
          visualMap_left: {name: "左边距(%)", value: "1%", type: "input"},
-         visualMap_orient: {name: "布局方向", value: "vertical", options: ["horizontal", "vertical"], type: "select"},
+         visualMap_orient: {name: "布局方向", value: "horizontal", options: ["horizontal", "vertical"], type: "select"},
          visualMap_width: {name: "宽度", value: "15", type: "input"},
          visualMap_height: {name: "高度", value: "30%", type: "input"},
-         visualMap_textColor: {name: "文字颜色", value: "#e6e6e6", type: "color"},
+         visualMap_textColor: {name: "标签颜色", value: "#e6e6e6", type: "color"},
          visualMap_piecewise_splitNumber: {name: "分段", value: "5", type: "input"},
 
          hr_report: {name: "[ 报表设置 ]", value: "", type: "hr"},
@@ -1350,8 +1352,8 @@ function getBar(container, themes) {
                     rotate: __ECHARTS__.configs.barLabelRotate.value,
                     rich: {
                         value: {
-                            color: __ECHARTS__.configs.labelTextColor.value,
-                            fontSize: __ECHARTS__.configs.labelFontSize.value,
+                            color: __ECHARTS__.configs.labelBarTextColor.value,
+                            fontSize: __ECHARTS__.configs.labelBarFontSize.value,
                         }
                     }
                 },
@@ -2029,7 +2031,7 @@ function getBarAndLine(container, themes) {
                     },
                     label: {
                         rotate: __ECHARTS__.configs.barLabelRotate.value,
-                        fontSize: __ECHARTS__.configs.labelFontSize.value,
+                        fontSize: __ECHARTS__.configs.labelBarFontSize.value,
                     }
                 };
 
@@ -2049,8 +2051,8 @@ function getBarAndLine(container, themes) {
                         rotate: __ECHARTS__.configs.barLabelRotate.value,
                         rich: {
                             value: {
-                                color: __ECHARTS__.configs.labelTextColor.value,
-                                fontSize: __ECHARTS__.configs.labelFontSize.value,
+                                color: __ECHARTS__.configs.labelBarTextColor.value,
+                                fontSize: __ECHARTS__.configs.labelBarFontSize.value,
                             }
                         }
                     }
@@ -2928,7 +2930,7 @@ function getPie(container,themes) {
         },
         series: series,
         label: {
-            fontSize: __ECHARTS__.configs.labelFontSize.value,
+            fontSize: __ECHARTS__.configs.labelPieFontSize.value,
         },
         animationEasing: 'elasticOut',
         animationDelayUpdate: function (idx) {
@@ -3118,7 +3120,7 @@ function getRing(container,themes) {
         },
         series: series,
         label: {
-            fontSize: __ECHARTS__.configs.labelFontSize.value,
+            fontSize: __ECHARTS__.configs.labelPieFontSize.value,
         },
         animationEasing: 'elasticOut',
         animationDelayUpdate: function (idx) {
@@ -3309,7 +3311,7 @@ function getRose(container,themes) {
         },
         series: series,
         label: {
-            fontSize: __ECHARTS__.configs.labelFontSize.value,
+            fontSize: __ECHARTS__.configs.labelPieFontSize.value,
         },
         animationEasing: 'elasticOut',
         animationDelayUpdate: function (idx) {
@@ -3893,8 +3895,6 @@ function  getRelationship(container, themes) {
         label: {
             show: true,
             fontSize: 12,
-            color: __ECHARTS__.configs.labelTextColor.value,
-            fontSize: __ECHARTS__.configs.labelFontSize.value,
         },
         edgeSymbol: ['circle', 'arrow'],
         edgeSymbolSize: [4, 10],
@@ -5891,12 +5891,12 @@ function getGeoOfChina(container, themes) {
             },
             label: {
                 normal: {
-                    show: __ECHARTS__.configs.geoAreaNameDisplay.value == "YES" ? true : false,
-                    color: "gray",
+                    show: __ECHARTS__.configs.geoAreaNameDisplay.value == "YES",
+                    color: __ECHARTS__.configs.geoAreaNameColor.value,
                 },
                 emphasis: {
                     show: true,
-                    color: "gray",
+                    color: __ECHARTS__.configs.geoAreaNameColor.value,
                 }
             },
             itemStyle: {
@@ -5939,7 +5939,7 @@ function getGeoOfChina(container, themes) {
                         formatter: '{b}',
                         position: 'top',
                         show: true,
-                        color: "gray"
+                        color: __ECHARTS__.configs.geoAreaNameColor.value,
                     }
                 },
                 itemStyle: {
@@ -5979,16 +5979,17 @@ function getGeoOfChina(container, themes) {
             show:__ECHARTS__.configs.visualMapDisplay.value == "YES",
             min: series[index].min,
             max: series[index].max,
-            //type: 'piecewise',
+            type: __ECHARTS__.configs.visualMap_type.value,
             calculable: true,
-            orient: 'vertical',//'horizontal'
-            left: 10,
-            top: 80,
-            itemWidth: 15,
-            itemHeight: containerHeight/3,
+            top: __ECHARTS__.configs.visualMap_top.value,
+            left: __ECHARTS__.configs.visualMap_left.value,
+            itemWidth: __ECHARTS__.configs.visualMap_width.value,
+            orient:__ECHARTS__.configs.visualMap_orient.value,
+            itemHeight: __ECHARTS__.configs.visualMap_height.value,
             textStyle: {
-                color: 'gray'
+                color: __ECHARTS__.configs.visualMap_textColor.value,
             },
+            splitNumber:__ECHARTS__.configs.visualMap_piecewise_splitNumber.value,
         };
         option.series[0].data = series[index].data;
         option.series[1].data = convertData(series[index].data.sort(function (a, b) {
@@ -6163,12 +6164,12 @@ function getGeoOfLocal(container, themes) {
             },
             label: {
                 normal: {
-                    show: __ECHARTS__.configs.geoAreaNameDisplay.value == "YES" ? true : false,
-                    color: "gray",
+                    show: __ECHARTS__.configs.geoAreaNameDisplay.value == "YES",
+                    color: __ECHARTS__.configs.geoAreaNameColor.value,
                 },
                 emphasis: {
                     show: true,
-                    color: "gray",
+                    color: __ECHARTS__.configs.geoAreaNameColor.value,
                 }
             },
             itemStyle: {
@@ -6252,16 +6253,17 @@ function getGeoOfLocal(container, themes) {
             show:__ECHARTS__.configs.visualMapDisplay.value == "YES",
             min: series[index].min,
             max: series[index].max,
-            //type: 'piecewise',
+            type: __ECHARTS__.configs.visualMap_type.value,
             calculable: true,
-            orient: 'vertical',//'horizontal'
-            left: 10,
-            top: 80,
-            itemWidth: 15,
-            itemHeight: containerHeight / 3,
+            top: __ECHARTS__.configs.visualMap_top.value,
+            left: __ECHARTS__.configs.visualMap_left.value,
+            itemWidth: __ECHARTS__.configs.visualMap_width.value,
+            orient:__ECHARTS__.configs.visualMap_orient.value,
+            itemHeight: __ECHARTS__.configs.visualMap_height.value,
             textStyle: {
-                color: 'gray'
+                color: __ECHARTS__.configs.visualMap_textColor.value,
             },
+            splitNumber:__ECHARTS__.configs.visualMap_piecewise_splitNumber.value,
         };
         option.series[0].data = series[index].data;
         option.series[1].data = convertData(series[index].data.sort(function (a, b) {
@@ -6344,8 +6346,8 @@ function getBar3D(container, themes) {
                 label: {
                     show: __ECHARTS__.configs.LabelOf3DDisplay.value == "YES",
                     textStyle: {
-                        color: __ECHARTS__.configs.labelTextColor.value,
-                        fontSize: __ECHARTS__.configs.labelFontSize.value,
+                        color: __ECHARTS__.configs.label3DTextColor.value,
+                        fontSize: __ECHARTS__.configs.label3DFontSize.value,
                         borderWidth: 1
                     },
                     formatter: function (params) {
@@ -6355,12 +6357,10 @@ function getBar3D(container, themes) {
                 emphasis: {
                     label: {
                         textStyle: {
-                            fontSize: __ECHARTS__.configs.labelFontSize.value,
-                            //color: __ECHARTS__.configs.labelTextColor.value,
+                            fontSize: __ECHARTS__.configs.label3DFontSize.value,
                         }
                     },
                     itemStyle: {
-                        //color: __ECHARTS__.configs.labelTextColor.value,
                     }
                 },
                 animation: true,
@@ -6556,8 +6556,8 @@ function getLine3D(container, themes) {
                 label: {
                     show: __ECHARTS__.configs.LabelOf3DDisplay.value == "YES",
                     textStyle: {
-                        color: __ECHARTS__.configs.labelTextColor.value,
-                        fontSize: __ECHARTS__.configs.labelFontSize.value,
+                        color: __ECHARTS__.configs.label3DTextColor.value,
+                        fontSize: __ECHARTS__.configs.label3DFontSize.value,
                         borderWidth: 1
                     },
                     formatter: function (params) {
@@ -6567,7 +6567,7 @@ function getLine3D(container, themes) {
                 emphasis: {
                     label: {
                         textStyle: {
-                            fontSize: __ECHARTS__.configs.labelFontSize.value,
+                            fontSize: __ECHARTS__.configs.label3DFontSize.value,
                             //color: '#900'
                         }
                     },
@@ -6772,8 +6772,8 @@ function getScatter3D(container, themes) {
                 label: {
                     show: __ECHARTS__.configs.LabelOf3DDisplay.value == "YES",
                     textStyle: {
-                        color: __ECHARTS__.configs.labelTextColor.value,
-                        fontSize: __ECHARTS__.configs.labelFontSize.value,
+                        color: __ECHARTS__.configs.label3DTextColor.value,
+                        fontSize: __ECHARTS__.configs.label3DFontSize.value,
                         borderWidth: 1
                     },
                     formatter: function (params) {
@@ -6783,7 +6783,7 @@ function getScatter3D(container, themes) {
                 emphasis: {
                     label: {
                         textStyle: {
-                            fontSize: __ECHARTS__.configs.labelFontSize.value,
+                            fontSize: __ECHARTS__.configs.label3DFontSize.value,
                             //color: '#900'
                         }
                     },
@@ -7504,11 +7504,11 @@ function getGeoMigrateLinesOfChinaCity(container, themes) {
                 label: {
                     normal: {
                         show: __ECHARTS__.configs.geoAreaNameDisplay.value == "YES",
-                        color: "gray",
+                        color: __ECHARTS__.configs.geoAreaNameColor.value,
                     },
                     emphasis: {
                         show: true,
-                        color: "gray",
+                        color: __ECHARTS__.configs.geoAreaNameColor.value,
                     }
                 },
                 roam: true,
@@ -8298,11 +8298,11 @@ function getCategoryLineForGeoOfLocal(container, themes) {
                         label: {
                             normal: {
                                 show: __ECHARTS__.configs.geoAreaNameDisplay.value == "YES",
-                                color: "gray",
+                                color: __ECHARTS__.configs.geoAreaNameColor.value,
                             },
                             emphasis: {
                                 show: true,
-                                color: "gray",
+                                color: __ECHARTS__.configs.geoAreaNameColor.value,
                             }
                         },
                         itemStyle: {
@@ -8345,7 +8345,7 @@ function getCategoryLineForGeoOfLocal(container, themes) {
                                     formatter: '{b}',
                                     position: 'top',
                                     show: true,
-                                    color: "gray"
+                                    color: __ECHARTS__.configs.geoAreaNameColor.value,
                                 }
                             },
                             itemStyle: {
