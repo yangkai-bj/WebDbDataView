@@ -1304,7 +1304,14 @@ function viewTables(index) {
                     tables.push(results.rows.item(i).tablename);
                     a.draggable = "true";
                     a.ondragstart = function (event) {
-                        event.dataTransfer.setData("Text", event.target.id);
+                        let sql = "/*脚本案例*/\r\n" +
+                            "SELECT\r\n" +
+                            "* \r\n" +
+                            "/*字段列表*/\r\n" +
+                            "FROM \r\n" +
+                            "{table}\r\n" +
+                            "ORDER BY 1";
+                        event.dataTransfer.setData("Text", sql.replace("{table}", event.target.id));
                     };
                     a.onclick = function(){
                         __CONFIGS__.CURRENT_TABLE.name = this.id;
@@ -2005,6 +2012,7 @@ function init() {
     }catch (e) {
     }
     if (checkStorage()) {
+        setUserConfig("CopyRight","应用开发: 杨凯 ☎ (010)63603329 ✉ <a href='mailto:yangkai.bj@ccb.com'>yangkai.bj@ccb.com</a>");
         $("footer").style.display = getUserConfig("help");
         $("themes").setAttribute("href", getUserConfig("pagethemes") == null ? "themes/default.css" : getUserConfig("pagethemes"));
 
@@ -2242,8 +2250,17 @@ function init() {
         openfile.value = "";
          __SQLEDITOR__.title =  __ECHARTS__.configs.titleText.value = __ECHARTS__.configs.titleSubText.value = null;
         __SQLEDITOR__.codeMirror.setValue("");
-        if (this.id == "help-create-sql")
-            __SQLEDITOR__.codeMirror.setValue("/*大括号中是用户参数*/\nSELECT * \nFROM \n{数据表}\nORDER BY 1");
+        if (this.id == "help-create-sql") {
+            let sql = "/*脚本案例*/\r\n" +
+                "SELECT\r\n" +
+                "* \r\n" +
+                "/*字段列表*/\r\n" +
+                "FROM \r\n" +
+                "{数据表}\r\n" +
+                "ORDER BY 1";
+            __SQLEDITOR__.codeMirror.setValue(sql);
+        }
+
     };
     sqltools.appendChild(newsql);
     setTooltip(newsql, "新建<br>脚本");
@@ -2788,6 +2805,7 @@ function init() {
     };
     setTooltip(analysis, "Analysis");
 
+    $("copyright").innerHTML = getUserConfig("CopyRight");
 
     var toecharts = document.createElement("div");
     datatools.appendChild(toecharts);

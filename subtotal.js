@@ -286,3 +286,5 @@ function subtotal(column, target, calculation) {
         return {columns: columns, data: data};
     }
 }
+
+$("copyright").innerHTML = getUserConfig("CopyRight");

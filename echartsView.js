@@ -1223,6 +1223,7 @@ function getEchartsConfigs(parent) {
 }
 
 function getEcharts(type, width, height, themes) {
+    $("copyright").innerHTML = getUserConfig("CopyRight");
     var container = document.createElement("div");
     container.className = "echarts-container";
     container.id = "echarts-container";
@@ -1560,7 +1561,7 @@ function getTransversBar(container, themes) {
             var series = {name: columns[c], type: "bar", data: []};
             //series.stack = "true";
             series.label = {
-                show: __ECHARTS__.configs.barLabelDisplay.value == "NO" ? false : true,
+                show: __ECHARTS__.configs.barLabelDisplay.value == "YES",
                 rotate: __ECHARTS__.configs.barLabelRotate.value,
                 align: 'center',
                 verticalAlign: 'middle',
@@ -1568,10 +1569,10 @@ function getTransversBar(container, themes) {
                 distance: 15,
                 formatter: '{value|{c}}',
                 rich: {
-                    value: {
-                        color: __ECHARTS__.configs.labelTextColor.value,
-                        fontSize: __ECHARTS__.configs.labelFontSizevalue,
-                    }
+                        value: {
+                            color: __ECHARTS__.configs.labelBarTextColor.value,
+                            fontSize: __ECHARTS__.configs.labelBarFontSize.value,
+                        }
                 }
             };
             series.animationDelay = function (idx) {
@@ -4365,7 +4366,6 @@ function getWebkitDep(container, themes) {
             label: {
                 position: 'right',
                 formatter: '{b}',
-                color: __ECHARTS__.configs.labelTextColor.value,
             },
             draggable: true,
             data: webkitDep.nodes.map(function (node, idx) {
@@ -4533,7 +4533,6 @@ function getScatter(container, themes) {
                     show: true,
                     position: 'left',
                     formatter: myRegression.expression,
-                    color: __ECHARTS__.configs.labelTextColor.value,
                     fontSize: 10
                 },
                 data: [{
@@ -4739,7 +4738,6 @@ function getFunnel(container, themes) {
                     label: {
                         show: true,
                         position: 'inside',
-                        color: __ECHARTS__.configs.labelTextColor.value,
                     },
                     labelLine: {
                         length: 10,
@@ -5066,7 +5064,6 @@ function getLiqiud(container, themes) {
 
                 label: {
                     show: true,
-                    color: __ECHARTS__.configs.labelTextColor.value,
                     insideColor: '#fff',
                     fontSize: __ECHARTS__.configs.liqiudFontSize.value,
                     fontWeight: 'bold',
@@ -6992,8 +6989,8 @@ function getCategoryLine(container, themes) {
                 formatter: '{value|{c}}',
                 rich: {
                     value: {
-                        color: __ECHARTS__.configs.labelTextColor.value,
-                        fontSize: __ECHARTS__.configs.labelFontSizevalue,
+                        color: __ECHARTS__.configs.labelBarTextColor.value,
+                        fontSize: __ECHARTS__.configs.labelBarFontSize.value,
                     }
                 }
             };
@@ -7761,7 +7758,6 @@ function getCategoryLineForLiqiud(container, themes) {
 
                 label: {
                     show: true,
-                    color: __ECHARTS__.configs.labelTextColor.value,
                     insideColor: '#fff',
                     fontSize: __ECHARTS__.configs.liqiudFontSize.value,
                     fontWeight: 'bold',
