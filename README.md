@@ -1,12 +1,20 @@
 # WebDbDataView（数据视图）
 <div style="background-image: url('https://repository-images.githubusercontent.com/280654590/7a4ee380-ca7b-11ea-85fe-72ff2ef8ada9')">
-<img src="https://images.gitee.com/uploads/images/2020/0910/191716_0b2536b3_7951851.png">
-<img src="https://images.gitee.com/uploads/images/2020/0910/191750_d537322e_7951851.png">
-<img src="https://images.gitee.com/uploads/images/2020/0910/191816_0bf5ed54_7951851.png">
-<img src="https://images.gitee.com/uploads/images/2020/0910/191844_8e3d1abf_7951851.png">
-<img src="https://images.gitee.com/uploads/images/2020/0910/192009_83133c02_7951851.png">
+<img src="https://images.gitee.com/uploads/images/2020/0821/132747_6a4b1080_7951851.png">
+<img src="https://images.gitee.com/uploads/images/2020/0821/132955_c7dd5ff8_7951851.png">
+<img src="https://images.gitee.com/uploads/images/2020/0822/210321_c1a3b247_7951851.png">
 </div>
 
+
+1. 采用HTML5技术开发，开发和测试环境使用Google Chrome浏览器，其他浏览器未测试。
+2. SQL编辑由CodeMirror提供支持,详细见https://codemirror.net。
+3. 数据视图由Apache Echarts提供支持，详细见https://echarts.apache.org/zh/index.html。
+4. 回归曲线计算由Echarts-stat提供支持,详细见https://github.com/ecomfe/echarts-stat。
+5. 8.Xlsx文件处理由SheetJS提供支持,详细见http://sheetjs.com。
+
+
+
+#功能
 1. 创建数据库
 2. 删除数据库
 3. 创建表
@@ -33,8 +41,5 @@
 25. 数据筛选
 26. 页面主题
 27. 用户参数
-28. 参数化全国城市经纬度数据、用户自定义经纬度数据和本地地图
-29. 导入Excel时,增加数据集合选择.
-30. 增加导入脚本字符集选择
 
 

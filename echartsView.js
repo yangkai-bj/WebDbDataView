@@ -135,10 +135,18 @@ var __ECHARTS__ = {
          outRadius: {name: "外半径(%)", value: "70%", type: "input"},
          inRadius: {name: "内半径(%)", value: "35%", type: "input"},
          pieLabelDisplay: {name: "显示标签", value: 'YES', options: ["YES", "NO"], type: "select"},
-         labelPieFontSize: {name: "标签字号(px)", value: 12, type: "input"},
+         pieLabelFontSize: {name: "标签字号(px)", value: 12, type: "input"},
          pieLabelAlignTo: {name: "标签对齐方式", value: 'none', options: ["none", "labelLine", "edge"], type: "select"},
          richTextLabel: {name: "富文本标签", value: 'NO', options: ["YES", "NO"], type: "select"},
-         groupwith: {name: "每行序列数", value: 2, type: "input"},
+         groupWith: {name: "每行序列数", value: 2, type: "input"},
+
+         hr_radar: {name: "[ 雷达图 ] ", value: "", type: "hr"},
+         radarShape:{name: "形状", value: 'circle', options: ["circle", "polygon"], type: "select"},
+         radarAreaDisplay:{name: "显示分区", value: 'YES', options: ["YES", "NO"], type: "select"},
+         radarNameDisplay:{name: "显示名称", value: 'YES', options: ["YES", "NO"], type: "select"},
+         radarLabelRotate:{name: "标签旋转度数", value: 0, type: "input"},
+         radarSplitNumber:{name: "分割段数", value: 5, type: "input"},
+         radarSameMax:{name: "同基比较", value: 'NO', options: ["YES", "NO"], type: "select"},
 
          hr_scatter: {name: "[ 散点图 ]", value: "", type: "hr"},
          scatterSymbolSize: {name: "数据点大小(px)", value: 6, type: "input"},
@@ -2519,14 +2527,6 @@ function getPolarBar(container, themes) {
     var myChart = echarts.init(container, themes);
     //主题:dark,light
     var option = {
-        grid: {
-            x: __ECHARTS__.configs.grid_left.value,
-            y: __ECHARTS__.configs.grid_top.value,
-            x2: __ECHARTS__.configs.grid_right.value,
-            y2: __ECHARTS__.configs.grid_bottom.value,
-            containLabel: __ECHARTS__.configs.grid_containLabel.value == "YES",
-            backgroundColor: 'transparent'
-        },
         title: {
             show: __ECHARTS__.configs.titleDisplay.value == "YES",
             text: __ECHARTS__.configs.titleText.value,
@@ -2562,44 +2562,61 @@ function getPolarBar(container, themes) {
         },
         angleAxis: {
             axisLabel: {
-                show: true,
+                show: __ECHARTS__.configs.axisLineDisplay.value == "YES",
                 textStyle: {
                     color: __ECHARTS__.configs.axisTextColor.value
                 }
             },
             axisLine: {
-                show: true,
+                show: __ECHARTS__.configs.axisLineDisplay.value == "YES",
                 lineStyle: {
                     color: __ECHARTS__.configs.axisColor.value,
                 },
             },
             splitLine: {
-                show: true,
+                show: __ECHARTS__.configs.splitXLineDisplay.value == "YES",
                 lineStyle: {
                     color: __ECHARTS__.configs.axisColor.value
+                },
+            },
+            axisTick:{
+                show: __ECHARTS__.configs.axisLineDisplay.value == "YES",
+                lineStyle: {
+                    color: __ECHARTS__.configs.axisColor.value,
                 },
             },
             z: 10
         },
         radiusAxis: {
             axisLabel: {
-                show: true,
+                show: __ECHARTS__.configs.axisLineDisplay.value == "YES",
                 textStyle: {
                     color: __ECHARTS__.configs.axisTextColor.value
                 }
             },
             axisLine: {
-                show: true,
+                show: __ECHARTS__.configs.axisLineDisplay.value == "YES",
                 lineStyle: {
                     color: __ECHARTS__.configs.axisColor.value
                 },
             },
-            splitArea: {show: true},
+            splitArea: {
+                show: __ECHARTS__.configs.splitYAreaDisplay.value == "YES",
+            },
+            axisTick:{
+                show: __ECHARTS__.configs.axisLineDisplay.value == "YES",
+                lineStyle: {
+                    color: __ECHARTS__.configs.axisColor.value,
+                },
+            },
             type: 'category',
             data: xAxis,
             z: 10,
         },
-        polar: {},
+        polar: {
+            center:[(toPoint(__ECHARTS__.configs.grid_left.value) + (100-toPoint(__ECHARTS__.configs.grid_left.value)-toPoint(__ECHARTS__.configs.grid_right.value))/2) + "%",
+            (toPoint(__ECHARTS__.configs.grid_top.value) + (100-toPoint(__ECHARTS__.configs.grid_top.value)-toPoint(__ECHARTS__.configs.grid_bottom.value))/2) + "%"],
+        },
         series: yAxis_series,
         legend: {
             show: __ECHARTS__.configs.legendDisplay.value == "YES",
@@ -2675,14 +2692,6 @@ function getPolarArea(container, themes) {
     var myChart = echarts.init(container, themes);
     //主题:dark,light
     var option = {
-        grid: {
-            x: __ECHARTS__.configs.grid_left.value,
-            y: __ECHARTS__.configs.grid_top.value,
-            x2: __ECHARTS__.configs.grid_right.value,
-            y2: __ECHARTS__.configs.grid_bottom.value,
-            containLabel: __ECHARTS__.configs.grid_containLabel.value == "YES",
-            backgroundColor: 'transparent'
-        },
         title: {
             show:__ECHARTS__.configs.titleDisplay.value =="YES",
             text: __ECHARTS__.configs.titleText.value,
@@ -2718,20 +2727,25 @@ function getPolarArea(container, themes) {
         },
         angleAxis: {
             axisLabel:{
-                show: true,
+                show: __ECHARTS__.configs.axisLineDisplay.value == "YES",
                 textStyle:{
                     color: __ECHARTS__.configs.axisTextColor.value,
                 }
             },
             axisLine: {
-                show: true,
+                show: __ECHARTS__.configs.axisLineDisplay.value == "YES",
                 lineStyle: {
                     color: __ECHARTS__.configs.axisColor.value
                 },
             },
+            axisTick:{
+                show: __ECHARTS__.configs.axisLineDisplay.value == "YES",
+                lineStyle: {
+                    color: __ECHARTS__.configs.axisColor.value,
+                },
+            },
             splitArea: {
-                show: true,
-                interval:1
+                show: __ECHARTS__.configs.splitXAreaDisplay.value == "YES",
             },
             type: 'category',
             data: xAxis,
@@ -2739,26 +2753,35 @@ function getPolarArea(container, themes) {
         },
         radiusAxis: {
             axisLabel:{
-                show: true,
+                show: __ECHARTS__.configs.axisLineDisplay.value == "YES",
                 textStyle:{
                     color: __ECHARTS__.configs.axisTextColor.value,
                 }
             },
             axisLine: {
-                show: true,
+                show: __ECHARTS__.configs.axisLineDisplay.value == "YES",
                 lineStyle: {
                     color: __ECHARTS__.configs.axisColor.value
                 },
             },
+            axisTick:{
+                show: __ECHARTS__.configs.axisLineDisplay.value == "YES",
+                lineStyle: {
+                    color: __ECHARTS__.configs.axisColor.value,
+                },
+            },
             splitLine: {
-                show: true,
+                show: __ECHARTS__.configs.splitYLineDisplay.value == "YES",
                 lineStyle: {
                     color: __ECHARTS__.configs.axisColor.value
                 },
             },
             z:10
         },
-        polar: {},
+        polar: {
+            center:[(toPoint(__ECHARTS__.configs.grid_left.value) + (100-toPoint(__ECHARTS__.configs.grid_left.value)-toPoint(__ECHARTS__.configs.grid_right.value))/2) + "%",
+            (toPoint(__ECHARTS__.configs.grid_top.value) + (100-toPoint(__ECHARTS__.configs.grid_top.value)-toPoint(__ECHARTS__.configs.grid_bottom.value))/2) + "%"],
+        },
         series: yAxis_series,
         legend: {
             show:__ECHARTS__.configs.legendDisplay.value =="YES",
@@ -2859,13 +2882,13 @@ function getPie(container,themes) {
 
     var top = 5;
     var left = 10;
-    var groupwith = __ECHARTS__.configs.groupwith.value;
-    var lines = parseInt(series.length / groupwith + 0.5);
+    var groupWith = __ECHARTS__.configs.groupWith.value;
+    var lines = parseInt(series.length / groupWith + 0.5);
     var height = parseInt(80 / lines);
-    var width = 80/groupwith;
+    var width = 80/groupWith;
     for (var i = 0; i < series.length; i++) {
-        series[i].top = ((top + parseInt(i / groupwith) * height) + parseInt(i / groupwith) * top) + "%";
-        series[i].left = (left + (i % groupwith) * width) + "%";
+        series[i].top = ((top + parseInt(i / groupWith) * height) + parseInt(i / groupWith) * top) + "%";
+        series[i].left = (left + (i % groupWith) * width) + "%";
         series[i].width = width + "%";
         series[i].height = height + "%";
     }
@@ -2931,7 +2954,7 @@ function getPie(container,themes) {
         },
         series: series,
         label: {
-            fontSize: __ECHARTS__.configs.labelPieFontSize.value,
+            fontSize: __ECHARTS__.configs.pieLabelFontSize.value,
         },
         animationEasing: 'elasticOut',
         animationDelayUpdate: function (idx) {
@@ -3049,13 +3072,13 @@ function getRing(container,themes) {
 
     var top = 5;
     var left = 10;
-    var groupwith = __ECHARTS__.configs.groupwith.value;
-    var lines = parseInt(series.length / groupwith + 0.5);
+    var groupWith = __ECHARTS__.configs.groupWith.value;
+    var lines = parseInt(series.length / groupWith + 0.5);
     var height = parseInt(80 / lines);
-    var width = 80 / groupwith;
+    var width = 80 / groupWith;
     for (var i = 0; i < series.length; i++) {
-        series[i].top = ((top + parseInt(i / groupwith) * height) + parseInt(i / groupwith) * top) + "%";
-        series[i].left = (left + (i % groupwith) * width) + "%";
+        series[i].top = ((top + parseInt(i / groupWith) * height) + parseInt(i / groupWith) * top) + "%";
+        series[i].left = (left + (i % groupWith) * width) + "%";
         series[i].width = width + "%";
         series[i].height = height + "%";
     }
@@ -3121,7 +3144,7 @@ function getRing(container,themes) {
         },
         series: series,
         label: {
-            fontSize: __ECHARTS__.configs.labelPieFontSize.value,
+            fontSize: __ECHARTS__.configs.pieLabelFontSize.value,
         },
         animationEasing: 'elasticOut',
         animationDelayUpdate: function (idx) {
@@ -3240,13 +3263,13 @@ function getRose(container,themes) {
     }
     var top = 5;
     var left = 10;
-    var groupwith = __ECHARTS__.configs.groupwith.value;
-    var lines = parseInt(series.length / groupwith + 0.5);
+    var groupWith = __ECHARTS__.configs.groupWith.value;
+    var lines = parseInt(series.length / groupWith + 0.5);
     var height = parseInt(80 / lines);
-    var width = 80/ groupwith;
+    var width = 80/ groupWith;
     for (var i = 0; i < series.length; i++) {
-        series[i].top = ((top + parseInt(i / groupwith) * height) + parseInt(i / groupwith) * top) + "%";
-        series[i].left = (left + (i % groupwith) * width) + "%";
+        series[i].top = ((top + parseInt(i / groupWith) * height) + parseInt(i / groupWith) * top) + "%";
+        series[i].left = (left + (i % groupWith) * width) + "%";
         series[i].width = width + "%";
         series[i].height = height + "%";
     }
@@ -3312,7 +3335,7 @@ function getRose(container,themes) {
         },
         series: series,
         label: {
-            fontSize: __ECHARTS__.configs.labelPieFontSize.value,
+            fontSize: __ECHARTS__.configs.pieLabelFontSize.value,
         },
         animationEasing: 'elasticOut',
         animationDelayUpdate: function (idx) {
@@ -3377,16 +3400,23 @@ function getRadar(container, themes) {
     var xAxis = [];
     var series = [];
     var xAxis_max = {};
-    //每个系类的最大值
-    for (var c=1;c<columns.length;c++) {
-        var _max = 0;
-        for (var i = 0; i < dataset["data"].length; i++) {
-            var r = dataset["data"][i];
-            if (r[columns[c]].value > _max )
-                _max = r[columns[c]].value;
-        }
-        xAxis_max[columns[c]] = _max;
-    }
+    var all_max = null;
+    //每行的最大值
+      for (var i = 0; i < dataset["data"].length; i++) {
+          let max = null;
+          let r = dataset["data"][i];
+          for (var c = 1; c < columns.length; c++) {
+              if (max == null)
+                  max = r[columns[c]].value;
+              else if (r[columns[c]].value > max)
+                  max = r[columns[c]].value;
+              if (all_max == null)
+                  all_max = max;
+              else if (max > all_max)
+                  all_max = max;
+          }
+          xAxis_max[r[columns[0]].value] = max;
+      }
 
     for (var c=0;c<columns.length;c++) {
         if ( c==0 ){
@@ -3394,13 +3424,17 @@ function getRadar(container, themes) {
                 var r = dataset["data"][i];
                 xAxis.push({
                     name: r[columns[c]].value,
-                    max: xAxis_max[columns[c]],
+                    max: __ECHARTS__.configs.radarSameMax.value=="YES"?all_max:xAxis_max[r[columns[c]].value],
                 });
             }
         } else {
             var serie = {
                 name: columns[c],
                 type: "radar",
+                areaStyle: {
+                    show:__ECHARTS__.configs.radarAreaDisplay.value == "YES",
+                    normal: {}
+                },
                 data: []
             };
             serie.animationDelay = function (idx) {
@@ -3427,40 +3461,40 @@ function getRadar(container, themes) {
             backgroundColor: 'transparent'
         },
         title: {
-            show:__ECHARTS__.configs.titleDisplay.value =="YES",
+            show: __ECHARTS__.configs.titleDisplay.value == "YES",
             text: __ECHARTS__.configs.titleText.value,
             subtext: __ECHARTS__.configs.titleSubText.value,
-            top:"top",
-            left:__ECHARTS__.configs.titlePosition.value,
-            textStyle:{
-                color:__ECHARTS__.configs.titleTextColor.value,
+            top: "top",
+            left: __ECHARTS__.configs.titlePosition.value,
+            textStyle: {
+                color: __ECHARTS__.configs.titleTextColor.value,
             },
-            subtextStyle:{
-                color:__ECHARTS__.configs.titleSubTextColor.value,
+            subtextStyle: {
+                color: __ECHARTS__.configs.titleSubTextColor.value,
             }
         },
         legend: {
-            show:__ECHARTS__.configs.legendDisplay.value =="YES",
+            show: __ECHARTS__.configs.legendDisplay.value == "YES",
             top: __ECHARTS__.configs.legendPositionTop.value,
             left: __ECHARTS__.configs.legendPositionLeft.value,
-            orient:__ECHARTS__.configs.legendOrient.value,
+            orient: __ECHARTS__.configs.legendOrient.value,
             data: columns.slice(1),
             textStyle: {
                 color: __ECHARTS__.configs.legendTextColor.value
             },
         },
         tooltip: {
-            show:__ECHARTS__.configs.tooltipDisplay.value == "YES",
+            show: __ECHARTS__.configs.tooltipDisplay.value == "YES",
         },
         toolbox: {
-            show: __ECHARTS__.configs.toolboxDisplay.value =="YES",
+            show: __ECHARTS__.configs.toolboxDisplay.value == "YES",
             feature: {
                 saveAsImage: {},
                 restore: {},
                 dataView: {show: true, readOnly: true}
             },
             top: __ECHARTS__.configs.toolbox_top.value,
-            left:__ECHARTS__.configs.toolbox_left.value,
+            left: __ECHARTS__.configs.toolbox_left.value,
             orient: __ECHARTS__.configs.toolbox_orient.value,
             emphasis: {
                 iconStyle: {
@@ -3469,16 +3503,44 @@ function getRadar(container, themes) {
             },
         },
         radar: {
-            // shape: 'circle',
+            center:[(toPoint(__ECHARTS__.configs.grid_left.value) + (100-toPoint(__ECHARTS__.configs.grid_left.value)-toPoint(__ECHARTS__.configs.grid_right.value))/2) + "%",
+            (toPoint(__ECHARTS__.configs.grid_top.value) + (100-toPoint(__ECHARTS__.configs.grid_top.value)-toPoint(__ECHARTS__.configs.grid_bottom.value))/2) + "%"],
+            shape: __ECHARTS__.configs.radarShape.value,
+            splitNumber:__ECHARTS__.configs.radarSplitNumber.value,
             name: {
+                show: __ECHARTS__.configs.radarNameDisplay.value == "YES",
                 textStyle: {
-                    color: '#fff',
+                    color: __ECHARTS__.configs.axisTextColor.value,
                     backgroundColor: '#999',
                     borderRadius: 3,
-                    padding: [3, 5]
-                }
+                    padding: [3, 5],
+                },
             },
-            indicator: xAxis
+            indicator: xAxis,
+
+            axisLabel: {
+                show: __ECHARTS__.configs.splitYLineDisplay.value == "YES",
+                textStyle: {
+                    color: __ECHARTS__.configs.axisTextColor.value,
+                },
+                rotate:__ECHARTS__.configs.radarLabelRotate.value,
+            },
+            axisLine: {
+                show: __ECHARTS__.configs.axisLineDisplay.value == "YES",
+                lineStyle: {
+                    color: __ECHARTS__.configs.axisColor.value
+                },
+            },
+            splitLine:{
+                show: __ECHARTS__.configs.splitYLineDisplay.value == "YES",
+                lineStyle: {
+                    color: __ECHARTS__.configs.axisColor.value
+                },
+            },
+            splitArea: {
+                show: __ECHARTS__.configs.splitYAreaDisplay.value == "YES",
+                interval:1
+            },
         },
         series: series,
         animationEasing: 'elasticOut',
@@ -4929,13 +4991,13 @@ function getWordCloud(container, themes) {
 
         var top = 5;
         var left = 10;
-        var groupwith = __ECHARTS__.configs.groupwith.value;
-        var lines = parseInt(series.length / groupwith + 0.5);
+        var groupWith = __ECHARTS__.configs.groupWith.value;
+        var lines = parseInt(series.length / groupWith + 0.5);
         var height = parseInt(80 / lines);
-        var width = 80 / groupwith;
+        var width = 80 / groupWith;
         for (var i = 0; i < series.length; i++) {
-            series[i].top = ((top + parseInt(i / groupwith) * height) + parseInt(i / groupwith) * top) + "%";
-            series[i].left = (left + (i % groupwith) * width) + "%";
+            series[i].top = ((top + parseInt(i / groupWith) * height) + parseInt(i / groupWith) * top) + "%";
+            series[i].left = (left + (i % groupWith) * width) + "%";
             series[i].width = width + "%";
             series[i].height = height + "%";
         }
@@ -5095,13 +5157,13 @@ function getLiqiud(container, themes) {
             series.push(serie);
         }
 
-        var groupwith = __ECHARTS__.configs.groupwith.value;
-        var lines = parseInt(series.length / groupwith + 0.5);
-        var radius = 80 / (lines>groupwith?lines:groupwith);
+        var groupWith = __ECHARTS__.configs.groupWith.value;
+        var lines = parseInt(series.length / groupWith + 0.5);
+        var radius = 80 / (lines>groupWith?lines:groupWith);
         for (var i = 0; i < series.length; i++) {
             series[i].radius = radius + "%";
-            var x = radius * 2 / 3 + (i % groupwith) * (radius + 5);
-            var y = radius * 2 / 3 + parseInt(i / groupwith) * (radius + 5);
+            var x = radius * 2 / 3 + (i % groupWith) * (radius + 5);
+            var y = radius * 2 / 3 + parseInt(i / groupWith) * (radius + 5);
             series[i].center = [x + "%", y + "%"];
         }
     }
@@ -5273,13 +5335,13 @@ function getGaugeWithAll(container, themes) {
         series.push(serie);
     }
 
-    var groupwith = __ECHARTS__.configs.groupwith.value;
-    var lines = parseInt(series.length / groupwith + 0.5);
-    var radius = 80 / (lines > groupwith ? lines : groupwith);
+    var groupWith = __ECHARTS__.configs.groupWith.value;
+    var lines = parseInt(series.length / groupWith + 0.5);
+    var radius = 80 / (lines > groupWith ? lines : groupWith);
     for (var i = 0; i < series.length; i++) {
         series[i].radius = radius + "%";
-        var x = radius * 2 / 3 + (i % groupwith) * (radius + 5);
-        var y = radius * 2 / 3 + parseInt(i / groupwith) * (radius + 5);
+        var x = radius * 2 / 3 + (i % groupWith) * (radius + 5);
+        var y = radius * 2 / 3 + parseInt(i / groupWith) * (radius + 5);
         series[i].center = [x + "%", y + "%"];
     }
 
@@ -5448,13 +5510,13 @@ function getGaugeWithOne(container, themes) {
         seriesgroup.push(series);
     }
 
-    var groupwith = __ECHARTS__.configs.groupwith.value;
+    var groupWith = __ECHARTS__.configs.groupWith.value;
     for (var g = 0; g < seriesgroup.length; g++) {
-        var lines = parseInt(seriesgroup[g].length / groupwith + 0.5);
-        var radius = 80 / (lines > groupwith ? lines : groupwith);
+        var lines = parseInt(seriesgroup[g].length / groupWith + 0.5);
+        var radius = 80 / (lines > groupWith ? lines : groupWith);
         for (var i = 0; i < seriesgroup[g].length; i++) {
-            var x = radius * 2 / 3 + (i % groupwith) * (radius + 5);
-            var y = radius * 2 / 3 + parseInt(i / groupwith) * (radius + 5);
+            var x = radius * 2 / 3 + (i % groupWith) * (radius + 5);
+            var y = radius * 2 / 3 + parseInt(i / groupWith) * (radius + 5);
             seriesgroup[g][i].radius = radius + "%";
             seriesgroup[g][i].center = [x + "%", y + "%"];
         }
