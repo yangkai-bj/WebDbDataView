@@ -2525,7 +2525,6 @@ function getPolarBar(container, themes) {
         }
     }
     var myChart = echarts.init(container, themes);
-    //主题:dark,light
     var option = {
         title: {
             show: __ECHARTS__.configs.titleDisplay.value == "YES",
@@ -2690,7 +2689,6 @@ function getPolarArea(container, themes) {
         }
     }
     var myChart = echarts.init(container, themes);
-    //主题:dark,light
     var option = {
         title: {
             show:__ECHARTS__.configs.titleDisplay.value =="YES",
@@ -2880,12 +2878,12 @@ function getPie(container,themes) {
         }
     }
 
-    var top = 5;
-    var left = 10;
-    var groupWith = __ECHARTS__.configs.groupWith.value;
-    var lines = parseInt(series.length / groupWith + 0.5);
-    var height = parseInt(80 / lines);
-    var width = 80/groupWith;
+    let top = toPoint(__ECHARTS__.configs.grid_top.value);
+    let left = toPoint(__ECHARTS__.configs.grid_left.value);
+    let groupWith = __ECHARTS__.configs.groupWith.value;
+    let lines = parseInt(series.length / groupWith + 0.5);
+    let height = parseInt((100 - toPoint(__ECHARTS__.configs.grid_top.value)- toPoint(__ECHARTS__.configs.grid_bottom.value)) / lines);
+    let width = (100 - toPoint(__ECHARTS__.configs.grid_left.value)- toPoint(__ECHARTS__.configs.grid_right.value))/groupWith;
     for (var i = 0; i < series.length; i++) {
         series[i].top = ((top + parseInt(i / groupWith) * height) + parseInt(i / groupWith) * top) + "%";
         series[i].left = (left + (i % groupWith) * width) + "%";
@@ -2895,14 +2893,6 @@ function getPie(container,themes) {
 
     var myChart = echarts.init(container, themes);
     var option = {
-        grid: {
-            x: __ECHARTS__.configs.grid_left.value,
-            y: __ECHARTS__.configs.grid_top.value,
-            x2: __ECHARTS__.configs.grid_right.value,
-            y2: __ECHARTS__.configs.grid_bottom.value,
-            containLabel: __ECHARTS__.configs.grid_containLabel.value == "YES",
-            backgroundColor: 'transparent'
-        },
         title: {
             show: __ECHARTS__.configs.titleDisplay.value == "YES",
             text: __ECHARTS__.configs.titleText.value,
@@ -3070,12 +3060,12 @@ function getRing(container,themes) {
         }
     }
 
-    var top = 5;
-    var left = 10;
-    var groupWith = __ECHARTS__.configs.groupWith.value;
-    var lines = parseInt(series.length / groupWith + 0.5);
-    var height = parseInt(80 / lines);
-    var width = 80 / groupWith;
+    let top = toPoint(__ECHARTS__.configs.grid_top.value);
+    let left = toPoint(__ECHARTS__.configs.grid_left.value);
+    let groupWith = __ECHARTS__.configs.groupWith.value;
+    let lines = parseInt(series.length / groupWith + 0.5);
+    let height = parseInt((100 - toPoint(__ECHARTS__.configs.grid_top.value)- toPoint(__ECHARTS__.configs.grid_bottom.value)) / lines);
+    let width = (100 - toPoint(__ECHARTS__.configs.grid_left.value)- toPoint(__ECHARTS__.configs.grid_right.value))/groupWith;
     for (var i = 0; i < series.length; i++) {
         series[i].top = ((top + parseInt(i / groupWith) * height) + parseInt(i / groupWith) * top) + "%";
         series[i].left = (left + (i % groupWith) * width) + "%";
@@ -3085,14 +3075,6 @@ function getRing(container,themes) {
 
     var myChart = echarts.init(container, themes);
     var option = {
-        grid: {
-            x: __ECHARTS__.configs.grid_left.value,
-            y: __ECHARTS__.configs.grid_top.value,
-            x2: __ECHARTS__.configs.grid_right.value,
-            y2: __ECHARTS__.configs.grid_bottom.value,
-            containLabel: __ECHARTS__.configs.grid_containLabel.value == "YES",
-            backgroundColor: 'transparent'
-        },
         title: {
             show:__ECHARTS__.configs.titleDisplay.value =="YES",
             text: __ECHARTS__.configs.titleText.value,
@@ -3261,12 +3243,12 @@ function getRose(container,themes) {
             series.push(serie);
         }
     }
-    var top = 5;
-    var left = 10;
-    var groupWith = __ECHARTS__.configs.groupWith.value;
-    var lines = parseInt(series.length / groupWith + 0.5);
-    var height = parseInt(80 / lines);
-    var width = 80/ groupWith;
+    let top = toPoint(__ECHARTS__.configs.grid_top.value);
+    let left = toPoint(__ECHARTS__.configs.grid_left.value);
+    let groupWith = __ECHARTS__.configs.groupWith.value;
+    let lines = parseInt(series.length / groupWith + 0.5);
+    let height = parseInt((100 - toPoint(__ECHARTS__.configs.grid_top.value)- toPoint(__ECHARTS__.configs.grid_bottom.value)) / lines);
+    let width = (100 - toPoint(__ECHARTS__.configs.grid_left.value)- toPoint(__ECHARTS__.configs.grid_right.value))/groupWith;
     for (var i = 0; i < series.length; i++) {
         series[i].top = ((top + parseInt(i / groupWith) * height) + parseInt(i / groupWith) * top) + "%";
         series[i].left = (left + (i % groupWith) * width) + "%";
@@ -3276,14 +3258,6 @@ function getRose(container,themes) {
 
     var myChart = echarts.init(container, themes);
     var option = {
-        grid: {
-            x: __ECHARTS__.configs.grid_left.value,
-            y: __ECHARTS__.configs.grid_top.value,
-            x2: __ECHARTS__.configs.grid_right.value,
-            y2: __ECHARTS__.configs.grid_bottom.value,
-            containLabel: __ECHARTS__.configs.grid_containLabel.value == "YES",
-            backgroundColor: 'transparent'
-        },
         title: {
             show:__ECHARTS__.configs.titleDisplay.value =="YES",
             text: __ECHARTS__.configs.titleText.value,
@@ -4827,15 +4801,16 @@ function getFunnel(container, themes) {
             }
         }
 
-        var top = 5;
-        var left = 10;
-        var lines = parseInt(series.length / 2 + 0.5);
-        var height = parseInt(80 / lines);
-        var width = 80;
+        let top = toPoint(__ECHARTS__.configs.grid_top.value);
+        let left = toPoint(__ECHARTS__.configs.grid_left.value);
+        let lines = parseInt(series.length / 2 + 0.5);
+        let height = parseInt((100 - toPoint(__ECHARTS__.configs.grid_top.value) - toPoint(__ECHARTS__.configs.grid_bottom.value)) / lines);
+        let width = 100 - toPoint(__ECHARTS__.configs.grid_left.value) - toPoint(__ECHARTS__.configs.grid_right.value);
+
         if (series.length > 1)
             width = 40;
         for (var i = 0; i < series.length; i++) {
-            series[i].top = ((top + parseInt(i / 2) * height) + parseInt(i / 2)*top) + "%";
+            series[i].top = ((top + parseInt(i / 2) * height) + parseInt(i / 2) * top) + "%";
             series[i].left = (left + (i % 2) * 40) + "%";
             if (series.length == 1) {
                 series[i].funnelAlign = "center";
@@ -4859,14 +4834,6 @@ function getFunnel(container, themes) {
     init();
 
     var option = {
-        grid: {
-            x: __ECHARTS__.configs.grid_left.value,
-            y: __ECHARTS__.configs.grid_top.value,
-            x2: __ECHARTS__.configs.grid_right.value,
-            y2: __ECHARTS__.configs.grid_bottom.value,
-            containLabel: __ECHARTS__.configs.grid_containLabel.value == "YES",
-            backgroundColor: 'transparent'
-        },
         title: {
             show:__ECHARTS__.configs.titleDisplay.value =="YES",
             text: __ECHARTS__.configs.titleText.value,
@@ -4989,12 +4956,13 @@ function getWordCloud(container, themes) {
             }
         }
 
-        var top = 5;
-        var left = 10;
-        var groupWith = __ECHARTS__.configs.groupWith.value;
-        var lines = parseInt(series.length / groupWith + 0.5);
-        var height = parseInt(80 / lines);
-        var width = 80 / groupWith;
+        let top = toPoint(__ECHARTS__.configs.grid_top.value);
+        let left = toPoint(__ECHARTS__.configs.grid_left.value);
+        let groupWith = __ECHARTS__.configs.groupWith.value;
+        let lines = parseInt(series.length / groupWith + 0.5);
+        let height = parseInt((100 - toPoint(__ECHARTS__.configs.grid_top.value) - toPoint(__ECHARTS__.configs.grid_bottom.value)) / lines);
+        let width = (100 - toPoint(__ECHARTS__.configs.grid_left.value) - toPoint(__ECHARTS__.configs.grid_right.value)) / groupWith;
+
         for (var i = 0; i < series.length; i++) {
             series[i].top = ((top + parseInt(i / groupWith) * height) + parseInt(i / groupWith) * top) + "%";
             series[i].left = (left + (i % groupWith) * width) + "%";
@@ -5170,14 +5138,6 @@ function getLiqiud(container, themes) {
 
     init();
     var option = {
-        grid: {
-            x: __ECHARTS__.configs.grid_left.value,
-            y: __ECHARTS__.configs.grid_top.value,
-            x2: __ECHARTS__.configs.grid_right.value,
-            y2: __ECHARTS__.configs.grid_bottom.value,
-            containLabel: __ECHARTS__.configs.grid_containLabel.value == "YES",
-            backgroundColor: 'transparent'
-        },
         tooltip: {
             show:__ECHARTS__.configs.tooltipDisplay.value == "YES",
         },
@@ -5524,14 +5484,6 @@ function getGaugeWithOne(container, themes) {
 
     var myChart = echarts.init(container, themes);
     var option = {
-        grid: {
-            x: __ECHARTS__.configs.grid_left.value,
-            y: __ECHARTS__.configs.grid_top.value,
-            x2: __ECHARTS__.configs.grid_right.value,
-            y2: __ECHARTS__.configs.grid_bottom.value,
-            containLabel: __ECHARTS__.configs.grid_containLabel.value == "YES",
-            backgroundColor: 'transparent'
-        },
         title: {
             show:__ECHARTS__.configs.titleDisplay.value =="YES",
             text: __ECHARTS__.configs.titleText.value,
@@ -7662,7 +7614,9 @@ function getCategoryLineForGauge(container, themes) {
             serie.animationDelay = function (idx) {
                 return idx * 5 + 100;
             };
-            serie.center = [(c*50/(columns.length-1)) + 50/(columns.length-1)*(c-1) + "%", "50%"];
+            let left = (toPoint(__ECHARTS__.configs.grid_left.value) + (100-toPoint(__ECHARTS__.configs.grid_left.value) - toPoint(__ECHARTS__.configs.grid_right.value))/2);
+            let top = (toPoint(__ECHARTS__.configs.grid_top.value) + (100-toPoint(__ECHARTS__.configs.grid_top.value) - toPoint(__ECHARTS__.configs.grid_bottom.value))/2);
+            serie.center = [(c*left/(columns.length-1)) + left/(columns.length-1)*(c-1) + "%",top + "%"];
             opt.series.push(serie);
         }
 
@@ -7671,14 +7625,6 @@ function getCategoryLineForGauge(container, themes) {
 
     var option = {
         baseOption: {
-            grid: {
-                x: __ECHARTS__.configs.grid_left.value,
-                y: __ECHARTS__.configs.grid_top.value,
-                x2: __ECHARTS__.configs.grid_right.value,
-                y2: __ECHARTS__.configs.grid_bottom.value,
-                containLabel: __ECHARTS__.configs.grid_containLabel.value == "YES",
-                backgroundColor: 'transparent'
-            },
             title: {
                 show: __ECHARTS__.configs.titleDisplay.value == "YES",
                 text: __ECHARTS__.configs.titleText.value,
@@ -7841,7 +7787,9 @@ function getCategoryLineForLiqiud(container, themes) {
             serie.animationDelay = function (idx) {
                 return idx * 5 + 100;
             };
-            serie.center = [(c*50/(columns.length-1)) + 50/(columns.length-1)*(c-1) + "%", "50%"];
+            let left = (toPoint(__ECHARTS__.configs.grid_left.value) + (100-toPoint(__ECHARTS__.configs.grid_left.value) - toPoint(__ECHARTS__.configs.grid_right.value))/2);
+            let top = (toPoint(__ECHARTS__.configs.grid_top.value) + (100-toPoint(__ECHARTS__.configs.grid_top.value) - toPoint(__ECHARTS__.configs.grid_bottom.value))/2);
+            serie.center = [(c*left/(columns.length-1)) + 50/(columns.length-1)*(c-1) + "%", top + "%"];
             opt.series.push(serie);
         }
 
@@ -7850,14 +7798,6 @@ function getCategoryLineForLiqiud(container, themes) {
 
     var option = {
         baseOption: {
-            grid: {
-                x: __ECHARTS__.configs.grid_left.value,
-                y: __ECHARTS__.configs.grid_top.value,
-                x2: __ECHARTS__.configs.grid_right.value,
-                y2: __ECHARTS__.configs.grid_bottom.value,
-                containLabel: __ECHARTS__.configs.grid_containLabel.value == "YES",
-                backgroundColor: 'transparent'
-            },
             title: {
                 show: __ECHARTS__.configs.titleDisplay.value == "YES",
                 text: __ECHARTS__.configs.titleText.value,
