@@ -49,10 +49,10 @@ var __ECHARTS__ = {
      configs: {
 
          hr_grid: {name: "[ 图像位置 ]", value: "", type: "hr"},
-         grid_left: {name: "左边距(%)", value: "10%", type: "input"},
-         grid_right: {name: "右边距(%)", value: "10%", type: "input"},
          grid_top: {name: "上边距(%)", value: "10%", type: "input"},
          grid_bottom: {name: "下边距(%)", value: "10%", type: "input"},
+         grid_left: {name: "左边距(%)", value: "10%", type: "input"},
+         grid_right: {name: "右边距(%)", value: "10%", type: "input"},
          grid_containLabel: {name: "包含轴标签", value: "YES", options: ["YES", "NO"], type: "select"},
 
          hr_toolbox: {name: "[ 图形工具 ]", value: "", type: "hr"},
@@ -166,12 +166,13 @@ var __ECHARTS__ = {
          },
          wordCloudMinFontSize: {name: "最小字号(px)", value: 12, type: "input"},
          wordCloudMaxFontSize: {name: "最大字号(px)", value: 60, type: "input"},
+         wordCloudRotationRange:{name:"旋转角度", value: 90, type: "input"},
 
          hr_liqiud: {name: "[ 水球图 ]", value: "", type: "hr"},
          liqiudShape: {
              name: "形状",
              value: "circle",
-             options: ["circle", "rect", "roundRect", "triangle", "diamond", "pin", "arrow"], type: "select"
+             options: ["circle", "rect", "roundRect", "triangle", "diamond", "pin", "arrow", "container", "path"], type: "select"
          },
          liqiudFontSize: {name: "标题字号(px)", value: 16, type: "input"},
 
@@ -4892,8 +4893,8 @@ function getWordCloud(container, themes) {
     var series = [];
     var columns = [];
     var legends = [];
-    var maskImage = new Image();
-    maskImage.src = __SYS_IMAGES__.logo_echarts;
+    //var maskImage = new Image();
+    //maskImage.src = 'logo.png';
 
     function init() {
         for (var i = 0; i < dataset["columns"].length; i++) {
@@ -4912,11 +4913,11 @@ function getWordCloud(container, themes) {
                     type: 'wordCloud',
                     gridSize: 2,
                     sizeRange: [__ECHARTS__.configs.wordCloudMinFontSize.value, __ECHARTS__.configs.wordCloudMaxFontSize.value],//[最小字号,最大字号],
-                    rotationRange: [-90, 90],//[旋转角度,旋转角度]
+                    rotationRange: [-1 * __ECHARTS__.configs.wordCloudRotationRange.value , __ECHARTS__.configs.wordCloudRotationRange.value],//[旋转角度,旋转角度]
                     shape: __ECHARTS__.configs.wordCloudShape.value,
                     //'circle', 'cardioid', 'diamond', 'triangle-forward', 'triangle', 'pentagon', 'star'
                     //maskImage: maskImage,
-                    drawOutOfBound: true,
+                    drawOutOfBound: false,
                     textStyle: {
                         normal: {
                             color: function () {
@@ -4934,7 +4935,7 @@ function getWordCloud(container, themes) {
                     },
                     data: [
                         {
-                            name: 'Sam S Club',
+                            name: 'wordCloud',
                             value: 10000,
                             textStyle: {
                                 normal: {
@@ -7279,8 +7280,6 @@ function getGeoMigrateLinesOfChinaCity(container, themes) {
             }
         }
 
-        var planePath = 'path://M1705.06,1318.313v-89.254l-319.9-221.799l0.073-208.063c0.521-84.662-26.629-121.796-63.961-121.491c-37.332-0.305-64.482,36.829-63.961,121.491l0.073,208.063l-319.9,221.799v89.254l330.343-157.288l12.238,241.308l-134.449,92.931l0.531,42.034l175.125-42.917l175.125,42.917l0.531-42.034l-134.449-92.931l12.238-241.308L1705.06,1318.313z';
-
         var getMapRegions = function(name) {
             let Regions = {};
             let features = echarts.getMap(name).geoJson.features;
@@ -7405,7 +7404,7 @@ function getGeoMigrateLinesOfChinaCity(container, themes) {
                         period: __ECHARTS__.configs.seriesLoopPlayInterval.value,
                         trailLength: 0,
                         //拖尾
-                        symbol: planePath,
+                        symbol: __SYS_IMAGES_PATH__.planePath,
                         symbolSize: 10
                     },
                     lineStyle: {
@@ -7604,7 +7603,7 @@ function getCategoryLineForGauge(container, themes) {
                 data: []
             };
             serie.data.push({
-                "name": row[columns[0]].value + "\n\n" + columns[c],
+                "name": row[columns[0]].value + "\r\n" + columns[c],
                 "value": row[columns[c]].value,
                 itemStyle: {
                     shadowColor: 'rgba(0, 0, 0, 0.5)',
@@ -7669,6 +7668,10 @@ function getCategoryLineForGauge(container, themes) {
             },
             tooltip: {
                 show: __ECHARTS__.configs.tooltipDisplay.value == "YES",
+                formatter: function (params) {
+                    var value = params.data.name.replace("\r\n", "<br>") + ":" + params.data.value;
+                    return value
+                },
             },
             toolbox: {
                 show: __ECHARTS__.configs.toolboxDisplay.value == "YES",
@@ -7734,7 +7737,7 @@ function getCategoryLineForLiqiud(container, themes) {
                 direction: 'right',
                 smooth: __ECHARTS__.configs.lineSmooth.value == "YES",
 
-                shape: __ECHARTS__.configs.liqiudShape.value,
+                shape: __ECHARTS__.configs.liqiudShape.value=="path"?__SYS_IMAGES_PATH__.echartsPath:__ECHARTS__.configs.liqiudShape.value,
 
                 waveAnimation: true,
                 animationEasing: 'linear',
@@ -7842,6 +7845,10 @@ function getCategoryLineForLiqiud(container, themes) {
             },
             tooltip: {
                 show: __ECHARTS__.configs.tooltipDisplay.value == "YES",
+                formatter: function (params) {
+                    var value = params.seriesName + "<br>" + params.data.name + ":" + params.data.value * 100 + "%";
+                    return value
+                },
             },
             toolbox: {
                 show: __ECHARTS__.configs.toolboxDisplay.value == "YES",
