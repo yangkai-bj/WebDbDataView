@@ -354,43 +354,48 @@ String.prototype.replaceAll = function(search, replacement) {
 };
 
 
-function transferData(structure,row){
+function transferData(structure,row) {
     //####################################
     //用于数据导入的行数据转换
     //读取当前数据表结构
     //####################################
-    var types = structure["data"];
-    var _row = [];
-    for(var i=0; i<row.length; i++){
-        var type = types[i].Type.value;
-        var p = type.indexOf("(");
-        if (p > 0){
-            type = type.substring(0,p);
+    let _row = [];
+    try {
+        let types = structure["data"];
+        if (types.length == row.length) {
+            for (var i = 0; i < row.length; i++) {
+                let type = types[i].Type.value;
+                let p = type.indexOf("(");
+                if (p > 0) {
+                    type = type.substring(0, p);
+                }
+                switch (type.toUpperCase()) {
+                    case "DATE":
+                        _row.push(new Date(row[i]).Format("yyyy-MM-dd"));
+                        break;
+                    case "DATETIME":
+                        _row.push(new Date(row[i]).Format("yyyy-MM-dd hh:mm:ss.S"));
+                        break;
+                    case "INT":
+                        _row.push(Number.parseInt(row[i]));
+                        break;
+                    case "DECIMAL":
+                        _row.push(Number.parseFloat(row[i]));
+                        break;
+                    case "FLOAT":
+                        _row.push(Number.parseFloat(row[i]));
+                        break;
+                    default:
+                        _row.push(row[i]);
+                        break;
+                }
+            }
         }
-        switch (type.toUpperCase()) {
-            case "DATE":
-                _row.push(new Date(row[i]).Format("yyyy-MM-dd"));
-                break;
-            case "DATETIME":
-                _row.push(new Date(row[i]).Format("yyyy-MM-dd hh:mm:ss.S"));
-                break;
-            case "INT":
-                _row.push(Number.parseInt(row[i]));
-                break;
-            case "DECIMAL":
-                _row.push(Number.parseFloat(row[i]));
-                break;
-            case "FLOAT":
-                _row.push(Number.parseFloat(row[i]));
-                break;
-            default:
-                _row.push(row[i]);
-                break;
-        }
+    } catch (e) {
     }
     return _row;
-
 }
+
 function importData(){
     //#######################################
     //默认行分隔符:\r\n
@@ -411,26 +416,35 @@ function importData(){
             var sql = "insert into " + table + " values ({VALUES})";
             //不要加字段列表，否则仅能导入两列数据.
             for (var i = 0; i < lines.length; i++) {
-                var data = transferData(__CONFIGS__.CURRENT_TABLE.structure, lines[i].trim().split(sep));
-                if (i == 0) {
-                    var values = "?";
-                    for (var c = 1; c < data.length; c++) {
-                        values += ",?"
+                try {
+                    let data = transferData(__CONFIGS__.CURRENT_TABLE.structure, lines[i].trim().split(sep));
+                    if (i == 0) {
+                        var values = "?";
+                        for (var c = 1; c < data.length; c++) {
+                            values += ",?"
+                        }
+                        sql = sql.replace("{VALUES}", values);
+                        viewMessage(sql);
+                    } else if (data.length == __CONFIGS__.CURRENT_TABLE.structure.data.length) {
+                        tx.executeSql(sql, data, function (tx, results) {
+                                __IMPORT__.SourceFile.count += 1;
+                                __IMPORT__.SourceFile.imported += results.rowsAffected;
+                                viewMessage("导入第 " + __IMPORT__.SourceFile.count + " 条记录.[ imported:" + __IMPORT__.SourceFile.imported + " failed:" + __IMPORT__.SourceFile.failed + " ]")
+                            },
+                            function (tx, error) {
+                                __IMPORT__.SourceFile.count += 1;
+                                __IMPORT__.SourceFile.failed += 1;
+                                viewMessage("第 " + __IMPORT__.SourceFile.count + " 条记录错误.[ imported:" + __IMPORT__.SourceFile.imported + " failed:" + __IMPORT__.SourceFile.failed + " ]\n" + error.message)
+                            });
+                    } else {
+                        __IMPORT__.SourceFile.count += 1;
+                        __IMPORT__.SourceFile.failed += 1;
+                        viewMessage("第 " + __IMPORT__.SourceFile.count + " 条记录错误.[ imported:" + __IMPORT__.SourceFile.imported + " failed:" + __IMPORT__.SourceFile.failed + " ]\n" + "数据拆分验证错误,\n[ " + lines[i] + " ]")
                     }
-                    sql = sql.replace("{VALUES}", values);
-
-                    viewMessage(sql);
-                } else {
-                    tx.executeSql(sql, data, function (tx, results) {
-                            __IMPORT__.SourceFile.count += 1;
-                            __IMPORT__.SourceFile.imported += results.rowsAffected;
-                            viewMessage("导入第 " + __IMPORT__.SourceFile.count + " 条记录.[ imported:" + __IMPORT__.SourceFile.imported + " failed:" + __IMPORT__.SourceFile.failed + " ]")
-                        },
-                        function (tx, error) {
-                            __IMPORT__.SourceFile.count += 1;
-                            __IMPORT__.SourceFile.failed += 1;
-                            viewMessage("第 " + __IMPORT__.SourceFile.count + " 条记录错误.[ imported:" + __IMPORT__.SourceFile.imported + " failed:" + __IMPORT__.SourceFile.failed + " ]\n" + error.message)
-                        });
+                }catch (e) {
+                    __IMPORT__.SourceFile.count += 1;
+                    __IMPORT__.SourceFile.failed += 1;
+                    viewMessage("第 " + __IMPORT__.SourceFile.count + " 条记录错误.[ imported:" + __IMPORT__.SourceFile.imported + " failed:" + __IMPORT__.SourceFile.failed + " ]\n" + e + "\n[ " + lines[i] + " ]")
                 }
             }
             //由于tx.executeSql异步执行，连续事务执行时间不可预计，不能添加事后统计，只能事中统计.
@@ -1670,20 +1684,20 @@ function formatNumber(num,pattern){
 }
 
 function fillSqlParam(sql) {
-    var reg = new RegExp(/\{[a-zA-Z0-9\u4e00-\u9fa5]+\}/, "g");
-    var params = sql.match(reg);
+    let reg = new RegExp(/\{[a-zA-Z0-9\u4e00-\u9fa5]+\}/, "g");
+    let params = sql.match(reg);
     if (params != null) {
         //参数去重
-        var temp = [];
+        let temp = [];
         for (var i = 0; i < params.length; i++) {
             if (temp.indexOf(params[i]) === -1)
                 temp.push(params[i]);
         }
         params = temp.slice(0);
         for (var i = 0; i < params.length; i++) {
-            var param = params[i].toString();
+            let param = params[i].toString();
             param = param.substring(param.indexOf("{") + 1, param.indexOf("}"));
-            var value = prompt(param + " : ");
+            let value = prompt(param + " : ");
             if (value != null)
                 sql = sql.replaceAll(params[i].toString(), value.toString());
         }
@@ -1694,7 +1708,7 @@ function fillSqlParam(sql) {
 function execute() {
     if (__CONFIGS__.CURRENT_DATABASE.connect != null) {
         __CONFIGS__.CURRENT_DATABASE.connect.transaction(function (tx) {
-            var selection = "";
+            let selection = "";
             if (__SQLEDITOR__.codeMirror.somethingSelected())
                 selection = __SQLEDITOR__.codeMirror.getSelection();
             else
@@ -1702,11 +1716,23 @@ function execute() {
             if (__SQLEDITOR__.parameter == null)
                 selection = fillSqlParam(selection);
             else {
-                for (param in __SQLEDITOR__.parameter) {
-                    selection = selection.replaceAll("{" + param.toString() + "}", __SQLEDITOR__.parameter[param].toString());
+                let title = __SQLEDITOR__.title;
+                for (var param in __SQLEDITOR__.parameter) {
+                    selection = selection.replaceAll("{" + param.toString() + "}", __SQLEDITOR__.parameter[param].toString())
+                    if (title != null)
+                        title = title.replaceAll("{" + param.toString() + "}", __SQLEDITOR__.parameter[param].toString());
+                }
+                if (title != null) {
+                    title = title.split("_");
+                    __ECHARTS__.configs.titleText.value = title[0];
+                    if (title.length > 1) {
+                        __ECHARTS__.configs.titleSubText.value = title[1];
+                    } else {
+                        __ECHARTS__.configs.titleSubText.value = "";
+                    }
                 }
             }
-            var sqls = [];
+            let sqls = [];
             if (selection.trim() != "") {
                 viewMessage(selection);
                 $("tableContainer").innerHTML = "";
@@ -1714,7 +1740,7 @@ function execute() {
                 $("dataset-label").innerText = " ● ";
                 sqls = selection.split(";");
                 for (var s = 0; s < sqls.length; s++) {
-                    var sql = sqls[s].slice(0).trim();
+                    let sql = sqls[s].slice(0).trim();
                     if (sql.trim() == "")
                         continue;
                     __DATASET__["sql"] = sql;
@@ -2378,15 +2404,6 @@ function init() {
             if (paramdialog != null) {
                 setCenterPosition($("page"), paramdialog)
             } else {
-                if (__SQLEDITOR__.title != null) {
-                    let title = __SQLEDITOR__.title.split("_");
-                    __ECHARTS__.configs.titleText.value = title[0];
-                    if (title.length > 1) {
-                        __ECHARTS__.configs.titleSubText.value = title[1];
-                    } else {
-                        __ECHARTS__.configs.titleSubText.value = "";
-                    }
-                }
                 execute();
             }
         }

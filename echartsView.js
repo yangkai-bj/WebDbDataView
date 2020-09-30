@@ -1089,18 +1089,22 @@ function getMapConfig() {
 
 function getEchartsConfigs(parent) {
     let config = getUserConfig("echartsconfig");
-    if (config != null){
+    if (config != null) {
         config = JSON.parse(config);
-        for(key in config){
+        for (key in config) {
             try {
                 __ECHARTS__.configs[key].value = config[key];
-            }catch (e) {
+            } catch (e) {
             }
         }
     }
     //报表名称取编辑器文档名称
-    if (__SQLEDITOR__.title != null) {
-        let title = __SQLEDITOR__.title.split("_");
+    let title = __SQLEDITOR__.title;
+    if (title != null) {
+        for (var param in __SQLEDITOR__.parameter) {
+            title = title.replaceAll("{" + param.toString() + "}", __SQLEDITOR__.parameter[param].toString());
+        }
+        title = title.split("_");
         __ECHARTS__.configs.titleText.value = title[0];
         if (title.length > 1) {
             __ECHARTS__.configs.titleSubText.value = title[1];
@@ -1125,7 +1129,7 @@ function getEchartsConfigs(parent) {
     let hr = document.createElement("hr");
     container.appendChild(hr);
 
-    var itemcontainer =document.createElement("div");
+    var itemcontainer = document.createElement("div");
     itemcontainer.className = "echarts-configs-container";
     container.appendChild(itemcontainer);
 
@@ -1173,7 +1177,7 @@ function getEchartsConfigs(parent) {
                 __ECHARTS__.configs[this.id].value = this.value;
             };
             d.appendChild(input);
-        } else if (__ECHARTS__.configs[name].type == "hr"){
+        } else if (__ECHARTS__.configs[name].type == "hr") {
             s.innerHTML = __ECHARTS__.configs[name].name;
             s.style.color = "var(--main-title-color)";
             let c = document.createElement("div");
@@ -1223,7 +1227,7 @@ function getEchartsConfigs(parent) {
     b = document.createElement("a");
     b.className = "button";
     b.innerHTML = "退出";
-    b.onclick= close.onclick = function () {
+    b.onclick = close.onclick = function () {
         var m = $("echarts-configs-Content");
         m.parentNode.removeChild(m);
     };
