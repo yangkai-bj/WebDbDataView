@@ -3114,6 +3114,7 @@ function getSubtotal(columns) {
     table.id = "subtotal-dialog-table";
     table.className = "table";
     table.style.width = "100%";
+    table.style.tableLayout = "fixed";
 
     table.innerText = "";
     var tr = document.createElement("tr");
@@ -3121,7 +3122,7 @@ function getSubtotal(columns) {
     table.appendChild(tr);
     var th = document.createElement("th");
     th.className = "th";
-    th.style.width = "36px";
+    th.style.width = "32px";
     th.innerText = "选择";
     tr.appendChild(th);
     th = document.createElement("th");
@@ -3307,8 +3308,11 @@ function getParamDialog(title, sql) {
         var container = document.createElement("div");
         container.id = "sql-param-dialog";
         container.className = "sql-param-dialog";
+
         var d = document.createElement("div");
+        d.className = d.id = "sql-param-title-container";
         var span = document.createElement("span");
+        span.className = span.id = "sql-param-title";
         span.innerHTML = (title == null?"[ ]":"[ " + title + " ]");
         d.appendChild(span);
         let close = document.createElement("img");
@@ -3397,6 +3401,7 @@ function getDataSlice() {
     table.id = "data-slice-table";
     table.className = "table";
     table.style.width = "100%";
+    table.style.tableLayout = "fixed";
 
     table.innerText = "";
     var tr = document.createElement("tr");
@@ -3404,7 +3409,7 @@ function getDataSlice() {
     table.appendChild(tr);
     var th = document.createElement("th");
     th.className = "th";
-    th.style.width = "18px";
+    th.style.width = "32px";
     th.innerText = "选择";
     tr.appendChild(th);
     th = document.createElement("th");
@@ -3564,6 +3569,7 @@ function getDataFilter(colid) {
     table.id = "data-filter-table";
     table.className = "table";
     table.style.width = "100%";
+    table.style.tableLayout = "fixed";
 
     table.innerText = "";
     var tr = document.createElement("tr");
@@ -3571,7 +3577,7 @@ function getDataFilter(colid) {
     table.appendChild(tr);
     var th = document.createElement("th");
     th.className = "th";
-    th.style.width = "18px";
+    th.style.width = "32px";
     th.innerText = "选择";
     tr.appendChild(th);
     th = document.createElement("th");

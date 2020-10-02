@@ -326,6 +326,9 @@ img.title_close_button:hover{
     border:1px solid var(--table-td-border-color);
     padding:3px 3px 2px 3px;
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -o-text-overflow: ellipsis;
 }
 
 .table td:hover {
@@ -748,6 +751,28 @@ img.title_close_button:hover{
     -webkit-animation: content-show 1s 1;
     animation: content-show 1s 1;
 }
+
+.sql-param-dialog .sql-param-title-container{
+    white-space: nowrap;
+    height: 22px;
+}
+
+.sql-param-dialog .sql-param-title {
+    float:left;
+    position: relative;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -o-text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 90%;
+    height: 22px;
+    display:block;
+}
+.sql-param-dialog .title_close_button{
+    position: relative;
+    float: right;
+}
+
 .sql-param-dialog select ,input {
     font-size: 90%;
     width: 180px;

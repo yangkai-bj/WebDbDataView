@@ -48,14 +48,14 @@ var __ECHARTS__ = {
      },
      configs: {
 
-         hr_grid: {name: "[ 图像位置 ]", value: "", type: "hr"},
+         hr_grid: {name: "图像位置", value: "", type: "hr"},
          grid_top: {name: "上边距(%)", value: "10%", type: "input"},
          grid_bottom: {name: "下边距(%)", value: "10%", type: "input"},
          grid_left: {name: "左边距(%)", value: "10%", type: "input"},
          grid_right: {name: "右边距(%)", value: "10%", type: "input"},
          grid_containLabel: {name: "包含轴标签", value: "YES", options: ["YES", "NO"], type: "select"},
 
-         hr_toolbox: {name: "[ 图形工具 ]", value: "", type: "hr"},
+         hr_toolbox: {name: "图形工具", value: "", type: "hr"},
          toolboxDisplay: {name: "是否显示", value: "YES", options: ["YES", "NO"], type: "select"},
          toolbox_top: {name: "上边距(%)", value: "1%", type: "input"},
          toolbox_left: {name: "左边距(%)", value: "", type: "input"},
@@ -67,10 +67,10 @@ var __ECHARTS__ = {
              type: "select"
          },
 
-         hr_tooltip: {name: "[ 提示组件 ]", value: "", type: "hr"},
+         hr_tooltip: {name: "提示组件", value: "", type: "hr"},
          tooltipDisplay: {name: "是否显示", value: "YES", options: ["YES", "NO"], type: "select"},
 
-         hr_title: {name: "[ 标题 ]", value: "", type: "hr"},
+         hr_title: {name: "标题", value: "", type: "hr"},
          titleDisplay: {name: "是否显示", value: "YES", options: ["YES", "NO"], type: "select"},
          titlePosition: {name: "标题位置", value: "left", options: ["left", "center", "right"], type: "select"},
          titleText: {name: "主标题名称", value: "", type: "input"},
@@ -78,14 +78,14 @@ var __ECHARTS__ = {
          titleSubText: {name: "副标题名称", value: "", type: "input"},
          titleSubTextColor: {value: "#e6e6e6", name: "副标题颜色", type: "color"},
 
-         hr_legend: {name: "[ 图例 ]", value: "", type: "hr"},
+         hr_legend: {name: "图例", value: "", type: "hr"},
          legendDisplay: {name: "是否显示", value: "YES", options: ["YES", "NO"], type: "select"},
          legendPositionTop: {name: "上边距(%)", value: "1%", type: "input"},
          legendPositionLeft: {name: "左边距(%)", value: "50%", type: "input"},
          legendOrient: {name: "布局方向", value: "horizontal", options: ["horizontal", "vertical"], type: "select"},
          legendTextColor: {name: "文字颜色", value: "#e6e6e6", type: "color"},
 
-         hr_axis: {name: "[ 坐标轴 ]", value: "", type: "hr"},
+         hr_axis: {name: "坐标轴", value: "", type: "hr"},
          axisLineDisplay: {name: "是否显示", value: "YES", options: ["YES", "NO"], type: "select"},
          axisColor: {name: "轴线颜色", value: "#e6e6e6", type: "color"},
          axisTextColor: {name: "标签颜色", value: "#e6e6e6", type: "color"},
@@ -100,7 +100,7 @@ var __ECHARTS__ = {
              type: "select"
          },
 
-         hr_bar: {name: "[ 柱状图 ]", value: "", type: "hr"},
+         hr_bar: {name: "柱状图", value: "", type: "hr"},
          barLabelDisplay: {name: "显示标签", value: 'NO', options: ["YES", "NO"], type: "select"},
          labelBarTextColor: {name: "标签颜色", value: "auto", type: "color"},
          labelBarFontSize: {name: "标签字号(px)", value: 12, type: "input"},
@@ -112,11 +112,11 @@ var __ECHARTS__ = {
          },
          barLabelRotate: {name: "标签旋转度数", value: 0, type: "input"},
 
-         hr_line: {name: "[ 线形图 ]", value: "", type: "hr"},
+         hr_line: {name: "线形图", value: "", type: "hr"},
          lineStyleWidth: {name: "线条宽度(px)", value: 2, type: "input"},
          lineSmooth: {name: "使用平滑线", value: 'YES', options: ["YES", "NO"], type: "select"},
 
-         hr_3D: {name: "[ 3D图形 ]", value: "", type: "hr"},
+         hr_3D: {name: "3D图形", value: "", type: "hr"},
          BoxWidthFor3D: {name: "宽度(X轴)", value: 200, type: "input"},
          BoxDepthFor3D: {name: "深度(Y轴)", value: 80, type: "input"},
          AutoRotateFor3D: {name: "自动旋转", value: "YES", options: ["YES", "NO"], type: "select"},
@@ -126,12 +126,12 @@ var __ECHARTS__ = {
          ItemStyleOpacityFor3D: {name: "透明度", value: 1, type: "input"},
          axisPointerDisplay: {name: "坐标轴指示器", value: "NO", options: ["YES", "NO"], type: "select"},
 
-         hr_regression: {name: "[ 趋势/回归 ]", value: "", type: "hr"},
+         hr_regression: {name: "趋势/回归", value: "", type: "hr"},
          regressionType: {name: "趋势/回归类型", value: '直线', options: ["直线", "指数", "对数", "多项式"], type: "select"},
          regressionPolynomialOrder: {name: "多项式阶数", value: 2, type: "input"},
          regressionForwardPeroids: {name: "趋势/回归前推周期", value: 0, type: "input"},
 
-         hr_pie: {name: "[ 饼图 ] ", value: "", type: "hr"},
+         hr_pie: {name: "饼图 ", value: "", type: "hr"},
          outRadius: {name: "外半径(%)", value: "70%", type: "input"},
          inRadius: {name: "内半径(%)", value: "35%", type: "input"},
          pieLabelDisplay: {name: "显示标签", value: 'YES', options: ["YES", "NO"], type: "select"},
@@ -140,7 +140,7 @@ var __ECHARTS__ = {
          richTextLabel: {name: "富文本标签", value: 'NO', options: ["YES", "NO"], type: "select"},
          groupWith: {name: "每行序列数", value: 2, type: "input"},
 
-         hr_radar: {name: "[ 雷达图 ] ", value: "", type: "hr"},
+         hr_radar: {name: "雷达图 ", value: "", type: "hr"},
          radarShape:{name: "形状", value: 'circle', options: ["circle", "polygon"], type: "select"},
          radarAreaDisplay:{name: "显示分区", value: 'YES', options: ["YES", "NO"], type: "select"},
          radarNameDisplay:{name: "显示名称", value: 'YES', options: ["YES", "NO"], type: "select"},
@@ -148,7 +148,7 @@ var __ECHARTS__ = {
          radarSplitNumber:{name: "分割段数", value: 5, type: "input"},
          radarSameMax:{name: "同基比较", value: 'NO', options: ["YES", "NO"], type: "select"},
 
-         hr_scatter: {name: "[ 散点图 ]", value: "", type: "hr"},
+         hr_scatter: {name: "散点图", value: "", type: "hr"},
          scatterSymbolSize: {name: "数据点大小(px)", value: 6, type: "input"},
          scatterSymbolShape: {
              name: "数据点形状",
@@ -157,7 +157,7 @@ var __ECHARTS__ = {
              type: "select"
          },
 
-         hr_wordCloud: {name: "[ 词云图 ]", value: "", type: "hr"},
+         hr_wordCloud: {name: "词云图", value: "", type: "hr"},
          wordCloudShape: {
              name: "形状",
              value: "circle",
@@ -168,7 +168,7 @@ var __ECHARTS__ = {
          wordCloudMaxFontSize: {name: "最大字号(px)", value: 60, type: "input"},
          wordCloudRotationRange:{name:"旋转角度", value: 90, type: "input"},
 
-         hr_liqiud: {name: "[ 水球图 ]", value: "", type: "hr"},
+         hr_liqiud: {name: "水球图", value: "", type: "hr"},
          liqiudShape: {
              name: "形状",
              value: "circle",
@@ -176,13 +176,13 @@ var __ECHARTS__ = {
          },
          liqiudFontSize: {name: "标题字号(px)", value: 16, type: "input"},
 
-         hr_gauge: {name: "[ 仪表盘 ]", value: "", type: "hr"},
+         hr_gauge: {name: "仪表盘", value: "", type: "hr"},
          gaugeAxisLabelFontSize: {name: "刻度字号(px)", value: 10, type: "input"},
          gaugeTitleFontSize: {name: "标题字号(px)", value: 14, type: "input"},
          gaugeLabelFontSize: {name: "标签字号(px)", value: 18, type: "input"},
          gaugeAxisLineWidth: {name: "圆轴宽度(px)", value: 10, type: "input"},
 
-         hr_calendar: {name: "[ 日历图 ]", value: "", type: "hr"},
+         hr_calendar: {name: "日历图", value: "", type: "hr"},
          calendarType: {
              name: "类型",
              value: "heatmap",
@@ -191,7 +191,7 @@ var __ECHARTS__ = {
          },
          calendarOrient: {name: "布局方向", value: 'vertical', options: ["horizontal", "vertical"], type: "select"},
 
-         hr_geo: {name: "[ 地图 ]", value: "", type: "hr"},
+         hr_geo: {name: "地图", value: "", type: "hr"},
          //geoBackgroundColor: {value: "#404a59", name: "地图背景颜色", type: "color"},
          geoAreaColor: {value: "#323c48", name: "区域颜色", type: "color"},
          geoBorderColor: {value: "#404a59", name: "边界颜色", type: "color"},
@@ -199,7 +199,7 @@ var __ECHARTS__ = {
          geoAreaNameDisplay: {name: "显示地区名称", value: "NO", options: ["YES", "NO"], type: "select"},
          geoAreaNameColor: {name: "地区名称颜色", value: "auto", type: "color"},
 
-         hr_timeline: {name: "[ 时间/类目轴 ]", value: "", type: "hr"},
+         hr_timeline: {name: "时间/类目轴", value: "", type: "hr"},
          timelineDisplay: {name: "是否显示", value: "YES", options: ["YES", "NO"], type: "select"},
          categoryLineType: {
              name: "序列图形",
@@ -209,7 +209,7 @@ var __ECHARTS__ = {
          },
          seriesLoopPlayInterval: {name: "间隔(秒)", value: 3, type: "input"},
 
-         hr_dataZoom: {name: "[ 数据缩放 ]", value: "", type: "hr"},
+         hr_dataZoom: {name: "数据缩放", value: "", type: "hr"},
          dataZoomBarDisplay: {name: "是否显示", value: "NO", options: ["YES", "NO"], type: "select"},
          dataZoomBarWidth: {name: "宽度(px)", value: 45, type: "input"},
          dataZoomFilterMode: {
@@ -219,7 +219,7 @@ var __ECHARTS__ = {
              type: "select"
          },
 
-         hr_visualMap: {name: "[ 视觉映射 ]", value: "", type: "hr"},
+         hr_visualMap: {name: "视觉映射", value: "", type: "hr"},
          visualMapDisplay: {name: "是否显示", value: "NO", options: ["YES", "NO"], type: "select"},
          visualMap_type: {name: "类型", value: "continuous", options: ["continuous", "piecewise"], type: "select"},
          visualMap_top: {name: "上边距(%)", value: "10%", type: "input"},
@@ -230,7 +230,7 @@ var __ECHARTS__ = {
          visualMap_textColor: {name: "标签颜色", value: "#e6e6e6", type: "color"},
          visualMap_piecewise_splitNumber: {name: "分段", value: "5", type: "input"},
 
-         hr_report: {name: "[ 报表设置 ]", value: "", type: "hr"},
+         hr_report: {name: "报表设置", value: "", type: "hr"},
          reportFontSize: {
              name: "字号",
              value: "100%",
@@ -1122,8 +1122,18 @@ function getEchartsConfigs(parent) {
     var span = document.createElement("span");
     span.innerHTML = "报表及图形参数: ";
     d.appendChild(span);
+    let toconfig = document.createElement("select");
+    toconfig.onchange = function(){
+        $(this.value).scrollIntoView({behavior: "smooth", block: "start", inline: "nearest"});
+        //滚动参数
+        //behavior: 定义缓动动画， "auto", "instant", 或 "smooth"。默认为 "auto"。
+        //block: "start", "center", "end", 或 "nearest"。默认为 "start"。
+        //inline:"start", "center", "end", 或 "nearest"。默认为 "nearest"。
+    };
+    d.appendChild(toconfig);
     let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
     d.appendChild(close);
+
     container.appendChild(d);
 
     let hr = document.createElement("hr");
@@ -1178,12 +1188,15 @@ function getEchartsConfigs(parent) {
             };
             d.appendChild(input);
         } else if (__ECHARTS__.configs[name].type == "hr") {
-            s.innerHTML = __ECHARTS__.configs[name].name;
+            s.innerHTML = "[ " + __ECHARTS__.configs[name].name + " ]";
             s.style.color = "var(--main-title-color)";
             let c = document.createElement("div");
             c.style.width = "70%";
             c.style.cssFloat = "right";
             d.appendChild(c);
+            d.id = name;
+            toconfig.options.add(new Option(__ECHARTS__.configs[name].name, name));
+            //设置锚点
             let h = document.createElement("hr");
             h.style.marginTop = "10px";
             c.appendChild(h)

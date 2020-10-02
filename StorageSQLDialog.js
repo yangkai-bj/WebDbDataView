@@ -47,6 +47,7 @@ function storageSqlDialog(sql, editer, type){
     tablecontainer.className = tablecontainer.id = "table-container";
     contentContainer.appendChild(tablecontainer);
     let sqltable = document.createElement("table");
+    sqltable.style.tableLayout = "fixed";
     tablecontainer.appendChild(sqltable);
     sqltable.id = "sql-Manager-Content-table";
     sqltable.className = "table";
@@ -110,7 +111,9 @@ function storageSqlDialog(sql, editer, type){
             var sqllist = JSON.parse(storage.getItem(__CONFIGS__.STORAGE.SCRIPTS));
             delete sqllist[name.value];
             storage.setItem(__CONFIGS__.STORAGE.SCRIPTS, JSON.stringify(sqllist));
-            getSQLList($("sql-Manager-Content-table"))
+            getSQLList($("sql-Manager-Content-table"));
+            $("table-container").style.display = "block";
+            $("edit-container").style.display = "none";
         }
     };
     tool.appendChild(del);
@@ -132,6 +135,8 @@ function storageSqlDialog(sql, editer, type){
                         var sqllist = JSON.parse(this.result);
                         storage.setItem(__CONFIGS__.STORAGE.SCRIPTS, JSON.stringify(sqllist));
                         getSQLList($("sql-Manager-Content-table"));
+                        $("table-container").style.display = "block";
+                        $("edit-container").style.display = "none";
                     }
                 };
                 reader.readAsText(file, __CONFIGS__.Charset.options[__CONFIGS__.Charset.value]);
@@ -187,11 +192,12 @@ function getSQLList(table){
     table.appendChild(tr);
     var th = document.createElement("th");
     th.className= "th";
-    th.style.width = "36px";
+    th.style.width = "32px";
     th.innerText = "选择";
     tr.appendChild(th);
     th = document.createElement("th");
     th.className= "th";
+    th.style.width = "50px";
     th.innerText = "序号";
     tr.appendChild(th);
     th = document.createElement("th");
