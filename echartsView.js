@@ -211,6 +211,7 @@ var __ECHARTS__ = {
 
          hr_dataZoom: {name: "数据缩放", value: "", type: "hr"},
          dataZoomBarDisplay: {name: "是否显示", value: "NO", options: ["YES", "NO"], type: "select"},
+         dataZoomBarColor: {value: "#404a59", name: "组件颜色", type: "color"},
          dataZoomBarWidth: {name: "宽度(px)", value: 45, type: "input"},
          dataZoomFilterMode: {
              name: "模式",
@@ -218,6 +219,8 @@ var __ECHARTS__ = {
              options: ["filter", "weakFilter", "empty", "none"],
              type: "select"
          },
+         dataZoomHandleIcon: {name: "手柄样式", value: "Rectangle", options: ["Rectangle", "Circle", "HollowCircle"], type: "select"},
+         dataZoomHandleSize: {name: "手柄大小", value: "100%", type: "input"},
 
          hr_visualMap: {name: "视觉映射", value: "", type: "hr"},
          visualMapDisplay: {name: "是否显示", value: "NO", options: ["YES", "NO"], type: "select"},
@@ -1536,29 +1539,47 @@ function getBar(container, themes) {
                 start: 0,
                 yAxisIndex: 0,
                 end: 100
-            },{
-                show: __ECHARTS__.configs.dataZoomBarDisplay.value == "YES",
-                type: 'slider',
-                filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
-                yAxisIndex: 0,
-                start: 0,
-                end: 100,
-                width: __ECHARTS__.configs.dataZoomBarWidth.value,
-                height: (100 - toPoint(__ECHARTS__.configs.grid_top.value) - toPoint(__ECHARTS__.configs.grid_bottom.value)) + "%",
-                top: __ECHARTS__.configs.grid_top.value,
-                right: (100 - toPoint(__ECHARTS__.configs.grid_right.value)) + "%",
-            },{
-                show: __ECHARTS__.configs.dataZoomBarDisplay.value == "YES",
-                type: 'slider',
-                filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
-                xAxisIndex: 0,
-                start: 0,
-                end: 100,
-                width: (100 - toPoint(__ECHARTS__.configs.grid_left.value) - toPoint(__ECHARTS__.configs.grid_right.value)) + "%",
-                height: __ECHARTS__.configs.dataZoomBarWidth.value,
-                left: __ECHARTS__.configs.grid_left.value,
-                top: (100 - toPoint(__ECHARTS__.configs.grid_bottom.value)) + "%",
-            }],
+            }, {
+            show: __ECHARTS__.configs.dataZoomBarDisplay.value == "YES",
+            type: 'slider',
+            filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
+            yAxisIndex: 0,
+            start: 0,
+            end: 100,
+            width: __ECHARTS__.configs.dataZoomBarWidth.value,
+            height: (100 - toPoint(__ECHARTS__.configs.grid_top.value) - toPoint(__ECHARTS__.configs.grid_bottom.value)) + "%",
+            top: __ECHARTS__.configs.grid_top.value,
+            right: (100 - toPoint(__ECHARTS__.configs.grid_right.value)) + "%",
+            handleIcon: __SYS_IMAGES_PATH__.dataZoomHandleIcon[__ECHARTS__.configs.dataZoomHandleIcon.value],
+            handleSize: __ECHARTS__.configs.dataZoomHandleSize.value,
+            borderColor: __ECHARTS__.configs.dataZoomBarColor.value,
+            handleStyle: {
+                color: __ECHARTS__.configs.dataZoomBarColor.value,
+            },
+            textStyle:{
+                color: __ECHARTS__.configs.dataZoomBarColor.value,
+            },
+        }, {
+            show: __ECHARTS__.configs.dataZoomBarDisplay.value == "YES",
+            type: 'slider',
+            filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
+            xAxisIndex: 0,
+            start: 0,
+            end: 100,
+            width: (100 - toPoint(__ECHARTS__.configs.grid_left.value) - toPoint(__ECHARTS__.configs.grid_right.value)) + "%",
+            height: __ECHARTS__.configs.dataZoomBarWidth.value,
+            left: __ECHARTS__.configs.grid_left.value,
+            top: (100 - toPoint(__ECHARTS__.configs.grid_bottom.value)) + "%",
+            handleIcon: __SYS_IMAGES_PATH__.dataZoomHandleIcon[__ECHARTS__.configs.dataZoomHandleIcon.value],
+            handleSize: __ECHARTS__.configs.dataZoomHandleSize.value,
+            borderColor: __ECHARTS__.configs.dataZoomBarColor.value,
+            handleStyle: {
+                color: __ECHARTS__.configs.dataZoomBarColor.value,
+            },
+            textStyle:{
+                color: __ECHARTS__.configs.dataZoomBarColor.value,
+            },
+        }],
         series: yAxis_series,
         animationEasing: 'elasticOut',
         animationDelayUpdate: function (idx) {
@@ -1762,6 +1783,12 @@ function getTransversBar(container, themes) {
             height: (100 - toPoint(__ECHARTS__.configs.grid_top.value) - toPoint(__ECHARTS__.configs.grid_bottom.value)) + "%",
             top: __ECHARTS__.configs.grid_top.value,
             right: (100 - toPoint(__ECHARTS__.configs.grid_right.value)) + "%",
+            handleIcon: __SYS_IMAGES_PATH__.dataZoomHandleIcon[__ECHARTS__.configs.dataZoomHandleIcon.value],
+            handleSize: __ECHARTS__.configs.dataZoomHandleSize.value,
+            borderColor: __ECHARTS__.configs.dataZoomBarColor.value,
+            handleStyle: {
+                color: __ECHARTS__.configs.dataZoomBarColor.value,
+            }
         }, {
             show: __ECHARTS__.configs.dataZoomBarDisplay.value == "YES",
             type: 'slider',
@@ -1773,6 +1800,12 @@ function getTransversBar(container, themes) {
             height: __ECHARTS__.configs.dataZoomBarWidth.value,
             left: __ECHARTS__.configs.grid_left.value,
             top: (100 - toPoint(__ECHARTS__.configs.grid_bottom.value)) + "%",
+            handleIcon: __SYS_IMAGES_PATH__.dataZoomHandleIcon[__ECHARTS__.configs.dataZoomHandleIcon.value],
+            handleSize: __ECHARTS__.configs.dataZoomHandleSize.value,
+            borderColor: __ECHARTS__.configs.dataZoomBarColor.value,
+            handleStyle: {
+                color: __ECHARTS__.configs.dataZoomBarColor.value,
+            }
         }],
         series: yAxis_series,
         animationEasing: 'elasticOut',
@@ -1780,14 +1813,12 @@ function getTransversBar(container, themes) {
             return idx * 3;
         }
     };
-    // 使用刚指定的配置项和数据显示图表。
     myChart.setOption(option);
 
     return container;
 }
 
 function getLine(container, themes) {
-    console.log(__ECHARTS__.configs.lineStyleWidth.value);
     var dataset =  __DATASET__["result"][__DATASET__.default.sheet];
     var columns = [];
     for (var i=0; i<dataset["columns"].length;i++){
@@ -1984,6 +2015,12 @@ function getLine(container, themes) {
             height: (100 - toPoint(__ECHARTS__.configs.grid_top.value) - toPoint(__ECHARTS__.configs.grid_bottom.value)) + "%",
             top: __ECHARTS__.configs.grid_top.value,
             right: (100 - toPoint(__ECHARTS__.configs.grid_right.value)) + "%",
+            handleIcon: __SYS_IMAGES_PATH__.dataZoomHandleIcon[__ECHARTS__.configs.dataZoomHandleIcon.value],
+            handleSize: __ECHARTS__.configs.dataZoomHandleSize.value,
+            borderColor: __ECHARTS__.configs.dataZoomBarColor.value,
+            handleStyle: {
+                color: __ECHARTS__.configs.dataZoomBarColor.value,
+            }
         }, {
             show: __ECHARTS__.configs.dataZoomBarDisplay.value == "YES",
             type: 'slider',
@@ -1995,6 +2032,12 @@ function getLine(container, themes) {
             height: __ECHARTS__.configs.dataZoomBarWidth.value,
             left: __ECHARTS__.configs.grid_left.value,
             top: (100 - toPoint(__ECHARTS__.configs.grid_bottom.value)) + "%",
+            handleIcon: __SYS_IMAGES_PATH__.dataZoomHandleIcon[__ECHARTS__.configs.dataZoomHandleIcon.value],
+            handleSize: __ECHARTS__.configs.dataZoomHandleSize.value,
+            borderColor: __ECHARTS__.configs.dataZoomBarColor.value,
+            handleStyle: {
+                color: __ECHARTS__.configs.dataZoomBarColor.value,
+            }
         }],
         series: yAxis_series,
         animationEasing: 'elasticOut',
@@ -2246,6 +2289,12 @@ function getBarAndLine(container, themes) {
             height: (100 - toPoint(__ECHARTS__.configs.grid_top.value) - toPoint(__ECHARTS__.configs.grid_bottom.value)) + "%",
             top: __ECHARTS__.configs.grid_top.value,
             right: (100 - toPoint(__ECHARTS__.configs.grid_right.value)) + "%",
+            handleIcon: __SYS_IMAGES_PATH__.dataZoomHandleIcon[__ECHARTS__.configs.dataZoomHandleIcon.value],
+            handleSize: __ECHARTS__.configs.dataZoomHandleSize.value,
+            borderColor: __ECHARTS__.configs.dataZoomBarColor.value,
+            handleStyle: {
+                color: __ECHARTS__.configs.dataZoomBarColor.value,
+            }
         }, {
             show: __ECHARTS__.configs.dataZoomBarDisplay.value == "YES",
             type: 'slider',
@@ -2257,6 +2306,12 @@ function getBarAndLine(container, themes) {
             height: __ECHARTS__.configs.dataZoomBarWidth.value,
             left: __ECHARTS__.configs.grid_left.value,
             top: (100 - toPoint(__ECHARTS__.configs.grid_bottom.value)) + "%",
+            handleIcon: __SYS_IMAGES_PATH__.dataZoomHandleIcon[__ECHARTS__.configs.dataZoomHandleIcon.value],
+            handleSize: __ECHARTS__.configs.dataZoomHandleSize.value,
+            borderColor: __ECHARTS__.configs.dataZoomBarColor.value,
+            handleStyle: {
+                color: __ECHARTS__.configs.dataZoomBarColor.value,
+            }
         }],
         series: yAxis_series,
         animationEasing: 'elasticOut',
@@ -2485,6 +2540,12 @@ function getAreaStyle(container, themes) {
             height: (100 - toPoint(__ECHARTS__.configs.grid_top.value) - toPoint(__ECHARTS__.configs.grid_bottom.value)) + "%",
             top: __ECHARTS__.configs.grid_top.value,
             right: (100 - toPoint(__ECHARTS__.configs.grid_right.value)) + "%",
+            handleIcon: __SYS_IMAGES_PATH__.dataZoomHandleIcon[__ECHARTS__.configs.dataZoomHandleIcon.value],
+            handleSize: __ECHARTS__.configs.dataZoomHandleSize.value,
+            borderColor: __ECHARTS__.configs.dataZoomBarColor.value,
+            handleStyle: {
+                color: __ECHARTS__.configs.dataZoomBarColor.value,
+            }
         }, {
             show: __ECHARTS__.configs.dataZoomBarDisplay.value == "YES",
             type: 'slider',
@@ -2496,6 +2557,12 @@ function getAreaStyle(container, themes) {
             height: __ECHARTS__.configs.dataZoomBarWidth.value,
             left: __ECHARTS__.configs.grid_left.value,
             top: (100 - toPoint(__ECHARTS__.configs.grid_bottom.value)) + "%",
+            handleIcon: __SYS_IMAGES_PATH__.dataZoomHandleIcon[__ECHARTS__.configs.dataZoomHandleIcon.value],
+            handleSize: __ECHARTS__.configs.dataZoomHandleSize.value,
+            borderColor: __ECHARTS__.configs.dataZoomBarColor.value,
+            handleStyle: {
+                color: __ECHARTS__.configs.dataZoomBarColor.value,
+            }
         }],
         series: yAxis_series,
         animationEasing: 'elasticOut',
@@ -3868,6 +3935,12 @@ function getRegression(container, themes) {
             height: (100 - toPoint(__ECHARTS__.configs.grid_top.value) - toPoint(__ECHARTS__.configs.grid_bottom.value)) + "%",
             top: __ECHARTS__.configs.grid_top.value,
             right: (100 - toPoint(__ECHARTS__.configs.grid_right.value)) + "%",
+            handleIcon: __SYS_IMAGES_PATH__.dataZoomHandleIcon[__ECHARTS__.configs.dataZoomHandleIcon.value],
+            handleSize: __ECHARTS__.configs.dataZoomHandleSize.value,
+            borderColor: __ECHARTS__.configs.dataZoomBarColor.value,
+            handleStyle: {
+                color: __ECHARTS__.configs.dataZoomBarColor.value,
+            }
         }, {
             show: __ECHARTS__.configs.dataZoomBarDisplay.value == "YES",
             type: 'slider',
@@ -3879,6 +3952,12 @@ function getRegression(container, themes) {
             height: __ECHARTS__.configs.dataZoomBarWidth.value,
             left: __ECHARTS__.configs.grid_left.value,
             top: (100 - toPoint(__ECHARTS__.configs.grid_bottom.value)) + "%",
+            handleIcon: __SYS_IMAGES_PATH__.dataZoomHandleIcon[__ECHARTS__.configs.dataZoomHandleIcon.value],
+            handleSize: __ECHARTS__.configs.dataZoomHandleSize.value,
+            borderColor: __ECHARTS__.configs.dataZoomBarColor.value,
+            handleStyle: {
+                color: __ECHARTS__.configs.dataZoomBarColor.value,
+            }
         }],
         series: series,
         animationEasing: 'elasticOut',
@@ -4739,6 +4818,12 @@ function getScatter(container, themes) {
             height: (100 - toPoint(__ECHARTS__.configs.grid_top.value) - toPoint(__ECHARTS__.configs.grid_bottom.value)) + "%",
             top: __ECHARTS__.configs.grid_top.value,
             right: (100 - toPoint(__ECHARTS__.configs.grid_right.value)) + "%",
+            handleIcon: __SYS_IMAGES_PATH__.dataZoomHandleIcon[__ECHARTS__.configs.dataZoomHandleIcon.value],
+            handleSize: __ECHARTS__.configs.dataZoomHandleSize.value,
+            borderColor: __ECHARTS__.configs.dataZoomBarColor.value,
+            handleStyle: {
+                color: __ECHARTS__.configs.dataZoomBarColor.value,
+            }
         }, {
             show: __ECHARTS__.configs.dataZoomBarDisplay.value == "YES",
             type: 'slider',
@@ -4750,6 +4835,12 @@ function getScatter(container, themes) {
             height: __ECHARTS__.configs.dataZoomBarWidth.value,
             left: __ECHARTS__.configs.grid_left.value,
             top: (100 - toPoint(__ECHARTS__.configs.grid_bottom.value)) + "%",
+            handleIcon: __SYS_IMAGES_PATH__.dataZoomHandleIcon[__ECHARTS__.configs.dataZoomHandleIcon.value],
+            handleSize: __ECHARTS__.configs.dataZoomHandleSize.value,
+            borderColor: __ECHARTS__.configs.dataZoomBarColor.value,
+            handleStyle: {
+                color: __ECHARTS__.configs.dataZoomBarColor.value,
+            }
         }],
         series: series,
         animationDurationUpdate: 1500,
@@ -6545,7 +6636,6 @@ function getBar3D(container, themes) {
         },
         series: series,
     };
-    console.log(option);
     myChart.setOption(option);
     return container;
 }
