@@ -80,8 +80,11 @@ var __ECHARTS__ = {
 
          hr_legend: {name: "图例", value: "", type: "hr"},
          legendDisplay: {name: "是否显示", value: "YES", options: ["YES", "NO"], type: "select"},
+         legendIcon: {name: "图标",value: "circle", options:["circle", "rect", "roundRect", "triangle", "diamond", "arrow","emptyCircle", "emptyRectangle", "emptyTriangle", "emptyDiamond", "none"], type: "select"},
+         legendSelectedMode: {name: "选择模式", value: "multiple", options: ["single","multiple"], type: "select"},
          legendPositionTop: {name: "上边距(%)", value: "1%", type: "input"},
          legendPositionLeft: {name: "左边距(%)", value: "50%", type: "input"},
+         legendType: {name: "显示类型", value: "plain", options: ["plain", "scroll"], type: "select"},
          legendOrient: {name: "布局方向", value: "horizontal", options: ["horizontal", "vertical"], type: "select"},
          legendTextColor: {name: "文字颜色", value: "#e6e6e6", type: "color"},
 
@@ -93,6 +96,8 @@ var __ECHARTS__ = {
          splitYLineDisplay: {name: "显示Y轴分隔线", value: "NO", options: ["YES", "NO"], type: "select"},
          splitXAreaDisplay: {name: "显示X轴分割区", value: "NO", options: ["YES", "NO"], type: "select"},
          splitYAreaDisplay: {name: "显示Y轴分割区", value: "NO", options: ["YES", "NO"], type: "select"},
+         xAxisInverse:{name: "X轴反向", value: "NO", options: ["YES", "NO"], type: "select"},
+         yAxisInverse:{name: "Y轴反向", value: "NO", options: ["YES", "NO"], type: "select"},
          axisPointerType: {
              name: "指示器类型",
              value: "shadow",
@@ -131,16 +136,17 @@ var __ECHARTS__ = {
          regressionPolynomialOrder: {name: "多项式阶数", value: 2, type: "input"},
          regressionForwardPeroids: {name: "趋势/回归前推周期", value: 0, type: "input"},
 
-         hr_pie: {name: "饼图 ", value: "", type: "hr"},
+         hr_pie: {name: "饼图/圆环/玫瑰", value: "", type: "hr"},
          outRadius: {name: "外半径(%)", value: "70%", type: "input"},
          inRadius: {name: "内半径(%)", value: "35%", type: "input"},
+         pieSelectedMode: {name: "选择模式", value: "single", options: ["single","multiple"], type: "select"},
          pieLabelDisplay: {name: "显示标签", value: 'YES', options: ["YES", "NO"], type: "select"},
          pieLabelFontSize: {name: "标签字号(px)", value: 12, type: "input"},
          pieLabelAlignTo: {name: "标签对齐方式", value: 'none', options: ["none", "labelLine", "edge"], type: "select"},
          richTextLabel: {name: "富文本标签", value: 'NO', options: ["YES", "NO"], type: "select"},
          groupWith: {name: "每行序列数", value: 2, type: "input"},
 
-         hr_radar: {name: "雷达图 ", value: "", type: "hr"},
+         hr_radar: {name: "雷达图", value: "", type: "hr"},
          radarShape:{name: "形状", value: 'circle', options: ["circle", "polygon"], type: "select"},
          radarAreaDisplay:{name: "显示分区", value: 'YES', options: ["YES", "NO"], type: "select"},
          radarNameDisplay:{name: "显示名称", value: 'YES', options: ["YES", "NO"], type: "select"},
@@ -1450,6 +1456,9 @@ function getBar(container, themes) {
         },
         legend: {
             show: __ECHARTS__.configs.legendDisplay.value == "YES",
+            icon: __ECHARTS__.configs.legendIcon.value,
+            type: __ECHARTS__.configs.legendType.value,
+            selectedMode: __ECHARTS__.configs.legendSelectedMode.value,
             top: __ECHARTS__.configs.legendPositionTop.value,
             left: __ECHARTS__.configs.legendPositionLeft.value,
             orient: __ECHARTS__.configs.legendOrient.value,
@@ -1469,6 +1478,7 @@ function getBar(container, themes) {
 
         xAxis: {
             data: xAxis,
+            inverse: __ECHARTS__.configs.xAxisInverse.value == "YES",
             axisLine: {
                 show: __ECHARTS__.configs.axisLineDisplay.value == "YES",
                 lineStyle: {
@@ -1500,6 +1510,7 @@ function getBar(container, themes) {
             }
         },
         yAxis: {
+            inverse: __ECHARTS__.configs.yAxisInverse.value == "YES",
             axisLine: {
                 show: __ECHARTS__.configs.axisLineDisplay.value == "YES",
                 lineStyle: {
@@ -1691,6 +1702,9 @@ function getTransversBar(container, themes) {
         },
         legend: {
             show: __ECHARTS__.configs.legendDisplay.value == "YES",
+            icon: __ECHARTS__.configs.legendIcon.value,
+            type: __ECHARTS__.configs.legendType.value,
+            selectedMode: __ECHARTS__.configs.legendSelectedMode.value,
             top: __ECHARTS__.configs.legendPositionTop.value,
             left: __ECHARTS__.configs.legendPositionLeft.value,
             orient: __ECHARTS__.configs.legendOrient.value,
@@ -1701,6 +1715,7 @@ function getTransversBar(container, themes) {
         },
         xAxis: {
             type: 'value',
+            inverse: __ECHARTS__.configs.xAxisInverse.value == "YES",
             axisLine: {
                 show: __ECHARTS__.configs.axisLineDisplay.value == "YES",
                 lineStyle: {
@@ -1733,6 +1748,7 @@ function getTransversBar(container, themes) {
         yAxis: {
             type: 'category',
             data: xAxis,
+            inverse: __ECHARTS__.configs.yAxisInverse.value == "YES",
             axisLine: {
                 show: __ECHARTS__.configs.axisLineDisplay.value == "YES",
                 lineStyle: {
@@ -1924,6 +1940,9 @@ function getLine(container, themes) {
 
         legend: {
             show: __ECHARTS__.configs.legendDisplay.value == "YES",
+            icon: __ECHARTS__.configs.legendIcon.value,
+            type: __ECHARTS__.configs.legendType.value,
+            selectedMode: __ECHARTS__.configs.legendSelectedMode.value,
             top: __ECHARTS__.configs.legendPositionTop.value,
             left: __ECHARTS__.configs.legendPositionLeft.value,
             orient: __ECHARTS__.configs.legendOrient.value,
@@ -1934,6 +1953,7 @@ function getLine(container, themes) {
         },
         xAxis: {
             data: xAxis,
+            inverse: __ECHARTS__.configs.xAxisInverse.value == "YES",
             axisLine: {
                 show: __ECHARTS__.configs.axisLineDisplay.value == "YES",
                 lineStyle: {
@@ -1965,6 +1985,7 @@ function getLine(container, themes) {
             }
         },
         yAxis: {
+            inverse: __ECHARTS__.configs.yAxisInverse.value == "YES",
             axisLine: {
                 show: __ECHARTS__.configs.axisLineDisplay.value == "YES",
                 lineStyle: {
@@ -2198,6 +2219,9 @@ function getBarAndLine(container, themes) {
         },
         legend: {
             show: __ECHARTS__.configs.legendDisplay.value == "YES",
+            icon: __ECHARTS__.configs.legendIcon.value,
+            type: __ECHARTS__.configs.legendType.value,
+            selectedMode: __ECHARTS__.configs.legendSelectedMode.value,
             top: __ECHARTS__.configs.legendPositionTop.value,
             left: __ECHARTS__.configs.legendPositionLeft.value,
             orient: __ECHARTS__.configs.legendOrient.value,
@@ -2208,6 +2232,7 @@ function getBarAndLine(container, themes) {
         },
         xAxis: {
             data: xAxis,
+            inverse: __ECHARTS__.configs.xAxisInverse.value == "YES",
             axisLine: {
                 show: __ECHARTS__.configs.axisLineDisplay.value == "YES",
                 lineStyle: {
@@ -2239,6 +2264,7 @@ function getBarAndLine(container, themes) {
             }
         },
         yAxis: {
+            inverse: __ECHARTS__.configs.yAxisInverse.value == "YES",
             axisLine: {
                 show: __ECHARTS__.configs.axisLineDisplay.value == "YES",
                 lineStyle: {
@@ -2449,6 +2475,9 @@ function getAreaStyle(container, themes) {
         },
         legend: {
             show: __ECHARTS__.configs.legendDisplay.value == "YES",
+            icon: __ECHARTS__.configs.legendIcon.value,
+            type: __ECHARTS__.configs.legendType.value,
+            selectedMode: __ECHARTS__.configs.legendSelectedMode.value,
             top: __ECHARTS__.configs.legendPositionTop.value,
             left: __ECHARTS__.configs.legendPositionLeft.value,
             orient: __ECHARTS__.configs.legendOrient.value,
@@ -2459,6 +2488,7 @@ function getAreaStyle(container, themes) {
         },
         xAxis: {
             data: xAxis,
+            inverse: __ECHARTS__.configs.xAxisInverse.value == "YES",
             axisLine: {
                 show: __ECHARTS__.configs.axisLineDisplay.value == "YES",
                 lineStyle: {
@@ -2490,6 +2520,7 @@ function getAreaStyle(container, themes) {
             }
         },
         yAxis: {
+            inverse: __ECHARTS__.configs.yAxisInverse.value == "YES",
             axisLine: {
                 show: __ECHARTS__.configs.axisLineDisplay.value == "YES",
                 lineStyle: {
@@ -2704,6 +2735,9 @@ function getPolarBar(container, themes) {
         series: yAxis_series,
         legend: {
             show: __ECHARTS__.configs.legendDisplay.value == "YES",
+            icon: __ECHARTS__.configs.legendIcon.value,
+            type: __ECHARTS__.configs.legendType.value,
+            selectedMode: __ECHARTS__.configs.legendSelectedMode.value,
             top: __ECHARTS__.configs.legendPositionTop.value,
             left: __ECHARTS__.configs.legendPositionLeft.value,
             orient: __ECHARTS__.configs.legendOrient.value,
@@ -2868,6 +2902,9 @@ function getPolarArea(container, themes) {
         series: yAxis_series,
         legend: {
             show:__ECHARTS__.configs.legendDisplay.value =="YES",
+            icon: __ECHARTS__.configs.legendIcon.value,
+            type: __ECHARTS__.configs.legendType.value,
+            selectedMode: __ECHARTS__.configs.legendSelectedMode.value,
             top: __ECHARTS__.configs.legendPositionTop.value,
             left: __ECHARTS__.configs.legendPositionLeft.value,
             orient:__ECHARTS__.configs.legendOrient.value,
@@ -2923,6 +2960,7 @@ function getPie(container,themes) {
                 name: columns[c],
                 type: "pie",
                 radius: __ECHARTS__.configs.outRadius.value,
+                selectedMode: __ECHARTS__.configs.pieSelectedMode.value,
                 label: {
                     show: __ECHARTS__.configs.pieLabelDisplay.value == "YES",
                     //控制label是否显示
@@ -3019,6 +3057,9 @@ function getPie(container,themes) {
         },
         legend: {
             show: __ECHARTS__.configs.legendDisplay.value == "YES",
+            icon: __ECHARTS__.configs.legendIcon.value,
+            type: __ECHARTS__.configs.legendType.value,
+            selectedMode: __ECHARTS__.configs.legendSelectedMode.value,
             top: __ECHARTS__.configs.legendPositionTop.value,
             left: __ECHARTS__.configs.legendPositionLeft.value,
             orient: __ECHARTS__.configs.legendOrient.value,
@@ -3104,6 +3145,7 @@ function getRing(container,themes) {
             var serie = {
                 name: columns[c],
                 type: "pie",
+                selectedMode: __ECHARTS__.configs.pieSelectedMode.value,
                 radius: [__ECHARTS__.configs.inRadius.value, __ECHARTS__.configs.outRadius.value],
                 avoidLabelOverlap: false,
                 label: {
@@ -3196,6 +3238,9 @@ function getRing(container,themes) {
         },
         legend: {
             show:__ECHARTS__.configs.legendDisplay.value =="YES",
+            icon: __ECHARTS__.configs.legendIcon.value,
+            type: __ECHARTS__.configs.legendType.value,
+            selectedMode: __ECHARTS__.configs.legendSelectedMode.value,
             top: __ECHARTS__.configs.legendPositionTop.value,
             left: __ECHARTS__.configs.legendPositionLeft.value,
             orient:__ECHARTS__.configs.legendOrient.value,
@@ -3287,6 +3332,7 @@ function getRose(container,themes) {
             var serie = {
                 name: columns[c],
                 type: "pie",
+                selectedMode: __ECHARTS__.configs.pieSelectedMode.value,
                 radius: [__ECHARTS__.configs.inRadius.value, __ECHARTS__.configs.outRadius.value],
                 center: ['50%', '50%'],
                 roseType: 'area',
@@ -3379,6 +3425,9 @@ function getRose(container,themes) {
         },
         legend: {
             show:__ECHARTS__.configs.legendDisplay.value =="YES",
+            icon: __ECHARTS__.configs.legendIcon.value,
+            type: __ECHARTS__.configs.legendType.value,
+            selectedMode: __ECHARTS__.configs.legendSelectedMode.value,
             top: __ECHARTS__.configs.legendPositionTop.value,
             left: __ECHARTS__.configs.legendPositionLeft.value,
             orient:__ECHARTS__.configs.legendOrient.value,
@@ -3534,6 +3583,9 @@ function getRadar(container, themes) {
         },
         legend: {
             show: __ECHARTS__.configs.legendDisplay.value == "YES",
+            icon: __ECHARTS__.configs.legendIcon.value,
+            type: __ECHARTS__.configs.legendType.value,
+            selectedMode: __ECHARTS__.configs.legendSelectedMode.value,
             top: __ECHARTS__.configs.legendPositionTop.value,
             left: __ECHARTS__.configs.legendPositionLeft.value,
             orient: __ECHARTS__.configs.legendOrient.value,
@@ -3835,6 +3887,9 @@ function getRegression(container, themes) {
         },
         legend: {
             show: __ECHARTS__.configs.legendDisplay.value == "YES",
+            icon: __ECHARTS__.configs.legendIcon.value,
+            type: __ECHARTS__.configs.legendType.value,
+            selectedMode: __ECHARTS__.configs.legendSelectedMode.value,
             top: __ECHARTS__.configs.legendPositionTop.value,
             left: __ECHARTS__.configs.legendPositionLeft.value,
             orient: __ECHARTS__.configs.legendOrient.value,
@@ -3852,6 +3907,7 @@ function getRegression(container, themes) {
         },
         xAxis: {
             data: xAxis,
+            inverse: __ECHARTS__.configs.xAxisInverse.value == "YES",
             axisLine: {
                 show: __ECHARTS__.configs.axisLineDisplay.value == "YES",
                 lineStyle: {
@@ -3885,6 +3941,7 @@ function getRegression(container, themes) {
         },
         yAxis: {
             type: 'value',
+            inverse: __ECHARTS__.configs.yAxisInverse.value == "YES",
             axisLine: {
                 show: __ECHARTS__.configs.axisLineDisplay.value == "YES",
                 lineStyle: {
@@ -4361,6 +4418,9 @@ function  getOrganizationStructure(container, themes) {
         },
         legend: {
             show:__ECHARTS__.configs.legendDisplay.value =="YES",
+            icon: __ECHARTS__.configs.legendIcon.value,
+            type: __ECHARTS__.configs.legendType.value,
+            selectedMode: __ECHARTS__.configs.legendSelectedMode.value,
             top: __ECHARTS__.configs.legendPositionTop.value,
             left: __ECHARTS__.configs.legendPositionLeft.value,
             orient:__ECHARTS__.configs.legendOrient.value,
@@ -4468,6 +4528,9 @@ function getWebkitDep(container, themes) {
         },
         legend: {
             show:__ECHARTS__.configs.legendDisplay.value =="YES",
+            icon: __ECHARTS__.configs.legendIcon.value,
+            type: __ECHARTS__.configs.legendType.value,
+            selectedMode: __ECHARTS__.configs.legendSelectedMode.value,
             top: __ECHARTS__.configs.legendPositionTop.value,
             left: __ECHARTS__.configs.legendPositionLeft.value,
             orient:__ECHARTS__.configs.legendOrient.value,
@@ -4705,6 +4768,9 @@ function getScatter(container, themes) {
         },
         legend: {
             show: __ECHARTS__.configs.legendDisplay.value == "YES",
+            icon: __ECHARTS__.configs.legendIcon.value,
+            type: __ECHARTS__.configs.legendType.value,
+            selectedMode: __ECHARTS__.configs.legendSelectedMode.value,
             top: __ECHARTS__.configs.legendPositionTop.value,
             left: __ECHARTS__.configs.legendPositionLeft.value,
             orient: __ECHARTS__.configs.legendOrient.value,
@@ -4737,6 +4803,7 @@ function getScatter(container, themes) {
             }
         },
         xAxis: {
+            inverse: __ECHARTS__.configs.xAxisInverse.value == "YES",
             axisLine: {
                 show: __ECHARTS__.configs.axisLineDisplay.value == "YES",
                 lineStyle: {
@@ -4766,6 +4833,7 @@ function getScatter(container, themes) {
             }
         },
         yAxis: {
+            inverse: __ECHARTS__.configs.yAxisInverse.value == "YES",
             scale: true,
             axisLine: {
                 show: __ECHARTS__.configs.axisLineDisplay.value == "YES",
@@ -4979,6 +5047,9 @@ function getFunnel(container, themes) {
         },
         legend: {
             show:__ECHARTS__.configs.legendDisplay.value =="YES",
+            icon: __ECHARTS__.configs.legendIcon.value,
+            type: __ECHARTS__.configs.legendType.value,
+            selectedMode: __ECHARTS__.configs.legendSelectedMode.value,
             top: __ECHARTS__.configs.legendPositionTop.value,
             left: __ECHARTS__.configs.legendPositionLeft.value,
             orient:__ECHARTS__.configs.legendOrient.value,
@@ -5113,6 +5184,9 @@ function getWordCloud(container, themes) {
         },
         legend: {
             show:__ECHARTS__.configs.legendDisplay.value =="YES",
+            icon: __ECHARTS__.configs.legendIcon.value,
+            type: __ECHARTS__.configs.legendType.value,
+            selectedMode: __ECHARTS__.configs.legendSelectedMode.value,
             top: __ECHARTS__.configs.legendPositionTop.value,
             left: __ECHARTS__.configs.legendPositionLeft.value,
             orient:__ECHARTS__.configs.legendOrient.value,
@@ -5265,6 +5339,9 @@ function getLiqiud(container, themes) {
         },
         legend: {
             show:__ECHARTS__.configs.legendDisplay.value =="YES",
+            icon: __ECHARTS__.configs.legendIcon.value,
+            type: __ECHARTS__.configs.legendType.value,
+            selectedMode: __ECHARTS__.configs.legendSelectedMode.value,
             top: __ECHARTS__.configs.legendPositionTop.value,
             left: __ECHARTS__.configs.legendPositionLeft.value,
             orient:__ECHARTS__.configs.legendOrient.value,
@@ -5439,6 +5516,9 @@ function getGaugeWithAll(container, themes) {
         },
         legend: {
             show:__ECHARTS__.configs.legendDisplay.value =="YES",
+            icon: __ECHARTS__.configs.legendIcon.value,
+            type: __ECHARTS__.configs.legendType.value,
+            selectedMode: __ECHARTS__.configs.legendSelectedMode.value,
             top: __ECHARTS__.configs.legendPositionTop.value,
             left: __ECHARTS__.configs.legendPositionLeft.value,
             orient:__ECHARTS__.configs.legendOrient.value,
@@ -5608,6 +5688,9 @@ function getGaugeWithOne(container, themes) {
         },
         legend: {
             show: __ECHARTS__.configs.legendDisplay.value == "YES",
+            icon: __ECHARTS__.configs.legendIcon.value,
+            type: __ECHARTS__.configs.legendType.value,
+            selectedMode: __ECHARTS__.configs.legendSelectedMode.value,
             top: __ECHARTS__.configs.legendPositionTop.value,
             left: __ECHARTS__.configs.legendPositionLeft.value,
             orient: __ECHARTS__.configs.legendOrient.value,
@@ -6531,6 +6614,9 @@ function getBar3D(container, themes) {
         },
         legend: {
             show: __ECHARTS__.configs.legendDisplay.value == "YES",
+            icon: __ECHARTS__.configs.legendIcon.value,
+            type: __ECHARTS__.configs.legendType.value,
+            selectedMode: __ECHARTS__.configs.legendSelectedMode.value,
             top: __ECHARTS__.configs.legendPositionTop.value,
             left: __ECHARTS__.configs.legendPositionLeft.value,
             orient: __ECHARTS__.configs.legendOrient.value,
@@ -6743,6 +6829,9 @@ function getLine3D(container, themes) {
         },
         legend: {
             show: __ECHARTS__.configs.legendDisplay.value == "YES",
+            icon: __ECHARTS__.configs.legendIcon.value,
+            type: __ECHARTS__.configs.legendType.value,
+            selectedMode: __ECHARTS__.configs.legendSelectedMode.value,
             top: __ECHARTS__.configs.legendPositionTop.value,
             left: __ECHARTS__.configs.legendPositionLeft.value,
             orient: __ECHARTS__.configs.legendOrient.value,
@@ -6959,6 +7048,9 @@ function getScatter3D(container, themes) {
         },
         legend: {
             show: __ECHARTS__.configs.legendDisplay.value == "YES",
+            icon: __ECHARTS__.configs.legendIcon.value,
+            type: __ECHARTS__.configs.legendType.value,
+            selectedMode: __ECHARTS__.configs.legendSelectedMode.value,
             top: __ECHARTS__.configs.legendPositionTop.value,
             left: __ECHARTS__.configs.legendPositionLeft.value,
             orient: __ECHARTS__.configs.legendOrient.value,
@@ -7119,6 +7211,7 @@ function getCategoryLine(container, themes) {
         }
         if (__ECHARTS__.configs.categoryLineType.value == "pie") {
             serie.radius = __ECHARTS__.configs.outRadius.value;
+            serie.selectedMode = __ECHARTS__.configs.pieSelectedMode.value;
             serie.label = {
                 show: true,
                 alignTo: __ECHARTS__.configs.pieLabelAlignTo.value,
@@ -7245,7 +7338,7 @@ function getCategoryLine(container, themes) {
                 show: __ECHARTS__.configs.tooltipDisplay.value == "YES",
                 trigger: 'axis',
                 axisPointer: {
-                    type: __ECHARTS__.configs.categoryLineType.value != "pie"?__ECHARTS__.configs.axisPointerType.value:"none",
+                    type: __ECHARTS__.configs.categoryLineType.value != "pie" ? __ECHARTS__.configs.axisPointerType.value : "none",
                 },
             },
             toolbox: {
@@ -7267,6 +7360,7 @@ function getCategoryLine(container, themes) {
             xAxis: {
                 type: 'category',
                 data: columns.slice(1),
+                inverse: __ECHARTS__.configs.xAxisInverse.value == "YES",
                 axisLine: {
                     show: __ECHARTS__.configs.axisLineDisplay.value == "YES" && __ECHARTS__.configs.categoryLineType.value != "pie",
                     lineStyle: {
@@ -7296,6 +7390,7 @@ function getCategoryLine(container, themes) {
             },
             yAxis: {
                 type: 'value',
+                inverse: __ECHARTS__.configs.yAxisInverse.value == "YES",
                 axisLine: {
                     show: __ECHARTS__.configs.axisLineDisplay.value == "YES" && __ECHARTS__.configs.categoryLineType.value != "pie",
                     lineStyle: {
@@ -7608,6 +7703,9 @@ function getGeoMigrateLinesOfChinaCity(container, themes) {
             },
             legend: {
                 show: __ECHARTS__.configs.legendDisplay.value == "YES",
+                icon: __ECHARTS__.configs.legendIcon.value,
+                type: __ECHARTS__.configs.legendType.value,
+                selectedMode: __ECHARTS__.configs.legendSelectedMode.value,
                 top: __ECHARTS__.configs.legendPositionTop.value,
                 left: __ECHARTS__.configs.legendPositionLeft.value,
                 orient: __ECHARTS__.configs.legendOrient.value,
