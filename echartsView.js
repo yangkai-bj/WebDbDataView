@@ -66,6 +66,12 @@ var __ECHARTS__ = {
              options: ["top", "bottom", "left", "right"],
              type: "select"
          },
+         toolboxFeatureSaveAsImage:{name: "保存图像", value: "YES", options: ["YES", "NO"], type: "select"},
+         toolboxFeatureRestore:{name: "还原", value: "YES", options: ["YES", "NO"], type: "select"},
+         toolboxFeatureDataView:{name: "数据视图", value: "NO", options: ["YES", "NO"], type: "select"},
+         toolboxFeatureDataZoom:{name: "数据缩放", value: "YES", options: ["YES", "NO"], type: "select"},
+         toolboxFeatureMagicType:{name: "图像转换", value: "YES", options: ["YES", "NO"], type: "select"},
+         toolboxFeatureBrush:{name: "区域选择", value: "NO", options: ["YES", "NO"], type: "select"},
 
          hr_tooltip: {name: "提示组件", value: "", type: "hr"},
          tooltipDisplay: {name: "是否显示", value: "YES", options: ["YES", "NO"], type: "select"},
@@ -120,6 +126,13 @@ var __ECHARTS__ = {
          hr_line: {name: "线形图", value: "", type: "hr"},
          lineStyleWidth: {name: "线条宽度(px)", value: 2, type: "input"},
          lineSmooth: {name: "使用平滑线", value: 'YES', options: ["YES", "NO"], type: "select"},
+         lineSymbol:{name: "数据符号",value:"emptyCircle", options: ["circle", "emptyCircle", "triangle", "emptyTriangle", "diamond", "emptyDiamond", "arrow", "emptyArrow", "pin", "emptyPin"], type: "select"},
+         lineSymbolSize:{name: "符号大小",value: 5, type: "input"},
+         lineMarkPointMin:{name: "最小值点", value: 'NO', options: ["YES", "NO"], type: "select"},
+         lineMarkPointMax:{name: "最大值点", value: 'NO', options: ["YES", "NO"], type: "select"},
+         lineMarkLineMin:{name: "最小值线", value: 'NO', options: ["YES", "NO"], type: "select"},
+         lineMarkLineMax:{name: "最大值线", value: 'NO', options: ["YES", "NO"], type: "select"},
+         lineMarkLineAvg:{name: "平均值线", value: 'NO', options: ["YES", "NO"], type: "select"},
 
          hr_3D: {name: "3D图形", value: "", type: "hr"},
          BoxWidthFor3D: {name: "宽度(X轴)", value: 200, type: "input"},
@@ -135,6 +148,7 @@ var __ECHARTS__ = {
          regressionType: {name: "趋势/回归类型", value: '直线', options: ["直线", "指数", "对数", "多项式"], type: "select"},
          regressionPolynomialOrder: {name: "多项式阶数", value: 2, type: "input"},
          regressionForwardPeroids: {name: "趋势/回归前推周期", value: 0, type: "input"},
+         regressionExpressionColor:{name: "表达式颜色", value: "auto", type: "color"},
 
          hr_pie: {name: "饼图/圆环/玫瑰", value: "", type: "hr"},
          outRadius: {name: "外半径(%)", value: "70%", type: "input"},
@@ -225,7 +239,7 @@ var __ECHARTS__ = {
              options: ["filter", "weakFilter", "empty", "none"],
              type: "select"
          },
-         dataZoomHandleIcon: {name: "手柄样式", value: "Rectangle", options: ["Rectangle", "Circle", "HollowCircle"], type: "select"},
+         dataZoomHandleIcon: {name: "手柄样式", value: "rect", options: ["rect", "circle", "emptyCircle"], type: "select"},
          dataZoomHandleSize: {name: "手柄大小", value: "100%", type: "input"},
 
          hr_visualMap: {name: "视觉映射", value: "", type: "hr"},
@@ -1416,19 +1430,19 @@ function getBar(container, themes) {
             containLabel: __ECHARTS__.configs.grid_containLabel.value == "YES",
             backgroundColor: 'transparent'
         },
-        brush: {
+        brush:  __ECHARTS__.configs.toolboxFeatureBrush.value == "YES"?{
             toolbox: ['rect', 'polygon', 'lineX', 'lineY', 'keep', 'clear'],
             xAxisIndex: 0
-        },
+        }:null,
         toolbox: {
             show: __ECHARTS__.configs.toolboxDisplay.value == "YES",
             feature: {
-                saveAsImage: {show: true},
-                restore: {show: true},
-                dataView: {show: true, readOnly: true},
-                dataZoom: {show: true},
+                saveAsImage: {show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES"},
+                restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
+                dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
+                dataZoom: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES"},
                 magicType: {
-                    show: true,
+                    show: __ECHARTS__.configs.toolboxFeatureMagicType.value == "YES",
                     type: ['line', 'bar', 'stack', 'tiled']
                 },
             },
@@ -1654,20 +1668,19 @@ function getTransversBar(container, themes) {
             containLabel: __ECHARTS__.configs.grid_containLabel.value == "YES",
             backgroundColor: 'transparent'
         },
-        brush: {
+        brush:  __ECHARTS__.configs.toolboxFeatureBrush.value == "YES"?{
             toolbox: ['rect', 'polygon', 'lineX', 'lineY', 'keep', 'clear'],
             xAxisIndex: 0
-        },
+        }:null,
         toolbox: {
             show: __ECHARTS__.configs.toolboxDisplay.value == "YES",
             feature: {
-                //mark: {show: true},
-                saveAsImage: {show: true},
-                restore: {show: true},
-                dataView: {show: true, readOnly: true},
-                dataZoom: {show: true},
+                saveAsImage: {show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES"},
+                restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
+                dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
+                dataZoom: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES"},
                 magicType: {
-                    show: true,
+                    show: __ECHARTS__.configs.toolboxFeatureMagicType.value == "YES",
                     type: ['stack', 'tiled']
                 },
             },
@@ -1834,17 +1847,37 @@ function getTransversBar(container, themes) {
     return container;
 }
 
+function getMarkPoint() {
+    let markPoint = {data: []};
+    if (__ECHARTS__.configs.lineMarkPointMin.value == "YES")
+        markPoint.data.push({type: 'min', name: __ECHARTS__.configs.lineMarkPointMin.name});
+    if (__ECHARTS__.configs.lineMarkPointMax.value == "YES")
+        markPoint.data.push({type: 'max', name: __ECHARTS__.configs.lineMarkPointMax.name});
+    return markPoint;
+}
+
+function getMarkLine() {
+    let markLine = {data: []};
+    if (__ECHARTS__.configs.lineMarkLineMin.value == "YES")
+        markLine.data.push({type: 'min', name: __ECHARTS__.configs.lineMarkLineMin.name});
+    if (__ECHARTS__.configs.lineMarkLineMax.value == "YES")
+        markLine.data.push({type: 'max', name: __ECHARTS__.configs.lineMarkLineMax.name});
+    if (__ECHARTS__.configs.lineMarkLineAvg.value == "YES")
+        markLine.data.push({type: 'average', name: __ECHARTS__.configs.lineMarkLineAvg.name});
+    return markLine;
+}
+
 function getLine(container, themes) {
-    var dataset =  __DATASET__["result"][__DATASET__.default.sheet];
+    var dataset = __DATASET__["result"][__DATASET__.default.sheet];
     var columns = [];
-    for (var i=0; i<dataset["columns"].length;i++){
+    for (var i = 0; i < dataset["columns"].length; i++) {
         columns.push(dataset["columns"][i].name);
     }
     var xAxis = [];
     var yAxis_series = [];
-    for (var c=0;c<columns.length;c++) {
-        if ( c==0 ){
-           for (var i = 0; i < dataset["data"].length; i++) {
+    for (var c = 0; c < columns.length; c++) {
+        if (c == 0) {
+            for (var i = 0; i < dataset["data"].length; i++) {
                 var r = dataset["data"][i];
                 xAxis.push(r[columns[c]].value);
             }
@@ -1852,24 +1885,17 @@ function getLine(container, themes) {
             var series = {
                 name: columns[c],
                 type: "line",
-                smooth: __ECHARTS__.configs.lineSmooth.value == "YES",
-                //平滑线
                 data: [],
+                itemStyle: {},
                 lineStyle: {
                     width: Number(__ECHARTS__.configs.lineStyleWidth.value),
                 },
-                itemStyle: {},
-                markPoint: {
-                    data: [
-                        {type: 'max', name: '最大值'},
-                        {type: 'min', name: '最小值'}
-                    ]
-                },
-                markLine: {
-                    data: [
-                        {type: 'average', name: '平均值'}
-                    ]
-                }
+                symbol: __ECHARTS__.configs.lineSymbol.value,
+                symbolSize: __ECHARTS__.configs.lineSymbolSize.value,
+                smooth: __ECHARTS__.configs.lineSmooth.value == "YES",
+                markPoint: getMarkPoint(),
+                markLine: getMarkLine(),
+                markArea: {},
             };
             series.animationDelay = function (idx) {
                 return idx * 5 + 100;
@@ -1891,25 +1917,24 @@ function getLine(container, themes) {
             containLabel: __ECHARTS__.configs.grid_containLabel.value == "YES",
             backgroundColor: 'transparent'
         },
-        brush: {
+        brush:  __ECHARTS__.configs.toolboxFeatureBrush.value == "YES"?{
             toolbox: ['rect', 'polygon', 'lineX', 'lineY', 'keep', 'clear'],
             xAxisIndex: 0
-        },
+        }:null,
         toolbox: {
             show: __ECHARTS__.configs.toolboxDisplay.value == "YES",
             feature: {
-                //mark: {show: true},
-                saveAsImage: {show: true},
-                restore: {show: true},
-                dataView: {show: true, readOnly: true},
-                dataZoom: {show: true},
+                saveAsImage: {show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES"},
+                restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
+                dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
+                dataZoom: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES"},
                 magicType: {
-                    show: true,
+                    show: __ECHARTS__.configs.toolboxFeatureMagicType.value == "YES",
                     type: ['line', 'bar', 'stack', 'tiled']
                 },
             },
             top: __ECHARTS__.configs.toolbox_top.value,
-            left:__ECHARTS__.configs.toolbox_left.value,
+            left: __ECHARTS__.configs.toolbox_left.value,
             orient: __ECHARTS__.configs.toolbox_orient.value,
             emphasis: {
                 iconStyle: {
@@ -1960,7 +1985,7 @@ function getLine(container, themes) {
                     color: __ECHARTS__.configs.axisColor.value
                 },
             },
-            axisTick:{
+            axisTick: {
                 show: __ECHARTS__.configs.axisLineDisplay.value == "YES",
             },
             axisLabel: {
@@ -1992,7 +2017,7 @@ function getLine(container, themes) {
                     color: __ECHARTS__.configs.axisColor.value
                 },
             },
-            axisTick:{
+            axisTick: {
                 show: __ECHARTS__.configs.axisLineDisplay.value == "YES",
             },
             axisLabel: {
@@ -2068,7 +2093,7 @@ function getLine(container, themes) {
     };
     // 使用刚指定的配置项和数据显示图表。
 
-    if (option.series.length > 1){
+    if (option.series.length > 1) {
         option.tooltip = {
             //显示活动标尺线.
             trigger: 'axis',
@@ -2091,8 +2116,8 @@ function getBarAndLine(container, themes) {
     var xAxis = [];
     var yAxis_series = [];
     for (var c=0;c<columns.length;c++) {
-        if ( c==0 ){
-           for (var i = 0; i < dataset["data"].length; i++) {
+        if (c == 0) {
+            for (var i = 0; i < dataset["data"].length; i++) {
                 var r = dataset["data"][i];
                 xAxis.push(r[columns[c]].value);
             }
@@ -2102,24 +2127,17 @@ function getBarAndLine(container, themes) {
                 serie = {
                     name: columns[c],
                     type: "line",
-                    smooth: __ECHARTS__.configs.lineSmooth.value == "YES",
-                    //平滑线
                     data: [],
                     lineStyle: {
                         width: Number(__ECHARTS__.configs.lineStyleWidth.value),
                     },
-                    itemStyle:{},
-                    markPoint: {
-                        data: [
-                            {type: 'max', name: '最大值'},
-                            {type: 'min', name: '最小值'}
-                        ]
-                    },
-                    markLine: {
-                        data: [
-                            {type: 'average', name: '平均值'}
-                        ]
-                    },
+                    itemStyle: {},
+                    symbol: __ECHARTS__.configs.lineSymbol.value,
+                    symbolSize: __ECHARTS__.configs.lineSymbolSize.value,
+                    smooth: __ECHARTS__.configs.lineSmooth.value == "YES",
+                    markPoint: getMarkPoint(),
+                    markLine: getMarkLine(),
+                    markArea: {},
                     label: {
                         rotate: __ECHARTS__.configs.barLabelRotate.value,
                         fontSize: __ECHARTS__.configs.labelBarFontSize.value,
@@ -2171,20 +2189,19 @@ function getBarAndLine(container, themes) {
             containLabel: __ECHARTS__.configs.grid_containLabel.value == "YES",
             backgroundColor: 'transparent'
         },
-        brush: {
+        brush:  __ECHARTS__.configs.toolboxFeatureBrush.value == "YES"?{
             toolbox: ['rect', 'polygon', 'lineX', 'lineY', 'keep', 'clear'],
             xAxisIndex: 0
-        },
+        }:null,
         toolbox: {
             show: __ECHARTS__.configs.toolboxDisplay.value == "YES",
             feature: {
-                //mark: {show: true},
-                saveAsImage: {show: true},
-                restore: {show: true},
-                dataView: {show: true, readOnly: true},
-                dataZoom: {show: true},
+                saveAsImage: {show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES"},
+                restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
+                dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
+                dataZoom: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES"},
                 magicType: {
-                    show: true,
+                    show: __ECHARTS__.configs.toolboxFeatureMagicType.value == "YES",
                     type: ['stack', 'tiled']
                 },
             },
@@ -2369,8 +2386,6 @@ function getAreaStyle(container, themes) {
             var series = {
                 name: columns[c],
                 type: "line",
-                smooth: __ECHARTS__.configs.lineSmooth.value == "YES",
-                //平滑线
                 areaStyle: {
                     //可指定渐变颜色
                     //color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
@@ -2382,10 +2397,6 @@ function getAreaStyle(container, themes) {
                     //}])
                 },
                 //面积图
-                symbol: 'circle',
-                //节点形状
-                symbolSize: 5,
-                //节点大小
                 sampling: 'average',
                 //抽样
                 itemStyle: {
@@ -2393,17 +2404,15 @@ function getAreaStyle(container, themes) {
                     //color: '#d68262'
                 },
                 data: [],
-                markPoint: {
-                    data: [
-                        {type: 'max', name: '最大值'},
-                        {type: 'min', name: '最小值'}
-                    ]
+                lineStyle: {
+                    width: Number(__ECHARTS__.configs.lineStyleWidth.value),
                 },
-                markLine: {
-                    data: [
-                        {type: 'average', name: '平均值'}
-                    ]
-                }
+                symbol: __ECHARTS__.configs.lineSymbol.value,
+                symbolSize: __ECHARTS__.configs.lineSymbolSize.value,
+                smooth: __ECHARTS__.configs.lineSmooth.value == "YES",
+                markPoint: getMarkPoint(),
+                markLine: getMarkLine(),
+                markArea: {},
             };
             series.animationDelay = function (idx) {
                 return idx * 5 + 100;
@@ -2426,20 +2435,19 @@ function getAreaStyle(container, themes) {
             containLabel: __ECHARTS__.configs.grid_containLabel.value == "YES",
             backgroundColor: 'transparent'
         },
-        brush: {
+        brush:  __ECHARTS__.configs.toolboxFeatureBrush.value == "YES"?{
             toolbox: ['rect', 'polygon', 'lineX', 'lineY', 'keep', 'clear'],
             xAxisIndex: 0
-        },
+        }:null,
         toolbox: {
             show: __ECHARTS__.configs.toolboxDisplay.value == "YES",
             feature: {
-                //mark: {show: true},
-                saveAsImage: {show: true},
-                restore: {show: true},
-                dataView: {show: true, readOnly: true},
-                dataZoom: {show: true},
+                saveAsImage: {show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES"},
+                restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
+                dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
+                dataZoom: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES"},
                 magicType: {
-                    show: true,
+                    show: __ECHARTS__.configs.toolboxFeatureMagicType.value == "YES",
                     type: ['stack', 'tiled']
                 },
             },
@@ -2658,11 +2666,12 @@ function getPolarBar(container, themes) {
         toolbox: {
             show: __ECHARTS__.configs.toolboxDisplay.value == "YES",
             feature: {
-                saveAsImage: {show: true},
-                restore: {show: true},
-                dataView: {show: true, readOnly: true},
+                saveAsImage: {show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES"},
+                restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
+                dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
+                dataZoom: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES"},
                 magicType: {
-                    show: true,
+                    show: __ECHARTS__.configs.toolboxFeatureMagicType.value == "YES",
                     type: ['stack', 'tiled']
                 },
             },
@@ -2824,13 +2833,14 @@ function getPolarArea(container, themes) {
         },
         toolbox: {
             show: __ECHARTS__.configs.toolboxDisplay.value =="YES",
-            feature:{
-                saveAsImage: {show: true},
-                restore: {show: true},
-                dataView: {show: true, readOnly: true},
+            feature: {
+                saveAsImage: {show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES"},
+                restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
+                dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
+                dataZoom: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES"},
                 magicType: {
-                    show: true,
-                    type:['stack', 'tiled']
+                    show: __ECHARTS__.configs.toolboxFeatureMagicType.value == "YES",
+                    type: ['stack', 'tiled']
                 },
             },
             top: __ECHARTS__.configs.toolbox_top.value,
@@ -3032,12 +3042,12 @@ function getPie(container,themes) {
         toolbox: {
             show: __ECHARTS__.configs.toolboxDisplay.value == "YES",
             feature: {
-                saveAsImage: {show: true},
-                restore: {show: true},
-                dataView: {show: true, readOnly: true},
-                dataZoom: {show: false},
+                saveAsImage: {show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES"},
+                restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
+                dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
+                dataZoom: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES"},
                 magicType: {
-                    show: false,
+                    show: __ECHARTS__.configs.toolboxFeatureMagicType.value == "YES",
                     type: ['pie', 'funnel']
                 },
             },
@@ -3218,12 +3228,12 @@ function getRing(container,themes) {
         toolbox: {
             show: __ECHARTS__.configs.toolboxDisplay.value =="YES",
             feature: {
-                saveAsImage: {show: true},
-                restore: {show: true},
-                dataView: {show: true, readOnly: true},
-                dataZoom: {show: false},
+                saveAsImage: {show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES"},
+                restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
+                dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
+                dataZoom: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES"},
                 magicType: {
-                    show: false,
+                    show: __ECHARTS__.configs.toolboxFeatureMagicType.value == "YES",
                     type: ['pie', 'funnel']
                 },
             },
@@ -3404,14 +3414,14 @@ function getRose(container,themes) {
         },
         toolbox: {
             show: __ECHARTS__.configs.toolboxDisplay.value =="YES",
-            feature:{
-                saveAsImage: {show: true},
-                restore: {show: true},
-                dataView: {show: true, readOnly: true},
-                dataZoom: {show: false},
+            feature: {
+                saveAsImage: {show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES"},
+                restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
+                dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
+                dataZoom: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES"},
                 magicType: {
-                    show: false,
-                    type:['pie','funnel']
+                    show: __ECHARTS__.configs.toolboxFeatureMagicType.value == "YES",
+                    type: ['pie', 'funnel']
                 },
             },
             top: __ECHARTS__.configs.toolbox_top.value,
@@ -3600,9 +3610,9 @@ function getRadar(container, themes) {
         toolbox: {
             show: __ECHARTS__.configs.toolboxDisplay.value == "YES",
             feature: {
-                saveAsImage: {},
-                restore: {},
-                dataView: {show: true, readOnly: true}
+                saveAsImage: {show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES"},
+                restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
+                dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
             },
             top: __ECHARTS__.configs.toolbox_top.value,
             left: __ECHARTS__.configs.toolbox_left.value,
@@ -3692,7 +3702,6 @@ function getRegression(container, themes) {
                     name: columns[c],
                     type: "line",
                     lineStyle: {
-                        opacity: __ECHARTS__.configs.ItemStyleOpacityFor3D.value,
                         width: Number(__ECHARTS__.configs.lineStyleWidth.value),
                     },
                     emphasis: {
@@ -3704,6 +3713,8 @@ function getRegression(container, themes) {
                         }
                     },
                     smooth: __ECHARTS__.configs.lineSmooth.value == "YES",
+                    symbol: __ECHARTS__.configs.lineSymbol.value,
+                    symbolSize: __ECHARTS__.configs.lineSymbolSize.value,
                     data: []
                 };
                 serie.animationDelay = function (idx) {
@@ -3739,8 +3750,10 @@ function getRegression(container, themes) {
         var regline = {
             name: type + "(" + column + ")",
             type: 'line',
-            showSymbol: false,
             smooth: __ECHARTS__.configs.lineSmooth.value == "YES",
+            showSymbol: false,
+            symbol: __ECHARTS__.configs.lineSymbol.value,
+            symbolSize: __ECHARTS__.configs.lineSymbolSize.value,
             data: data,
             lineStyle: {
                 type: 'dotted',     //'solid/dashed/dotted'
@@ -3753,7 +3766,7 @@ function getRegression(container, themes) {
                     show: true,
                     position: 'left',
                     formatter: myRegression.expression,
-                    color: '#333',
+                    color:__ECHARTS__.configs.regressionExpressionColor.value,
                     fontSize: 10
                 },
                 data: [{
@@ -3846,21 +3859,20 @@ function getRegression(container, themes) {
             containLabel: __ECHARTS__.configs.grid_containLabel.value == "YES",
             backgroundColor: 'transparent'
         },
-        brush: {
+        brush:  __ECHARTS__.configs.toolboxFeatureBrush.value == "YES"?{
             toolbox: ['rect', 'polygon', 'lineX', 'lineY', 'keep', 'clear'],
             xAxisIndex: 0
-        },
+        }:null,
         toolbox: {
             show: __ECHARTS__.configs.toolboxDisplay.value == "YES",
             feature: {
-                //mark: {show: true},
-                saveAsImage: {show: true},
-                restore: {show: true},
-                dataView: {show: true, readOnly: true},
-                dataZoom: {show: true},
+                saveAsImage: {show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES"},
+                restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
+                dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
+                dataZoom: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES"},
                 magicType: {
-                    show: true,
-                    type: ['line', 'bar']
+                    show: __ECHARTS__.configs.toolboxFeatureMagicType.value == "YES",
+                    type: ['line', 'bar',]
                 },
             },
             top: __ECHARTS__.configs.toolbox_top.value,
@@ -4135,10 +4147,10 @@ function  getRelationship(container, themes) {
         },
         toolbox: {
             show: __ECHARTS__.configs.toolboxDisplay.value =="YES",
-            feature:{
-                saveAsImage: {show: true},
-                restore: {show: true},
-                dataView: {show: true, readOnly: true},
+            feature: {
+                saveAsImage: {show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES"},
+                restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
+                dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
             },
             top: __ECHARTS__.configs.toolbox_top.value,
             left:__ECHARTS__.configs.toolbox_left.value,
@@ -4397,10 +4409,10 @@ function  getOrganizationStructure(container, themes) {
         },
         toolbox: {
             show: __ECHARTS__.configs.toolboxDisplay.value =="YES",
-            feature:{
-                saveAsImage: {show: true},
-                restore: {show: true},
-                dataView: {show: true, readOnly: true},
+            feature: {
+                saveAsImage: {show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES"},
+                restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
+                dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
             },
             top: __ECHARTS__.configs.toolbox_top.value,
             left:__ECHARTS__.configs.toolbox_left.value,
@@ -4542,9 +4554,9 @@ function getWebkitDep(container, themes) {
         toolbox: {
             show: __ECHARTS__.configs.toolboxDisplay.value =="YES",
             feature: {
-                saveAsImage: {show: true},
-                restore: {show: true},
-                dataView: {show: true, readOnly: true},
+                saveAsImage: {show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES"},
+                restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
+                dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
             },
             top: __ECHARTS__.configs.toolbox_top.value,
             left:__ECHARTS__.configs.toolbox_left.value,
@@ -4782,9 +4794,9 @@ function getScatter(container, themes) {
         toolbox: {
             show: __ECHARTS__.configs.toolboxDisplay.value == "YES",
             feature: {
-                saveAsImage: {show: true},
-                restore: {show: true},
-                dataView: {show: true, readOnly: true},
+                saveAsImage: {show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES"},
+                restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
+                dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
             },
             top: __ECHARTS__.configs.toolbox_top.value,
             left:__ECHARTS__.configs.toolbox_left.value,
@@ -5032,9 +5044,9 @@ function getFunnel(container, themes) {
         toolbox: {
             show: __ECHARTS__.configs.toolboxDisplay.value =="YES",
             feature: {
-                saveAsImage: {show: true},
-                restore: {show: true},
-                dataView: {show: true, readOnly: true},
+                saveAsImage: {show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES"},
+                restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
+                dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
             },
             top: __ECHARTS__.configs.toolbox_top.value,
             left:__ECHARTS__.configs.toolbox_left.value,
@@ -5198,9 +5210,9 @@ function getWordCloud(container, themes) {
         toolbox: {
             show: __ECHARTS__.configs.toolboxDisplay.value =="YES",
             feature: {
-                saveAsImage: {show: true},
-                restore: {show: true},
-                dataView: {show: true, readOnly: true},
+                saveAsImage: {show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES"},
+                restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
+                dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
             },
             top: __ECHARTS__.configs.toolbox_top.value,
             left:__ECHARTS__.configs.toolbox_left.value,
@@ -5353,9 +5365,10 @@ function getLiqiud(container, themes) {
         toolbox: {
             show: __ECHARTS__.configs.toolboxDisplay.value =="YES",
             feature: {
-                saveAsImage: {show: true},
-                restore: {show: true},
-                dataView: {show: true, readOnly: true},
+                saveAsImage: {show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES"},
+                restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
+                dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
+
             },
             top: __ECHARTS__.configs.toolbox_top.value,
             left:__ECHARTS__.configs.toolbox_left.value,
@@ -5534,9 +5547,9 @@ function getGaugeWithAll(container, themes) {
         toolbox: {
             show: __ECHARTS__.configs.toolboxDisplay.value =="YES",
             feature: {
-                saveAsImage: {},
-                restore: {},
-                dataView: {show: true, readOnly: true}
+                saveAsImage: {show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES"},
+                restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
+                dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
             },
             right: "10",
             orient: "vertical",
@@ -5706,9 +5719,9 @@ function getGaugeWithOne(container, themes) {
         toolbox: {
             show: __ECHARTS__.configs.toolboxDisplay.value =="YES",
             feature: {
-                saveAsImage: {},
-                restore: {},
-                dataView: {show: true, readOnly: true}
+                saveAsImage: {show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES"},
+                restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
+                dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
             },
             top: __ECHARTS__.configs.toolbox_top.value,
             left:__ECHARTS__.configs.toolbox_left.value,
@@ -5916,9 +5929,9 @@ function getCalendar(container, themes) {
         toolbox: {
             show: __ECHARTS__.configs.toolboxDisplay.value =="YES",
             feature: {
-                saveAsImage: {},
-                restore: {},
-                dataView: {show: true, readOnly: true}
+                saveAsImage: {show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES"},
+                restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
+                dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
             },
             top: __ECHARTS__.configs.toolbox_top.value,
             left:__ECHARTS__.configs.toolbox_left.value,
@@ -6045,9 +6058,9 @@ function getGeoOfChina(container, themes) {
         toolbox: {
             show: __ECHARTS__.configs.toolboxDisplay.value =="YES",
             feature: {
-                saveAsImage: {show: true},
-                restore: {show: true},
-                dataView: {show: true, readOnly: true},
+                saveAsImage: {show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES"},
+                restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
+                dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
             },
             top: __ECHARTS__.configs.toolbox_top.value,
             left:__ECHARTS__.configs.toolbox_left.value,
@@ -6316,9 +6329,9 @@ function getGeoOfLocal(container, themes) {
         toolbox: {
             show: __ECHARTS__.configs.toolboxDisplay.value =="YES",
             feature: {
-                saveAsImage: {show: true},
-                restore: {show: true},
-                dataView: {show: true, readOnly: true},
+                saveAsImage: {show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES"},
+                restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
+                dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
             },
             top: __ECHARTS__.configs.toolbox_top.value,
             left:__ECHARTS__.configs.toolbox_left.value,
@@ -6631,9 +6644,9 @@ function getBar3D(container, themes) {
         toolbox: {
             show: __ECHARTS__.configs.toolboxDisplay.value == "YES",
             feature: {
-                saveAsImage: {show: true},
-                restore: {show: true},
-                dataView: {show: true, readOnly: true},
+                saveAsImage: {show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES"},
+                restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
+                dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
             },
             top: __ECHARTS__.configs.toolbox_top.value,
             left:__ECHARTS__.configs.toolbox_left.value,
@@ -6846,9 +6859,9 @@ function getLine3D(container, themes) {
         toolbox: {
             show: __ECHARTS__.configs.toolboxDisplay.value =="YES",
             feature: {
-                saveAsImage: {show: true},
-                restore: {show: true},
-                dataView: {show: true, readOnly: true},
+                saveAsImage: {show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES"},
+                restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
+                dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
             },
             top: __ECHARTS__.configs.toolbox_top.value,
             left:__ECHARTS__.configs.toolbox_left.value,
@@ -7065,9 +7078,9 @@ function getScatter3D(container, themes) {
         toolbox: {
             show: __ECHARTS__.configs.toolboxDisplay.value =="YES",
             feature: {
-                saveAsImage: {show: true},
-                restore: {show: true},
-                dataView: {show: true, readOnly: true},
+                saveAsImage: {show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES"},
+                restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
+                dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
             },
             top: __ECHARTS__.configs.toolbox_top.value,
             left:__ECHARTS__.configs.toolbox_left.value,
@@ -7271,6 +7284,11 @@ function getCategoryLine(container, themes) {
             serie.lineStyle = {
                 width: Number(__ECHARTS__.configs.lineStyleWidth.value),
             };
+            serie.symbol = __ECHARTS__.configs.lineSymbol.value;
+            serie.symbolSize= __ECHARTS__.configs.lineSymbolSize.value;
+            serie.markPoint= getMarkPoint();
+            serie.markLine= getMarkLine();
+            serie.markArea= {};
             if (__ECHARTS__.configs.categoryLineType.value == "areaStyle") {
                 serie.areaStyle = {};
             }
@@ -7344,10 +7362,10 @@ function getCategoryLine(container, themes) {
             toolbox: {
                 show: __ECHARTS__.configs.toolboxDisplay.value == "YES",
                 feature: {
-                    saveAsImage: {show: true},
-                    restore: {show: true},
-                    dataView: {show: true, readOnly: true},
-                },
+                saveAsImage: {show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES"},
+                restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
+                dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
+            },
                 top: __ECHARTS__.configs.toolbox_top.value,
                 left: __ECHARTS__.configs.toolbox_left.value,
                 orient: __ECHARTS__.configs.toolbox_orient.value,
@@ -7675,10 +7693,10 @@ function getGeoMigrateLinesOfChinaCity(container, themes) {
             toolbox: {
                 show: __ECHARTS__.configs.toolboxDisplay.value == "YES",
                 feature: {
-                    saveAsImage: {show: true},
-                    restore: {show: true},
-                    dataView: {show: true, readOnly: true},
-                },
+                saveAsImage: {show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES"},
+                restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
+                dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
+            },
                 top: __ECHARTS__.configs.toolbox_top.value,
                 left: __ECHARTS__.configs.toolbox_left.value,
                 orient: __ECHARTS__.configs.toolbox_orient.value,
@@ -7881,10 +7899,10 @@ function getCategoryLineForGauge(container, themes) {
             toolbox: {
                 show: __ECHARTS__.configs.toolboxDisplay.value == "YES",
                 feature: {
-                    saveAsImage: {show: true},
-                    restore: {show: true},
-                    dataView: {show: true, readOnly: true},
-                },
+                saveAsImage: {show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES"},
+                restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
+                dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
+            },
                 top: __ECHARTS__.configs.toolbox_top.value,
                 left: __ECHARTS__.configs.toolbox_left.value,
                 orient: __ECHARTS__.configs.toolbox_orient.value,
@@ -8058,9 +8076,10 @@ function getCategoryLineForLiqiud(container, themes) {
             toolbox: {
                 show: __ECHARTS__.configs.toolboxDisplay.value == "YES",
                 feature: {
-                    saveAsImage: {show: true},
-                    restore: {show: true},
-                    dataView: {show: true, readOnly: true},
+                    saveAsImage: {show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES"},
+                    restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
+                    dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
+
                 },
                 top: __ECHARTS__.configs.toolbox_top.value,
                 left: __ECHARTS__.configs.toolbox_left.value,
@@ -8171,9 +8190,10 @@ function getCategoryLineForGeoOfChina(container, themes) {
                     toolbox: {
                         show: __ECHARTS__.configs.toolboxDisplay.value == "YES",
                         feature: {
-                            saveAsImage: {show: true},
-                            restore: {show: true},
-                            dataView: {show: true, readOnly: true},
+                            saveAsImage: {show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES"},
+                            restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
+                            dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
+
                         },
                         top: __ECHARTS__.configs.toolbox_top.value,
                         left: __ECHARTS__.configs.toolbox_left.value,
@@ -8350,10 +8370,11 @@ function getCategoryLineForGeoOfChina(container, themes) {
             toolbox: {
                 show: __ECHARTS__.configs.toolboxDisplay.value == "YES",
                 feature: {
-                    saveAsImage: {show: true},
-                    restore: {show: true},
-                    dataView: {show: true, readOnly: true},
-                },
+                saveAsImage: {show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES"},
+                restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
+                dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
+
+            },
                 top: __ECHARTS__.configs.toolbox_top.value,
                 left: __ECHARTS__.configs.toolbox_left.value,
                 orient: __ECHARTS__.configs.toolbox_orient.value,
@@ -8456,9 +8477,10 @@ function getCategoryLineForGeoOfLocal(container, themes) {
                     toolbox: {
                         show: __ECHARTS__.configs.toolboxDisplay.value == "YES",
                         feature: {
-                            saveAsImage: {show: true},
-                            restore: {show: true},
-                            dataView: {show: true, readOnly: true},
+                            saveAsImage: {show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES"},
+                            restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
+                            dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
+
                         },
                         top: __ECHARTS__.configs.toolbox_top.value,
                         left: __ECHARTS__.configs.toolbox_left.value,
@@ -8636,9 +8658,10 @@ function getCategoryLineForGeoOfLocal(container, themes) {
             toolbox: {
                 show: __ECHARTS__.configs.toolboxDisplay.value == "YES",
                 feature: {
-                    saveAsImage: {show: true},
-                    restore: {show: true},
-                    dataView: {show: true, readOnly: true},
+                    saveAsImage: {show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES"},
+                    restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
+                    dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
+
                 },
                 top: __ECHARTS__.configs.toolbox_top.value,
                 left: __ECHARTS__.configs.toolbox_left.value,
