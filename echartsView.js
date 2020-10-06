@@ -1,267 +1,288 @@
 
 var __ECHARTS__ = {
-     type: {
-         "柱状图": "Bar",
-         "柱状图(3D)": "Bar3D",
-         "线型图": "Line",
-         "线型图(3D)": "Line3D",
-         "柱状&线型": "BarAndLine",
-         "条形图": "TransversBar",
-         "面积图": "AreaStyle",
-         "饼图": "Pie",
-         "圆环图": "Ring",
-         "玫瑰图": "Rose",
-         "雷达图": "Radar",
-         "极坐标柱状图": "PolarBar",
-         "极坐标面积图": "PolarArea",
-         "回归序列": "Regression",
-         "散点图": "Scatter",
-         "散点图(3D)": "Scatter3D",
-         "金字塔": "Funnel",
-         "资金流向": "Relationship",
-         "组织结构": "OrganizationStructure",
-         "分类集中": "WebkitDep",
-         "词云图": "WordCloud",
-         "水球图": "Liqiud",
-         "仪表盘": "Gauge",
-         "日历图": "Calendar",
-         "类目轴": "CategoryLine",
-         "全国地图": "GeoOfChina",
-         "本地地图": "GeoOfLocal",
-         "迁徙地图": "GeoMigrateLinesOfChinaCity"
-     },
-     themes: {
-         "Default": "",
-         "Chalk": "Chalk",
-         "Dark": "Dark",
-         "Essos": "Essos",
-         "Infographic": "Infographic",
-         "Light": "light",
-         "Macarons": "Macarons",
-         "Purple": "Purple",
-         "Roma": "Roma",
-         "Shine": "Shine",
-         "Vintage": "Vintage",
-         "Walden": "Walden",
-         "Westeros": "Westeros",
-         "Wonderland": "Wonderland"
-     },
-     configs: {
+    type: {
+        "柱状图": "Bar",
+        "柱状图(3D)": "Bar3D",
+        "线型图": "Line",
+        "线型图(3D)": "Line3D",
+        "柱状&线型": "BarAndLine",
+        "条形图": "TransversBar",
+        "面积图": "AreaStyle",
+        "饼图": "Pie",
+        "圆环图": "Ring",
+        "玫瑰图": "Rose",
+        "雷达图": "Radar",
+        "极坐标柱状图": "PolarBar",
+        "极坐标面积图": "PolarArea",
+        "回归序列": "Regression",
+        "散点图": "Scatter",
+        "散点图(3D)": "Scatter3D",
+        "金字塔": "Funnel",
+        "资金流向": "Relationship",
+        "组织结构": "OrganizationStructure",
+        "分类集中": "WebkitDep",
+        "词云图": "WordCloud",
+        "水球图": "Liqiud",
+        "仪表盘": "Gauge",
+        "日历图": "Calendar",
+        "类目轴": "CategoryLine",
+        "全国地图": "GeoOfChina",
+        "本地地图": "GeoOfLocal",
+        "迁徙地图": "GeoMigrateLinesOfChinaCity"
+    },
+    themes: {
+        "Default": "",
+        "Chalk": "Chalk",
+        "Dark": "Dark",
+        "Essos": "Essos",
+        "Infographic": "Infographic",
+        "Light": "light",
+        "Macarons": "Macarons",
+        "Purple": "Purple",
+        "Roma": "Roma",
+        "Shine": "Shine",
+        "Vintage": "Vintage",
+        "Walden": "Walden",
+        "Westeros": "Westeros",
+        "Wonderland": "Wonderland"
+    },
+    configs: {
 
-         hr_grid: {name: "图像位置", value: "", type: "hr"},
-         grid_top: {name: "上边距(%)", value: "10%", type: "input"},
-         grid_bottom: {name: "下边距(%)", value: "10%", type: "input"},
-         grid_left: {name: "左边距(%)", value: "10%", type: "input"},
-         grid_right: {name: "右边距(%)", value: "10%", type: "input"},
-         grid_containLabel: {name: "包含轴标签", value: "YES", options: ["YES", "NO"], type: "select"},
+        hr_grid: {name: "图像位置", value: "", type: "hr"},
+        grid_top: {name: "上边距(%)", value: "10%", type: "input"},
+        grid_bottom: {name: "下边距(%)", value: "10%", type: "input"},
+        grid_left: {name: "左边距(%)", value: "10%", type: "input"},
+        grid_right: {name: "右边距(%)", value: "10%", type: "input"},
+        grid_containLabel: {name: "包含轴标签", value: "YES", options: ["YES", "NO"], type: "select"},
 
-         hr_toolbox: {name: "图形工具", value: "", type: "hr"},
-         toolboxDisplay: {name: "是否显示", value: "YES", options: ["YES", "NO"], type: "select"},
-         toolbox_top: {name: "上边距(%)", value: "1%", type: "input"},
-         toolbox_left: {name: "左边距(%)", value: "", type: "input"},
-         toolbox_orient: {name: "布局方向", value: "vertical", options: ["horizontal", "vertical"], type: "select"},
-         toolbox_textPosition: {
-             name: "文字位置",
-             value: "left",
-             options: ["top", "bottom", "left", "right"],
-             type: "select"
-         },
-         toolboxFeatureSaveAsImage:{name: "保存图像", value: "YES", options: ["YES", "NO"], type: "select"},
-         toolboxFeatureRestore:{name: "还原", value: "YES", options: ["YES", "NO"], type: "select"},
-         toolboxFeatureDataView:{name: "数据视图", value: "NO", options: ["YES", "NO"], type: "select"},
-         toolboxFeatureDataZoom:{name: "数据缩放", value: "YES", options: ["YES", "NO"], type: "select"},
-         toolboxFeatureMagicType:{name: "图像转换", value: "YES", options: ["YES", "NO"], type: "select"},
-         toolboxFeatureBrush:{name: "区域选择", value: "NO", options: ["YES", "NO"], type: "select"},
+        hr_toolbox: {name: "图形工具", value: "", type: "hr"},
+        toolboxDisplay: {name: "是否显示", value: "YES", options: ["YES", "NO"], type: "select"},
+        toolbox_top: {name: "上边距(%)", value: "1%", type: "input"},
+        toolbox_left: {name: "左边距(%)", value: "", type: "input"},
+        toolbox_orient: {name: "布局方向", value: "vertical", options: ["horizontal", "vertical"], type: "select"},
+        toolbox_textPosition: {
+            name: "文字位置",
+            value: "left",
+            options: ["top", "bottom", "left", "right"],
+            type: "select"
+        },
+        toolboxFeatureSaveAsImage: {name: "保存图像", value: "YES", options: ["YES", "NO"], type: "select"},
+        toolboxFeatureRestore: {name: "还原", value: "YES", options: ["YES", "NO"], type: "select"},
+        toolboxFeatureDataView: {name: "数据视图", value: "NO", options: ["YES", "NO"], type: "select"},
+        toolboxFeatureDataZoom: {name: "数据缩放", value: "YES", options: ["YES", "NO"], type: "select"},
+        toolboxFeatureMagicType: {name: "图像转换", value: "YES", options: ["YES", "NO"], type: "select"},
+        toolboxFeatureBrush: {name: "区域选择", value: "NO", options: ["YES", "NO"], type: "select"},
 
-         hr_tooltip: {name: "提示组件", value: "", type: "hr"},
-         tooltipDisplay: {name: "是否显示", value: "YES", options: ["YES", "NO"], type: "select"},
+        hr_tooltip: {name: "提示组件", value: "", type: "hr"},
+        tooltipDisplay: {name: "是否显示", value: "YES", options: ["YES", "NO"], type: "select"},
+        axisPointerType: {
+            name: "指示器类型",
+            value: "shadow",
+            options: ["shadow", "line", "cross", "none"],
+            type: "select"
+        },
 
-         hr_title: {name: "标题", value: "", type: "hr"},
-         titleDisplay: {name: "是否显示", value: "YES", options: ["YES", "NO"], type: "select"},
-         titlePosition: {name: "标题位置", value: "left", options: ["left", "center", "right"], type: "select"},
-         titleText: {name: "主标题名称", value: "", type: "input"},
-         titleTextColor: {value: "#e6e6e6", name: "主标题颜色", type: "color"},
-         titleSubText: {name: "副标题名称", value: "", type: "input"},
-         titleSubTextColor: {value: "#e6e6e6", name: "副标题颜色", type: "color"},
+        hr_title: {name: "标题", value: "", type: "hr"},
+        titleDisplay: {name: "是否显示", value: "YES", options: ["YES", "NO"], type: "select"},
+        titlePosition: {name: "标题位置", value: "left", options: ["left", "center", "right"], type: "select"},
+        titleText: {name: "主标题名称", value: "", type: "input"},
+        titleTextColor: {value: "#e6e6e6", name: "主标题颜色", type: "color"},
+        titleSubText: {name: "副标题名称", value: "", type: "input"},
+        titleSubTextColor: {value: "#e6e6e6", name: "副标题颜色", type: "color"},
 
-         hr_legend: {name: "图例", value: "", type: "hr"},
-         legendDisplay: {name: "是否显示", value: "YES", options: ["YES", "NO"], type: "select"},
-         legendIcon: {name: "图标",value: "circle", options:["circle", "rect", "roundRect", "triangle", "diamond", "arrow","emptyCircle", "emptyRectangle", "emptyTriangle", "emptyDiamond", "none"], type: "select"},
-         legendSelectedMode: {name: "选择模式", value: "multiple", options: ["single","multiple"], type: "select"},
-         legendPositionTop: {name: "上边距(%)", value: "1%", type: "input"},
-         legendPositionLeft: {name: "左边距(%)", value: "50%", type: "input"},
-         legendType: {name: "显示类型", value: "plain", options: ["plain", "scroll"], type: "select"},
-         legendOrient: {name: "布局方向", value: "horizontal", options: ["horizontal", "vertical"], type: "select"},
-         legendTextColor: {name: "文字颜色", value: "#e6e6e6", type: "color"},
+        hr_legend: {name: "图例", value: "", type: "hr"},
+        legendDisplay: {name: "是否显示", value: "YES", options: ["YES", "NO"], type: "select"},
+        legendIcon: {
+            name: "图标",
+            value: "circle",
+            options: ["circle", "rect", "roundRect", "triangle", "diamond", "arrow", "emptyCircle", "emptyRectangle", "emptyTriangle", "emptyDiamond", "none"],
+            type: "select"
+        },
+        legendSelectedMode: {name: "选择模式", value: "multiple", options: ["single", "multiple"], type: "select"},
+        legendPositionTop: {name: "上边距(%)", value: "1%", type: "input"},
+        legendPositionLeft: {name: "左边距(%)", value: "50%", type: "input"},
+        legendType: {name: "显示类型", value: "plain", options: ["plain", "scroll"], type: "select"},
+        legendOrient: {name: "布局方向", value: "horizontal", options: ["horizontal", "vertical"], type: "select"},
+        legendTextColor: {name: "文字颜色", value: "#e6e6e6", type: "color"},
 
-         hr_axis: {name: "坐标轴", value: "", type: "hr"},
-         axisLineDisplay: {name: "是否显示", value: "YES", options: ["YES", "NO"], type: "select"},
-         axisColor: {name: "轴线颜色", value: "#e6e6e6", type: "color"},
-         axisTextColor: {name: "标签颜色", value: "#e6e6e6", type: "color"},
-         splitXLineDisplay: {name: "显示X轴分隔线", value: "NO", options: ["YES", "NO"], type: "select"},
-         splitYLineDisplay: {name: "显示Y轴分隔线", value: "NO", options: ["YES", "NO"], type: "select"},
-         splitXAreaDisplay: {name: "显示X轴分割区", value: "NO", options: ["YES", "NO"], type: "select"},
-         splitYAreaDisplay: {name: "显示Y轴分割区", value: "NO", options: ["YES", "NO"], type: "select"},
-         xAxisInverse:{name: "X轴反向", value: "NO", options: ["YES", "NO"], type: "select"},
-         yAxisInverse:{name: "Y轴反向", value: "NO", options: ["YES", "NO"], type: "select"},
-         axisPointerType: {
-             name: "指示器类型",
-             value: "shadow",
-             options: ["shadow", "line", "cross", "none"],
-             type: "select"
-         },
+        hr_axis: {name: "坐标轴", value: "", type: "hr"},
+        axisLineDisplay: {name: "是否显示", value: "YES", options: ["YES", "NO"], type: "select"},
+        axisColor: {name: "轴线颜色", value: "#e6e6e6", type: "color"},
+        axisTextColor: {name: "标签颜色", value: "#e6e6e6", type: "color"},
+        splitXLineDisplay: {name: "显示X轴分隔线", value: "NO", options: ["YES", "NO"], type: "select"},
+        splitYLineDisplay: {name: "显示Y轴分隔线", value: "NO", options: ["YES", "NO"], type: "select"},
+        splitXAreaDisplay: {name: "显示X轴分割区", value: "NO", options: ["YES", "NO"], type: "select"},
+        splitYAreaDisplay: {name: "显示Y轴分割区", value: "NO", options: ["YES", "NO"], type: "select"},
+        xAxisInverse: {name: "X轴反向", value: "NO", options: ["YES", "NO"], type: "select"},
+        yAxisInverse: {name: "Y轴反向", value: "NO", options: ["YES", "NO"], type: "select"},
 
-         hr_bar: {name: "柱状图", value: "", type: "hr"},
-         barLabelDisplay: {name: "显示标签", value: 'NO', options: ["YES", "NO"], type: "select"},
-         labelBarTextColor: {name: "标签颜色", value: "auto", type: "color"},
-         labelBarFontSize: {name: "标签字号(px)", value: 12, type: "input"},
-         barLabelPosition: {
-             name: "标签位置",
-             value: 'top',
-             options: ["top", "left", "right", "bottom", "insideTop", "insideLeft", "insideRight", "insideBottom"],
-             type: "select"
-         },
-         barLabelRotate: {name: "标签旋转度数", value: 0, type: "input"},
+        hr_bar: {name: "柱状图", value: "", type: "hr"},
+        barLabelDisplay: {name: "显示标签", value: 'NO', options: ["YES", "NO"], type: "select"},
+        barEmphasisLabelDisplay: {name: "显示热点标签", value: 'NO', options: ["YES", "NO"], type: "select"},
+        labelBarTextColor: {name: "标签颜色", value: "auto", type: "color"},
+        labelBarFontSize: {name: "标签字号(px)", value: 12, type: "input"},
+        barLabelPosition: {
+            name: "标签位置",
+            value: 'top',
+            options: ["top", "left", "right", "bottom", "insideTop", "insideLeft", "insideRight", "insideBottom"],
+            type: "select"
+        },
+        barLabelRotate: {name: "标签旋转度数", value: 0, type: "input"},
 
-         hr_line: {name: "线形图", value: "", type: "hr"},
-         lineStyleWidth: {name: "线条宽度(px)", value: 2, type: "input"},
-         lineSmooth: {name: "使用平滑线", value: 'YES', options: ["YES", "NO"], type: "select"},
-         lineSymbol:{name: "数据符号",value:"emptyCircle", options: ["circle", "emptyCircle", "triangle", "emptyTriangle", "diamond", "emptyDiamond", "arrow", "emptyArrow", "pin", "emptyPin"], type: "select"},
-         lineSymbolSize:{name: "符号大小",value: 5, type: "input"},
-         lineMarkPointMin:{name: "最小值点", value: 'NO', options: ["YES", "NO"], type: "select"},
-         lineMarkPointMax:{name: "最大值点", value: 'NO', options: ["YES", "NO"], type: "select"},
-         lineMarkLineMin:{name: "最小值线", value: 'NO', options: ["YES", "NO"], type: "select"},
-         lineMarkLineMax:{name: "最大值线", value: 'NO', options: ["YES", "NO"], type: "select"},
-         lineMarkLineAvg:{name: "平均值线", value: 'NO', options: ["YES", "NO"], type: "select"},
+        hr_line: {name: "线形图", value: "", type: "hr"},
+        lineStyleWidth: {name: "线条宽度(px)", value: 2, type: "input"},
+        lineEmphasisLabelDisplay: {name: "显示热点标签", value: 'YES', options: ["YES", "NO"], type: "select"},
+        lineLabelFontSize: {name: "标签字号(px)", value: 12, type: "input"},
+        lineSmooth: {name: "使用平滑线", value: 'YES', options: ["YES", "NO"], type: "select"},
+        lineSymbol: {
+            name: "数据符号",
+            value: "emptyCircle",
+            options: ["circle", "emptyCircle", "triangle", "emptyTriangle", "diamond", "emptyDiamond", "arrow", "emptyArrow", "pin", "emptyPin"],
+            type: "select"
+        },
+        lineSymbolSize: {name: "符号大小", value: 5, type: "input"},
+        lineMarkPointMin: {name: "最小值点", value: 'NO', options: ["YES", "NO"], type: "select"},
+        lineMarkPointMax: {name: "最大值点", value: 'NO', options: ["YES", "NO"], type: "select"},
+        lineMarkLineMin: {name: "最小值线", value: 'NO', options: ["YES", "NO"], type: "select"},
+        lineMarkLineMax: {name: "最大值线", value: 'NO', options: ["YES", "NO"], type: "select"},
+        lineMarkLineAvg: {name: "平均值线", value: 'NO', options: ["YES", "NO"], type: "select"},
 
-         hr_3D: {name: "3D图形", value: "", type: "hr"},
-         BoxWidthFor3D: {name: "宽度(X轴)", value: 200, type: "input"},
-         BoxDepthFor3D: {name: "深度(Y轴)", value: 80, type: "input"},
-         AutoRotateFor3D: {name: "自动旋转", value: "YES", options: ["YES", "NO"], type: "select"},
-         LabelOf3DDisplay: {name: "显示标签", value: "NO", options: ["YES", "NO"], type: "select"},
-         label3DTextColor: {name: "标签颜色", value: "auto", type: "color"},
-         label3DFontSize: {name: "标签字号(px)", value: 12, type: "input"},
-         ItemStyleOpacityFor3D: {name: "透明度", value: 1, type: "input"},
-         axisPointerDisplay: {name: "坐标轴指示器", value: "NO", options: ["YES", "NO"], type: "select"},
+        hr_regression: {name: "趋势/回归", value: "", type: "hr"},
+        regressionType: {name: "趋势/回归类型", value: '直线', options: ["直线", "指数", "对数", "多项式"], type: "select"},
+        regressionPolynomialOrder: {name: "多项式阶数", value: 2, type: "input"},
+        regressionForwardPeroids: {name: "趋势/回归前推周期", value: 0, type: "input"},
+        regressionExpressionDisplay: {name: "显示表达式", value: 'NO', options: ["YES", "NO"], type: "select"},
+        regressionExpressionColor: {name: "表达式颜色", value: "auto", type: "color"},
 
-         hr_regression: {name: "趋势/回归", value: "", type: "hr"},
-         regressionType: {name: "趋势/回归类型", value: '直线', options: ["直线", "指数", "对数", "多项式"], type: "select"},
-         regressionPolynomialOrder: {name: "多项式阶数", value: 2, type: "input"},
-         regressionForwardPeroids: {name: "趋势/回归前推周期", value: 0, type: "input"},
-         regressionExpressionColor:{name: "表达式颜色", value: "auto", type: "color"},
+        hr_pie: {name: "饼图/圆环/玫瑰", value: "", type: "hr"},
+        outRadius: {name: "外半径(%)", value: "70%", type: "input"},
+        inRadius: {name: "内半径(%)", value: "35%", type: "input"},
+        pieSelectedMode: {name: "选择模式", value: "single", options: ["single", "multiple"], type: "select"},
+        pieLabelDisplay: {name: "显示标签", value: 'YES', options: ["YES", "NO"], type: "select"},
+        pieLabelFontSize: {name: "标签字号(px)", value: 12, type: "input"},
+        pieLabelAlignTo: {name: "标签对齐方式", value: 'none', options: ["none", "labelLine", "edge"], type: "select"},
+        richTextLabel: {name: "富文本标签", value: 'NO', options: ["YES", "NO"], type: "select"},
+        groupWith: {name: "每行序列数", value: 2, type: "input"},
 
-         hr_pie: {name: "饼图/圆环/玫瑰", value: "", type: "hr"},
-         outRadius: {name: "外半径(%)", value: "70%", type: "input"},
-         inRadius: {name: "内半径(%)", value: "35%", type: "input"},
-         pieSelectedMode: {name: "选择模式", value: "single", options: ["single","multiple"], type: "select"},
-         pieLabelDisplay: {name: "显示标签", value: 'YES', options: ["YES", "NO"], type: "select"},
-         pieLabelFontSize: {name: "标签字号(px)", value: 12, type: "input"},
-         pieLabelAlignTo: {name: "标签对齐方式", value: 'none', options: ["none", "labelLine", "edge"], type: "select"},
-         richTextLabel: {name: "富文本标签", value: 'NO', options: ["YES", "NO"], type: "select"},
-         groupWith: {name: "每行序列数", value: 2, type: "input"},
+        hr_radar: {name: "雷达图", value: "", type: "hr"},
+        radarShape: {name: "形状", value: 'circle', options: ["circle", "polygon"], type: "select"},
+        radarAreaDisplay: {name: "显示分区", value: 'YES', options: ["YES", "NO"], type: "select"},
+        radarNameDisplay: {name: "显示名称", value: 'YES', options: ["YES", "NO"], type: "select"},
+        radarLabelRotate: {name: "标签旋转度数", value: 0, type: "input"},
+        radarSplitNumber: {name: "分割段数", value: 5, type: "input"},
+        radarSameMax: {name: "同基比较", value: 'NO', options: ["YES", "NO"], type: "select"},
 
-         hr_radar: {name: "雷达图", value: "", type: "hr"},
-         radarShape:{name: "形状", value: 'circle', options: ["circle", "polygon"], type: "select"},
-         radarAreaDisplay:{name: "显示分区", value: 'YES', options: ["YES", "NO"], type: "select"},
-         radarNameDisplay:{name: "显示名称", value: 'YES', options: ["YES", "NO"], type: "select"},
-         radarLabelRotate:{name: "标签旋转度数", value: 0, type: "input"},
-         radarSplitNumber:{name: "分割段数", value: 5, type: "input"},
-         radarSameMax:{name: "同基比较", value: 'NO', options: ["YES", "NO"], type: "select"},
+        hr_scatter: {name: "散点图", value: "", type: "hr"},
+        scatterSymbolSize: {name: "数据点大小(px)", value: 6, type: "input"},
+        scatterSymbolShape: {
+            name: "数据点形状",
+            value: "circle",
+            options: ['circle', 'rect', 'roundRect', 'triangle', 'diamond', 'pin', 'arrow', 'none'],
+            type: "select"
+        },
 
-         hr_scatter: {name: "散点图", value: "", type: "hr"},
-         scatterSymbolSize: {name: "数据点大小(px)", value: 6, type: "input"},
-         scatterSymbolShape: {
-             name: "数据点形状",
-             value: "circle",
-             options: ['circle', 'rect', 'roundRect', 'triangle', 'diamond', 'pin', 'arrow', 'none'],
-             type: "select"
-         },
+        hr_wordCloud: {name: "词云图", value: "", type: "hr"},
+        wordCloudShape: {
+            name: "形状",
+            value: "circle",
+            options: ["circle", "cardioid", "diamond", "triangle-forward", "triangle", "pentagon", "star"],
+            type: "select"
+        },
+        wordCloudMinFontSize: {name: "最小字号(px)", value: 12, type: "input"},
+        wordCloudMaxFontSize: {name: "最大字号(px)", value: 60, type: "input"},
+        wordCloudRotationRange: {name: "旋转角度", value: 90, type: "input"},
 
-         hr_wordCloud: {name: "词云图", value: "", type: "hr"},
-         wordCloudShape: {
-             name: "形状",
-             value: "circle",
-             options: ["circle", "cardioid", "diamond", "triangle-forward", "triangle", "pentagon", "star"],
-             type: "select"
-         },
-         wordCloudMinFontSize: {name: "最小字号(px)", value: 12, type: "input"},
-         wordCloudMaxFontSize: {name: "最大字号(px)", value: 60, type: "input"},
-         wordCloudRotationRange:{name:"旋转角度", value: 90, type: "input"},
+        hr_liqiud: {name: "水球图", value: "", type: "hr"},
+        liqiudShape: {
+            name: "形状",
+            value: "circle",
+            options: ["circle", "rect", "roundRect", "triangle", "diamond", "pin", "arrow", "container", "whale"],
+            type: "select"
+        },
+        liqiudFontSize: {name: "标题字号(px)", value: 16, type: "input"},
 
-         hr_liqiud: {name: "水球图", value: "", type: "hr"},
-         liqiudShape: {
-             name: "形状",
-             value: "circle",
-             options: ["circle", "rect", "roundRect", "triangle", "diamond", "pin", "arrow", "container", "path"], type: "select"
-         },
-         liqiudFontSize: {name: "标题字号(px)", value: 16, type: "input"},
+        hr_gauge: {name: "仪表盘", value: "", type: "hr"},
+        gaugeAxisLabelFontSize: {name: "刻度字号(px)", value: 10, type: "input"},
+        gaugeTitleFontSize: {name: "标题字号(px)", value: 14, type: "input"},
+        gaugeLabelFontSize: {name: "标签字号(px)", value: 18, type: "input"},
+        gaugeAxisLineWidth: {name: "圆轴宽度(px)", value: 10, type: "input"},
 
-         hr_gauge: {name: "仪表盘", value: "", type: "hr"},
-         gaugeAxisLabelFontSize: {name: "刻度字号(px)", value: 10, type: "input"},
-         gaugeTitleFontSize: {name: "标题字号(px)", value: 14, type: "input"},
-         gaugeLabelFontSize: {name: "标签字号(px)", value: 18, type: "input"},
-         gaugeAxisLineWidth: {name: "圆轴宽度(px)", value: 10, type: "input"},
+        hr_calendar: {name: "日历图", value: "", type: "hr"},
+        calendarType: {
+            name: "类型",
+            value: "heatmap",
+            options: ['heatmap', 'scatter', 'effectScatter'],
+            type: "select"
+        },
+        calendarOrient: {name: "布局方向", value: 'vertical', options: ["horizontal", "vertical"], type: "select"},
 
-         hr_calendar: {name: "日历图", value: "", type: "hr"},
-         calendarType: {
-             name: "类型",
-             value: "heatmap",
-             options: ['heatmap', 'scatter', 'effectScatter'],
-             type: "select"
-         },
-         calendarOrient: {name: "布局方向", value: 'vertical', options: ["horizontal", "vertical"], type: "select"},
+        hr_3D: {name: "3D图形", value: "", type: "hr"},
+        BoxWidthFor3D: {name: "宽度(X轴)", value: 200, type: "input"},
+        BoxDepthFor3D: {name: "深度(Y轴)", value: 80, type: "input"},
+        AutoRotateFor3D: {name: "自动旋转", value: "YES", options: ["YES", "NO"], type: "select"},
+        AutoRotateSpeedFor3D: {name: "旋转速度", value: 10, type: "input"},
+        LabelOf3DDisplay: {name: "显示标签", value: "NO", options: ["YES", "NO"], type: "select"},
+        label3DTextColor: {name: "标签颜色", value: "auto", type: "color"},
+        label3DFontSize: {name: "标签字号(px)", value: 12, type: "input"},
+        ItemStyleOpacityFor3D: {name: "透明度", value: 1, type: "input"},
+        LightShadowFor3D: {name: "显示光线阴影", value: "YES", options: ["YES", "NO"], type: "select"},
+        axisPointerDisplay: {name: "坐标轴指示器", value: "NO", options: ["YES", "NO"], type: "select"},
 
-         hr_geo: {name: "地图", value: "", type: "hr"},
-         //geoBackgroundColor: {value: "#404a59", name: "地图背景颜色", type: "color"},
-         geoAreaColor: {value: "#323c48", name: "区域颜色", type: "color"},
-         geoBorderColor: {value: "#404a59", name: "边界颜色", type: "color"},
-         geoHotAreaColor: {value: "#2a333d", name: "热点区域颜色", type: "color"},
-         geoAreaNameDisplay: {name: "显示地区名称", value: "NO", options: ["YES", "NO"], type: "select"},
-         geoAreaNameColor: {name: "地区名称颜色", value: "auto", type: "color"},
+        hr_geo: {name: "地图", value: "", type: "hr"},
+        //geoBackgroundColor: {value: "#404a59", name: "地图背景颜色", type: "color"},
+        geoAreaColor: {value: "#323c48", name: "区域颜色", type: "color"},
+        geoBorderColor: {value: "#404a59", name: "边界颜色", type: "color"},
+        geoHotAreaColor: {value: "#2a333d", name: "热点区域颜色", type: "color"},
+        geoAreaNameDisplay: {name: "显示地区名称", value: "NO", options: ["YES", "NO"], type: "select"},
+        geoAreaNameColor: {name: "地区名称颜色", value: "auto", type: "color"},
+        geoLineSymbol: {name: "符号", value: "plane", options: ["plane", "rocket"], type: "select"},
+        geoLineSymbolSize: {name: "符号大小", value: 10, type: "input"},
+        geoLineCurveness: {name: "线路曲率", value: 0.2, type: "input"},
+        geoLinePeriod: {name: "周期速度(秒)", value: 5, type: "input"},
 
-         hr_timeline: {name: "时间/类目轴", value: "", type: "hr"},
-         timelineDisplay: {name: "是否显示", value: "YES", options: ["YES", "NO"], type: "select"},
-         categoryLineType: {
-             name: "序列图形",
-             value: "bar",
-             options: ["bar", "line", "areaStyle", "pie"],
-             type: "select"
-         },
-         seriesLoopPlayInterval: {name: "间隔(秒)", value: 3, type: "input"},
+        hr_timeline: {name: "时间/类目轴", value: "", type: "hr"},
+        timelineDisplay: {name: "是否显示", value: "YES", options: ["YES", "NO"], type: "select"},
+        categoryLineType: {
+            name: "序列图形",
+            value: "bar",
+            options: ["bar", "line", "areaStyle", "pie"],
+            type: "select"
+        },
+        seriesLoopPlayInterval: {name: "间隔(秒)", value: 3, type: "input"},
 
-         hr_dataZoom: {name: "数据缩放", value: "", type: "hr"},
-         dataZoomBarDisplay: {name: "是否显示", value: "NO", options: ["YES", "NO"], type: "select"},
-         dataZoomBarColor: {value: "#404a59", name: "组件颜色", type: "color"},
-         dataZoomBarWidth: {name: "宽度(px)", value: 45, type: "input"},
-         dataZoomFilterMode: {
-             name: "模式",
-             value: "filter",
-             options: ["filter", "weakFilter", "empty", "none"],
-             type: "select"
-         },
-         dataZoomHandleIcon: {name: "手柄样式", value: "rect", options: ["rect", "circle", "emptyCircle"], type: "select"},
-         dataZoomHandleSize: {name: "手柄大小", value: "100%", type: "input"},
+        hr_dataZoom: {name: "数据缩放", value: "", type: "hr"},
+        dataZoomBarDisplay: {name: "是否显示", value: "NO", options: ["YES", "NO"], type: "select"},
+        dataZoomBarColor: {value: "#404a59", name: "组件颜色", type: "color"},
+        dataZoomBarWidth: {name: "宽度(px)", value: 45, type: "input"},
+        dataZoomFilterMode: {
+            name: "模式",
+            value: "filter",
+            options: ["filter", "weakFilter", "empty", "none"],
+            type: "select"
+        },
+        dataZoomHandleIcon: {name: "手柄样式", value: "rect", options: ["rect", "circle", "emptyCircle"], type: "select"},
+        dataZoomHandleSize: {name: "手柄大小", value: "100%", type: "input"},
 
-         hr_visualMap: {name: "视觉映射", value: "", type: "hr"},
-         visualMapDisplay: {name: "是否显示", value: "NO", options: ["YES", "NO"], type: "select"},
-         visualMap_type: {name: "类型", value: "continuous", options: ["continuous", "piecewise"], type: "select"},
-         visualMap_top: {name: "上边距(%)", value: "10%", type: "input"},
-         visualMap_left: {name: "左边距(%)", value: "1%", type: "input"},
-         visualMap_orient: {name: "布局方向", value: "horizontal", options: ["horizontal", "vertical"], type: "select"},
-         visualMap_width: {name: "宽度", value: "15", type: "input"},
-         visualMap_height: {name: "高度", value: "30%", type: "input"},
-         visualMap_textColor: {name: "标签颜色", value: "#e6e6e6", type: "color"},
-         visualMap_piecewise_splitNumber: {name: "分段", value: "5", type: "input"},
+        hr_visualMap: {name: "视觉映射", value: "", type: "hr"},
+        visualMapDisplay: {name: "是否显示", value: "NO", options: ["YES", "NO"], type: "select"},
+        visualMap_type: {name: "类型", value: "continuous", options: ["continuous", "piecewise"], type: "select"},
+        visualMap_top: {name: "上边距(%)", value: "10%", type: "input"},
+        visualMap_left: {name: "左边距(%)", value: "1%", type: "input"},
+        visualMap_orient: {name: "布局方向", value: "horizontal", options: ["horizontal", "vertical"], type: "select"},
+        visualMap_width: {name: "宽度", value: "15", type: "input"},
+        visualMap_height: {name: "高度", value: "30%", type: "input"},
+        visualMap_textColor: {name: "标签颜色", value: "#e6e6e6", type: "color"},
+        visualMap_piecewise_splitNumber: {name: "分段", value: "5", type: "input"},
 
-         hr_report: {name: "报表设置", value: "", type: "hr"},
-         reportFontSize: {
-             name: "字号",
-             value: "100%",
-             options: ["100%", "110%", "120%", "130%", "140%", "150%"],
-             type: "select"
-         },
-     }
- };
+        hr_report: {name: "报表设置", value: "", type: "hr"},
+        reportFontSize: {
+            name: "字号",
+            value: "100%",
+            options: ["100%", "110%", "120%", "130%", "140%", "150%"],
+            type: "select"
+        },
+    }
+};
 
 var geoCoordMap = {
     LocalMap: "北京",
@@ -1407,6 +1428,23 @@ function getBar(container, themes) {
                         }
                     }
                 },
+                emphasis: {
+                    label: {
+                        show: __ECHARTS__.configs.barEmphasisLabelDisplay.value == "YES",
+                        align: 'center',
+                        verticalAlign: 'middle',
+                        position: __ECHARTS__.configs.barLabelPosition.value,
+                        distance: 15,
+                        formatter: '{value|{c}}',
+                        rotate: __ECHARTS__.configs.barLabelRotate.value,
+                        rich: {
+                            value: {
+                                color: __ECHARTS__.configs.labelBarTextColor.value,
+                                fontSize: __ECHARTS__.configs.labelBarFontSize.value,
+                            }
+                        }
+                    }
+                },
                 smooth: __ECHARTS__.configs.lineSmooth.value == "YES",
             };
             series.animationDelay = function (idx) {
@@ -1641,10 +1679,27 @@ function getTransversBar(container, themes) {
                 distance: 15,
                 formatter: '{value|{c}}',
                 rich: {
+                    value: {
+                        color: __ECHARTS__.configs.labelBarTextColor.value,
+                        fontSize: __ECHARTS__.configs.labelBarFontSize.value,
+                    }
+                }
+            };
+            series.emphasis = {
+                label: {
+                    show: __ECHARTS__.configs.barEmphasisLabelDisplay.value == "YES",
+                    align: 'center',
+                    verticalAlign: 'middle',
+                    position: __ECHARTS__.configs.barLabelPosition.value,
+                    distance: 15,
+                    formatter: '{value|{c}}',
+                    rotate: __ECHARTS__.configs.barLabelRotate.value,
+                    rich: {
                         value: {
                             color: __ECHARTS__.configs.labelBarTextColor.value,
                             fontSize: __ECHARTS__.configs.labelBarFontSize.value,
                         }
+                    }
                 }
             };
             series.animationDelay = function (idx) {
@@ -1890,6 +1945,13 @@ function getLine(container, themes) {
                 lineStyle: {
                     width: Number(__ECHARTS__.configs.lineStyleWidth.value),
                 },
+                emphasis: {
+                    label: {
+                        show: __ECHARTS__.configs.lineEmphasisLabelDisplay.value == "YES",
+                        position: 'left',
+                        fontSize: __ECHARTS__.configs.lineLabelFontSize.value,
+                    }
+                },
                 symbol: __ECHARTS__.configs.lineSymbol.value,
                 symbolSize: __ECHARTS__.configs.lineSymbolSize.value,
                 smooth: __ECHARTS__.configs.lineSmooth.value == "YES",
@@ -2091,17 +2153,7 @@ function getLine(container, themes) {
             return idx * 3;
         }
     };
-    // 使用刚指定的配置项和数据显示图表。
 
-    if (option.series.length > 1) {
-        option.tooltip = {
-            //显示活动标尺线.
-            trigger: 'axis',
-            position: function (pt) {
-                return [pt[0], '10%'];
-            }
-        }
-    }
     myChart.setOption(option);
 
     return container;
@@ -2130,6 +2182,13 @@ function getBarAndLine(container, themes) {
                     data: [],
                     lineStyle: {
                         width: Number(__ECHARTS__.configs.lineStyleWidth.value),
+                    },
+                    emphasis: {
+                        label: {
+                            show: __ECHARTS__.configs.lineEmphasisLabelDisplay.value == "YES",
+                            position: 'left',
+                            fontSize: __ECHARTS__.configs.lineLabelFontSize.value,
+                        }
                     },
                     itemStyle: {},
                     symbol: __ECHARTS__.configs.lineSymbol.value,
@@ -2164,7 +2223,24 @@ function getBarAndLine(container, themes) {
                                 fontSize: __ECHARTS__.configs.labelBarFontSize.value,
                             }
                         }
-                    }
+                    },
+                    emphasis: {
+                        label: {
+                            show: __ECHARTS__.configs.barEmphasisLabelDisplay.value == "YES",
+                            align: 'center',
+                            verticalAlign: 'middle',
+                            position: __ECHARTS__.configs.barLabelPosition.value,
+                            distance: 15,
+                            formatter: '{value|{c}}',
+                            rotate: __ECHARTS__.configs.barLabelRotate.value,
+                            rich: {
+                                value: {
+                                    color: __ECHARTS__.configs.labelBarTextColor.value,
+                                    fontSize: __ECHARTS__.configs.labelBarFontSize.value,
+                                }
+                            }
+                        }
+                    },
                 }
             }
 
@@ -2393,7 +2469,7 @@ function getAreaStyle(container, themes) {
                     //    color: 'rgb(255, 158, 68)'
                     //}, {
                     //    offset: 1,
-                     //   color: 'rgb(255, 70, 131)'
+                    //   color: 'rgb(255, 70, 131)'
                     //}])
                 },
                 //面积图
@@ -2406,6 +2482,13 @@ function getAreaStyle(container, themes) {
                 data: [],
                 lineStyle: {
                     width: Number(__ECHARTS__.configs.lineStyleWidth.value),
+                },
+                emphasis: {
+                    label: {
+                        show: __ECHARTS__.configs.lineEmphasisLabelDisplay.value == "YES",
+                        position: 'left',
+                        fontSize: __ECHARTS__.configs.lineLabelFontSize.value,
+                    }
                 },
                 symbol: __ECHARTS__.configs.lineSymbol.value,
                 symbolSize: __ECHARTS__.configs.lineSymbolSize.value,
@@ -3706,10 +3789,9 @@ function getRegression(container, themes) {
                     },
                     emphasis: {
                         label: {
-                            show: true,
+                            show: __ECHARTS__.configs.lineEmphasisLabelDisplay.value == "YES",
                             position: 'left',
-                            color: 'blue',
-                            fontSize: 12
+                            fontSize: __ECHARTS__.configs.lineLabelFontSize.value,
                         }
                     },
                     smooth: __ECHARTS__.configs.lineSmooth.value == "YES",
@@ -3763,11 +3845,11 @@ function getRegression(container, themes) {
                     color: 'transparent'
                 },
                 label: {
-                    show: true,
+                    show: __ECHARTS__.configs.regressionExpressionDisplay.value == "YES",
                     position: 'left',
-                    formatter: myRegression.expression,
+                    formatter: myRegression.expression.replaceAll("+ -" ," - "),
                     color:__ECHARTS__.configs.regressionExpressionColor.value,
-                    fontSize: 10
+                    fontSize: __ECHARTS__.configs.lineLabelFontSize.value,
                 },
                 data: [{
                     coord: data[data.length - 1]
@@ -6556,7 +6638,6 @@ function getBar3D(container, themes) {
                 itemStyle: {
                     opacity: __ECHARTS__.configs.ItemStyleOpacityFor3D.value,
                     //柱子的透明度,取值范围[0-1]
-                    color: "red"
                 },
 
                 label: {
@@ -6576,8 +6657,7 @@ function getBar3D(container, themes) {
                             fontSize: __ECHARTS__.configs.label3DFontSize.value,
                         }
                     },
-                    itemStyle: {
-                    }
+                    itemStyle: {}
                 },
                 animation: true,
                 animationDurationUpdate: 1000,
@@ -6649,7 +6729,7 @@ function getBar3D(container, themes) {
                 dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
             },
             top: __ECHARTS__.configs.toolbox_top.value,
-            left:__ECHARTS__.configs.toolbox_left.value,
+            left: __ECHARTS__.configs.toolbox_left.value,
             orient: __ECHARTS__.configs.toolbox_orient.value,
             emphasis: {
                 iconStyle: {
@@ -6666,12 +6746,12 @@ function getBar3D(container, themes) {
             top: __ECHARTS__.configs.visualMap_top.value,
             left: __ECHARTS__.configs.visualMap_left.value,
             itemWidth: __ECHARTS__.configs.visualMap_width.value,
-            orient:__ECHARTS__.configs.visualMap_orient.value,
+            orient: __ECHARTS__.configs.visualMap_orient.value,
             itemHeight: __ECHARTS__.configs.visualMap_height.value,
             textStyle: {
                 color: __ECHARTS__.configs.visualMap_textColor.value,
             },
-            splitNumber:__ECHARTS__.configs.visualMap_piecewise_splitNumber.value,
+            splitNumber: __ECHARTS__.configs.visualMap_piecewise_splitNumber.value,
         },
         xAxis3D: {
             type: 'category',
@@ -6694,7 +6774,7 @@ function getBar3D(container, themes) {
             boxDepth: __ECHARTS__.configs.BoxDepthFor3D.value,
             viewControl: {
                 autoRotate: __ECHARTS__.configs.AutoRotateFor3D.value == "YES",
-                autoRotateSpeed: 10,
+                autoRotateSpeed: __ECHARTS__.configs.AutoRotateSpeedFor3D.value,
                 projection: 'orthographic',
                 animationDurationUpdate: 1000,
                 animationEasingUpdate: "cubicInOut",
@@ -6703,7 +6783,7 @@ function getBar3D(container, themes) {
                 },
             },
             axisLine: {
-                show:__ECHARTS__.configs.axisLineDisplay.value == "YES",
+                show: __ECHARTS__.configs.axisLineDisplay.value == "YES",
                 lineStyle: {
                     color: __ECHARTS__.configs.axisColor.value
                 },
@@ -6726,7 +6806,7 @@ function getBar3D(container, themes) {
             light: {
                 main: {
                     intensity: 1.2,
-                    //shadow: true
+                    shadow: __ECHARTS__.configs.LightShadowFor3D.value == "YES",
                 },
                 ambient: {
                     intensity: 0.3
@@ -6923,7 +7003,7 @@ function getLine3D(container, themes) {
             boxDepth: __ECHARTS__.configs.BoxDepthFor3D.value,
             viewControl: {
                 autoRotate: __ECHARTS__.configs.AutoRotateFor3D.value == "YES",
-                autoRotateSpeed: 10,
+                autoRotateSpeed: __ECHARTS__.configs.AutoRotateSpeedFor3D.value,
                 projection: 'orthographic',
                 //animationDurationUpdate: 1000,
                 //animationEasingUpdate: "cubicInOut"
@@ -6948,6 +7028,15 @@ function getLine3D(container, themes) {
                 lineStyle: {
                     color: __ECHARTS__.configs.axisColor.value
                 },
+            },
+            light: {
+                main: {
+                    intensity: 1.2,
+                    shadow: __ECHARTS__.configs.LightShadowFor3D.value == "YES",
+                },
+                ambient: {
+                    intensity: 0.3
+                }
             },
         },
         series: series,
@@ -7171,6 +7260,15 @@ function getScatter3D(container, themes) {
                     color: __ECHARTS__.configs.axisColor.value
                 },
             },
+            light: {
+                main: {
+                    intensity: 1.2,
+                    shadow: __ECHARTS__.configs.LightShadowFor3D.value == "YES",
+                },
+                ambient: {
+                    intensity: 0.3
+                }
+            },
         },
         series: series,
     };
@@ -7218,6 +7316,23 @@ function getCategoryLine(container, themes) {
                     value: {
                         color: __ECHARTS__.configs.labelBarTextColor.value,
                         fontSize: __ECHARTS__.configs.labelBarFontSize.value,
+                    }
+                }
+            };
+            serie.emphasis = {
+                label: {
+                    show: __ECHARTS__.configs.barEmphasisLabelDisplay.value == "YES",
+                    align: 'center',
+                    verticalAlign: 'middle',
+                    position: __ECHARTS__.configs.barLabelPosition.value,
+                    distance: 15,
+                    formatter: '{value|{c}}',
+                    rotate: __ECHARTS__.configs.barLabelRotate.value,
+                    rich: {
+                        value: {
+                            color: __ECHARTS__.configs.labelBarTextColor.value,
+                            fontSize: __ECHARTS__.configs.labelBarFontSize.value,
+                        }
                     }
                 }
             };
@@ -7284,11 +7399,18 @@ function getCategoryLine(container, themes) {
             serie.lineStyle = {
                 width: Number(__ECHARTS__.configs.lineStyleWidth.value),
             };
+            serie.emphasis = {
+                label: {
+                    show: __ECHARTS__.configs.lineEmphasisLabelDisplay.value == "YES",
+                    position: 'left',
+                    fontSize: __ECHARTS__.configs.lineLabelFontSize.value,
+                }
+            };
             serie.symbol = __ECHARTS__.configs.lineSymbol.value;
-            serie.symbolSize= __ECHARTS__.configs.lineSymbolSize.value;
-            serie.markPoint= getMarkPoint();
-            serie.markLine= getMarkLine();
-            serie.markArea= {};
+            serie.symbolSize = __ECHARTS__.configs.lineSymbolSize.value;
+            serie.markPoint = getMarkPoint();
+            serie.markLine = getMarkLine();
+            serie.markArea = {};
             if (__ECHARTS__.configs.categoryLineType.value == "areaStyle") {
                 serie.areaStyle = {};
             }
@@ -7595,7 +7717,7 @@ function getGeoMigrateLinesOfChinaCity(container, themes) {
                     zlevel: 1,
                     effect: {
                         show: true,
-                        period: __ECHARTS__.configs.seriesLoopPlayInterval.value,
+                        period: __ECHARTS__.configs.geoLinePeriod.value,
                         trailLength: 0.2,
                         //拖尾
                         color: '#fff',
@@ -7607,7 +7729,7 @@ function getGeoMigrateLinesOfChinaCity(container, themes) {
                             color: colors[index],
                             width: 0,
                             opacity: 0.1,
-                            curveness: 0.2,
+                            curveness: __ECHARTS__.configs.geoLineCurveness.value,
                             //曲率
                         }
                     },
@@ -7621,18 +7743,18 @@ function getGeoMigrateLinesOfChinaCity(container, themes) {
                     symbolSize: 5,
                     effect: {
                         show: true,
-                        period: __ECHARTS__.configs.seriesLoopPlayInterval.value,
+                        period: __ECHARTS__.configs.geoLinePeriod.value,
                         trailLength: 0,
                         //拖尾
-                        symbol: __SYS_IMAGES_PATH__.planePath,
-                        symbolSize: 10
+                        symbol: __SYS_IMAGES_PATH__[__ECHARTS__.configs.geoLineSymbol.value],
+                        symbolSize: __ECHARTS__.configs.geoLineSymbolSize.value,
                     },
                     lineStyle: {
                         normal: {
                             color: colors[index],
                             width: 1,
                             opacity: 0.3,
-                            curveness: 0.2
+                            curveness: __ECHARTS__.configs.geoLineCurveness.value,
                             //曲率
                         }
                     },
@@ -7960,7 +8082,7 @@ function getCategoryLineForLiqiud(container, themes) {
                 direction: 'right',
                 smooth: __ECHARTS__.configs.lineSmooth.value == "YES",
 
-                shape: __ECHARTS__.configs.liqiudShape.value=="path"?__SYS_IMAGES_PATH__.echartsPath:__ECHARTS__.configs.liqiudShape.value,
+                shape: __ECHARTS__.configs.liqiudShape.value=="whale"?__SYS_IMAGES_PATH__.whale:__ECHARTS__.configs.liqiudShape.value,
 
                 waveAnimation: true,
                 animationEasing: 'linear',
