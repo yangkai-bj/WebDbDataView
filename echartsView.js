@@ -116,6 +116,30 @@ var __ECHARTS__ = {
         xAxisInverse: {name: "X轴反向", value: "NO", options: ["YES", "NO"], type: "select"},
         yAxisInverse: {name: "Y轴反向", value: "NO", options: ["YES", "NO"], type: "select"},
 
+        hr_animation: {name: "动画设置", value: "", type: "hr"},
+        animation: {name: "启用动画", value: "YES", options: ["YES", "NO"], type: "select"},
+        animationThreshold: {name: "启动动画阈值", value: 2000, type: "input"},
+        animationEasing: {
+            name: "初始动画",
+            value: "linear",
+            options: ["linear", "quadraticIn", "quadraticOut", "quadraticInOut", "cubicIn", "cubicOut", "cubicInOut", "quarticIn", "quarticOut", "quarticInOut", "quinticIn", "quinticOut", "quinticInOut",
+                "sinusoidalIn", "sinusoidalOut", "sinusoidalInOut", "exponentialIn", "exponentialOut", "exponentialInOut", "circularIn", "circularOut", "circularInOut", "elasticIn", "elasticOut", "elasticInOut",
+                "backIn", "backOut", "backInOut", "bounceIn", "bounceOut", "bounceInOut",],
+            type: "select"
+        },
+        animationDuration: {name: "初始动画时长", value: 1000, type: "input"},
+        animationDelay: {name: "初始动画延时", value: 10, type: "input"},
+        animationEasingUpdate: {
+            name: "更新动画",
+            value: "linear",
+            options: ["linear", "quadraticIn", "quadraticOut", "quadraticInOut", "cubicIn", "cubicOut", "cubicInOut", "quarticIn", "quarticOut", "quarticInOut", "quinticIn", "quinticOut", "quinticInOut",
+                "sinusoidalIn", "sinusoidalOut", "sinusoidalInOut", "exponentialIn", "exponentialOut", "exponentialInOut", "circularIn", "circularOut", "circularInOut", "elasticIn", "elasticOut", "elasticInOut",
+                "backIn", "backOut", "backInOut", "bounceIn", "bounceOut", "bounceInOut",],
+            type: "select"
+        },
+        animationDurationUpdate: {name: "更新动画时长", value: 1000, type: "input"},
+        animationDelayUpdate: {name: "更新动画延时", value: 10, type: "input"},
+
         hr_bar: {name: "柱状图", value: "", type: "hr"},
         barLabelDisplay: {name: "显示标签", value: 'NO', options: ["YES", "NO"], type: "select"},
         barEmphasisLabelDisplay: {name: "显示热点标签", value: 'NO', options: ["YES", "NO"], type: "select"},
@@ -131,7 +155,10 @@ var __ECHARTS__ = {
 
         hr_line: {name: "线形图", value: "", type: "hr"},
         lineStyleWidth: {name: "线条宽度(px)", value: 2, type: "input"},
+        lineLabelDisplay: {name: "显示标签", value: 'NO', options: ["YES", "NO"], type: "select"},
         lineEmphasisLabelDisplay: {name: "显示热点标签", value: 'YES', options: ["YES", "NO"], type: "select"},
+        lineLabelTextColor: {name: "标签颜色", value: "auto", type: "color"},
+        lineLabelRotate: {name: "标签旋转度数", value: 0, type: "input"},
         lineLabelFontSize: {name: "标签字号(px)", value: 12, type: "input"},
         lineSmooth: {name: "使用平滑线", value: 'YES', options: ["YES", "NO"], type: "select"},
         lineSymbol: {
@@ -163,6 +190,13 @@ var __ECHARTS__ = {
         pieLabelAlignTo: {name: "标签对齐方式", value: 'none', options: ["none", "labelLine", "edge"], type: "select"},
         richTextLabel: {name: "富文本标签", value: 'NO', options: ["YES", "NO"], type: "select"},
         groupWith: {name: "每行序列数", value: 2, type: "input"},
+        animationType: {name: "初始动画", value: "expansion", options: ["expansion", "scale"], type: "select"},
+        animationTypeUpdate: {
+            name: "更新动画",
+            value: "transition",
+            options: ["transition", "expansion"],
+            type: "select"
+        },
 
         hr_radar: {name: "雷达图", value: "", type: "hr"},
         radarShape: {name: "形状", value: 'circle', options: ["circle", "polygon"], type: "select"},
@@ -1436,7 +1470,7 @@ function getBar(container, themes) {
                         position: __ECHARTS__.configs.barLabelPosition.value,
                         distance: 15,
                         formatter: '{value|{c}}',
-                        rotate: __ECHARTS__.configs.barLabelRotate.value,
+                        rotate: 0,
                         rich: {
                             value: {
                                 color: __ECHARTS__.configs.labelBarTextColor.value,
@@ -1446,10 +1480,25 @@ function getBar(container, themes) {
                     }
                 },
                 smooth: __ECHARTS__.configs.lineSmooth.value == "YES",
+
+                animation: __ECHARTS__.configs.animation.value == "YES",
+                animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
+                animationEasing: __ECHARTS__.configs.animationEasing.value,
+                animationDuration: function (idx) {
+                    return idx * Number(__ECHARTS__.configs.animationDuration.value) + c * Number(__ECHARTS__.configs.animationDuration.value);
+                },
+                animationDelay: function (idx) {
+                    return idx * Number(__ECHARTS__.configs.animationDelay.value) + c * Number(__ECHARTS__.configs.animationDelay.value);
+                },
+                animationEasingUpdate: __ECHARTS__.configs.animationEasingUpdate.value,
+                animationDurationUpdate: function (idx) {
+                    return idx * Number(__ECHARTS__.configs.animationDurationUpdate.value) + c * Number(__ECHARTS__.configs.animationDurationUpdate.value);
+                },
+                animationDelayUpdate: function (idx) {
+                    return idx * Number(__ECHARTS__.configs.animationDelayUpdate.value) + c * Number(__ECHARTS__.configs.animationDelayUpdate.value);
+                },
             };
-            series.animationDelay = function (idx) {
-                return idx * 5 + 100;
-            };
+
             for (var i = 0; i < dataset["data"].length; i++) {
                 var r = dataset["data"][i];
                 series.data.push(r[columns[c]].value);
@@ -1644,10 +1693,6 @@ function getBar(container, themes) {
             },
         }],
         series: yAxis_series,
-        animationEasing: 'elasticOut',
-        animationDelayUpdate: function (idx) {
-            return idx * 3;
-        }
     };
     myChart.setOption(option);
     return container;
@@ -1668,8 +1713,27 @@ function getTransversBar(container, themes) {
                 xAxis.push(r[columns[c]].value);
             }
         } else {
-            var series = {name: columns[c], type: "bar", data: []};
-            //series.stack = "true";
+            var series = {name: columns[c],
+                type: "bar",
+                data: [],
+                animation: __ECHARTS__.configs.animation.value == "YES",
+                animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
+                animationEasing: __ECHARTS__.configs.animationEasing.value,
+                animationDuration: function (idx) {
+                    return idx * Number(__ECHARTS__.configs.animationDuration.value) + c * Number(__ECHARTS__.configs.animationDuration.value);
+                },
+                animationDelay: function (idx) {
+                    return idx * Number(__ECHARTS__.configs.animationDelay.value) + c * Number(__ECHARTS__.configs.animationDelay.value);
+                },
+                animationEasingUpdate: __ECHARTS__.configs.animationEasingUpdate.value,
+                animationDurationUpdate: function (idx) {
+                    return idx * Number(__ECHARTS__.configs.animationDurationUpdate.value) + c * Number(__ECHARTS__.configs.animationDurationUpdate.value);
+                },
+                animationDelayUpdate: function (idx) {
+                    return idx * Number(__ECHARTS__.configs.animationDelayUpdate.value) + c * Number(__ECHARTS__.configs.animationDelayUpdate.value);
+                },
+            };
+
             series.label = {
                 show: __ECHARTS__.configs.barLabelDisplay.value == "YES",
                 rotate: __ECHARTS__.configs.barLabelRotate.value,
@@ -1693,7 +1757,7 @@ function getTransversBar(container, themes) {
                     position: __ECHARTS__.configs.barLabelPosition.value,
                     distance: 15,
                     formatter: '{value|{c}}',
-                    rotate: __ECHARTS__.configs.barLabelRotate.value,
+                    rotate: 0,
                     rich: {
                         value: {
                             color: __ECHARTS__.configs.labelBarTextColor.value,
@@ -1702,9 +1766,7 @@ function getTransversBar(container, themes) {
                     }
                 }
             };
-            series.animationDelay = function (idx) {
-                return idx * 5 + 100;
-            };
+
             for (var i = 0; i < dataset["data"].length; i++) {
                 var r = dataset["data"][i];
                 series.data.push(r[columns[c]].value);
@@ -1892,10 +1954,6 @@ function getTransversBar(container, themes) {
             }
         }],
         series: yAxis_series,
-        animationEasing: 'elasticOut',
-        animationDelayUpdate: function (idx) {
-            return idx * 3;
-        }
     };
     myChart.setOption(option);
 
@@ -1941,6 +1999,21 @@ function getLine(container, themes) {
                 name: columns[c],
                 type: "line",
                 data: [],
+                label: {
+                    show: __ECHARTS__.configs.lineLabelDisplay.value == "YES",
+                    align: 'center',
+                    verticalAlign: 'middle',
+                    position: "top",
+                    distance: 15,
+                    formatter: '{value|{c}}',
+                    rotate: __ECHARTS__.configs.lineLabelRotate.value,
+                    rich: {
+                        value: {
+                            color: __ECHARTS__.configs.lineLabelTextColor.value,
+                            fontSize: __ECHARTS__.configs.lineLabelFontSize.value,
+                        }
+                    }
+                },
                 itemStyle: {},
                 lineStyle: {
                     width: Number(__ECHARTS__.configs.lineStyleWidth.value),
@@ -1948,7 +2021,8 @@ function getLine(container, themes) {
                 emphasis: {
                     label: {
                         show: __ECHARTS__.configs.lineEmphasisLabelDisplay.value == "YES",
-                        position: 'left',
+                        position: 'bottom',
+                        rotate: 0,
                         fontSize: __ECHARTS__.configs.lineLabelFontSize.value,
                     }
                 },
@@ -1958,10 +2032,25 @@ function getLine(container, themes) {
                 markPoint: getMarkPoint(),
                 markLine: getMarkLine(),
                 markArea: {},
+
+                animation: __ECHARTS__.configs.animation.value == "YES",
+                animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
+                animationEasing: __ECHARTS__.configs.animationEasing.value,
+                animationDuration: function (idx) {
+                    return idx * Number(__ECHARTS__.configs.animationDuration.value) + c * Number(__ECHARTS__.configs.animationDuration.value);
+                },
+                animationDelay: function (idx) {
+                    return idx * Number(__ECHARTS__.configs.animationDelay.value) + c * Number(__ECHARTS__.configs.animationDelay.value);
+                },
+                animationEasingUpdate: __ECHARTS__.configs.animationEasingUpdate.value,
+                animationDurationUpdate: function (idx) {
+                    return idx * Number(__ECHARTS__.configs.animationDurationUpdate.value) + c * Number(__ECHARTS__.configs.animationDurationUpdate.value);
+                },
+                animationDelayUpdate: function (idx) {
+                    return idx * Number(__ECHARTS__.configs.animationDelayUpdate.value) + c * Number(__ECHARTS__.configs.animationDelayUpdate.value);
+                },
             };
-            series.animationDelay = function (idx) {
-                return idx * 5 + 100;
-            };
+
             for (var i = 0; i < dataset["data"].length; i++) {
                 var r = dataset["data"][i];
                 series.data.push(r[columns[c]].value);
@@ -2148,10 +2237,6 @@ function getLine(container, themes) {
             }
         }],
         series: yAxis_series,
-        animationEasing: 'elasticOut',
-        animationDelayUpdate: function (idx) {
-            return idx * 3;
-        }
     };
 
     myChart.setOption(option);
@@ -2183,10 +2268,26 @@ function getBarAndLine(container, themes) {
                     lineStyle: {
                         width: Number(__ECHARTS__.configs.lineStyleWidth.value),
                     },
+                    label: {
+                        show: __ECHARTS__.configs.lineLabelDisplay.value == "YES",
+                        align: 'center',
+                        verticalAlign: 'middle',
+                        position: "top",
+                        distance: 15,
+                        formatter: '{value|{c}}',
+                        rotate: __ECHARTS__.configs.lineLabelRotate.value,
+                        rich: {
+                            value: {
+                                color: __ECHARTS__.configs.lineLabelTextColor.value,
+                                fontSize: __ECHARTS__.configs.lineLabelFontSize.value,
+                            }
+                        }
+                    },
                     emphasis: {
                         label: {
                             show: __ECHARTS__.configs.lineEmphasisLabelDisplay.value == "YES",
-                            position: 'left',
+                            position: 'bottom',
+                            rotate: 0,
                             fontSize: __ECHARTS__.configs.lineLabelFontSize.value,
                         }
                     },
@@ -2197,10 +2298,22 @@ function getBarAndLine(container, themes) {
                     markPoint: getMarkPoint(),
                     markLine: getMarkLine(),
                     markArea: {},
-                    label: {
-                        rotate: __ECHARTS__.configs.barLabelRotate.value,
-                        fontSize: __ECHARTS__.configs.labelBarFontSize.value,
-                    }
+                    animation: __ECHARTS__.configs.animation.value == "YES",
+                    animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
+                    animationEasing: __ECHARTS__.configs.animationEasing.value,
+                    animationDuration: function (idx) {
+                        return idx * Number(__ECHARTS__.configs.animationDuration.value) + c * Number(__ECHARTS__.configs.animationDuration.value);
+                    },
+                    animationDelay: function (idx) {
+                        return idx * Number(__ECHARTS__.configs.animationDelay.value) + c * Number(__ECHARTS__.configs.animationDelay.value);
+                    },
+                    animationEasingUpdate: __ECHARTS__.configs.animationEasingUpdate.value,
+                    animationDurationUpdate: function (idx) {
+                        return idx * Number(__ECHARTS__.configs.animationDurationUpdate.value) + c * Number(__ECHARTS__.configs.animationDurationUpdate.value);
+                    },
+                    animationDelayUpdate: function (idx) {
+                        return idx * Number(__ECHARTS__.configs.animationDelayUpdate.value) + c * Number(__ECHARTS__.configs.animationDelayUpdate.value);
+                    },
                 };
 
             }
@@ -2232,7 +2345,7 @@ function getBarAndLine(container, themes) {
                             position: __ECHARTS__.configs.barLabelPosition.value,
                             distance: 15,
                             formatter: '{value|{c}}',
-                            rotate: __ECHARTS__.configs.barLabelRotate.value,
+                            rotate: 0,
                             rich: {
                                 value: {
                                     color: __ECHARTS__.configs.labelBarTextColor.value,
@@ -2241,6 +2354,22 @@ function getBarAndLine(container, themes) {
                             }
                         }
                     },
+                    animation: __ECHARTS__.configs.animation.value == "YES",
+                    animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
+                    animationEasing: __ECHARTS__.configs.animationEasing.value,
+                    animationDuration: function (idx) {
+                        return idx * Number(__ECHARTS__.configs.animationDuration.value) + c * Number(__ECHARTS__.configs.animationDuration.value);
+                    },
+                    animationDelay: function (idx) {
+                        return idx * Number(__ECHARTS__.configs.animationDelay.value) + c * Number(__ECHARTS__.configs.animationDelay.value);
+                    },
+                    animationEasingUpdate: __ECHARTS__.configs.animationEasingUpdate.value,
+                    animationDurationUpdate: function (idx) {
+                        return idx * Number(__ECHARTS__.configs.animationDurationUpdate.value) + c * Number(__ECHARTS__.configs.animationDurationUpdate.value);
+                    },
+                    animationDelayUpdate: function (idx) {
+                        return idx * Number(__ECHARTS__.configs.animationDelayUpdate.value) + c * Number(__ECHARTS__.configs.animationDelayUpdate.value);
+                    },
                 }
             }
 
@@ -2248,9 +2377,6 @@ function getBarAndLine(container, themes) {
                 var r = dataset["data"][i];
                 serie.data.push(r[columns[c]].value);
             }
-            serie.animationDelay = function (idx) {
-                return idx * 5 + 100;
-            };
             yAxis_series.push(serie);
         }
     }
@@ -2433,10 +2559,6 @@ function getBarAndLine(container, themes) {
             }
         }],
         series: yAxis_series,
-        animationEasing: 'elasticOut',
-        animationDelayUpdate: function (idx) {
-            return idx * 3;
-        }
     };
     // 使用刚指定的配置项和数据显示图表。
     myChart.setOption(option);
@@ -2483,10 +2605,26 @@ function getAreaStyle(container, themes) {
                 lineStyle: {
                     width: Number(__ECHARTS__.configs.lineStyleWidth.value),
                 },
+                label: {
+                    show: __ECHARTS__.configs.lineLabelDisplay.value == "YES",
+                    align: 'center',
+                    verticalAlign: 'middle',
+                    position: "top",
+                    distance: 15,
+                    formatter: '{value|{c}}',
+                    rotate: __ECHARTS__.configs.lineLabelRotate.value,
+                    rich: {
+                        value: {
+                            color: __ECHARTS__.configs.lineLabelTextColor.value,
+                            fontSize: __ECHARTS__.configs.lineLabelFontSize.value,
+                        }
+                    }
+                },
                 emphasis: {
                     label: {
                         show: __ECHARTS__.configs.lineEmphasisLabelDisplay.value == "YES",
-                        position: 'left',
+                        position: 'bottom',
+                        rotate:0,
                         fontSize: __ECHARTS__.configs.lineLabelFontSize.value,
                     }
                 },
@@ -2496,9 +2634,23 @@ function getAreaStyle(container, themes) {
                 markPoint: getMarkPoint(),
                 markLine: getMarkLine(),
                 markArea: {},
-            };
-            series.animationDelay = function (idx) {
-                return idx * 5 + 100;
+
+                animation: __ECHARTS__.configs.animation.value == "YES",
+                animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
+                animationEasing: __ECHARTS__.configs.animationEasing.value,
+                animationDuration: function (idx) {
+                    return idx * Number(__ECHARTS__.configs.animationDuration.value) + c * Number(__ECHARTS__.configs.animationDuration.value);
+                },
+                animationDelay: function (idx) {
+                    return idx * Number(__ECHARTS__.configs.animationDelay.value) + c * Number(__ECHARTS__.configs.animationDelay.value);
+                },
+                animationEasingUpdate: __ECHARTS__.configs.animationEasingUpdate.value,
+                animationDurationUpdate: function (idx) {
+                    return idx * Number(__ECHARTS__.configs.animationDurationUpdate.value) + c * Number(__ECHARTS__.configs.animationDurationUpdate.value);
+                },
+                animationDelayUpdate: function (idx) {
+                    return idx * Number(__ECHARTS__.configs.animationDelayUpdate.value) + c * Number(__ECHARTS__.configs.animationDelayUpdate.value);
+                },
             };
             for (var i = 0; i < dataset["data"].length; i++) {
                 var r = dataset["data"][i];
@@ -2687,12 +2839,7 @@ function getAreaStyle(container, themes) {
             }
         }],
         series: yAxis_series,
-        animationEasing: 'elasticOut',
-        animationDelayUpdate: function (idx) {
-            return idx * 3;
-        }
     };
-    // 使用刚指定的配置项和数据显示图表。
     myChart.setOption(option);
 
     return container;
@@ -2717,12 +2864,25 @@ function getPolarBar(container, themes) {
                 name: columns[c],
                 type: "bar",
                 coordinateSystem: 'polar',
-                data: []
+                data: [],
+                animation: __ECHARTS__.configs.animation.value == "YES",
+                animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
+                animationEasing: __ECHARTS__.configs.animationEasing.value,
+                animationDuration: function (idx) {
+                    return idx * Number(__ECHARTS__.configs.animationDuration.value) + c * Number(__ECHARTS__.configs.animationDuration.value);
+                },
+                animationDelay: function (idx) {
+                    return idx * Number(__ECHARTS__.configs.animationDelay.value) + c * Number(__ECHARTS__.configs.animationDelay.value);
+                },
+                animationEasingUpdate: __ECHARTS__.configs.animationEasingUpdate.value,
+                animationDurationUpdate: function (idx) {
+                    return idx * Number(__ECHARTS__.configs.animationDurationUpdate.value) + c * Number(__ECHARTS__.configs.animationDurationUpdate.value);
+                },
+                animationDelayUpdate: function (idx) {
+                    return idx * Number(__ECHARTS__.configs.animationDelayUpdate.value) + c * Number(__ECHARTS__.configs.animationDelayUpdate.value);
+                },
             };
-            //series.stack = "true";
-            series.animationDelay = function (idx) {
-                return idx * 5 + 100;
-            };
+
 
             for (var i = 0; i < dataset["data"].length; i++) {
                 var r = dataset["data"][i];
@@ -2857,10 +3017,6 @@ function getPolarBar(container, themes) {
             radiusAxis: 0
         }],
 
-        animationEasing: 'elasticOut',
-        animationDelayUpdate: function (idx) {
-            return idx * 3;
-        }
     };
     myChart.setOption(option);
     return container;
@@ -2886,10 +3042,22 @@ function getPolarArea(container, themes) {
                 type: "bar",
                 coordinateSystem: 'polar',
                 data: [],
-            };
-            //series.stack = "true";
-            series.animationDelay = function (idx) {
-                return idx * 5 + 100;
+                animation: __ECHARTS__.configs.animation.value == "YES",
+                animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
+                animationEasing: __ECHARTS__.configs.animationEasing.value,
+                animationDuration: function (idx) {
+                    return idx * Number(__ECHARTS__.configs.animationDuration.value) + c * Number(__ECHARTS__.configs.animationDuration.value);
+                },
+                animationDelay: function (idx) {
+                    return idx * Number(__ECHARTS__.configs.animationDelay.value) + c * Number(__ECHARTS__.configs.animationDelay.value);
+                },
+                animationEasingUpdate: __ECHARTS__.configs.animationEasingUpdate.value,
+                animationDurationUpdate: function (idx) {
+                    return idx * Number(__ECHARTS__.configs.animationDurationUpdate.value) + c * Number(__ECHARTS__.configs.animationDurationUpdate.value);
+                },
+                animationDelayUpdate: function (idx) {
+                    return idx * Number(__ECHARTS__.configs.animationDelayUpdate.value) + c * Number(__ECHARTS__.configs.animationDelayUpdate.value);
+                },
             };
 
             for (var i = 0; i < dataset["data"].length; i++) {
@@ -3024,11 +3192,6 @@ function getPolarArea(container, themes) {
             end: 100,
             radiusAxis:0
         }],
-
-        animationEasing: 'elasticOut',
-        animationDelayUpdate: function (idx) {
-            return idx * 3;
-        }
     };
     myChart.setOption(option);
     return container;
@@ -3079,12 +3242,12 @@ function getPie(container,themes) {
                 },
                 hoverOffset: 10,
                 selectedOffset: 10,
-                avoidLabelOverlap:true,
-                hoverAnimation:true,
-                data: []
-            };
-            serie.animationDelay = function (idx) {
-                return idx * 5 + 100;
+                avoidLabelOverlap: true,
+                hoverAnimation: true,
+                data: [],
+                animation: __ECHARTS__.configs.animation.value == "YES",
+                animationType: __ECHARTS__.configs.animationType.value,
+                animationTypeUpdate: __ECHARTS__.configs.animationTypeUpdate.value,
             };
             for (var i = 0; i < dataset["data"].length; i++) {
                 var r = dataset["data"][i];
@@ -3165,10 +3328,6 @@ function getPie(container,themes) {
         label: {
             fontSize: __ECHARTS__.configs.pieLabelFontSize.value,
         },
-        animationEasing: 'elasticOut',
-        animationDelayUpdate: function (idx) {
-            return idx * 3;
-        }
     };
 
     if (__ECHARTS__.configs.richTextLabel.value == "YES") {
@@ -3258,19 +3417,19 @@ function getRing(container,themes) {
                         fontWeight: 'bold'
                     }
                 },
-               itemStyle: {
+                itemStyle: {
                     label: {
                         show: true,
                     }
                 },
                 hoverOffset: 10,
                 selectedOffset: 10,
-                avoidLabelOverlap:true,
-                hoverAnimation:true,
-                data: []
-            };
-            serie.animationDelay = function (idx) {
-                return idx * 5 + 100;
+                avoidLabelOverlap: true,
+                hoverAnimation: true,
+                data: [],
+                animation: __ECHARTS__.configs.animation.value == "YES",
+                animationType: __ECHARTS__.configs.animationType.value,
+                animationTypeUpdate: __ECHARTS__.configs.animationTypeUpdate.value,
             };
             for (var i = 0; i < dataset["data"].length; i++) {
                 var r = dataset["data"][i];
@@ -3351,10 +3510,6 @@ function getRing(container,themes) {
         label: {
             fontSize: __ECHARTS__.configs.pieLabelFontSize.value,
         },
-        animationEasing: 'elasticOut',
-        animationDelayUpdate: function (idx) {
-            return idx * 3;
-        }
 
     };
     if (__ECHARTS__.configs.richTextLabel.value == "YES") {
@@ -3453,13 +3608,14 @@ function getRose(container,themes) {
                 },
                 hoverOffset: 10,
                 selectedOffset: 10,
-                avoidLabelOverlap:true,
-                hoverAnimation:true,
-                data: []
+                avoidLabelOverlap: true,
+                hoverAnimation: true,
+                data: [],
+                animation: __ECHARTS__.configs.animation.value == "YES",
+                animationType: __ECHARTS__.configs.animationType.value,
+                animationTypeUpdate: __ECHARTS__.configs.animationTypeUpdate.value,
             };
-            serie.animationDelay = function (idx) {
-                return idx * 5 + 100;
-            };
+
             for (var i = 0; i < dataset["data"].length; i++) {
                 var r = dataset["data"][i];
                 serie.data.push({"value": r[columns[c]].value,"name": legends[i]});
@@ -3538,10 +3694,6 @@ function getRose(container,themes) {
         label: {
             fontSize: __ECHARTS__.configs.pieLabelFontSize.value,
         },
-        animationEasing: 'elasticOut',
-        animationDelayUpdate: function (idx) {
-            return idx * 3;
-        }
     };
     if (__ECHARTS__.configs.richTextLabel.value == "YES") {
         //富文本
@@ -3633,14 +3785,28 @@ function getRadar(container, themes) {
                 name: columns[c],
                 type: "radar",
                 areaStyle: {
-                    show:__ECHARTS__.configs.radarAreaDisplay.value == "YES",
+                    show: __ECHARTS__.configs.radarAreaDisplay.value == "YES",
                     normal: {}
                 },
-                data: []
+                data: [],
+                animation: __ECHARTS__.configs.animation.value == "YES",
+                animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
+                animationEasing: __ECHARTS__.configs.animationEasing.value,
+                animationDuration: function (idx) {
+                    return idx * Number(__ECHARTS__.configs.animationDuration.value) + c * Number(__ECHARTS__.configs.animationDuration.value);
+                },
+                animationDelay: function (idx) {
+                    return idx * Number(__ECHARTS__.configs.animationDelay.value) + c * Number(__ECHARTS__.configs.animationDelay.value);
+                },
+                animationEasingUpdate: __ECHARTS__.configs.animationEasingUpdate.value,
+                animationDurationUpdate: function (idx) {
+                    return idx * Number(__ECHARTS__.configs.animationDurationUpdate.value) + c * Number(__ECHARTS__.configs.animationDurationUpdate.value);
+                },
+                animationDelayUpdate: function (idx) {
+                    return idx * Number(__ECHARTS__.configs.animationDelayUpdate.value) + c * Number(__ECHARTS__.configs.animationDelayUpdate.value);
+                },
             };
-            serie.animationDelay = function (idx) {
-                return idx * 5 + 100;
-            };
+
             var d = {name:columns[c], value:[]};
             for (var i = 0; i < dataset["data"].length; i++) {
                 var r = dataset["data"][i];
@@ -3747,10 +3913,6 @@ function getRadar(container, themes) {
             },
         },
         series: series,
-        animationEasing: 'elasticOut',
-        animationDelayUpdate: function (idx) {
-            return idx * 3;
-        }
     };
     myChart.setOption(option);
     return container;
@@ -3787,28 +3949,56 @@ function getRegression(container, themes) {
                     lineStyle: {
                         width: Number(__ECHARTS__.configs.lineStyleWidth.value),
                     },
+                    label: {
+                        show: __ECHARTS__.configs.lineLabelDisplay.value == "YES",
+                        align: 'center',
+                        verticalAlign: 'middle',
+                        position: "top",
+                        distance: 15,
+                        formatter: '{value|{c}}',
+                        rotate: __ECHARTS__.configs.lineLabelRotate.value,
+                        rich: {
+                            value: {
+                                color: __ECHARTS__.configs.lineLabelTextColor.value,
+                                fontSize: __ECHARTS__.configs.lineLabelFontSize.value,
+                            }
+                        }
+                    },
                     emphasis: {
                         label: {
                             show: __ECHARTS__.configs.lineEmphasisLabelDisplay.value == "YES",
-                            position: 'left',
+                            position: 'bottom',
+                            rotate: 0,
                             fontSize: __ECHARTS__.configs.lineLabelFontSize.value,
                         }
                     },
                     smooth: __ECHARTS__.configs.lineSmooth.value == "YES",
                     symbol: __ECHARTS__.configs.lineSymbol.value,
                     symbolSize: __ECHARTS__.configs.lineSymbolSize.value,
-                    data: []
+                    data: [],
+
+                    animation: __ECHARTS__.configs.animation.value == "YES",
+                    animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
+                    animationEasing: __ECHARTS__.configs.animationEasing.value,
+                    animationDuration: function (idx) {
+                        return idx * Number(__ECHARTS__.configs.animationDuration.value) + c * Number(__ECHARTS__.configs.animationDuration.value);
+                    },
+                    animationDelay: function (idx) {
+                        return idx * Number(__ECHARTS__.configs.animationDelay.value) + c * Number(__ECHARTS__.configs.animationDelay.value);
+                    },
+                    animationEasingUpdate: __ECHARTS__.configs.animationEasingUpdate.value,
+                    animationDurationUpdate: function (idx) {
+                        return idx * Number(__ECHARTS__.configs.animationDurationUpdate.value) + c * Number(__ECHARTS__.configs.animationDurationUpdate.value);
+                    },
+                    animationDelayUpdate: function (idx) {
+                        return idx * Number(__ECHARTS__.configs.animationDelayUpdate.value) + c * Number(__ECHARTS__.configs.animationDelayUpdate.value);
+                    },
                 };
-                serie.animationDelay = function (idx) {
-                    return idx * 5 + 100;
-                };
+
                 for (var i = 0; i < dataset["data"].length; i++) {
                     var r = dataset["data"][i];
                     serie.data.push([i, r[columns[c]].value]);
                 }
-                serie.animationDelay = function (idx) {
-                    return idx * 5 + 100;
-                };
                 series.push(serie);
 
                 for (var regression in regressionType) {
@@ -3847,17 +4037,30 @@ function getRegression(container, themes) {
                 label: {
                     show: __ECHARTS__.configs.regressionExpressionDisplay.value == "YES",
                     position: 'left',
-                    formatter: myRegression.expression.replaceAll("+ -" ," - "),
-                    color:__ECHARTS__.configs.regressionExpressionColor.value,
+                    formatter: myRegression.expression.replaceAll("+ -", " - "),
+                    color: __ECHARTS__.configs.regressionExpressionColor.value,
                     fontSize: __ECHARTS__.configs.lineLabelFontSize.value,
                 },
                 data: [{
                     coord: data[data.length - 1]
                 }],
-            }
-        };
-        regline.animationDelay = function (idx) {
-            return idx * 5 + 100;
+            },
+            animation: __ECHARTS__.configs.animation.value == "YES",
+            animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
+            animationEasing: __ECHARTS__.configs.animationEasing.value,
+            animationDuration: function (idx) {
+                return idx * Number(__ECHARTS__.configs.animationDuration.value);
+            },
+            animationDelay: function (idx) {
+                return idx * Number(__ECHARTS__.configs.animationDelay.value);
+            },
+            animationEasingUpdate: __ECHARTS__.configs.animationEasingUpdate.value,
+            animationDurationUpdate: function (idx) {
+                return idx * Number(__ECHARTS__.configs.animationDurationUpdate.value);
+            },
+            animationDelayUpdate: function (idx) {
+                return idx * Number(__ECHARTS__.configs.animationDelayUpdate.value);
+            },
         };
         series.push(regline);
     }
@@ -4111,10 +4314,6 @@ function getRegression(container, themes) {
             }
         }],
         series: series,
-        animationEasing: 'elasticOut',
-        animationDelayUpdate: function (idx) {
-            return idx * 3;
-        }
     };
     myChart.setOption(option);
     return container;
@@ -5062,7 +5261,23 @@ function getFunnel(container, themes) {
                             fontSize: 20
                         }
                     },
-                    data: []
+                    data: [],
+                    animation: __ECHARTS__.configs.animation.value == "YES",
+                    animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
+                    animationEasing: __ECHARTS__.configs.animationEasing.value,
+                    animationDuration: function (idx) {
+                        return idx * Number(__ECHARTS__.configs.animationDuration.value) + c * Number(__ECHARTS__.configs.animationDuration.value);
+                    },
+                    animationDelay: function (idx) {
+                        return idx * Number(__ECHARTS__.configs.animationDelay.value) + c * Number(__ECHARTS__.configs.animationDelay.value);
+                    },
+                    animationEasingUpdate: __ECHARTS__.configs.animationEasingUpdate.value,
+                    animationDurationUpdate: function (idx) {
+                        return idx * Number(__ECHARTS__.configs.animationDurationUpdate.value) + c * Number(__ECHARTS__.configs.animationDurationUpdate.value);
+                    },
+                    animationDelayUpdate: function (idx) {
+                        return idx * Number(__ECHARTS__.configs.animationDelayUpdate.value) + c * Number(__ECHARTS__.configs.animationDelayUpdate.value);
+                    },
                 };
                 for (var i = 0; i < dataset["data"].length; i++) {
                     var row = dataset["data"][i];
@@ -5186,7 +5401,7 @@ function getWordCloud(container, themes) {
                     type: 'wordCloud',
                     gridSize: 2,
                     sizeRange: [__ECHARTS__.configs.wordCloudMinFontSize.value, __ECHARTS__.configs.wordCloudMaxFontSize.value],//[最小字号,最大字号],
-                    rotationRange: [-1 * __ECHARTS__.configs.wordCloudRotationRange.value , __ECHARTS__.configs.wordCloudRotationRange.value],//[旋转角度,旋转角度]
+                    rotationRange: [-1 * __ECHARTS__.configs.wordCloudRotationRange.value, __ECHARTS__.configs.wordCloudRotationRange.value],//[旋转角度,旋转角度]
                     shape: __ECHARTS__.configs.wordCloudShape.value,
                     //'circle', 'cardioid', 'diamond', 'triangle-forward', 'triangle', 'pentagon', 'star'
                     //maskImage: maskImage,
@@ -5219,7 +5434,23 @@ function getWordCloud(container, themes) {
                                 }
                             }
                         }
-                    ]
+                    ],
+                    animation: __ECHARTS__.configs.animation.value == "YES",
+                    animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
+                    animationEasing: __ECHARTS__.configs.animationEasing.value,
+                    animationDuration: function (idx) {
+                        return idx * Number(__ECHARTS__.configs.animationDuration.value) + c * Number(__ECHARTS__.configs.animationDuration.value);
+                    },
+                    animationDelay: function (idx) {
+                        return idx * Number(__ECHARTS__.configs.animationDelay.value) + c * Number(__ECHARTS__.configs.animationDelay.value);
+                    },
+                    animationEasingUpdate: __ECHARTS__.configs.animationEasingUpdate.value,
+                    animationDurationUpdate: function (idx) {
+                        return idx * Number(__ECHARTS__.configs.animationDurationUpdate.value) + c * Number(__ECHARTS__.configs.animationDurationUpdate.value);
+                    },
+                    animationDelayUpdate: function (idx) {
+                        return idx * Number(__ECHARTS__.configs.animationDelayUpdate.value) + c * Number(__ECHARTS__.configs.animationDelayUpdate.value);
+                    },
                 };
                 serie.data = [];
                 for (var i = 0; i < dataset["data"].length; i++) {
@@ -5383,7 +5614,23 @@ function getLiqiud(container, themes) {
                     itemStyle: {
                         opacity: 0.8
                     }
-                }
+                },
+                animation: __ECHARTS__.configs.animation.value == "YES",
+                animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
+                animationEasing: __ECHARTS__.configs.animationEasing.value,
+                animationDuration: function (idx) {
+                    return idx * Number(__ECHARTS__.configs.animationDuration.value);
+                },
+                animationDelay: function (idx) {
+                    return idx * Number(__ECHARTS__.configs.animationDelay.value);
+                },
+                animationEasingUpdate: __ECHARTS__.configs.animationEasingUpdate.value,
+                animationDurationUpdate: function (idx) {
+                    return idx * Number(__ECHARTS__.configs.animationDurationUpdate.value);
+                },
+                animationDelayUpdate: function (idx) {
+                    return idx * Number(__ECHARTS__.configs.animationDelayUpdate.value);
+                },
             };
             for (var c = 0; c < columns.length; c++) {
                 if (c == 0) {
@@ -5396,9 +5643,6 @@ function getLiqiud(container, themes) {
                     });
                 }
             }
-            serie.animationDelay = function (idx) {
-                return idx * 5 + 100;
-            };
             series.push(serie);
         }
 
@@ -5532,8 +5776,8 @@ function getGaugeWithAll(container, themes) {
                     width: __ECHARTS__.configs.gaugeAxisLineWidth.value,//10, //圆X轴宽度
                     shadowColor: 'rgba(0, 0, 0, 0.5)',
                     shadowBlur: 10,
-                    color:[[0.2, '#3CB371'], [0.8, '#6388ae'], [1, '#DB7093']]
-                        //默认[[0.2, '#91c7ae'], [0.8, '#63869e'], [1, '#c23531']]
+                    color: [[0.2, '#3CB371'], [0.8, '#6388ae'], [1, '#DB7093']]
+                    //默认[[0.2, '#91c7ae'], [0.8, '#63869e'], [1, '#c23531']]
                 }
             },
             axisLabel: {
@@ -5541,7 +5785,7 @@ function getGaugeWithAll(container, themes) {
                 textShadowColor: 'rgba(0, 0, 0, 0.5)',
                 textShadowBlur: 10,
             },
-            splitLine:{
+            splitLine: {
                 length: 15,
             },
             pointer: {
@@ -5550,11 +5794,27 @@ function getGaugeWithAll(container, themes) {
             },
             detail: {
                 formatter: ['{value}%', ''].join("\n"),
-                fontSize:  __ECHARTS__.configs.gaugeLabelFontSize.value,
+                fontSize: __ECHARTS__.configs.gaugeLabelFontSize.value,
                 textShadowColor: 'rgba(0, 0, 0, 0.5)',
                 textShadowBlur: 10,
             },
-            data: []
+            data: [],
+            animation: __ECHARTS__.configs.animation.value == "YES",
+            animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
+            animationEasing: __ECHARTS__.configs.animationEasing.value,
+            animationDuration: function (idx) {
+                return idx * Number(__ECHARTS__.configs.animationDuration.value) + c * Number(__ECHARTS__.configs.animationDuration.value);
+            },
+            animationDelay: function (idx) {
+                return idx * Number(__ECHARTS__.configs.animationDelay.value) + c * Number(__ECHARTS__.configs.animationDelay.value);
+            },
+            animationEasingUpdate: __ECHARTS__.configs.animationEasingUpdate.value,
+            animationDurationUpdate: function (idx) {
+                return idx * Number(__ECHARTS__.configs.animationDurationUpdate.value) + c * Number(__ECHARTS__.configs.animationDurationUpdate.value);
+            },
+            animationDelayUpdate: function (idx) {
+                return idx * Number(__ECHARTS__.configs.animationDelayUpdate.value) + c * Number(__ECHARTS__.configs.animationDelayUpdate.value);
+            },
         };
         for (var c = 0; c < columns.length; c++) {
             if (c == 0)
@@ -5570,9 +5830,7 @@ function getGaugeWithAll(container, themes) {
                 })
             }
         }
-        serie.animationDelay = function (idx) {
-            return idx * 5 + 100;
-        };
+
         series.push(serie);
     }
 
@@ -5643,10 +5901,6 @@ function getGaugeWithAll(container, themes) {
             },
         },
         series: series,
-        animationEasing: 'elasticOut',
-        animationDelayUpdate: function (idx) {
-            return idx * 3;
-        }
     };
     myChart.setOption(option);
     var timer;
@@ -5735,7 +5989,23 @@ function getGaugeWithOne(container, themes) {
                         textShadowColor: 'rgba(0, 0, 0, 0.5)',
                         textShadowBlur: 10,
                     },
-                    data: []
+                    data: [],
+                    animation: __ECHARTS__.configs.animation.value == "YES",
+                    animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
+                    animationEasing: __ECHARTS__.configs.animationEasing.value,
+                    animationDuration: function (idx) {
+                        return idx * Number(__ECHARTS__.configs.animationDuration.value) + c * Number(__ECHARTS__.configs.animationDuration.value);
+                    },
+                    animationDelay: function (idx) {
+                        return idx * Number(__ECHARTS__.configs.animationDelay.value) + c * Number(__ECHARTS__.configs.animationDelay.value);
+                    },
+                    animationEasingUpdate: __ECHARTS__.configs.animationEasingUpdate.value,
+                    animationDurationUpdate: function (idx) {
+                        return idx * Number(__ECHARTS__.configs.animationDurationUpdate.value) + c * Number(__ECHARTS__.configs.animationDurationUpdate.value);
+                    },
+                    animationDelayUpdate: function (idx) {
+                        return idx * Number(__ECHARTS__.configs.animationDelayUpdate.value) + c * Number(__ECHARTS__.configs.animationDelayUpdate.value);
+                    },
                 };
                 serie.data.push({
                     "name": legends[i] + "\n\n" + columns[c],
@@ -5745,9 +6015,6 @@ function getGaugeWithOne(container, themes) {
                         shadowBlur: 10
                     }
                 });
-                serie.animationDelay = function (idx) {
-                    return idx * 5 + 100;
-                };
                 series.push(serie);
             }
         }
@@ -5815,10 +6082,6 @@ function getGaugeWithOne(container, themes) {
             },
         },
         series: seriesgroup[index],
-        animationEasing: 'elasticOut',
-        animationDelayUpdate: function (idx) {
-            return idx * 3;
-        }
     };
     myChart.setOption(option);
 
@@ -5888,7 +6151,23 @@ function getCalendar(container, themes) {
                     type: __ECHARTS__.configs.calendarType.value, //['heatmap','scatter','effectScatter']
                     coordinateSystem: 'calendar',
                     calendarIndex: c - 1,
-                    data: []
+                    data: [],
+                    animation: __ECHARTS__.configs.animation.value == "YES",
+                    animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
+                    animationEasing: __ECHARTS__.configs.animationEasing.value,
+                    animationDuration: function (idx) {
+                        return idx * Number(__ECHARTS__.configs.animationDuration.value) + c * Number(__ECHARTS__.configs.animationDuration.value);
+                    },
+                    animationDelay: function (idx) {
+                        return idx * Number(__ECHARTS__.configs.animationDelay.value) + c * Number(__ECHARTS__.configs.animationDelay.value);
+                    },
+                    animationEasingUpdate: __ECHARTS__.configs.animationEasingUpdate.value,
+                    animationDurationUpdate: function (idx) {
+                        return idx * Number(__ECHARTS__.configs.animationDurationUpdate.value) + c * Number(__ECHARTS__.configs.animationDurationUpdate.value);
+                    },
+                    animationDelayUpdate: function (idx) {
+                        return idx * Number(__ECHARTS__.configs.animationDelayUpdate.value) + c * Number(__ECHARTS__.configs.animationDelayUpdate.value);
+                    },
                 };
                 var visualMap = {
                     //type: 'piecewise',
@@ -5942,9 +6221,6 @@ function getCalendar(container, themes) {
                 visualMap.max = valueMax;
                 visualMap.show = __ECHARTS__.configs.visualMapDisplay.value == "YES",
                 calendar.range = [rangeMin, rangeMax];
-                serie.animationDelay = function (idx) {
-                    return idx * 5 + 100;
-                };
                 calendars.push(calendar);
                 series.push(serie);
                 visualMaps.push(visualMap);
@@ -6125,27 +6401,27 @@ function getGeoOfChina(container, themes) {
         },
         //backgroundColor: __ECHARTS__.configs.geoBackgroundColor.value,
         title: {
-            show:__ECHARTS__.configs.titleDisplay.value =="YES",
+            show: __ECHARTS__.configs.titleDisplay.value == "YES",
             text: __ECHARTS__.configs.titleText.value,
             subtext: __ECHARTS__.configs.titleSubText.value,
-            top:"top",
-            left:__ECHARTS__.configs.titlePosition.value,
-            textStyle:{
-                color:__ECHARTS__.configs.titleTextColor.value,
+            top: "top",
+            left: __ECHARTS__.configs.titlePosition.value,
+            textStyle: {
+                color: __ECHARTS__.configs.titleTextColor.value,
             },
-            subtextStyle:{
-                color:__ECHARTS__.configs.titleSubTextColor.value,
+            subtextStyle: {
+                color: __ECHARTS__.configs.titleSubTextColor.value,
             }
         },
         toolbox: {
-            show: __ECHARTS__.configs.toolboxDisplay.value =="YES",
+            show: __ECHARTS__.configs.toolboxDisplay.value == "YES",
             feature: {
                 saveAsImage: {show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES"},
                 restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
                 dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
             },
             top: __ECHARTS__.configs.toolbox_top.value,
-            left:__ECHARTS__.configs.toolbox_left.value,
+            left: __ECHARTS__.configs.toolbox_left.value,
             orient: __ECHARTS__.configs.toolbox_orient.value,
             emphasis: {
                 iconStyle: {
@@ -6154,18 +6430,18 @@ function getGeoOfChina(container, themes) {
             },
         },
         tooltip: {
-            show:__ECHARTS__.configs.tooltipDisplay.value == "YES",
+            show: __ECHARTS__.configs.tooltipDisplay.value == "YES",
             formatter: function (params) {
                 var value = "";
                 try {
-                    value = params.name + '<br>' +  params.seriesName + ': ' + ((params['value'].length == 3) ? params.data['value'][2] : params.data['value'])
-                }catch (e) {
+                    value = params.name + '<br>' + params.seriesName + ': ' + ((params['value'].length == 3) ? params.data['value'][2] : params.data['value'])
+                } catch (e) {
                 }
                 return value
             },
         },
         visualMap: {
-            show:__ECHARTS__.configs.visualMapDisplay.value == "YES",
+            show: __ECHARTS__.configs.visualMapDisplay.value == "YES",
             min: series[index].min,
             max: series[index].max,
             type: __ECHARTS__.configs.visualMap_type.value,
@@ -6173,12 +6449,12 @@ function getGeoOfChina(container, themes) {
             top: __ECHARTS__.configs.visualMap_top.value,
             left: __ECHARTS__.configs.visualMap_left.value,
             itemWidth: __ECHARTS__.configs.visualMap_width.value,
-            orient:__ECHARTS__.configs.visualMap_orient.value,
+            orient: __ECHARTS__.configs.visualMap_orient.value,
             itemHeight: __ECHARTS__.configs.visualMap_height.value,
             textStyle: {
                 color: __ECHARTS__.configs.visualMap_textColor.value,
             },
-            splitNumber:__ECHARTS__.configs.visualMap_piecewise_splitNumber.value,
+            splitNumber: __ECHARTS__.configs.visualMap_piecewise_splitNumber.value,
         },
         geo: {
             map: "china",
@@ -6211,13 +6487,13 @@ function getGeoOfChina(container, themes) {
         },
         series: [
             {
-                name:series[index].name,
+                name: series[index].name,
                 type: "map",
                 geoIndex: 0,
                 data: series[index].data,
             },
             {
-                name:series[index].name,
+                name: series[index].name,
                 type: 'effectScatter',//'scatter',//'effectScatter'
                 coordinateSystem: 'geo',
                 data: convertData(series[index].data.sort(function (a, b) {
@@ -6225,7 +6501,7 @@ function getGeoOfChina(container, themes) {
                 })),
                 symbolSize: function (val) {
                     var value = val[2] / (series[index].max / __ECHARTS__.configs.scatterSymbolSize.value);
-                    return value<5?5:value;
+                    return value < 5 ? 5 : value;
                 },
                 showEffectOn: 'render',
                 rippleEffect: {
@@ -6251,8 +6527,22 @@ function getGeoOfChina(container, themes) {
             }
         ],
 
-        animationDurationUpdate: 3000,
-        animationEasingUpdate: 'quinticInOut',
+        animation: __ECHARTS__.configs.animation.value == "YES",
+        animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
+        animationEasing: __ECHARTS__.configs.animationEasing.value,
+        animationDuration: function (idx) {
+            return idx * Number(__ECHARTS__.configs.animationDuration.value);
+        },
+        animationDelay: function (idx) {
+            return idx * Number(__ECHARTS__.configs.animationDelay.value);
+        },
+        animationEasingUpdate: __ECHARTS__.configs.animationEasingUpdate.value,
+        animationDurationUpdate: function (idx) {
+            return idx * Number(__ECHARTS__.configs.animationDurationUpdate.value);
+        },
+        animationDelayUpdate: function (idx) {
+            return idx * Number(__ECHARTS__.configs.animationDelayUpdate.value);
+        },
     };
     myChart.setOption(option);
 
@@ -6524,8 +6814,22 @@ function getGeoOfLocal(container, themes) {
             }
         ],
 
-        animationDurationUpdate: 3000,
-        animationEasingUpdate: 'quinticInOut',
+        animation: __ECHARTS__.configs.animation.value == "YES",
+        animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
+        animationEasing: __ECHARTS__.configs.animationEasing.value,
+        animationDuration: function (idx) {
+            return idx * Number(__ECHARTS__.configs.animationDuration.value);
+        },
+        animationDelay: function (idx) {
+            return idx * Number(__ECHARTS__.configs.animationDelay.value);
+        },
+        animationEasingUpdate: __ECHARTS__.configs.animationEasingUpdate.value,
+        animationDurationUpdate: function (idx) {
+            return idx * Number(__ECHARTS__.configs.animationDurationUpdate.value);
+        },
+        animationDelayUpdate: function (idx) {
+            return idx * Number(__ECHARTS__.configs.animationDelayUpdate.value);
+        },
     };
 
     myChart.setOption(option);
@@ -6659,9 +6963,22 @@ function getBar3D(container, themes) {
                     },
                     itemStyle: {}
                 },
-                animation: true,
-                animationDurationUpdate: 1000,
-                animationEasingUpdate: "cubicOut"
+                animation: __ECHARTS__.configs.animation.value == "YES",
+                animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
+                animationEasing: __ECHARTS__.configs.animationEasing.value,
+                animationDuration: function (idx) {
+                    return idx * Number(__ECHARTS__.configs.animationDuration.value) + c * Number(__ECHARTS__.configs.animationDuration.value);
+                },
+                animationDelay: function (idx) {
+                    return idx * Number(__ECHARTS__.configs.animationDelay.value) + c * Number(__ECHARTS__.configs.animationDelay.value);
+                },
+                animationEasingUpdate: __ECHARTS__.configs.animationEasingUpdate.value,
+                animationDurationUpdate: function (idx) {
+                    return idx * Number(__ECHARTS__.configs.animationDurationUpdate.value) + c * Number(__ECHARTS__.configs.animationDurationUpdate.value);
+                },
+                animationDelayUpdate: function (idx) {
+                    return idx * Number(__ECHARTS__.configs.animationDelayUpdate.value) + c * Number(__ECHARTS__.configs.animationDelayUpdate.value);
+                },
             };
             for (var i = 0; i < dataset["data"].length; i++) {
                 var r = dataset["data"][i];
@@ -6676,9 +6993,6 @@ function getBar3D(container, themes) {
                     value: [item[0], item[1], item[2]],
                 }
             });
-            serie.animationDelay = function (idx) {
-                return idx * 5 + 100;
-            };
             series.push(serie);
         }
     }
@@ -6776,10 +7090,21 @@ function getBar3D(container, themes) {
                 autoRotate: __ECHARTS__.configs.AutoRotateFor3D.value == "YES",
                 autoRotateSpeed: __ECHARTS__.configs.AutoRotateSpeedFor3D.value,
                 projection: 'orthographic',
-                animationDurationUpdate: 1000,
-                animationEasingUpdate: "cubicInOut",
+                animation: __ECHARTS__.configs.animation.value == "YES",
+                animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
+                animationEasing: __ECHARTS__.configs.animationEasing.value,
+                animationDuration: function (idx) {
+                    return idx * Number(__ECHARTS__.configs.animationDuration.value);
+                },
                 animationDelay: function (idx) {
-                    return idx * 5 + 100;
+                    return idx * Number(__ECHARTS__.configs.animationDelay.value);
+                },
+                animationEasingUpdate: __ECHARTS__.configs.animationEasingUpdate.value,
+                animationDurationUpdate: function (idx) {
+                    return idx * Number(__ECHARTS__.configs.animationDurationUpdate.value);
+                },
+                animationDelayUpdate: function (idx) {
+                    return idx * Number(__ECHARTS__.configs.animationDelayUpdate.value);
                 },
             },
             axisLine: {
@@ -6873,9 +7198,22 @@ function getLine3D(container, themes) {
 
                     }
                 },
-                animation: true,
-                animationDurationUpdate: 1000,
-                animationEasingUpdate: "cubicOut"
+                animation: __ECHARTS__.configs.animation.value == "YES",
+                animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
+                animationEasing: __ECHARTS__.configs.animationEasing.value,
+                animationDuration: function (idx) {
+                    return idx * Number(__ECHARTS__.configs.animationDuration.value) + c * Number(__ECHARTS__.configs.animationDuration.value);
+                },
+                animationDelay: function (idx) {
+                    return idx * Number(__ECHARTS__.configs.animationDelay.value) + c * Number(__ECHARTS__.configs.animationDelay.value);
+                },
+                animationEasingUpdate: __ECHARTS__.configs.animationEasingUpdate.value,
+                animationDurationUpdate: function (idx) {
+                    return idx * Number(__ECHARTS__.configs.animationDurationUpdate.value) + c * Number(__ECHARTS__.configs.animationDurationUpdate.value);
+                },
+                animationDelayUpdate: function (idx) {
+                    return idx * Number(__ECHARTS__.configs.animationDelayUpdate.value) + c * Number(__ECHARTS__.configs.animationDelayUpdate.value);
+                },
             };
             var data = [];
             for (var i = 0; i < dataset["data"].length; i++) {
@@ -6891,9 +7229,6 @@ function getLine3D(container, themes) {
                     value: [item[0], item[1], item[2]],
                 }
             });
-            serie.animationDelay = function (idx) {
-                return idx * 5 + 100;
-            };
             series.push(serie);
         }
     }
@@ -7005,8 +7340,22 @@ function getLine3D(container, themes) {
                 autoRotate: __ECHARTS__.configs.AutoRotateFor3D.value == "YES",
                 autoRotateSpeed: __ECHARTS__.configs.AutoRotateSpeedFor3D.value,
                 projection: 'orthographic',
-                //animationDurationUpdate: 1000,
-                //animationEasingUpdate: "cubicInOut"
+                animation: __ECHARTS__.configs.animation.value == "YES",
+                animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
+                animationEasing: __ECHARTS__.configs.animationEasing.value,
+                animationDuration: function (idx) {
+                    return idx * Number(__ECHARTS__.configs.animationDuration.value);
+                },
+                animationDelay: function (idx) {
+                    return idx * Number(__ECHARTS__.configs.animationDelay.value);
+                },
+                animationEasingUpdate: __ECHARTS__.configs.animationEasingUpdate.value,
+                animationDurationUpdate: function (idx) {
+                    return idx * Number(__ECHARTS__.configs.animationDurationUpdate.value);
+                },
+                animationDelayUpdate: function (idx) {
+                    return idx * Number(__ECHARTS__.configs.animationDelayUpdate.value);
+                },
             },
             axisLine: {
                 show:__ECHARTS__.configs.axisLineDisplay.value == "YES",
@@ -7101,9 +7450,22 @@ function getScatter3D(container, themes) {
                         //color: '#900'
                     }
                 },
-                animation: true,
-                animationDurationUpdate: 1000,
-                animationEasingUpdate: "cubicOut"
+                animation: __ECHARTS__.configs.animation.value == "YES",
+                animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
+                animationEasing: __ECHARTS__.configs.animationEasing.value,
+                animationDuration: function (idx) {
+                    return idx * Number(__ECHARTS__.configs.animationDuration.value) + c * Number(__ECHARTS__.configs.animationDuration.value);
+                },
+                animationDelay: function (idx) {
+                    return idx * Number(__ECHARTS__.configs.animationDelay.value) + c * Number(__ECHARTS__.configs.animationDelay.value);
+                },
+                animationEasingUpdate: __ECHARTS__.configs.animationEasingUpdate.value,
+                animationDurationUpdate: function (idx) {
+                    return idx * Number(__ECHARTS__.configs.animationDurationUpdate.value) + c * Number(__ECHARTS__.configs.animationDurationUpdate.value);
+                },
+                animationDelayUpdate: function (idx) {
+                    return idx * Number(__ECHARTS__.configs.animationDelayUpdate.value) + c * Number(__ECHARTS__.configs.animationDelayUpdate.value);
+                },
             };
             var data = [];
             for (var i = 0; i < dataset["data"].length; i++) {
@@ -7119,9 +7481,6 @@ function getScatter3D(container, themes) {
                     value: [item[0], item[1], item[2]],
                 }
             });
-            serie.animationDelay = function (idx) {
-                return idx * 5 + 100;
-            };
             series.push(serie);
         }
     }
@@ -7233,10 +7592,21 @@ function getScatter3D(container, themes) {
                 autoRotate: __ECHARTS__.configs.AutoRotateFor3D.value == "YES",
                 autoRotateSpeed: 10,
                 projection: 'orthographic',
-                animationDurationUpdate: 1000,
-                animationEasingUpdate: "cubicInOut",
+                animation: __ECHARTS__.configs.animation.value == "YES",
+                animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
+                animationEasing: __ECHARTS__.configs.animationEasing.value,
+                animationDuration: function (idx) {
+                    return idx * Number(__ECHARTS__.configs.animationDuration.value);
+                },
                 animationDelay: function (idx) {
-                    return idx * 5 + 100;
+                    return idx * Number(__ECHARTS__.configs.animationDelay.value);
+                },
+                animationEasingUpdate: __ECHARTS__.configs.animationEasingUpdate.value,
+                animationDurationUpdate: function (idx) {
+                    return idx * Number(__ECHARTS__.configs.animationDurationUpdate.value);
+                },
+                animationDelayUpdate: function (idx) {
+                    return idx * Number(__ECHARTS__.configs.animationDelayUpdate.value);
                 },
             },
             axisLine: {
@@ -7301,7 +7671,23 @@ function getCategoryLine(container, themes) {
         }
         var serie = {
             name: row[columns[0]].value,
-            data: data ,
+            data: data,
+            animation: __ECHARTS__.configs.animation.value == "YES",
+            animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
+            animationEasing: __ECHARTS__.configs.animationEasing.value,
+            animationDuration: function (idx) {
+                return idx * Number(__ECHARTS__.configs.animationDuration.value) ;
+            },
+            animationDelay: function (idx) {
+                return idx * Number(__ECHARTS__.configs.animationDelay.value);
+            },
+            animationEasingUpdate: __ECHARTS__.configs.animationEasingUpdate.value,
+            animationDurationUpdate: function (idx) {
+                return idx * Number(__ECHARTS__.configs.animationDurationUpdate.value);
+            },
+            animationDelayUpdate: function (idx) {
+                return idx * Number(__ECHARTS__.configs.animationDelayUpdate.value);
+            },
         };
         if (__ECHARTS__.configs.categoryLineType.value == "bar") {
             serie.label = {
@@ -7327,7 +7713,7 @@ function getCategoryLine(container, themes) {
                     position: __ECHARTS__.configs.barLabelPosition.value,
                     distance: 15,
                     formatter: '{value|{c}}',
-                    rotate: __ECHARTS__.configs.barLabelRotate.value,
+                    rotate: 0,
                     rich: {
                         value: {
                             color: __ECHARTS__.configs.labelBarTextColor.value,
@@ -7346,6 +7732,9 @@ function getCategoryLine(container, themes) {
                 bleedMargin: 5,
                 margin: 20
             };
+            serie.animationType = __ECHARTS__.configs.animationType.value;
+            serie.animationTypeUpdate = __ECHARTS__.configs.animationTypeUpdate.value;
+
             if (__ECHARTS__.configs.richTextLabel.value == "YES") {
                 serie.label = {
                     formatter: '{a|{a}}{abg|}\n{hr|}\n  {b|{b}：}{c}  {per|{d}%}  ',
@@ -7399,10 +7788,26 @@ function getCategoryLine(container, themes) {
             serie.lineStyle = {
                 width: Number(__ECHARTS__.configs.lineStyleWidth.value),
             };
+            serie.label = {
+                show: __ECHARTS__.configs.lineLabelDisplay.value == "YES",
+                align: 'center',
+                verticalAlign: 'middle',
+                position: "top",
+                distance: 15,
+                formatter: '{value|{c}}',
+                rotate: __ECHARTS__.configs.lineLabelRotate.value,
+                rich: {
+                    value: {
+                        color: __ECHARTS__.configs.lineLabelTextColor.value,
+                        fontSize: __ECHARTS__.configs.lineLabelFontSize.value,
+                    }
+                }
+            };
             serie.emphasis = {
                 label: {
                     show: __ECHARTS__.configs.lineEmphasisLabelDisplay.value == "YES",
-                    position: 'left',
+                    position: 'bottom',
+                    rotate:0,
                     fontSize: __ECHARTS__.configs.lineLabelFontSize.value,
                 }
             };
@@ -7415,9 +7820,6 @@ function getCategoryLine(container, themes) {
                 serie.areaStyle = {};
             }
         }
-        serie.animationDelay = function (idx) {
-            return idx * 5 + 100;
-        };
         opt.series.push(serie);
         options.push(opt);
     }
@@ -7561,10 +7963,6 @@ function getCategoryLine(container, themes) {
             series: {
                 type: __ECHARTS__.configs.categoryLineType.value == "areaStyle" ? "line" : __ECHARTS__.configs.categoryLineType.value,
             },
-            animationEasing: 'elasticOut',
-            animationDelayUpdate: function (idx) {
-                return idx * 3;
-            }
         },
         options: options
     };
@@ -7945,7 +8343,10 @@ function getCategoryLineForGauge(container, themes) {
                     textShadowColor: 'rgba(0, 0, 0, 0.5)',
                     textShadowBlur: 10,
                 },
-                data: []
+                data: [],
+                animation: __ECHARTS__.configs.animation.value == "YES",
+                animationEasing: __ECHARTS__.configs.animationEasing.value,
+                animationEasingUpdate: __ECHARTS__.configs.animationEasingUpdate.value,
             };
             serie.data.push({
                 "name": row[columns[0]].value + "\r\n" + columns[c],
@@ -7955,9 +8356,7 @@ function getCategoryLineForGauge(container, themes) {
                     shadowBlur: 10
                 }
             });
-            serie.animationDelay = function (idx) {
-                return idx * 5 + 100;
-            };
+
             let left = (toPoint(__ECHARTS__.configs.grid_left.value) + (100-toPoint(__ECHARTS__.configs.grid_left.value) - toPoint(__ECHARTS__.configs.grid_right.value))/2);
             let top = (toPoint(__ECHARTS__.configs.grid_top.value) + (100-toPoint(__ECHARTS__.configs.grid_top.value) - toPoint(__ECHARTS__.configs.grid_bottom.value))/2);
             serie.center = [(c*left/(columns.length-1)) + left/(columns.length-1)*(c-1) + "%",top + "%"];
@@ -8037,10 +8436,6 @@ function getCategoryLineForGauge(container, themes) {
             series: {
                 type: "gauge",
             },
-            animationEasing: 'elasticOut',
-            animationDelayUpdate: function (idx) {
-                return idx * 3;
-            }
         },
         options: options
     };
@@ -8126,15 +8521,17 @@ function getCategoryLineForLiqiud(container, themes) {
                     itemStyle: {
                         opacity: 0.8
                     }
-                }
+                },
+                animation: __ECHARTS__.configs.animation.value == "YES",
+                animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
+                animationEasing: __ECHARTS__.configs.animationEasing.value,
+                animationEasingUpdate: __ECHARTS__.configs.animationEasingUpdate.value,
             };
             serie.data.push({
                 name: columns[c],
                 value: row[columns[c]].value
             });
-            serie.animationDelay = function (idx) {
-                return idx * 5 + 100;
-            };
+
             let left = (toPoint(__ECHARTS__.configs.grid_left.value) + (100-toPoint(__ECHARTS__.configs.grid_left.value) - toPoint(__ECHARTS__.configs.grid_right.value))/2);
             let top = (toPoint(__ECHARTS__.configs.grid_top.value) + (100-toPoint(__ECHARTS__.configs.grid_top.value) - toPoint(__ECHARTS__.configs.grid_bottom.value))/2);
             serie.center = [(c*left/(columns.length-1)) + 50/(columns.length-1)*(c-1) + "%", top + "%"];
@@ -8212,10 +8609,6 @@ function getCategoryLineForLiqiud(container, themes) {
                     }
                 },
             },
-            animationEasing: 'elasticOut',
-            animationDelayUpdate: function (idx) {
-                return idx * 3;
-            }
         },
         options: options
     };
@@ -8424,8 +8817,22 @@ function getCategoryLineForGeoOfChina(container, themes) {
                         }
                     ],
 
-                    animationDurationUpdate: 3000,
-                    animationEasingUpdate: 'quinticInOut',
+                    animation: __ECHARTS__.configs.animation.value == "YES",
+                    animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
+                    animationEasing: __ECHARTS__.configs.animationEasing.value,
+                    animationDuration: function (idx) {
+                        return idx * Number(__ECHARTS__.configs.animationDuration.value) + c * Number(__ECHARTS__.configs.animationDuration.value);
+                    },
+                    animationDelay: function (idx) {
+                        return idx * Number(__ECHARTS__.configs.animationDelay.value) + c * Number(__ECHARTS__.configs.animationDelay.value);
+                    },
+                    animationEasingUpdate: __ECHARTS__.configs.animationEasingUpdate.value,
+                    animationDurationUpdate: function (idx) {
+                        return idx * Number(__ECHARTS__.configs.animationDurationUpdate.value) + c * Number(__ECHARTS__.configs.animationDurationUpdate.value);
+                    },
+                    animationDelayUpdate: function (idx) {
+                        return idx * Number(__ECHARTS__.configs.animationDelayUpdate.value) + c * Number(__ECHARTS__.configs.animationDelayUpdate.value);
+                    },
                 };
                 options.push(opt);
             }
@@ -8506,10 +8913,6 @@ function getCategoryLineForGeoOfChina(container, themes) {
                     }
                 },
             },
-            animationEasing: 'elasticOut',
-            animationDelayUpdate: function (idx) {
-                return idx * 3;
-            }
         },
         options: options
     };
@@ -8713,8 +9116,22 @@ function getCategoryLineForGeoOfLocal(container, themes) {
                         }
                     ],
 
-                    animationDurationUpdate: 3000,
-                    animationEasingUpdate: 'quinticInOut',
+                    animation: __ECHARTS__.configs.animation.value == "YES",
+                    animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
+                    animationEasing: __ECHARTS__.configs.animationEasing.value,
+                    animationDuration: function (idx) {
+                        return idx * Number(__ECHARTS__.configs.animationDuration.value) + c * Number(__ECHARTS__.configs.animationDuration.value);
+                    },
+                    animationDelay: function (idx) {
+                        return idx * Number(__ECHARTS__.configs.animationDelay.value) + c * Number(__ECHARTS__.configs.animationDelay.value);
+                    },
+                    animationEasingUpdate: __ECHARTS__.configs.animationEasingUpdate.value,
+                    animationDurationUpdate: function (idx) {
+                        return idx * Number(__ECHARTS__.configs.animationDurationUpdate.value) + c * Number(__ECHARTS__.configs.animationDurationUpdate.value);
+                    },
+                    animationDelayUpdate: function (idx) {
+                        return idx * Number(__ECHARTS__.configs.animationDelayUpdate.value) + c * Number(__ECHARTS__.configs.animationDelayUpdate.value);
+                    },
                 };
                 options.push(opt);
             }
@@ -8794,10 +9211,6 @@ function getCategoryLineForGeoOfLocal(container, themes) {
                     }
                 },
             },
-            animationEasing: 'elasticOut',
-            animationDelayUpdate: function (idx) {
-                return idx * 3;
-            }
         },
         options: options
     };
