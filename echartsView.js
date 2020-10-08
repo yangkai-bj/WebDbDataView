@@ -59,7 +59,12 @@ var __ECHARTS__ = {
         toolboxDisplay: {name: "是否显示", value: "YES", options: ["YES", "NO"], type: "select"},
         toolbox_top: {name: "上边距(%)", value: "1%", type: "input"},
         toolbox_left: {name: "左边距(%)", value: "", type: "input"},
-        toolbox_orient: {name: "布局方向", value: "vertical", options: ["horizontal", "vertical"], type: "select"},
+        toolbox_orient: {
+            name: "布局方向",
+            value: "vertical",
+            options: [new Option("横向", "horizontal"), new Option("纵向", "vertical")],
+            type: "select"
+        },
         toolbox_textPosition: {
             name: "文字位置",
             value: "left",
@@ -78,7 +83,7 @@ var __ECHARTS__ = {
         axisPointerType: {
             name: "指示器类型",
             value: "shadow",
-            options: ["shadow", "line", "cross", "none"],
+            options: [new Option("阴影", "shadow"), new Option("线型", "line"), new Option("交叉", "cross"), new Option("不设置", "none")],
             type: "select"
         },
 
@@ -95,14 +100,29 @@ var __ECHARTS__ = {
         legendIcon: {
             name: "图标",
             value: "circle",
-            options: ["circle", "rect", "roundRect", "triangle", "diamond", "arrow", "emptyCircle", "emptyRectangle", "emptyTriangle", "emptyDiamond", "none"],
+            options: [new Option("圆形", "circle"), new Option("空心圆", "emptyCircle"), new Option("三角形", "triangle"), new Option("空心三角形", "emptyTriangle"), new Option("菱形", "diamond"), new Option("空心菱形", "emptyDiamond"), new Option("箭头", "arrow"), new Option("空心箭头", "emptyArrow"), new Option("图钉", "pin"), new Option("空心图钉", "emptyPin")],
             type: "select"
         },
-        legendSelectedMode: {name: "选择模式", value: "multiple", options: ["single", "multiple"], type: "select"},
+        legendSelectedMode: {
+            name: "选择模式",
+            value: "multiple",
+            options: [new Option("单选", "single"), new Option("多选", "multiple")],
+            type: "select"
+        },
         legendPositionTop: {name: "上边距(%)", value: "1%", type: "input"},
         legendPositionLeft: {name: "左边距(%)", value: "50%", type: "input"},
-        legendType: {name: "显示类型", value: "plain", options: ["plain", "scroll"], type: "select"},
-        legendOrient: {name: "布局方向", value: "horizontal", options: ["horizontal", "vertical"], type: "select"},
+        legendType: {
+            name: "显示类型",
+            value: "plain",
+            options: [new Option("简单", "plain"), new Option("滚动", "scroll")],
+            type: "select"
+        },
+        legendOrient: {
+            name: "布局方向",
+            value: "horizontal",
+            options: [new Option("横向", "horizontal"), new Option("纵向", "vertical")],
+            type: "select"
+        },
         legendTextColor: {name: "文字颜色", value: "#e6e6e6", type: "color"},
 
         hr_axis: {name: "坐标轴", value: "", type: "hr"},
@@ -116,38 +136,14 @@ var __ECHARTS__ = {
         xAxisInverse: {name: "X轴反向", value: "NO", options: ["YES", "NO"], type: "select"},
         yAxisInverse: {name: "Y轴反向", value: "NO", options: ["YES", "NO"], type: "select"},
 
-        hr_animation: {name: "动画设置", value: "", type: "hr"},
-        animation: {name: "启用动画", value: "YES", options: ["YES", "NO"], type: "select"},
-        animationThreshold: {name: "启动动画阈值", value: 2000, type: "input"},
-        animationEasing: {
-            name: "初始动画",
-            value: "linear",
-            options: ["linear", "quadraticIn", "quadraticOut", "quadraticInOut", "cubicIn", "cubicOut", "cubicInOut", "quarticIn", "quarticOut", "quarticInOut", "quinticIn", "quinticOut", "quinticInOut",
-                "sinusoidalIn", "sinusoidalOut", "sinusoidalInOut", "exponentialIn", "exponentialOut", "exponentialInOut", "circularIn", "circularOut", "circularInOut", "elasticIn", "elasticOut", "elasticInOut",
-                "backIn", "backOut", "backInOut", "bounceIn", "bounceOut", "bounceInOut",],
-            type: "select"
-        },
-        animationDuration: {name: "初始动画时长", value: 1000, type: "input"},
-        animationDelay: {name: "初始动画延时", value: 10, type: "input"},
-        animationEasingUpdate: {
-            name: "更新动画",
-            value: "linear",
-            options: ["linear", "quadraticIn", "quadraticOut", "quadraticInOut", "cubicIn", "cubicOut", "cubicInOut", "quarticIn", "quarticOut", "quarticInOut", "quinticIn", "quinticOut", "quinticInOut",
-                "sinusoidalIn", "sinusoidalOut", "sinusoidalInOut", "exponentialIn", "exponentialOut", "exponentialInOut", "circularIn", "circularOut", "circularInOut", "elasticIn", "elasticOut", "elasticInOut",
-                "backIn", "backOut", "backInOut", "bounceIn", "bounceOut", "bounceInOut",],
-            type: "select"
-        },
-        animationDurationUpdate: {name: "更新动画时长", value: 1000, type: "input"},
-        animationDelayUpdate: {name: "更新动画延时", value: 10, type: "input"},
-
         hr_bar: {name: "柱状图", value: "", type: "hr"},
-        barLabelDisplay: {name: "显示标签", value: 'NO', options: ["YES", "NO"], type: "select"},
-        barEmphasisLabelDisplay: {name: "显示热点标签", value: 'NO', options: ["YES", "NO"], type: "select"},
+        barLabelDisplay: {name: "显示标签", value: "NO", options: ["YES", "NO"], type: "select"},
+        barEmphasisLabelDisplay: {name: "显示热点标签", value: "NO", options: ["YES", "NO"], type: "select"},
         labelBarTextColor: {name: "标签颜色", value: "auto", type: "color"},
         labelBarFontSize: {name: "标签字号(px)", value: 12, type: "input"},
         barLabelPosition: {
             name: "标签位置",
-            value: 'top',
+            value: "top",
             options: ["top", "left", "right", "bottom", "insideTop", "insideLeft", "insideRight", "insideBottom"],
             type: "select"
         },
@@ -155,63 +151,78 @@ var __ECHARTS__ = {
 
         hr_line: {name: "线形图", value: "", type: "hr"},
         lineStyleWidth: {name: "线条宽度(px)", value: 2, type: "input"},
-        lineLabelDisplay: {name: "显示标签", value: 'NO', options: ["YES", "NO"], type: "select"},
-        lineEmphasisLabelDisplay: {name: "显示热点标签", value: 'YES', options: ["YES", "NO"], type: "select"},
+        lineLabelDisplay: {name: "显示标签", value: "NO", options: ["YES", "NO"], type: "select"},
+        lineEmphasisLabelDisplay: {name: "显示热点标签", value: "YES", options: ["YES", "NO"], type: "select"},
         lineLabelTextColor: {name: "标签颜色", value: "auto", type: "color"},
         lineLabelRotate: {name: "标签旋转度数", value: 0, type: "input"},
         lineLabelFontSize: {name: "标签字号(px)", value: 12, type: "input"},
-        lineSmooth: {name: "使用平滑线", value: 'YES', options: ["YES", "NO"], type: "select"},
+        lineSmooth: {name: "使用平滑线", value: "YES", options: ["YES", "NO"], type: "select"},
         lineSymbol: {
             name: "数据符号",
             value: "emptyCircle",
-            options: ["circle", "emptyCircle", "triangle", "emptyTriangle", "diamond", "emptyDiamond", "arrow", "emptyArrow", "pin", "emptyPin"],
+            options: [new Option("圆形", "circle"), new Option("空心圆", "emptyCircle"), new Option("三角形", "triangle"), new Option("空心三角形", "emptyTriangle"), new Option("菱形", "diamond"), new Option("空心菱形", "emptyDiamond"), new Option("箭头", "arrow"), new Option("空心箭头", "emptyArrow"), new Option("图钉", "pin"), new Option("空心图钉", "emptyPin")],
             type: "select"
         },
         lineSymbolSize: {name: "符号大小", value: 5, type: "input"},
-        lineMarkPointMin: {name: "最小值点", value: 'NO', options: ["YES", "NO"], type: "select"},
-        lineMarkPointMax: {name: "最大值点", value: 'NO', options: ["YES", "NO"], type: "select"},
-        lineMarkLineMin: {name: "最小值线", value: 'NO', options: ["YES", "NO"], type: "select"},
-        lineMarkLineMax: {name: "最大值线", value: 'NO', options: ["YES", "NO"], type: "select"},
-        lineMarkLineAvg: {name: "平均值线", value: 'NO', options: ["YES", "NO"], type: "select"},
+        lineMarkPointMin: {name: "最小值点", value: "NO", options: ["YES", "NO"], type: "select"},
+        lineMarkPointMax: {name: "最大值点", value: "NO", options: ["YES", "NO"], type: "select"},
+        lineMarkLineMin: {name: "最小值线", value: "NO", options: ["YES", "NO"], type: "select"},
+        lineMarkLineMax: {name: "最大值线", value: "NO", options: ["YES", "NO"], type: "select"},
+        lineMarkLineAvg: {name: "平均值线", value: "NO", options: ["YES", "NO"], type: "select"},
 
         hr_regression: {name: "趋势/回归", value: "", type: "hr"},
-        regressionType: {name: "趋势/回归类型", value: '直线', options: ["直线", "指数", "对数", "多项式"], type: "select"},
+        regressionType: {name: "趋势/回归类型", value: "直线", options: ["直线", "指数", "对数", "多项式"], type: "select"},
         regressionPolynomialOrder: {name: "多项式阶数", value: 2, type: "input"},
         regressionForwardPeroids: {name: "趋势/回归前推周期", value: 0, type: "input"},
-        regressionExpressionDisplay: {name: "显示表达式", value: 'NO', options: ["YES", "NO"], type: "select"},
+        regressionExpressionDisplay: {name: "显示表达式", value: "NO", options: ["YES", "NO"], type: "select"},
         regressionExpressionColor: {name: "表达式颜色", value: "auto", type: "color"},
 
         hr_pie: {name: "饼图/圆环/玫瑰", value: "", type: "hr"},
         outRadius: {name: "外半径(%)", value: "70%", type: "input"},
         inRadius: {name: "内半径(%)", value: "35%", type: "input"},
-        pieSelectedMode: {name: "选择模式", value: "single", options: ["single", "multiple"], type: "select"},
-        pieLabelDisplay: {name: "显示标签", value: 'YES', options: ["YES", "NO"], type: "select"},
+        pieSelectedMode: {
+            name: "选择模式",
+            value: "single",
+            options: [new Option("单选", "single"), new Option("多选", "multiple")],
+            type: "select"
+        },
+        pieLabelDisplay: {name: "显示标签", value: "YES", options: ["YES", "NO"], type: "select"},
         pieLabelFontSize: {name: "标签字号(px)", value: 12, type: "input"},
-        pieLabelAlignTo: {name: "标签对齐方式", value: 'none', options: ["none", "labelLine", "edge"], type: "select"},
-        richTextLabel: {name: "富文本标签", value: 'NO', options: ["YES", "NO"], type: "select"},
+        pieLabelAlignTo: {name: "标签对齐方式", value: "none", options: [new Option("不对齐", "none"), new Option("标签线", "labelLine"), new Option("边缘", "edge")], type: "select"},
+        richTextLabel: {name: "富文本标签", value: "NO", options: ["YES", "NO"], type: "select"},
         groupWith: {name: "每行序列数", value: 2, type: "input"},
-        animationType: {name: "初始动画", value: "expansion", options: ["expansion", "scale"], type: "select"},
+        animationType: {
+            name: "初始动画",
+            value: "expansion",
+            options: [new Option("膨胀", "expansion"), new Option("逐级", "scale")],
+            type: "select"
+        },
         animationTypeUpdate: {
             name: "更新动画",
             value: "transition",
-            options: ["transition", "expansion"],
+            options: [new Option("过渡", "transition"), new Option("膨胀", "expansion")],
             type: "select"
         },
 
         hr_radar: {name: "雷达图", value: "", type: "hr"},
-        radarShape: {name: "形状", value: 'circle', options: ["circle", "polygon"], type: "select"},
-        radarAreaDisplay: {name: "显示分区", value: 'YES', options: ["YES", "NO"], type: "select"},
-        radarNameDisplay: {name: "显示名称", value: 'YES', options: ["YES", "NO"], type: "select"},
+        radarShape: {
+            name: "形状",
+            value: "circle",
+            options: [new Option("圆形", "circle"), new Option("多边形", "polygon")],
+            type: "select"
+        },
+        radarAreaDisplay: {name: "显示分区", value: "YES", options: ["YES", "NO"], type: "select"},
+        radarNameDisplay: {name: "显示名称", value: "YES", options: ["YES", "NO"], type: "select"},
         radarLabelRotate: {name: "标签旋转度数", value: 0, type: "input"},
         radarSplitNumber: {name: "分割段数", value: 5, type: "input"},
-        radarSameMax: {name: "同基比较", value: 'NO', options: ["YES", "NO"], type: "select"},
+        radarSameMax: {name: "同基比较", value: "NO", options: ["YES", "NO"], type: "select"},
 
         hr_scatter: {name: "散点图", value: "", type: "hr"},
         scatterSymbolSize: {name: "数据点大小(px)", value: 6, type: "input"},
         scatterSymbolShape: {
             name: "数据点形状",
             value: "circle",
-            options: ['circle', 'rect', 'roundRect', 'triangle', 'diamond', 'pin', 'arrow', 'none'],
+            options: [new Option("圆形", "circle"), new Option("四边形", "rect"), new Option("圆角四边形", "roundRect"), new Option("三角形", "triangle"), new Option("菱形", "diamond"), new Option("图钉", "pin"), new Option("箭头", "arrow"), new Option("不设置", "none")],
             type: "select"
         },
 
@@ -219,7 +230,7 @@ var __ECHARTS__ = {
         wordCloudShape: {
             name: "形状",
             value: "circle",
-            options: ["circle", "cardioid", "diamond", "triangle-forward", "triangle", "pentagon", "star"],
+            options: [new Option("圆形", "circle"), new Option("心形", "cardioid"), new Option("菱形", "diamond"), new Option("三角形", "triangle"), new Option("右向三角形", "triangle-forward"), new Option("五边形", "pentagon"), new Option("星形", "star")],
             type: "select"
         },
         wordCloudMinFontSize: {name: "最小字号(px)", value: 12, type: "input"},
@@ -230,7 +241,7 @@ var __ECHARTS__ = {
         liqiudShape: {
             name: "形状",
             value: "circle",
-            options: ["circle", "rect", "roundRect", "triangle", "diamond", "pin", "arrow", "container", "whale"],
+            options: [new Option("圆形", "circle"), new Option("四边形", "rect"), new Option("圆角四边形", "roundRect"), new Option("三角形", "triangle"), new Option("菱形", "diamond"), new Option("图钉", "pin"), new Option("箭头", "arrow"), new Option("容器", "container"), new Option("鲸鱼", "whale")],
             type: "select"
         },
         liqiudFontSize: {name: "标题字号(px)", value: 16, type: "input"},
@@ -245,10 +256,15 @@ var __ECHARTS__ = {
         calendarType: {
             name: "类型",
             value: "heatmap",
-            options: ['heatmap', 'scatter', 'effectScatter'],
+            options: [new Option("热图", "heatmap"), new Option("散点", "scatter"), new Option("效应散点", "effectScatter")],
             type: "select"
         },
-        calendarOrient: {name: "布局方向", value: 'vertical', options: ["horizontal", "vertical"], type: "select"},
+        calendarOrient: {
+            name: "布局方向",
+            value: "vertical",
+            options: [new Option("横向", "horizontal"), new Option("纵向", "vertical")],
+            type: "select"
+        },
 
         hr_3D: {name: "3D图形", value: "", type: "hr"},
         BoxWidthFor3D: {name: "宽度(X轴)", value: 200, type: "input"},
@@ -269,7 +285,12 @@ var __ECHARTS__ = {
         geoHotAreaColor: {value: "#2a333d", name: "热点区域颜色", type: "color"},
         geoAreaNameDisplay: {name: "显示地区名称", value: "NO", options: ["YES", "NO"], type: "select"},
         geoAreaNameColor: {name: "地区名称颜色", value: "auto", type: "color"},
-        geoLineSymbol: {name: "符号", value: "plane", options: ["plane", "rocket"], type: "select"},
+        geoLineSymbol: {
+            name: "符号",
+            value: "plane",
+            options: [new Option("飞机", "plane"), new Option("火箭", "rocket"), new Option("箭头", "arrow"), new Option("图钉", "pin"), new Option("三角型", "triangle"), new Option("菱形", "diamond")],
+            type: "select"
+        },
         geoLineSymbolSize: {name: "符号大小", value: 10, type: "input"},
         geoLineCurveness: {name: "线路曲率", value: 0.2, type: "input"},
         geoLinePeriod: {name: "周期速度(秒)", value: 5, type: "input"},
@@ -279,7 +300,7 @@ var __ECHARTS__ = {
         categoryLineType: {
             name: "序列图形",
             value: "bar",
-            options: ["bar", "line", "areaStyle", "pie"],
+            options: [new Option("柱状图", "bar"), new Option("线型图", "line"), new Option("面积图", "areaStyle"), new Option("饼图", "pie")],
             type: "select"
         },
         seriesLoopPlayInterval: {name: "间隔(秒)", value: 3, type: "input"},
@@ -291,22 +312,62 @@ var __ECHARTS__ = {
         dataZoomFilterMode: {
             name: "模式",
             value: "filter",
-            options: ["filter", "weakFilter", "empty", "none"],
+            options: [new Option("过滤", "filter"), new Option("弱过滤", "weakFilter"), new Option("空", "empty"), new Option("不过滤", "none")],
             type: "select"
         },
-        dataZoomHandleIcon: {name: "手柄样式", value: "rect", options: ["rect", "circle", "emptyCircle"], type: "select"},
+        dataZoomHandleIcon: {
+            name: "手柄样式",
+            value: "rect",
+            options: [new Option("长方形", "rect"), new Option("实心圆", "circle"), new Option("空心圆", "emptyCircle")],
+            type: "select"
+        },
         dataZoomHandleSize: {name: "手柄大小", value: "100%", type: "input"},
 
         hr_visualMap: {name: "视觉映射", value: "", type: "hr"},
         visualMapDisplay: {name: "是否显示", value: "NO", options: ["YES", "NO"], type: "select"},
-        visualMap_type: {name: "类型", value: "continuous", options: ["continuous", "piecewise"], type: "select"},
+        visualMap_type: {
+            name: "类型",
+            value: "continuous",
+            options: [new Option("连续", "continuous"), new Option("分段", "piecewise")],
+            type: "select"
+        },
         visualMap_top: {name: "上边距(%)", value: "10%", type: "input"},
         visualMap_left: {name: "左边距(%)", value: "1%", type: "input"},
-        visualMap_orient: {name: "布局方向", value: "horizontal", options: ["horizontal", "vertical"], type: "select"},
+        visualMap_orient: {
+            name: "布局方向",
+            value: "horizontal",
+            options: [new Option("横向", "horizontal"), new Option("纵向", "vertical")],
+            type: "select"
+        },
         visualMap_width: {name: "宽度", value: "15", type: "input"},
         visualMap_height: {name: "高度", value: "30%", type: "input"},
         visualMap_textColor: {name: "标签颜色", value: "#e6e6e6", type: "color"},
         visualMap_piecewise_splitNumber: {name: "分段", value: "5", type: "input"},
+
+        hr_animation: {name: "动画设置", value: "", type: "hr"},
+        animation: {name: "启用动画", value: "YES", options: ["YES", "NO"], type: "select"},
+        animationThreshold: {name: "启动动画阈值", value: 2000, type: "input"},
+        animationFunctionType: {name: "函数类型", value: "In", options: ["In", "Out", "InOut"], type: "select"},
+        animationEasing: {
+            name: "初始动画",
+            value: "linear",
+            options: [new Option("线性", "linear"), new Option("二次方", "quadratic"), new Option("三次方", "cubic"), new Option("四次方", "quartic"), new Option("五次方", "quintic"),
+                new Option("正弦曲线", "sinusoidal"), new Option("指数", "exponential"), new Option("圆形", "circular"), new Option("弹力", "elastic"),
+                new Option("倒退", "back"), new Option("反弹", "bounce")],
+            type: "select"
+        },
+        animationDuration: {name: "初始动画时长", value: 1000, type: "input"},
+        animationDelay: {name: "初始动画延时", value: 10, type: "input"},
+        animationEasingUpdate: {
+            name: "更新动画",
+            value: "linear",
+            options: [new Option("线性", "linear"), new Option("二次方", "quadratic"), new Option("三次方", "cubic"), new Option("四次方", "quartic"), new Option("五次方", "quintic"),
+                new Option("正弦曲线", "sinusoidal"), new Option("指数", "exponential"), new Option("圆形", "circular"), new Option("弹力", "elastic"),
+                new Option("倒退", "back"), new Option("反弹", "bounce")],
+            type: "select"
+        },
+        animationDurationUpdate: {name: "更新动画时长", value: 1000, type: "input"},
+        animationDelayUpdate: {name: "更新动画延时", value: 10, type: "input"},
 
         hr_report: {name: "报表设置", value: "", type: "hr"},
         reportFontSize: {
@@ -1247,7 +1308,10 @@ function getEchartsConfigs(parent) {
             input.type = "select";
             input.className = "editinput";
             for (var i = 0; i < __ECHARTS__.configs[name].options.length; i++) {
-                input.options.add(new Option(__ECHARTS__.configs[name].options[i]));
+                if (typeof __ECHARTS__.configs[name].options[i] === "object")
+                     input.options.add(__ECHARTS__.configs[name].options[i]);
+                else
+                    input.options.add(new Option(__ECHARTS__.configs[name].options[i]));
             }
             input.value = __ECHARTS__.configs[name].value;
             input.onchange = function () {
@@ -1428,6 +1492,14 @@ function getEcharts(type, width, height, themes) {
     }
 }
 
+function getAnimationEasing(){
+    return __ECHARTS__.configs.animationEasing.value == "linear"?__ECHARTS__.configs.animationEasing.value:__ECHARTS__.configs.animationEasing.value + __ECHARTS__.configs.animationFunctionType.value;
+}
+
+function getAnimationEasingUpdate(){
+    return __ECHARTS__.configs.animationEasingUpdate.value == "linear"?__ECHARTS__.configs.animationEasingUpdate.value:__ECHARTS__.configs.animationEasingUpdate.value + __ECHARTS__.configs.animationFunctionType.value;
+}
+
 function getBar(container, themes) {
     var dataset = __DATASET__["result"][__DATASET__.default.sheet];
     var columns = [];
@@ -1449,11 +1521,11 @@ function getBar(container, themes) {
                 data: [],
                 label: {
                     show: __ECHARTS__.configs.barLabelDisplay.value == "YES",
-                    align: 'center',
-                    verticalAlign: 'middle',
+                    align: "center",
+                    verticalAlign: "middle",
                     position: __ECHARTS__.configs.barLabelPosition.value,
                     distance: 15,
-                    formatter: '{value|{c}}',
+                    formatter: "{value|{c}}",
                     rotate: __ECHARTS__.configs.barLabelRotate.value,
                     rich: {
                         value: {
@@ -1465,11 +1537,11 @@ function getBar(container, themes) {
                 emphasis: {
                     label: {
                         show: __ECHARTS__.configs.barEmphasisLabelDisplay.value == "YES",
-                        align: 'center',
-                        verticalAlign: 'middle',
+                        align: "center",
+                        verticalAlign: "middle",
                         position: __ECHARTS__.configs.barLabelPosition.value,
                         distance: 15,
-                        formatter: '{value|{c}}',
+                        formatter: "{value|{c}}",
                         rotate: 0,
                         rich: {
                             value: {
@@ -1483,14 +1555,14 @@ function getBar(container, themes) {
 
                 animation: __ECHARTS__.configs.animation.value == "YES",
                 animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
-                animationEasing: __ECHARTS__.configs.animationEasing.value,
+                animationEasing: getAnimationEasing(),
                 animationDuration: function (idx) {
                     return idx * Number(__ECHARTS__.configs.animationDuration.value) + c * Number(__ECHARTS__.configs.animationDuration.value);
                 },
                 animationDelay: function (idx) {
                     return idx * Number(__ECHARTS__.configs.animationDelay.value) + c * Number(__ECHARTS__.configs.animationDelay.value);
                 },
-                animationEasingUpdate: __ECHARTS__.configs.animationEasingUpdate.value,
+                animationEasingUpdate: getAnimationEasingUpdate(),
                 animationDurationUpdate: function (idx) {
                     return idx * Number(__ECHARTS__.configs.animationDurationUpdate.value) + c * Number(__ECHARTS__.configs.animationDurationUpdate.value);
                 },
@@ -1515,10 +1587,10 @@ function getBar(container, themes) {
             x2: __ECHARTS__.configs.grid_right.value,
             y2: __ECHARTS__.configs.grid_bottom.value,
             containLabel: __ECHARTS__.configs.grid_containLabel.value == "YES",
-            backgroundColor: 'transparent'
+            backgroundColor: "transparent"
         },
         brush:  __ECHARTS__.configs.toolboxFeatureBrush.value == "YES"?{
-            toolbox: ['rect', 'polygon', 'lineX', 'lineY', 'keep', 'clear'],
+            toolbox: ["rect", "polygon", "lineX", "lineY", "keep", "clear"],
             xAxisIndex: 0
         }:null,
         toolbox: {
@@ -1530,7 +1602,7 @@ function getBar(container, themes) {
                 dataZoom: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES"},
                 magicType: {
                     show: __ECHARTS__.configs.toolboxFeatureMagicType.value == "YES",
-                    type: ['line', 'bar', 'stack', 'tiled']
+                    type: ["line", "bar", "stack", "tiled"]
                 },
             },
             top: __ECHARTS__.configs.toolbox_top.value,
@@ -1571,7 +1643,7 @@ function getBar(container, themes) {
 
         tooltip: {
             show: __ECHARTS__.configs.tooltipDisplay.value == "YES",
-            trigger: 'axis',
+            trigger: "axis",
             axisPointer: {
                 type: __ECHARTS__.configs.axisPointerType.value,
             },
@@ -1640,20 +1712,20 @@ function getBar(container, themes) {
             }
         },
         dataZoom: [{
-                type: 'inside',
+                type: "inside",
                 filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
                 start: 0,
                 xAxisIndex: 0,
                 end: 100
             },{
-                type: 'inside',
+                type: "inside",
                 filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
                 start: 0,
                 yAxisIndex: 0,
                 end: 100
             }, {
             show: __ECHARTS__.configs.dataZoomBarDisplay.value == "YES",
-            type: 'slider',
+            type: "slider",
             filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
             yAxisIndex: 0,
             start: 0,
@@ -1673,7 +1745,7 @@ function getBar(container, themes) {
             },
         }, {
             show: __ECHARTS__.configs.dataZoomBarDisplay.value == "YES",
-            type: 'slider',
+            type: "slider",
             filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
             xAxisIndex: 0,
             start: 0,
@@ -1718,14 +1790,14 @@ function getTransversBar(container, themes) {
                 data: [],
                 animation: __ECHARTS__.configs.animation.value == "YES",
                 animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
-                animationEasing: __ECHARTS__.configs.animationEasing.value,
+                animationEasing: getAnimationEasing(),
                 animationDuration: function (idx) {
                     return idx * Number(__ECHARTS__.configs.animationDuration.value) + c * Number(__ECHARTS__.configs.animationDuration.value);
                 },
                 animationDelay: function (idx) {
                     return idx * Number(__ECHARTS__.configs.animationDelay.value) + c * Number(__ECHARTS__.configs.animationDelay.value);
                 },
-                animationEasingUpdate: __ECHARTS__.configs.animationEasingUpdate.value,
+                animationEasingUpdate: getAnimationEasingUpdate(),
                 animationDurationUpdate: function (idx) {
                     return idx * Number(__ECHARTS__.configs.animationDurationUpdate.value) + c * Number(__ECHARTS__.configs.animationDurationUpdate.value);
                 },
@@ -1737,11 +1809,11 @@ function getTransversBar(container, themes) {
             series.label = {
                 show: __ECHARTS__.configs.barLabelDisplay.value == "YES",
                 rotate: __ECHARTS__.configs.barLabelRotate.value,
-                align: 'center',
-                verticalAlign: 'middle',
+                align: "center",
+                verticalAlign: "middle",
                 position: __ECHARTS__.configs.barLabelPosition.value,
                 distance: 15,
-                formatter: '{value|{c}}',
+                formatter: "{value|{c}}",
                 rich: {
                     value: {
                         color: __ECHARTS__.configs.labelBarTextColor.value,
@@ -1752,11 +1824,11 @@ function getTransversBar(container, themes) {
             series.emphasis = {
                 label: {
                     show: __ECHARTS__.configs.barEmphasisLabelDisplay.value == "YES",
-                    align: 'center',
-                    verticalAlign: 'middle',
+                    align: "center",
+                    verticalAlign: "middle",
                     position: __ECHARTS__.configs.barLabelPosition.value,
                     distance: 15,
-                    formatter: '{value|{c}}',
+                    formatter: "{value|{c}}",
                     rotate: 0,
                     rich: {
                         value: {
@@ -1783,10 +1855,10 @@ function getTransversBar(container, themes) {
             x2: __ECHARTS__.configs.grid_right.value,
             y2: __ECHARTS__.configs.grid_bottom.value,
             containLabel: __ECHARTS__.configs.grid_containLabel.value == "YES",
-            backgroundColor: 'transparent'
+            backgroundColor: "transparent"
         },
         brush:  __ECHARTS__.configs.toolboxFeatureBrush.value == "YES"?{
-            toolbox: ['rect', 'polygon', 'lineX', 'lineY', 'keep', 'clear'],
+            toolbox: ["rect", "polygon", "lineX", "lineY", "keep", "clear"],
             xAxisIndex: 0
         }:null,
         toolbox: {
@@ -1798,7 +1870,7 @@ function getTransversBar(container, themes) {
                 dataZoom: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES"},
                 magicType: {
                     show: __ECHARTS__.configs.toolboxFeatureMagicType.value == "YES",
-                    type: ['stack', 'tiled']
+                    type: ["stack", "tiled"]
                 },
             },
             top: __ECHARTS__.configs.toolbox_top.value,
@@ -1825,7 +1897,7 @@ function getTransversBar(container, themes) {
         },
         tooltip: {
             show: __ECHARTS__.configs.tooltipDisplay.value == "YES",
-            trigger: 'axis',
+            trigger: "axis",
             axisPointer: {
                 type: __ECHARTS__.configs.axisPointerType.value,
             },
@@ -1844,7 +1916,7 @@ function getTransversBar(container, themes) {
             },
         },
         xAxis: {
-            type: 'value',
+            type: "value",
             inverse: __ECHARTS__.configs.xAxisInverse.value == "YES",
             axisLine: {
                 show: __ECHARTS__.configs.axisLineDisplay.value == "YES",
@@ -1876,7 +1948,7 @@ function getTransversBar(container, themes) {
             }
         },
         yAxis: {
-            type: 'category',
+            type: "category",
             data: xAxis,
             inverse: __ECHARTS__.configs.yAxisInverse.value == "YES",
             axisLine: {
@@ -1907,20 +1979,20 @@ function getTransversBar(container, themes) {
             }
         },
         dataZoom: [{
-            type: 'inside',
+            type: "inside",
             filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
             start: 0,
             xAxisIndex: 0,
             end: 100
         }, {
-            type: 'inside',
+            type: "inside",
             filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
             start: 0,
             yAxisIndex: 0,
             end: 100
         }, {
             show: __ECHARTS__.configs.dataZoomBarDisplay.value == "YES",
-            type: 'slider',
+            type: "slider",
             filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
             yAxisIndex: 0,
             start: 0,
@@ -1937,7 +2009,7 @@ function getTransversBar(container, themes) {
             }
         }, {
             show: __ECHARTS__.configs.dataZoomBarDisplay.value == "YES",
-            type: 'slider',
+            type: "slider",
             filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
             xAxisIndex: 0,
             start: 0,
@@ -1963,20 +2035,20 @@ function getTransversBar(container, themes) {
 function getMarkPoint() {
     let markPoint = {data: []};
     if (__ECHARTS__.configs.lineMarkPointMin.value == "YES")
-        markPoint.data.push({type: 'min', name: __ECHARTS__.configs.lineMarkPointMin.name});
+        markPoint.data.push({type: "min", name: __ECHARTS__.configs.lineMarkPointMin.name});
     if (__ECHARTS__.configs.lineMarkPointMax.value == "YES")
-        markPoint.data.push({type: 'max', name: __ECHARTS__.configs.lineMarkPointMax.name});
+        markPoint.data.push({type: "max", name: __ECHARTS__.configs.lineMarkPointMax.name});
     return markPoint;
 }
 
 function getMarkLine() {
     let markLine = {data: []};
     if (__ECHARTS__.configs.lineMarkLineMin.value == "YES")
-        markLine.data.push({type: 'min', name: __ECHARTS__.configs.lineMarkLineMin.name});
+        markLine.data.push({type: "min", name: __ECHARTS__.configs.lineMarkLineMin.name});
     if (__ECHARTS__.configs.lineMarkLineMax.value == "YES")
-        markLine.data.push({type: 'max', name: __ECHARTS__.configs.lineMarkLineMax.name});
+        markLine.data.push({type: "max", name: __ECHARTS__.configs.lineMarkLineMax.name});
     if (__ECHARTS__.configs.lineMarkLineAvg.value == "YES")
-        markLine.data.push({type: 'average', name: __ECHARTS__.configs.lineMarkLineAvg.name});
+        markLine.data.push({type: "average", name: __ECHARTS__.configs.lineMarkLineAvg.name});
     return markLine;
 }
 
@@ -2001,11 +2073,11 @@ function getLine(container, themes) {
                 data: [],
                 label: {
                     show: __ECHARTS__.configs.lineLabelDisplay.value == "YES",
-                    align: 'center',
-                    verticalAlign: 'middle',
+                    align: "center",
+                    verticalAlign: "middle",
                     position: "top",
                     distance: 15,
-                    formatter: '{value|{c}}',
+                    formatter: "{value|{c}}",
                     rotate: __ECHARTS__.configs.lineLabelRotate.value,
                     rich: {
                         value: {
@@ -2021,7 +2093,7 @@ function getLine(container, themes) {
                 emphasis: {
                     label: {
                         show: __ECHARTS__.configs.lineEmphasisLabelDisplay.value == "YES",
-                        position: 'bottom',
+                        position: "bottom",
                         rotate: 0,
                         fontSize: __ECHARTS__.configs.lineLabelFontSize.value,
                     }
@@ -2035,14 +2107,14 @@ function getLine(container, themes) {
 
                 animation: __ECHARTS__.configs.animation.value == "YES",
                 animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
-                animationEasing: __ECHARTS__.configs.animationEasing.value,
+                animationEasing: getAnimationEasing(),
                 animationDuration: function (idx) {
                     return idx * Number(__ECHARTS__.configs.animationDuration.value) + c * Number(__ECHARTS__.configs.animationDuration.value);
                 },
                 animationDelay: function (idx) {
                     return idx * Number(__ECHARTS__.configs.animationDelay.value) + c * Number(__ECHARTS__.configs.animationDelay.value);
                 },
-                animationEasingUpdate: __ECHARTS__.configs.animationEasingUpdate.value,
+                animationEasingUpdate: getAnimationEasingUpdate(),
                 animationDurationUpdate: function (idx) {
                     return idx * Number(__ECHARTS__.configs.animationDurationUpdate.value) + c * Number(__ECHARTS__.configs.animationDurationUpdate.value);
                 },
@@ -2066,10 +2138,10 @@ function getLine(container, themes) {
             x2: __ECHARTS__.configs.grid_right.value,
             y2: __ECHARTS__.configs.grid_bottom.value,
             containLabel: __ECHARTS__.configs.grid_containLabel.value == "YES",
-            backgroundColor: 'transparent'
+            backgroundColor: "transparent"
         },
         brush:  __ECHARTS__.configs.toolboxFeatureBrush.value == "YES"?{
-            toolbox: ['rect', 'polygon', 'lineX', 'lineY', 'keep', 'clear'],
+            toolbox: ["rect", "polygon", "lineX", "lineY", "keep", "clear"],
             xAxisIndex: 0
         }:null,
         toolbox: {
@@ -2081,7 +2153,7 @@ function getLine(container, themes) {
                 dataZoom: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES"},
                 magicType: {
                     show: __ECHARTS__.configs.toolboxFeatureMagicType.value == "YES",
-                    type: ['line', 'bar', 'stack', 'tiled']
+                    type: ["line", "bar", "stack", "tiled"]
                 },
             },
             top: __ECHARTS__.configs.toolbox_top.value,
@@ -2108,7 +2180,7 @@ function getLine(container, themes) {
         },
         tooltip: {
             show: __ECHARTS__.configs.tooltipDisplay.value == "YES",
-            trigger: 'axis',
+            trigger: "axis",
             axisPointer: {
                 type: __ECHARTS__.configs.axisPointerType.value,
             },
@@ -2190,20 +2262,20 @@ function getLine(container, themes) {
             }
         },
         dataZoom: [{
-            type: 'inside',
+            type: "inside",
             filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
             start: 0,
             xAxisIndex: 0,
             end: 100
         }, {
-            type: 'inside',
+            type: "inside",
             filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
             start: 0,
             yAxisIndex: 0,
             end: 100
         }, {
             show: __ECHARTS__.configs.dataZoomBarDisplay.value == "YES",
-            type: 'slider',
+            type: "slider",
             filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
             yAxisIndex: 0,
             start: 0,
@@ -2220,7 +2292,7 @@ function getLine(container, themes) {
             }
         }, {
             show: __ECHARTS__.configs.dataZoomBarDisplay.value == "YES",
-            type: 'slider',
+            type: "slider",
             filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
             xAxisIndex: 0,
             start: 0,
@@ -2270,11 +2342,11 @@ function getBarAndLine(container, themes) {
                     },
                     label: {
                         show: __ECHARTS__.configs.lineLabelDisplay.value == "YES",
-                        align: 'center',
-                        verticalAlign: 'middle',
+                        align: "center",
+                        verticalAlign: "middle",
                         position: "top",
                         distance: 15,
-                        formatter: '{value|{c}}',
+                        formatter: "{value|{c}}",
                         rotate: __ECHARTS__.configs.lineLabelRotate.value,
                         rich: {
                             value: {
@@ -2286,7 +2358,7 @@ function getBarAndLine(container, themes) {
                     emphasis: {
                         label: {
                             show: __ECHARTS__.configs.lineEmphasisLabelDisplay.value == "YES",
-                            position: 'bottom',
+                            position: "bottom",
                             rotate: 0,
                             fontSize: __ECHARTS__.configs.lineLabelFontSize.value,
                         }
@@ -2300,14 +2372,14 @@ function getBarAndLine(container, themes) {
                     markArea: {},
                     animation: __ECHARTS__.configs.animation.value == "YES",
                     animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
-                    animationEasing: __ECHARTS__.configs.animationEasing.value,
+                    animationEasing: getAnimationEasing(),
                     animationDuration: function (idx) {
                         return idx * Number(__ECHARTS__.configs.animationDuration.value) + c * Number(__ECHARTS__.configs.animationDuration.value);
                     },
                     animationDelay: function (idx) {
                         return idx * Number(__ECHARTS__.configs.animationDelay.value) + c * Number(__ECHARTS__.configs.animationDelay.value);
                     },
-                    animationEasingUpdate: __ECHARTS__.configs.animationEasingUpdate.value,
+                    animationEasingUpdate: getAnimationEasingUpdate(),
                     animationDurationUpdate: function (idx) {
                         return idx * Number(__ECHARTS__.configs.animationDurationUpdate.value) + c * Number(__ECHARTS__.configs.animationDurationUpdate.value);
                     },
@@ -2324,11 +2396,11 @@ function getBarAndLine(container, themes) {
                     data: [],
                     label: {
                         show: __ECHARTS__.configs.barLabelDisplay.value == "YES",
-                        align: 'center',
-                        verticalAlign: 'middle',
+                        align: "center",
+                        verticalAlign: "middle",
                         position: __ECHARTS__.configs.barLabelPosition.value,
                         distance: 15,
-                        formatter: '{value|{c}}',
+                        formatter: "{value|{c}}",
                         rotate: __ECHARTS__.configs.barLabelRotate.value,
                         rich: {
                             value: {
@@ -2340,11 +2412,11 @@ function getBarAndLine(container, themes) {
                     emphasis: {
                         label: {
                             show: __ECHARTS__.configs.barEmphasisLabelDisplay.value == "YES",
-                            align: 'center',
-                            verticalAlign: 'middle',
+                            align: "center",
+                            verticalAlign: "middle",
                             position: __ECHARTS__.configs.barLabelPosition.value,
                             distance: 15,
-                            formatter: '{value|{c}}',
+                            formatter: "{value|{c}}",
                             rotate: 0,
                             rich: {
                                 value: {
@@ -2356,14 +2428,14 @@ function getBarAndLine(container, themes) {
                     },
                     animation: __ECHARTS__.configs.animation.value == "YES",
                     animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
-                    animationEasing: __ECHARTS__.configs.animationEasing.value,
+                    animationEasing: getAnimationEasing(),
                     animationDuration: function (idx) {
                         return idx * Number(__ECHARTS__.configs.animationDuration.value) + c * Number(__ECHARTS__.configs.animationDuration.value);
                     },
                     animationDelay: function (idx) {
                         return idx * Number(__ECHARTS__.configs.animationDelay.value) + c * Number(__ECHARTS__.configs.animationDelay.value);
                     },
-                    animationEasingUpdate: __ECHARTS__.configs.animationEasingUpdate.value,
+                    animationEasingUpdate: getAnimationEasingUpdate(),
                     animationDurationUpdate: function (idx) {
                         return idx * Number(__ECHARTS__.configs.animationDurationUpdate.value) + c * Number(__ECHARTS__.configs.animationDurationUpdate.value);
                     },
@@ -2389,10 +2461,10 @@ function getBarAndLine(container, themes) {
             x2: __ECHARTS__.configs.grid_right.value,
             y2: __ECHARTS__.configs.grid_bottom.value,
             containLabel: __ECHARTS__.configs.grid_containLabel.value == "YES",
-            backgroundColor: 'transparent'
+            backgroundColor: "transparent"
         },
         brush:  __ECHARTS__.configs.toolboxFeatureBrush.value == "YES"?{
-            toolbox: ['rect', 'polygon', 'lineX', 'lineY', 'keep', 'clear'],
+            toolbox: ["rect", "polygon", "lineX", "lineY", "keep", "clear"],
             xAxisIndex: 0
         }:null,
         toolbox: {
@@ -2404,7 +2476,7 @@ function getBarAndLine(container, themes) {
                 dataZoom: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES"},
                 magicType: {
                     show: __ECHARTS__.configs.toolboxFeatureMagicType.value == "YES",
-                    type: ['stack', 'tiled']
+                    type: ["stack", "tiled"]
                 },
             },
             top: __ECHARTS__.configs.toolbox_top.value,
@@ -2431,7 +2503,7 @@ function getBarAndLine(container, themes) {
         },
         tooltip: {
             show: __ECHARTS__.configs.tooltipDisplay.value == "YES",
-            trigger: 'axis',
+            trigger: "axis",
             axisPointer: {
                 type: __ECHARTS__.configs.axisPointerType.value,
             },
@@ -2512,20 +2584,20 @@ function getBarAndLine(container, themes) {
             }
         },
         dataZoom: [{
-            type: 'inside',
+            type: "inside",
             filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
             start: 0,
             xAxisIndex: 0,
             end: 100
         }, {
-            type: 'inside',
+            type: "inside",
             filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
             start: 0,
             yAxisIndex: 0,
             end: 100
         }, {
             show: __ECHARTS__.configs.dataZoomBarDisplay.value == "YES",
-            type: 'slider',
+            type: "slider",
             filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
             yAxisIndex: 0,
             start: 0,
@@ -2542,7 +2614,7 @@ function getBarAndLine(container, themes) {
             }
         }, {
             show: __ECHARTS__.configs.dataZoomBarDisplay.value == "YES",
-            type: 'slider',
+            type: "slider",
             filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
             xAxisIndex: 0,
             start: 0,
@@ -2588,18 +2660,18 @@ function getAreaStyle(container, themes) {
                     //可指定渐变颜色
                     //color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
                     //    offset: 0,
-                    //    color: 'rgb(255, 158, 68)'
+                    //    color: "rgb(255, 158, 68)"
                     //}, {
                     //    offset: 1,
-                    //   color: 'rgb(255, 70, 131)'
+                    //   color: "rgb(255, 70, 131)"
                     //}])
                 },
                 //面积图
-                sampling: 'average',
+                sampling: "average",
                 //抽样
                 itemStyle: {
                     //可指定系列颜色
-                    //color: '#d68262'
+                    //color: "#d68262"
                 },
                 data: [],
                 lineStyle: {
@@ -2607,11 +2679,11 @@ function getAreaStyle(container, themes) {
                 },
                 label: {
                     show: __ECHARTS__.configs.lineLabelDisplay.value == "YES",
-                    align: 'center',
-                    verticalAlign: 'middle',
+                    align: "center",
+                    verticalAlign: "middle",
                     position: "top",
                     distance: 15,
-                    formatter: '{value|{c}}',
+                    formatter: "{value|{c}}",
                     rotate: __ECHARTS__.configs.lineLabelRotate.value,
                     rich: {
                         value: {
@@ -2623,7 +2695,7 @@ function getAreaStyle(container, themes) {
                 emphasis: {
                     label: {
                         show: __ECHARTS__.configs.lineEmphasisLabelDisplay.value == "YES",
-                        position: 'bottom',
+                        position: "bottom",
                         rotate:0,
                         fontSize: __ECHARTS__.configs.lineLabelFontSize.value,
                     }
@@ -2637,14 +2709,14 @@ function getAreaStyle(container, themes) {
 
                 animation: __ECHARTS__.configs.animation.value == "YES",
                 animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
-                animationEasing: __ECHARTS__.configs.animationEasing.value,
+                animationEasing: getAnimationEasing(),
                 animationDuration: function (idx) {
                     return idx * Number(__ECHARTS__.configs.animationDuration.value) + c * Number(__ECHARTS__.configs.animationDuration.value);
                 },
                 animationDelay: function (idx) {
                     return idx * Number(__ECHARTS__.configs.animationDelay.value) + c * Number(__ECHARTS__.configs.animationDelay.value);
                 },
-                animationEasingUpdate: __ECHARTS__.configs.animationEasingUpdate.value,
+                animationEasingUpdate: getAnimationEasingUpdate(),
                 animationDurationUpdate: function (idx) {
                     return idx * Number(__ECHARTS__.configs.animationDurationUpdate.value) + c * Number(__ECHARTS__.configs.animationDurationUpdate.value);
                 },
@@ -2668,10 +2740,10 @@ function getAreaStyle(container, themes) {
             x2: __ECHARTS__.configs.grid_right.value,
             y2: __ECHARTS__.configs.grid_bottom.value,
             containLabel: __ECHARTS__.configs.grid_containLabel.value == "YES",
-            backgroundColor: 'transparent'
+            backgroundColor: "transparent"
         },
         brush:  __ECHARTS__.configs.toolboxFeatureBrush.value == "YES"?{
-            toolbox: ['rect', 'polygon', 'lineX', 'lineY', 'keep', 'clear'],
+            toolbox: ["rect", "polygon", "lineX", "lineY", "keep", "clear"],
             xAxisIndex: 0
         }:null,
         toolbox: {
@@ -2683,7 +2755,7 @@ function getAreaStyle(container, themes) {
                 dataZoom: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES"},
                 magicType: {
                     show: __ECHARTS__.configs.toolboxFeatureMagicType.value == "YES",
-                    type: ['stack', 'tiled']
+                    type: ["stack", "tiled"]
                 },
             },
             top: __ECHARTS__.configs.toolbox_top.value,
@@ -2711,9 +2783,9 @@ function getAreaStyle(container, themes) {
         tooltip: {
             show: __ECHARTS__.configs.tooltipDisplay.value == "YES",
             //显示活动标尺线.
-            trigger: 'axis',
+            trigger: "axis",
             position: function (pt) {
-                return [pt[0], '10%'];
+                return [pt[0], "10%"];
             }
         },
         legend: {
@@ -2792,20 +2864,20 @@ function getAreaStyle(container, themes) {
             }
         },
         dataZoom: [{
-            type: 'inside',
+            type: "inside",
             filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
             start: 0,
             xAxisIndex: 0,
             end: 100
         }, {
-            type: 'inside',
+            type: "inside",
             filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
             start: 0,
             yAxisIndex: 0,
             end: 100
         }, {
             show: __ECHARTS__.configs.dataZoomBarDisplay.value == "YES",
-            type: 'slider',
+            type: "slider",
             filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
             yAxisIndex: 0,
             start: 0,
@@ -2822,7 +2894,7 @@ function getAreaStyle(container, themes) {
             }
         }, {
             show: __ECHARTS__.configs.dataZoomBarDisplay.value == "YES",
-            type: 'slider',
+            type: "slider",
             filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
             xAxisIndex: 0,
             start: 0,
@@ -2863,18 +2935,18 @@ function getPolarBar(container, themes) {
             var series = {
                 name: columns[c],
                 type: "bar",
-                coordinateSystem: 'polar',
+                coordinateSystem: "polar",
                 data: [],
                 animation: __ECHARTS__.configs.animation.value == "YES",
                 animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
-                animationEasing: __ECHARTS__.configs.animationEasing.value,
+                animationEasing: getAnimationEasing(),
                 animationDuration: function (idx) {
                     return idx * Number(__ECHARTS__.configs.animationDuration.value) + c * Number(__ECHARTS__.configs.animationDuration.value);
                 },
                 animationDelay: function (idx) {
                     return idx * Number(__ECHARTS__.configs.animationDelay.value) + c * Number(__ECHARTS__.configs.animationDelay.value);
                 },
-                animationEasingUpdate: __ECHARTS__.configs.animationEasingUpdate.value,
+                animationEasingUpdate: getAnimationEasingUpdate(),
                 animationDurationUpdate: function (idx) {
                     return idx * Number(__ECHARTS__.configs.animationDurationUpdate.value) + c * Number(__ECHARTS__.configs.animationDurationUpdate.value);
                 },
@@ -2915,7 +2987,7 @@ function getPolarBar(container, themes) {
                 dataZoom: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES"},
                 magicType: {
                     show: __ECHARTS__.configs.toolboxFeatureMagicType.value == "YES",
-                    type: ['stack', 'tiled']
+                    type: ["stack", "tiled"]
                 },
             },
             top: __ECHARTS__.configs.toolbox_top.value,
@@ -2976,7 +3048,7 @@ function getPolarBar(container, themes) {
                     color: __ECHARTS__.configs.axisColor.value,
                 },
             },
-            type: 'category',
+            type: "category",
             data: xAxis,
             z: 10,
         },
@@ -3000,17 +3072,17 @@ function getPolarBar(container, themes) {
         },
         tooltip: {
             show: __ECHARTS__.configs.tooltipDisplay.value == "YES",
-            trigger: 'item',
-            formatter: '{a} <br/>{b}: {c}'
+            trigger: "item",
+            formatter: "{a} <br/>{b}: {c}"
         },
         dataZoom: [{
-            type: 'inside',
+            type: "inside",
             filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
             start: 0,
             end: 100,
             angleAxis: 0,
         }, {
-            type: 'inside',
+            type: "inside",
             filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
             start: 0,
             end: 100,
@@ -3040,18 +3112,18 @@ function getPolarArea(container, themes) {
             var series = {
                 name: columns[c],
                 type: "bar",
-                coordinateSystem: 'polar',
+                coordinateSystem: "polar",
                 data: [],
                 animation: __ECHARTS__.configs.animation.value == "YES",
                 animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
-                animationEasing: __ECHARTS__.configs.animationEasing.value,
+                animationEasing: getAnimationEasing(),
                 animationDuration: function (idx) {
                     return idx * Number(__ECHARTS__.configs.animationDuration.value) + c * Number(__ECHARTS__.configs.animationDuration.value);
                 },
                 animationDelay: function (idx) {
                     return idx * Number(__ECHARTS__.configs.animationDelay.value) + c * Number(__ECHARTS__.configs.animationDelay.value);
                 },
-                animationEasingUpdate: __ECHARTS__.configs.animationEasingUpdate.value,
+                animationEasingUpdate: getAnimationEasingUpdate(),
                 animationDurationUpdate: function (idx) {
                     return idx * Number(__ECHARTS__.configs.animationDurationUpdate.value) + c * Number(__ECHARTS__.configs.animationDurationUpdate.value);
                 },
@@ -3091,7 +3163,7 @@ function getPolarArea(container, themes) {
                 dataZoom: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES"},
                 magicType: {
                     show: __ECHARTS__.configs.toolboxFeatureMagicType.value == "YES",
-                    type: ['stack', 'tiled']
+                    type: ["stack", "tiled"]
                 },
             },
             top: __ECHARTS__.configs.toolbox_top.value,
@@ -3125,7 +3197,7 @@ function getPolarArea(container, themes) {
             splitArea: {
                 show: __ECHARTS__.configs.splitXAreaDisplay.value == "YES",
             },
-            type: 'category',
+            type: "category",
             data: xAxis,
             z:10
         },
@@ -3176,17 +3248,17 @@ function getPolarArea(container, themes) {
         },
         tooltip: {
             show:__ECHARTS__.configs.tooltipDisplay.value == "YES",
-            trigger: 'item',
-            formatter: '{a} <br/>{b}: {c}'
+            trigger: "item",
+            formatter: "{a} <br/>{b}: {c}"
         },
         dataZoom: [{
-            type: 'inside',
+            type: "inside",
             filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
             start: 0,
             end: 100,
             angleAxis: 0,
         },{
-            type: 'inside',
+            type: "inside",
             filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
             start: 0,
             end: 100,
@@ -3220,7 +3292,7 @@ function getPie(container,themes) {
                 label: {
                     show: __ECHARTS__.configs.pieLabelDisplay.value == "YES",
                     //控制label是否显示
-                    // position: 'center'
+                    // position: "center"
                     alignTo: __ECHARTS__.configs.pieLabelAlignTo.value,
                     bleedMargin: 5,
                     margin: 20,
@@ -3231,8 +3303,8 @@ function getPie(container,themes) {
                 emphasis: {
                     label: {
                         show: true,
-                        fontSize: '30',
-                        fontWeight: 'bold'
+                        fontSize: "30",
+                        fontWeight: "bold"
                     }
                 },
                 itemStyle: {
@@ -3294,7 +3366,7 @@ function getPie(container,themes) {
                 dataZoom: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES"},
                 magicType: {
                     show: __ECHARTS__.configs.toolboxFeatureMagicType.value == "YES",
-                    type: ['pie', 'funnel']
+                    type: ["pie", "funnel"]
                 },
             },
             top: __ECHARTS__.configs.toolbox_top.value,
@@ -3308,8 +3380,8 @@ function getPie(container,themes) {
         },
         tooltip: {
             show: __ECHARTS__.configs.tooltipDisplay.value == "YES",
-            trigger: 'item',
-            formatter: '{a} <br/>{b}: {c} ({d}%)'
+            trigger: "item",
+            formatter: "{a} <br/>{b}: {c} ({d}%)"
         },
         legend: {
             show: __ECHARTS__.configs.legendDisplay.value == "YES",
@@ -3333,32 +3405,32 @@ function getPie(container,themes) {
     if (__ECHARTS__.configs.richTextLabel.value == "YES") {
         //富文本
         option.label = {
-            formatter: '{a|{a}}{abg|}\n{hr|}\n  {b|{b}：}{c}  {per|{d}%}  ',
-            backgroundColor: '#eee',
-            borderColor: '#aaa',
+            formatter: "{a|{a}}{abg|}\n{hr|}\n  {b|{b}：}{c}  {per|{d}%}  ",
+            backgroundColor: "#eee",
+            borderColor: "#aaa",
             borderWidth: 1,
             borderRadius: 4,
             //shadowBlur:3,
             //shadowOffsetX: 2,
             //shadowOffsetY: 2,
-            //shadowColor: '#999',
+            //shadowColor: "#999",
             padding: [0, 7],
             rich: {
                 a: {
-                    color: '#999',
+                    color: "#999",
                     lineHeight: 22,
-                    align: 'center'
+                    align: "center"
                 },
                 abg: {
-                    backgroundColor: '',
-                    width: '100%',
-                    align: 'right',
+                    backgroundColor: "",
+                    width: "100%",
+                    align: "right",
                     height: 22,
                     borderRadius: [4, 4, 0, 0]
                 },
                 hr: {
-                    borderColor: '#aaa',
-                    width: '100%',
+                    borderColor: "#aaa",
+                    width: "100%",
                     borderWidth: 0.5,
                     height: 0
                 },
@@ -3367,8 +3439,8 @@ function getPie(container,themes) {
                     lineHeight: 33
                 },
                 per: {
-                    color: '#eee',
-                    backgroundColor: '#334455',
+                    color: "#eee",
+                    backgroundColor: "#334455",
                     padding: [2, 4],
                     borderRadius: 2
                 }
@@ -3402,7 +3474,7 @@ function getRing(container,themes) {
                 avoidLabelOverlap: false,
                 label: {
                     show: __ECHARTS__.configs.pieLabelDisplay.value == "YES",
-                    //position: 'center'
+                    //position: "center"
                     alignTo: __ECHARTS__.configs.pieLabelAlignTo.value,
                     bleedMargin: 5,
                     margin: 20,
@@ -3413,8 +3485,8 @@ function getRing(container,themes) {
                 emphasis: {
                     label: {
                         show: true,
-                        fontSize: '30',
-                        fontWeight: 'bold'
+                        fontSize: "30",
+                        fontWeight: "bold"
                     }
                 },
                 itemStyle: {
@@ -3476,7 +3548,7 @@ function getRing(container,themes) {
                 dataZoom: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES"},
                 magicType: {
                     show: __ECHARTS__.configs.toolboxFeatureMagicType.value == "YES",
-                    type: ['pie', 'funnel']
+                    type: ["pie", "funnel"]
                 },
             },
             top: __ECHARTS__.configs.toolbox_top.value,
@@ -3503,8 +3575,8 @@ function getRing(container,themes) {
         },
         tooltip: {
             show:__ECHARTS__.configs.tooltipDisplay.value == "YES",
-            trigger: 'item',
-            formatter: '{a} <br/>{b}: {c} ({d}%)'
+            trigger: "item",
+            formatter: "{a} <br/>{b}: {c} ({d}%)"
         },
         series: series,
         label: {
@@ -3515,32 +3587,32 @@ function getRing(container,themes) {
     if (__ECHARTS__.configs.richTextLabel.value == "YES") {
         //富文本
         option.label = {
-            formatter: '{a|{a}}{abg|}\n{hr|}\n  {b|{b}：}{c}  {per|{d}%}  ',
-            backgroundColor: '#eee',
-            borderColor: '#aaa',
+            formatter: "{a|{a}}{abg|}\n{hr|}\n  {b|{b}：}{c}  {per|{d}%}  ",
+            backgroundColor: "#eee",
+            borderColor: "#aaa",
             borderWidth: 1,
             borderRadius: 4,
             //shadowBlur:3,
             //shadowOffsetX: 2,
             //shadowOffsetY: 2,
-            //shadowColor: '#999',
+            //shadowColor: "#999",
             padding: [0, 7],
             rich: {
                 a: {
-                    color: '#999',
+                    color: "#999",
                     lineHeight: 22,
-                    align: 'center'
+                    align: "center"
                 },
                 abg: {
-                    backgroundColor: '',
-                    width: '100%',
-                    align: 'right',
+                    backgroundColor: "",
+                    width: "100%",
+                    align: "right",
                     height: 22,
                     borderRadius: [4, 4, 0, 0]
                 },
                 hr: {
-                    borderColor: '#aaa',
-                    width: '100%',
+                    borderColor: "#aaa",
+                    width: "100%",
                     borderWidth: 0.5,
                     height: 0
                 },
@@ -3549,8 +3621,8 @@ function getRing(container,themes) {
                     lineHeight: 33
                 },
                 per: {
-                    color: '#eee',
-                    backgroundColor: '#334455',
+                    color: "#eee",
+                    backgroundColor: "#334455",
                     padding: [2, 4],
                     borderRadius: 2
                 }
@@ -3582,11 +3654,11 @@ function getRose(container,themes) {
                 type: "pie",
                 selectedMode: __ECHARTS__.configs.pieSelectedMode.value,
                 radius: [__ECHARTS__.configs.inRadius.value, __ECHARTS__.configs.outRadius.value],
-                center: ['50%', '50%'],
-                roseType: 'area',
+                center: ["50%", "50%"],
+                roseType: "area",
                 label: {
                     show: __ECHARTS__.configs.pieLabelDisplay.value == "YES",
-                    //position: 'center'
+                    //position: "center"
                     alignTo: __ECHARTS__.configs.pieLabelAlignTo.value,
                     bleedMargin: 5,
                     margin: 20,
@@ -3597,8 +3669,8 @@ function getRose(container,themes) {
                 emphasis: {
                     label: {
                         show: true,
-                        fontSize: '30',
-                        fontWeight: 'bold'
+                        fontSize: "30",
+                        fontWeight: "bold"
                     }
                 },
                 itemStyle: {
@@ -3660,7 +3732,7 @@ function getRose(container,themes) {
                 dataZoom: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES"},
                 magicType: {
                     show: __ECHARTS__.configs.toolboxFeatureMagicType.value == "YES",
-                    type: ['pie', 'funnel']
+                    type: ["pie", "funnel"]
                 },
             },
             top: __ECHARTS__.configs.toolbox_top.value,
@@ -3687,8 +3759,8 @@ function getRose(container,themes) {
         },
         tooltip: {
             show:__ECHARTS__.configs.tooltipDisplay.value == "YES",
-            trigger: 'item',
-            formatter: '{a} <br/>{b}: {c} ({d}%)'
+            trigger: "item",
+            formatter: "{a} <br/>{b}: {c} ({d}%)"
         },
         series: series,
         label: {
@@ -3698,32 +3770,32 @@ function getRose(container,themes) {
     if (__ECHARTS__.configs.richTextLabel.value == "YES") {
         //富文本
         option.label = {
-            formatter: '{a|{a}}{abg|}\n{hr|}\n  {b|{b}：}{c}  {per|{d}%}  ',
-            backgroundColor: '#eee',
-            borderColor: '#aaa',
+            formatter: "{a|{a}}{abg|}\n{hr|}\n  {b|{b}：}{c}  {per|{d}%}  ",
+            backgroundColor: "#eee",
+            borderColor: "#aaa",
             borderWidth: 1,
             borderRadius: 4,
             //shadowBlur:3,
             //shadowOffsetX: 2,
             //shadowOffsetY: 2,
-            //shadowColor: '#999',
+            //shadowColor: "#999",
             padding: [0, 7],
             rich: {
                 a: {
-                    color: '#999',
+                    color: "#999",
                     lineHeight: 22,
-                    align: 'center'
+                    align: "center"
                 },
                 abg: {
-                    backgroundColor: '',
-                    width: '100%',
-                    align: 'right',
+                    backgroundColor: "",
+                    width: "100%",
+                    align: "right",
                     height: 22,
                     borderRadius: [4, 4, 0, 0]
                 },
                 hr: {
-                    borderColor: '#aaa',
-                    width: '100%',
+                    borderColor: "#aaa",
+                    width: "100%",
                     borderWidth: 0.5,
                     height: 0
                 },
@@ -3732,8 +3804,8 @@ function getRose(container,themes) {
                     lineHeight: 33
                 },
                 per: {
-                    color: '#eee',
-                    backgroundColor: '#334455',
+                    color: "#eee",
+                    backgroundColor: "#334455",
                     padding: [2, 4],
                     borderRadius: 2
                 }
@@ -3791,14 +3863,14 @@ function getRadar(container, themes) {
                 data: [],
                 animation: __ECHARTS__.configs.animation.value == "YES",
                 animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
-                animationEasing: __ECHARTS__.configs.animationEasing.value,
+                animationEasing: getAnimationEasing(),
                 animationDuration: function (idx) {
                     return idx * Number(__ECHARTS__.configs.animationDuration.value) + c * Number(__ECHARTS__.configs.animationDuration.value);
                 },
                 animationDelay: function (idx) {
                     return idx * Number(__ECHARTS__.configs.animationDelay.value) + c * Number(__ECHARTS__.configs.animationDelay.value);
                 },
-                animationEasingUpdate: __ECHARTS__.configs.animationEasingUpdate.value,
+                animationEasingUpdate: getAnimationEasingUpdate(),
                 animationDurationUpdate: function (idx) {
                     return idx * Number(__ECHARTS__.configs.animationDurationUpdate.value) + c * Number(__ECHARTS__.configs.animationDurationUpdate.value);
                 },
@@ -3825,7 +3897,7 @@ function getRadar(container, themes) {
             x2: __ECHARTS__.configs.grid_right.value,
             y2: __ECHARTS__.configs.grid_bottom.value,
             containLabel: __ECHARTS__.configs.grid_containLabel.value == "YES",
-            backgroundColor: 'transparent'
+            backgroundColor: "transparent"
         },
         title: {
             show: __ECHARTS__.configs.titleDisplay.value == "YES",
@@ -3881,7 +3953,7 @@ function getRadar(container, themes) {
                 show: __ECHARTS__.configs.radarNameDisplay.value == "YES",
                 textStyle: {
                     color: __ECHARTS__.configs.axisTextColor.value,
-                    backgroundColor: '#999',
+                    backgroundColor: "#999",
                     borderRadius: 3,
                     padding: [3, 5],
                 },
@@ -3951,11 +4023,11 @@ function getRegression(container, themes) {
                     },
                     label: {
                         show: __ECHARTS__.configs.lineLabelDisplay.value == "YES",
-                        align: 'center',
-                        verticalAlign: 'middle',
+                        align: "center",
+                        verticalAlign: "middle",
                         position: "top",
                         distance: 15,
-                        formatter: '{value|{c}}',
+                        formatter: "{value|{c}}",
                         rotate: __ECHARTS__.configs.lineLabelRotate.value,
                         rich: {
                             value: {
@@ -3967,7 +4039,7 @@ function getRegression(container, themes) {
                     emphasis: {
                         label: {
                             show: __ECHARTS__.configs.lineEmphasisLabelDisplay.value == "YES",
-                            position: 'bottom',
+                            position: "bottom",
                             rotate: 0,
                             fontSize: __ECHARTS__.configs.lineLabelFontSize.value,
                         }
@@ -3979,14 +4051,14 @@ function getRegression(container, themes) {
 
                     animation: __ECHARTS__.configs.animation.value == "YES",
                     animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
-                    animationEasing: __ECHARTS__.configs.animationEasing.value,
+                    animationEasing: getAnimationEasing(),
                     animationDuration: function (idx) {
                         return idx * Number(__ECHARTS__.configs.animationDuration.value) + c * Number(__ECHARTS__.configs.animationDuration.value);
                     },
                     animationDelay: function (idx) {
                         return idx * Number(__ECHARTS__.configs.animationDelay.value) + c * Number(__ECHARTS__.configs.animationDelay.value);
                     },
-                    animationEasingUpdate: __ECHARTS__.configs.animationEasingUpdate.value,
+                    animationEasingUpdate: getAnimationEasingUpdate(),
                     animationDurationUpdate: function (idx) {
                         return idx * Number(__ECHARTS__.configs.animationDurationUpdate.value) + c * Number(__ECHARTS__.configs.animationDurationUpdate.value);
                     },
@@ -4021,22 +4093,22 @@ function getRegression(container, themes) {
         var data = appendData(myRegression.points, myRegression.parameter, regressionType[type]);
         var regline = {
             name: type + "(" + column + ")",
-            type: 'line',
+            type: "line",
             smooth: __ECHARTS__.configs.lineSmooth.value == "YES",
             showSymbol: false,
             symbol: __ECHARTS__.configs.lineSymbol.value,
             symbolSize: __ECHARTS__.configs.lineSymbolSize.value,
             data: data,
             lineStyle: {
-                type: 'dotted',     //'solid/dashed/dotted'
+                type: "dotted",     //"solid/dashed/dotted"
             },
             markPoint: {
                 itemStyle: {
-                    color: 'transparent'
+                    color: "transparent"
                 },
                 label: {
                     show: __ECHARTS__.configs.regressionExpressionDisplay.value == "YES",
-                    position: 'left',
+                    position: "left",
                     formatter: myRegression.expression.replaceAll("+ -", " - "),
                     color: __ECHARTS__.configs.regressionExpressionColor.value,
                     fontSize: __ECHARTS__.configs.lineLabelFontSize.value,
@@ -4047,14 +4119,14 @@ function getRegression(container, themes) {
             },
             animation: __ECHARTS__.configs.animation.value == "YES",
             animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
-            animationEasing: __ECHARTS__.configs.animationEasing.value,
+            animationEasing: getAnimationEasing(),
             animationDuration: function (idx) {
                 return idx * Number(__ECHARTS__.configs.animationDuration.value);
             },
             animationDelay: function (idx) {
                 return idx * Number(__ECHARTS__.configs.animationDelay.value);
             },
-            animationEasingUpdate: __ECHARTS__.configs.animationEasingUpdate.value,
+            animationEasingUpdate: getAnimationEasingUpdate(),
             animationDurationUpdate: function (idx) {
                 return idx * Number(__ECHARTS__.configs.animationDurationUpdate.value);
             },
@@ -4142,10 +4214,10 @@ function getRegression(container, themes) {
             x2: __ECHARTS__.configs.grid_right.value,
             y2: __ECHARTS__.configs.grid_bottom.value,
             containLabel: __ECHARTS__.configs.grid_containLabel.value == "YES",
-            backgroundColor: 'transparent'
+            backgroundColor: "transparent"
         },
         brush:  __ECHARTS__.configs.toolboxFeatureBrush.value == "YES"?{
-            toolbox: ['rect', 'polygon', 'lineX', 'lineY', 'keep', 'clear'],
+            toolbox: ["rect", "polygon", "lineX", "lineY", "keep", "clear"],
             xAxisIndex: 0
         }:null,
         toolbox: {
@@ -4157,7 +4229,7 @@ function getRegression(container, themes) {
                 dataZoom: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES"},
                 magicType: {
                     show: __ECHARTS__.configs.toolboxFeatureMagicType.value == "YES",
-                    type: ['line', 'bar',]
+                    type: ["line", "bar",]
                 },
             },
             top: __ECHARTS__.configs.toolbox_top.value,
@@ -4197,7 +4269,7 @@ function getRegression(container, themes) {
         },
         tooltip: {
             show: __ECHARTS__.configs.tooltipDisplay.value == "YES",
-            trigger: 'axis',
+            trigger: "axis",
             axisPointer: {
                 type: __ECHARTS__.configs.axisPointerType.value,
             }
@@ -4237,7 +4309,7 @@ function getRegression(container, themes) {
             }
         },
         yAxis: {
-            type: 'value',
+            type: "value",
             inverse: __ECHARTS__.configs.yAxisInverse.value == "YES",
             axisLine: {
                 show: __ECHARTS__.configs.axisLineDisplay.value == "YES",
@@ -4267,20 +4339,20 @@ function getRegression(container, themes) {
             }
         },
         dataZoom: [{
-            type: 'inside',
+            type: "inside",
             filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
             start: 0,
             xAxisIndex: 0,
             end: 100
         }, {
-            type: 'inside',
+            type: "inside",
             filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
             start: 0,
             yAxisIndex: 0,
             end: 100
         }, {
             show: __ECHARTS__.configs.dataZoomBarDisplay.value == "YES",
-            type: 'slider',
+            type: "slider",
             filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
             yAxisIndex: 0,
             start: 0,
@@ -4297,7 +4369,7 @@ function getRegression(container, themes) {
             }
         }, {
             show: __ECHARTS__.configs.dataZoomBarDisplay.value == "YES",
-            type: 'slider',
+            type: "slider",
             filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
             xAxisIndex: 0,
             start: 0,
@@ -4368,8 +4440,8 @@ function  getRelationship(container, themes) {
     }
 
     var serie = {
-        type: 'graph',
-        layout: 'none',
+        type: "graph",
+        layout: "none",
         //如果修改为force,则force配置生效，暂不需要。
         force: {
             repulsion: 1000
@@ -4380,7 +4452,7 @@ function  getRelationship(container, themes) {
             show: true,
             fontSize: 12,
         },
-        edgeSymbol: ['circle', 'arrow'],
+        edgeSymbol: ["circle", "arrow"],
         edgeSymbolSize: [4, 10],
         edgeLabel: {
             fontSize: 9
@@ -4394,14 +4466,14 @@ function  getRelationship(container, themes) {
         },
         itemStyle: {
             shadowBlur: 10,
-            shadowColor: 'rgba(25, 100, 150, 0.5)',
+            shadowColor: "rgba(25, 100, 150, 0.5)",
             shadowOffsetY: 5,
             color: new echarts.graphic.RadialGradient(0.4, 0.3, 1, [{
                 offset: 0,
-                color: 'rgb(251, 118, 123)'
+                color: "rgb(251, 118, 123)"
             }, {
                 offset: 1,
-                color: 'rgb(204, 46, 72)'
+                color: "rgb(204, 46, 72)"
             }])
         },
         roam: true,
@@ -4411,10 +4483,23 @@ function  getRelationship(container, themes) {
                 opacity: 1,
                 width: 2.5
             }
-        }
-    };
-    serie.animationDelay = function (idx) {
-        return idx * 5 + 100;
+        },
+        animation: __ECHARTS__.configs.animation.value == "YES",
+        animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
+        animationEasing: getAnimationEasing(),
+        animationDuration: function (idx) {
+            return idx * Number(__ECHARTS__.configs.animationDuration.value);
+        },
+        animationDelay: function (idx) {
+            return idx * Number(__ECHARTS__.configs.animationDelay.value);
+        },
+        animationEasingUpdate: getAnimationEasingUpdate(),
+        animationDurationUpdate: function (idx) {
+            return idx * Number(__ECHARTS__.configs.animationDurationUpdate.value);
+        },
+        animationDelayUpdate: function (idx) {
+            return idx * Number(__ECHARTS__.configs.animationDelayUpdate.value);
+        },
     };
 
     var option = {
@@ -4424,7 +4509,7 @@ function  getRelationship(container, themes) {
             x2: __ECHARTS__.configs.grid_right.value,
             y2: __ECHARTS__.configs.grid_bottom.value,
             containLabel: __ECHARTS__.configs.grid_containLabel.value == "YES",
-            backgroundColor: 'transparent'
+            backgroundColor: "transparent"
         },
         toolbox: {
             show: __ECHARTS__.configs.toolboxDisplay.value =="YES",
@@ -4464,8 +4549,6 @@ function  getRelationship(container, themes) {
             width: 2,
             curveness: 0.2
         },
-        animationDurationUpdate: 1500,
-        animationEasingUpdate: 'quinticInOut',
     };
 
     myChart.setOption(option);
@@ -4476,9 +4559,9 @@ function  getRelationship(container, themes) {
         myChart.setOption({
             graphic: echarts.util.map(option.series[0].data, function (item, dataIndex) {
                 //使用图形元素组件在节点上划出一个隐形的图形覆盖住节点，小于原节点，留出部分用户显示当前节点与其他节点关系显示。
-                var tmpPos = myChart.convertToPixel({'seriesIndex': 0},[item.x,item.y]);
+                var tmpPos = myChart.convertToPixel({"seriesIndex": 0},[item.x,item.y]);
                 return {
-                    type: 'circle',
+                    type: "circle",
                     id: dataIndex,
                     position: tmpPos,
                     shape: {
@@ -4494,14 +4577,14 @@ function  getRelationship(container, themes) {
                 };
             })
         });
-        window.addEventListener('resize', updatePosition);
-        myChart.on('dataZoom', updatePosition);
+        window.addEventListener("resize", updatePosition);
+        myChart.on("dataZoom", updatePosition);
     }
-    myChart.on('graphRoam', updatePosition);
+    myChart.on("graphRoam", updatePosition);
     function updatePosition(){
         myChart.setOption({
             graphic: echarts.util.map(option.series[0].data, function (item, dataIndex) {
-                var tmpPos = myChart.convertToPixel({'seriesIndex': 0},[item.x,item.y]);
+                var tmpPos = myChart.convertToPixel({"seriesIndex": 0},[item.x,item.y]);
                 return {
                     position: tmpPos
                 };
@@ -4510,7 +4593,7 @@ function  getRelationship(container, themes) {
     }
     function onPointDragging(dataIndex) {
         //节点上图层拖拽执行的函数
-        var tmpPos = myChart.convertFromPixel({'seriesIndex': 0},this.position);
+        var tmpPos = myChart.convertFromPixel({"seriesIndex": 0},this.position);
         option.series[0].data[dataIndex].x = tmpPos[0];
         option.series[0].data[dataIndex].y = tmpPos[1];
         myChart.setOption(option);
@@ -4582,64 +4665,64 @@ function  getOrganizationStructure(container, themes) {
         if(i >= 7){
             //##################树型结构###########################
             return {
-                top: '2%',
-                left: '15%',
-                bottom: '2%',
-                right: '20%',
+                top: "2%",
+                left: "15%",
+                bottom: "2%",
+                right: "20%",
                 expandAndCollapse: true,
                 animationDuration: 550,
                 animationDurationUpdate: 750,
                 label: {
-                    position: 'left',
-                    verticalAlign: 'middle',
-                    align: 'right'
+                    position: "left",
+                    verticalAlign: "middle",
+                    align: "right"
                 },
                 leaves: {
                     label: {
-                        position: 'right',
-                        verticalAlign: 'middle',
-                        align: 'left'
+                        position: "right",
+                        verticalAlign: "middle",
+                        align: "left"
                     }
                 }
             };
         } else if (i >= 4){
             return {
-                top: '20%',
-                left: '10%',
-                bottom: '30%',
-                right: '10%',
-                orient: 'vertical',
-                edgeShape: 'polyline',
-                edgeForkPosition: '63%',
+                top: "20%",
+                left: "10%",
+                bottom: "30%",
+                right: "10%",
+                orient: "vertical",
+                edgeShape: "polyline",
+                edgeForkPosition: "63%",
                 initialTreeDepth: 3,
 
                 expandAndCollapse: true,
                 animationDuration: 550,
                 animationDurationUpdate: 750,
                 label: {
-                    position: 'top',
+                    position: "top",
                     rotate: -90,
-                    verticalAlign: 'middle',
-                    align: 'right',
+                    verticalAlign: "middle",
+                    align: "right",
                     //fontSize: 9
                 },
 
                 leaves: {
                     label: {
-                        position: 'bottom',
+                        position: "bottom",
                         rotate: -90,
-                        verticalAlign: 'middle',
-                        align: 'left'
+                        verticalAlign: "middle",
+                        align: "left"
                     }
                 },
             };
         } else {
             //#####################圆型结构#######################
             return {
-                top: '18%',
-                bottom: '14%',
-                layout: 'radial',
-                symbol: 'emptyCircle',
+                top: "18%",
+                bottom: "14%",
+                layout: "radial",
+                symbol: "emptyCircle",
                 initialTreeDepth: 3,
                 animationDurationUpdate: 750
             };
@@ -4652,15 +4735,31 @@ function  getOrganizationStructure(container, themes) {
     var legends = [];
     for (var i=0; i<nodes.length; i++) {
         if (nodes[i].parent == null) {
-            legends.push({name: nodes[i].name, icon: 'rectangle'});
+            legends.push({name: nodes[i].name, icon: "rectangle"});
             var serie = {
-                type: 'tree',
+                type: "tree",
                 name: nodes[i].name,
                 data: [{
                     name: nodes[i].name,
                     children: getChildren(nodes[i].name)
                 }],
                 symbolSize: 7,
+                animation: __ECHARTS__.configs.animation.value == "YES",
+                animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
+                animationEasing: getAnimationEasing(),
+                animationDuration: function (idx) {
+                    return idx * Number(__ECHARTS__.configs.animationDuration.value);
+                },
+                animationDelay: function (idx) {
+                    return idx * Number(__ECHARTS__.configs.animationDelay.value);
+                },
+                animationEasingUpdate: getAnimationEasingUpdate(),
+                animationDurationUpdate: function (idx) {
+                    return idx * Number(__ECHARTS__.configs.animationDurationUpdate.value);
+                },
+                animationDelayUpdate: function (idx) {
+                    return idx * Number(__ECHARTS__.configs.animationDelayUpdate.value);
+                },
             };
             series.push(Object.assign(serie, getType()));
         }
@@ -4673,7 +4772,7 @@ function  getOrganizationStructure(container, themes) {
             x2: __ECHARTS__.configs.grid_right.value,
             y2: __ECHARTS__.configs.grid_bottom.value,
             containLabel: __ECHARTS__.configs.grid_containLabel.value == "YES",
-            backgroundColor: 'transparent'
+            backgroundColor: "transparent"
         },
         title: {
             show:__ECHARTS__.configs.titleDisplay.value =="YES",
@@ -4706,8 +4805,8 @@ function  getOrganizationStructure(container, themes) {
         },
         tooltip: {
             show:__ECHARTS__.configs.tooltipDisplay.value == "YES",
-            trigger: 'item',
-            triggerOn: 'mousemove'
+            trigger: "item",
+            triggerOn: "mousemove"
         },
         legend: {
             show:__ECHARTS__.configs.legendDisplay.value =="YES",
@@ -4724,8 +4823,6 @@ function  getOrganizationStructure(container, themes) {
         },
         series:series,
         draggable: true,
-        animationDurationUpdate: 1500,
-        animationEasingUpdate: 'quinticInOut',
     };
 
     myChart.setOption(option);
@@ -4804,7 +4901,7 @@ function getWebkitDep(container, themes) {
             x2: __ECHARTS__.configs.grid_right.value,
             y2: __ECHARTS__.configs.grid_bottom.value,
             containLabel: __ECHARTS__.configs.grid_containLabel.value == "YES",
-            backgroundColor: 'transparent'
+            backgroundColor: "transparent"
         },
         title: {
             show:__ECHARTS__.configs.titleDisplay.value =="YES",
@@ -4849,12 +4946,12 @@ function getWebkitDep(container, themes) {
             },
         },
         series: [{
-            type: 'graph',
-            layout: 'force',
+            type: "graph",
+            layout: "force",
             animation: false,
             label: {
-                position: 'right',
-                formatter: '{b}',
+                position: "right",
+                formatter: "{b}",
             },
             draggable: true,
             data: webkitDep.nodes.map(function (node, idx) {
@@ -4898,14 +4995,14 @@ function getScatter(container, themes) {
             var serie = {
                 name: columns[c],
                 data: [],
-                type: 'scatter',//"scatterGL"
+                type: "scatter",//"scatterGL"
                 emphasis: {
                     label: {
                         show: true,
                         formatter: function (param) {
                             return param.data[1];
                         },
-                        position: 'top'
+                        position: "top"
                     }
                 },
                 //symbolSize: [10, 70],
@@ -4918,14 +5015,30 @@ function getScatter(container, themes) {
                     //        return ((maxvalue - minvalue) / (30 - 5)) * Math.abs(data[1]) + 5;
 
                     //} else
-                        return __ECHARTS__.configs.scatterSymbolSize.value;
+                    return __ECHARTS__.configs.scatterSymbolSize.value;
                 },
                 itemStyle: {
                     opacity: 0.8,
                     shadowBlur: 5,
                     shadowOffsetX: 0,
                     shadowOffsetY: 0,
-                }
+                },
+                animation: __ECHARTS__.configs.animation.value == "YES",
+                animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
+                animationEasing: getAnimationEasing(),
+                animationDuration: function (idx) {
+                    return idx * Number(__ECHARTS__.configs.animationDuration.value) + c * Number(__ECHARTS__.configs.animationDuration.value);
+                },
+                animationDelay: function (idx) {
+                    return idx * Number(__ECHARTS__.configs.animationDelay.value) + c * Number(__ECHARTS__.configs.animationDelay.value);
+                },
+                animationEasingUpdate: getAnimationEasingUpdate(),
+                animationDurationUpdate: function (idx) {
+                    return idx * Number(__ECHARTS__.configs.animationDurationUpdate.value) + c * Number(__ECHARTS__.configs.animationDurationUpdate.value);
+                },
+                animationDelayUpdate: function (idx) {
+                    return idx * Number(__ECHARTS__.configs.animationDelayUpdate.value) + c * Number(__ECHARTS__.configs.animationDelayUpdate.value);
+                },
             };
             for (var i = 0; i < dataset["data"].length; i++) {
                 var d = [];
@@ -5007,30 +5120,43 @@ function getScatter(container, themes) {
         var data = appendData(myRegression.points, myRegression.parameter, regressionType[type]);
         var regline = {
             name: type + "(" + column + ")",
-            type: 'line',
+            type: "line",
             showSymbol: false,
             smooth: __ECHARTS__.configs.lineSmooth.value == "YES",
             data: data,
             lineStyle: {
-                type: 'dotted',     //'solid/dashed/dotted'
+                type: "dotted",     //"solid/dashed/dotted"
             },
             markPoint: {
                 itemStyle: {
-                    color: 'transparent'
+                    color: "transparent"
                 },
                 label: {
                     show: true,
-                    position: 'left',
+                    position: "left",
                     formatter: myRegression.expression,
                     fontSize: 10
                 },
                 data: [{
                     coord: data[data.length - 1]
                 }],
-            }
-        };
-        regline.animationDelay = function (idx) {
-            return idx * 5 + 100;
+            },
+            animation: __ECHARTS__.configs.animation.value == "YES",
+            animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
+            animationEasing: getAnimationEasing(),
+            animationDuration: function (idx) {
+                return idx * Number(__ECHARTS__.configs.animationDuration.value);
+            },
+            animationDelay: function (idx) {
+                return idx * Number(__ECHARTS__.configs.animationDelay.value);
+            },
+            animationEasingUpdate: getAnimationEasingUpdate(),
+            animationDurationUpdate: function (idx) {
+                return idx * Number(__ECHARTS__.configs.animationDurationUpdate.value);
+            },
+            animationDelayUpdate: function (idx) {
+                return idx * Number(__ECHARTS__.configs.animationDelayUpdate.value);
+            },
         };
         series.push(regline);
     }
@@ -5044,7 +5170,7 @@ function getScatter(container, themes) {
             x2: __ECHARTS__.configs.grid_right.value,
             y2: __ECHARTS__.configs.grid_bottom.value,
             containLabel: __ECHARTS__.configs.grid_containLabel.value == "YES",
-            backgroundColor: 'transparent'
+            backgroundColor: "transparent"
         },
         title: {
             show: __ECHARTS__.configs.titleDisplay.value == "YES",
@@ -5090,7 +5216,7 @@ function getScatter(container, themes) {
         },
         tooltip: {
             show: __ECHARTS__.configs.tooltipDisplay.value == "YES",
-            trigger: 'axis',
+            trigger: "axis",
             axisPointer: {
                 type: __ECHARTS__.configs.axisPointerType.value,
             }
@@ -5115,7 +5241,7 @@ function getScatter(container, themes) {
             splitLine: {
                 show: __ECHARTS__.configs.splitXLineDisplay.value == "YES",
                 lineStyle: {
-                    type: 'dashed',
+                    type: "dashed",
                     color: [
                         __ECHARTS__.configs.axisColor.value
                     ]
@@ -5146,7 +5272,7 @@ function getScatter(container, themes) {
             splitLine: {
                 show: __ECHARTS__.configs.splitYLineDisplay.value == "YES",
                 lineStyle: {
-                    type: 'dashed',
+                    type: "dashed",
                     color: [
                         __ECHARTS__.configs.axisColor.value
                     ]
@@ -5157,20 +5283,20 @@ function getScatter(container, themes) {
             }
         },
         dataZoom: [{
-            type: 'inside',
+            type: "inside",
             filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
             start: 0,
             xAxisIndex: 0,
             end: 100
         }, {
-            type: 'inside',
+            type: "inside",
             filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
             start: 0,
             yAxisIndex: 0,
             end: 100
         }, {
             show: __ECHARTS__.configs.dataZoomBarDisplay.value == "YES",
-            type: 'slider',
+            type: "slider",
             filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
             yAxisIndex: 0,
             start: 0,
@@ -5187,7 +5313,7 @@ function getScatter(container, themes) {
             }
         }, {
             show: __ECHARTS__.configs.dataZoomBarDisplay.value == "YES",
-            type: 'slider',
+            type: "slider",
             filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
             xAxisIndex: 0,
             start: 0,
@@ -5205,7 +5331,7 @@ function getScatter(container, themes) {
         }],
         series: series,
         animationDurationUpdate: 1500,
-        animationEasingUpdate: 'quinticInOut',
+        animationEasingUpdate: "quinticInOut",
     };
 
     myChart.setOption(option);
@@ -5234,26 +5360,26 @@ function getFunnel(container, themes) {
             } else {
                 var serie = {
                     name: columns[c],
-                    type: 'funnel',
+                    type: "funnel",
                     min: 0,
                     max: 100,
-                    minSize: '0%',
-                    maxSize: '100%',
-                    sort: 'ascending',//descending/ascending
+                    minSize: "0%",
+                    maxSize: "100%",
+                    sort: "ascending",//descending/ascending
                     //gap: 2,
                     label: {
                         show: true,
-                        position: 'inside',
+                        position: "inside",
                     },
                     labelLine: {
                         length: 10,
                         lineStyle: {
                             width: 1,
-                            type: 'solid'
+                            type: "solid"
                         }
                     },
                     itemStyle: {
-                        borderColor: '#fff',
+                        borderColor: "#fff",
                         borderWidth: 1
                     },
                     emphasis: {
@@ -5264,14 +5390,14 @@ function getFunnel(container, themes) {
                     data: [],
                     animation: __ECHARTS__.configs.animation.value == "YES",
                     animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
-                    animationEasing: __ECHARTS__.configs.animationEasing.value,
+                    animationEasing: getAnimationEasing(),
                     animationDuration: function (idx) {
                         return idx * Number(__ECHARTS__.configs.animationDuration.value) + c * Number(__ECHARTS__.configs.animationDuration.value);
                     },
                     animationDelay: function (idx) {
                         return idx * Number(__ECHARTS__.configs.animationDelay.value) + c * Number(__ECHARTS__.configs.animationDelay.value);
                     },
-                    animationEasingUpdate: __ECHARTS__.configs.animationEasingUpdate.value,
+                    animationEasingUpdate: getAnimationEasingUpdate(),
                     animationDurationUpdate: function (idx) {
                         return idx * Number(__ECHARTS__.configs.animationDurationUpdate.value) + c * Number(__ECHARTS__.configs.animationDurationUpdate.value);
                     },
@@ -5335,7 +5461,7 @@ function getFunnel(container, themes) {
         },
         tooltip: {
             show:__ECHARTS__.configs.tooltipDisplay.value == "YES",
-            trigger: 'item',
+            trigger: "item",
             formatter: "{a} <br/>{b} : {c}"
         },
         toolbox: {
@@ -5382,7 +5508,7 @@ function getWordCloud(container, themes) {
     var columns = [];
     var legends = [];
     //var maskImage = new Image();
-    //maskImage.src = 'logo.png';
+    //maskImage.src = "logo.png";
 
     function init() {
         for (var i = 0; i < dataset["columns"].length; i++) {
@@ -5398,53 +5524,53 @@ function getWordCloud(container, themes) {
             } else {
                 var serie = {
                     name: columns[c],
-                    type: 'wordCloud',
+                    type: "wordCloud",
                     gridSize: 2,
                     sizeRange: [__ECHARTS__.configs.wordCloudMinFontSize.value, __ECHARTS__.configs.wordCloudMaxFontSize.value],//[最小字号,最大字号],
                     rotationRange: [-1 * __ECHARTS__.configs.wordCloudRotationRange.value, __ECHARTS__.configs.wordCloudRotationRange.value],//[旋转角度,旋转角度]
                     shape: __ECHARTS__.configs.wordCloudShape.value,
-                    //'circle', 'cardioid', 'diamond', 'triangle-forward', 'triangle', 'pentagon', 'star'
+                    //"circle", "cardioid", "diamond", "triangle-forward", "triangle", "pentagon", "star"
                     //maskImage: maskImage,
                     drawOutOfBound: false,
                     textStyle: {
                         normal: {
                             color: function () {
-                                return 'rgb(' + [
+                                return "rgb(" + [
                                     Math.round(Math.random() * 160),
                                     Math.round(Math.random() * 160),
                                     Math.round(Math.random() * 160)
-                                ].join(',') + ')';
+                                ].join(",") + ")";
                             }
                         },
                         emphasis: {
                             shadowBlur: 10,
-                            shadowColor: '#333'
+                            shadowColor: "#333"
                         }
                     },
                     data: [
                         {
-                            name: 'wordCloud',
+                            name: "wordCloud",
                             value: 10000,
                             textStyle: {
                                 normal: {
-                                    color: 'black'
+                                    color: "black"
                                 },
                                 emphasis: {
-                                    color: 'red'
+                                    color: "red"
                                 }
                             }
                         }
                     ],
                     animation: __ECHARTS__.configs.animation.value == "YES",
                     animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
-                    animationEasing: __ECHARTS__.configs.animationEasing.value,
+                    animationEasing: getAnimationEasing(),
                     animationDuration: function (idx) {
                         return idx * Number(__ECHARTS__.configs.animationDuration.value) + c * Number(__ECHARTS__.configs.animationDuration.value);
                     },
                     animationDelay: function (idx) {
                         return idx * Number(__ECHARTS__.configs.animationDelay.value) + c * Number(__ECHARTS__.configs.animationDelay.value);
                     },
-                    animationEasingUpdate: __ECHARTS__.configs.animationEasingUpdate.value,
+                    animationEasingUpdate: getAnimationEasingUpdate(),
                     animationDurationUpdate: function (idx) {
                         return idx * Number(__ECHARTS__.configs.animationDurationUpdate.value) + c * Number(__ECHARTS__.configs.animationDurationUpdate.value);
                     },
@@ -5485,7 +5611,7 @@ function getWordCloud(container, themes) {
             x2: __ECHARTS__.configs.grid_right.value,
             y2: __ECHARTS__.configs.grid_bottom.value,
             containLabel: __ECHARTS__.configs.grid_containLabel.value == "YES",
-            backgroundColor: 'transparent'
+            backgroundColor: "transparent"
         },
         title: {
             show:__ECHARTS__.configs.titleDisplay.value =="YES",
@@ -5503,7 +5629,7 @@ function getWordCloud(container, themes) {
         tooltip: {
             show:__ECHARTS__.configs.tooltipDisplay.value == "YES",
             formatter: function (param) {
-                return param.name + '<br>' + param.seriesName + ':'
+                return param.name + "<br>" + param.seriesName + ":"
                     + param.value;
             }
         },
@@ -5558,56 +5684,52 @@ function getLiqiud(container, themes) {
             var r = dataset["data"][i];
             var serie = {
                 name: r[columns[0]].value,
-                type: 'liquidFill',
+                type: "liquidFill",
                 data: [],
-                color: ['#294D99', '#156ACF', '#1598ED', '#45BDFF'],
-                //center: ['50%', '50%'],
-                //radius: '50%',
-                amplitude: '8%',
-                waveLength: '80%',
-                phase: 'auto',
-                period: 'auto',
-                direction: 'right',
+                color: ["#294D99", "#156ACF", "#1598ED", "#45BDFF"],
+                //center: ["50%", "50%"],
+                //radius: "50%",
+                amplitude: "8%",
+                waveLength: "80%",
+                phase: "auto",
+                period: "auto",
+                direction: "right",
                 smooth: __ECHARTS__.configs.lineSmooth.value == "YES",
 
                 shape: __ECHARTS__.configs.liqiudShape.value,
 
                 waveAnimation: true,
-                animationEasing: 'linear',
-                animationEasingUpdate: 'linear',
-                animationDuration: 2000,
-                animationDurationUpdate: 1000,
 
                 outline: {
                     show: true,
                     borderDistance: 3,
                     itemStyle: {
-                        color: '#1598ED',//'none',
-                        borderColor: '#294D99',
+                        color: "#1598ED",//"none",
+                        borderColor: "#294D99",
                         borderWidth: 2,
                         shadowBlur: 10,
-                        shadowColor: 'rgba(0, 0, 0, 0.25)'
+                        shadowColor: "rgba(0, 0, 0, 0.25)"
                     }
                 },
 
                 backgroundStyle: {
-                    color: '#E3F7FF'
+                    color: "#E3F7FF"
                 },
 
                 itemStyle: {
                     opacity: 0.6,
                     shadowBlur: 50,
-                    shadowColor: 'rgba(0, 0, 0, 0.4)'
+                    shadowColor: "rgba(0, 0, 0, 0.4)"
                 },
 
                 label: {
                     show: true,
-                    insideColor: '#fff',
+                    insideColor: "#fff",
                     fontSize: __ECHARTS__.configs.liqiudFontSize.value,
-                    fontWeight: 'bold',
-                    align: 'center',
-                    baseline: 'middle',
-                    position: 'inside'
+                    fontWeight: "bold",
+                    align: "center",
+                    baseline: "middle",
+                    position: "inside"
                 },
 
                 emphasis: {
@@ -5617,14 +5739,14 @@ function getLiqiud(container, themes) {
                 },
                 animation: __ECHARTS__.configs.animation.value == "YES",
                 animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
-                animationEasing: __ECHARTS__.configs.animationEasing.value,
+                animationEasing: getAnimationEasing(),
                 animationDuration: function (idx) {
                     return idx * Number(__ECHARTS__.configs.animationDuration.value);
                 },
                 animationDelay: function (idx) {
                     return idx * Number(__ECHARTS__.configs.animationDelay.value);
                 },
-                animationEasingUpdate: __ECHARTS__.configs.animationEasingUpdate.value,
+                animationEasingUpdate: getAnimationEasingUpdate(),
                 animationDurationUpdate: function (idx) {
                     return idx * Number(__ECHARTS__.configs.animationDurationUpdate.value);
                 },
@@ -5707,8 +5829,8 @@ function getLiqiud(container, themes) {
         },
         label: {
             formatter: function (param) {
-                return param.seriesName + '\n\n'
-                    + param.name + '\n\n'
+                return param.seriesName + "\n\n"
+                    + param.name + "\n\n"
                     + Math.round(param.value * 10000) / 100 + "%";
             },
         },
@@ -5717,10 +5839,10 @@ function getLiqiud(container, themes) {
 
     myChart.setOption(option);
 
-    myChart.on('mouseover', function (params) {
+    myChart.on("mouseover", function (params) {
         stopTimer();
     });
-    myChart.on('mouseout', function (params) {
+    myChart.on("mouseout", function (params) {
         startTimer();
     });
 
@@ -5765,24 +5887,24 @@ function getGaugeWithAll(container, themes) {
             name: legends[i],
             type: "gauge",
             title: {
-                fontWeight: 'bolder',
+                fontWeight: "bolder",
                 fontSize: __ECHARTS__.configs.gaugeTitleFontSize.value,
-                color: 'gray',
-                textShadowColor: 'rgba(0, 0, 0, 0.5)',
+                color: "gray",
+                textShadowColor: "rgba(0, 0, 0, 0.5)",
                 textShadowBlur: 10,
             },
             axisLine: {
                 lineStyle: {
                     width: __ECHARTS__.configs.gaugeAxisLineWidth.value,//10, //圆X轴宽度
-                    shadowColor: 'rgba(0, 0, 0, 0.5)',
+                    shadowColor: "rgba(0, 0, 0, 0.5)",
                     shadowBlur: 10,
-                    color: [[0.2, '#3CB371'], [0.8, '#6388ae'], [1, '#DB7093']]
-                    //默认[[0.2, '#91c7ae'], [0.8, '#63869e'], [1, '#c23531']]
+                    color: [[0.2, "#3CB371"], [0.8, "#6388ae"], [1, "#DB7093"]]
+                    //默认[[0.2, "#91c7ae"], [0.8, "#63869e"], [1, "#c23531"]]
                 }
             },
             axisLabel: {
                 fontSize: __ECHARTS__.configs.gaugeAxisLabelFontSize.value,
-                textShadowColor: 'rgba(0, 0, 0, 0.5)',
+                textShadowColor: "rgba(0, 0, 0, 0.5)",
                 textShadowBlur: 10,
             },
             splitLine: {
@@ -5790,25 +5912,25 @@ function getGaugeWithAll(container, themes) {
             },
             pointer: {
                 width: 5, //指针宽度
-                length: '60%'  //指针长度
+                length: "60%"  //指针长度
             },
             detail: {
-                formatter: ['{value}%', ''].join("\n"),
+                formatter: ["{value}%", ""].join("\n"),
                 fontSize: __ECHARTS__.configs.gaugeLabelFontSize.value,
-                textShadowColor: 'rgba(0, 0, 0, 0.5)',
+                textShadowColor: "rgba(0, 0, 0, 0.5)",
                 textShadowBlur: 10,
             },
             data: [],
             animation: __ECHARTS__.configs.animation.value == "YES",
             animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
-            animationEasing: __ECHARTS__.configs.animationEasing.value,
+            animationEasing: getAnimationEasing(),
             animationDuration: function (idx) {
                 return idx * Number(__ECHARTS__.configs.animationDuration.value) + c * Number(__ECHARTS__.configs.animationDuration.value);
             },
             animationDelay: function (idx) {
                 return idx * Number(__ECHARTS__.configs.animationDelay.value) + c * Number(__ECHARTS__.configs.animationDelay.value);
             },
-            animationEasingUpdate: __ECHARTS__.configs.animationEasingUpdate.value,
+            animationEasingUpdate: getAnimationEasingUpdate(),
             animationDurationUpdate: function (idx) {
                 return idx * Number(__ECHARTS__.configs.animationDurationUpdate.value) + c * Number(__ECHARTS__.configs.animationDurationUpdate.value);
             },
@@ -5824,7 +5946,7 @@ function getGaugeWithAll(container, themes) {
                     "name": legends[i] + "\n\n" + columns[c],
                     "value": r[columns[c]].value,
                     itemStyle: {
-                        shadowColor: 'rgba(0, 0, 0, 0.5)',
+                        shadowColor: "rgba(0, 0, 0, 0.5)",
                         shadowBlur: 10
                     }
                 })
@@ -5852,7 +5974,7 @@ function getGaugeWithAll(container, themes) {
             x2: __ECHARTS__.configs.grid_right.value,
             y2: __ECHARTS__.configs.grid_bottom.value,
             containLabel: __ECHARTS__.configs.grid_containLabel.value == "YES",
-            backgroundColor: 'transparent'
+            backgroundColor: "transparent"
         },
         title: {
             show:__ECHARTS__.configs.titleDisplay.value =="YES",
@@ -5882,7 +6004,7 @@ function getGaugeWithAll(container, themes) {
         },
         tooltip: {
             show:__ECHARTS__.configs.tooltipDisplay.value == "YES",
-            formatter: '{b} : {c}%'
+            formatter: "{b} : {c}%"
         },
         toolbox: {
             show: __ECHARTS__.configs.toolboxDisplay.value =="YES",
@@ -5896,7 +6018,7 @@ function getGaugeWithAll(container, themes) {
             top: "top",
             emphasis: {
                 iconStyle: {
-                    textPosition: 'left'
+                    textPosition: "left"
                 }
             },
         },
@@ -5904,10 +6026,10 @@ function getGaugeWithAll(container, themes) {
     };
     myChart.setOption(option);
     var timer;
-    myChart.on('mouseover', function (params) {
+    myChart.on("mouseover", function (params) {
         stopTimer();
     });
-    myChart.on('mouseout', function (params) {
+    myChart.on("mouseout", function (params) {
         startTimer();
     });
     function doing() {
@@ -5956,24 +6078,24 @@ function getGaugeWithOne(container, themes) {
                     name: legends[i],
                     type: "gauge",
                     title: {
-                        fontWeight: 'bolder',
+                        fontWeight: "bolder",
                         fontSize: __ECHARTS__.configs.gaugeTitleFontSize.value,
-                        color: 'gray',
-                        textShadowColor: 'rgba(0, 0, 0, 0.5)',
+                        color: "gray",
+                        textShadowColor: "rgba(0, 0, 0, 0.5)",
                         textShadowBlur: 10,
                     },
                     axisLine: {
                         lineStyle: {
                             width: __ECHARTS__.configs.gaugeAxisLineWidth.value,//10, //圆X轴宽度
-                            shadowColor: 'rgba(0, 0, 0, 0.5)',
+                            shadowColor: "rgba(0, 0, 0, 0.5)",
                             shadowBlur: 10,
-                            color: [[0.2, '#3CB371'], [0.8, '#6388ae'], [1, '#DB7093']]
-                            //默认[[0.2, '#91c7ae'], [0.8, '#63869e'], [1, '#c23531']]
+                            color: [[0.2, "#3CB371"], [0.8, "#6388ae"], [1, "#DB7093"]]
+                            //默认[[0.2, "#91c7ae"], [0.8, "#63869e"], [1, "#c23531"]]
                         }
                     },
                     axisLabel: {
                         fontSize: __ECHARTS__.configs.gaugeAxisLabelFontSize.value,
-                        textShadowColor: 'rgba(0, 0, 0, 0.5)',
+                        textShadowColor: "rgba(0, 0, 0, 0.5)",
                         textShadowBlur: 10,
                     },
                     splitLine: {
@@ -5981,25 +6103,25 @@ function getGaugeWithOne(container, themes) {
                     },
                     pointer: {
                         width: 5, //指针宽度
-                        length: '60%'  //指针长度
+                        length: "60%"  //指针长度
                     },
                     detail: {
-                        formatter: ['{value}%', ''].join("\n"),
+                        formatter: ["{value}%", ""].join("\n"),
                         fontSize: __ECHARTS__.configs.gaugeLabelFontSize.value,
-                        textShadowColor: 'rgba(0, 0, 0, 0.5)',
+                        textShadowColor: "rgba(0, 0, 0, 0.5)",
                         textShadowBlur: 10,
                     },
                     data: [],
                     animation: __ECHARTS__.configs.animation.value == "YES",
                     animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
-                    animationEasing: __ECHARTS__.configs.animationEasing.value,
+                    animationEasing: getAnimationEasing(),
                     animationDuration: function (idx) {
                         return idx * Number(__ECHARTS__.configs.animationDuration.value) + c * Number(__ECHARTS__.configs.animationDuration.value);
                     },
                     animationDelay: function (idx) {
                         return idx * Number(__ECHARTS__.configs.animationDelay.value) + c * Number(__ECHARTS__.configs.animationDelay.value);
                     },
-                    animationEasingUpdate: __ECHARTS__.configs.animationEasingUpdate.value,
+                    animationEasingUpdate: getAnimationEasingUpdate(),
                     animationDurationUpdate: function (idx) {
                         return idx * Number(__ECHARTS__.configs.animationDurationUpdate.value) + c * Number(__ECHARTS__.configs.animationDurationUpdate.value);
                     },
@@ -6011,7 +6133,7 @@ function getGaugeWithOne(container, themes) {
                     "name": legends[i] + "\n\n" + columns[c],
                     "value": r[columns[c]].value,
                     itemStyle: {
-                        shadowColor: 'rgba(0, 0, 0, 0.5)',
+                        shadowColor: "rgba(0, 0, 0, 0.5)",
                         shadowBlur: 10
                     }
                 });
@@ -6063,7 +6185,7 @@ function getGaugeWithOne(container, themes) {
         },
         tooltip: {
             show:__ECHARTS__.configs.tooltipDisplay.value == "YES",
-            formatter: '{b} : {c}%'
+            formatter: "{b} : {c}%"
         },
         toolbox: {
             show: __ECHARTS__.configs.toolboxDisplay.value =="YES",
@@ -6086,10 +6208,10 @@ function getGaugeWithOne(container, themes) {
     myChart.setOption(option);
 
     var timer;
-    myChart.on('mouseover', function (params) {
+    myChart.on("mouseover", function (params) {
         stopTimer();
     });
-    myChart.on('mouseout', function (params) {
+    myChart.on("mouseout", function (params) {
         startTimer();
     });
     function doing() {
@@ -6138,30 +6260,30 @@ function getCalendar(container, themes) {
                 for (var i = 0; i < dataset["data"].length; i++) {
                     var r = dataset["data"][i];
                     if (i == 0) {
-                        rangeMin = echarts.format.formatTime('yyyy-MM-dd', r[columns[0]].value);
-                        rangeMax = echarts.format.formatTime('yyyy-MM-dd', r[columns[0]].value);
+                        rangeMin = echarts.format.formatTime("yyyy-MM-dd", r[columns[0]].value);
+                        rangeMax = echarts.format.formatTime("yyyy-MM-dd", r[columns[0]].value);
                     } else {
-                        rangeMin = echarts.format.formatTime('yyyy-MM-dd', r[columns[c]].value) < rangeMin ? echarts.format.formatTime('yyyy-MM-dd', r[columns[c]].value) : rangeMin;
-                        rangeMax = echarts.format.formatTime('yyyy-MM-dd', r[columns[c]].value) > rangeMax ? echarts.format.formatTime('yyyy-MM-dd', r[columns[c]].value) : rangeMax;
+                        rangeMin = echarts.format.formatTime("yyyy-MM-dd", r[columns[c]].value) < rangeMin ? echarts.format.formatTime("yyyy-MM-dd", r[columns[c]].value) : rangeMin;
+                        rangeMax = echarts.format.formatTime("yyyy-MM-dd", r[columns[c]].value) > rangeMax ? echarts.format.formatTime("yyyy-MM-dd", r[columns[c]].value) : rangeMax;
                     }
                 }
             } else {
                 var serie = {
                     name: columns[c],
-                    type: __ECHARTS__.configs.calendarType.value, //['heatmap','scatter','effectScatter']
-                    coordinateSystem: 'calendar',
+                    type: __ECHARTS__.configs.calendarType.value, //["heatmap","scatter","effectScatter"]
+                    coordinateSystem: "calendar",
                     calendarIndex: c - 1,
                     data: [],
                     animation: __ECHARTS__.configs.animation.value == "YES",
                     animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
-                    animationEasing: __ECHARTS__.configs.animationEasing.value,
+                    animationEasing: getAnimationEasing(),
                     animationDuration: function (idx) {
                         return idx * Number(__ECHARTS__.configs.animationDuration.value) + c * Number(__ECHARTS__.configs.animationDuration.value);
                     },
                     animationDelay: function (idx) {
                         return idx * Number(__ECHARTS__.configs.animationDelay.value) + c * Number(__ECHARTS__.configs.animationDelay.value);
                     },
-                    animationEasingUpdate: __ECHARTS__.configs.animationEasingUpdate.value,
+                    animationEasingUpdate: getAnimationEasingUpdate(),
                     animationDurationUpdate: function (idx) {
                         return idx * Number(__ECHARTS__.configs.animationDurationUpdate.value) + c * Number(__ECHARTS__.configs.animationDurationUpdate.value);
                     },
@@ -6170,23 +6292,23 @@ function getCalendar(container, themes) {
                     },
                 };
                 var visualMap = {
-                    //type: 'piecewise',
+                    //type: "piecewise",
                     show:__ECHARTS__.configs.visualMapDisplay.value == "YES",
                     calculable: true,
-                    //orient: 'vertical',//'horizontal'
+                    //orient: "vertical",//"horizontal"
                     //left: 10,
                     //top: 10,
                     seriesIndex: c - 1,//影射数据系列
                     dimension: 1,//影射数据纬度
                     textStyle: {
-                        color: 'gray'
+                        color: "gray"
                     }
                 };
                 var calendar = {
-                    orient: __ECHARTS__.configs.calendarOrient.value, //'vertical',//'horizontal'
+                    orient: __ECHARTS__.configs.calendarOrient.value, //"vertical",//"horizontal"
                     left: "10%",
                     right: "10%",
-                    cellSize: ['auto', 'auto'],
+                    cellSize: ["auto", "auto"],
                     itemStyle: {
                         borderWidth: 0.5,
                     },
@@ -6211,7 +6333,7 @@ function getCalendar(container, themes) {
                         }
                     }
                 }
-                if (__ECHARTS__.configs.calendarType.value == 'effectScatter' || __ECHARTS__.configs.calendarType.value == 'scatter') {
+                if (__ECHARTS__.configs.calendarType.value == "effectScatter" || __ECHARTS__.configs.calendarType.value == "scatter") {
                     serie.symbolSize = function (val) {
                         var value = val[1] / (valueMax / __ECHARTS__.configs.scatterSymbolSize.value);
                         return value < 5 ? 5 : value;
@@ -6236,7 +6358,7 @@ function getCalendar(container, themes) {
                 visualMaps[i].itemHeight = containerWidth * width / 100;
                 calendars[i].bottom = "10%";
                 visualMaps[i].top = "90%";
-                visualMaps[i].orient = 'horizontal';
+                visualMaps[i].orient = "horizontal";
             }
         } else {
             var height = (95 - 10 * calendars.length) / calendars.length;
@@ -6261,7 +6383,7 @@ function getCalendar(container, themes) {
             x2: __ECHARTS__.configs.grid_right.value,
             y2: __ECHARTS__.configs.grid_bottom.value,
             containLabel: __ECHARTS__.configs.grid_containLabel.value == "YES",
-            backgroundColor: 'transparent'
+            backgroundColor: "transparent"
         },
         title: {
             show:__ECHARTS__.configs.titleDisplay.value =="YES",
@@ -6278,10 +6400,10 @@ function getCalendar(container, themes) {
         },
         tooltip: {
             show:__ECHARTS__.configs.tooltipDisplay.value == "YES",
-            position: 'top',
+            position: "top",
             formatter: function (p) {
-                var format = echarts.format.formatTime('yyyy-MM-dd', p.data[0]);
-                return format + '<br> ' + p.seriesName + ": " + p.data[1];
+                var format = echarts.format.formatTime("yyyy-MM-dd", p.data[0]);
+                return format + "<br> " + p.seriesName + ": " + p.data[1];
             }
         },
         toolbox: {
@@ -6397,7 +6519,7 @@ function getGeoOfChina(container, themes) {
             x2: __ECHARTS__.configs.grid_right.value,
             y2: __ECHARTS__.configs.grid_bottom.value,
             containLabel: __ECHARTS__.configs.grid_containLabel.value == "YES",
-            backgroundColor: 'transparent'
+            backgroundColor: "transparent"
         },
         //backgroundColor: __ECHARTS__.configs.geoBackgroundColor.value,
         title: {
@@ -6434,7 +6556,7 @@ function getGeoOfChina(container, themes) {
             formatter: function (params) {
                 var value = "";
                 try {
-                    value = params.name + '<br>' + params.seriesName + ': ' + ((params['value'].length == 3) ? params.data['value'][2] : params.data['value'])
+                    value = params.name + "<br>" + params.seriesName + ": " + ((params["value"].length == 3) ? params.data["value"][2] : params.data["value"])
                 } catch (e) {
                 }
                 return value
@@ -6478,7 +6600,7 @@ function getGeoOfChina(container, themes) {
                     areaColor: __ECHARTS__.configs.geoAreaColor.value,
                     borderColor: __ECHARTS__.configs.geoBorderColor.value,
                     shadowBlur: 50,
-                    shadowColor: 'rgba(0, 0, 0, 0.2)',
+                    shadowColor: "rgba(0, 0, 0, 0.2)",
                 },
                 emphasis: {
                     areaColor: __ECHARTS__.configs.geoHotAreaColor.value
@@ -6494,8 +6616,8 @@ function getGeoOfChina(container, themes) {
             },
             {
                 name: series[index].name,
-                type: 'effectScatter',//'scatter',//'effectScatter'
-                coordinateSystem: 'geo',
+                type: "effectScatter",//"scatter",//"effectScatter"
+                coordinateSystem: "geo",
                 data: convertData(series[index].data.sort(function (a, b) {
                     return b.value - a.value;
                 })),
@@ -6503,15 +6625,15 @@ function getGeoOfChina(container, themes) {
                     var value = val[2] / (series[index].max / __ECHARTS__.configs.scatterSymbolSize.value);
                     return value < 5 ? 5 : value;
                 },
-                showEffectOn: 'render',
+                showEffectOn: "render",
                 rippleEffect: {
-                    brushType: 'stroke'
+                    brushType: "stroke"
                 },
                 hoverAnimation: true,
                 label: {
                     normal: {
-                        formatter: '{b}',
-                        position: 'top',
+                        formatter: "{b}",
+                        position: "top",
                         show: true,
                         color: __ECHARTS__.configs.geoAreaNameColor.value,
                     }
@@ -6520,7 +6642,7 @@ function getGeoOfChina(container, themes) {
                     normal: {
                         color: __ECHARTS__.configs.geoAreaColor.value,
                         shadowBlur: 10,
-                        shadowColor: 'rgba(0, 0, 0, 0.2)',
+                        shadowColor: "rgba(0, 0, 0, 0.2)",
                     }
                 },
                 zlevel: 1
@@ -6529,14 +6651,14 @@ function getGeoOfChina(container, themes) {
 
         animation: __ECHARTS__.configs.animation.value == "YES",
         animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
-        animationEasing: __ECHARTS__.configs.animationEasing.value,
+        animationEasing: getAnimationEasing(),
         animationDuration: function (idx) {
             return idx * Number(__ECHARTS__.configs.animationDuration.value);
         },
         animationDelay: function (idx) {
             return idx * Number(__ECHARTS__.configs.animationDelay.value);
         },
-        animationEasingUpdate: __ECHARTS__.configs.animationEasingUpdate.value,
+        animationEasingUpdate: getAnimationEasingUpdate(),
         animationDurationUpdate: function (idx) {
             return idx * Number(__ECHARTS__.configs.animationDurationUpdate.value);
         },
@@ -6547,10 +6669,10 @@ function getGeoOfChina(container, themes) {
     myChart.setOption(option);
 
     var timer;
-    myChart.on('mouseover', function (params) {
+    myChart.on("mouseover", function (params) {
         stopTimer();
     });
-    myChart.on('mouseout', function (params) {
+    myChart.on("mouseout", function (params) {
         startTimer();
     });
 
@@ -6682,7 +6804,7 @@ function getGeoOfLocal(container, themes) {
             x2: __ECHARTS__.configs.grid_right.value,
             y2: __ECHARTS__.configs.grid_bottom.value,
             containLabel: __ECHARTS__.configs.grid_containLabel.value == "YES",
-            backgroundColor: 'transparent'
+            backgroundColor: "transparent"
         },
         //backgroundColor: __ECHARTS__.configs.geoBackgroundColor.value,
         title: {
@@ -6720,7 +6842,7 @@ function getGeoOfLocal(container, themes) {
             formatter: function (params) {
                 var value = "";
                 try {
-                    value = params.name + '<br>' +  params.seriesName + ': ' + ((params['value'].length == 3) ? params.data['value'][2] : params.data['value'])
+                    value = params.name + "<br>" +  params.seriesName + ": " + ((params["value"].length == 3) ? params.data["value"][2] : params.data["value"])
                 }catch (e) {
                 }
                 return value
@@ -6742,7 +6864,7 @@ function getGeoOfLocal(container, themes) {
             },
             splitNumber:__ECHARTS__.configs.visualMap_piecewise_splitNumber.value,
         },
-        //backgroundColor: '#013954',
+        //backgroundColor: "#013954",
         geo: {
             map: geoCoordMap.LocalMap,
             roam: true,
@@ -6765,7 +6887,7 @@ function getGeoOfLocal(container, themes) {
                     areaColor: __ECHARTS__.configs.geoAreaColor.value,
                     borderColor: __ECHARTS__.configs.geoBorderColor.value,
                     shadowBlur: 50,
-                    shadowColor: 'rgba(0, 0, 0, 0.2)',
+                    shadowColor: "rgba(0, 0, 0, 0.2)",
                 },
                 emphasis: {
                     areaColor: __ECHARTS__.configs.geoHotAreaColor.value
@@ -6781,8 +6903,8 @@ function getGeoOfLocal(container, themes) {
             },
             {
                 name: series[index].name,
-                type: 'effectScatter',//'scatter',//'effectScatter'
-                coordinateSystem: 'geo',
+                type: "effectScatter",//"scatter",//"effectScatter"
+                coordinateSystem: "geo",
                 data: convertData(series[index].data.sort(function (a, b) {
                     return b.value - a.value;
                 })),
@@ -6790,15 +6912,15 @@ function getGeoOfLocal(container, themes) {
                     var value = val[2] / (series[index].max / __ECHARTS__.configs.scatterSymbolSize.value);
                     return value<5?5:value;
                 },
-                showEffectOn: 'render',
+                showEffectOn: "render",
                 rippleEffect: {
-                    brushType: 'stroke'
+                    brushType: "stroke"
                 },
                 hoverAnimation: true,
                 label: {
                     normal: {
-                        formatter: '{b}',
-                        position: 'top',
+                        formatter: "{b}",
+                        position: "top",
                         show: true,
                         color: "gray"
                     }
@@ -6807,7 +6929,7 @@ function getGeoOfLocal(container, themes) {
                     normal: {
                         color: __ECHARTS__.configs.geoAreaColor.value,
                         shadowBlur: 10,
-                        shadowColor: 'rgba(0, 0, 0, 0.2)',
+                        shadowColor: "rgba(0, 0, 0, 0.2)",
                     }
                 },
                 zlevel: 1
@@ -6816,14 +6938,14 @@ function getGeoOfLocal(container, themes) {
 
         animation: __ECHARTS__.configs.animation.value == "YES",
         animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
-        animationEasing: __ECHARTS__.configs.animationEasing.value,
+        animationEasing: getAnimationEasing(),
         animationDuration: function (idx) {
             return idx * Number(__ECHARTS__.configs.animationDuration.value);
         },
         animationDelay: function (idx) {
             return idx * Number(__ECHARTS__.configs.animationDelay.value);
         },
-        animationEasingUpdate: __ECHARTS__.configs.animationEasingUpdate.value,
+        animationEasingUpdate: getAnimationEasingUpdate(),
         animationDurationUpdate: function (idx) {
             return idx * Number(__ECHARTS__.configs.animationDurationUpdate.value);
         },
@@ -6835,10 +6957,10 @@ function getGeoOfLocal(container, themes) {
     myChart.setOption(option);
 
     var timer;
-    myChart.on('mouseover', function (params) {
+    myChart.on("mouseover", function (params) {
         stopTimer();
     });
-    myChart.on('mouseout', function (params) {
+    myChart.on("mouseout", function (params) {
         startTimer();
     });
 
@@ -6914,17 +7036,17 @@ function getBar3D(container, themes) {
             var data = [];
             var serie = {
                 name: columns[c],
-                type: 'bar3D',
+                type: "bar3D",
                 data: [],
                 bevelSize: 0.1,
                 //柱子的倒角尺寸。支持设置为从 0 到 1 的值。默认为 0，即没有倒角。
                 bevelSmoothness: 4,
                 //柱子倒角的光滑/圆润度，数值越大越光滑/圆润
 
-                shading: 'realistic',
-                //'color' 只显示颜色，不受光照等其它因素的影响。
-                //'lambert' 通过经典的 lambert 着色表现光照带来的明暗。
-                //'realistic' 真实感渲染，
+                shading: "realistic",
+                //"color" 只显示颜色，不受光照等其它因素的影响。
+                //"lambert" 通过经典的 lambert 着色表现光照带来的明暗。
+                //"realistic" 真实感渲染，
                 realisticMaterial: {
                     roughness: 0.5,
                     //用于表示材质的粗糙度，0为完全光滑，1完全粗糙，中间的值则是介于这两者之间。
@@ -6965,14 +7087,14 @@ function getBar3D(container, themes) {
                 },
                 animation: __ECHARTS__.configs.animation.value == "YES",
                 animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
-                animationEasing: __ECHARTS__.configs.animationEasing.value,
+                animationEasing: getAnimationEasing(),
                 animationDuration: function (idx) {
                     return idx * Number(__ECHARTS__.configs.animationDuration.value) + c * Number(__ECHARTS__.configs.animationDuration.value);
                 },
                 animationDelay: function (idx) {
                     return idx * Number(__ECHARTS__.configs.animationDelay.value) + c * Number(__ECHARTS__.configs.animationDelay.value);
                 },
-                animationEasingUpdate: __ECHARTS__.configs.animationEasingUpdate.value,
+                animationEasingUpdate: getAnimationEasingUpdate(),
                 animationDurationUpdate: function (idx) {
                     return idx * Number(__ECHARTS__.configs.animationDurationUpdate.value) + c * Number(__ECHARTS__.configs.animationDurationUpdate.value);
                 },
@@ -7004,7 +7126,7 @@ function getBar3D(container, themes) {
             x2: __ECHARTS__.configs.grid_right.value,
             y2: __ECHARTS__.configs.grid_bottom.value,
             containLabel: __ECHARTS__.configs.grid_containLabel.value == "YES",
-            backgroundColor: 'transparent'
+            backgroundColor: "transparent"
         },
         title: {
             show: __ECHARTS__.configs.titleDisplay.value == "YES",
@@ -7068,15 +7190,15 @@ function getBar3D(container, themes) {
             splitNumber: __ECHARTS__.configs.visualMap_piecewise_splitNumber.value,
         },
         xAxis3D: {
-            type: 'category',
+            type: "category",
             data: rows,
         },
         yAxis3D: {
-            type: 'category',
+            type: "category",
             data: columns.slice(1),
         },
         zAxis3D: {
-            type: 'value',
+            type: "value",
             axisLine: {
                 lineStyle: {
                     color: __ECHARTS__.configs.axisColor.value
@@ -7089,17 +7211,17 @@ function getBar3D(container, themes) {
             viewControl: {
                 autoRotate: __ECHARTS__.configs.AutoRotateFor3D.value == "YES",
                 autoRotateSpeed: __ECHARTS__.configs.AutoRotateSpeedFor3D.value,
-                projection: 'orthographic',
+                projection: "orthographic",
                 animation: __ECHARTS__.configs.animation.value == "YES",
                 animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
-                animationEasing: __ECHARTS__.configs.animationEasing.value,
+                animationEasing: getAnimationEasing(),
                 animationDuration: function (idx) {
                     return idx * Number(__ECHARTS__.configs.animationDuration.value);
                 },
                 animationDelay: function (idx) {
                     return idx * Number(__ECHARTS__.configs.animationDelay.value);
                 },
-                animationEasingUpdate: __ECHARTS__.configs.animationEasingUpdate.value,
+                animationEasingUpdate: getAnimationEasingUpdate(),
                 animationDurationUpdate: function (idx) {
                     return idx * Number(__ECHARTS__.configs.animationDurationUpdate.value);
                 },
@@ -7191,7 +7313,7 @@ function getLine3D(container, themes) {
                     label: {
                         textStyle: {
                             fontSize: __ECHARTS__.configs.label3DFontSize.value,
-                            //color: '#900'
+                            //color: "#900"
                         }
                     },
                     itemStyle: {
@@ -7200,14 +7322,14 @@ function getLine3D(container, themes) {
                 },
                 animation: __ECHARTS__.configs.animation.value == "YES",
                 animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
-                animationEasing: __ECHARTS__.configs.animationEasing.value,
+                animationEasing: getAnimationEasing(),
                 animationDuration: function (idx) {
                     return idx * Number(__ECHARTS__.configs.animationDuration.value) + c * Number(__ECHARTS__.configs.animationDuration.value);
                 },
                 animationDelay: function (idx) {
                     return idx * Number(__ECHARTS__.configs.animationDelay.value) + c * Number(__ECHARTS__.configs.animationDelay.value);
                 },
-                animationEasingUpdate: __ECHARTS__.configs.animationEasingUpdate.value,
+                animationEasingUpdate: getAnimationEasingUpdate(),
                 animationDurationUpdate: function (idx) {
                     return idx * Number(__ECHARTS__.configs.animationDurationUpdate.value) + c * Number(__ECHARTS__.configs.animationDurationUpdate.value);
                 },
@@ -7240,7 +7362,7 @@ function getLine3D(container, themes) {
             x2: __ECHARTS__.configs.grid_right.value,
             y2: __ECHARTS__.configs.grid_bottom.value,
             containLabel: __ECHARTS__.configs.grid_containLabel.value == "YES",
-            backgroundColor: 'transparent'
+            backgroundColor: "transparent"
         },
         title: {
             show:__ECHARTS__.configs.titleDisplay.value =="YES",
@@ -7305,7 +7427,7 @@ function getLine3D(container, themes) {
         },
 
         xAxis3D: {
-            type: 'category',
+            type: "category",
             data: rows,
             axisLine: {
                 show: true,
@@ -7315,7 +7437,7 @@ function getLine3D(container, themes) {
             },
         },
         yAxis3D: {
-            type: 'category',
+            type: "category",
             data: columns.slice(1),
             axisLine: {
                 show: true,
@@ -7325,7 +7447,7 @@ function getLine3D(container, themes) {
             },
         },
         zAxis3D: {
-            type: 'value',
+            type: "value",
             axisLine: {
                 show: true,
                 lineStyle: {
@@ -7339,17 +7461,17 @@ function getLine3D(container, themes) {
             viewControl: {
                 autoRotate: __ECHARTS__.configs.AutoRotateFor3D.value == "YES",
                 autoRotateSpeed: __ECHARTS__.configs.AutoRotateSpeedFor3D.value,
-                projection: 'orthographic',
+                projection: "orthographic",
                 animation: __ECHARTS__.configs.animation.value == "YES",
                 animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
-                animationEasing: __ECHARTS__.configs.animationEasing.value,
+                animationEasing: getAnimationEasing(),
                 animationDuration: function (idx) {
                     return idx * Number(__ECHARTS__.configs.animationDuration.value);
                 },
                 animationDelay: function (idx) {
                     return idx * Number(__ECHARTS__.configs.animationDelay.value);
                 },
-                animationEasingUpdate: __ECHARTS__.configs.animationEasingUpdate.value,
+                animationEasingUpdate: getAnimationEasingUpdate(),
                 animationDurationUpdate: function (idx) {
                     return idx * Number(__ECHARTS__.configs.animationDurationUpdate.value);
                 },
@@ -7422,10 +7544,10 @@ function getScatter3D(container, themes) {
                 data: [],
                 symbolSize: __ECHARTS__.configs.scatterSymbolSize.value,
                 symbol: __ECHARTS__.configs.scatterSymbolShape.value,
-                //'circle', 'rect', 'roundRect', 'triangle', 'diamond', 'pin', 'arrow', 'none'
+                //"circle", "rect", "roundRect", "triangle", "diamond", "pin", "arrow", "none"
                 itemStyle: {
                     borderWidth: 1,
-                    borderColor: 'rgba(255,255,255,0.8)',
+                    borderColor: "rgba(255,255,255,0.8)",
                     opacity: __ECHARTS__.configs.ItemStyleOpacityFor3D.value,
                 },
                 label: {
@@ -7443,23 +7565,23 @@ function getScatter3D(container, themes) {
                     label: {
                         textStyle: {
                             fontSize: __ECHARTS__.configs.label3DFontSize.value,
-                            //color: '#900'
+                            //color: "#900"
                         }
                     },
                     itemStyle: {
-                        //color: '#900'
+                        //color: "#900"
                     }
                 },
                 animation: __ECHARTS__.configs.animation.value == "YES",
                 animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
-                animationEasing: __ECHARTS__.configs.animationEasing.value,
+                animationEasing: getAnimationEasing(),
                 animationDuration: function (idx) {
                     return idx * Number(__ECHARTS__.configs.animationDuration.value) + c * Number(__ECHARTS__.configs.animationDuration.value);
                 },
                 animationDelay: function (idx) {
                     return idx * Number(__ECHARTS__.configs.animationDelay.value) + c * Number(__ECHARTS__.configs.animationDelay.value);
                 },
-                animationEasingUpdate: __ECHARTS__.configs.animationEasingUpdate.value,
+                animationEasingUpdate: getAnimationEasingUpdate(),
                 animationDurationUpdate: function (idx) {
                     return idx * Number(__ECHARTS__.configs.animationDurationUpdate.value) + c * Number(__ECHARTS__.configs.animationDurationUpdate.value);
                 },
@@ -7492,7 +7614,7 @@ function getScatter3D(container, themes) {
             x2: __ECHARTS__.configs.grid_right.value,
             y2: __ECHARTS__.configs.grid_bottom.value,
             containLabel: __ECHARTS__.configs.grid_containLabel.value == "YES",
-            backgroundColor: 'transparent'
+            backgroundColor: "transparent"
         },
         title: {
             show:__ECHARTS__.configs.titleDisplay.value =="YES",
@@ -7557,7 +7679,7 @@ function getScatter3D(container, themes) {
         },
 
         xAxis3D: {
-            type: 'category',
+            type: "category",
             data: rows,
             axisLine: {
                 show: true,
@@ -7567,7 +7689,7 @@ function getScatter3D(container, themes) {
             },
         },
         yAxis3D: {
-            type: 'category',
+            type: "category",
             data: columns.slice(1),
             axisLine: {
                 show: true,
@@ -7577,7 +7699,7 @@ function getScatter3D(container, themes) {
             },
         },
         zAxis3D: {
-            type: 'value',
+            type: "value",
             axisLine: {
                 show: true,
                 lineStyle: {
@@ -7591,17 +7713,17 @@ function getScatter3D(container, themes) {
             viewControl: {
                 autoRotate: __ECHARTS__.configs.AutoRotateFor3D.value == "YES",
                 autoRotateSpeed: 10,
-                projection: 'orthographic',
+                projection: "orthographic",
                 animation: __ECHARTS__.configs.animation.value == "YES",
                 animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
-                animationEasing: __ECHARTS__.configs.animationEasing.value,
+                animationEasing: getAnimationEasing(),
                 animationDuration: function (idx) {
                     return idx * Number(__ECHARTS__.configs.animationDuration.value);
                 },
                 animationDelay: function (idx) {
                     return idx * Number(__ECHARTS__.configs.animationDelay.value);
                 },
-                animationEasingUpdate: __ECHARTS__.configs.animationEasingUpdate.value,
+                animationEasingUpdate: getAnimationEasingUpdate(),
                 animationDurationUpdate: function (idx) {
                     return idx * Number(__ECHARTS__.configs.animationDurationUpdate.value);
                 },
@@ -7674,14 +7796,14 @@ function getCategoryLine(container, themes) {
             data: data,
             animation: __ECHARTS__.configs.animation.value == "YES",
             animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
-            animationEasing: __ECHARTS__.configs.animationEasing.value,
+            animationEasing: getAnimationEasing(),
             animationDuration: function (idx) {
                 return idx * Number(__ECHARTS__.configs.animationDuration.value) ;
             },
             animationDelay: function (idx) {
                 return idx * Number(__ECHARTS__.configs.animationDelay.value);
             },
-            animationEasingUpdate: __ECHARTS__.configs.animationEasingUpdate.value,
+            animationEasingUpdate: getAnimationEasingUpdate(),
             animationDurationUpdate: function (idx) {
                 return idx * Number(__ECHARTS__.configs.animationDurationUpdate.value);
             },
@@ -7693,11 +7815,11 @@ function getCategoryLine(container, themes) {
             serie.label = {
                 show: __ECHARTS__.configs.barLabelDisplay.value == "YES",
                 rotate: __ECHARTS__.configs.barLabelRotate.value,
-                align: 'center',
-                verticalAlign: 'middle',
+                align: "center",
+                verticalAlign: "middle",
                 position: __ECHARTS__.configs.barLabelPosition.value,
                 distance: 15,
-                formatter: '{value|{c}}',
+                formatter: "{value|{c}}",
                 rich: {
                     value: {
                         color: __ECHARTS__.configs.labelBarTextColor.value,
@@ -7708,11 +7830,11 @@ function getCategoryLine(container, themes) {
             serie.emphasis = {
                 label: {
                     show: __ECHARTS__.configs.barEmphasisLabelDisplay.value == "YES",
-                    align: 'center',
-                    verticalAlign: 'middle',
+                    align: "center",
+                    verticalAlign: "middle",
                     position: __ECHARTS__.configs.barLabelPosition.value,
                     distance: 15,
-                    formatter: '{value|{c}}',
+                    formatter: "{value|{c}}",
                     rotate: 0,
                     rich: {
                         value: {
@@ -7737,32 +7859,32 @@ function getCategoryLine(container, themes) {
 
             if (__ECHARTS__.configs.richTextLabel.value == "YES") {
                 serie.label = {
-                    formatter: '{a|{a}}{abg|}\n{hr|}\n  {b|{b}：}{c}  {per|{d}%}  ',
-                    backgroundColor: '#eee',
-                    borderColor: '#aaa',
+                    formatter: "{a|{a}}{abg|}\n{hr|}\n  {b|{b}：}{c}  {per|{d}%}  ",
+                    backgroundColor: "#eee",
+                    borderColor: "#aaa",
                     borderWidth: 1,
                     borderRadius: 4,
                     //shadowBlur:3,
                     //shadowOffsetX: 2,
                     //shadowOffsetY: 2,
-                    //shadowColor: '#999',
+                    //shadowColor: "#999",
                     padding: [0, 7],
                     rich: {
                         a: {
-                            color: '#999',
+                            color: "#999",
                             lineHeight: 22,
-                            align: 'center'
+                            align: "center"
                         },
                         abg: {
-                            backgroundColor: '',
-                            width: '100%',
-                            align: 'right',
+                            backgroundColor: "",
+                            width: "100%",
+                            align: "right",
                             height: 22,
                             borderRadius: [4, 4, 0, 0]
                         },
                         hr: {
-                            borderColor: '#aaa',
-                            width: '100%',
+                            borderColor: "#aaa",
+                            width: "100%",
                             borderWidth: 0.5,
                             height: 0
                         },
@@ -7771,8 +7893,8 @@ function getCategoryLine(container, themes) {
                             lineHeight: 33
                         },
                         per: {
-                            color: '#eee',
-                            backgroundColor: '#334455',
+                            color: "#eee",
+                            backgroundColor: "#334455",
                             padding: [2, 4],
                             borderRadius: 2
                         }
@@ -7790,11 +7912,11 @@ function getCategoryLine(container, themes) {
             };
             serie.label = {
                 show: __ECHARTS__.configs.lineLabelDisplay.value == "YES",
-                align: 'center',
-                verticalAlign: 'middle',
+                align: "center",
+                verticalAlign: "middle",
                 position: "top",
                 distance: 15,
-                formatter: '{value|{c}}',
+                formatter: "{value|{c}}",
                 rotate: __ECHARTS__.configs.lineLabelRotate.value,
                 rich: {
                     value: {
@@ -7806,7 +7928,7 @@ function getCategoryLine(container, themes) {
             serie.emphasis = {
                 label: {
                     show: __ECHARTS__.configs.lineEmphasisLabelDisplay.value == "YES",
-                    position: 'bottom',
+                    position: "bottom",
                     rotate:0,
                     fontSize: __ECHARTS__.configs.lineLabelFontSize.value,
                 }
@@ -7832,7 +7954,7 @@ function getCategoryLine(container, themes) {
                 x2: __ECHARTS__.configs.grid_right.value,
                 y2: __ECHARTS__.configs.grid_bottom.value,
                 containLabel: __ECHARTS__.configs.grid_containLabel.value == "YES",
-                backgroundColor: 'transparent'
+                backgroundColor: "transparent"
             },
             title: {
                 show: __ECHARTS__.configs.titleDisplay.value == "YES",
@@ -7849,11 +7971,11 @@ function getCategoryLine(container, themes) {
             },
             timeline: {
                 show: __ECHARTS__.configs.timelineDisplay.value == "YES",
-                axisType: 'category',
+                axisType: "category",
                 //考虑数据通用性，使用类目轴
-                //'value' 数值轴，适用于连续数据。
-                // 'category' 类目轴，适用于离散的类目数据。
-                // 'time' 时间轴，适用于连续的时序数据，与数值轴相比时间轴带有时间的格式化，在刻度计算上也有所不同，例如会根据跨度的范围来决定使用月，星期，日还是小时范围的刻度。
+                //"value" 数值轴，适用于连续数据。
+                // "category" 类目轴，适用于离散的类目数据。
+                // "time" 时间轴，适用于连续的时序数据，与数值轴相比时间轴带有时间的格式化，在刻度计算上也有所不同，例如会根据跨度的范围来决定使用月，星期，日还是小时范围的刻度。
                 realtime: true,
                 //事实时更新数据
                 loop: true,
@@ -7863,10 +7985,10 @@ function getCategoryLine(container, themes) {
                 // currentIndex: 2,
                 playInterval: __ECHARTS__.configs.seriesLoopPlayInterval.value * 1000,
                 // controlStyle: {
-                //     position: 'left'
+                //     position: "left"
                 // },
-                symbol: 'emptyCircle',
-                //'circle', 'rect', 'roundRect', 'triangle', 'diamond', 'pin', 'arrow', 'none'
+                symbol: "emptyCircle",
+                //"circle", "rect", "roundRect", "triangle", "diamond", "pin", "arrow", "none"
                 symbolSize: 2,
                 data: times,
                 label: {
@@ -7878,7 +8000,7 @@ function getCategoryLine(container, themes) {
             },
             tooltip: {
                 show: __ECHARTS__.configs.tooltipDisplay.value == "YES",
-                trigger: 'axis',
+                trigger: "axis",
                 axisPointer: {
                     type: __ECHARTS__.configs.categoryLineType.value != "pie" ? __ECHARTS__.configs.axisPointerType.value : "none",
                 },
@@ -7900,7 +8022,7 @@ function getCategoryLine(container, themes) {
                 },
             },
             xAxis: {
-                type: 'category',
+                type: "category",
                 data: columns.slice(1),
                 inverse: __ECHARTS__.configs.xAxisInverse.value == "YES",
                 axisLine: {
@@ -7931,7 +8053,7 @@ function getCategoryLine(container, themes) {
                 }
             },
             yAxis: {
-                type: 'value',
+                type: "value",
                 inverse: __ECHARTS__.configs.yAxisInverse.value == "YES",
                 axisLine: {
                     show: __ECHARTS__.configs.axisLineDisplay.value == "YES" && __ECHARTS__.configs.categoryLineType.value != "pie",
@@ -8105,21 +8227,21 @@ function getGeoMigrateLinesOfChinaCity(container, themes) {
             return res;
         };
 
-        var colors = ['#a6c84c', '#ffa022', '#46bee9', "#9370DB","#F08080","#FF4500"];
+        var colors = ["#a6c84c", "#ffa022", "#46bee9", "#9370DB","#F08080","#FF4500"];
         var series = [];
         seriedata.forEach(function (item, i) {
             let index = i<colors.length?i:i%colors.length;
             series.push({
                     name: item[0],
-                    type: 'lines',
+                    type: "lines",
                     zlevel: 1,
                     effect: {
                         show: true,
                         period: __ECHARTS__.configs.geoLinePeriod.value,
                         trailLength: 0.2,
                         //拖尾
-                        color: '#fff',
-                        symbol: 'line',
+                        color: "#fff",
+                        symbol: "line",
                         symbolSize: 1
                     },
                     lineStyle: {
@@ -8135,16 +8257,16 @@ function getGeoMigrateLinesOfChinaCity(container, themes) {
                 },
                 {
                     name: item[0],
-                    type: 'lines',
+                    type: "lines",
                     zlevel: 2,
-                    symbol: ['none', 'arrow'],
+                    symbol: ["none", "arrow"],
                     symbolSize: 5,
                     effect: {
                         show: true,
                         period: __ECHARTS__.configs.geoLinePeriod.value,
                         trailLength: 0,
                         //拖尾
-                        symbol: __SYS_IMAGES_PATH__[__ECHARTS__.configs.geoLineSymbol.value],
+                        symbol: (__ECHARTS__.configs.geoLineSymbol.value == "plane" || __ECHARTS__.configs.geoLineSymbol.value == "rocket")?__SYS_IMAGES_PATH__[__ECHARTS__.configs.geoLineSymbol.value]:__ECHARTS__.configs.geoLineSymbol.value,
                         symbolSize: __ECHARTS__.configs.geoLineSymbolSize.value,
                     },
                     lineStyle: {
@@ -8161,17 +8283,17 @@ function getGeoMigrateLinesOfChinaCity(container, themes) {
                 {
                     //目标
                     name: item[0],
-                    type: 'effectScatter',
-                    coordinateSystem: 'geo',
+                    type: "effectScatter",
+                    coordinateSystem: "geo",
                     zlevel: 2,
                     rippleEffect: {
-                        brushType: 'stroke'
+                        brushType: "stroke"
                     },
                     label: {
                         normal: {
                             show: true,
-                            position: 'right',
-                            formatter: '{b}'
+                            position: "right",
+                            formatter: "{b}"
                         }
                     },
                     symbolSize: function (val) {
@@ -8194,7 +8316,7 @@ function getGeoMigrateLinesOfChinaCity(container, themes) {
                 x2: __ECHARTS__.configs.grid_right.value,
                 y2: __ECHARTS__.configs.grid_bottom.value,
                 containLabel: __ECHARTS__.configs.grid_containLabel.value == "YES",
-                backgroundColor: 'transparent'
+                backgroundColor: "transparent"
             },
             //backgroundColor: __ECHARTS__.configs.geoBackgroundColor.value,
             title: {
@@ -8227,15 +8349,15 @@ function getGeoMigrateLinesOfChinaCity(container, themes) {
                 },
             },
             tooltip: {
-                //trigger: 'item'
+                //trigger: "item"
                 show: __ECHARTS__.configs.tooltipDisplay.value == "YES",
                 formatter: function (params) {
                     var value = "";
                     if (params.seriesType == "lines")
-                        value = params.data.fromName + " ↣ " + params.data.toName + ':<br>' + params.data.details;
+                        value = params.data.fromName + " ↣ " + params.data.toName + ":<br>" + params.data.details;
                     //仅标注线提示;因点会重复,不标注点提示
                     //else
-                    //    value = params.seriesName + " ↣ " + params.name + ':<br>' + params.data.details;
+                    //    value = params.seriesName + " ↣ " + params.name + ":<br>" + params.data.details;
                     return value
                 },
             },
@@ -8253,7 +8375,7 @@ function getGeoMigrateLinesOfChinaCity(container, themes) {
                 },
             },
             geo: {
-                map: 'china',
+                map: "china",
                 label: {
                     normal: {
                         show: __ECHARTS__.configs.geoAreaNameDisplay.value == "YES",
@@ -8270,7 +8392,7 @@ function getGeoMigrateLinesOfChinaCity(container, themes) {
                         areaColor: __ECHARTS__.configs.geoAreaColor.value,
                         borderColor: __ECHARTS__.configs.geoBorderColor.value,
                         shadowBlur: 50,
-                        shadowColor: 'rgba(0, 0, 0, 0.2)',
+                        shadowColor: "rgba(0, 0, 0, 0.2)",
                     },
                     emphasis: {
                         areaColor: __ECHARTS__.configs.geoHotAreaColor.value
@@ -8310,24 +8432,24 @@ function getCategoryLineForGauge(container, themes) {
                 name: row[columns[0]].value,
                 type: "gauge",
                 title: {
-                    fontWeight: 'bolder',
+                    fontWeight: "bolder",
                     fontSize: __ECHARTS__.configs.gaugeTitleFontSize.value,
-                    color: 'gray',
-                    textShadowColor: 'rgba(0, 0, 0, 0.5)',
+                    color: "gray",
+                    textShadowColor: "rgba(0, 0, 0, 0.5)",
                     textShadowBlur: 10,
                 },
                 axisLine: {
                     lineStyle: {
                         width: __ECHARTS__.configs.gaugeAxisLineWidth.value,//10, //圆X轴宽度
-                        shadowColor: 'rgba(0, 0, 0, 0.5)',
+                        shadowColor: "rgba(0, 0, 0, 0.5)",
                         shadowBlur: 10,
-                        color: [[0.2, '#3CB371'], [0.8, '#6388ae'], [1, '#DB7093']]
-                        //默认[[0.2, '#91c7ae'], [0.8, '#63869e'], [1, '#c23531']]
+                        color: [[0.2, "#3CB371"], [0.8, "#6388ae"], [1, "#DB7093"]]
+                        //默认[[0.2, "#91c7ae"], [0.8, "#63869e"], [1, "#c23531"]]
                     }
                 },
                 axisLabel: {
                     fontSize: __ECHARTS__.configs.gaugeAxisLabelFontSize.value,
-                    textShadowColor: 'rgba(0, 0, 0, 0.5)',
+                    textShadowColor: "rgba(0, 0, 0, 0.5)",
                     textShadowBlur: 10,
                 },
                 splitLine: {
@@ -8335,24 +8457,24 @@ function getCategoryLineForGauge(container, themes) {
                 },
                 pointer: {
                     width: 5, //指针宽度
-                    length: '60%'  //指针长度
+                    length: "60%"  //指针长度
                 },
                 detail: {
-                    formatter: ['{value}%', ''].join("\n"),
+                    formatter: ["{value}%", ""].join("\n"),
                     fontSize: __ECHARTS__.configs.gaugeLabelFontSize.value,
-                    textShadowColor: 'rgba(0, 0, 0, 0.5)',
+                    textShadowColor: "rgba(0, 0, 0, 0.5)",
                     textShadowBlur: 10,
                 },
                 data: [],
                 animation: __ECHARTS__.configs.animation.value == "YES",
-                animationEasing: __ECHARTS__.configs.animationEasing.value,
-                animationEasingUpdate: __ECHARTS__.configs.animationEasingUpdate.value,
+                animationEasing: getAnimationEasing(),
+                animationEasingUpdate: getAnimationEasingUpdate(),
             };
             serie.data.push({
                 "name": row[columns[0]].value + "\r\n" + columns[c],
                 "value": row[columns[c]].value,
                 itemStyle: {
-                    shadowColor: 'rgba(0, 0, 0, 0.5)',
+                    shadowColor: "rgba(0, 0, 0, 0.5)",
                     shadowBlur: 10
                 }
             });
@@ -8383,11 +8505,11 @@ function getCategoryLineForGauge(container, themes) {
             },
             timeline: {
                 show: __ECHARTS__.configs.timelineDisplay.value == "YES",
-                axisType: 'category',
+                axisType: "category",
                 //考虑数据通用性，使用类目轴
-                //'value' 数值轴，适用于连续数据。
-                // 'category' 类目轴，适用于离散的类目数据。
-                // 'time' 时间轴，适用于连续的时序数据，与数值轴相比时间轴带有时间的格式化，在刻度计算上也有所不同，例如会根据跨度的范围来决定使用月，星期，日还是小时范围的刻度。
+                //"value" 数值轴，适用于连续数据。
+                // "category" 类目轴，适用于离散的类目数据。
+                // "time" 时间轴，适用于连续的时序数据，与数值轴相比时间轴带有时间的格式化，在刻度计算上也有所不同，例如会根据跨度的范围来决定使用月，星期，日还是小时范围的刻度。
                 realtime: true,
                 //事实时更新数据
                 loop: true,
@@ -8397,10 +8519,10 @@ function getCategoryLineForGauge(container, themes) {
                 // currentIndex: 2,
                 playInterval: __ECHARTS__.configs.seriesLoopPlayInterval.value * 1000,
                 // controlStyle: {
-                //     position: 'left'
+                //     position: "left"
                 // },
-                symbol: 'emptyCircle',
-                //'circle', 'rect', 'roundRect', 'triangle', 'diamond', 'pin', 'arrow', 'none'
+                symbol: "emptyCircle",
+                //"circle", "rect", "roundRect", "triangle", "diamond", "pin", "arrow", "none"
                 symbolSize: 2,
                 data: times,
                 label: {
@@ -8465,56 +8587,52 @@ function getCategoryLineForLiqiud(container, themes) {
         for (var c = 1; c < columns.length; c++) {
             var serie = {
                 name: row[columns[0]].value,
-                type: 'liquidFill',
+                type: "liquidFill",
                 data: [],
-                color: ['#294D99', '#156ACF', '#1598ED', '#45BDFF'],
-                //center: ['50%', '50%'],
-                //radius: '50%',
-                amplitude: '8%',
-                waveLength: '80%',
-                phase: 'auto',
-                period: 'auto',
-                direction: 'right',
+                color: ["#294D99", "#156ACF", "#1598ED", "#45BDFF"],
+                //center: ["50%", "50%"],
+                //radius: "50%",
+                amplitude: "8%",
+                waveLength: "80%",
+                phase: "auto",
+                period: "auto",
+                direction: "right",
                 smooth: __ECHARTS__.configs.lineSmooth.value == "YES",
 
                 shape: __ECHARTS__.configs.liqiudShape.value=="whale"?__SYS_IMAGES_PATH__.whale:__ECHARTS__.configs.liqiudShape.value,
 
                 waveAnimation: true,
-                animationEasing: 'linear',
-                animationEasingUpdate: 'linear',
-                animationDuration: 2000,
-                animationDurationUpdate: 1000,
 
                 outline: {
                     show: true,
                     borderDistance: 3,
                     itemStyle: {
-                        color: '#1598ED',//'none',
-                        borderColor: '#294D99',
+                        color: "#1598ED",//"none",
+                        borderColor: "#294D99",
                         borderWidth: 2,
                         shadowBlur: 10,
-                        shadowColor: 'rgba(0, 0, 0, 0.25)'
+                        shadowColor: "rgba(0, 0, 0, 0.25)"
                     }
                 },
 
                 backgroundStyle: {
-                    color: '#E3F7FF'
+                    color: "#E3F7FF"
                 },
 
                 itemStyle: {
                     opacity: 0.6,
                     shadowBlur: 50,
-                    shadowColor: 'rgba(0, 0, 0, 0.4)'
+                    shadowColor: "rgba(0, 0, 0, 0.4)"
                 },
 
                 label: {
                     show: true,
-                    insideColor: '#fff',
+                    insideColor: "#fff",
                     fontSize: __ECHARTS__.configs.liqiudFontSize.value,
-                    fontWeight: 'bold',
-                    align: 'center',
-                    baseline: 'middle',
-                    position: 'inside'
+                    fontWeight: "bold",
+                    align: "center",
+                    baseline: "middle",
+                    position: "inside"
                 },
 
                 emphasis: {
@@ -8524,8 +8642,8 @@ function getCategoryLineForLiqiud(container, themes) {
                 },
                 animation: __ECHARTS__.configs.animation.value == "YES",
                 animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
-                animationEasing: __ECHARTS__.configs.animationEasing.value,
-                animationEasingUpdate: __ECHARTS__.configs.animationEasingUpdate.value,
+                animationEasing: getAnimationEasing(),
+                animationEasingUpdate: getAnimationEasingUpdate(),
             };
             serie.data.push({
                 name: columns[c],
@@ -8558,11 +8676,11 @@ function getCategoryLineForLiqiud(container, themes) {
             },
             timeline: {
                 show: __ECHARTS__.configs.timelineDisplay.value == "YES",
-                axisType: 'category',
+                axisType: "category",
                 //考虑数据通用性，使用类目轴
-                //'value' 数值轴，适用于连续数据。
-                // 'category' 类目轴，适用于离散的类目数据。
-                // 'time' 时间轴，适用于连续的时序数据，与数值轴相比时间轴带有时间的格式化，在刻度计算上也有所不同，例如会根据跨度的范围来决定使用月，星期，日还是小时范围的刻度。
+                //"value" 数值轴，适用于连续数据。
+                // "category" 类目轴，适用于离散的类目数据。
+                // "time" 时间轴，适用于连续的时序数据，与数值轴相比时间轴带有时间的格式化，在刻度计算上也有所不同，例如会根据跨度的范围来决定使用月，星期，日还是小时范围的刻度。
                 realtime: true,
                 //事实时更新数据
                 loop: true,
@@ -8572,10 +8690,10 @@ function getCategoryLineForLiqiud(container, themes) {
                 // currentIndex: 2,
                 playInterval: __ECHARTS__.configs.seriesLoopPlayInterval.value * 1000,
                 // controlStyle: {
-                //     position: 'left'
+                //     position: "left"
                 // },
-                symbol: 'emptyCircle',
-                //'circle', 'rect', 'roundRect', 'triangle', 'diamond', 'pin', 'arrow', 'none'
+                symbol: "emptyCircle",
+                //"circle", "rect", "roundRect", "triangle", "diamond", "pin", "arrow", "none"
                 symbolSize: 2,
                 data: times,
                 label: {
@@ -8699,7 +8817,7 @@ function getCategoryLineForGeoOfChina(container, themes) {
                         x2: __ECHARTS__.configs.grid_right.value,
                         y2: __ECHARTS__.configs.grid_bottom.value,
                         containLabel: __ECHARTS__.configs.grid_containLabel.value == "YES",
-                        backgroundColor: 'transparent'
+                        backgroundColor: "transparent"
                     },
                     //backgroundColor: __ECHARTS__.configs.geoBackgroundColor.value,
                     toolbox: {
@@ -8724,7 +8842,7 @@ function getCategoryLineForGeoOfChina(container, themes) {
                         formatter: function (params) {
                             var value = "";
                             try {
-                                value = params.name + '<br>' + params.seriesName + ': ' + ((params['value'].length == 3) ? params.data['value'][2] : params.data['value'])
+                                value = params.name + "<br>" + params.seriesName + ": " + ((params["value"].length == 3) ? params.data["value"][2] : params.data["value"])
                             } catch (e) {
                             }
                             return value
@@ -8768,7 +8886,7 @@ function getCategoryLineForGeoOfChina(container, themes) {
                                 areaColor: __ECHARTS__.configs.geoAreaColor.value,
                                 borderColor: __ECHARTS__.configs.geoBorderColor.value,
                                 shadowBlur: 50,
-                                shadowColor: 'rgba(0, 0, 0, 0.2)',
+                                shadowColor: "rgba(0, 0, 0, 0.2)",
                             },
                             emphasis: {
                                 areaColor: __ECHARTS__.configs.geoHotAreaColor.value
@@ -8784,8 +8902,8 @@ function getCategoryLineForGeoOfChina(container, themes) {
                         },
                         {
                             name: columns[c],
-                            type: 'effectScatter',//'scatter',//'effectScatter'
-                            coordinateSystem: 'geo',
+                            type: "effectScatter",//"scatter",//"effectScatter"
+                            coordinateSystem: "geo",
                             data: convertData(data.sort(function (a, b) {
                                 return b.value - a.value;
                             })),
@@ -8793,15 +8911,15 @@ function getCategoryLineForGeoOfChina(container, themes) {
                                 var value = val[2] / (max / __ECHARTS__.configs.scatterSymbolSize.value);
                                 return value < 5 ? 5 : value;
                             },
-                            showEffectOn: 'render',
+                            showEffectOn: "render",
                             rippleEffect: {
-                                brushType: 'stroke'
+                                brushType: "stroke"
                             },
                             hoverAnimation: true,
                             label: {
                                 normal: {
-                                    formatter: '{b}',
-                                    position: 'top',
+                                    formatter: "{b}",
+                                    position: "top",
                                     show: true,
                                     color: "gray"
                                 }
@@ -8810,7 +8928,7 @@ function getCategoryLineForGeoOfChina(container, themes) {
                                 normal: {
                                     color: __ECHARTS__.configs.geoAreaColor.value,
                                     shadowBlur: 10,
-                                    shadowColor: 'rgba(0, 0, 0, 0.2)',
+                                    shadowColor: "rgba(0, 0, 0, 0.2)",
                                 }
                             },
                             zlevel: 1
@@ -8819,14 +8937,14 @@ function getCategoryLineForGeoOfChina(container, themes) {
 
                     animation: __ECHARTS__.configs.animation.value == "YES",
                     animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
-                    animationEasing: __ECHARTS__.configs.animationEasing.value,
+                    animationEasing: getAnimationEasing(),
                     animationDuration: function (idx) {
                         return idx * Number(__ECHARTS__.configs.animationDuration.value) + c * Number(__ECHARTS__.configs.animationDuration.value);
                     },
                     animationDelay: function (idx) {
                         return idx * Number(__ECHARTS__.configs.animationDelay.value) + c * Number(__ECHARTS__.configs.animationDelay.value);
                     },
-                    animationEasingUpdate: __ECHARTS__.configs.animationEasingUpdate.value,
+                    animationEasingUpdate: getAnimationEasingUpdate(),
                     animationDurationUpdate: function (idx) {
                         return idx * Number(__ECHARTS__.configs.animationDurationUpdate.value) + c * Number(__ECHARTS__.configs.animationDurationUpdate.value);
                     },
@@ -8849,7 +8967,7 @@ function getCategoryLineForGeoOfChina(container, themes) {
                 x2: __ECHARTS__.configs.grid_right.value,
                 y2: __ECHARTS__.configs.grid_bottom.value,
                 containLabel: __ECHARTS__.configs.grid_containLabel.value == "YES",
-                backgroundColor: 'transparent'
+                backgroundColor: "transparent"
             },
             title: {
                 show: __ECHARTS__.configs.titleDisplay.value == "YES",
@@ -8866,11 +8984,11 @@ function getCategoryLineForGeoOfChina(container, themes) {
             },
             timeline: {
                 show: __ECHARTS__.configs.timelineDisplay.value == "YES",
-                axisType: 'category',
+                axisType: "category",
                 //考虑数据通用性，使用类目轴
-                //'value' 数值轴，适用于连续数据。
-                // 'category' 类目轴，适用于离散的类目数据。
-                // 'time' 时间轴，适用于连续的时序数据，与数值轴相比时间轴带有时间的格式化，在刻度计算上也有所不同，例如会根据跨度的范围来决定使用月，星期，日还是小时范围的刻度。
+                //"value" 数值轴，适用于连续数据。
+                // "category" 类目轴，适用于离散的类目数据。
+                // "time" 时间轴，适用于连续的时序数据，与数值轴相比时间轴带有时间的格式化，在刻度计算上也有所不同，例如会根据跨度的范围来决定使用月，星期，日还是小时范围的刻度。
                 realtime: true,
                 //事实时更新数据
                 loop: true,
@@ -8880,10 +8998,10 @@ function getCategoryLineForGeoOfChina(container, themes) {
                 // currentIndex: 2,
                 playInterval: __ECHARTS__.configs.seriesLoopPlayInterval.value * 1000,
                 // controlStyle: {
-                //     position: 'left'
+                //     position: "left"
                 // },
-                symbol: 'emptyCircle',
-                //'circle', 'rect', 'roundRect', 'triangle', 'diamond', 'pin', 'arrow', 'none'
+                symbol: "emptyCircle",
+                //"circle", "rect", "roundRect", "triangle", "diamond", "pin", "arrow", "none"
                 symbolSize: 2,
                 data: times,
                 label: {
@@ -8996,7 +9114,7 @@ function getCategoryLineForGeoOfLocal(container, themes) {
                         x2: __ECHARTS__.configs.grid_right.value,
                         y2: __ECHARTS__.configs.grid_bottom.value,
                         containLabel: __ECHARTS__.configs.grid_containLabel.value == "YES",
-                        backgroundColor: 'transparent'
+                        backgroundColor: "transparent"
                     },
                     //backgroundColor: __ECHARTS__.configs.geoBackgroundColor.value,
                     toolbox: {
@@ -9022,7 +9140,7 @@ function getCategoryLineForGeoOfLocal(container, themes) {
                         formatter: function (params) {
                             var value = "";
                             try {
-                                value = params.name + '<br>' + params.seriesName + ': ' + ((params['value'].length == 3) ? params.data['value'][2] : params.data['value'])
+                                value = params.name + "<br>" + params.seriesName + ": " + ((params["value"].length == 3) ? params.data["value"][2] : params.data["value"])
                             } catch (e) {
                             }
                             return value
@@ -9044,7 +9162,7 @@ function getCategoryLineForGeoOfLocal(container, themes) {
                         },
                         splitNumber: __ECHARTS__.configs.visualMap_piecewise_splitNumber.value,
                     },
-                    //backgroundColor: '#013954',
+                    //backgroundColor: "#013954",
                     geo: {
                         map: geoCoordMap.LocalMap,
                         roam: true,
@@ -9067,7 +9185,7 @@ function getCategoryLineForGeoOfLocal(container, themes) {
                                 areaColor: __ECHARTS__.configs.geoAreaColor.value,
                                 borderColor: __ECHARTS__.configs.geoBorderColor.value,
                                 shadowBlur: 50,
-                                shadowColor: 'rgba(0, 0, 0, 0.2)',
+                                shadowColor: "rgba(0, 0, 0, 0.2)",
                             },
                             emphasis: {
                                 areaColor: __ECHARTS__.configs.geoHotAreaColor.value
@@ -9083,8 +9201,8 @@ function getCategoryLineForGeoOfLocal(container, themes) {
                         },
                         {
                             name: columns[c],
-                            type: 'effectScatter',//'scatter',//'effectScatter'
-                            coordinateSystem: 'geo',
+                            type: "effectScatter",//"scatter",//"effectScatter"
+                            coordinateSystem: "geo",
                             data: convertData(data.sort(function (a, b) {
                                 return b.value - a.value;
                             })),
@@ -9092,15 +9210,15 @@ function getCategoryLineForGeoOfLocal(container, themes) {
                                 var value = val[2] / (max / __ECHARTS__.configs.scatterSymbolSize.value);
                                 return value < 5 ? 5 : value;
                             },
-                            showEffectOn: 'render',
+                            showEffectOn: "render",
                             rippleEffect: {
-                                brushType: 'stroke'
+                                brushType: "stroke"
                             },
                             hoverAnimation: true,
                             label: {
                                 normal: {
-                                    formatter: '{b}',
-                                    position: 'top',
+                                    formatter: "{b}",
+                                    position: "top",
                                     show: true,
                                     color: __ECHARTS__.configs.geoAreaNameColor.value,
                                 }
@@ -9109,7 +9227,7 @@ function getCategoryLineForGeoOfLocal(container, themes) {
                                 normal: {
                                     color: __ECHARTS__.configs.geoAreaColor.value,
                                     shadowBlur: 10,
-                                    shadowColor: 'rgba(0, 0, 0, 0.2)',
+                                    shadowColor: "rgba(0, 0, 0, 0.2)",
                                 }
                             },
                             zlevel: 1
@@ -9118,14 +9236,14 @@ function getCategoryLineForGeoOfLocal(container, themes) {
 
                     animation: __ECHARTS__.configs.animation.value == "YES",
                     animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
-                    animationEasing: __ECHARTS__.configs.animationEasing.value,
+                    animationEasing: getAnimationEasing(),
                     animationDuration: function (idx) {
                         return idx * Number(__ECHARTS__.configs.animationDuration.value) + c * Number(__ECHARTS__.configs.animationDuration.value);
                     },
                     animationDelay: function (idx) {
                         return idx * Number(__ECHARTS__.configs.animationDelay.value) + c * Number(__ECHARTS__.configs.animationDelay.value);
                     },
-                    animationEasingUpdate: __ECHARTS__.configs.animationEasingUpdate.value,
+                    animationEasingUpdate: getAnimationEasingUpdate(),
                     animationDurationUpdate: function (idx) {
                         return idx * Number(__ECHARTS__.configs.animationDurationUpdate.value) + c * Number(__ECHARTS__.configs.animationDurationUpdate.value);
                     },
@@ -9147,7 +9265,7 @@ function getCategoryLineForGeoOfLocal(container, themes) {
                 x2: __ECHARTS__.configs.grid_right.value,
                 y2: __ECHARTS__.configs.grid_bottom.value,
                 containLabel: __ECHARTS__.configs.grid_containLabel.value == "YES",
-                backgroundColor: 'transparent'
+                backgroundColor: "transparent"
             },
             title: {
                 show: __ECHARTS__.configs.titleDisplay.value == "YES",
@@ -9164,11 +9282,11 @@ function getCategoryLineForGeoOfLocal(container, themes) {
             },
             timeline: {
                 show: __ECHARTS__.configs.timelineDisplay.value == "YES",
-                axisType: 'category',
+                axisType: "category",
                 //考虑数据通用性，使用类目轴
-                //'value' 数值轴，适用于连续数据。
-                // 'category' 类目轴，适用于离散的类目数据。
-                // 'time' 时间轴，适用于连续的时序数据，与数值轴相比时间轴带有时间的格式化，在刻度计算上也有所不同，例如会根据跨度的范围来决定使用月，星期，日还是小时范围的刻度。
+                //"value" 数值轴，适用于连续数据。
+                // "category" 类目轴，适用于离散的类目数据。
+                // "time" 时间轴，适用于连续的时序数据，与数值轴相比时间轴带有时间的格式化，在刻度计算上也有所不同，例如会根据跨度的范围来决定使用月，星期，日还是小时范围的刻度。
                 realtime: true,
                 //事实时更新数据
                 loop: true,
@@ -9178,10 +9296,10 @@ function getCategoryLineForGeoOfLocal(container, themes) {
                 // currentIndex: 2,
                 playInterval: __ECHARTS__.configs.seriesLoopPlayInterval.value * 1000,
                 // controlStyle: {
-                //     position: 'left'
+                //     position: "left"
                 // },
-                symbol: 'emptyCircle',
-                //'circle', 'rect', 'roundRect', 'triangle', 'diamond', 'pin', 'arrow', 'none'
+                symbol: "emptyCircle",
+                //"circle", "rect", "roundRect", "triangle", "diamond", "pin", "arrow", "none"
                 symbolSize: 2,
                 data: times,
                 label: {
