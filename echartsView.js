@@ -53,10 +53,10 @@ var __ECHARTS__ = {
         grid_bottom: {name: "下边距(%)", value: "10%", type: "input"},
         grid_left: {name: "左边距(%)", value: "10%", type: "input"},
         grid_right: {name: "右边距(%)", value: "10%", type: "input"},
-        grid_containLabel: {name: "包含轴标签", value: "YES", options: ["YES", "NO"], type: "select"},
+        grid_containLabel: {name: "包含轴标签", value: "YES", options: [new Option("是","YES"), new Option("否","NO")], type: "select"},
 
         hr_toolbox: {name: "图形工具", value: "", type: "hr"},
-        toolboxDisplay: {name: "是否显示", value: "YES", options: ["YES", "NO"], type: "select"},
+        toolboxDisplay: {name: "是否显示", value: "YES", options: [new Option("是","YES"), new Option("否","NO")], type: "select"},
         toolbox_top: {name: "上边距(%)", value: "1%", type: "input"},
         toolbox_left: {name: "左边距(%)", value: "", type: "input"},
         toolbox_orient: {
@@ -68,18 +68,18 @@ var __ECHARTS__ = {
         toolbox_textPosition: {
             name: "文字位置",
             value: "left",
-            options: ["top", "bottom", "left", "right"],
+            options: [new Option("顶部","top"), new Option("底部","bottom"), new Option("左边","left"), new Option("右边","right")],
             type: "select"
         },
-        toolboxFeatureSaveAsImage: {name: "保存图像", value: "YES", options: ["YES", "NO"], type: "select"},
-        toolboxFeatureRestore: {name: "还原", value: "YES", options: ["YES", "NO"], type: "select"},
-        toolboxFeatureDataView: {name: "数据视图", value: "NO", options: ["YES", "NO"], type: "select"},
-        toolboxFeatureDataZoom: {name: "数据缩放", value: "YES", options: ["YES", "NO"], type: "select"},
-        toolboxFeatureMagicType: {name: "图像转换", value: "YES", options: ["YES", "NO"], type: "select"},
-        toolboxFeatureBrush: {name: "区域选择", value: "NO", options: ["YES", "NO"], type: "select"},
+        toolboxFeatureSaveAsImage: {name: "保存图像", value: "YES", options: [new Option("是","YES"), new Option("否","NO")], type: "select"},
+        toolboxFeatureRestore: {name: "还原", value: "YES", options: [new Option("是","YES"), new Option("否","NO")], type: "select"},
+        toolboxFeatureDataView: {name: "数据视图", value: "NO", options: [new Option("是","YES"), new Option("否","NO")], type: "select"},
+        toolboxFeatureDataZoom: {name: "数据缩放", value: "YES", options: [new Option("是","YES"), new Option("否","NO")], type: "select"},
+        toolboxFeatureMagicType: {name: "图像转换", value: "YES", options: [new Option("是","YES"), new Option("否","NO")], type: "select"},
+        toolboxFeatureBrush: {name: "区域选择", value: "NO", options: [new Option("是","YES"), new Option("否","NO")], type: "select"},
 
         hr_tooltip: {name: "提示组件", value: "", type: "hr"},
-        tooltipDisplay: {name: "是否显示", value: "YES", options: ["YES", "NO"], type: "select"},
+        tooltipDisplay: {name: "是否显示", value: "YES", options: [new Option("是","YES"), new Option("否","NO")], type: "select"},
         axisPointerType: {
             name: "指示器类型",
             value: "shadow",
@@ -88,15 +88,15 @@ var __ECHARTS__ = {
         },
 
         hr_title: {name: "标题", value: "", type: "hr"},
-        titleDisplay: {name: "是否显示", value: "YES", options: ["YES", "NO"], type: "select"},
-        titlePosition: {name: "标题位置", value: "left", options: ["left", "center", "right"], type: "select"},
+        titleDisplay: {name: "是否显示", value: "YES", options: [new Option("是","YES"), new Option("否","NO")], type: "select"},
+        titlePosition: {name: "标题位置", value: "left", options: [new Option("左边","left"), new Option("居中","center"), new Option("右边","right")], type: "select"},
         titleText: {name: "主标题名称", value: "", type: "input"},
         titleTextColor: {value: "#e6e6e6", name: "主标题颜色", type: "color"},
         titleSubText: {name: "副标题名称", value: "", type: "input"},
         titleSubTextColor: {value: "#e6e6e6", name: "副标题颜色", type: "color"},
 
         hr_legend: {name: "图例", value: "", type: "hr"},
-        legendDisplay: {name: "是否显示", value: "YES", options: ["YES", "NO"], type: "select"},
+        legendDisplay: {name: "是否显示", value: "YES", options: [new Option("是","YES"), new Option("否","NO")], type: "select"},
         legendIcon: {
             name: "图标",
             value: "circle",
@@ -126,37 +126,38 @@ var __ECHARTS__ = {
         legendTextColor: {name: "文字颜色", value: "#e6e6e6", type: "color"},
 
         hr_axis: {name: "坐标轴", value: "", type: "hr"},
-        axisLineDisplay: {name: "是否显示", value: "YES", options: ["YES", "NO"], type: "select"},
+        axisLineDisplay: {name: "是否显示", value: "YES", options: [new Option("是","YES"), new Option("否","NO")], type: "select"},
         axisColor: {name: "轴线颜色", value: "#e6e6e6", type: "color"},
         axisTextColor: {name: "标签颜色", value: "#e6e6e6", type: "color"},
-        splitXLineDisplay: {name: "显示X轴分隔线", value: "NO", options: ["YES", "NO"], type: "select"},
-        splitYLineDisplay: {name: "显示Y轴分隔线", value: "NO", options: ["YES", "NO"], type: "select"},
-        splitXAreaDisplay: {name: "显示X轴分割区", value: "NO", options: ["YES", "NO"], type: "select"},
-        splitYAreaDisplay: {name: "显示Y轴分割区", value: "NO", options: ["YES", "NO"], type: "select"},
-        xAxisInverse: {name: "X轴反向", value: "NO", options: ["YES", "NO"], type: "select"},
-        yAxisInverse: {name: "Y轴反向", value: "NO", options: ["YES", "NO"], type: "select"},
+        splitXLineDisplay: {name: "显示X轴分隔线", value: "NO", options: [new Option("是","YES"), new Option("否","NO")], type: "select"},
+        splitYLineDisplay: {name: "显示Y轴分隔线", value: "NO", options: [new Option("是","YES"), new Option("否","NO")], type: "select"},
+        splitXAreaDisplay: {name: "显示X轴分割区", value: "NO", options: [new Option("是","YES"), new Option("否","NO")], type: "select"},
+        splitYAreaDisplay: {name: "显示Y轴分割区", value: "NO", options: [new Option("是","YES"), new Option("否","NO")], type: "select"},
+        xAxisInverse: {name: "X轴反向", value: "NO", options: [new Option("是","YES"), new Option("否","NO")], type: "select"},
+        yAxisInverse: {name: "Y轴反向", value: "NO", options: [new Option("是","YES"), new Option("否","NO")], type: "select"},
 
         hr_bar: {name: "柱状图", value: "", type: "hr"},
-        barLabelDisplay: {name: "显示标签", value: "NO", options: ["YES", "NO"], type: "select"},
-        barEmphasisLabelDisplay: {name: "显示热点标签", value: "NO", options: ["YES", "NO"], type: "select"},
+        barLabelDisplay: {name: "显示标签", value: "NO", options: [new Option("是","YES"), new Option("否","NO")], type: "select"},
+        barEmphasisLabelDisplay: {name: "显示热点标签", value: "NO", options: [new Option("是","YES"), new Option("否","NO")], type: "select"},
         labelBarTextColor: {name: "标签颜色", value: "auto", type: "color"},
-        labelBarFontSize: {name: "标签字号(px)", value: 12, type: "input"},
+        labelBarFontSize: {name: "标签字号", value: 12, type: "input"},
         barLabelPosition: {
             name: "标签位置",
             value: "top",
-            options: ["top", "left", "right", "bottom", "insideTop", "insideLeft", "insideRight", "insideBottom"],
+            options: [new Option("顶部", "top"), new Option("左边", "left"), new Option("右边", "right"), new Option("底部", "bottom"),
+                new Option("内部顶部", "insideTop"), new Option("内部左边", "insideLeft"), new Option("内部右边", "insideRight"), new Option("内部底部", "insideBottom")],
             type: "select"
         },
         barLabelRotate: {name: "标签旋转度数", value: 0, type: "input"},
 
         hr_line: {name: "线形图", value: "", type: "hr"},
-        lineStyleWidth: {name: "线条宽度(px)", value: 2, type: "input"},
-        lineLabelDisplay: {name: "显示标签", value: "NO", options: ["YES", "NO"], type: "select"},
-        lineEmphasisLabelDisplay: {name: "显示热点标签", value: "YES", options: ["YES", "NO"], type: "select"},
+        lineStyleWidth: {name: "线条宽度", value: 2, type: "input"},
+        lineLabelDisplay: {name: "显示标签", value: "NO", options: [new Option("是","YES"), new Option("否","NO")], type: "select"},
+        lineEmphasisLabelDisplay: {name: "显示热点标签", value: "YES", options: [new Option("是","YES"), new Option("否","NO")], type: "select"},
         lineLabelTextColor: {name: "标签颜色", value: "auto", type: "color"},
         lineLabelRotate: {name: "标签旋转度数", value: 0, type: "input"},
-        lineLabelFontSize: {name: "标签字号(px)", value: 12, type: "input"},
-        lineSmooth: {name: "使用平滑线", value: "YES", options: ["YES", "NO"], type: "select"},
+        lineLabelFontSize: {name: "标签字号", value: 12, type: "input"},
+        lineSmooth: {name: "使用平滑线", value: "YES", options: [new Option("是","YES"), new Option("否","NO")], type: "select"},
         lineSymbol: {
             name: "数据符号",
             value: "emptyCircle",
@@ -164,17 +165,17 @@ var __ECHARTS__ = {
             type: "select"
         },
         lineSymbolSize: {name: "符号大小", value: 5, type: "input"},
-        lineMarkPointMin: {name: "最小值点", value: "NO", options: ["YES", "NO"], type: "select"},
-        lineMarkPointMax: {name: "最大值点", value: "NO", options: ["YES", "NO"], type: "select"},
-        lineMarkLineMin: {name: "最小值线", value: "NO", options: ["YES", "NO"], type: "select"},
-        lineMarkLineMax: {name: "最大值线", value: "NO", options: ["YES", "NO"], type: "select"},
-        lineMarkLineAvg: {name: "平均值线", value: "NO", options: ["YES", "NO"], type: "select"},
+        lineMarkPointMin: {name: "最小值点", value: "NO", options: [new Option("是","YES"), new Option("否","NO")], type: "select"},
+        lineMarkPointMax: {name: "最大值点", value: "NO", options: [new Option("是","YES"), new Option("否","NO")], type: "select"},
+        lineMarkLineMin: {name: "最小值线", value: "NO", options: [new Option("是","YES"), new Option("否","NO")], type: "select"},
+        lineMarkLineMax: {name: "最大值线", value: "NO", options: [new Option("是","YES"), new Option("否","NO")], type: "select"},
+        lineMarkLineAvg: {name: "平均值线", value: "NO", options: [new Option("是","YES"), new Option("否","NO")], type: "select"},
 
         hr_regression: {name: "趋势/回归", value: "", type: "hr"},
         regressionType: {name: "趋势/回归类型", value: "直线", options: ["直线", "指数", "对数", "多项式"], type: "select"},
         regressionPolynomialOrder: {name: "多项式阶数", value: 2, type: "input"},
         regressionForwardPeroids: {name: "趋势/回归前推周期", value: 0, type: "input"},
-        regressionExpressionDisplay: {name: "显示表达式", value: "NO", options: ["YES", "NO"], type: "select"},
+        regressionExpressionDisplay: {name: "显示表达式", value: "NO", options: [new Option("是","YES"), new Option("否","NO")], type: "select"},
         regressionExpressionColor: {name: "表达式颜色", value: "auto", type: "color"},
 
         hr_pie: {name: "饼图/圆环/玫瑰", value: "", type: "hr"},
@@ -186,10 +187,10 @@ var __ECHARTS__ = {
             options: [new Option("单选", "single"), new Option("多选", "multiple")],
             type: "select"
         },
-        pieLabelDisplay: {name: "显示标签", value: "YES", options: ["YES", "NO"], type: "select"},
-        pieLabelFontSize: {name: "标签字号(px)", value: 12, type: "input"},
+        pieLabelDisplay: {name: "显示标签", value: "YES", options: [new Option("是","YES"), new Option("否","NO")], type: "select"},
+        pieLabelFontSize: {name: "标签字号", value: 12, type: "input"},
         pieLabelAlignTo: {name: "标签对齐方式", value: "none", options: [new Option("不对齐", "none"), new Option("标签线", "labelLine"), new Option("边缘", "edge")], type: "select"},
-        richTextLabel: {name: "富文本标签", value: "NO", options: ["YES", "NO"], type: "select"},
+        richTextLabel: {name: "富文本标签", value: "NO", options: [new Option("是","YES"), new Option("否","NO")], type: "select"},
         groupWith: {name: "每行序列数", value: 2, type: "input"},
         animationType: {
             name: "初始动画",
@@ -211,14 +212,14 @@ var __ECHARTS__ = {
             options: [new Option("圆形", "circle"), new Option("多边形", "polygon")],
             type: "select"
         },
-        radarAreaDisplay: {name: "显示分区", value: "YES", options: ["YES", "NO"], type: "select"},
-        radarNameDisplay: {name: "显示名称", value: "YES", options: ["YES", "NO"], type: "select"},
+        radarAreaDisplay: {name: "显示分区", value: "YES", options: [new Option("是","YES"), new Option("否","NO")], type: "select"},
+        radarNameDisplay: {name: "显示名称", value: "YES", options: [new Option("是","YES"), new Option("否","NO")], type: "select"},
         radarLabelRotate: {name: "标签旋转度数", value: 0, type: "input"},
         radarSplitNumber: {name: "分割段数", value: 5, type: "input"},
-        radarSameMax: {name: "同基比较", value: "NO", options: ["YES", "NO"], type: "select"},
+        radarSameMax: {name: "同基比较", value: "NO", options: [new Option("是","YES"), new Option("否","NO")], type: "select"},
 
         hr_scatter: {name: "散点图", value: "", type: "hr"},
-        scatterSymbolSize: {name: "数据点大小(px)", value: 6, type: "input"},
+        scatterSymbolSize: {name: "数据点大小", value: 6, type: "input"},
         scatterSymbolShape: {
             name: "数据点形状",
             value: "circle",
@@ -233,8 +234,8 @@ var __ECHARTS__ = {
             options: [new Option("圆形", "circle"), new Option("心形", "cardioid"), new Option("菱形", "diamond"), new Option("三角形", "triangle"), new Option("右向三角形", "triangle-forward"), new Option("五边形", "pentagon"), new Option("星形", "star")],
             type: "select"
         },
-        wordCloudMinFontSize: {name: "最小字号(px)", value: 12, type: "input"},
-        wordCloudMaxFontSize: {name: "最大字号(px)", value: 60, type: "input"},
+        wordCloudMinFontSize: {name: "最小字号", value: 12, type: "input"},
+        wordCloudMaxFontSize: {name: "最大字号", value: 60, type: "input"},
         wordCloudRotationRange: {name: "旋转角度", value: 90, type: "input"},
 
         hr_liqiud: {name: "水球图", value: "", type: "hr"},
@@ -244,13 +245,13 @@ var __ECHARTS__ = {
             options: [new Option("圆形", "circle"), new Option("四边形", "rect"), new Option("圆角四边形", "roundRect"), new Option("三角形", "triangle"), new Option("菱形", "diamond"), new Option("图钉", "pin"), new Option("箭头", "arrow"), new Option("容器", "container"), new Option("鲸鱼", "whale")],
             type: "select"
         },
-        liqiudFontSize: {name: "标题字号(px)", value: 16, type: "input"},
+        liqiudFontSize: {name: "标题字号", value: 16, type: "input"},
 
         hr_gauge: {name: "仪表盘", value: "", type: "hr"},
-        gaugeAxisLabelFontSize: {name: "刻度字号(px)", value: 10, type: "input"},
-        gaugeTitleFontSize: {name: "标题字号(px)", value: 14, type: "input"},
-        gaugeLabelFontSize: {name: "标签字号(px)", value: 18, type: "input"},
-        gaugeAxisLineWidth: {name: "圆轴宽度(px)", value: 10, type: "input"},
+        gaugeAxisLabelFontSize: {name: "刻度字号", value: 10, type: "input"},
+        gaugeTitleFontSize: {name: "标题字号", value: 14, type: "input"},
+        gaugeLabelFontSize: {name: "标签字号", value: 18, type: "input"},
+        gaugeAxisLineWidth: {name: "圆轴宽度", value: 10, type: "input"},
 
         hr_calendar: {name: "日历图", value: "", type: "hr"},
         calendarType: {
@@ -269,21 +270,21 @@ var __ECHARTS__ = {
         hr_3D: {name: "3D图形", value: "", type: "hr"},
         BoxWidthFor3D: {name: "宽度(X轴)", value: 200, type: "input"},
         BoxDepthFor3D: {name: "深度(Y轴)", value: 80, type: "input"},
-        AutoRotateFor3D: {name: "自动旋转", value: "YES", options: ["YES", "NO"], type: "select"},
+        AutoRotateFor3D: {name: "自动旋转", value: "YES", options: [new Option("是","YES"), new Option("否","NO")], type: "select"},
         AutoRotateSpeedFor3D: {name: "旋转速度", value: 10, type: "input"},
-        LabelOf3DDisplay: {name: "显示标签", value: "NO", options: ["YES", "NO"], type: "select"},
+        LabelOf3DDisplay: {name: "显示标签", value: "NO", options: [new Option("是","YES"), new Option("否","NO")], type: "select"},
         label3DTextColor: {name: "标签颜色", value: "auto", type: "color"},
-        label3DFontSize: {name: "标签字号(px)", value: 12, type: "input"},
+        label3DFontSize: {name: "标签字号", value: 12, type: "input"},
         ItemStyleOpacityFor3D: {name: "透明度", value: 1, type: "input"},
-        LightShadowFor3D: {name: "显示光线阴影", value: "YES", options: ["YES", "NO"], type: "select"},
-        axisPointerDisplay: {name: "坐标轴指示器", value: "NO", options: ["YES", "NO"], type: "select"},
+        LightShadowFor3D: {name: "显示光线阴影", value: "YES", options: [new Option("是","YES"), new Option("否","NO")], type: "select"},
+        axisPointerDisplay: {name: "坐标轴指示器", value: "NO", options: [new Option("是","YES"), new Option("否","NO")], type: "select"},
 
         hr_geo: {name: "地图", value: "", type: "hr"},
         //geoBackgroundColor: {value: "#404a59", name: "地图背景颜色", type: "color"},
         geoAreaColor: {value: "#323c48", name: "区域颜色", type: "color"},
         geoBorderColor: {value: "#404a59", name: "边界颜色", type: "color"},
         geoHotAreaColor: {value: "#2a333d", name: "热点区域颜色", type: "color"},
-        geoAreaNameDisplay: {name: "显示地区名称", value: "NO", options: ["YES", "NO"], type: "select"},
+        geoAreaNameDisplay: {name: "显示地区名称", value: "NO", options: [new Option("是","YES"), new Option("否","NO")], type: "select"},
         geoAreaNameColor: {name: "地区名称颜色", value: "auto", type: "color"},
         geoLineSymbol: {
             name: "符号",
@@ -296,7 +297,7 @@ var __ECHARTS__ = {
         geoLinePeriod: {name: "周期速度(秒)", value: 5, type: "input"},
 
         hr_timeline: {name: "时间/类目轴", value: "", type: "hr"},
-        timelineDisplay: {name: "是否显示", value: "YES", options: ["YES", "NO"], type: "select"},
+        timelineDisplay: {name: "是否显示", value: "YES", options: [new Option("是","YES"), new Option("否","NO")], type: "select"},
         categoryLineType: {
             name: "序列图形",
             value: "bar",
@@ -306,9 +307,9 @@ var __ECHARTS__ = {
         seriesLoopPlayInterval: {name: "间隔(秒)", value: 3, type: "input"},
 
         hr_dataZoom: {name: "数据缩放", value: "", type: "hr"},
-        dataZoomBarDisplay: {name: "是否显示", value: "NO", options: ["YES", "NO"], type: "select"},
+        dataZoomBarDisplay: {name: "是否显示", value: "NO", options: [new Option("是","YES"), new Option("否","NO")], type: "select"},
         dataZoomBarColor: {value: "#404a59", name: "组件颜色", type: "color"},
-        dataZoomBarWidth: {name: "宽度(px)", value: 45, type: "input"},
+        dataZoomBarWidth: {name: "宽度", value: 45, type: "input"},
         dataZoomFilterMode: {
             name: "模式",
             value: "filter",
@@ -324,7 +325,7 @@ var __ECHARTS__ = {
         dataZoomHandleSize: {name: "手柄大小", value: "100%", type: "input"},
 
         hr_visualMap: {name: "视觉映射", value: "", type: "hr"},
-        visualMapDisplay: {name: "是否显示", value: "NO", options: ["YES", "NO"], type: "select"},
+        visualMapDisplay: {name: "是否显示", value: "NO", options: [new Option("是","YES"), new Option("否","NO")], type: "select"},
         visualMap_type: {
             name: "类型",
             value: "continuous",
@@ -345,9 +346,8 @@ var __ECHARTS__ = {
         visualMap_piecewise_splitNumber: {name: "分段", value: "5", type: "input"},
 
         hr_animation: {name: "动画设置", value: "", type: "hr"},
-        animation: {name: "启用动画", value: "YES", options: ["YES", "NO"], type: "select"},
+        animation: {name: "启用动画", value: "YES", options: [new Option("是","YES"), new Option("否","NO")], type: "select"},
         animationThreshold: {name: "启动动画阈值", value: 2000, type: "input"},
-        animationFunctionType: {name: "函数类型", value: "In", options: ["In", "Out", "InOut"], type: "select"},
         animationEasing: {
             name: "初始动画",
             value: "linear",
@@ -368,6 +368,7 @@ var __ECHARTS__ = {
         },
         animationDurationUpdate: {name: "更新动画时长", value: 1000, type: "input"},
         animationDelayUpdate: {name: "更新动画延时", value: 10, type: "input"},
+        animationFunctionType: {name: "动画附加", value: "In", options: ["In", "Out", "InOut"], type: "select"},
 
         hr_report: {name: "报表设置", value: "", type: "hr"},
         reportFontSize: {
