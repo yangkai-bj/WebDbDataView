@@ -2380,8 +2380,10 @@ function init() {
     saveas.appendChild(__SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.unload_sql));
     let help_downloadsql = $("help-download-sql");
     saveas.onclick = help_downloadsql.onclick = function () {
-        var blob = new Blob([str2ab(__SQLEDITOR__.codeMirror.getValue())], {type: "application/octet-stream"});
-        openDownloadDialog(blob, "WebSQLiteDataView.sql");
+        let blob = new Blob([str2ab(__SQLEDITOR__.codeMirror.getValue())], {type: "application/octet-stream"});
+        let title = __SQLEDITOR__.title != null?__SQLEDITOR__.title.split("_")[0]:prompt("请输入文件名称:");
+        if (title != null && title.trim() != "")
+            openDownloadDialog(blob, title + ".sql");
     };
     sqltools.appendChild(saveas);
     setTooltip(saveas, "导出<br>脚本");
@@ -2706,8 +2708,10 @@ function init() {
                 }
                 aoa.push(row);
             }
-            var sheet = XLSX.utils.aoa_to_sheet(aoa);
-            openDownloadDialog(sheet2blob(sheet), 'WebSQLiteDataView.xlsx');
+            let sheet = XLSX.utils.aoa_to_sheet(aoa);
+            let title = __SQLEDITOR__.title != null ? __SQLEDITOR__.title.split("_")[0] : prompt("请输入文件名称:");
+            if (title != null && title.trim() != "")
+                openDownloadDialog(sheet2blob(sheet), title + ".xlsx");
         }
     };
     setTooltip(download, "下载<br>数据集");
