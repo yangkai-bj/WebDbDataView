@@ -28,7 +28,8 @@ var __ECHARTS__ = {
         "类目轴": "CategoryLine",
         "全国地图": "GeoOfChina",
         "本地地图": "GeoOfLocal",
-        "迁徙地图": "GeoMigrateLinesOfChinaCity"
+        "迁徙地图": "GeoMigrateLinesOfChinaCity",
+        "数据滚屏": "ScrollingScreen",
     },
     themes: {
         "Default": "",
@@ -1490,6 +1491,8 @@ function getEcharts(type, width, height, themes) {
         case "GeoMigrateLinesOfChinaCity":
             return getGeoMigrateLinesOfChinaCity(container,themes);
             break;
+        case "ScrollingScreen":
+            return getScrollingScreen(container,themes);
     }
 }
 
@@ -1499,6 +1502,62 @@ function getAnimationEasing(){
 
 function getAnimationEasingUpdate(){
     return __ECHARTS__.configs.animationEasingUpdate.value == "linear"?__ECHARTS__.configs.animationEasingUpdate.value:__ECHARTS__.configs.animationEasingUpdate.value + __ECHARTS__.configs.animationFunctionType.value;
+}
+
+function getGraphic(link) {
+    let graphic = [
+        {
+            type: 'group',
+            rotation: Math.PI / 4,
+            bounding: 'raw',
+            right: 110,
+            bottom: 110,
+            z: -100,
+            onclick: function (){
+                window.open(messageDecode(link.link))},
+            children: [
+                {
+                    type: 'image',
+                    z: -10,
+                    left: 'center',
+                    top: 'center',
+                    position: [90,0],
+                    style: {
+                        image: link.image,
+                        width: 36,
+                        height: 30.55,
+                        opacity: link.opacity,
+                    }
+                },
+                {
+                    type: 'rect',
+                    left: 'center',
+                    top: 'center',
+                    z: -100,
+                    shape: {
+                        width: 400,
+                        height: 50
+                    },
+                    style: {
+                        fill: 'rgba(0,0,0,0.3)',
+                        opacity: link.opacity,
+                    }
+                },
+                {
+                    type: 'text',
+                    left: 'center',
+                    top: 'center',
+                    z: -100,
+                    style: {
+                        fill: '#fff',
+                        text: messageDecode(link.title).trim(),
+                        font: 'bold 18px Microsoft YaHei',
+                        opacity: link.opacity,
+                    }
+                }
+            ]
+        }];
+    return graphic;
 }
 
 function getBar(container, themes) {
@@ -1590,14 +1649,17 @@ function getBar(container, themes) {
             containLabel: __ECHARTS__.configs.grid_containLabel.value == "YES",
             backgroundColor: "transparent"
         },
-        brush:  __ECHARTS__.configs.toolboxFeatureBrush.value == "YES"?{
+        brush: __ECHARTS__.configs.toolboxFeatureBrush.value == "YES" ? {
             toolbox: ["rect", "polygon", "lineX", "lineY", "keep", "clear"],
             xAxisIndex: 0
-        }:null,
+        } : null,
         toolbox: {
             show: __ECHARTS__.configs.toolboxDisplay.value == "YES",
             feature: {
-                saveAsImage: {show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES"},
+                saveAsImage: {
+                    show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES",
+                    excludeComponents: ["toolbox", "dataZoom", "timeline", "visualMap", "brush"]
+                },
                 restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
                 dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
                 dataZoom: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES"},
@@ -1607,7 +1669,7 @@ function getBar(container, themes) {
                 },
             },
             top: __ECHARTS__.configs.toolbox_top.value,
-            left:__ECHARTS__.configs.toolbox_left.value,
+            left: __ECHARTS__.configs.toolbox_left.value,
             orient: __ECHARTS__.configs.toolbox_orient.value,
             emphasis: {
                 iconStyle: {
@@ -1618,6 +1680,7 @@ function getBar(container, themes) {
         title: {
             show: __ECHARTS__.configs.titleDisplay.value == "YES",
             text: __ECHARTS__.configs.titleText.value,
+            link: messageDecode(__SYS_LOGO_LINK__.link),
             subtext: __ECHARTS__.configs.titleSubText.value,
             top: "top",
             left: __ECHARTS__.configs.titlePosition.value,
@@ -1659,7 +1722,7 @@ function getBar(container, themes) {
                     color: __ECHARTS__.configs.axisColor.value
                 },
             },
-            axisTick:{
+            axisTick: {
                 show: __ECHARTS__.configs.axisLineDisplay.value == "YES",
             },
             axisLabel: {
@@ -1691,7 +1754,7 @@ function getBar(container, themes) {
                     color: __ECHARTS__.configs.axisColor.value
                 },
             },
-            axisTick:{
+            axisTick: {
                 show: __ECHARTS__.configs.axisLineDisplay.value == "YES",
             },
             axisLabel: {
@@ -1713,18 +1776,18 @@ function getBar(container, themes) {
             }
         },
         dataZoom: [{
-                type: "inside",
-                filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
-                start: 0,
-                xAxisIndex: 0,
-                end: 100
-            },{
-                type: "inside",
-                filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
-                start: 0,
-                yAxisIndex: 0,
-                end: 100
-            }, {
+            type: "inside",
+            filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
+            start: 0,
+            xAxisIndex: 0,
+            end: 100
+        }, {
+            type: "inside",
+            filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
+            start: 0,
+            yAxisIndex: 0,
+            end: 100
+        }, {
             show: __ECHARTS__.configs.dataZoomBarDisplay.value == "YES",
             type: "slider",
             filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
@@ -1741,7 +1804,7 @@ function getBar(container, themes) {
             handleStyle: {
                 color: __ECHARTS__.configs.dataZoomBarColor.value,
             },
-            textStyle:{
+            textStyle: {
                 color: __ECHARTS__.configs.dataZoomBarColor.value,
             },
         }, {
@@ -1761,10 +1824,11 @@ function getBar(container, themes) {
             handleStyle: {
                 color: __ECHARTS__.configs.dataZoomBarColor.value,
             },
-            textStyle:{
+            textStyle: {
                 color: __ECHARTS__.configs.dataZoomBarColor.value,
             },
         }],
+        graphic: getGraphic(__SYS_LOGO_LINK__),
         series: yAxis_series,
     };
     myChart.setOption(option);
@@ -1865,7 +1929,10 @@ function getTransversBar(container, themes) {
         toolbox: {
             show: __ECHARTS__.configs.toolboxDisplay.value == "YES",
             feature: {
-                saveAsImage: {show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES"},
+                saveAsImage: {
+                    show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES",
+                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"]
+                },
                 restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
                 dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
                 dataZoom: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES"},
@@ -1886,6 +1953,7 @@ function getTransversBar(container, themes) {
         title: {
             show: __ECHARTS__.configs.titleDisplay.value == "YES",
             text: __ECHARTS__.configs.titleText.value,
+            link: messageDecode(__SYS_LOGO_LINK__.link),
             subtext: __ECHARTS__.configs.titleSubText.value,
             top: "top",
             left: __ECHARTS__.configs.titlePosition.value,
@@ -2026,6 +2094,7 @@ function getTransversBar(container, themes) {
                 color: __ECHARTS__.configs.dataZoomBarColor.value,
             }
         }],
+        graphic: getGraphic(__SYS_LOGO_LINK__),
         series: yAxis_series,
     };
     myChart.setOption(option);
@@ -2148,7 +2217,10 @@ function getLine(container, themes) {
         toolbox: {
             show: __ECHARTS__.configs.toolboxDisplay.value == "YES",
             feature: {
-                saveAsImage: {show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES"},
+                saveAsImage: {
+                    show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES",
+                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"]
+                },
                 restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
                 dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
                 dataZoom: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES"},
@@ -2169,6 +2241,7 @@ function getLine(container, themes) {
         title: {
             show: __ECHARTS__.configs.titleDisplay.value == "YES",
             text: __ECHARTS__.configs.titleText.value,
+            link: messageDecode(__SYS_LOGO_LINK__.link),
             subtext: __ECHARTS__.configs.titleSubText.value,
             top: "top",
             left: __ECHARTS__.configs.titlePosition.value,
@@ -2309,6 +2382,7 @@ function getLine(container, themes) {
                 color: __ECHARTS__.configs.dataZoomBarColor.value,
             }
         }],
+        graphic: getGraphic(__SYS_LOGO_LINK__),
         series: yAxis_series,
     };
 
@@ -2471,7 +2545,10 @@ function getBarAndLine(container, themes) {
         toolbox: {
             show: __ECHARTS__.configs.toolboxDisplay.value == "YES",
             feature: {
-                saveAsImage: {show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES"},
+                saveAsImage: {
+                    show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES",
+                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"]
+                },
                 restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
                 dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
                 dataZoom: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES"},
@@ -2492,6 +2569,7 @@ function getBarAndLine(container, themes) {
         title: {
             show: __ECHARTS__.configs.titleDisplay.value == "YES",
             text: __ECHARTS__.configs.titleText.value,
+            link: messageDecode(__SYS_LOGO_LINK__.link),
             subtext: __ECHARTS__.configs.titleSubText.value,
             top: "top",
             left: __ECHARTS__.configs.titlePosition.value,
@@ -2631,6 +2709,7 @@ function getBarAndLine(container, themes) {
                 color: __ECHARTS__.configs.dataZoomBarColor.value,
             }
         }],
+        graphic: getGraphic(__SYS_LOGO_LINK__),
         series: yAxis_series,
     };
     // 使用刚指定的配置项和数据显示图表。
@@ -2750,7 +2829,10 @@ function getAreaStyle(container, themes) {
         toolbox: {
             show: __ECHARTS__.configs.toolboxDisplay.value == "YES",
             feature: {
-                saveAsImage: {show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES"},
+                saveAsImage: {
+                    show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES",
+                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"]
+                },
                 restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
                 dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
                 dataZoom: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES"},
@@ -2771,6 +2853,7 @@ function getAreaStyle(container, themes) {
         title: {
             show: __ECHARTS__.configs.titleDisplay.value == "YES",
             text: __ECHARTS__.configs.titleText.value,
+            link: messageDecode(__SYS_LOGO_LINK__.link),
             subtext: __ECHARTS__.configs.titleSubText.value,
             top: "top",
             left: __ECHARTS__.configs.titlePosition.value,
@@ -2911,6 +2994,7 @@ function getAreaStyle(container, themes) {
                 color: __ECHARTS__.configs.dataZoomBarColor.value,
             }
         }],
+        graphic: getGraphic(__SYS_LOGO_LINK__),
         series: yAxis_series,
     };
     myChart.setOption(option);
@@ -2969,6 +3053,7 @@ function getPolarBar(container, themes) {
         title: {
             show: __ECHARTS__.configs.titleDisplay.value == "YES",
             text: __ECHARTS__.configs.titleText.value,
+            link: messageDecode(__SYS_LOGO_LINK__.link),
             subtext: __ECHARTS__.configs.titleSubText.value,
             top: "top",
             left: __ECHARTS__.configs.titlePosition.value,
@@ -2982,7 +3067,10 @@ function getPolarBar(container, themes) {
         toolbox: {
             show: __ECHARTS__.configs.toolboxDisplay.value == "YES",
             feature: {
-                saveAsImage: {show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES"},
+                saveAsImage: {
+                    show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES",
+                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"]
+                },
                 restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
                 dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
                 dataZoom: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES"},
@@ -3089,6 +3177,7 @@ function getPolarBar(container, themes) {
             end: 100,
             radiusAxis: 0
         }],
+        graphic: getGraphic(__SYS_LOGO_LINK__),
 
     };
     myChart.setOption(option);
@@ -3145,6 +3234,7 @@ function getPolarArea(container, themes) {
         title: {
             show:__ECHARTS__.configs.titleDisplay.value =="YES",
             text: __ECHARTS__.configs.titleText.value,
+            link: messageDecode(__SYS_LOGO_LINK__.link),
             subtext: __ECHARTS__.configs.titleSubText.value,
             top:"top",
             left:__ECHARTS__.configs.titlePosition.value,
@@ -3158,7 +3248,10 @@ function getPolarArea(container, themes) {
         toolbox: {
             show: __ECHARTS__.configs.toolboxDisplay.value =="YES",
             feature: {
-                saveAsImage: {show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES"},
+                saveAsImage: {
+                    show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES",
+                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"]
+                },
                 restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
                 dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
                 dataZoom: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES"},
@@ -3265,6 +3358,7 @@ function getPolarArea(container, themes) {
             end: 100,
             radiusAxis:0
         }],
+        graphic: getGraphic(__SYS_LOGO_LINK__),
     };
     myChart.setOption(option);
     return container;
@@ -3348,6 +3442,7 @@ function getPie(container,themes) {
         title: {
             show: __ECHARTS__.configs.titleDisplay.value == "YES",
             text: __ECHARTS__.configs.titleText.value,
+            link: messageDecode(__SYS_LOGO_LINK__.link),
             subtext: __ECHARTS__.configs.titleSubText.value,
             top: "top",
             left: __ECHARTS__.configs.titlePosition.value,
@@ -3361,7 +3456,10 @@ function getPie(container,themes) {
         toolbox: {
             show: __ECHARTS__.configs.toolboxDisplay.value == "YES",
             feature: {
-                saveAsImage: {show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES"},
+                saveAsImage: {
+                    show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES",
+                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"]
+                },
                 restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
                 dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
                 dataZoom: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES"},
@@ -3398,6 +3496,7 @@ function getPie(container,themes) {
             },
         },
         series: series,
+        graphic: getGraphic(__SYS_LOGO_LINK__),
         label: {
             fontSize: __ECHARTS__.configs.pieLabelFontSize.value,
         },
@@ -3447,6 +3546,7 @@ function getPie(container,themes) {
                 }
             }
         };
+
     }
     myChart.setOption(option);
     return container;
@@ -3530,6 +3630,7 @@ function getRing(container,themes) {
         title: {
             show:__ECHARTS__.configs.titleDisplay.value =="YES",
             text: __ECHARTS__.configs.titleText.value,
+            link: messageDecode(__SYS_LOGO_LINK__.link),
             subtext: __ECHARTS__.configs.titleSubText.value,
             top:"top",
             left:__ECHARTS__.configs.titlePosition.value,
@@ -3543,7 +3644,10 @@ function getRing(container,themes) {
         toolbox: {
             show: __ECHARTS__.configs.toolboxDisplay.value =="YES",
             feature: {
-                saveAsImage: {show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES"},
+                saveAsImage: {
+                    show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES",
+                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"]
+                },
                 restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
                 dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
                 dataZoom: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES"},
@@ -3580,6 +3684,7 @@ function getRing(container,themes) {
             formatter: "{a} <br/>{b}: {c} ({d}%)"
         },
         series: series,
+        graphic: getGraphic(__SYS_LOGO_LINK__),
         label: {
             fontSize: __ECHARTS__.configs.pieLabelFontSize.value,
         },
@@ -3714,6 +3819,7 @@ function getRose(container,themes) {
         title: {
             show:__ECHARTS__.configs.titleDisplay.value =="YES",
             text: __ECHARTS__.configs.titleText.value,
+            link: messageDecode(__SYS_LOGO_LINK__.link),
             subtext: __ECHARTS__.configs.titleSubText.value,
             top:"top",
             left:__ECHARTS__.configs.titlePosition.value,
@@ -3727,7 +3833,10 @@ function getRose(container,themes) {
         toolbox: {
             show: __ECHARTS__.configs.toolboxDisplay.value =="YES",
             feature: {
-                saveAsImage: {show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES"},
+                saveAsImage: {
+                    show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES",
+                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"]
+                },
                 restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
                 dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
                 dataZoom: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES"},
@@ -3764,6 +3873,7 @@ function getRose(container,themes) {
             formatter: "{a} <br/>{b}: {c} ({d}%)"
         },
         series: series,
+        graphic: getGraphic(__SYS_LOGO_LINK__),
         label: {
             fontSize: __ECHARTS__.configs.pieLabelFontSize.value,
         },
@@ -3903,6 +4013,7 @@ function getRadar(container, themes) {
         title: {
             show: __ECHARTS__.configs.titleDisplay.value == "YES",
             text: __ECHARTS__.configs.titleText.value,
+            link: messageDecode(__SYS_LOGO_LINK__.link),
             subtext: __ECHARTS__.configs.titleSubText.value,
             top: "top",
             left: __ECHARTS__.configs.titlePosition.value,
@@ -3932,7 +4043,10 @@ function getRadar(container, themes) {
         toolbox: {
             show: __ECHARTS__.configs.toolboxDisplay.value == "YES",
             feature: {
-                saveAsImage: {show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES"},
+                saveAsImage: {
+                    show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES",
+                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"]
+                },
                 restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
                 dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
             },
@@ -3986,6 +4100,7 @@ function getRadar(container, themes) {
             },
         },
         series: series,
+        graphic: getGraphic(__SYS_LOGO_LINK__),
     };
     myChart.setOption(option);
     return container;
@@ -4224,7 +4339,10 @@ function getRegression(container, themes) {
         toolbox: {
             show: __ECHARTS__.configs.toolboxDisplay.value == "YES",
             feature: {
-                saveAsImage: {show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES"},
+                saveAsImage: {
+                    show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES",
+                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"]
+                },
                 restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
                 dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
                 dataZoom: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES"},
@@ -4245,6 +4363,7 @@ function getRegression(container, themes) {
         title: {
             show: __ECHARTS__.configs.titleDisplay.value == "YES",
             text: __ECHARTS__.configs.titleText.value,
+            link: messageDecode(__SYS_LOGO_LINK__.link),
             subtext: __ECHARTS__.configs.titleSubText.value,
             top: "top",
             left: __ECHARTS__.configs.titlePosition.value,
@@ -4387,6 +4506,7 @@ function getRegression(container, themes) {
             }
         }],
         series: series,
+        graphic: getGraphic(__SYS_LOGO_LINK__),
     };
     myChart.setOption(option);
     return container;
@@ -4515,7 +4635,10 @@ function  getRelationship(container, themes) {
         toolbox: {
             show: __ECHARTS__.configs.toolboxDisplay.value =="YES",
             feature: {
-                saveAsImage: {show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES"},
+                saveAsImage: {
+                    show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES",
+                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"]
+                },
                 restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
                 dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
             },
@@ -4531,6 +4654,7 @@ function  getRelationship(container, themes) {
         title: {
             show:__ECHARTS__.configs.titleDisplay.value =="YES",
             text: __ECHARTS__.configs.titleText.value,
+            link: messageDecode(__SYS_LOGO_LINK__.link),
             subtext: __ECHARTS__.configs.titleSubText.value,
             top:"top",
             left:__ECHARTS__.configs.titlePosition.value,
@@ -4550,6 +4674,7 @@ function  getRelationship(container, themes) {
             width: 2,
             curveness: 0.2
         },
+        graphic: getGraphic(__SYS_LOGO_LINK__),
     };
 
     myChart.setOption(option);
@@ -4778,6 +4903,7 @@ function  getOrganizationStructure(container, themes) {
         title: {
             show:__ECHARTS__.configs.titleDisplay.value =="YES",
             text: __ECHARTS__.configs.titleText.value,
+            link: messageDecode(__SYS_LOGO_LINK__.link),
             subtext: __ECHARTS__.configs.titleSubText.value,
             top:"top",
             left:__ECHARTS__.configs.titlePosition.value,
@@ -4791,7 +4917,10 @@ function  getOrganizationStructure(container, themes) {
         toolbox: {
             show: __ECHARTS__.configs.toolboxDisplay.value =="YES",
             feature: {
-                saveAsImage: {show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES"},
+                saveAsImage: {
+                    show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES",
+                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"]
+                },
                 restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
                 dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
             },
@@ -4824,6 +4953,7 @@ function  getOrganizationStructure(container, themes) {
         },
         series:series,
         draggable: true,
+        graphic: getGraphic(__SYS_LOGO_LINK__),
     };
 
     myChart.setOption(option);
@@ -4907,6 +5037,7 @@ function getWebkitDep(container, themes) {
         title: {
             show:__ECHARTS__.configs.titleDisplay.value =="YES",
             text: __ECHARTS__.configs.titleText.value,
+            link: messageDecode(__SYS_LOGO_LINK__.link),
             subtext: __ECHARTS__.configs.titleSubText.value,
             top:"top",
             left:__ECHARTS__.configs.titlePosition.value,
@@ -4933,7 +5064,10 @@ function getWebkitDep(container, themes) {
         toolbox: {
             show: __ECHARTS__.configs.toolboxDisplay.value =="YES",
             feature: {
-                saveAsImage: {show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES"},
+                saveAsImage: {
+                    show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES",
+                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"]
+                },
                 restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
                 dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
             },
@@ -4966,7 +5100,8 @@ function getWebkitDep(container, themes) {
                 gravity: 0.2
             },
             edges: webkitDep.links
-        }]
+        }],
+        graphic: getGraphic(__SYS_LOGO_LINK__),
     };
 
     myChart.setOption(option);
@@ -5176,6 +5311,7 @@ function getScatter(container, themes) {
         title: {
             show: __ECHARTS__.configs.titleDisplay.value == "YES",
             text: __ECHARTS__.configs.titleText.value,
+            link: messageDecode(__SYS_LOGO_LINK__.link),
             subtext: __ECHARTS__.configs.titleSubText.value,
             top: "top",
             left: __ECHARTS__.configs.titlePosition.value,
@@ -5202,7 +5338,10 @@ function getScatter(container, themes) {
         toolbox: {
             show: __ECHARTS__.configs.toolboxDisplay.value == "YES",
             feature: {
-                saveAsImage: {show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES"},
+                saveAsImage: {
+                    show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES",
+                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"]
+                },
                 restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
                 dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
             },
@@ -5331,6 +5470,7 @@ function getScatter(container, themes) {
             }
         }],
         series: series,
+        graphic: getGraphic(__SYS_LOGO_LINK__),
         animationDurationUpdate: 1500,
         animationEasingUpdate: "quinticInOut",
     };
@@ -5450,6 +5590,7 @@ function getFunnel(container, themes) {
         title: {
             show:__ECHARTS__.configs.titleDisplay.value =="YES",
             text: __ECHARTS__.configs.titleText.value,
+            link: messageDecode(__SYS_LOGO_LINK__.link),
             subtext: __ECHARTS__.configs.titleSubText.value,
             top:"top",
             left:__ECHARTS__.configs.titlePosition.value,
@@ -5468,7 +5609,10 @@ function getFunnel(container, themes) {
         toolbox: {
             show: __ECHARTS__.configs.toolboxDisplay.value =="YES",
             feature: {
-                saveAsImage: {show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES"},
+                saveAsImage: {
+                    show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES",
+                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"]
+                },
                 restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
                 dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
             },
@@ -5494,7 +5638,8 @@ function getFunnel(container, themes) {
                 color: __ECHARTS__.configs.legendTextColor.value
             },
         },
-        series: series
+        series: series,
+        graphic: getGraphic(__SYS_LOGO_LINK__),
     };
 
     myChart.setOption(option);
@@ -5617,6 +5762,7 @@ function getWordCloud(container, themes) {
         title: {
             show:__ECHARTS__.configs.titleDisplay.value =="YES",
             text: __ECHARTS__.configs.titleText.value,
+            link: messageDecode(__SYS_LOGO_LINK__.link),
             subtext: __ECHARTS__.configs.titleSubText.value,
             top:"top",
             left:__ECHARTS__.configs.titlePosition.value,
@@ -5650,7 +5796,10 @@ function getWordCloud(container, themes) {
         toolbox: {
             show: __ECHARTS__.configs.toolboxDisplay.value =="YES",
             feature: {
-                saveAsImage: {show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES"},
+                saveAsImage: {
+                    show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES",
+                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"]
+                },
                 restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
                 dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
             },
@@ -5663,7 +5812,8 @@ function getWordCloud(container, themes) {
                 }
             },
         },
-        series: series
+        series: series,
+        graphic: getGraphic(__SYS_LOGO_LINK__),
     };
 
     myChart.setOption(option);
@@ -5788,6 +5938,7 @@ function getLiqiud(container, themes) {
         title: {
             show:__ECHARTS__.configs.titleDisplay.value =="YES",
             text: __ECHARTS__.configs.titleText.value,
+            link: messageDecode(__SYS_LOGO_LINK__.link),
             subtext: __ECHARTS__.configs.titleSubText.value,
             top:"top",
             left:__ECHARTS__.configs.titlePosition.value,
@@ -5814,7 +5965,10 @@ function getLiqiud(container, themes) {
         toolbox: {
             show: __ECHARTS__.configs.toolboxDisplay.value =="YES",
             feature: {
-                saveAsImage: {show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES"},
+                saveAsImage: {
+                    show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES",
+                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"]
+                },
                 restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
                 dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
 
@@ -5835,7 +5989,8 @@ function getLiqiud(container, themes) {
                     + Math.round(param.value * 10000) / 100 + "%";
             },
         },
-        series: series
+        series: series,
+        graphic: getGraphic(__SYS_LOGO_LINK__),
     };
 
     myChart.setOption(option);
@@ -5980,6 +6135,7 @@ function getGaugeWithAll(container, themes) {
         title: {
             show:__ECHARTS__.configs.titleDisplay.value =="YES",
             text: __ECHARTS__.configs.titleText.value,
+            link: messageDecode(__SYS_LOGO_LINK__.link),
             subtext: __ECHARTS__.configs.titleSubText.value,
             top:"top",
             left:__ECHARTS__.configs.titlePosition.value,
@@ -6010,7 +6166,10 @@ function getGaugeWithAll(container, themes) {
         toolbox: {
             show: __ECHARTS__.configs.toolboxDisplay.value =="YES",
             feature: {
-                saveAsImage: {show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES"},
+                saveAsImage: {
+                    show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES",
+                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"]
+                },
                 restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
                 dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
             },
@@ -6161,6 +6320,7 @@ function getGaugeWithOne(container, themes) {
         title: {
             show:__ECHARTS__.configs.titleDisplay.value =="YES",
             text: __ECHARTS__.configs.titleText.value,
+            link: messageDecode(__SYS_LOGO_LINK__.link),
             subtext: __ECHARTS__.configs.titleSubText.value,
             top:"top",
             left:__ECHARTS__.configs.titlePosition.value,
@@ -6191,7 +6351,10 @@ function getGaugeWithOne(container, themes) {
         toolbox: {
             show: __ECHARTS__.configs.toolboxDisplay.value =="YES",
             feature: {
-                saveAsImage: {show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES"},
+                saveAsImage: {
+                    show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES",
+                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"]
+                },
                 restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
                 dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
             },
@@ -6205,6 +6368,7 @@ function getGaugeWithOne(container, themes) {
             },
         },
         series: seriesgroup[index],
+        graphic: getGraphic(__SYS_LOGO_LINK__),
     };
     myChart.setOption(option);
 
@@ -6389,6 +6553,7 @@ function getCalendar(container, themes) {
         title: {
             show:__ECHARTS__.configs.titleDisplay.value =="YES",
             text: __ECHARTS__.configs.titleText.value,
+            link: messageDecode(__SYS_LOGO_LINK__.link),
             subtext: __ECHARTS__.configs.titleSubText.value,
             top:"top",
             left:__ECHARTS__.configs.titlePosition.value,
@@ -6410,7 +6575,10 @@ function getCalendar(container, themes) {
         toolbox: {
             show: __ECHARTS__.configs.toolboxDisplay.value =="YES",
             feature: {
-                saveAsImage: {show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES"},
+                saveAsImage: {
+                    show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES",
+                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"]
+                },
                 restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
                 dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
             },
@@ -6425,7 +6593,8 @@ function getCalendar(container, themes) {
         },
         visualMap: visualMaps,
         calendar: calendars,
-        series: series
+        series: series,
+        graphic: getGraphic(__SYS_LOGO_LINK__),
     };
     myChart.setOption(option);
     return container;
@@ -6526,6 +6695,7 @@ function getGeoOfChina(container, themes) {
         title: {
             show: __ECHARTS__.configs.titleDisplay.value == "YES",
             text: __ECHARTS__.configs.titleText.value,
+            link: messageDecode(__SYS_LOGO_LINK__.link),
             subtext: __ECHARTS__.configs.titleSubText.value,
             top: "top",
             left: __ECHARTS__.configs.titlePosition.value,
@@ -6539,7 +6709,10 @@ function getGeoOfChina(container, themes) {
         toolbox: {
             show: __ECHARTS__.configs.toolboxDisplay.value == "YES",
             feature: {
-                saveAsImage: {show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES"},
+                saveAsImage: {
+                    show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES",
+                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"]
+                },
                 restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
                 dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
             },
@@ -6649,7 +6822,7 @@ function getGeoOfChina(container, themes) {
                 zlevel: 1
             }
         ],
-
+        graphic: getGraphic(__SYS_LOGO_LINK__),
         animation: __ECHARTS__.configs.animation.value == "YES",
         animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
         animationEasing: getAnimationEasing(),
@@ -6811,6 +6984,7 @@ function getGeoOfLocal(container, themes) {
         title: {
             show:__ECHARTS__.configs.titleDisplay.value =="YES",
             text: __ECHARTS__.configs.titleText.value,
+            link: messageDecode(__SYS_LOGO_LINK__.link),
             subtext: __ECHARTS__.configs.titleSubText.value,
             top:"top",
             left:__ECHARTS__.configs.titlePosition.value,
@@ -6824,7 +6998,10 @@ function getGeoOfLocal(container, themes) {
         toolbox: {
             show: __ECHARTS__.configs.toolboxDisplay.value =="YES",
             feature: {
-                saveAsImage: {show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES"},
+                saveAsImage: {
+                    show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES",
+                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"]
+                },
                 restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
                 dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
             },
@@ -6937,6 +7114,7 @@ function getGeoOfLocal(container, themes) {
             }
         ],
 
+        graphic: getGraphic(__SYS_LOGO_LINK__),
         animation: __ECHARTS__.configs.animation.value == "YES",
         animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
         animationEasing: getAnimationEasing(),
@@ -7132,6 +7310,7 @@ function getBar3D(container, themes) {
         title: {
             show: __ECHARTS__.configs.titleDisplay.value == "YES",
             text: __ECHARTS__.configs.titleText.value,
+            link: messageDecode(__SYS_LOGO_LINK__.link),
             subtext: __ECHARTS__.configs.titleSubText.value,
             top: "top",
             left: __ECHARTS__.configs.titlePosition.value,
@@ -7161,7 +7340,10 @@ function getBar3D(container, themes) {
         toolbox: {
             show: __ECHARTS__.configs.toolboxDisplay.value == "YES",
             feature: {
-                saveAsImage: {show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES"},
+                saveAsImage: {
+                    show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES",
+                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"]
+                },
                 restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
                 dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
             },
@@ -7262,6 +7444,7 @@ function getBar3D(container, themes) {
             },
         },
         series: series,
+        graphic: getGraphic(__SYS_LOGO_LINK__),
     };
     myChart.setOption(option);
     return container;
@@ -7368,6 +7551,7 @@ function getLine3D(container, themes) {
         title: {
             show:__ECHARTS__.configs.titleDisplay.value =="YES",
             text: __ECHARTS__.configs.titleText.value,
+            link: messageDecode(__SYS_LOGO_LINK__.link),
             subtext: __ECHARTS__.configs.titleSubText.value,
             top:"top",
             left:__ECHARTS__.configs.titlePosition.value,
@@ -7397,7 +7581,10 @@ function getLine3D(container, themes) {
         toolbox: {
             show: __ECHARTS__.configs.toolboxDisplay.value =="YES",
             feature: {
-                saveAsImage: {show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES"},
+                saveAsImage: {
+                    show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES",
+                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"]
+                },
                 restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
                 dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
             },
@@ -7512,6 +7699,7 @@ function getLine3D(container, themes) {
             },
         },
         series: series,
+        graphic: getGraphic(__SYS_LOGO_LINK__),
     };
     myChart.setOption(option);
     return container;
@@ -7620,6 +7808,7 @@ function getScatter3D(container, themes) {
         title: {
             show:__ECHARTS__.configs.titleDisplay.value =="YES",
             text: __ECHARTS__.configs.titleText.value,
+            link: messageDecode(__SYS_LOGO_LINK__.link),
             subtext: __ECHARTS__.configs.titleSubText.value,
             top:"top",
             left:__ECHARTS__.configs.titlePosition.value,
@@ -7649,7 +7838,10 @@ function getScatter3D(container, themes) {
         toolbox: {
             show: __ECHARTS__.configs.toolboxDisplay.value =="YES",
             feature: {
-                saveAsImage: {show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES"},
+                saveAsImage: {
+                    show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES",
+                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"]
+                },
                 restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
                 dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
             },
@@ -7764,6 +7956,7 @@ function getScatter3D(container, themes) {
             },
         },
         series: series,
+        graphic: getGraphic(__SYS_LOGO_LINK__),
     };
     myChart.setOption(option);
     return container;
@@ -7960,6 +8153,7 @@ function getCategoryLine(container, themes) {
             title: {
                 show: __ECHARTS__.configs.titleDisplay.value == "YES",
                 text: __ECHARTS__.configs.titleText.value,
+                link: messageDecode(__SYS_LOGO_LINK__.link),
                 subtext: __ECHARTS__.configs.titleSubText.value,
                 top: "top",
                 left: __ECHARTS__.configs.titlePosition.value,
@@ -8009,7 +8203,10 @@ function getCategoryLine(container, themes) {
             toolbox: {
                 show: __ECHARTS__.configs.toolboxDisplay.value == "YES",
                 feature: {
-                saveAsImage: {show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES"},
+                saveAsImage: {
+                    show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES",
+                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"]
+                },
                 restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
                 dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
             },
@@ -8086,6 +8283,7 @@ function getCategoryLine(container, themes) {
             series: {
                 type: __ECHARTS__.configs.categoryLineType.value == "areaStyle" ? "line" : __ECHARTS__.configs.categoryLineType.value,
             },
+            graphic: getGraphic(__SYS_LOGO_LINK__),
         },
         options: options
     };
@@ -8323,6 +8521,7 @@ function getGeoMigrateLinesOfChinaCity(container, themes) {
             title: {
                 show: __ECHARTS__.configs.titleDisplay.value == "YES",
                 text: __ECHARTS__.configs.titleText.value,
+                link: messageDecode(__SYS_LOGO_LINK__.link),
                 subtext: __ECHARTS__.configs.titleSubText.value,
                 top: "top",
                 left: __ECHARTS__.configs.titlePosition.value,
@@ -8336,7 +8535,10 @@ function getGeoMigrateLinesOfChinaCity(container, themes) {
             toolbox: {
                 show: __ECHARTS__.configs.toolboxDisplay.value == "YES",
                 feature: {
-                saveAsImage: {show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES"},
+                saveAsImage: {
+                    show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES",
+                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"]
+                },
                 restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
                 dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
             },
@@ -8400,7 +8602,8 @@ function getGeoMigrateLinesOfChinaCity(container, themes) {
                     }
                 }
             },
-            series: series
+            series: series,
+            graphic: getGraphic(__SYS_LOGO_LINK__),
         };
     } else {
         alert("该视图需要[源城市]、[目标城市]和[详细信息]等三个数据指标.")
@@ -8494,6 +8697,7 @@ function getCategoryLineForGauge(container, themes) {
             title: {
                 show: __ECHARTS__.configs.titleDisplay.value == "YES",
                 text: __ECHARTS__.configs.titleText.value,
+                link: messageDecode(__SYS_LOGO_LINK__.link),
                 subtext: __ECHARTS__.configs.titleSubText.value,
                 top: "top",
                 left: __ECHARTS__.configs.titlePosition.value,
@@ -8543,7 +8747,10 @@ function getCategoryLineForGauge(container, themes) {
             toolbox: {
                 show: __ECHARTS__.configs.toolboxDisplay.value == "YES",
                 feature: {
-                saveAsImage: {show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES"},
+                saveAsImage: {
+                    show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES",
+                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"]
+                },
                 restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
                 dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
             },
@@ -8559,6 +8766,7 @@ function getCategoryLineForGauge(container, themes) {
             series: {
                 type: "gauge",
             },
+            graphic: getGraphic(__SYS_LOGO_LINK__),
         },
         options: options
     };
@@ -8665,6 +8873,7 @@ function getCategoryLineForLiqiud(container, themes) {
             title: {
                 show: __ECHARTS__.configs.titleDisplay.value == "YES",
                 text: __ECHARTS__.configs.titleText.value,
+                link: messageDecode(__SYS_LOGO_LINK__.link),
                 subtext: __ECHARTS__.configs.titleSubText.value,
                 top: "top",
                 left: __ECHARTS__.configs.titlePosition.value,
@@ -8714,7 +8923,10 @@ function getCategoryLineForLiqiud(container, themes) {
             toolbox: {
                 show: __ECHARTS__.configs.toolboxDisplay.value == "YES",
                 feature: {
-                    saveAsImage: {show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES"},
+                    saveAsImage: {
+                        show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES",
+                        excludeComponents: ["toolbox", "dataZoom", "timeline", "visualMap", "brush"]
+                    },
                     restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
                     dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
 
@@ -8728,6 +8940,7 @@ function getCategoryLineForLiqiud(container, themes) {
                     }
                 },
             },
+            graphic: getGraphic(__SYS_LOGO_LINK__),
         },
         options: options
     };
@@ -8824,7 +9037,10 @@ function getCategoryLineForGeoOfChina(container, themes) {
                     toolbox: {
                         show: __ECHARTS__.configs.toolboxDisplay.value == "YES",
                         feature: {
-                            saveAsImage: {show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES"},
+                            saveAsImage: {
+                                show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES",
+                                excludeComponents: ["toolbox", "dataZoom", "timeline", "visualMap", "brush"]
+                            },
                             restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
                             dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
 
@@ -8935,6 +9151,7 @@ function getCategoryLineForGeoOfChina(container, themes) {
                             zlevel: 1
                         }
                     ],
+                    graphic: getGraphic(__SYS_LOGO_LINK__),
 
                     animation: __ECHARTS__.configs.animation.value == "YES",
                     animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
@@ -8973,6 +9190,7 @@ function getCategoryLineForGeoOfChina(container, themes) {
             title: {
                 show: __ECHARTS__.configs.titleDisplay.value == "YES",
                 text: __ECHARTS__.configs.titleText.value,
+                link: messageDecode(__SYS_LOGO_LINK__.link),
                 subtext: __ECHARTS__.configs.titleSubText.value,
                 top: "top",
                 left: __ECHARTS__.configs.titlePosition.value,
@@ -9018,7 +9236,10 @@ function getCategoryLineForGeoOfChina(container, themes) {
             toolbox: {
                 show: __ECHARTS__.configs.toolboxDisplay.value == "YES",
                 feature: {
-                saveAsImage: {show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES"},
+                saveAsImage: {
+                    show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES",
+                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"]
+                },
                 restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
                 dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
 
@@ -9032,6 +9253,7 @@ function getCategoryLineForGeoOfChina(container, themes) {
                     }
                 },
             },
+            graphic: getGraphic(__SYS_LOGO_LINK__),
         },
         options: options
     };
@@ -9121,7 +9343,10 @@ function getCategoryLineForGeoOfLocal(container, themes) {
                     toolbox: {
                         show: __ECHARTS__.configs.toolboxDisplay.value == "YES",
                         feature: {
-                            saveAsImage: {show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES"},
+                            saveAsImage: {
+                                show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES",
+                                excludeComponents: ["toolbox", "dataZoom", "timeline", "visualMap", "brush"]
+                            },
                             restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
                             dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
 
@@ -9234,7 +9459,7 @@ function getCategoryLineForGeoOfLocal(container, themes) {
                             zlevel: 1
                         }
                     ],
-
+                    graphic: getGraphic(__SYS_LOGO_LINK__),
                     animation: __ECHARTS__.configs.animation.value == "YES",
                     animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
                     animationEasing: getAnimationEasing(),
@@ -9271,6 +9496,7 @@ function getCategoryLineForGeoOfLocal(container, themes) {
             title: {
                 show: __ECHARTS__.configs.titleDisplay.value == "YES",
                 text: __ECHARTS__.configs.titleText.value,
+                link: messageDecode(__SYS_LOGO_LINK__.link),
                 subtext: __ECHARTS__.configs.titleSubText.value,
                 top: "top",
                 left: __ECHARTS__.configs.titlePosition.value,
@@ -9316,7 +9542,10 @@ function getCategoryLineForGeoOfLocal(container, themes) {
             toolbox: {
                 show: __ECHARTS__.configs.toolboxDisplay.value == "YES",
                 feature: {
-                    saveAsImage: {show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES"},
+                    saveAsImage: {
+                        show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES",
+                        excludeComponents: ["toolbox", "dataZoom", "timeline", "visualMap", "brush"]
+                    },
                     restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
                     dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
 
@@ -9330,6 +9559,7 @@ function getCategoryLineForGeoOfLocal(container, themes) {
                     }
                 },
             },
+            graphic: getGraphic(__SYS_LOGO_LINK__),
         },
         options: options
     };
@@ -9337,6 +9567,80 @@ function getCategoryLineForGeoOfLocal(container, themes) {
     return container;
 }
 
+function getScrollingScreen(container, themes) {
+    var dataset = __DATASET__["result"][__DATASET__.default.sheet];
+    var columns = [];
+    var data = [];
+    for (var i = 0; i < dataset["columns"].length; i++) {
+        columns.push(dataset["columns"][i].name);
+        data.push({
+                type: 'text',
+                id: 'columns' + i,
+                left: 20 + 300 * (i+1),
+                top: 20,
+                z: -10,
+                bounding: 'raw',
+                style: {
+                    text: dataset["columns"][i].name,
+                    font: '20px "STHeiti", sans-serif',
+                }
+            });
+    }
+
+    for (var i = 0; i < dataset["data"].length; i++) {
+        let r = dataset["data"][i];
+        for (var c = 0; c < columns.length; c++) {
+            //data.push(r[columns[c]].value);
+            data.push({
+                type: 'text',
+                id: i + "-" + c,
+                left: 20 + 300 * (c+1),
+                top: 20 * (i+1),
+                z: -10,
+                bounding: 'raw',
+                style: {
+                    text: r[columns[c]].value,
+                    font: '20px "STHeiti", sans-serif',
+                }
+            });
+        }
+    }
+
+    var myChart = echarts.init(container, themes);
+    var option = {
+        graphic: data
+    };
+    myChart.setOption(option);
+
+    var top = 100;
+    setInterval(function () {
+        if (top > 0)
+            top = top - 0.5;
+        else
+            top = 100;
+        myChart.setOption(
+            {
+                graphic: [
+                {
+                id: 'logo',
+                top: top + "%",
+                },
+                {
+                    id: 'textGroup1',
+                    top: top + "%",
+                },
+                {
+                    id: 'textGroup2',
+                    top: top + "%",
+                }
+                ]
+            }
+        );
+    }, 40);
+
+
+    return container;
+}
 
 
 
