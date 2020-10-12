@@ -307,6 +307,15 @@ var __ECHARTS__ = {
         },
         seriesLoopPlayInterval: {name: "间隔(秒)", value: 3, type: "input"},
 
+        hr_scrollingScreen:{name: "数据滚屏", value: "", type: "hr"},
+        scrollingScreenLeft:{name: "左边距(%)", value: "20%", type: "input"},
+        scrollingScreenBackColor:{value: "transparent", name: "背景颜色", type: "input"},
+        scrollingScreenColumnWidth: {name: "数据宽度", value: 200, type: "input"},
+        scrollingScreenFontSize:{name: "字号", value: 16, type: "input"},
+        scrollingScreenBorderColor:{value: "transparent", name: "边框颜色", type: "color"},
+        scrollingScreenFontFillColor:{value: "#404a59", name: "文本颜色", type: "color"},
+        scrollingScreenSpeed:{name: "速度", value: 10, type: "input"},
+
         hr_dataZoom: {name: "数据缩放", value: "", type: "hr"},
         dataZoomBarDisplay: {name: "是否显示", value: "NO", options: [new Option("是","YES"), new Option("否","NO")], type: "select"},
         dataZoomBarColor: {value: "#404a59", name: "组件颜色", type: "color"},
@@ -1508,6 +1517,7 @@ function getGraphic(link) {
     let graphic = [
         {
             type: 'group',
+            id:"logoLink",
             rotation: Math.PI / 4,
             bounding: 'raw',
             right: 110,
@@ -9568,76 +9578,131 @@ function getCategoryLineForGeoOfLocal(container, themes) {
 }
 
 function getScrollingScreen(container, themes) {
+    var containerWidth = Number(container.style.width.slice(0).replace(/px/i, ""));
+    var containerHeight = Number(container.style.height.slice(0).replace(/px/i, ""));
     var dataset = __DATASET__["result"][__DATASET__.default.sheet];
     var columns = [];
     var data = [];
+    var txtOffset = 8;
+    var lineHeight = Number(__ECHARTS__.configs.scrollingScreenFontSize.value) + txtOffset;
+    var groupHeight = lineHeight;
+    var timeout = false;
+
     for (var i = 0; i < dataset["columns"].length; i++) {
         columns.push(dataset["columns"][i].name);
         data.push({
-                type: 'text',
-                id: 'columns' + i,
-                left: 20 + 300 * (i+1),
-                top: 20,
-                z: -10,
-                bounding: 'raw',
-                style: {
-                    text: dataset["columns"][i].name,
-                    font: '20px "STHeiti", sans-serif',
-                }
-            });
+            type: 'rect',
+            left: __ECHARTS__.configs.scrollingScreenColumnWidth.value * (i + 1),
+            top: 0,
+            z: 100,
+            shape: {
+                width: __ECHARTS__.configs.scrollingScreenColumnWidth.value,
+                height: lineHeight,
+            },
+            style: {
+                lineWidth: 1,
+                fill: __ECHARTS__.configs.scrollingScreenBackColor.value,//'rgba(0,0,0,0.2)',
+                stroke: __ECHARTS__.configs.scrollingScreenBorderColor.value,
+            }
+        }, {
+            type: 'text',
+            id: 'columns' + i,
+            left: __ECHARTS__.configs.scrollingScreenColumnWidth.value * (i + 1) + txtOffset,
+            top: txtOffset,
+            z: 100,
+            bounding: 'raw',
+            style: {
+                text: dataset["columns"][i].name,
+                font: __ECHARTS__.configs.scrollingScreenFontSize.value + 'px "Microsoft YaHei", sans-serif',
+                fill: __ECHARTS__.configs.scrollingScreenFontFillColor.value,
+            }
+        });
     }
 
     for (var i = 0; i < dataset["data"].length; i++) {
         let r = dataset["data"][i];
         for (var c = 0; c < columns.length; c++) {
-            //data.push(r[columns[c]].value);
             data.push({
+                type: 'rect',
+                left: __ECHARTS__.configs.scrollingScreenColumnWidth.value * (c + 1),
+                top: lineHeight * (i + 1),
+                z: 100,
+                shape: {
+                    width: __ECHARTS__.configs.scrollingScreenColumnWidth.value,
+                    height: lineHeight,
+                },
+                style: {
+                    lineWidth: 1,
+                    fill: __ECHARTS__.configs.scrollingScreenBackColor.value,//'rgba(0,0,0,0.2)',
+                    stroke: __ECHARTS__.configs.scrollingScreenBorderColor.value,
+                }
+            }, {
                 type: 'text',
                 id: i + "-" + c,
-                left: 20 + 300 * (c+1),
-                top: 20 * (i+1),
-                z: -10,
+                left: __ECHARTS__.configs.scrollingScreenColumnWidth.value * (c + 1) + txtOffset,
+                top: lineHeight * (i + 1) + txtOffset,
+                z: 100,
                 bounding: 'raw',
                 style: {
                     text: r[columns[c]].value,
-                    font: '20px "STHeiti", sans-serif',
-                }
+                    font: __ECHARTS__.configs.scrollingScreenFontSize.value + 'px "Microsoft YaHei", sans-serif',
+                    fill: __ECHARTS__.configs.scrollingScreenFontFillColor.value,
+                },
             });
         }
+        groupHeight += lineHeight;
     }
 
     var myChart = echarts.init(container, themes);
     var option = {
-        graphic: data
+        title: {
+            show: __ECHARTS__.configs.titleDisplay.value == "YES",
+            text: __ECHARTS__.configs.titleText.value,
+            link: messageDecode(__SYS_LOGO_LINK__.link),
+            subtext: __ECHARTS__.configs.titleSubText.value,
+            top: "top",
+            left: __ECHARTS__.configs.titlePosition.value,
+            textStyle: {
+                color: __ECHARTS__.configs.titleTextColor.value,
+            },
+            subtextStyle: {
+                color: __ECHARTS__.configs.titleSubTextColor.value,
+            }
+        },
+
+        graphic: getGraphic(__SYS_LOGO_LINK__)
     };
+    option.graphic.push({
+        type: 'group',
+        id: 'scrollingScreen',
+        left: __ECHARTS__.configs.scrollingScreenLeft.value,
+        children: data,
+        onmouseover: function () {
+            timeout = true;
+        },
+        onmouseout: function () {
+            timeout = false;
+        }
+    });
     myChart.setOption(option);
 
-    var top = 100;
+    let top = containerHeight;
     setInterval(function () {
-        if (top > 0)
-            top = top - 0.5;
-        else
-            top = 100;
-        myChart.setOption(
-            {
-                graphic: [
+        if (!timeout) {
+            if (top > (groupHeight * (-1)))
+                top = top - 1;
+            else
+                top = containerHeight;
+            myChart.setOption(
                 {
-                id: 'logo',
-                top: top + "%",
-                },
-                {
-                    id: 'textGroup1',
-                    top: top + "%",
-                },
-                {
-                    id: 'textGroup2',
-                    top: top + "%",
+                    graphic: [{
+                        id: 'scrollingScreen',
+                        top: top,
+                    }]
                 }
-                ]
-            }
-        );
-    }, 40);
-
+            );
+        }
+    }, __ECHARTS__.configs.scrollingScreenSpeed.value);
 
     return container;
 }
