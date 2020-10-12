@@ -309,11 +309,12 @@ var __ECHARTS__ = {
 
         hr_scrollingScreen:{name: "数据滚屏", value: "", type: "hr"},
         scrollingScreenLeft:{name: "左边距(%)", value: "20%", type: "input"},
-        scrollingScreenBackColor:{value: "transparent", name: "背景颜色", type: "input"},
-        scrollingScreenColumnWidth: {name: "数据宽度", value: 200, type: "input"},
+        scrollingScreenBackColor:{value: "transparent", name: "背景颜色", type: "color"},
+        scrollingScreenOpacity:{value: 0.4, name: "透明度", type: "input"},
+        scrollingScreenColumnFontFillColor:{value: "#404a59", name: "文本颜色", type: "color"},
+        scrollingScreenColumnWidth: {name: "数据项宽度", value: 200, type: "input"},
         scrollingScreenFontSize:{name: "字号", value: 16, type: "input"},
         scrollingScreenBorderColor:{value: "transparent", name: "边框颜色", type: "color"},
-        scrollingScreenFontFillColor:{value: "#404a59", name: "文本颜色", type: "color"},
         scrollingScreenSpeed:{name: "速度", value: 10, type: "input"},
 
         hr_dataZoom: {name: "数据缩放", value: "", type: "hr"},
@@ -1513,6 +1514,16 @@ function getAnimationEasingUpdate(){
     return __ECHARTS__.configs.animationEasingUpdate.value == "linear"?__ECHARTS__.configs.animationEasingUpdate.value:__ECHARTS__.configs.animationEasingUpdate.value + __ECHARTS__.configs.animationFunctionType.value;
 }
 
+function getLoading(){
+    return {
+        text : "正在加载...",
+        color: '#c23531',
+        textColor: '#c23531',
+        maskColor: 'rgba(255, 255, 255, 0.2)',
+        zlevel: 0,
+    };
+}
+
 function getGraphic(link) {
     let graphic = [
         {
@@ -1571,6 +1582,9 @@ function getGraphic(link) {
 }
 
 function getBar(container, themes) {
+    var myChart = echarts.init(container, themes);
+    myChart.showLoading(getLoading());
+
     var dataset = __DATASET__["result"][__DATASET__.default.sheet];
     var columns = [];
     for (var i = 0; i < dataset["columns"].length; i++) {
@@ -1648,8 +1662,7 @@ function getBar(container, themes) {
             yAxis_series.push(series);
         }
     }
-    var myChart = echarts.init(container, themes);
-    //主题:dark,light
+
     var option = {
         grid: {
             x: __ECHARTS__.configs.grid_left.value,
@@ -1841,11 +1854,17 @@ function getBar(container, themes) {
         graphic: getGraphic(__SYS_LOGO_LINK__),
         series: yAxis_series,
     };
-    myChart.setOption(option);
+    setTimeout(() => {
+      myChart.hideLoading();
+      myChart.setOption(option);
+    }, 3000);
     return container;
 }
 
 function getTransversBar(container, themes) {
+    var myChart = echarts.init(container, themes);
+    myChart.showLoading(getLoading());
+
     var dataset =  __DATASET__["result"][__DATASET__.default.sheet];
     var columns = [];
     for (var i=0; i<dataset["columns"].length;i++){
@@ -1921,8 +1940,7 @@ function getTransversBar(container, themes) {
             yAxis_series.push(series);
         }
     }
-    var myChart = echarts.init(container, themes);
-    //主题:dark,light
+
     var option = {
         grid: {
             x: __ECHARTS__.configs.grid_left.value,
@@ -2107,7 +2125,10 @@ function getTransversBar(container, themes) {
         graphic: getGraphic(__SYS_LOGO_LINK__),
         series: yAxis_series,
     };
-    myChart.setOption(option);
+    setTimeout(() => {
+      myChart.hideLoading();
+      myChart.setOption(option);
+    }, 3000);
 
     return container;
 }
@@ -2133,6 +2154,9 @@ function getMarkLine() {
 }
 
 function getLine(container, themes) {
+    var myChart = echarts.init(container, themes);
+    myChart.showLoading(getLoading());
+
     var dataset = __DATASET__["result"][__DATASET__.default.sheet];
     var columns = [];
     for (var i = 0; i < dataset["columns"].length; i++) {
@@ -2210,7 +2234,7 @@ function getLine(container, themes) {
             yAxis_series.push(series);
         }
     }
-    var myChart = echarts.init(container, themes);
+
     var option = {
         grid: {
             x: __ECHARTS__.configs.grid_left.value,
@@ -2220,16 +2244,16 @@ function getLine(container, themes) {
             containLabel: __ECHARTS__.configs.grid_containLabel.value == "YES",
             backgroundColor: "transparent"
         },
-        brush:  __ECHARTS__.configs.toolboxFeatureBrush.value == "YES"?{
+        brush: __ECHARTS__.configs.toolboxFeatureBrush.value == "YES" ? {
             toolbox: ["rect", "polygon", "lineX", "lineY", "keep", "clear"],
             xAxisIndex: 0
-        }:null,
+        } : null,
         toolbox: {
             show: __ECHARTS__.configs.toolboxDisplay.value == "YES",
             feature: {
                 saveAsImage: {
                     show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES",
-                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"]
+                    excludeComponents: ["toolbox", "dataZoom", "timeline", "visualMap", "brush"]
                 },
                 restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
                 dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
@@ -2396,12 +2420,18 @@ function getLine(container, themes) {
         series: yAxis_series,
     };
 
-    myChart.setOption(option);
+    setTimeout(() => {
+        myChart.hideLoading();
+        myChart.setOption(option);
+    }, 3000);
 
     return container;
 }
 
 function getBarAndLine(container, themes) {
+    var myChart = echarts.init(container, themes);
+    myChart.showLoading(getLoading());
+
     var dataset =  __DATASET__["result"][__DATASET__.default.sheet];
     var columns = [];
     for (var i=0; i<dataset["columns"].length;i++){
@@ -2537,8 +2567,7 @@ function getBarAndLine(container, themes) {
             yAxis_series.push(serie);
         }
     }
-    var myChart = echarts.init(container, themes);
-    //主题:dark,light
+
     var option = {
         grid: {
             x: __ECHARTS__.configs.grid_left.value,
@@ -2722,13 +2751,18 @@ function getBarAndLine(container, themes) {
         graphic: getGraphic(__SYS_LOGO_LINK__),
         series: yAxis_series,
     };
-    // 使用刚指定的配置项和数据显示图表。
-    myChart.setOption(option);
+    setTimeout(() => {
+      myChart.hideLoading();
+      myChart.setOption(option);
+    }, 3000);
 
     return container;
 }
 
 function getAreaStyle(container, themes) {
+    var myChart = echarts.init(container, themes);
+    myChart.showLoading(getLoading());
+
     var dataset =  __DATASET__["result"][__DATASET__.default.sheet];
     var columns = [];
     for (var i=0; i<dataset["columns"].length;i++){
@@ -2821,8 +2855,7 @@ function getAreaStyle(container, themes) {
             yAxis_series.push(series);
         }
     }
-    var myChart = echarts.init(container, themes);
-    //主题:dark,light
+
     var option = {
         grid: {
             x: __ECHARTS__.configs.grid_left.value,
@@ -3007,12 +3040,18 @@ function getAreaStyle(container, themes) {
         graphic: getGraphic(__SYS_LOGO_LINK__),
         series: yAxis_series,
     };
-    myChart.setOption(option);
+    setTimeout(() => {
+      myChart.hideLoading();
+      myChart.setOption(option);
+    }, 3000);
 
     return container;
 }
 
 function getPolarBar(container, themes) {
+    var myChart = echarts.init(container, themes);
+    myChart.showLoading(getLoading());
+
     var dataset = __DATASET__["result"][__DATASET__.default.sheet];
     var columns = [];
     for (var i = 0; i < dataset["columns"].length; i++) {
@@ -3058,7 +3097,7 @@ function getPolarBar(container, themes) {
             yAxis_series.push(series);
         }
     }
-    var myChart = echarts.init(container, themes);
+
     var option = {
         title: {
             show: __ECHARTS__.configs.titleDisplay.value == "YES",
@@ -3190,11 +3229,17 @@ function getPolarBar(container, themes) {
         graphic: getGraphic(__SYS_LOGO_LINK__),
 
     };
-    myChart.setOption(option);
+    setTimeout(() => {
+      myChart.hideLoading();
+      myChart.setOption(option);
+    }, 3000);
     return container;
 }
 
 function getPolarArea(container, themes) {
+    var myChart = echarts.init(container, themes);
+    myChart.showLoading(getLoading());
+
     var dataset = __DATASET__["result"][__DATASET__.default.sheet];
     var columns = [];
     for (var i = 0; i < dataset["columns"].length; i++) {
@@ -3239,7 +3284,7 @@ function getPolarArea(container, themes) {
             yAxis_series.push(series);
         }
     }
-    var myChart = echarts.init(container, themes);
+
     var option = {
         title: {
             show:__ECHARTS__.configs.titleDisplay.value =="YES",
@@ -3370,11 +3415,17 @@ function getPolarArea(container, themes) {
         }],
         graphic: getGraphic(__SYS_LOGO_LINK__),
     };
-    myChart.setOption(option);
+    setTimeout(() => {
+      myChart.hideLoading();
+      myChart.setOption(option);
+    }, 3000);
     return container;
 }
 
 function getPie(container,themes) {
+    var myChart = echarts.init(container, themes);
+    myChart.showLoading(getLoading());
+
     var dataset = __DATASET__["result"][__DATASET__.default.sheet];
     var columns = [];
     for (var i = 0; i < dataset["columns"].length; i++) {
@@ -3447,7 +3498,6 @@ function getPie(container,themes) {
         series[i].height = height + "%";
     }
 
-    var myChart = echarts.init(container, themes);
     var option = {
         title: {
             show: __ECHARTS__.configs.titleDisplay.value == "YES",
@@ -3558,11 +3608,17 @@ function getPie(container,themes) {
         };
 
     }
-    myChart.setOption(option);
+    setTimeout(() => {
+      myChart.hideLoading();
+      myChart.setOption(option);
+    }, 3000);
     return container;
 }
 
 function getRing(container,themes) {
+    var myChart = echarts.init(container, themes);
+    myChart.showLoading(getLoading());
+
     var dataset = __DATASET__["result"][__DATASET__.default.sheet];
     var columns = [];
     for (var i = 0; i < dataset["columns"].length; i++) {
@@ -3635,7 +3691,6 @@ function getRing(container,themes) {
         series[i].height = height + "%";
     }
 
-    var myChart = echarts.init(container, themes);
     var option = {
         title: {
             show:__ECHARTS__.configs.titleDisplay.value =="YES",
@@ -3745,12 +3800,18 @@ function getRing(container,themes) {
             }
         };
     }
-    myChart.setOption(option);
+    setTimeout(() => {
+      myChart.hideLoading();
+      myChart.setOption(option);
+    }, 3000);
 
     return container;
 }
 
 function getRose(container,themes) {
+    var myChart = echarts.init(container, themes);
+    myChart.showLoading(getLoading());
+
     var dataset =  __DATASET__["result"][__DATASET__.default.sheet];
     var columns = [];
     for (var i=0; i<dataset["columns"].length;i++){
@@ -3824,7 +3885,6 @@ function getRose(container,themes) {
         series[i].height = height + "%";
     }
 
-    var myChart = echarts.init(container, themes);
     var option = {
         title: {
             show:__ECHARTS__.configs.titleDisplay.value =="YES",
@@ -3933,11 +3993,17 @@ function getRose(container,themes) {
             }
         };
     }
-    myChart.setOption(option);
+   setTimeout(() => {
+      myChart.hideLoading();
+      myChart.setOption(option);
+    }, 3000);
     return container;
 }
 
 function getRadar(container, themes) {
+    var myChart = echarts.init(container, themes);
+    myChart.showLoading(getLoading());
+
     var dataset =  __DATASET__["result"][__DATASET__.default.sheet];
     var columns = [];
     for (var i=0; i<dataset["columns"].length;i++){
@@ -4010,7 +4076,6 @@ function getRadar(container, themes) {
         }
     }
 
-    var myChart = echarts.init(container, themes);
     var option = {
         grid: {
             x: __ECHARTS__.configs.grid_left.value,
@@ -4112,14 +4177,19 @@ function getRadar(container, themes) {
         series: series,
         graphic: getGraphic(__SYS_LOGO_LINK__),
     };
-    myChart.setOption(option);
+    setTimeout(() => {
+      myChart.hideLoading();
+      myChart.setOption(option);
+    }, 3000);
     return container;
 
 }
 
 function getRegression(container, themes) {
-    var regressionType = {"直线": "linear", "指数": "exponential", "对数": "logarithmic", "多项式": "polynomial"};
     var myChart = echarts.init(container, themes);
+    myChart.showLoading(getLoading());
+
+    var regressionType = {"直线": "linear", "指数": "exponential", "对数": "logarithmic", "多项式": "polynomial"};
     var dataset = __DATASET__["result"][__DATASET__.default.sheet];
     var columns = [];
     for (var i = 0; i < dataset["columns"].length; i++) {
@@ -4518,12 +4588,17 @@ function getRegression(container, themes) {
         series: series,
         graphic: getGraphic(__SYS_LOGO_LINK__),
     };
-    myChart.setOption(option);
+    setTimeout(() => {
+      myChart.hideLoading();
+      myChart.setOption(option);
+    }, 3000);
     return container;
 }
 
 function  getRelationship(container, themes) {
     var myChart = echarts.init(container, themes);
+    myChart.showLoading(getLoading());
+
     var dataset =  __DATASET__["result"][__DATASET__.default.sheet];
     var columns = [];
     for (var i=0; i<dataset["columns"].length;i++){
@@ -4687,7 +4762,10 @@ function  getRelationship(container, themes) {
         graphic: getGraphic(__SYS_LOGO_LINK__),
     };
 
-    myChart.setOption(option);
+    setTimeout(() => {
+      myChart.hideLoading();
+      myChart.setOption(option);
+    }, 3000);
 
      //以下代码是为解决节点拖动
     initInvisibleGraphic();
@@ -4740,6 +4818,8 @@ function  getRelationship(container, themes) {
 
 function  getOrganizationStructure(container, themes) {
     var myChart = echarts.init(container, themes);
+    myChart.showLoading(getLoading());
+
     var dataset =  __DATASET__["result"][__DATASET__.default.sheet];
     var columns = [];
     for (var i=0; i<dataset["columns"].length;i++){
@@ -4966,12 +5046,17 @@ function  getOrganizationStructure(container, themes) {
         graphic: getGraphic(__SYS_LOGO_LINK__),
     };
 
-    myChart.setOption(option);
+    setTimeout(() => {
+      myChart.hideLoading();
+      myChart.setOption(option);
+    }, 3000);
     return container;
 }
 
 function getWebkitDep(container, themes) {
     var myChart = echarts.init(container, themes);
+    myChart.showLoading(getLoading());
+
     var dataset =  __DATASET__["result"][__DATASET__.default.sheet];
     var columns = [];
     var categories = [];
@@ -5114,15 +5199,19 @@ function getWebkitDep(container, themes) {
         graphic: getGraphic(__SYS_LOGO_LINK__),
     };
 
-    myChart.setOption(option);
+    setTimeout(() => {
+      myChart.hideLoading();
+      myChart.setOption(option);
+    }, 3000);
     return container;
 }
 
 function getScatter(container, themes) {
-    var regressionType = {"直线": "linear", "指数": "exponential", "对数": "logarithmic", "多项式": "polynomial"};
     var myChart = echarts.init(container, themes);
-    var dataset = __DATASET__["result"][__DATASET__.default.sheet];
+    myChart.showLoading(getLoading());
 
+    var regressionType = {"直线": "linear", "指数": "exponential", "对数": "logarithmic", "多项式": "polynomial"};
+    var dataset = __DATASET__["result"][__DATASET__.default.sheet];
     var series = [];
     var columns = [];
     var minvalue = 0;
@@ -5485,14 +5574,18 @@ function getScatter(container, themes) {
         animationEasingUpdate: "quinticInOut",
     };
 
-    myChart.setOption(option);
+    setTimeout(() => {
+      myChart.hideLoading();
+      myChart.setOption(option);
+    }, 3000);
     return container;
 }
 
 function getFunnel(container, themes) {
     var myChart = echarts.init(container, themes);
-    var dataset = __DATASET__["result"][__DATASET__.default.sheet];
+    myChart.showLoading(getLoading());
 
+    var dataset = __DATASET__["result"][__DATASET__.default.sheet];
     var series = [];
     var columns = [];
     var legends = [];
@@ -5652,14 +5745,18 @@ function getFunnel(container, themes) {
         graphic: getGraphic(__SYS_LOGO_LINK__),
     };
 
-    myChart.setOption(option);
+    setTimeout(() => {
+      myChart.hideLoading();
+      myChart.setOption(option);
+    }, 3000);
     return container;
 }
 
 function getWordCloud(container, themes) {
     var myChart = echarts.init(container, themes);
-    var dataset = __DATASET__["result"][__DATASET__.default.sheet];
+    myChart.showLoading(getLoading());
 
+    var dataset = __DATASET__["result"][__DATASET__.default.sheet];
     var series = [];
     var columns = [];
     var legends = [];
@@ -5826,12 +5923,17 @@ function getWordCloud(container, themes) {
         graphic: getGraphic(__SYS_LOGO_LINK__),
     };
 
-    myChart.setOption(option);
+    setTimeout(() => {
+      myChart.hideLoading();
+      myChart.setOption(option);
+    }, 3000);
     return container;
 }
 
 function getLiqiud(container, themes) {
     var myChart = echarts.init(container, themes);
+    myChart.showLoading(getLoading());
+
     var dataset = __DATASET__["result"][__DATASET__.default.sheet];
     var columns = [];
     for (var i = 0; i < dataset["columns"].length; i++) {
@@ -6003,7 +6105,10 @@ function getLiqiud(container, themes) {
         graphic: getGraphic(__SYS_LOGO_LINK__),
     };
 
-    myChart.setOption(option);
+    setTimeout(() => {
+      myChart.hideLoading();
+      myChart.setOption(option);
+    }, 3000);
 
     myChart.on("mouseover", function (params) {
         stopTimer();
@@ -6015,13 +6120,14 @@ function getLiqiud(container, themes) {
     var timer;
     function doing() {
         let option = myChart.getOption();
-        for (var i=0;i<option.series.length;i++){
+        for (var i = 0; i < option.series.length; i++) {
             if (option.series[i].data.length > 1) {
                 var data = option.series[i].data.slice(1);
                 data.push(option.series[i].data[0]);
                 option.series[i].data = data;
             }
         }
+
         myChart.setOption(option);
     }
 
@@ -6039,6 +6145,9 @@ function getLiqiud(container, themes) {
 }
 
 function getGaugeWithAll(container, themes) {
+    var myChart = echarts.init(container, themes);
+    myChart.showLoading(getLoading());
+
     var dataset = __DATASET__["result"][__DATASET__.default.sheet];
     var columns = [];
     for (var i = 0; i < dataset["columns"].length; i++) {
@@ -6132,7 +6241,6 @@ function getGaugeWithAll(container, themes) {
         series[i].center = [x + "%", y + "%"];
     }
 
-    var myChart = echarts.init(container, themes);
     var option = {
         grid: {
             x: __ECHARTS__.configs.grid_left.value,
@@ -6194,7 +6302,10 @@ function getGaugeWithAll(container, themes) {
         },
         series: series,
     };
-    myChart.setOption(option);
+    setTimeout(() => {
+      myChart.hideLoading();
+      myChart.setOption(option);
+    }, 3000);
     var timer;
     myChart.on("mouseover", function (params) {
         stopTimer();
@@ -6211,6 +6322,7 @@ function getGaugeWithAll(container, themes) {
                 option.series[i].data = data;
             }
         }
+
         myChart.setOption(option);
     }
 
@@ -6228,6 +6340,10 @@ function getGaugeWithAll(container, themes) {
 }
 
 function getGaugeWithOne(container, themes) {
+    var myChart = echarts.init(container, themes);
+    myChart.showLoading(getLoading());
+
+
     var dataset = __DATASET__["result"][__DATASET__.default.sheet];
     var columns = [];
     for (var i = 0; i < dataset["columns"].length; i++) {
@@ -6325,7 +6441,6 @@ function getGaugeWithOne(container, themes) {
         }
     }
 
-    var myChart = echarts.init(container, themes);
     var option = {
         title: {
             show:__ECHARTS__.configs.titleDisplay.value =="YES",
@@ -6380,7 +6495,10 @@ function getGaugeWithOne(container, themes) {
         series: seriesgroup[index],
         graphic: getGraphic(__SYS_LOGO_LINK__),
     };
-    myChart.setOption(option);
+    setTimeout(() => {
+      myChart.hideLoading();
+      myChart.setOption(option);
+    }, 3000);
 
     var timer;
     myChart.on("mouseover", function (params) {
@@ -6391,10 +6509,10 @@ function getGaugeWithOne(container, themes) {
     });
     function doing() {
         let option = myChart.getOption();
-        if (index < (seriesgroup.length-1)){
-            index+=1;
+        if (index < (seriesgroup.length - 1)) {
+            index += 1;
         } else {
-            index=0;
+            index = 0;
         }
         option.series = seriesgroup[index];
         myChart.setOption(option);
@@ -6415,6 +6533,8 @@ function getGaugeWithOne(container, themes) {
 
 function getCalendar(container, themes) {
     var myChart = echarts.init(container, themes);
+    myChart.showLoading(getLoading());
+
     var dataset = __DATASET__["result"][__DATASET__.default.sheet];
     var columns = [];
     for (var i = 0; i < dataset["columns"].length; i++) {
@@ -6606,13 +6726,18 @@ function getCalendar(container, themes) {
         series: series,
         graphic: getGraphic(__SYS_LOGO_LINK__),
     };
-    myChart.setOption(option);
+    setTimeout(() => {
+      myChart.hideLoading();
+      myChart.setOption(option);
+    }, 3000);
     return container;
 
 }
 
 function getGeoOfChina(container, themes) {
     var myChart = echarts.init(container, themes);
+    myChart.showLoading(getLoading());
+
     var dataset = __DATASET__["result"][__DATASET__.default.sheet];
     var columns = [];
     for (var i = 0; i < dataset["columns"].length; i++) {
@@ -6850,7 +6975,10 @@ function getGeoOfChina(container, themes) {
             return idx * Number(__ECHARTS__.configs.animationDelayUpdate.value);
         },
     };
-    myChart.setOption(option);
+    setTimeout(() => {
+      myChart.hideLoading();
+      myChart.setOption(option);
+    }, 3000);
 
     var timer;
     myChart.on("mouseover", function (params) {
@@ -6862,7 +6990,7 @@ function getGeoOfChina(container, themes) {
 
     function doing() {
         var option = myChart.getOption();
-        if (index < (series.length-1)) {
+        if (index < (series.length - 1)) {
             index += 1;
         } else {
             index = 0;
@@ -6870,7 +6998,7 @@ function getGeoOfChina(container, themes) {
         option.series[0].name = series[index].name;
         option.series[1].name = series[index].name;
         option.visualMap = {
-            show:__ECHARTS__.configs.visualMapDisplay.value == "YES",
+            show: __ECHARTS__.configs.visualMapDisplay.value == "YES",
             min: series[index].min,
             max: series[index].max,
             type: __ECHARTS__.configs.visualMap_type.value,
@@ -6878,19 +7006,22 @@ function getGeoOfChina(container, themes) {
             top: __ECHARTS__.configs.visualMap_top.value,
             left: __ECHARTS__.configs.visualMap_left.value,
             itemWidth: __ECHARTS__.configs.visualMap_width.value,
-            orient:__ECHARTS__.configs.visualMap_orient.value,
+            orient: __ECHARTS__.configs.visualMap_orient.value,
             itemHeight: __ECHARTS__.configs.visualMap_height.value,
             textStyle: {
                 color: __ECHARTS__.configs.visualMap_textColor.value,
             },
-            splitNumber:__ECHARTS__.configs.visualMap_piecewise_splitNumber.value,
+            splitNumber: __ECHARTS__.configs.visualMap_piecewise_splitNumber.value,
         };
         option.series[0].data = series[index].data;
         option.series[1].data = convertData(series[index].data.sort(function (a, b) {
-                    return b.value - a.value;
-                }));
+            return b.value - a.value;
+        }));
 
-        myChart.setOption(option);
+        setTimeout(() => {
+            myChart.hideLoading();
+            myChart.setOption(option);
+        }, 3000);
     }
 
     function startTimer() {
@@ -6909,6 +7040,8 @@ function getGeoOfChina(container, themes) {
 
 function getGeoOfLocal(container, themes) {
     var myChart = echarts.init(container, themes);
+    myChart.showLoading(getLoading());
+
     var dataset = __DATASET__["result"][__DATASET__.default.sheet];
     var columns = [];
     for (var i = 0; i < dataset["columns"].length; i++) {
@@ -7143,7 +7276,10 @@ function getGeoOfLocal(container, themes) {
         },
     };
 
-    myChart.setOption(option);
+    setTimeout(() => {
+      myChart.hideLoading();
+      myChart.setOption(option);
+    }, 3000);
 
     var timer;
     myChart.on("mouseover", function (params) {
@@ -7155,7 +7291,7 @@ function getGeoOfLocal(container, themes) {
 
     function doing() {
         var option = myChart.getOption();
-        if (index < (series.length-1)) {
+        if (index < (series.length - 1)) {
             index += 1;
         } else {
             index = 0;
@@ -7163,7 +7299,7 @@ function getGeoOfLocal(container, themes) {
         option.series[0].name = series[index].name;
         option.series[1].name = series[index].name;
         option.visualMap = {
-            show:__ECHARTS__.configs.visualMapDisplay.value == "YES",
+            show: __ECHARTS__.configs.visualMapDisplay.value == "YES",
             min: series[index].min,
             max: series[index].max,
             type: __ECHARTS__.configs.visualMap_type.value,
@@ -7171,17 +7307,17 @@ function getGeoOfLocal(container, themes) {
             top: __ECHARTS__.configs.visualMap_top.value,
             left: __ECHARTS__.configs.visualMap_left.value,
             itemWidth: __ECHARTS__.configs.visualMap_width.value,
-            orient:__ECHARTS__.configs.visualMap_orient.value,
+            orient: __ECHARTS__.configs.visualMap_orient.value,
             itemHeight: __ECHARTS__.configs.visualMap_height.value,
             textStyle: {
                 color: __ECHARTS__.configs.visualMap_textColor.value,
             },
-            splitNumber:__ECHARTS__.configs.visualMap_piecewise_splitNumber.value,
+            splitNumber: __ECHARTS__.configs.visualMap_piecewise_splitNumber.value,
         };
         option.series[0].data = series[index].data;
         option.series[1].data = convertData(series[index].data.sort(function (a, b) {
-                    return b.value - a.value;
-                }));
+            return b.value - a.value;
+        }));
 
         myChart.setOption(option);
     }
@@ -7202,6 +7338,8 @@ function getGeoOfLocal(container, themes) {
 
 function getBar3D(container, themes) {
     var myChart = echarts.init(container, themes);
+    myChart.showLoading(getLoading());
+
     var containerWidth = Number(container.style.width.slice(0).replace(/px/i, ""));
     var containerHeight = Number(container.style.height.slice(0).replace(/px/i, ""));
 
@@ -7456,12 +7594,17 @@ function getBar3D(container, themes) {
         series: series,
         graphic: getGraphic(__SYS_LOGO_LINK__),
     };
-    myChart.setOption(option);
+    setTimeout(() => {
+      myChart.hideLoading();
+      myChart.setOption(option);
+    }, 3000);
     return container;
 }
 
 function getLine3D(container, themes) {
     var myChart = echarts.init(container, themes);
+    myChart.showLoading(getLoading());
+
     var containerWidth = Number(container.style.width.slice(0).replace(/px/i, ""));
     var containerHeight = Number(container.style.height.slice(0).replace(/px/i, ""));
 
@@ -7711,12 +7854,17 @@ function getLine3D(container, themes) {
         series: series,
         graphic: getGraphic(__SYS_LOGO_LINK__),
     };
-    myChart.setOption(option);
+    setTimeout(() => {
+      myChart.hideLoading();
+      myChart.setOption(option);
+    }, 3000);
     return container;
 }
 
 function getScatter3D(container, themes) {
     var myChart = echarts.init(container, themes);
+    myChart.showLoading(getLoading());
+
     var containerWidth = Number(container.style.width.slice(0).replace(/px/i, ""));
     var containerHeight = Number(container.style.height.slice(0).replace(/px/i, ""));
 
@@ -7968,12 +8116,17 @@ function getScatter3D(container, themes) {
         series: series,
         graphic: getGraphic(__SYS_LOGO_LINK__),
     };
-    myChart.setOption(option);
+    setTimeout(() => {
+      myChart.hideLoading();
+      myChart.setOption(option);
+    }, 3000);
     return container;
 }
 
 function getCategoryLine(container, themes) {
     var myChart = echarts.init(container, themes);
+    myChart.showLoading(getLoading());
+
     var containerWidth = Number(container.style.width.slice(0).replace(/px/i, ""));
     var containerHeight = Number(container.style.height.slice(0).replace(/px/i, ""));
 
@@ -8297,13 +8450,18 @@ function getCategoryLine(container, themes) {
         },
         options: options
     };
-    myChart.setOption(option);
+    setTimeout(() => {
+      myChart.hideLoading();
+      myChart.setOption(option);
+    }, 3000);
     return container;
 }
 
 function getGeoMigrateLinesOfChinaCity(container, themes) {
     //数据结构:fromCity|toCity|value or text
     var myChart = echarts.init(container, themes);
+    myChart.showLoading(getLoading());
+
     var containerWidth = Number(container.style.width.slice(0).replace(/px/i, ""));
     var containerHeight = Number(container.style.height.slice(0).replace(/px/i, ""));
 
@@ -8618,12 +8776,17 @@ function getGeoMigrateLinesOfChinaCity(container, themes) {
     } else {
         alert("该视图需要[源城市]、[目标城市]和[详细信息]等三个数据指标.")
     }
-    myChart.setOption(option);
+    setTimeout(() => {
+      myChart.hideLoading();
+      myChart.setOption(option);
+    }, 3000);
     return container;
 }
 
 function getCategoryLineForGauge(container, themes) {
     var myChart = echarts.init(container, themes);
+    myChart.showLoading(getLoading());
+
     var containerWidth = Number(container.style.width.slice(0).replace(/px/i, ""));
     var containerHeight = Number(container.style.height.slice(0).replace(/px/i, ""));
 
@@ -8780,12 +8943,17 @@ function getCategoryLineForGauge(container, themes) {
         },
         options: options
     };
-    myChart.setOption(option);
+    setTimeout(() => {
+      myChart.hideLoading();
+      myChart.setOption(option);
+    }, 3000);
     return container;
 }
 
 function getCategoryLineForLiqiud(container, themes) {
     var myChart = echarts.init(container, themes);
+    myChart.showLoading(getLoading());
+
     var containerWidth = Number(container.style.width.slice(0).replace(/px/i, ""));
     var containerHeight = Number(container.style.height.slice(0).replace(/px/i, ""));
 
@@ -8954,12 +9122,17 @@ function getCategoryLineForLiqiud(container, themes) {
         },
         options: options
     };
-    myChart.setOption(option);
+    setTimeout(() => {
+      myChart.hideLoading();
+      myChart.setOption(option);
+    }, 3000);
     return container;
 }
 
 function getCategoryLineForGeoOfChina(container, themes) {
     var myChart = echarts.init(container, themes);
+    myChart.showLoading(getLoading());
+
     var dataset = __DATASET__["result"][__DATASET__.default.sheet];
     var columns = [];
     for (var i = 0; i < dataset["columns"].length; i++) {
@@ -9267,12 +9440,17 @@ function getCategoryLineForGeoOfChina(container, themes) {
         },
         options: options
     };
-    myChart.setOption(option);
+    setTimeout(() => {
+      myChart.hideLoading();
+      myChart.setOption(option);
+    }, 3000);
     return container;
 }
 
 function getCategoryLineForGeoOfLocal(container, themes) {
     var myChart = echarts.init(container, themes);
+    myChart.showLoading(getLoading());
+
     var dataset = __DATASET__["result"][__DATASET__.default.sheet];
     var columns = [];
     for (var i = 0; i < dataset["columns"].length; i++) {
@@ -9573,15 +9751,21 @@ function getCategoryLineForGeoOfLocal(container, themes) {
         },
         options: options
     };
-    myChart.setOption(option);
+    setTimeout(() => {
+        myChart.hideLoading();
+        myChart.setOption(option);
+    }, 3000);
     return container;
 }
 
 function getScrollingScreen(container, themes) {
+    var myChart = echarts.init(container, themes);
+    myChart.showLoading(getLoading());
     var containerWidth = Number(container.style.width.slice(0).replace(/px/i, ""));
     var containerHeight = Number(container.style.height.slice(0).replace(/px/i, ""));
     var dataset = __DATASET__["result"][__DATASET__.default.sheet];
     var columns = [];
+    var cols = [];
     var data = [];
     var txtOffset = 8;
     var lineHeight = Number(__ECHARTS__.configs.scrollingScreenFontSize.value) + txtOffset;
@@ -9590,7 +9774,7 @@ function getScrollingScreen(container, themes) {
 
     for (var i = 0; i < dataset["columns"].length; i++) {
         columns.push(dataset["columns"][i].name);
-        data.push({
+        cols.push({
             type: 'rect',
             left: __ECHARTS__.configs.scrollingScreenColumnWidth.value * (i + 1),
             top: 0,
@@ -9600,10 +9784,11 @@ function getScrollingScreen(container, themes) {
                 height: lineHeight,
             },
             style: {
-                lineWidth: 1,
+                lineWidth: 0.5,
                 fill: __ECHARTS__.configs.scrollingScreenBackColor.value,//'rgba(0,0,0,0.2)',
                 stroke: __ECHARTS__.configs.scrollingScreenBorderColor.value,
-            }
+                opacity: __ECHARTS__.configs.scrollingScreenOpacity.value,
+            },
         }, {
             type: 'text',
             id: 'columns' + i,
@@ -9614,10 +9799,17 @@ function getScrollingScreen(container, themes) {
             style: {
                 text: dataset["columns"][i].name,
                 font: __ECHARTS__.configs.scrollingScreenFontSize.value + 'px "Microsoft YaHei", sans-serif',
-                fill: __ECHARTS__.configs.scrollingScreenFontFillColor.value,
+                fill: __ECHARTS__.configs.scrollingScreenColumnFontFillColor.value,
             }
         });
     }
+
+    var colorPalette = [
+        '#2ec7c9', '#b6a2de', '#5ab1ef', '#ffb980', '#d87a80',
+        '#8d98b3', '#e5cf0d', '#97b552', '#95706d', '#dc69aa',
+        '#07a2a4', '#9a7fd1', '#588dd5', '#f5994e', '#c05050',
+        '#59678c', '#c9ab00', '#7eb00a', '#6f5553', '#c14089'
+    ];
 
     for (var i = 0; i < dataset["data"].length; i++) {
         let r = dataset["data"][i];
@@ -9626,34 +9818,34 @@ function getScrollingScreen(container, themes) {
                 type: 'rect',
                 left: __ECHARTS__.configs.scrollingScreenColumnWidth.value * (c + 1),
                 top: lineHeight * (i + 1),
-                z: 100,
+                z: 99,
                 shape: {
                     width: __ECHARTS__.configs.scrollingScreenColumnWidth.value,
                     height: lineHeight,
                 },
                 style: {
-                    lineWidth: 1,
-                    fill: __ECHARTS__.configs.scrollingScreenBackColor.value,//'rgba(0,0,0,0.2)',
+                    lineWidth: 0.5,
+                    fill: i % 2 > 0 ? __ECHARTS__.configs.scrollingScreenBackColor.value : "transparent",//'rgba(0,0,0,0.2)',
                     stroke: __ECHARTS__.configs.scrollingScreenBorderColor.value,
-                }
+                    opacity: __ECHARTS__.configs.scrollingScreenOpacity.value,
+                },
             }, {
                 type: 'text',
                 id: i + "-" + c,
                 left: __ECHARTS__.configs.scrollingScreenColumnWidth.value * (c + 1) + txtOffset,
                 top: lineHeight * (i + 1) + txtOffset,
-                z: 100,
+                z: 99,
                 bounding: 'raw',
                 style: {
                     text: r[columns[c]].value,
                     font: __ECHARTS__.configs.scrollingScreenFontSize.value + 'px "Microsoft YaHei", sans-serif',
-                    fill: __ECHARTS__.configs.scrollingScreenFontFillColor.value,
+                    fill: colorPalette[i % colorPalette.length],
                 },
             });
         }
         groupHeight += lineHeight;
     }
 
-    var myChart = echarts.init(container, themes);
     var option = {
         title: {
             show: __ECHARTS__.configs.titleDisplay.value == "YES",
@@ -9673,24 +9865,39 @@ function getScrollingScreen(container, themes) {
         graphic: getGraphic(__SYS_LOGO_LINK__)
     };
     option.graphic.push({
-        type: 'group',
-        id: 'scrollingScreen',
-        left: __ECHARTS__.configs.scrollingScreenLeft.value,
-        children: data,
-        onmouseover: function () {
-            timeout = true;
+            type: 'group',
+            id: 'scrollingColums',
+            left: __ECHARTS__.configs.scrollingScreenLeft.value,
+            children: cols,
+            onmouseover: function () {
+                timeout = true;
+            },
+            onmouseout: function () {
+                timeout = false;
+            }
         },
-        onmouseout: function () {
-            timeout = false;
-        }
-    });
-    myChart.setOption(option);
+        {
+            type: 'group',
+            id: 'scrollingScreen',
+            left: __ECHARTS__.configs.scrollingScreenLeft.value,
+            children: data,
+            onmouseover: function () {
+                timeout = true;
+            },
+            onmouseout: function () {
+                timeout = false;
+            }
+        });
+    setTimeout(() => {
+        myChart.hideLoading();
+        myChart.setOption(option);
+    }, 3000);
 
     let top = containerHeight;
     setInterval(function () {
         if (!timeout) {
             if (top > (groupHeight * (-1)))
-                top = top - 1;
+                top = top - 2;
             else
                 top = containerHeight;
             myChart.setOption(
@@ -9702,7 +9909,7 @@ function getScrollingScreen(container, themes) {
                 }
             );
         }
-    }, __ECHARTS__.configs.scrollingScreenSpeed.value);
+    }, Number(__ECHARTS__.configs.scrollingScreenSpeed.value));
 
     return container;
 }
