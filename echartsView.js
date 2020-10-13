@@ -309,12 +309,12 @@ var __ECHARTS__ = {
 
         hr_scrollingScreen:{name: "数据滚屏", value: "", type: "hr"},
         scrollingScreenLeft:{name: "左边距(%)", value: "20%", type: "input"},
+        scrollingScreenWidth: {name: "宽度", value: 800, type: "input"},
         scrollingScreenBackColor:{value: "transparent", name: "背景颜色", type: "color"},
-        scrollingScreenOpacity:{value: 0.4, name: "透明度", type: "input"},
-        scrollingScreenColumnFontFillColor:{value: "#404a59", name: "文本颜色", type: "color"},
-        scrollingScreenColumnWidth: {name: "数据项宽度", value: 200, type: "input"},
-        scrollingScreenFontSize:{name: "字号", value: 16, type: "input"},
         scrollingScreenBorderColor:{value: "transparent", name: "边框颜色", type: "color"},
+        scrollingScreenColumnFontFillColor:{value: "#404a59", name: "表头颜色", type: "color"},
+        scrollingScreenOpacity:{value: 0.4, name: "透明度", type: "input"},
+        scrollingScreenFontSize:{name: "字号", value: 16, type: "input"},
         scrollingScreenSpeed:{name: "速度", value: 10, type: "input"},
 
         hr_dataZoom: {name: "数据缩放", value: "", type: "hr"},
@@ -1514,9 +1514,9 @@ function getAnimationEasingUpdate(){
     return __ECHARTS__.configs.animationEasingUpdate.value == "linear"?__ECHARTS__.configs.animationEasingUpdate.value:__ECHARTS__.configs.animationEasingUpdate.value + __ECHARTS__.configs.animationFunctionType.value;
 }
 
-function getLoading(){
+function getLoading(text){
     return {
-        text : "正在加载...",
+        text : text,
         color: '#c23531',
         textColor: '#c23531',
         maskColor: 'rgba(255, 255, 255, 0.2)',
@@ -1583,9 +1583,9 @@ function getGraphic(link) {
 
 function getBar(container, themes) {
     var myChart = echarts.init(container, themes);
-    myChart.showLoading(getLoading());
-
     var dataset = __DATASET__["result"][__DATASET__.default.sheet];
+    myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
+
     var columns = [];
     for (var i = 0; i < dataset["columns"].length; i++) {
         columns.push(dataset["columns"][i].name);
@@ -1857,15 +1857,15 @@ function getBar(container, themes) {
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
-    }, 3000);
+    }, 2000);
     return container;
 }
 
 function getTransversBar(container, themes) {
     var myChart = echarts.init(container, themes);
-    myChart.showLoading(getLoading());
+    var dataset = __DATASET__["result"][__DATASET__.default.sheet];
+    myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
-    var dataset =  __DATASET__["result"][__DATASET__.default.sheet];
     var columns = [];
     for (var i=0; i<dataset["columns"].length;i++){
         columns.push(dataset["columns"][i].name);
@@ -2128,7 +2128,7 @@ function getTransversBar(container, themes) {
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
-    }, 3000);
+    }, 2000);
 
     return container;
 }
@@ -2155,9 +2155,9 @@ function getMarkLine() {
 
 function getLine(container, themes) {
     var myChart = echarts.init(container, themes);
-    myChart.showLoading(getLoading());
-
     var dataset = __DATASET__["result"][__DATASET__.default.sheet];
+    myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
+
     var columns = [];
     for (var i = 0; i < dataset["columns"].length; i++) {
         columns.push(dataset["columns"][i].name);
@@ -2423,16 +2423,16 @@ function getLine(container, themes) {
     setTimeout(() => {
         myChart.hideLoading();
         myChart.setOption(option);
-    }, 3000);
+    }, 2000);
 
     return container;
 }
 
 function getBarAndLine(container, themes) {
     var myChart = echarts.init(container, themes);
-    myChart.showLoading(getLoading());
+    var dataset = __DATASET__["result"][__DATASET__.default.sheet];
+    myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
-    var dataset =  __DATASET__["result"][__DATASET__.default.sheet];
     var columns = [];
     for (var i=0; i<dataset["columns"].length;i++){
         columns.push(dataset["columns"][i].name);
@@ -2754,16 +2754,16 @@ function getBarAndLine(container, themes) {
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
-    }, 3000);
+    }, 2000);
 
     return container;
 }
 
 function getAreaStyle(container, themes) {
     var myChart = echarts.init(container, themes);
-    myChart.showLoading(getLoading());
+    var dataset = __DATASET__["result"][__DATASET__.default.sheet];
+    myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
-    var dataset =  __DATASET__["result"][__DATASET__.default.sheet];
     var columns = [];
     for (var i=0; i<dataset["columns"].length;i++){
         columns.push(dataset["columns"][i].name);
@@ -3043,16 +3043,16 @@ function getAreaStyle(container, themes) {
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
-    }, 3000);
+    }, 2000);
 
     return container;
 }
 
 function getPolarBar(container, themes) {
     var myChart = echarts.init(container, themes);
-    myChart.showLoading(getLoading());
-
     var dataset = __DATASET__["result"][__DATASET__.default.sheet];
+    myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
+
     var columns = [];
     for (var i = 0; i < dataset["columns"].length; i++) {
         columns.push(dataset["columns"][i].name);
@@ -3232,15 +3232,15 @@ function getPolarBar(container, themes) {
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
-    }, 3000);
+    }, 2000);
     return container;
 }
 
 function getPolarArea(container, themes) {
     var myChart = echarts.init(container, themes);
-    myChart.showLoading(getLoading());
-
     var dataset = __DATASET__["result"][__DATASET__.default.sheet];
+    myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
+
     var columns = [];
     for (var i = 0; i < dataset["columns"].length; i++) {
         columns.push(dataset["columns"][i].name);
@@ -3418,15 +3418,15 @@ function getPolarArea(container, themes) {
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
-    }, 3000);
+    }, 2000);
     return container;
 }
 
 function getPie(container,themes) {
     var myChart = echarts.init(container, themes);
-    myChart.showLoading(getLoading());
-
     var dataset = __DATASET__["result"][__DATASET__.default.sheet];
+    myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
+
     var columns = [];
     for (var i = 0; i < dataset["columns"].length; i++) {
         columns.push(dataset["columns"][i].name);
@@ -3611,15 +3611,15 @@ function getPie(container,themes) {
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
-    }, 3000);
+    }, 2000);
     return container;
 }
 
 function getRing(container,themes) {
     var myChart = echarts.init(container, themes);
-    myChart.showLoading(getLoading());
-
     var dataset = __DATASET__["result"][__DATASET__.default.sheet];
+    myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
+
     var columns = [];
     for (var i = 0; i < dataset["columns"].length; i++) {
         columns.push(dataset["columns"][i].name);
@@ -3803,16 +3803,16 @@ function getRing(container,themes) {
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
-    }, 3000);
+    }, 2000);
 
     return container;
 }
 
 function getRose(container,themes) {
     var myChart = echarts.init(container, themes);
-    myChart.showLoading(getLoading());
+    var dataset = __DATASET__["result"][__DATASET__.default.sheet];
+    myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
-    var dataset =  __DATASET__["result"][__DATASET__.default.sheet];
     var columns = [];
     for (var i=0; i<dataset["columns"].length;i++){
         columns.push(dataset["columns"][i].name);
@@ -3996,15 +3996,15 @@ function getRose(container,themes) {
    setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
-    }, 3000);
+    }, 2000);
     return container;
 }
 
 function getRadar(container, themes) {
     var myChart = echarts.init(container, themes);
-    myChart.showLoading(getLoading());
+    var dataset = __DATASET__["result"][__DATASET__.default.sheet];
+    myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
-    var dataset =  __DATASET__["result"][__DATASET__.default.sheet];
     var columns = [];
     for (var i=0; i<dataset["columns"].length;i++){
         columns.push(dataset["columns"][i].name);
@@ -4180,17 +4180,17 @@ function getRadar(container, themes) {
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
-    }, 3000);
+    }, 2000);
     return container;
 
 }
 
 function getRegression(container, themes) {
     var myChart = echarts.init(container, themes);
-    myChart.showLoading(getLoading());
+    var dataset = __DATASET__["result"][__DATASET__.default.sheet];
+    myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
     var regressionType = {"直线": "linear", "指数": "exponential", "对数": "logarithmic", "多项式": "polynomial"};
-    var dataset = __DATASET__["result"][__DATASET__.default.sheet];
     var columns = [];
     for (var i = 0; i < dataset["columns"].length; i++) {
         columns.push(dataset["columns"][i].name);
@@ -4591,15 +4591,15 @@ function getRegression(container, themes) {
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
-    }, 3000);
+    }, 2000);
     return container;
 }
 
 function  getRelationship(container, themes) {
     var myChart = echarts.init(container, themes);
-    myChart.showLoading(getLoading());
+    var dataset = __DATASET__["result"][__DATASET__.default.sheet];
+    myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
-    var dataset =  __DATASET__["result"][__DATASET__.default.sheet];
     var columns = [];
     for (var i=0; i<dataset["columns"].length;i++){
         columns.push(dataset["columns"][i].name);
@@ -4765,7 +4765,7 @@ function  getRelationship(container, themes) {
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
-    }, 3000);
+    }, 2000);
 
      //以下代码是为解决节点拖动
     initInvisibleGraphic();
@@ -4818,9 +4818,9 @@ function  getRelationship(container, themes) {
 
 function  getOrganizationStructure(container, themes) {
     var myChart = echarts.init(container, themes);
-    myChart.showLoading(getLoading());
+    var dataset = __DATASET__["result"][__DATASET__.default.sheet];
+    myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
-    var dataset =  __DATASET__["result"][__DATASET__.default.sheet];
     var columns = [];
     for (var i=0; i<dataset["columns"].length;i++){
         columns.push(dataset["columns"][i].name);
@@ -5049,15 +5049,15 @@ function  getOrganizationStructure(container, themes) {
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
-    }, 3000);
+    }, 2000);
     return container;
 }
 
 function getWebkitDep(container, themes) {
     var myChart = echarts.init(container, themes);
-    myChart.showLoading(getLoading());
+    var dataset = __DATASET__["result"][__DATASET__.default.sheet];
+    myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
-    var dataset =  __DATASET__["result"][__DATASET__.default.sheet];
     var columns = [];
     var categories = [];
     for (var i=0; i<dataset["columns"].length;i++){
@@ -5202,16 +5202,16 @@ function getWebkitDep(container, themes) {
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
-    }, 3000);
+    }, 2000);
     return container;
 }
 
 function getScatter(container, themes) {
     var myChart = echarts.init(container, themes);
-    myChart.showLoading(getLoading());
+    var dataset = __DATASET__["result"][__DATASET__.default.sheet];
+    myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
     var regressionType = {"直线": "linear", "指数": "exponential", "对数": "logarithmic", "多项式": "polynomial"};
-    var dataset = __DATASET__["result"][__DATASET__.default.sheet];
     var series = [];
     var columns = [];
     var minvalue = 0;
@@ -5577,15 +5577,15 @@ function getScatter(container, themes) {
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
-    }, 3000);
+    }, 2000);
     return container;
 }
 
 function getFunnel(container, themes) {
     var myChart = echarts.init(container, themes);
-    myChart.showLoading(getLoading());
-
     var dataset = __DATASET__["result"][__DATASET__.default.sheet];
+    myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
+
     var series = [];
     var columns = [];
     var legends = [];
@@ -5748,15 +5748,15 @@ function getFunnel(container, themes) {
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
-    }, 3000);
+    }, 2000);
     return container;
 }
 
 function getWordCloud(container, themes) {
     var myChart = echarts.init(container, themes);
-    myChart.showLoading(getLoading());
-
     var dataset = __DATASET__["result"][__DATASET__.default.sheet];
+    myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
+
     var series = [];
     var columns = [];
     var legends = [];
@@ -5926,15 +5926,15 @@ function getWordCloud(container, themes) {
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
-    }, 3000);
+    }, 2000);
     return container;
 }
 
 function getLiqiud(container, themes) {
     var myChart = echarts.init(container, themes);
-    myChart.showLoading(getLoading());
-
     var dataset = __DATASET__["result"][__DATASET__.default.sheet];
+    myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
+
     var columns = [];
     for (var i = 0; i < dataset["columns"].length; i++) {
         columns.push(dataset["columns"][i].name);
@@ -6108,7 +6108,7 @@ function getLiqiud(container, themes) {
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
-    }, 3000);
+    }, 2000);
 
     myChart.on("mouseover", function (params) {
         stopTimer();
@@ -6146,9 +6146,9 @@ function getLiqiud(container, themes) {
 
 function getGaugeWithAll(container, themes) {
     var myChart = echarts.init(container, themes);
-    myChart.showLoading(getLoading());
-
     var dataset = __DATASET__["result"][__DATASET__.default.sheet];
+    myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
+
     var columns = [];
     for (var i = 0; i < dataset["columns"].length; i++) {
         columns.push(dataset["columns"][i].name);
@@ -6305,7 +6305,7 @@ function getGaugeWithAll(container, themes) {
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
-    }, 3000);
+    }, 2000);
     var timer;
     myChart.on("mouseover", function (params) {
         stopTimer();
@@ -6341,10 +6341,9 @@ function getGaugeWithAll(container, themes) {
 
 function getGaugeWithOne(container, themes) {
     var myChart = echarts.init(container, themes);
-    myChart.showLoading(getLoading());
-
-
     var dataset = __DATASET__["result"][__DATASET__.default.sheet];
+    myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
+
     var columns = [];
     for (var i = 0; i < dataset["columns"].length; i++) {
         columns.push(dataset["columns"][i].name);
@@ -6498,7 +6497,7 @@ function getGaugeWithOne(container, themes) {
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
-    }, 3000);
+    }, 2000);
 
     var timer;
     myChart.on("mouseover", function (params) {
@@ -6533,9 +6532,9 @@ function getGaugeWithOne(container, themes) {
 
 function getCalendar(container, themes) {
     var myChart = echarts.init(container, themes);
-    myChart.showLoading(getLoading());
-
     var dataset = __DATASET__["result"][__DATASET__.default.sheet];
+    myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
+
     var columns = [];
     for (var i = 0; i < dataset["columns"].length; i++) {
         columns.push(dataset["columns"][i].name);
@@ -6729,16 +6728,16 @@ function getCalendar(container, themes) {
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
-    }, 3000);
+    }, 2000);
     return container;
 
 }
 
 function getGeoOfChina(container, themes) {
     var myChart = echarts.init(container, themes);
-    myChart.showLoading(getLoading());
-
     var dataset = __DATASET__["result"][__DATASET__.default.sheet];
+    myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
+
     var columns = [];
     for (var i = 0; i < dataset["columns"].length; i++) {
         columns.push(dataset["columns"][i].name);
@@ -6978,7 +6977,7 @@ function getGeoOfChina(container, themes) {
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
-    }, 3000);
+    }, 2000);
 
     var timer;
     myChart.on("mouseover", function (params) {
@@ -7021,7 +7020,7 @@ function getGeoOfChina(container, themes) {
         setTimeout(() => {
             myChart.hideLoading();
             myChart.setOption(option);
-        }, 3000);
+        }, 2000);
     }
 
     function startTimer() {
@@ -7040,9 +7039,9 @@ function getGeoOfChina(container, themes) {
 
 function getGeoOfLocal(container, themes) {
     var myChart = echarts.init(container, themes);
-    myChart.showLoading(getLoading());
-
     var dataset = __DATASET__["result"][__DATASET__.default.sheet];
+    myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
+
     var columns = [];
     for (var i = 0; i < dataset["columns"].length; i++) {
         columns.push(dataset["columns"][i].name);
@@ -7279,7 +7278,7 @@ function getGeoOfLocal(container, themes) {
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
-    }, 3000);
+    }, 2000);
 
     var timer;
     myChart.on("mouseover", function (params) {
@@ -7338,12 +7337,11 @@ function getGeoOfLocal(container, themes) {
 
 function getBar3D(container, themes) {
     var myChart = echarts.init(container, themes);
-    myChart.showLoading(getLoading());
+    var dataset = __DATASET__["result"][__DATASET__.default.sheet];
+    myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
     var containerWidth = Number(container.style.width.slice(0).replace(/px/i, ""));
     var containerHeight = Number(container.style.height.slice(0).replace(/px/i, ""));
-
-    var dataset = __DATASET__["result"][__DATASET__.default.sheet];
     var columns = [];
     var rows = [];
     var valueMin = null;
@@ -7597,18 +7595,17 @@ function getBar3D(container, themes) {
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
-    }, 3000);
+    }, 2000);
     return container;
 }
 
 function getLine3D(container, themes) {
     var myChart = echarts.init(container, themes);
-    myChart.showLoading(getLoading());
+    var dataset = __DATASET__["result"][__DATASET__.default.sheet];
+    myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
     var containerWidth = Number(container.style.width.slice(0).replace(/px/i, ""));
     var containerHeight = Number(container.style.height.slice(0).replace(/px/i, ""));
-
-    var dataset = __DATASET__["result"][__DATASET__.default.sheet];
     var columns = [];
     var rows = [];
     var series = [];
@@ -7857,18 +7854,17 @@ function getLine3D(container, themes) {
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
-    }, 3000);
+    }, 2000);
     return container;
 }
 
 function getScatter3D(container, themes) {
     var myChart = echarts.init(container, themes);
-    myChart.showLoading(getLoading());
+    var dataset = __DATASET__["result"][__DATASET__.default.sheet];
+    myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
     var containerWidth = Number(container.style.width.slice(0).replace(/px/i, ""));
     var containerHeight = Number(container.style.height.slice(0).replace(/px/i, ""));
-
-    var dataset = __DATASET__["result"][__DATASET__.default.sheet];
     var columns = [];
     var rows = [];
     var series = [];
@@ -8119,18 +8115,18 @@ function getScatter3D(container, themes) {
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
-    }, 3000);
+    }, 2000);
     return container;
 }
 
 function getCategoryLine(container, themes) {
     var myChart = echarts.init(container, themes);
-    myChart.showLoading(getLoading());
+    var dataset = __DATASET__["result"][__DATASET__.default.sheet];
+    myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
     var containerWidth = Number(container.style.width.slice(0).replace(/px/i, ""));
     var containerHeight = Number(container.style.height.slice(0).replace(/px/i, ""));
 
-    var dataset = __DATASET__["result"][__DATASET__.default.sheet];
     var columns = [];
     var times = [];
     var options = [];
@@ -8453,19 +8449,19 @@ function getCategoryLine(container, themes) {
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
-    }, 3000);
+    }, 2000);
     return container;
 }
 
 function getGeoMigrateLinesOfChinaCity(container, themes) {
     //数据结构:fromCity|toCity|value or text
     var myChart = echarts.init(container, themes);
-    myChart.showLoading(getLoading());
+    var dataset = __DATASET__["result"][__DATASET__.default.sheet];
+    myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
     var containerWidth = Number(container.style.width.slice(0).replace(/px/i, ""));
     var containerHeight = Number(container.style.height.slice(0).replace(/px/i, ""));
 
-    var dataset = __DATASET__["result"][__DATASET__.default.sheet];
     var columns = [];
     for (var i = 0; i < dataset["columns"].length; i++) {
         columns.push(dataset["columns"][i].name);
@@ -8779,18 +8775,18 @@ function getGeoMigrateLinesOfChinaCity(container, themes) {
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
-    }, 3000);
+    }, 2000);
     return container;
 }
 
 function getCategoryLineForGauge(container, themes) {
     var myChart = echarts.init(container, themes);
-    myChart.showLoading(getLoading());
+    var dataset = __DATASET__["result"][__DATASET__.default.sheet];
+    myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
     var containerWidth = Number(container.style.width.slice(0).replace(/px/i, ""));
     var containerHeight = Number(container.style.height.slice(0).replace(/px/i, ""));
 
-    var dataset = __DATASET__["result"][__DATASET__.default.sheet];
     var columns = [];
     var times = [];
     var options = [];
@@ -8946,18 +8942,18 @@ function getCategoryLineForGauge(container, themes) {
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
-    }, 3000);
+    }, 2000);
     return container;
 }
 
 function getCategoryLineForLiqiud(container, themes) {
     var myChart = echarts.init(container, themes);
-    myChart.showLoading(getLoading());
+    var dataset = __DATASET__["result"][__DATASET__.default.sheet];
+    myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
     var containerWidth = Number(container.style.width.slice(0).replace(/px/i, ""));
     var containerHeight = Number(container.style.height.slice(0).replace(/px/i, ""));
 
-    var dataset = __DATASET__["result"][__DATASET__.default.sheet];
     var columns = [];
     var times = [];
     var options = [];
@@ -9125,15 +9121,15 @@ function getCategoryLineForLiqiud(container, themes) {
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
-    }, 3000);
+    }, 2000);
     return container;
 }
 
 function getCategoryLineForGeoOfChina(container, themes) {
     var myChart = echarts.init(container, themes);
-    myChart.showLoading(getLoading());
-
     var dataset = __DATASET__["result"][__DATASET__.default.sheet];
+    myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
+
     var columns = [];
     for (var i = 0; i < dataset["columns"].length; i++) {
         columns.push(dataset["columns"][i].name);
@@ -9443,15 +9439,15 @@ function getCategoryLineForGeoOfChina(container, themes) {
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
-    }, 3000);
+    }, 2000);
     return container;
 }
 
 function getCategoryLineForGeoOfLocal(container, themes) {
     var myChart = echarts.init(container, themes);
-    myChart.showLoading(getLoading());
-
     var dataset = __DATASET__["result"][__DATASET__.default.sheet];
+    myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
+
     var columns = [];
     for (var i = 0; i < dataset["columns"].length; i++) {
         columns.push(dataset["columns"][i].name);
@@ -9754,16 +9750,17 @@ function getCategoryLineForGeoOfLocal(container, themes) {
     setTimeout(() => {
         myChart.hideLoading();
         myChart.setOption(option);
-    }, 3000);
+    }, 2000);
     return container;
 }
 
 function getScrollingScreen(container, themes) {
     var myChart = echarts.init(container, themes);
-    myChart.showLoading(getLoading());
+    var dataset = __DATASET__["result"][__DATASET__.default.sheet];
+    myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
+
     var containerWidth = Number(container.style.width.slice(0).replace(/px/i, ""));
     var containerHeight = Number(container.style.height.slice(0).replace(/px/i, ""));
-    var dataset = __DATASET__["result"][__DATASET__.default.sheet];
     var columns = [];
     var cols = [];
     var data = [];
@@ -9771,28 +9768,29 @@ function getScrollingScreen(container, themes) {
     var lineHeight = Number(__ECHARTS__.configs.scrollingScreenFontSize.value) + txtOffset;
     var groupHeight = lineHeight;
     var timeout = false;
+    var colWidth = Number(__ECHARTS__.configs.scrollingScreenWidth.value)/dataset["columns"].length;
 
     for (var i = 0; i < dataset["columns"].length; i++) {
         columns.push(dataset["columns"][i].name);
         cols.push({
             type: 'rect',
-            left: __ECHARTS__.configs.scrollingScreenColumnWidth.value * (i + 1),
+            left: colWidth * (i + 1),
             top: 0,
             z: 100,
             shape: {
-                width: __ECHARTS__.configs.scrollingScreenColumnWidth.value,
+                width: colWidth,
                 height: lineHeight,
             },
             style: {
                 lineWidth: 0.5,
                 fill: __ECHARTS__.configs.scrollingScreenBackColor.value,//'rgba(0,0,0,0.2)',
                 stroke: __ECHARTS__.configs.scrollingScreenBorderColor.value,
-                opacity: __ECHARTS__.configs.scrollingScreenOpacity.value,
+                opacity: Number(__ECHARTS__.configs.scrollingScreenOpacity.value) + 0.5,
             },
         }, {
             type: 'text',
             id: 'columns' + i,
-            left: __ECHARTS__.configs.scrollingScreenColumnWidth.value * (i + 1) + txtOffset,
+            left: colWidth * (i + 1) + txtOffset,
             top: txtOffset,
             z: 100,
             bounding: 'raw',
@@ -9816,11 +9814,11 @@ function getScrollingScreen(container, themes) {
         for (var c = 0; c < columns.length; c++) {
             data.push({
                 type: 'rect',
-                left: __ECHARTS__.configs.scrollingScreenColumnWidth.value * (c + 1),
+                left: colWidth * (c + 1),
                 top: lineHeight * (i + 1),
                 z: 99,
                 shape: {
-                    width: __ECHARTS__.configs.scrollingScreenColumnWidth.value,
+                    width: colWidth,
                     height: lineHeight,
                 },
                 style: {
@@ -9832,7 +9830,7 @@ function getScrollingScreen(container, themes) {
             }, {
                 type: 'text',
                 id: i + "-" + c,
-                left: __ECHARTS__.configs.scrollingScreenColumnWidth.value * (c + 1) + txtOffset,
+                left: colWidth * (c + 1) + txtOffset,
                 top: lineHeight * (i + 1) + txtOffset,
                 z: 99,
                 bounding: 'raw',
@@ -9866,7 +9864,7 @@ function getScrollingScreen(container, themes) {
     };
     option.graphic.push({
             type: 'group',
-            id: 'scrollingColums',
+            id: 'scrollingColumn',
             left: __ECHARTS__.configs.scrollingScreenLeft.value,
             children: cols,
             onmouseover: function () {
@@ -9878,7 +9876,7 @@ function getScrollingScreen(container, themes) {
         },
         {
             type: 'group',
-            id: 'scrollingScreen',
+            id: 'scrollingData',
             left: __ECHARTS__.configs.scrollingScreenLeft.value,
             children: data,
             onmouseover: function () {
@@ -9891,7 +9889,7 @@ function getScrollingScreen(container, themes) {
     setTimeout(() => {
         myChart.hideLoading();
         myChart.setOption(option);
-    }, 3000);
+    }, 2000);
 
     let top = containerHeight;
     setInterval(function () {
@@ -9902,8 +9900,13 @@ function getScrollingScreen(container, themes) {
                 top = containerHeight;
             myChart.setOption(
                 {
-                    graphic: [{
-                        id: 'scrollingScreen',
+                    graphic: [
+                        {
+                            id: 'scrollingColumn',
+                            top: (top - lineHeight)<=0?0:(top - lineHeight),
+                        },
+                        {
+                        id: 'scrollingData',
                         top: top,
                     }]
                 }
