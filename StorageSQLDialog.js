@@ -123,24 +123,26 @@ function storageSqlDialog(sql, editer, type){
     input.id = "openJson";
     input.style.display = "none";
     input.className = "openJson";
+    input.accept = "text/plain,.json";
     input.onchange = function () {
         if (window.FileReader) {
             try {
-                var file = this.files[0];
-                var reader = new FileReader();
+                let file = this.files[0];
+                let reader = new FileReader();
                 reader.onload = function () {
-                    var isOver = confirm("您确定覆盖当前存储的所有脚本吗?");
+                    let isOver = confirm("您确定覆盖当前存储的所有脚本吗?");
                     if (isOver) {
-                        var storage = window.localStorage;
-                        var sqllist = JSON.parse(this.result);
+                        console.log(this.result);
+                        let storage = window.localStorage;
+                        let sqllist = JSON.parse(this.result);
                         storage.setItem(__CONFIGS__.STORAGE.SCRIPTS, JSON.stringify(sqllist));
                         getSQLList($("sql-Manager-Content-table"));
                         $("table-container").style.display = "block";
                         $("edit-container").style.display = "none";
                     }
                 };
-                reader.readAsText(file, __CONFIGS__.Charset.options[__CONFIGS__.Charset.value]);
-            }catch (e) {
+                reader.readAsText(file, __SQLEDITOR__.charset.options[__SQLEDITOR__.charset.value]);
+            } catch (e) {
                 alert("请选择需要导入的文件.")
             }
         } else {

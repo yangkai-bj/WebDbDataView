@@ -73,7 +73,8 @@ var __ECHARTS__ = {
             type: "select"
         },
         toolboxFeatureSaveAsImage: {name: "保存图像", value: "YES", options: [new Option("是","YES"), new Option("否","NO")], type: "select"},
-        toolboxFeatureRestore: {name: "还原", value: "YES", options: [new Option("是","YES"), new Option("否","NO")], type: "select"},
+        toolboxFeatureSaveAsImageBackgroundColor:{name: "图像背景", value: "auto", options: [new Option("自动","auto"), new Option("白色","#ffffff"),new Option("透明","transparent")], type: "select"},
+        toolboxFeatureRestore: {name: "图像还原", value: "YES", options: [new Option("是","YES"), new Option("否","NO")], type: "select"},
         toolboxFeatureDataView: {name: "数据视图", value: "NO", options: [new Option("是","YES"), new Option("否","NO")], type: "select"},
         toolboxFeatureDataZoom: {name: "数据缩放", value: "YES", options: [new Option("是","YES"), new Option("否","NO")], type: "select"},
         toolboxFeatureMagicType: {name: "图像转换", value: "YES", options: [new Option("是","YES"), new Option("否","NO")], type: "select"},
@@ -1681,7 +1682,8 @@ function getBar(container, themes) {
             feature: {
                 saveAsImage: {
                     show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES",
-                    excludeComponents: ["toolbox", "dataZoom", "timeline", "visualMap", "brush"]
+                    excludeComponents: ["toolbox", "dataZoom", "timeline", "visualMap", "brush"],
+                    backgroundColor:__ECHARTS__.configs.toolboxFeatureSaveAsImageBackgroundColor.value,
                 },
                 restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
                 dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
@@ -1959,7 +1961,8 @@ function getTransversBar(container, themes) {
             feature: {
                 saveAsImage: {
                     show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES",
-                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"]
+                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"],
+                    backgroundColor:__ECHARTS__.configs.toolboxFeatureSaveAsImageBackgroundColor.value,
                 },
                 restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
                 dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
@@ -2253,7 +2256,8 @@ function getLine(container, themes) {
             feature: {
                 saveAsImage: {
                     show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES",
-                    excludeComponents: ["toolbox", "dataZoom", "timeline", "visualMap", "brush"]
+                    excludeComponents: ["toolbox", "dataZoom", "timeline", "visualMap", "brush"],
+                    backgroundColor:__ECHARTS__.configs.toolboxFeatureSaveAsImageBackgroundColor.value,
                 },
                 restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
                 dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
@@ -2586,7 +2590,8 @@ function getBarAndLine(container, themes) {
             feature: {
                 saveAsImage: {
                     show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES",
-                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"]
+                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"],
+                    backgroundColor:__ECHARTS__.configs.toolboxFeatureSaveAsImageBackgroundColor.value,
                 },
                 restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
                 dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
@@ -2874,7 +2879,8 @@ function getAreaStyle(container, themes) {
             feature: {
                 saveAsImage: {
                     show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES",
-                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"]
+                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"],
+                    backgroundColor:__ECHARTS__.configs.toolboxFeatureSaveAsImageBackgroundColor.value,
                 },
                 restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
                 dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
@@ -3118,7 +3124,8 @@ function getPolarBar(container, themes) {
             feature: {
                 saveAsImage: {
                     show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES",
-                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"]
+                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"],
+                    backgroundColor:__ECHARTS__.configs.toolboxFeatureSaveAsImageBackgroundColor.value,
                 },
                 restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
                 dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
@@ -3305,7 +3312,8 @@ function getPolarArea(container, themes) {
             feature: {
                 saveAsImage: {
                     show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES",
-                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"]
+                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"],
+                    backgroundColor:__ECHARTS__.configs.toolboxFeatureSaveAsImageBackgroundColor.value,
                 },
                 restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
                 dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
@@ -3518,7 +3526,8 @@ function getPie(container,themes) {
             feature: {
                 saveAsImage: {
                     show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES",
-                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"]
+                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"],
+                    backgroundColor:__ECHARTS__.configs.toolboxFeatureSaveAsImageBackgroundColor.value,
                 },
                 restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
                 dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
@@ -3711,7 +3720,8 @@ function getRing(container,themes) {
             feature: {
                 saveAsImage: {
                     show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES",
-                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"]
+                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"],
+                    backgroundColor:__ECHARTS__.configs.toolboxFeatureSaveAsImageBackgroundColor.value,
                 },
                 restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
                 dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
@@ -3905,7 +3915,8 @@ function getRose(container,themes) {
             feature: {
                 saveAsImage: {
                     show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES",
-                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"]
+                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"],
+                    backgroundColor:__ECHARTS__.configs.toolboxFeatureSaveAsImageBackgroundColor.value,
                 },
                 restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
                 dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
@@ -4120,7 +4131,8 @@ function getRadar(container, themes) {
             feature: {
                 saveAsImage: {
                     show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES",
-                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"]
+                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"],
+                    backgroundColor:__ECHARTS__.configs.toolboxFeatureSaveAsImageBackgroundColor.value,
                 },
                 restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
                 dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
@@ -4421,7 +4433,8 @@ function getRegression(container, themes) {
             feature: {
                 saveAsImage: {
                     show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES",
-                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"]
+                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"],
+                    backgroundColor:__ECHARTS__.configs.toolboxFeatureSaveAsImageBackgroundColor.value,
                 },
                 restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
                 dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
@@ -4722,7 +4735,8 @@ function  getRelationship(container, themes) {
             feature: {
                 saveAsImage: {
                     show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES",
-                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"]
+                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"],
+                    backgroundColor:__ECHARTS__.configs.toolboxFeatureSaveAsImageBackgroundColor.value,
                 },
                 restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
                 dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
@@ -5009,7 +5023,8 @@ function  getOrganizationStructure(container, themes) {
             feature: {
                 saveAsImage: {
                     show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES",
-                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"]
+                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"],
+                    backgroundColor:__ECHARTS__.configs.toolboxFeatureSaveAsImageBackgroundColor.value,
                 },
                 restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
                 dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
@@ -5161,7 +5176,8 @@ function getWebkitDep(container, themes) {
             feature: {
                 saveAsImage: {
                     show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES",
-                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"]
+                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"],
+                    backgroundColor:__ECHARTS__.configs.toolboxFeatureSaveAsImageBackgroundColor.value,
                 },
                 restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
                 dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
@@ -5439,7 +5455,8 @@ function getScatter(container, themes) {
             feature: {
                 saveAsImage: {
                     show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES",
-                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"]
+                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"],
+                    backgroundColor:__ECHARTS__.configs.toolboxFeatureSaveAsImageBackgroundColor.value,
                 },
                 restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
                 dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
@@ -5714,7 +5731,8 @@ function getFunnel(container, themes) {
             feature: {
                 saveAsImage: {
                     show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES",
-                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"]
+                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"],
+                    backgroundColor:__ECHARTS__.configs.toolboxFeatureSaveAsImageBackgroundColor.value,
                 },
                 restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
                 dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
@@ -5905,7 +5923,8 @@ function getWordCloud(container, themes) {
             feature: {
                 saveAsImage: {
                     show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES",
-                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"]
+                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"],
+                    backgroundColor:__ECHARTS__.configs.toolboxFeatureSaveAsImageBackgroundColor.value,
                 },
                 restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
                 dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
@@ -6079,7 +6098,8 @@ function getLiqiud(container, themes) {
             feature: {
                 saveAsImage: {
                     show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES",
-                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"]
+                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"],
+                    backgroundColor:__ECHARTS__.configs.toolboxFeatureSaveAsImageBackgroundColor.value,
                 },
                 restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
                 dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
@@ -6286,7 +6306,8 @@ function getGaugeWithAll(container, themes) {
             feature: {
                 saveAsImage: {
                     show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES",
-                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"]
+                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"],
+                    backgroundColor:__ECHARTS__.configs.toolboxFeatureSaveAsImageBackgroundColor.value,
                 },
                 restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
                 dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
@@ -6477,7 +6498,8 @@ function getGaugeWithOne(container, themes) {
             feature: {
                 saveAsImage: {
                     show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES",
-                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"]
+                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"],
+                    backgroundColor:__ECHARTS__.configs.toolboxFeatureSaveAsImageBackgroundColor.value,
                 },
                 restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
                 dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
@@ -6706,7 +6728,8 @@ function getCalendar(container, themes) {
             feature: {
                 saveAsImage: {
                     show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES",
-                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"]
+                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"],
+                    backgroundColor:__ECHARTS__.configs.toolboxFeatureSaveAsImageBackgroundColor.value,
                 },
                 restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
                 dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
@@ -6845,7 +6868,8 @@ function getGeoOfChina(container, themes) {
             feature: {
                 saveAsImage: {
                     show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES",
-                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"]
+                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"],
+                    backgroundColor:__ECHARTS__.configs.toolboxFeatureSaveAsImageBackgroundColor.value,
                 },
                 restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
                 dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
@@ -7142,7 +7166,8 @@ function getGeoOfLocal(container, themes) {
             feature: {
                 saveAsImage: {
                     show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES",
-                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"]
+                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"],
+                    backgroundColor:__ECHARTS__.configs.toolboxFeatureSaveAsImageBackgroundColor.value,
                 },
                 restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
                 dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
@@ -7488,7 +7513,8 @@ function getBar3D(container, themes) {
             feature: {
                 saveAsImage: {
                     show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES",
-                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"]
+                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"],
+                    backgroundColor:__ECHARTS__.configs.toolboxFeatureSaveAsImageBackgroundColor.value,
                 },
                 restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
                 dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
@@ -7733,7 +7759,8 @@ function getLine3D(container, themes) {
             feature: {
                 saveAsImage: {
                     show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES",
-                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"]
+                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"],
+                    backgroundColor:__ECHARTS__.configs.toolboxFeatureSaveAsImageBackgroundColor.value,
                 },
                 restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
                 dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
@@ -7994,7 +8021,8 @@ function getScatter3D(container, themes) {
             feature: {
                 saveAsImage: {
                     show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES",
-                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"]
+                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"],
+                    backgroundColor:__ECHARTS__.configs.toolboxFeatureSaveAsImageBackgroundColor.value,
                 },
                 restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
                 dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
@@ -8364,7 +8392,8 @@ function getCategoryLine(container, themes) {
                 feature: {
                 saveAsImage: {
                     show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES",
-                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"]
+                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"],
+                    backgroundColor:__ECHARTS__.configs.toolboxFeatureSaveAsImageBackgroundColor.value,
                 },
                 restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
                 dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
@@ -8701,7 +8730,8 @@ function getGeoMigrateLinesOfChinaCity(container, themes) {
                 feature: {
                 saveAsImage: {
                     show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES",
-                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"]
+                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"],
+                    backgroundColor:__ECHARTS__.configs.toolboxFeatureSaveAsImageBackgroundColor.value,
                 },
                 restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
                 dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
@@ -8918,7 +8948,8 @@ function getCategoryLineForGauge(container, themes) {
                 feature: {
                 saveAsImage: {
                     show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES",
-                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"]
+                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"],
+                    backgroundColor:__ECHARTS__.configs.toolboxFeatureSaveAsImageBackgroundColor.value,
                 },
                 restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
                 dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
@@ -9099,7 +9130,8 @@ function getCategoryLineForLiqiud(container, themes) {
                 feature: {
                     saveAsImage: {
                         show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES",
-                        excludeComponents: ["toolbox", "dataZoom", "timeline", "visualMap", "brush"]
+                        excludeComponents: ["toolbox", "dataZoom", "timeline", "visualMap", "brush"],
+                    backgroundColor:__ECHARTS__.configs.toolboxFeatureSaveAsImageBackgroundColor.value,
                     },
                     restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
                     dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
@@ -9218,7 +9250,8 @@ function getCategoryLineForGeoOfChina(container, themes) {
                         feature: {
                             saveAsImage: {
                                 show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES",
-                                excludeComponents: ["toolbox", "dataZoom", "timeline", "visualMap", "brush"]
+                                excludeComponents: ["toolbox", "dataZoom", "timeline", "visualMap", "brush"],
+                    backgroundColor:__ECHARTS__.configs.toolboxFeatureSaveAsImageBackgroundColor.value,
                             },
                             restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
                             dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
@@ -9417,7 +9450,8 @@ function getCategoryLineForGeoOfChina(container, themes) {
                 feature: {
                 saveAsImage: {
                     show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES",
-                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"]
+                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"],
+                    backgroundColor:__ECHARTS__.configs.toolboxFeatureSaveAsImageBackgroundColor.value,
                 },
                 restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
                 dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
@@ -9529,7 +9563,8 @@ function getCategoryLineForGeoOfLocal(container, themes) {
                         feature: {
                             saveAsImage: {
                                 show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES",
-                                excludeComponents: ["toolbox", "dataZoom", "timeline", "visualMap", "brush"]
+                                excludeComponents: ["toolbox", "dataZoom", "timeline", "visualMap", "brush"],
+                                backgroundColor: __ECHARTS__.configs.toolboxFeatureSaveAsImageBackgroundColor.value,
                             },
                             restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
                             dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
@@ -9728,7 +9763,8 @@ function getCategoryLineForGeoOfLocal(container, themes) {
                 feature: {
                     saveAsImage: {
                         show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value == "YES",
-                        excludeComponents: ["toolbox", "dataZoom", "timeline", "visualMap", "brush"]
+                        excludeComponents: ["toolbox", "dataZoom", "timeline", "visualMap", "brush"],
+                        backgroundColor: __ECHARTS__.configs.toolboxFeatureSaveAsImageBackgroundColor.value,
                     },
                     restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value == "YES"},
                     dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value == "YES", readOnly: true},
