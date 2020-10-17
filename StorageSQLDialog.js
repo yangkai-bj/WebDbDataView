@@ -101,6 +101,7 @@ function storageSqlDialog(sql, editer, type){
             editer.title = $("sql-Manager-Content-name").value;
     };
     tool.appendChild(add);
+
     var del = document.createElement("div");
     del.className = "button";
     del.innerText = "删除";
@@ -118,7 +119,32 @@ function storageSqlDialog(sql, editer, type){
     };
     tool.appendChild(del);
 
-     var saveas = document.createElement("div");
+    var rename = document.createElement("div");
+    rename.className = "button";
+    rename.innerText = "重命名";
+    rename.onclick = function(){
+        let name = $("sql-Manager-Content-name");
+        let newname = prompt("请输入新的脚本名称:");
+        if (name.value !="" && newname.trim() != "") {
+            let storage = window.localStorage;
+            let sqllist = JSON.parse(storage.getItem(__CONFIGS__.STORAGE.SCRIPTS));
+            let tmp = {};
+            for(sqlname in sqllist){
+                if (sqlname == name.value){
+                    tmp[newname] = sqllist[sqlname];
+                } else {
+                    tmp[sqlname] = sqllist[sqlname];
+                }
+            }
+            storage.setItem(__CONFIGS__.STORAGE.SCRIPTS, JSON.stringify(tmp));
+            getSQLList($("sql-Manager-Content-table"));
+            $("table-container").style.display = "block";
+            $("edit-container").style.display = "none";
+        }
+    };
+    tool.appendChild(rename);
+
+    var saveas = document.createElement("div");
     saveas.type = "div";
     saveas.className="button";
     saveas.innerText = "备份";
@@ -222,7 +248,7 @@ function getSQLList(table){
         }
         tr.setAttribute("name", name);
         tr.setAttribute("sql", sqllist[name]);
-        tr.onclick = function() {
+        tr.ondblclick = function() {
             var name = $("sql-Manager-Content-name");
             var sql = $("sql-Manager-Content-sql");
             name.value = this.getAttribute("name");

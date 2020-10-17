@@ -57,7 +57,8 @@ var __ECHARTS__ = {
     },
     configs: {
 
-        hr_grid: {name: "图像位置", value: "", type: "hr"},
+        hr_grid: {name: "图像参数", value: "", type: "hr"},
+        loadingTimes: {name: "载入时间(秒)", value: 2, type: "input"},
         grid_top: {name: "上边距(%)", value: "10%", type: "input"},
         grid_bottom: {name: "下边距(%)", value: "10%", type: "input"},
         grid_left: {name: "左边距(%)", value: "10%", type: "input"},
@@ -102,8 +103,10 @@ var __ECHARTS__ = {
         titlePosition: {name: "标题位置", value: "left", options: [new Option("左边","left"), new Option("居中","center"), new Option("右边","right")], type: "select"},
         titleText: {name: "主标题名称", value: "", type: "input"},
         titleTextColor: {value: "#e6e6e6", name: "主标题颜色", type: "color"},
+        titleTextLink:{name: "主标题超链接", value: "", type: "input"},
         titleSubText: {name: "副标题名称", value: "", type: "input"},
         titleSubTextColor: {value: "#e6e6e6", name: "副标题颜色", type: "color"},
+        titleSubTextLink:{name: "副标题超链接", value: "", type: "input"},
 
         hr_legend: {name: "图例", value: "", type: "hr"},
         legendDisplay: {name: "是否显示", value: "true", options: [new Option("是","true"), new Option("否","false")], type: "select"},
@@ -326,7 +329,7 @@ var __ECHARTS__ = {
         scrollingScreenColumnFontFillColor:{value: "#404a59", name: "表头颜色", type: "color"},
         scrollingScreenOpacity:{value: 0.4, name: "透明度", type: "input"},
         scrollingScreenFontSize:{name: "字号", value: 16, type: "input"},
-        scrollingScreenSpeed:{name: "速度", value: 10, type: "input"},
+        scrollingScreenSpeed:{name: "速度(毫秒)", value: 10, type: "input"},
 
         hr_dataZoom: {name: "数据缩放", value: "", type: "hr"},
         dataZoomBarDisplay: {name: "是否显示", value: "false", options: [new Option("是","true"), new Option("否","false")], type: "select"},
@@ -369,7 +372,7 @@ var __ECHARTS__ = {
 
         hr_animation: {name: "动画设置", value: "", type: "hr"},
         animation: {name: "启用动画", value: "true", options: [new Option("是","true"), new Option("否","false")], type: "select"},
-        animationThreshold: {name: "启动动画阈值", value: 2000, type: "input"},
+        animationThreshold: {name: "启动动画阈值(毫秒)", value: 2000, type: "input"},
         animationEasing: {
             name: "初始动画",
             value: "linear",
@@ -378,8 +381,8 @@ var __ECHARTS__ = {
                 new Option("倒退", "back"), new Option("反弹", "bounce")],
             type: "select"
         },
-        animationDuration: {name: "初始动画时长", value: 1000, type: "input"},
-        animationDelay: {name: "初始动画延时", value: 10, type: "input"},
+        animationDuration: {name: "初始动画时长(毫秒)", value: 1000, type: "input"},
+        animationDelay: {name: "初始动画延时(毫秒)", value: 10, type: "input"},
         animationEasingUpdate: {
             name: "更新动画",
             value: "linear",
@@ -388,8 +391,8 @@ var __ECHARTS__ = {
                 new Option("倒退", "back"), new Option("反弹", "bounce")],
             type: "select"
         },
-        animationDurationUpdate: {name: "更新动画时长", value: 1000, type: "input"},
-        animationDelayUpdate: {name: "更新动画延时", value: 10, type: "input"},
+        animationDurationUpdate: {name: "更新动画时长(毫秒)", value: 1000, type: "input"},
+        animationDelayUpdate: {name: "更新动画延时(毫秒)", value: 10, type: "input"},
         animationFunctionType: {name: "动画附加", value: "In", options: ["In", "Out", "InOut"], type: "select"},
 
         hr_report: {name: "报表设置", value: "", type: "hr"},
@@ -1715,8 +1718,11 @@ function getBar(container, themes) {
         title: {
             show: __ECHARTS__.configs.titleDisplay.value.toBoolean(),
             text: __ECHARTS__.configs.titleText.value,
-            link: messageDecode(__SYS_LOGO_LINK__.link),
+            link: __ECHARTS__.configs.titleTextLink.value,
+            target : "blank",
             subtext: __ECHARTS__.configs.titleSubText.value,
+            sublink: __ECHARTS__.configs.titleSubTextLink.value,
+            subtarget: "blank",
             top: "top",
             left: __ECHARTS__.configs.titlePosition.value,
             textStyle: {
@@ -1872,7 +1878,7 @@ function getBar(container, themes) {
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
-    }, 2000);
+    }, Number(__ECHARTS__.configs.loadingTimes.value) * 1000);
     return container;
 }
 
@@ -1997,8 +2003,11 @@ function getTransversBar(container, themes) {
         title: {
             show: __ECHARTS__.configs.titleDisplay.value.toBoolean(),
             text: __ECHARTS__.configs.titleText.value,
-            link: messageDecode(__SYS_LOGO_LINK__.link),
+            link: __ECHARTS__.configs.titleTextLink.value,
+            target : "blank",
             subtext: __ECHARTS__.configs.titleSubText.value,
+            sublink: __ECHARTS__.configs.titleSubTextLink.value,
+            subtarget: "blank",
             top: "top",
             left: __ECHARTS__.configs.titlePosition.value,
             textStyle: {
@@ -2145,7 +2154,7 @@ function getTransversBar(container, themes) {
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
-    }, 2000);
+    }, Number(__ECHARTS__.configs.loadingTimes.value) * 1000);
 
     return container;
 }
@@ -2293,8 +2302,11 @@ function getLine(container, themes) {
         title: {
             show: __ECHARTS__.configs.titleDisplay.value.toBoolean(),
             text: __ECHARTS__.configs.titleText.value,
-            link: messageDecode(__SYS_LOGO_LINK__.link),
+            link: __ECHARTS__.configs.titleTextLink.value,
+            target : "blank",
             subtext: __ECHARTS__.configs.titleSubText.value,
+            sublink: __ECHARTS__.configs.titleSubTextLink.value,
+            subtarget: "blank",
             top: "top",
             left: __ECHARTS__.configs.titlePosition.value,
             textStyle: {
@@ -2442,7 +2454,7 @@ function getLine(container, themes) {
     setTimeout(() => {
         myChart.hideLoading();
         myChart.setOption(option);
-    }, 2000);
+    }, Number(__ECHARTS__.configs.loadingTimes.value) * 1000);
 
     return container;
 }
@@ -2628,8 +2640,11 @@ function getBarAndLine(container, themes) {
         title: {
             show: __ECHARTS__.configs.titleDisplay.value.toBoolean(),
             text: __ECHARTS__.configs.titleText.value,
-            link: messageDecode(__SYS_LOGO_LINK__.link),
+            link: __ECHARTS__.configs.titleTextLink.value,
+            target : "blank",
             subtext: __ECHARTS__.configs.titleSubText.value,
+            sublink: __ECHARTS__.configs.titleSubTextLink.value,
+            subtarget: "blank",
             top: "top",
             left: __ECHARTS__.configs.titlePosition.value,
             textStyle: {
@@ -2775,7 +2790,7 @@ function getBarAndLine(container, themes) {
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
-    }, 2000);
+    }, Number(__ECHARTS__.configs.loadingTimes.value) * 1000);
 
     return container;
 }
@@ -2918,8 +2933,11 @@ function getAreaStyle(container, themes) {
         title: {
             show: __ECHARTS__.configs.titleDisplay.value.toBoolean(),
             text: __ECHARTS__.configs.titleText.value,
-            link: messageDecode(__SYS_LOGO_LINK__.link),
+            link: __ECHARTS__.configs.titleTextLink.value,
+            target : "blank",
             subtext: __ECHARTS__.configs.titleSubText.value,
+            sublink: __ECHARTS__.configs.titleSubTextLink.value,
+            subtarget: "blank",
             top: "top",
             left: __ECHARTS__.configs.titlePosition.value,
             textStyle: {
@@ -3066,7 +3084,7 @@ function getAreaStyle(container, themes) {
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
-    }, 2000);
+    }, Number(__ECHARTS__.configs.loadingTimes.value) * 1000);
 
     return container;
 }
@@ -3125,8 +3143,11 @@ function getPolarBar(container, themes) {
         title: {
             show: __ECHARTS__.configs.titleDisplay.value.toBoolean(),
             text: __ECHARTS__.configs.titleText.value,
-            link: messageDecode(__SYS_LOGO_LINK__.link),
+            link: __ECHARTS__.configs.titleTextLink.value,
+            target : "blank",
             subtext: __ECHARTS__.configs.titleSubText.value,
+            sublink: __ECHARTS__.configs.titleSubTextLink.value,
+            subtarget: "blank",
             top: "top",
             left: __ECHARTS__.configs.titlePosition.value,
             textStyle: {
@@ -3256,7 +3277,7 @@ function getPolarBar(container, themes) {
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
-    }, 2000);
+    }, Number(__ECHARTS__.configs.loadingTimes.value) * 1000);
     return container;
 }
 
@@ -3311,10 +3332,13 @@ function getPolarArea(container, themes) {
 
     var option = {
         title: {
-            show:__ECHARTS__.configs.titleDisplay.value.toBoolean(),
+            show: __ECHARTS__.configs.titleDisplay.value.toBoolean(),
             text: __ECHARTS__.configs.titleText.value,
-            link: messageDecode(__SYS_LOGO_LINK__.link),
+            link: __ECHARTS__.configs.titleTextLink.value,
+            target : "blank",
             subtext: __ECHARTS__.configs.titleSubText.value,
+            sublink: __ECHARTS__.configs.titleSubTextLink.value,
+            subtarget: "blank",
             top:"top",
             left:__ECHARTS__.configs.titlePosition.value,
             textStyle:{
@@ -3443,7 +3467,7 @@ function getPolarArea(container, themes) {
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
-    }, 2000);
+    }, Number(__ECHARTS__.configs.loadingTimes.value) * 1000);
     return container;
 }
 
@@ -3527,8 +3551,11 @@ function getPie(container,themes) {
         title: {
             show: __ECHARTS__.configs.titleDisplay.value.toBoolean(),
             text: __ECHARTS__.configs.titleText.value,
-            link: messageDecode(__SYS_LOGO_LINK__.link),
+            link: __ECHARTS__.configs.titleTextLink.value,
+            target : "blank",
             subtext: __ECHARTS__.configs.titleSubText.value,
+            sublink: __ECHARTS__.configs.titleSubTextLink.value,
+            subtarget: "blank",
             top: "top",
             left: __ECHARTS__.configs.titlePosition.value,
             textStyle: {
@@ -3637,7 +3664,7 @@ function getPie(container,themes) {
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
-    }, 2000);
+    }, Number(__ECHARTS__.configs.loadingTimes.value) * 1000);
     return container;
 }
 
@@ -3719,10 +3746,13 @@ function getRing(container,themes) {
 
     var option = {
         title: {
-            show:__ECHARTS__.configs.titleDisplay.value.toBoolean(),
+            show: __ECHARTS__.configs.titleDisplay.value.toBoolean(),
             text: __ECHARTS__.configs.titleText.value,
-            link: messageDecode(__SYS_LOGO_LINK__.link),
+            link: __ECHARTS__.configs.titleTextLink.value,
+            target : "blank",
             subtext: __ECHARTS__.configs.titleSubText.value,
+            sublink: __ECHARTS__.configs.titleSubTextLink.value,
+            subtarget: "blank",
             top:"top",
             left:__ECHARTS__.configs.titlePosition.value,
             textStyle:{
@@ -3830,7 +3860,7 @@ function getRing(container,themes) {
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
-    }, 2000);
+    }, Number(__ECHARTS__.configs.loadingTimes.value) * 1000);
 
     return container;
 }
@@ -3914,10 +3944,13 @@ function getRose(container,themes) {
 
     var option = {
         title: {
-            show:__ECHARTS__.configs.titleDisplay.value.toBoolean(),
+            show: __ECHARTS__.configs.titleDisplay.value.toBoolean(),
             text: __ECHARTS__.configs.titleText.value,
-            link: messageDecode(__SYS_LOGO_LINK__.link),
+            link: __ECHARTS__.configs.titleTextLink.value,
+            target : "blank",
             subtext: __ECHARTS__.configs.titleSubText.value,
+            sublink: __ECHARTS__.configs.titleSubTextLink.value,
+            subtarget: "blank",
             top:"top",
             left:__ECHARTS__.configs.titlePosition.value,
             textStyle:{
@@ -4024,7 +4057,7 @@ function getRose(container,themes) {
    setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
-    }, 2000);
+    }, Number(__ECHARTS__.configs.loadingTimes.value) * 1000);
     return container;
 }
 
@@ -4116,8 +4149,11 @@ function getRadar(container, themes) {
         title: {
             show: __ECHARTS__.configs.titleDisplay.value.toBoolean(),
             text: __ECHARTS__.configs.titleText.value,
-            link: messageDecode(__SYS_LOGO_LINK__.link),
+            link: __ECHARTS__.configs.titleTextLink.value,
+            target : "blank",
             subtext: __ECHARTS__.configs.titleSubText.value,
+            sublink: __ECHARTS__.configs.titleSubTextLink.value,
+            subtarget: "blank",
             top: "top",
             left: __ECHARTS__.configs.titlePosition.value,
             textStyle: {
@@ -4209,7 +4245,7 @@ function getRadar(container, themes) {
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
-    }, 2000);
+    }, Number(__ECHARTS__.configs.loadingTimes.value) * 1000);
     return container;
 
 }
@@ -4473,8 +4509,11 @@ function getRegression(container, themes) {
         title: {
             show: __ECHARTS__.configs.titleDisplay.value.toBoolean(),
             text: __ECHARTS__.configs.titleText.value,
-            link: messageDecode(__SYS_LOGO_LINK__.link),
+            link: __ECHARTS__.configs.titleTextLink.value,
+            target : "blank",
             subtext: __ECHARTS__.configs.titleSubText.value,
+            sublink: __ECHARTS__.configs.titleSubTextLink.value,
+            subtarget: "blank",
             top: "top",
             left: __ECHARTS__.configs.titlePosition.value,
             textStyle: {
@@ -4622,7 +4661,7 @@ function getRegression(container, themes) {
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
-    }, 2000);
+    }, Number(__ECHARTS__.configs.loadingTimes.value) * 1000);
     return container;
 }
 
@@ -4769,10 +4808,13 @@ function  getRelationship(container, themes) {
             },
         },
         title: {
-            show:__ECHARTS__.configs.titleDisplay.value.toBoolean(),
+            show: __ECHARTS__.configs.titleDisplay.value.toBoolean(),
             text: __ECHARTS__.configs.titleText.value,
-            link: messageDecode(__SYS_LOGO_LINK__.link),
+            link: __ECHARTS__.configs.titleTextLink.value,
+            target : "blank",
             subtext: __ECHARTS__.configs.titleSubText.value,
+            sublink: __ECHARTS__.configs.titleSubTextLink.value,
+            subtarget: "blank",
             top:"top",
             left:__ECHARTS__.configs.titlePosition.value,
             textStyle:{
@@ -4797,7 +4839,7 @@ function  getRelationship(container, themes) {
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
-    }, 2000);
+    }, Number(__ECHARTS__.configs.loadingTimes.value) * 1000);
 
      //以下代码是为解决节点拖动
     initInvisibleGraphic();
@@ -5023,10 +5065,13 @@ function  getOrganizationStructure(container, themes) {
             backgroundColor: "transparent"
         },
         title: {
-            show:__ECHARTS__.configs.titleDisplay.value.toBoolean(),
+            show: __ECHARTS__.configs.titleDisplay.value.toBoolean(),
             text: __ECHARTS__.configs.titleText.value,
-            link: messageDecode(__SYS_LOGO_LINK__.link),
+            link: __ECHARTS__.configs.titleTextLink.value,
+            target : "blank",
             subtext: __ECHARTS__.configs.titleSubText.value,
+            sublink: __ECHARTS__.configs.titleSubTextLink.value,
+            subtarget: "blank",
             top:"top",
             left:__ECHARTS__.configs.titlePosition.value,
             textStyle:{
@@ -5082,7 +5127,7 @@ function  getOrganizationStructure(container, themes) {
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
-    }, 2000);
+    }, Number(__ECHARTS__.configs.loadingTimes.value) * 1000);
     return container;
 }
 
@@ -5163,10 +5208,13 @@ function getWebkitDep(container, themes) {
             backgroundColor: "transparent"
         },
         title: {
-            show:__ECHARTS__.configs.titleDisplay.value.toBoolean(),
+            show: __ECHARTS__.configs.titleDisplay.value.toBoolean(),
             text: __ECHARTS__.configs.titleText.value,
-            link: messageDecode(__SYS_LOGO_LINK__.link),
+            link: __ECHARTS__.configs.titleTextLink.value,
+            target : "blank",
             subtext: __ECHARTS__.configs.titleSubText.value,
+            sublink: __ECHARTS__.configs.titleSubTextLink.value,
+            subtarget: "blank",
             top:"top",
             left:__ECHARTS__.configs.titlePosition.value,
             textStyle:{
@@ -5236,7 +5284,7 @@ function getWebkitDep(container, themes) {
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
-    }, 2000);
+    }, Number(__ECHARTS__.configs.loadingTimes.value) * 1000);
     return container;
 }
 
@@ -5444,8 +5492,11 @@ function getScatter(container, themes) {
         title: {
             show: __ECHARTS__.configs.titleDisplay.value.toBoolean(),
             text: __ECHARTS__.configs.titleText.value,
-            link: messageDecode(__SYS_LOGO_LINK__.link),
+            link: __ECHARTS__.configs.titleTextLink.value,
+            target : "blank",
             subtext: __ECHARTS__.configs.titleSubText.value,
+            sublink: __ECHARTS__.configs.titleSubTextLink.value,
+            subtarget: "blank",
             top: "top",
             left: __ECHARTS__.configs.titlePosition.value,
             textStyle: {
@@ -5612,7 +5663,7 @@ function getScatter(container, themes) {
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
-    }, 2000);
+    }, Number(__ECHARTS__.configs.loadingTimes.value) * 1000);
     return container;
 }
 
@@ -5726,10 +5777,13 @@ function getFunnel(container, themes) {
 
     var option = {
         title: {
-            show:__ECHARTS__.configs.titleDisplay.value.toBoolean(),
+            show: __ECHARTS__.configs.titleDisplay.value.toBoolean(),
             text: __ECHARTS__.configs.titleText.value,
-            link: messageDecode(__SYS_LOGO_LINK__.link),
+            link: __ECHARTS__.configs.titleTextLink.value,
+            target : "blank",
             subtext: __ECHARTS__.configs.titleSubText.value,
+            sublink: __ECHARTS__.configs.titleSubTextLink.value,
+            subtarget: "blank",
             top:"top",
             left:__ECHARTS__.configs.titlePosition.value,
             textStyle:{
@@ -5784,7 +5838,7 @@ function getFunnel(container, themes) {
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
-    }, 2000);
+    }, Number(__ECHARTS__.configs.loadingTimes.value) * 1000);
     return container;
 }
 
@@ -5903,10 +5957,13 @@ function getWordCloud(container, themes) {
             backgroundColor: "transparent"
         },
         title: {
-            show:__ECHARTS__.configs.titleDisplay.value.toBoolean(),
+            show: __ECHARTS__.configs.titleDisplay.value.toBoolean(),
             text: __ECHARTS__.configs.titleText.value,
-            link: messageDecode(__SYS_LOGO_LINK__.link),
+            link: __ECHARTS__.configs.titleTextLink.value,
+            target : "blank",
             subtext: __ECHARTS__.configs.titleSubText.value,
+            sublink: __ECHARTS__.configs.titleSubTextLink.value,
+            subtarget: "blank",
             top:"top",
             left:__ECHARTS__.configs.titlePosition.value,
             textStyle:{
@@ -5963,7 +6020,7 @@ function getWordCloud(container, themes) {
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
-    }, 2000);
+    }, Number(__ECHARTS__.configs.loadingTimes.value) * 1000);
     return container;
 }
 
@@ -6085,10 +6142,13 @@ function getLiqiud(container, themes) {
             show:__ECHARTS__.configs.tooltipDisplay.value.toBoolean(),
         },
         title: {
-            show:__ECHARTS__.configs.titleDisplay.value.toBoolean(),
+            show: __ECHARTS__.configs.titleDisplay.value.toBoolean(),
             text: __ECHARTS__.configs.titleText.value,
-            link: messageDecode(__SYS_LOGO_LINK__.link),
+            link: __ECHARTS__.configs.titleTextLink.value,
+            target : "blank",
             subtext: __ECHARTS__.configs.titleSubText.value,
+            sublink: __ECHARTS__.configs.titleSubTextLink.value,
+            subtarget: "blank",
             top:"top",
             left:__ECHARTS__.configs.titlePosition.value,
             textStyle:{
@@ -6146,7 +6206,7 @@ function getLiqiud(container, themes) {
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
-    }, 2000);
+    }, Number(__ECHARTS__.configs.loadingTimes.value) * 1000);
 
     myChart.on("mouseover", function (params) {
         stopTimer();
@@ -6289,10 +6349,13 @@ function getGaugeWithAll(container, themes) {
             backgroundColor: "transparent"
         },
         title: {
-            show:__ECHARTS__.configs.titleDisplay.value.toBoolean(),
+            show: __ECHARTS__.configs.titleDisplay.value.toBoolean(),
             text: __ECHARTS__.configs.titleText.value,
-            link: messageDecode(__SYS_LOGO_LINK__.link),
+            link: __ECHARTS__.configs.titleTextLink.value,
+            target : "blank",
             subtext: __ECHARTS__.configs.titleSubText.value,
+            sublink: __ECHARTS__.configs.titleSubTextLink.value,
+            subtarget: "blank",
             top:"top",
             left:__ECHARTS__.configs.titlePosition.value,
             textStyle:{
@@ -6344,7 +6407,7 @@ function getGaugeWithAll(container, themes) {
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
-    }, 2000);
+    }, Number(__ECHARTS__.configs.loadingTimes.value) * 1000);
     var timer;
     myChart.on("mouseover", function (params) {
         stopTimer();
@@ -6481,10 +6544,13 @@ function getGaugeWithOne(container, themes) {
 
     var option = {
         title: {
-            show:__ECHARTS__.configs.titleDisplay.value.toBoolean(),
+            show: __ECHARTS__.configs.titleDisplay.value.toBoolean(),
             text: __ECHARTS__.configs.titleText.value,
-            link: messageDecode(__SYS_LOGO_LINK__.link),
+            link: __ECHARTS__.configs.titleTextLink.value,
+            target : "blank",
             subtext: __ECHARTS__.configs.titleSubText.value,
+            sublink: __ECHARTS__.configs.titleSubTextLink.value,
+            subtarget: "blank",
             top:"top",
             left:__ECHARTS__.configs.titlePosition.value,
             textStyle:{
@@ -6537,7 +6603,7 @@ function getGaugeWithOne(container, themes) {
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
-    }, 2000);
+    }, Number(__ECHARTS__.configs.loadingTimes.value) * 1000);
 
     var timer;
     myChart.on("mouseover", function (params) {
@@ -6720,10 +6786,13 @@ function getCalendar(container, themes) {
             backgroundColor: "transparent"
         },
         title: {
-            show:__ECHARTS__.configs.titleDisplay.value.toBoolean(),
+            show: __ECHARTS__.configs.titleDisplay.value.toBoolean(),
             text: __ECHARTS__.configs.titleText.value,
-            link: messageDecode(__SYS_LOGO_LINK__.link),
+            link: __ECHARTS__.configs.titleTextLink.value,
+            target : "blank",
             subtext: __ECHARTS__.configs.titleSubText.value,
+            sublink: __ECHARTS__.configs.titleSubTextLink.value,
+            subtarget: "blank",
             top:"top",
             left:__ECHARTS__.configs.titlePosition.value,
             textStyle:{
@@ -6769,7 +6838,7 @@ function getCalendar(container, themes) {
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
-    }, 2000);
+    }, Number(__ECHARTS__.configs.loadingTimes.value) * 1000);
     return container;
 
 }
@@ -6870,8 +6939,11 @@ function getGeoOfChina(container, themes) {
         title: {
             show: __ECHARTS__.configs.titleDisplay.value.toBoolean(),
             text: __ECHARTS__.configs.titleText.value,
-            link: messageDecode(__SYS_LOGO_LINK__.link),
+            link: __ECHARTS__.configs.titleTextLink.value,
+            target : "blank",
             subtext: __ECHARTS__.configs.titleSubText.value,
+            sublink: __ECHARTS__.configs.titleSubTextLink.value,
+            subtarget: "blank",
             top: "top",
             left: __ECHARTS__.configs.titlePosition.value,
             textStyle: {
@@ -7019,7 +7091,7 @@ function getGeoOfChina(container, themes) {
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
-    }, 2000);
+    }, Number(__ECHARTS__.configs.loadingTimes.value) * 1000);
 
     var timer;
     myChart.on("mouseover", function (params) {
@@ -7062,7 +7134,7 @@ function getGeoOfChina(container, themes) {
         setTimeout(() => {
             myChart.hideLoading();
             myChart.setOption(option);
-        }, 2000);
+        }, Number(__ECHARTS__.configs.loadingTimes.value) * 1000);
     }
 
     function startTimer() {
@@ -7166,10 +7238,13 @@ function getGeoOfLocal(container, themes) {
         },
         //backgroundColor: __ECHARTS__.configs.geoBackgroundColor.value,
         title: {
-            show:__ECHARTS__.configs.titleDisplay.value.toBoolean(),
+            show: __ECHARTS__.configs.titleDisplay.value.toBoolean(),
             text: __ECHARTS__.configs.titleText.value,
-            link: messageDecode(__SYS_LOGO_LINK__.link),
+            link: __ECHARTS__.configs.titleTextLink.value,
+            target : "blank",
             subtext: __ECHARTS__.configs.titleSubText.value,
+            sublink: __ECHARTS__.configs.titleSubTextLink.value,
+            subtarget: "blank",
             top:"top",
             left:__ECHARTS__.configs.titlePosition.value,
             textStyle:{
@@ -7321,7 +7396,7 @@ function getGeoOfLocal(container, themes) {
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
-    }, 2000);
+    }, Number(__ECHARTS__.configs.loadingTimes.value) * 1000);
 
     var timer;
     myChart.on("mouseover", function (params) {
@@ -7499,8 +7574,11 @@ function getBar3D(container, themes) {
         title: {
             show: __ECHARTS__.configs.titleDisplay.value.toBoolean(),
             text: __ECHARTS__.configs.titleText.value,
-            link: messageDecode(__SYS_LOGO_LINK__.link),
+            link: __ECHARTS__.configs.titleTextLink.value,
+            target : "blank",
             subtext: __ECHARTS__.configs.titleSubText.value,
+            sublink: __ECHARTS__.configs.titleSubTextLink.value,
+            subtarget: "blank",
             top: "top",
             left: __ECHARTS__.configs.titlePosition.value,
             textStyle: {
@@ -7640,7 +7718,7 @@ function getBar3D(container, themes) {
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
-    }, 2000);
+    }, Number(__ECHARTS__.configs.loadingTimes.value) * 1000);
     return container;
 }
 
@@ -7744,10 +7822,13 @@ function getLine3D(container, themes) {
             backgroundColor: "transparent"
         },
         title: {
-            show:__ECHARTS__.configs.titleDisplay.value.toBoolean(),
+            show: __ECHARTS__.configs.titleDisplay.value.toBoolean(),
             text: __ECHARTS__.configs.titleText.value,
-            link: messageDecode(__SYS_LOGO_LINK__.link),
+            link: __ECHARTS__.configs.titleTextLink.value,
+            target : "blank",
             subtext: __ECHARTS__.configs.titleSubText.value,
+            sublink: __ECHARTS__.configs.titleSubTextLink.value,
+            subtarget: "blank",
             top:"top",
             left:__ECHARTS__.configs.titlePosition.value,
             textStyle:{
@@ -7900,7 +7981,7 @@ function getLine3D(container, themes) {
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
-    }, 2000);
+    }, Number(__ECHARTS__.configs.loadingTimes.value) * 1000);
     return container;
 }
 
@@ -8006,10 +8087,13 @@ function getScatter3D(container, themes) {
             backgroundColor: "transparent"
         },
         title: {
-            show:__ECHARTS__.configs.titleDisplay.value.toBoolean(),
+            show: __ECHARTS__.configs.titleDisplay.value.toBoolean(),
             text: __ECHARTS__.configs.titleText.value,
-            link: messageDecode(__SYS_LOGO_LINK__.link),
+            link: __ECHARTS__.configs.titleTextLink.value,
+            target : "blank",
             subtext: __ECHARTS__.configs.titleSubText.value,
+            sublink: __ECHARTS__.configs.titleSubTextLink.value,
+            subtarget: "blank",
             top:"top",
             left:__ECHARTS__.configs.titlePosition.value,
             textStyle:{
@@ -8162,7 +8246,7 @@ function getScatter3D(container, themes) {
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
-    }, 2000);
+    }, Number(__ECHARTS__.configs.loadingTimes.value) * 1000);
     return container;
 }
 
@@ -8359,8 +8443,11 @@ function getCategoryLine(container, themes) {
             title: {
                 show: __ECHARTS__.configs.titleDisplay.value.toBoolean(),
                 text: __ECHARTS__.configs.titleText.value,
-                link: messageDecode(__SYS_LOGO_LINK__.link),
+                link: __ECHARTS__.configs.titleTextLink.value,
+                target: "blank",
                 subtext: __ECHARTS__.configs.titleSubText.value,
+                sublink: __ECHARTS__.configs.titleSubTextLink.value,
+                subtarget: "blank",
                 top: "top",
                 left: __ECHARTS__.configs.titlePosition.value,
                 textStyle: {
@@ -8409,14 +8496,14 @@ function getCategoryLine(container, themes) {
             toolbox: {
                 show: __ECHARTS__.configs.toolboxDisplay.value.toBoolean(),
                 feature: {
-                saveAsImage: {
-                    show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value.toBoolean(),
-                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"],
-                    backgroundColor:__ECHARTS__.configs.toolboxFeatureSaveAsImageBackgroundColor.value,
+                    saveAsImage: {
+                        show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value.toBoolean(),
+                        excludeComponents: ["toolbox", "dataZoom", "timeline", "visualMap", "brush"],
+                        backgroundColor: __ECHARTS__.configs.toolboxFeatureSaveAsImageBackgroundColor.value,
+                    },
+                    restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value.toBoolean()},
+                    dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
                 },
-                restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value.toBoolean()},
-                dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-            },
                 top: __ECHARTS__.configs.toolbox_top.value,
                 left: __ECHARTS__.configs.toolbox_left.value,
                 orient: __ECHARTS__.configs.toolbox_orient.value,
@@ -8499,7 +8586,7 @@ function getCategoryLine(container, themes) {
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
-    }, 2000);
+    }, Number(__ECHARTS__.configs.loadingTimes.value) * 1000);
     return container;
 }
 
@@ -8555,7 +8642,7 @@ function getGeoMigrateLinesOfChinaCity(container, themes) {
             }
         }
 
-        var getMapRegions = function(name) {
+        var getMapRegions = function (name) {
             let Regions = {};
             let features = echarts.getMap(name).geoJson.features;
             for (var i = 0; i < features.length; i++) {
@@ -8593,7 +8680,7 @@ function getGeoMigrateLinesOfChinaCity(container, themes) {
                     res.push({
                         fromName: dataItem[0].city,
                         toName: dataItem[1].city,
-                        coords: [fromRegion?fromRegion:fromCity, toRegion?toRegion:toCity],
+                        coords: [fromRegion ? fromRegion : fromCity, toRegion ? toRegion : toCity],
                         details: dataItem[1].value
                     });
                 }
@@ -8605,10 +8692,10 @@ function getGeoMigrateLinesOfChinaCity(container, themes) {
             let res = [];
             let fromRegion = geoCoordMap.Region[data[0]];
             let fromCity = geoCoordMap.City[data[0]];
-            if (fromRegion){
+            if (fromRegion) {
                 res.push({name: data[0], value: fromRegion, details: ""});
-            } else if(fromCity) {
-                 res.push({name: data[0], value: fromCity, details: ""});
+            } else if (fromCity) {
+                res.push({name: data[0], value: fromCity, details: ""});
             } else {
                 for (coord in geoCoordMap.City) {
                     if (coord.includes(data[0])) {
@@ -8619,11 +8706,11 @@ function getGeoMigrateLinesOfChinaCity(container, themes) {
                 }
             }
 
-            for (var i=0;i<data[1].length;i++) {
+            for (var i = 0; i < data[1].length; i++) {
                 let item = data[1][i];
                 let toRegion = geoCoordMap.Region[item[1].city];
                 let toCity = geoCoordMap.City[item[1].city];
-                if (toRegion){
+                if (toRegion) {
                     res.push({name: item[1].city, value: toRegion, details: item[1].value});
                 } else if (toCity) {
                     res.push({name: item[1].city, value: toCity, details: item[1].value});
@@ -8640,10 +8727,10 @@ function getGeoMigrateLinesOfChinaCity(container, themes) {
             return res;
         };
 
-        var colors = ["#a6c84c", "#ffa022", "#46bee9", "#9370DB","#F08080","#FF4500"];
+        var colors = ["#a6c84c", "#ffa022", "#46bee9", "#9370DB", "#F08080", "#FF4500"];
         var series = [];
         seriedata.forEach(function (item, i) {
-            let index = i<colors.length?i:i%colors.length;
+            let index = i < colors.length ? i : i % colors.length;
             series.push({
                     name: item[0],
                     type: "lines",
@@ -8679,7 +8766,7 @@ function getGeoMigrateLinesOfChinaCity(container, themes) {
                         period: __ECHARTS__.configs.geoLinePeriod.value,
                         trailLength: 0,
                         //拖尾
-                        symbol: (__ECHARTS__.configs.geoLineSymbol.value == "plane" || __ECHARTS__.configs.geoLineSymbol.value == "rocket")?__SYS_IMAGES_PATH__[__ECHARTS__.configs.geoLineSymbol.value]:__ECHARTS__.configs.geoLineSymbol.value,
+                        symbol: (__ECHARTS__.configs.geoLineSymbol.value == "plane" || __ECHARTS__.configs.geoLineSymbol.value == "rocket") ? __SYS_IMAGES_PATH__[__ECHARTS__.configs.geoLineSymbol.value] : __ECHARTS__.configs.geoLineSymbol.value,
                         symbolSize: __ECHARTS__.configs.geoLineSymbolSize.value,
                     },
                     lineStyle: {
@@ -8735,8 +8822,11 @@ function getGeoMigrateLinesOfChinaCity(container, themes) {
             title: {
                 show: __ECHARTS__.configs.titleDisplay.value.toBoolean(),
                 text: __ECHARTS__.configs.titleText.value,
-                link: messageDecode(__SYS_LOGO_LINK__.link),
+                link: __ECHARTS__.configs.titleTextLink.value,
+                target: "blank",
                 subtext: __ECHARTS__.configs.titleSubText.value,
+                sublink: __ECHARTS__.configs.titleSubTextLink.value,
+                subtarget: "blank",
                 top: "top",
                 left: __ECHARTS__.configs.titlePosition.value,
                 textStyle: {
@@ -8749,14 +8839,14 @@ function getGeoMigrateLinesOfChinaCity(container, themes) {
             toolbox: {
                 show: __ECHARTS__.configs.toolboxDisplay.value.toBoolean(),
                 feature: {
-                saveAsImage: {
-                    show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value.toBoolean(),
-                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"],
-                    backgroundColor:__ECHARTS__.configs.toolboxFeatureSaveAsImageBackgroundColor.value,
+                    saveAsImage: {
+                        show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value.toBoolean(),
+                        excludeComponents: ["toolbox", "dataZoom", "timeline", "visualMap", "brush"],
+                        backgroundColor: __ECHARTS__.configs.toolboxFeatureSaveAsImageBackgroundColor.value,
+                    },
+                    restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value.toBoolean()},
+                    dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
                 },
-                restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value.toBoolean()},
-                dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-            },
                 top: __ECHARTS__.configs.toolbox_top.value,
                 left: __ECHARTS__.configs.toolbox_left.value,
                 orient: __ECHARTS__.configs.toolbox_orient.value,
@@ -8826,7 +8916,7 @@ function getGeoMigrateLinesOfChinaCity(container, themes) {
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
-    }, 2000);
+    }, Number(__ECHARTS__.configs.loadingTimes.value) * 1000);
     return container;
 }
 
@@ -8917,8 +9007,11 @@ function getCategoryLineForGauge(container, themes) {
             title: {
                 show: __ECHARTS__.configs.titleDisplay.value.toBoolean(),
                 text: __ECHARTS__.configs.titleText.value,
-                link: messageDecode(__SYS_LOGO_LINK__.link),
+                link: __ECHARTS__.configs.titleTextLink.value,
+                target: "blank",
                 subtext: __ECHARTS__.configs.titleSubText.value,
+                sublink: __ECHARTS__.configs.titleSubTextLink.value,
+                subtarget: "blank",
                 top: "top",
                 left: __ECHARTS__.configs.titlePosition.value,
                 textStyle: {
@@ -8994,7 +9087,7 @@ function getCategoryLineForGauge(container, themes) {
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
-    }, 2000);
+    }, Number(__ECHARTS__.configs.loadingTimes.value) * 1000);
     return container;
 }
 
@@ -9099,8 +9192,11 @@ function getCategoryLineForLiqiud(container, themes) {
             title: {
                 show: __ECHARTS__.configs.titleDisplay.value.toBoolean(),
                 text: __ECHARTS__.configs.titleText.value,
-                link: messageDecode(__SYS_LOGO_LINK__.link),
+                link: __ECHARTS__.configs.titleTextLink.value,
+                target: "blank",
                 subtext: __ECHARTS__.configs.titleSubText.value,
+                sublink: __ECHARTS__.configs.titleSubTextLink.value,
+                subtarget: "blank",
                 top: "top",
                 left: __ECHARTS__.configs.titlePosition.value,
                 textStyle: {
@@ -9174,7 +9270,7 @@ function getCategoryLineForLiqiud(container, themes) {
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
-    }, 2000);
+    }, Number(__ECHARTS__.configs.loadingTimes.value) * 1000);
     return container;
 }
 
@@ -9423,8 +9519,11 @@ function getCategoryLineForGeoOfChina(container, themes) {
             title: {
                 show: __ECHARTS__.configs.titleDisplay.value.toBoolean(),
                 text: __ECHARTS__.configs.titleText.value,
-                link: messageDecode(__SYS_LOGO_LINK__.link),
+                link: __ECHARTS__.configs.titleTextLink.value,
+                target: "blank",
                 subtext: __ECHARTS__.configs.titleSubText.value,
+                sublink: __ECHARTS__.configs.titleSubTextLink.value,
+                subtarget: "blank",
                 top: "top",
                 left: __ECHARTS__.configs.titlePosition.value,
                 textStyle: {
@@ -9494,7 +9593,7 @@ function getCategoryLineForGeoOfChina(container, themes) {
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
-    }, 2000);
+    }, Number(__ECHARTS__.configs.loadingTimes.value) * 1000);
     return container;
 }
 
@@ -9736,8 +9835,11 @@ function getCategoryLineForGeoOfLocal(container, themes) {
             title: {
                 show: __ECHARTS__.configs.titleDisplay.value.toBoolean(),
                 text: __ECHARTS__.configs.titleText.value,
-                link: messageDecode(__SYS_LOGO_LINK__.link),
+                link: __ECHARTS__.configs.titleTextLink.value,
+                target: "blank",
                 subtext: __ECHARTS__.configs.titleSubText.value,
+                sublink: __ECHARTS__.configs.titleSubTextLink.value,
+                subtarget: "blank",
                 top: "top",
                 left: __ECHARTS__.configs.titlePosition.value,
                 textStyle: {
@@ -9807,7 +9909,7 @@ function getCategoryLineForGeoOfLocal(container, themes) {
     setTimeout(() => {
         myChart.hideLoading();
         myChart.setOption(option);
-    }, 2000);
+    }, Number(__ECHARTS__.configs.loadingTimes.value) * 1000);
     return container;
 }
 
@@ -9905,8 +10007,11 @@ function getScrollingScreen(container, themes) {
         title: {
             show: __ECHARTS__.configs.titleDisplay.value.toBoolean(),
             text: __ECHARTS__.configs.titleText.value,
-            link: messageDecode(__SYS_LOGO_LINK__.link),
+            link: __ECHARTS__.configs.titleTextLink.value,
+            target : "blank",
             subtext: __ECHARTS__.configs.titleSubText.value,
+            sublink: __ECHARTS__.configs.titleSubTextLink.value,
+            subtarget: "blank",
             top: "top",
             left: __ECHARTS__.configs.titlePosition.value,
             textStyle: {
@@ -9946,7 +10051,7 @@ function getScrollingScreen(container, themes) {
     setTimeout(() => {
         myChart.hideLoading();
         myChart.setOption(option);
-    }, 2000);
+    }, Number(__ECHARTS__.configs.loadingTimes.value) * 1000);
 
     let top = containerHeight;
     setInterval(function () {
