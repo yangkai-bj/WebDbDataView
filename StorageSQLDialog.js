@@ -118,6 +118,23 @@ function storageSqlDialog(sql, editer, type){
     };
     tool.appendChild(del);
 
+     var saveas = document.createElement("div");
+    saveas.type = "div";
+    saveas.className="button";
+    saveas.innerText = "备份";
+    saveas.onclick = function () {
+        var storage = window.localStorage;
+        var sqllist = {};
+        if (storage.getItem(__CONFIGS__.STORAGE.SCRIPTS) == null)
+            storage.setItem(__CONFIGS__.STORAGE.SCRIPTS, "{}");
+        else {
+            sqllist = JSON.parse(storage.getItem(__CONFIGS__.STORAGE.SCRIPTS));
+        }
+        var blob = new Blob([str2ab(JSON.stringify(sqllist))], {type: "application/octet-stream"});
+        openDownloadDialog(blob, "WebDataView-SQL-backup.json");
+    };
+    tool.appendChild(saveas);
+
     var input = document.createElement("input");
     input.type = "file";
     input.id = "openJson";
@@ -159,23 +176,6 @@ function storageSqlDialog(sql, editer, type){
         $("openJson").click();
     };
     tool.appendChild(loadfile);
-
-    var saveas = document.createElement("div");
-    saveas.type = "div";
-    saveas.className="button";
-    saveas.innerText = "备份";
-    saveas.onclick = function () {
-        var storage = window.localStorage;
-        var sqllist = {};
-        if (storage.getItem(__CONFIGS__.STORAGE.SCRIPTS) == null)
-            storage.setItem(__CONFIGS__.STORAGE.SCRIPTS, "{}");
-        else {
-            sqllist = JSON.parse(storage.getItem(__CONFIGS__.STORAGE.SCRIPTS));
-        }
-        var blob = new Blob([str2ab(JSON.stringify(sqllist))], {type: "application/octet-stream"});
-        openDownloadDialog(blob, "WebDataView-SQL-backup.json");
-    };
-    tool.appendChild(saveas);
 
     var exit = document.createElement("div");
     exit.className = "button";
