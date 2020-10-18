@@ -125,22 +125,33 @@ function storageSqlDialog(sql, editer, type){
     rename.onclick = function(){
         let name = $("sql-Manager-Content-name");
         let newname = prompt("请输入新的脚本名称:");
-        if (name.value !="" && newname.trim() != "") {
-            let storage = window.localStorage;
-            let sqllist = JSON.parse(storage.getItem(__CONFIGS__.STORAGE.SCRIPTS));
-            let tmp = {};
-            for(sqlname in sqllist){
-                if (sqlname == name.value){
-                    tmp[newname] = sqllist[sqlname];
-                } else {
-                    tmp[sqlname] = sqllist[sqlname];
-                }
+        let storage = window.localStorage;
+        let sqllist = JSON.parse(storage.getItem(__CONFIGS__.STORAGE.SCRIPTS));
+        let exist = false;
+        for (sqlname in sqllist) {
+            if (sqlname == newname.trim()) {
+                exist = true;
+                break;
             }
-            storage.setItem(__CONFIGS__.STORAGE.SCRIPTS, JSON.stringify(tmp));
-            getSQLList($("sql-Manager-Content-table"));
-            $("table-container").style.display = "block";
-            $("edit-container").style.display = "none";
         }
+        if (!exist) {
+            if (name.value != "" && newname.trim() != "") {
+                let tmp = {};
+                for (sqlname in sqllist) {
+                    if (sqlname == name.value) {
+                        tmp[newname] = sqllist[sqlname];
+                    } else {
+                        tmp[sqlname] = sqllist[sqlname];
+                    }
+                }
+                storage.setItem(__CONFIGS__.STORAGE.SCRIPTS, JSON.stringify(tmp));
+                getSQLList($("sql-Manager-Content-table"));
+                $("table-container").style.display = "block";
+                $("edit-container").style.display = "none";
+                name.value = newname;
+            }
+        } else
+            alert("名称 " + newname + " 已经存在，请重新命名.")
     };
     tool.appendChild(rename);
 
@@ -248,7 +259,7 @@ function getSQLList(table){
         }
         tr.setAttribute("name", name);
         tr.setAttribute("sql", sqllist[name]);
-        tr.ondblclick = function() {
+        tr.onclick = function() {
             var name = $("sql-Manager-Content-name");
             var sql = $("sql-Manager-Content-sql");
             name.value = this.getAttribute("name");
