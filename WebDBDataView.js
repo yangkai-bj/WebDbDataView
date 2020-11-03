@@ -2138,8 +2138,8 @@ function init() {
     dbinfo.innerText = "测试";
     dbinfo.style.display = "none";
     dbinfo.onclick = function () {
-        let a = "100%";
-        alert(Number("100%"));
+        let a = "";
+        console.log(messageEncode(a));
     };
     dbstools.appendChild(dbinfo);
     setTooltip(dbinfo, "功能测试");
@@ -2828,6 +2828,41 @@ function init() {
 
     $("copyright").innerHTML = getUserConfig("CopyRight");
 
+    var toMultiEcharts = document.createElement("div");
+    datatools.appendChild(toMultiEcharts);
+    toMultiEcharts.className = "button";
+    toMultiEcharts.innerText = "☶";
+    toMultiEcharts.style.fontSize = "150%";
+    toMultiEcharts.style.cssFloat = "right";
+    toMultiEcharts.id = "dataset-to-multi-echarts";
+    toMultiEcharts.onclick = $("help-dataset-to-multi-echarts").onclick = function () {
+         $("page").appendChild(getMultiEcharts());
+    };
+    toMultiEcharts.ondragenter = function (event) {
+        if (event.target.id == "dataset-to-multi-echarts") {
+            event.target.style.border = "1px dotted red";
+        }
+    };
+    toMultiEcharts.ondragover = function (event) {
+        if (event.target.id == "dataset-to-multi-echarts") {
+            event.preventDefault();
+        }
+    };
+    toMultiEcharts.ondrop = function (event) {
+        if (event.target.id == "dataset-to-multi-echarts") {
+            event.target.style.border = "0px dotted var(--main-border-color)";
+            let id = event.dataTransfer.getData("Text");
+            __ECHARTS__.sets.push(id);
+        }
+    }
+    toMultiEcharts.ondragleave = function (event) {
+        if (event.target.id == "dataset-to-multi-echarts") {
+            event.target.style.border = "1px dotted var(--main-border-color)";
+        }
+    };
+
+    setTooltip(toMultiEcharts, "显示<br>视图集合");
+
     var toecharts = document.createElement("div");
     datatools.appendChild(toecharts);
     toecharts.className = "button";
@@ -2840,8 +2875,8 @@ function init() {
             var mecharts = document.createElement("div");
             mecharts.className = "echarts";
             mecharts.id = "echarts-full-screen";
-            mecharts.style.width = (getAbsolutePosition($("page")).width - 10) + "px";
-            mecharts.style.height = getAbsolutePosition($("page")).height + "px";
+            mecharts.style.width = (getAbsolutePosition($("page")).width + 10) + "px";
+            mecharts.style.height = (getAbsolutePosition($("page")).height + 25)  + "px";
             mecharts.style.top = "0px";
             mecharts.style.left = "0px";
             window.addEventListener("keydown", function (e) {
@@ -2852,7 +2887,15 @@ function init() {
                         $("echarts-full-screen").parentElement.removeChild($("echarts-full-screen"));
                 }
             });
-            mecharts.appendChild(getEcharts(__DATASET__.echarts.type, (getAbsolutePosition($("page")).width - 30) + "px", (getAbsolutePosition($("page")).height - 20) + "px", __DATASET__.echarts.theme));
+            let echart = getEcharts(
+                null,
+                __DATASET__.echarts.type,
+                (getAbsolutePosition($("page")).width+5) + "px",
+                (getAbsolutePosition($("page")).height+20) + "px",
+                __DATASET__.echarts.theme,
+                __DATASET__["result"][__DATASET__.default.sheet],
+                __ECHARTS__.configs);
+            mecharts.appendChild(echart);
             $("page").appendChild(mecharts);
         } catch (e) {
             console.log(e);
@@ -2899,7 +2942,15 @@ function init() {
             var _width = (getAbsolutePosition(container).width * 1) + "px";
             var _height = (getAbsolutePosition(container).height * 1) + "px";
             container.innerHTML = "";
-            container.appendChild(getEcharts(__DATASET__.echarts.type, _width, _height, __DATASET__.echarts.theme));
+            var echart = getEcharts(
+                null,
+                __DATASET__.echarts.type,
+                _width,
+                _height,
+                __DATASET__.echarts.theme,
+                __DATASET__["result"][__DATASET__.default.sheet],
+                __ECHARTS__.configs);
+            container.appendChild(echart);
             setUserConfig("echartsthemes", this.value);
         } catch (e) {
             console.log(e);
@@ -2923,7 +2974,15 @@ function init() {
             var _width = (getAbsolutePosition(container).width * 1) + "px";
             var _height = (getAbsolutePosition(container).height * 1) + "px";
             container.innerHTML = "";
-            container.appendChild(getEcharts(__DATASET__.echarts.type, _width, _height, __DATASET__.echarts.theme));
+            var echart = getEcharts(
+                null,
+                __DATASET__.echarts.type,
+                _width,
+                _height,
+                __DATASET__.echarts.theme,
+                __DATASET__["result"][__DATASET__.default.sheet],
+                __ECHARTS__.configs);
+            container.appendChild(echart);
         } catch (e) {
             console.log(e);
         }
@@ -2945,7 +3004,15 @@ function init() {
             var _width = (getAbsolutePosition(container).width * 1) + "px";
             var _height = (getAbsolutePosition(container).height * 1) + "px";
             container.innerHTML = "";
-            container.appendChild(getEcharts(__DATASET__.echarts.type, _width, _height, __DATASET__.echarts.theme));
+            var echart = getEcharts(
+                null,
+                __DATASET__.echarts.type,
+                _width,
+                _height,
+                __DATASET__.echarts.theme,
+                __DATASET__["result"][__DATASET__.default.sheet],
+                __ECHARTS__.configs);
+            container.appendChild(echart);
         } catch (e) {
             console.log(e);
         }
@@ -3073,6 +3140,7 @@ function readWorkbookFromLocalFile(file) {
         rABS = false;
     }
 }
+
 
 function getSubtotal(columns) {
     var container = document.createElement("div");
@@ -4047,6 +4115,286 @@ function CompareObj(objA, objB, flag) {
         }
     }
     return flag;
+}
+
+function setMultiEchartsView(parent, template) {
+    parent.innerHTML = "";
+    let views = __ECHARTS__.layouts[template];
+    for (let i = 0; i < views.data.length; i++) {
+        let view = views.data[i];
+        let contain = document.createElement("div");
+        contain.className = "multi-echarts-view-contain";
+        contain.style.position = views.position;
+        switch (views.position) {
+            case "static":
+                //contain.style.left = view[0] + "%";
+                //contain.style.top = view[1] + "%";
+                contain.style.width = view[2] + "%";
+                contain.style.height = view[3] + "%";
+            case "relative":
+                contain.style.left = view[0] + "%";
+                contain.style.top = view[1] + "%";
+                contain.style.width = view[2] + "%";
+                contain.style.height = view[3] + "%";
+
+            case "absolute":
+                contain.style.left = view[0] + "%";
+                contain.style.top = view[1] + "%";
+                contain.style.width = view[2] + "%";
+                contain.style.height = view[3] + "%";
+        }
+        parent.appendChild(contain);
+        contain.style.lineHeight = getAbsolutePosition(parent).height * view[3] / 100 + "px";
+        contain.innerHTML = "请从右侧拖入布局框架或从左侧拖入数据视图。";
+        contain.ondragenter = function (event) {
+            if (event.target.className == "multi-echarts-view-contain") {
+                event.target.style.border = "1px dotted red";
+            }
+        };
+        contain.ondragover = function (event) {
+            if (event.target.className == "multi-echarts-view-contain") {
+                event.preventDefault();
+            }
+        };
+        contain.ondrop = function (event) {
+            if (event.target.className == "multi-echarts-view-contain") {
+                event.target.style.border = "0px dotted var(--main-border-color)";
+                let id = event.dataTransfer.getData("Text");
+                let echart = __ECHARTS__.history[id];
+                if (echart != null) {
+                    try {
+                        let posi = getAbsolutePosition(this);
+                        let _width = posi.width + "px";
+                        let _height = posi.height + "px";
+                        let e = getEcharts(
+                            this,
+                            echart.type,
+                            _width,
+                            _height,
+                            echart.themes,
+                            echart.dataset,
+                            echart.configs);
+                    } catch (e) {
+                        console.log(e);
+                    }
+                } else {
+                    setMultiEchartsView(this, id);
+                    this.style.border = "0px dotted var(--main-border-color)";
+                }
+            }
+        };
+        contain.ondragleave = function (event) {
+            if (event.target.className == "multi-echarts-view-contain") {
+                event.target.style.border = "1px dotted var(--main-border-color)";
+            }
+        };
+    }
+    if (parent.className == "multi-echarts-view-contain") {
+        parent.ondragenter = null;
+        parent.ondrop = null;
+        parent.ondragleave = null;
+        //注销父级容器的拖入功能
+    }
+}
+
+function getLayoutslist(parent) {
+    parent.innerHTML = "";
+    let toolbar = document.createElement("div");
+    parent.appendChild(toolbar);
+    toolbar.className = "toolbar";
+    let b = document.createElement("a");
+    b.className = "button";
+    b.innerHTML = "重置";
+    b.onclick = function () {
+        $("multi-echarts-view").innerHTML = "请从右侧拖入您需要的布局框架。";
+    };
+    toolbar.appendChild(b);
+
+    b = document.createElement("a");
+    b.className = "button";
+    b.innerHTML = "新增";
+    b.onclick = function () {
+        let name = prompt("请输入布局名称:");
+        let ex = false;
+        if (name != null && name != "") {
+            for (n in __ECHARTS__.layouts) {
+                if (n == name) {
+                    ex = true;
+                    break;
+                }
+            }
+            if (ex == true)
+                alert("名称 " + name + " 已经存在.");
+            else {
+                __ECHARTS__.layouts[name] = {data: [[0, 0, 99, 99],], position: "absolute"};
+                getLayoutslist($("multi-layouts-list"))
+            }
+        }
+    };
+    toolbar.appendChild(b);
+    for (let name in __ECHARTS__.layouts) {
+        let row = document.createElement("div");
+        row.className = "multi-layouts-list-row";
+        row.id = name;
+
+        let title = document.createElement("div");
+        let text = document.createElement("span");
+        title.appendChild(text);
+        text.innerHTML = name;
+        row.appendChild(title);
+
+        let save = document.createElement("span");
+        save.className = "clickable";
+        save.innerText = "✔";
+        save.setAttribute("id", name);
+        save.onclick = function () {
+            try {
+                let name = this.getAttribute("id");
+                let value = $("multi-layouts-list-row-edit-" + name).value;
+                __ECHARTS__.layouts[name].data = JSON.parse(value);
+                alert("布局 " + name + " 修改成功.")
+            }catch (e) {
+                alert("布局格式输入错误，请检查！\r\n请遵循[左边距%,上边距%,宽度%,高度%]设置.")
+            }
+        };
+        title.appendChild(save);
+
+        let detail = document.createElement("div");
+        let edit = document.createElement("textarea");
+        edit.className = "multi-layouts-list-row-edit";
+        edit.id = "multi-layouts-list-row-edit-" + name;
+        edit.type = "textarea";
+        edit.value = JSON.stringify(__ECHARTS__.layouts[name].data);
+        detail.appendChild(edit);
+        row.appendChild(detail);
+
+        parent.appendChild(row);
+        row.draggable = "true";
+        row.ondragstart = function (event) {
+            event.dataTransfer.setData("Text", event.target.id);
+        };
+    }
+}
+
+function getMultiEcharts() {
+    try {
+        let multiEcharts = document.createElement("div");
+        multiEcharts.className = "echarts";
+        multiEcharts.id = "multi-echarts";
+        multiEcharts.style.width = (getAbsolutePosition($("page")).width + 10) + "px";
+        multiEcharts.style.height = (getAbsolutePosition($("page")).height + 25) + "px";
+        multiEcharts.style.top = "0px";
+        multiEcharts.style.left = "0px";
+
+        let echartsList = document.createElement("div");
+        echartsList.id = echartsList.className = "multi-echarts-list";
+        multiEcharts.appendChild(echartsList);
+
+        for (let i = 0; i < __ECHARTS__.sets.length; i++) {
+            let echart = __ECHARTS__.history[__ECHARTS__.sets[i]];
+            let row = document.createElement("div");
+            row.className = "multi-echarts-list-row";
+            row.id = echart.id;
+
+            let title = document.createElement("div");
+            let text = document.createElement("span");
+            title.appendChild(text);
+            text.innerHTML = echart.configs.titleText.value != "" ? echart.configs.titleText.value : echart.id;
+            row.appendChild(title);
+
+            let del = document.createElement("span");
+            del.className = "clickable";
+            del.innerText = "✘";
+            del.setAttribute("id", echart.id);
+            del.onclick = function () {
+                let row = $(this.getAttribute("id"));
+                let data = [];
+                for (let i = 0; i < __ECHARTS__.sets.length; i++) {
+                    if (__ECHARTS__.sets[i] != this.getAttribute("id"))
+                        data.push(__ECHARTS__.sets[i]);
+                }
+                __ECHARTS__.sets = data;
+                row.parentElement.removeChild(row);
+            };
+            ;
+            title.appendChild(del);
+
+            let detail = document.createElement("div");
+            let type = document.createElement("span");
+            type.innerText = echart.type;
+            detail.appendChild(type);
+            let themes = document.createElement("span");
+            themes.innerText = echart.themes;
+            detail.appendChild(themes);
+            row.appendChild(detail);
+
+            echartsList.appendChild(row);
+            row.draggable = "true";
+            row.ondragstart = function (event) {
+                event.dataTransfer.setData("Text", event.target.id);
+            };
+        }
+
+        let layoutsList = document.createElement("div");
+        layoutsList.id = layoutsList.className = "multi-layouts-list";
+        multiEcharts.appendChild(layoutsList);
+        getLayoutslist(layoutsList);
+
+        let multiEchartsViews = document.createElement("div");
+        multiEchartsViews.className = multiEchartsViews.id = "multi-echarts-view";
+        multiEcharts.appendChild(multiEchartsViews);
+        multiEchartsViews.style.lineHeight = getAbsolutePosition($("page")).height + "px";
+        multiEchartsViews.innerHTML = "请从右侧拖入您需要的布局框架。";
+        multiEchartsViews.onmousemove = function () {
+            if (event.x < 300 && (event.y*100/getAbsolutePosition($("multi-echarts-view")).height >= 25 && event.y*100/getAbsolutePosition($("multi-echarts-view")).height <= 75)) {
+                $("multi-echarts-list").style.display = "block";
+            } else {
+                $("multi-echarts-list").style.display = "none";
+            }
+
+            if (event.x> getAbsolutePosition($("multi-echarts-view")).width - 300
+                && (event.y*100/getAbsolutePosition($("multi-echarts-view")).height >= 25 && event.y*100/getAbsolutePosition($("multi-echarts-view")).height <= 75)){
+                $("multi-layouts-list").style.display = "block";
+                $("multi-layouts-list").style.left = (getAbsolutePosition($("multi-echarts-view")).width - 305) + "px"
+            } else {
+                $("multi-layouts-list").style.display = "none";
+            }
+        };
+        multiEchartsViews.ondragenter = function (event) {
+            if (event.target.className == "multi-echarts-view") {
+                event.target.style.opacity = 0.5
+            }
+        };
+        multiEchartsViews.ondragover = function (event) {
+            if (event.target.className == "multi-echarts-view") {
+                event.preventDefault();
+            }
+        };
+        multiEchartsViews.ondrop = function (event) {
+            if (event.target.className == "multi-echarts-view") {
+                event.target.style.opacity = 1
+                let id = event.dataTransfer.getData("Text");
+                setMultiEchartsView(this, id);
+            }
+        };
+        multiEchartsViews.ondragleave = function (event) {
+            if (event.target.className == "multi-echarts-view") {
+                event.target.style.opacity = 1
+            }
+        };
+
+        window.addEventListener("keydown", function (e) {
+            //keypress无法获取Esc键值,keydown和keyup可以.
+            var keycode = e.which || e.keyCode;
+            if (keycode == 27) {
+                if ($("multi-echarts") != null)
+                    $("multi-echarts").parentElement.removeChild($("multi-echarts"));
+            }
+        });
+        return multiEcharts;
+    } catch (e) {
+        console.log(e);
+    }
 }
 
 

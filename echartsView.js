@@ -7,7 +7,84 @@ String.prototype.toBoolean = function(){
         return false
 };
 
+function stringToHex(str){
+    var val = "";
+    for (var i = 0; i < str.length; i++) {
+        if (val == "") {
+            val = str.charCodeAt(i).toString(16);
+        } else {
+            val += "," + str.charCodeAt(i).toString(16);
+        }
+    }
+    return val;
+}
+
+function getEchartsId(){
+    let id = new Date().Format("yyyyMMddhhmmssS") + "&" + Math.floor(Math.random() * 100);
+    return stringToHex(id).replaceAll(",","").toUpperCase();
+}
+
 var __ECHARTS__ = {
+    history:{},
+    sets:[],
+    layouts: {
+        单一: {
+            data: [
+                [0, 0, 99, 99],
+            ],
+            position: "absolute"
+        },
+        两行: {
+            data: [
+                [0, 0, 99, 49],
+                [0, 50, 99, 49]
+            ],
+            position: "absolute"
+        },
+        三行: {
+            data: [
+                [0, 0, 99, 32],
+                [0, 33, 99, 32],
+                [0, 66, 99, 32]
+                ],
+            position: "absolute"
+        },
+        两列: {
+            data: [
+                [0, 0, 49, 99],
+                [50, 0, 49, 99]
+            ],
+            position: "absolute"
+        },
+        三列: {
+            data: [
+                [0, 0, 32, 99],
+                [33, 0, 32, 99],
+                [66, 0, 32, 99]
+            ],
+            position: "absolute"
+        },
+        两行两列: {
+            data: [
+                [0, 0, 49, 49],
+                [50, 0, 49, 49],
+                [0, 50, 49, 49],
+                [50, 50, 49, 49],
+            ],
+            position: "absolute"
+        },
+        专业: {
+            data: [
+                [0, 0, 32, 49],
+                [33, 0, 32, 24],
+                [33, 25, 32, 24],
+                [66, 0, 33, 49],
+                [0, 50, 49, 49],
+                [50, 50, 49, 49]
+            ],
+            position: "absolute"
+        }
+    },
     type: {
         "柱状图": "Bar",
         "柱状图(3D)": "Bar3D",
@@ -1393,10 +1470,18 @@ function getEchartsConfigs(parent) {
         setUserConfig("echartsconfig", JSON.stringify(config));
         try {
             //var container = $("tableContainer");
-            var _width = (getAbsolutePosition(parent).width * 0.985) + "px";
-            var _height = (getAbsolutePosition(parent).height * 0.965) + "px";
+            var _width = (getAbsolutePosition(parent).width * 1) + "px";
+            var _height = (getAbsolutePosition(parent).height * 1) + "px";
             parent.innerHTML = "";
-            parent.appendChild(getEcharts(__DATASET__.echarts.type, _width, _height, __DATASET__.echarts.theme));
+            var echart = getEcharts(
+                null,
+                __DATASET__.echarts.type,
+                _width,
+                _height,
+                __DATASET__.echarts.theme,
+                __DATASET__["result"][__DATASET__.default.sheet],
+                __ECHARTS__.configs);
+            parent.appendChild(echart);
         } catch (e) {
 
         }
@@ -1416,116 +1501,111 @@ function getEchartsConfigs(parent) {
     return container;
 }
 
-function getEcharts(type, width, height, themes) {
+function getEcharts(container, type, width, height, themes, dataset, configs) {
     $("copyright").innerHTML = getUserConfig("CopyRight");
-    var container = document.createElement("div");
-    container.className = "echarts-container";
-    container.id = "echarts-container";
-    container.style.width = width;
-    container.style.height = height;
     switch (type) {
         case "Bar":
-            return getBar(container, themes);
+            return getBar(container, themes, width, height, type, dataset,configs);
             break;
         case "PolarBar":
-            return getPolarBar(container, themes);
+            return getPolarBar(container, themes, width, height, type, dataset,configs);
             break;
         case "PolarArea":
-            return getPolarArea(container, themes);
+            return getPolarArea(container, themes, width, height, type, dataset,configs);
             break;
         case "Line":
-            return getLine(container, themes);
+            return getLine(container, themes, width, height, type, dataset,configs);
             break;
         case "Line3D":
-            return getLine3D(container, themes);
+            return getLine3D(container, themes, width, height, type, dataset,configs);
             break;
         case "BarAndLine":
-            return getBarAndLine(container, themes);
+            return getBarAndLine(container, themes, width, height, type, dataset,configs);
             break;
         case "AreaStyle":
-            return getAreaStyle(container, themes);
+            return getAreaStyle(container, themes, width, height, type, dataset,configs);
             break;
         case "TransversBar":
-            return getTransversBar(container, themes);
+            return getTransversBar(container, themes, width, height, type, dataset,configs);
             break;
         case "Pie":
-            return getPie(container, themes);
+            return getPie(container, themes, width, height, type, dataset,configs);
             break;
         case "Ring":
-            return getRing(container, themes);
+            return getRing(container, themes, width, height, type, dataset,configs);
             break;
         case "Rose":
-            return getRose(container, themes);
+            return getRose(container, themes, width, height, type, dataset,configs);
             break;
         case "Gauge":
-            //return getGaugeWithOne(container, themes);
-            return getCategoryLineForGauge(container, themes);
+            //return getGaugeWithOne(container, themes, width, height, type, dataset,configs);
+            return getCategoryLineForGauge(container, themes, width, height, type, dataset,configs);
             break;
         case "Radar":
-            return getRadar(container, themes);
+            return getRadar(container, themes, width, height, type, dataset,configs);
             break;
         case "Regression":
-            return getRegression(container, themes);
+            return getRegression(container, themes, width, height, type, dataset,configs);
             break;
         case "Relationship":
-            return getRelationship(container, themes);
+            return getRelationship(container, themes, width, height, type, dataset,configs);
             break;
         case "OrganizationStructure":
-            return getOrganizationStructure(container, themes);
+            return getOrganizationStructure(container, themes, width, height, type, dataset,configs);
             break;
         case "WebkitDep":
-            return getWebkitDep(container, themes);
+            return getWebkitDep(container, themes, width, height, type, dataset,configs);
             break;
         case "Scatter":
-            return getScatter(container, themes);
+            return getScatter(container, themes, width, height, type, dataset,configs);
             break;
         case "Funnel":
-            return getFunnel(container, themes);
+            return getFunnel(container, themes, width, height, type, dataset,configs);
             break;
         case "WordCloud":
-            return getWordCloud(container, themes);
+            return getWordCloud(container, themes, width, height, type, dataset,configs);
             break;
         case "Liqiud":
-            //return getLiqiud(container, themes);
-            return getCategoryLineForLiqiud(container, themes);
+            //return getLiqiud(container, themes, width, height, type, dataset,configs);
+            return getCategoryLineForLiqiud(container, themes, width, height, type, dataset,configs);
             break;
         case "Calendar":
-            return getCalendar(container, themes);
+            return getCalendar(container, themes, width, height, type, dataset,configs);
             break;
         case "GeoOfChina":
-            //return getGeoOfChina(container, themes);
-            return getCategoryLineForGeoOfChina(container, themes);
+            //return getGeoOfChina(container, themes, width, height, type, dataset,configs);
+            return getCategoryLineForGeoOfChina(container, themes, width, height, type, dataset,configs);
             break;
         case "GeoOfLocal":
-            //return getGeoOfLocal(container, themes);
-            return getCategoryLineForGeoOfLocal(container, themes);
+            //return getGeoOfLocal(container, themes, width, height, type, dataset,configs);
+            return getCategoryLineForGeoOfLocal(container, themes, width, height, type, dataset,configs);
             break;
         case "Bar3D":
-            return getBar3D(container, themes);
+            return getBar3D(container, themes, width, height, type, dataset,configs);
             break;
         case "Scatter3D":
-            return getScatter3D(container, themes);
+            return getScatter3D(container, themes, width, height, type, dataset,configs);
             break;
         case "CategoryLine":
-            return getCategoryLine(container,themes);
+            return getCategoryLine(container, themes, width, height, type, dataset,configs);
             break;
         case "FunctionLine":
-            return getFunctionLine(container,themes);
+            return getFunctionLine(container, themes, width, height, type, dataset,configs);
             break;
         case "GeoMigrateLinesOfChinaCity":
-            return getGeoMigrateLinesOfChinaCity(container,themes);
+            return getGeoMigrateLinesOfChinaCity(container, themes, width, height, type, dataset,configs);
             break;
         case "ScrollingScreen":
-            return getScrollingScreen(container,themes);
+            return getScrollingScreen(container, themes, width, height, type, dataset,configs);
     }
 }
 
-function getAnimationEasing(){
-    return __ECHARTS__.configs.animationEasing.value == "linear"?__ECHARTS__.configs.animationEasing.value:__ECHARTS__.configs.animationEasing.value + __ECHARTS__.configs.animationFunctionType.value;
+function getAnimationEasing(configs){
+    return configs.animationEasing.value == "linear"?configs.animationEasing.value:configs.animationEasing.value + configs.animationFunctionType.value;
 }
 
-function getAnimationEasingUpdate(){
-    return __ECHARTS__.configs.animationEasingUpdate.value == "linear"?__ECHARTS__.configs.animationEasingUpdate.value:__ECHARTS__.configs.animationEasingUpdate.value + __ECHARTS__.configs.animationFunctionType.value;
+function getAnimationEasingUpdate(configs){
+    return configs.animationEasingUpdate.value == "linear"?configs.animationEasingUpdate.value:configs.animationEasingUpdate.value + configs.animationFunctionType.value;
 }
 
 function getLoading(text){
@@ -1538,7 +1618,7 @@ function getLoading(text){
     };
 }
 
-function getGraphic(link) {
+function getWaterGraphic(link) {
     let graphic = [
         {
             type: 'group',
@@ -1595,9 +1675,15 @@ function getGraphic(link) {
     return graphic;
 }
 
-function getBar(container, themes) {
+function getBar(container, themes, width, height, type, dataset, configs) {
+    if (container == null) {
+        container = document.createElement("div");
+        container.className = "echarts-container";
+        container.id = "echarts-container";
+        container.style.width = width;
+        container.style.height = height;
+    }
     var myChart = echarts.init(container, themes);
-    var dataset = __DATASET__["result"][__DATASET__.default.sheet];
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
     var columns = [];
@@ -1618,54 +1704,54 @@ function getBar(container, themes) {
                 type: "bar",
                 data: [],
                 label: {
-                    show: __ECHARTS__.configs.barLabelDisplay.value.toBoolean(),
+                    show: configs.barLabelDisplay.value.toBoolean(),
                     align: "center",
                     verticalAlign: "middle",
-                    position: __ECHARTS__.configs.barLabelPosition.value,
+                    position: configs.barLabelPosition.value,
                     distance: 15,
                     formatter: "{value|{c}}",
-                    rotate: __ECHARTS__.configs.barLabelRotate.value,
+                    rotate: configs.barLabelRotate.value,
                     rich: {
                         value: {
-                            color: __ECHARTS__.configs.labelBarTextColor.value,
-                            fontSize: __ECHARTS__.configs.labelBarFontSize.value,
+                            color: configs.labelBarTextColor.value,
+                            fontSize: configs.labelBarFontSize.value,
                         }
                     }
                 },
                 emphasis: {
                     label: {
-                        show: __ECHARTS__.configs.barEmphasisLabelDisplay.value.toBoolean(),
+                        show: configs.barEmphasisLabelDisplay.value.toBoolean(),
                         align: "center",
                         verticalAlign: "middle",
-                        position: __ECHARTS__.configs.barLabelPosition.value,
+                        position: configs.barLabelPosition.value,
                         distance: 15,
                         formatter: "{value|{c}}",
                         rotate: 0,
                         rich: {
                             value: {
-                                color: __ECHARTS__.configs.labelBarTextColor.value,
-                                fontSize: __ECHARTS__.configs.labelBarFontSize.value,
+                                color: configs.labelBarTextColor.value,
+                                fontSize: configs.labelBarFontSize.value,
                             }
                         }
                     }
                 },
-                smooth: __ECHARTS__.configs.lineSmooth.value.toBoolean(),
+                smooth: configs.lineSmooth.value.toBoolean(),
 
-                animation: __ECHARTS__.configs.animation.value.toBoolean(),
-                animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
-                animationEasing: getAnimationEasing(),
+                animation: configs.animation.value.toBoolean(),
+                animationThreshold: Number(configs.animationThreshold.value),
+                animationEasing: getAnimationEasing(configs),
                 animationDuration: function (idx) {
-                    return idx * Number(__ECHARTS__.configs.animationDuration.value) + c * Number(__ECHARTS__.configs.animationDuration.value);
+                    return idx * Number(configs.animationDuration.value) + c * Number(configs.animationDuration.value);
                 },
                 animationDelay: function (idx) {
-                    return idx * Number(__ECHARTS__.configs.animationDelay.value) + c * Number(__ECHARTS__.configs.animationDelay.value);
+                    return idx * Number(configs.animationDelay.value) + c * Number(configs.animationDelay.value);
                 },
-                animationEasingUpdate: getAnimationEasingUpdate(),
+                animationEasingUpdate: getAnimationEasingUpdate(configs),
                 animationDurationUpdate: function (idx) {
-                    return idx * Number(__ECHARTS__.configs.animationDurationUpdate.value) + c * Number(__ECHARTS__.configs.animationDurationUpdate.value);
+                    return idx * Number(configs.animationDurationUpdate.value) + c * Number(configs.animationDurationUpdate.value);
                 },
                 animationDelayUpdate: function (idx) {
-                    return idx * Number(__ECHARTS__.configs.animationDelayUpdate.value) + c * Number(__ECHARTS__.configs.animationDelayUpdate.value);
+                    return idx * Number(configs.animationDelayUpdate.value) + c * Number(configs.animationDelayUpdate.value);
                 },
             };
 
@@ -1679,212 +1765,237 @@ function getBar(container, themes) {
 
     var option = {
         grid: {
-            x: __ECHARTS__.configs.grid_left.value,
-            y: __ECHARTS__.configs.grid_top.value,
-            x2: __ECHARTS__.configs.grid_right.value,
-            y2: __ECHARTS__.configs.grid_bottom.value,
-            containLabel: __ECHARTS__.configs.grid_containLabel.value.toBoolean(),
+            x: configs.grid_left.value,
+            y: configs.grid_top.value,
+            x2: configs.grid_right.value,
+            y2: configs.grid_bottom.value,
+            containLabel: configs.grid_containLabel.value.toBoolean(),
             backgroundColor: "transparent"
         },
-        brush: __ECHARTS__.configs.toolboxFeatureBrush.value.toBoolean() ? {
+        brush: configs.toolboxFeatureBrush.value.toBoolean() ? {
             toolbox: ["rect", "polygon", "lineX", "lineY", "keep", "clear"],
             xAxisIndex: 0
         } : null,
         toolbox: {
-            show: __ECHARTS__.configs.toolboxDisplay.value.toBoolean(),
+            show: configs.toolboxDisplay.value.toBoolean(),
             feature: {
                 saveAsImage: {
-                    show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value.toBoolean(),
+                    show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
                     excludeComponents: ["toolbox", "dataZoom", "timeline", "visualMap", "brush"],
-                    backgroundColor:__ECHARTS__.configs.toolboxFeatureSaveAsImageBackgroundColor.value,
+                    backgroundColor: configs.toolboxFeatureSaveAsImageBackgroundColor.value,
                 },
-                restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value.toBoolean()},
-                dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                dataZoom: {show: __ECHARTS__.configs.toolboxFeatureDataView.value.toBoolean()},
+                restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
+                dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
+                dataZoom: {show: configs.toolboxFeatureDataView.value.toBoolean()},
                 magicType: {
-                    show: __ECHARTS__.configs.toolboxFeatureMagicType.value.toBoolean(),
+                    show: configs.toolboxFeatureMagicType.value.toBoolean(),
                     type: ["line", "bar", "stack", "tiled"]
                 },
             },
-            top: __ECHARTS__.configs.toolbox_top.value,
-            left: __ECHARTS__.configs.toolbox_left.value,
-            orient: __ECHARTS__.configs.toolbox_orient.value,
+            top: configs.toolbox_top.value,
+            left: configs.toolbox_left.value,
+            orient: configs.toolbox_orient.value,
             emphasis: {
                 iconStyle: {
-                    textPosition: __ECHARTS__.configs.toolbox_textPosition.value,
+                    textPosition: configs.toolbox_textPosition.value,
                 }
             },
         },
         title: {
-            show: __ECHARTS__.configs.titleDisplay.value.toBoolean(),
-            text: __ECHARTS__.configs.titleText.value,
-            link: __ECHARTS__.configs.titleTextLink.value,
-            target : "blank",
-            subtext: __ECHARTS__.configs.titleSubText.value,
-            sublink: __ECHARTS__.configs.titleSubTextLink.value,
+            show: configs.titleDisplay.value.toBoolean(),
+            text: configs.titleText.value,
+            link: configs.titleTextLink.value,
+            target: "blank",
+            subtext: configs.titleSubText.value,
+            sublink: configs.titleSubTextLink.value,
             subtarget: "blank",
             top: "top",
-            left: __ECHARTS__.configs.titlePosition.value,
+            left: configs.titlePosition.value,
             textStyle: {
-                color: __ECHARTS__.configs.titleTextColor.value,
+                color: configs.titleTextColor.value,
             },
             subtextStyle: {
-                color: __ECHARTS__.configs.titleSubTextColor.value,
+                color: configs.titleSubTextColor.value,
             }
         },
         legend: {
-            show: __ECHARTS__.configs.legendDisplay.value.toBoolean(),
-            icon: __ECHARTS__.configs.legendIcon.value,
-            type: __ECHARTS__.configs.legendType.value,
-            selectedMode: __ECHARTS__.configs.legendSelectedMode.value,
-            top: __ECHARTS__.configs.legendPositionTop.value,
-            left: __ECHARTS__.configs.legendPositionLeft.value,
-            orient: __ECHARTS__.configs.legendOrient.value,
+            show: configs.legendDisplay.value.toBoolean(),
+            icon: configs.legendIcon.value,
+            type: configs.legendType.value,
+            selectedMode: configs.legendSelectedMode.value,
+            top: configs.legendPositionTop.value,
+            left: configs.legendPositionLeft.value,
+            orient: configs.legendOrient.value,
             data: columns.slice(1, columns.length),
             textStyle: {
-                color: __ECHARTS__.configs.legendTextColor.value
+                color: configs.legendTextColor.value
             },
         },
 
         tooltip: {
-            show: __ECHARTS__.configs.tooltipDisplay.value.toBoolean(),
+            show: configs.tooltipDisplay.value.toBoolean(),
             trigger: "axis",
             axisPointer: {
-                type: __ECHARTS__.configs.axisPointerType.value,
+                type: configs.axisPointerType.value,
             },
         },
 
         xAxis: {
             data: xAxis,
-            inverse: __ECHARTS__.configs.xAxisInverse.value.toBoolean(),
+            inverse: configs.xAxisInverse.value.toBoolean(),
             axisLine: {
-                show: __ECHARTS__.configs.axisLineDisplay.value.toBoolean(),
+                show: configs.axisLineDisplay.value.toBoolean(),
                 lineStyle: {
-                    color: __ECHARTS__.configs.axisColor.value
+                    color: configs.axisColor.value
                 },
             },
             axisTick: {
-                show: __ECHARTS__.configs.axisLineDisplay.value.toBoolean(),
+                show: configs.axisLineDisplay.value.toBoolean(),
             },
             axisLabel: {
-                show: __ECHARTS__.configs.axisLineDisplay.value.toBoolean(),
+                show: configs.axisLineDisplay.value.toBoolean(),
                 interval: "auto",
                 margin: 8,
-                rotate: Number(__ECHARTS__.configs.xAxisLabelRotate.value),
+                rotate: Number(configs.xAxisLabelRotate.value),
                 textStyle: {
-                    color: __ECHARTS__.configs.axisTextColor.value
+                    color: configs.axisTextColor.value
                 }
             },
             splitLine: {
-                show: __ECHARTS__.configs.splitXLineDisplay.value.toBoolean(),
+                show: configs.splitXLineDisplay.value.toBoolean(),
                 lineStyle: {
                     color: [
-                        __ECHARTS__.configs.axisColor.value
+                        configs.axisColor.value
                     ]
                 },
             },
             splitArea: {
-                show: __ECHARTS__.configs.splitXAreaDisplay.value.toBoolean(),
+                show: configs.splitXAreaDisplay.value.toBoolean(),
             }
         },
         yAxis: {
-            inverse: __ECHARTS__.configs.yAxisInverse.value.toBoolean(),
+            inverse: configs.yAxisInverse.value.toBoolean(),
             axisLine: {
-                show: __ECHARTS__.configs.axisLineDisplay.value.toBoolean(),
+                show: configs.axisLineDisplay.value.toBoolean(),
                 lineStyle: {
-                    color: __ECHARTS__.configs.axisColor.value
+                    color: configs.axisColor.value
                 },
             },
             axisTick: {
-                show: __ECHARTS__.configs.axisLineDisplay.value.toBoolean(),
+                show: configs.axisLineDisplay.value.toBoolean(),
             },
             axisLabel: {
-                show: __ECHARTS__.configs.axisLineDisplay.value.toBoolean(),
-                rotate: Number(__ECHARTS__.configs.yAxisLabelRotate.value),
+                show: configs.axisLineDisplay.value.toBoolean(),
+                rotate: Number(configs.yAxisLabelRotate.value),
                 textStyle: {
-                    color: __ECHARTS__.configs.axisTextColor.value
+                    color: configs.axisTextColor.value
                 }
             },
             splitLine: {
-                show: __ECHARTS__.configs.splitYLineDisplay.value.toBoolean(),
+                show: configs.splitYLineDisplay.value.toBoolean(),
                 lineStyle: {
                     color: [
-                        __ECHARTS__.configs.axisColor.value
+                        configs.axisColor.value
                     ]
                 },
             },
             splitArea: {
-                show: __ECHARTS__.configs.splitYAreaDisplay.value.toBoolean(),
+                show: configs.splitYAreaDisplay.value.toBoolean(),
             }
         },
         dataZoom: [{
             type: "inside",
-            filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
+            filterMode: configs.dataZoomFilterMode.value,
             start: 0,
             xAxisIndex: 0,
             end: 100
         }, {
             type: "inside",
-            filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
+            filterMode: configs.dataZoomFilterMode.value,
             start: 0,
             yAxisIndex: 0,
             end: 100
         }, {
-            show: __ECHARTS__.configs.dataZoomBarDisplay.value.toBoolean(),
+            show: configs.dataZoomBarDisplay.value.toBoolean(),
             type: "slider",
-            filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
+            filterMode: configs.dataZoomFilterMode.value,
             yAxisIndex: 0,
             start: 0,
             end: 100,
-            width: __ECHARTS__.configs.dataZoomBarWidth.value,
-            height: (100 - toPoint(__ECHARTS__.configs.grid_top.value) - toPoint(__ECHARTS__.configs.grid_bottom.value)) + "%",
-            top: __ECHARTS__.configs.grid_top.value,
-            right: (100 - toPoint(__ECHARTS__.configs.grid_right.value)) + "%",
-            handleIcon: __SYS_IMAGES_PATH__.dataZoomHandleIcon[__ECHARTS__.configs.dataZoomHandleIcon.value],
-            handleSize: __ECHARTS__.configs.dataZoomHandleSize.value,
-            borderColor: __ECHARTS__.configs.dataZoomBarColor.value,
+            width: configs.dataZoomBarWidth.value,
+            height: (100 - toPoint(configs.grid_top.value) - toPoint(configs.grid_bottom.value)) + "%",
+            top: configs.grid_top.value,
+            right: (100 - toPoint(configs.grid_right.value)) + "%",
+            handleIcon: __SYS_IMAGES_PATH__.dataZoomHandleIcon[configs.dataZoomHandleIcon.value],
+            handleSize: configs.dataZoomHandleSize.value,
+            borderColor: configs.dataZoomBarColor.value,
             handleStyle: {
-                color: __ECHARTS__.configs.dataZoomBarColor.value,
+                color: configs.dataZoomBarColor.value,
             },
             textStyle: {
-                color: __ECHARTS__.configs.dataZoomBarColor.value,
+                color: configs.dataZoomBarColor.value,
             },
         }, {
-            show: __ECHARTS__.configs.dataZoomBarDisplay.value.toBoolean(),
+            show: configs.dataZoomBarDisplay.value.toBoolean(),
             type: "slider",
-            filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
+            filterMode: configs.dataZoomFilterMode.value,
             xAxisIndex: 0,
             start: 0,
             end: 100,
-            width: (100 - toPoint(__ECHARTS__.configs.grid_left.value) - toPoint(__ECHARTS__.configs.grid_right.value)) + "%",
-            height: __ECHARTS__.configs.dataZoomBarWidth.value,
-            left: __ECHARTS__.configs.grid_left.value,
-            top: (100 - toPoint(__ECHARTS__.configs.grid_bottom.value)) + "%",
-            handleIcon: __SYS_IMAGES_PATH__.dataZoomHandleIcon[__ECHARTS__.configs.dataZoomHandleIcon.value],
-            handleSize: __ECHARTS__.configs.dataZoomHandleSize.value,
-            borderColor: __ECHARTS__.configs.dataZoomBarColor.value,
+            width: (100 - toPoint(configs.grid_left.value) - toPoint(configs.grid_right.value)) + "%",
+            height: configs.dataZoomBarWidth.value,
+            left: configs.grid_left.value,
+            top: (100 - toPoint(configs.grid_bottom.value)) + "%",
+            handleIcon: __SYS_IMAGES_PATH__.dataZoomHandleIcon[configs.dataZoomHandleIcon.value],
+            handleSize: configs.dataZoomHandleSize.value,
+            borderColor: configs.dataZoomBarColor.value,
             handleStyle: {
-                color: __ECHARTS__.configs.dataZoomBarColor.value,
+                color: configs.dataZoomBarColor.value,
             },
             textStyle: {
-                color: __ECHARTS__.configs.dataZoomBarColor.value,
+                color: configs.dataZoomBarColor.value,
             },
         }],
-        graphic: getGraphic(__SYS_LOGO_LINK__),
+        graphic: getWaterGraphic(__SYS_LOGO_LINK__),
         series: yAxis_series,
     };
 
 
     setTimeout(() => {
-      myChart.hideLoading();
-      myChart.setOption(option);
-    }, Number(__ECHARTS__.configs.loadingTimes.value) * 1000);
+        myChart.hideLoading();
+        myChart.setOption(option);
+    }, Number(configs.loadingTimes.value) * 1000);
+
+
+    container.id = getEchartsId();
+    container.draggable = "true";
+    container.ondragstart = function (event) {
+        event.dataTransfer.setData("Text", event.target.id);
+    };
+
+    __ECHARTS__.history[container.id] = {
+        id: container.id,
+        type: type,
+        configs: configs,
+        dataset: dataset,
+        themes: themes,
+        contrainer: container,
+        width: width,
+        height: height,
+    };
     return container;
 }
 
-function getTransversBar(container, themes) {
+function getTransversBar(container, themes, width, height, type, dataset, configs) {
+    if (container == null) {
+        container = document.createElement("div");
+        container.className = "echarts-container";
+        container.id = "echarts-container";
+        container.style.width = width;
+        container.style.height = height;
+    }
     var myChart = echarts.init(container, themes);
-    var dataset = __DATASET__["result"][__DATASET__.default.sheet];
+
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
     var columns = [];
@@ -1903,52 +2014,52 @@ function getTransversBar(container, themes) {
             var series = {name: columns[c],
                 type: "bar",
                 data: [],
-                animation: __ECHARTS__.configs.animation.value.toBoolean(),
-                animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
-                animationEasing: getAnimationEasing(),
+                animation: configs.animation.value.toBoolean(),
+                animationThreshold: Number(configs.animationThreshold.value),
+                animationEasing: getAnimationEasing(configs),
                 animationDuration: function (idx) {
-                    return idx * Number(__ECHARTS__.configs.animationDuration.value) + c * Number(__ECHARTS__.configs.animationDuration.value);
+                    return idx * Number(configs.animationDuration.value) + c * Number(configs.animationDuration.value);
                 },
                 animationDelay: function (idx) {
-                    return idx * Number(__ECHARTS__.configs.animationDelay.value) + c * Number(__ECHARTS__.configs.animationDelay.value);
+                    return idx * Number(configs.animationDelay.value) + c * Number(configs.animationDelay.value);
                 },
-                animationEasingUpdate: getAnimationEasingUpdate(),
+                animationEasingUpdate: getAnimationEasingUpdate(configs),
                 animationDurationUpdate: function (idx) {
-                    return idx * Number(__ECHARTS__.configs.animationDurationUpdate.value) + c * Number(__ECHARTS__.configs.animationDurationUpdate.value);
+                    return idx * Number(configs.animationDurationUpdate.value) + c * Number(configs.animationDurationUpdate.value);
                 },
                 animationDelayUpdate: function (idx) {
-                    return idx * Number(__ECHARTS__.configs.animationDelayUpdate.value) + c * Number(__ECHARTS__.configs.animationDelayUpdate.value);
+                    return idx * Number(configs.animationDelayUpdate.value) + c * Number(configs.animationDelayUpdate.value);
                 },
             };
 
             series.label = {
-                show: __ECHARTS__.configs.barLabelDisplay.value.toBoolean(),
-                rotate: __ECHARTS__.configs.barLabelRotate.value,
+                show: configs.barLabelDisplay.value.toBoolean(),
+                rotate: configs.barLabelRotate.value,
                 align: "center",
                 verticalAlign: "middle",
-                position: __ECHARTS__.configs.barLabelPosition.value,
+                position: configs.barLabelPosition.value,
                 distance: 15,
                 formatter: "{value|{c}}",
                 rich: {
                     value: {
-                        color: __ECHARTS__.configs.labelBarTextColor.value,
-                        fontSize: __ECHARTS__.configs.labelBarFontSize.value,
+                        color: configs.labelBarTextColor.value,
+                        fontSize: configs.labelBarFontSize.value,
                     }
                 }
             };
             series.emphasis = {
                 label: {
-                    show: __ECHARTS__.configs.barEmphasisLabelDisplay.value.toBoolean(),
+                    show: configs.barEmphasisLabelDisplay.value.toBoolean(),
                     align: "center",
                     verticalAlign: "middle",
-                    position: __ECHARTS__.configs.barLabelPosition.value,
+                    position: configs.barLabelPosition.value,
                     distance: 15,
                     formatter: "{value|{c}}",
                     rotate: 0,
                     rich: {
                         value: {
-                            color: __ECHARTS__.configs.labelBarTextColor.value,
-                            fontSize: __ECHARTS__.configs.labelBarFontSize.value,
+                            color: configs.labelBarTextColor.value,
+                            fontSize: configs.labelBarFontSize.value,
                         }
                     }
                 }
@@ -1964,224 +2075,246 @@ function getTransversBar(container, themes) {
 
     var option = {
         grid: {
-            x: __ECHARTS__.configs.grid_left.value,
-            y: __ECHARTS__.configs.grid_top.value,
-            x2: __ECHARTS__.configs.grid_right.value,
-            y2: __ECHARTS__.configs.grid_bottom.value,
-            containLabel: __ECHARTS__.configs.grid_containLabel.value.toBoolean(),
+            x: configs.grid_left.value,
+            y: configs.grid_top.value,
+            x2: configs.grid_right.value,
+            y2: configs.grid_bottom.value,
+            containLabel: configs.grid_containLabel.value.toBoolean(),
             backgroundColor: "transparent"
         },
-        brush:  __ECHARTS__.configs.toolboxFeatureBrush.value.toBoolean()?{
+        brush:  configs.toolboxFeatureBrush.value.toBoolean()?{
             toolbox: ["rect", "polygon", "lineX", "lineY", "keep", "clear"],
             xAxisIndex: 0
         }:null,
         toolbox: {
-            show: __ECHARTS__.configs.toolboxDisplay.value.toBoolean(),
+            show: configs.toolboxDisplay.value.toBoolean(),
             feature: {
                 saveAsImage: {
-                    show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value.toBoolean(),
+                    show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
                     excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"],
-                    backgroundColor:__ECHARTS__.configs.toolboxFeatureSaveAsImageBackgroundColor.value,
+                    backgroundColor:configs.toolboxFeatureSaveAsImageBackgroundColor.value,
                 },
-                restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value.toBoolean()},
-                dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                dataZoom: {show: __ECHARTS__.configs.toolboxFeatureDataView.value.toBoolean()},
+                restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
+                dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
+                dataZoom: {show: configs.toolboxFeatureDataView.value.toBoolean()},
                 magicType: {
-                    show: __ECHARTS__.configs.toolboxFeatureMagicType.value.toBoolean(),
+                    show: configs.toolboxFeatureMagicType.value.toBoolean(),
                     type: ["stack", "tiled"]
                 },
             },
-            top: __ECHARTS__.configs.toolbox_top.value,
-            left:__ECHARTS__.configs.toolbox_left.value,
-            orient: __ECHARTS__.configs.toolbox_orient.value,
+            top: configs.toolbox_top.value,
+            left:configs.toolbox_left.value,
+            orient: configs.toolbox_orient.value,
             emphasis: {
                 iconStyle: {
-                    textPosition: __ECHARTS__.configs.toolbox_textPosition.value,
+                    textPosition: configs.toolbox_textPosition.value,
                 }
             },
         },
         title: {
-            show: __ECHARTS__.configs.titleDisplay.value.toBoolean(),
-            text: __ECHARTS__.configs.titleText.value,
-            link: __ECHARTS__.configs.titleTextLink.value,
+            show: configs.titleDisplay.value.toBoolean(),
+            text: configs.titleText.value,
+            link: configs.titleTextLink.value,
             target : "blank",
-            subtext: __ECHARTS__.configs.titleSubText.value,
-            sublink: __ECHARTS__.configs.titleSubTextLink.value,
+            subtext: configs.titleSubText.value,
+            sublink: configs.titleSubTextLink.value,
             subtarget: "blank",
             top: "top",
-            left: __ECHARTS__.configs.titlePosition.value,
+            left: configs.titlePosition.value,
             textStyle: {
-                color: __ECHARTS__.configs.titleTextColor.value,
+                color: configs.titleTextColor.value,
             },
             subtextStyle: {
-                color: __ECHARTS__.configs.titleSubTextColor.value,
+                color: configs.titleSubTextColor.value,
             }
         },
         tooltip: {
-            show: __ECHARTS__.configs.tooltipDisplay.value.toBoolean(),
+            show: configs.tooltipDisplay.value.toBoolean(),
             trigger: "axis",
             axisPointer: {
-                type: __ECHARTS__.configs.axisPointerType.value,
+                type: configs.axisPointerType.value,
             },
         },
         legend: {
-            show: __ECHARTS__.configs.legendDisplay.value.toBoolean(),
-            icon: __ECHARTS__.configs.legendIcon.value,
-            type: __ECHARTS__.configs.legendType.value,
-            selectedMode: __ECHARTS__.configs.legendSelectedMode.value,
-            top: __ECHARTS__.configs.legendPositionTop.value,
-            left: __ECHARTS__.configs.legendPositionLeft.value,
-            orient: __ECHARTS__.configs.legendOrient.value,
+            show: configs.legendDisplay.value.toBoolean(),
+            icon: configs.legendIcon.value,
+            type: configs.legendType.value,
+            selectedMode: configs.legendSelectedMode.value,
+            top: configs.legendPositionTop.value,
+            left: configs.legendPositionLeft.value,
+            orient: configs.legendOrient.value,
             data: columns.slice(1, columns.length),
             textStyle: {
-                color: __ECHARTS__.configs.legendTextColor.value
+                color: configs.legendTextColor.value
             },
         },
         xAxis: {
             type: "value",
-            inverse: __ECHARTS__.configs.xAxisInverse.value.toBoolean(),
+            inverse: configs.xAxisInverse.value.toBoolean(),
             axisLine: {
-                show: __ECHARTS__.configs.axisLineDisplay.value.toBoolean(),
+                show: configs.axisLineDisplay.value.toBoolean(),
                 lineStyle: {
-                    color: __ECHARTS__.configs.axisColor.value
+                    color: configs.axisColor.value
                 },
             },
             axisTick:{
-                show: __ECHARTS__.configs.axisLineDisplay.value.toBoolean(),
+                show: configs.axisLineDisplay.value.toBoolean(),
             },
             axisLabel: {
                 interval: "auto",
                 margin: 8,
-                rotate: Number(__ECHARTS__.configs.xAxisLabelRotate.value),
+                rotate: Number(configs.xAxisLabelRotate.value),
                 textStyle: {
-                    color: __ECHARTS__.configs.axisTextColor.value
+                    color: configs.axisTextColor.value
                 }
             },
             splitLine: {
-                show: __ECHARTS__.configs.splitXLineDisplay.value.toBoolean(),
+                show: configs.splitXLineDisplay.value.toBoolean(),
                 lineStyle: {
                     color: [
-                        __ECHARTS__.configs.axisColor.value
+                        configs.axisColor.value
                     ]
                 },
             },
             splitArea: {
-                show: __ECHARTS__.configs.splitXAreaDisplay.value.toBoolean(),
+                show: configs.splitXAreaDisplay.value.toBoolean(),
             }
         },
         yAxis: {
             type: "category",
             data: xAxis,
-            inverse: __ECHARTS__.configs.yAxisInverse.value.toBoolean(),
+            inverse: configs.yAxisInverse.value.toBoolean(),
             axisLine: {
-                show: __ECHARTS__.configs.axisLineDisplay.value.toBoolean(),
+                show: configs.axisLineDisplay.value.toBoolean(),
                 lineStyle: {
-                    color: __ECHARTS__.configs.axisColor.value
+                    color: configs.axisColor.value
                 },
             },
             axisTick:{
-                show: __ECHARTS__.configs.axisLineDisplay.value.toBoolean(),
+                show: configs.axisLineDisplay.value.toBoolean(),
             },
             axisLabel: {
-                show: __ECHARTS__.configs.axisLineDisplay.value.toBoolean(),
-                rotate: Number(__ECHARTS__.configs.yAxisLabelRotate.value),
+                show: configs.axisLineDisplay.value.toBoolean(),
+                rotate: Number(configs.yAxisLabelRotate.value),
                 textStyle: {
-                    color: __ECHARTS__.configs.axisTextColor.value
+                    color: configs.axisTextColor.value
                 }
             },
             splitLine: {
-                show: __ECHARTS__.configs.splitYLineDisplay.value.toBoolean(),
+                show: configs.splitYLineDisplay.value.toBoolean(),
                 lineStyle: {
                     color: [
-                        __ECHARTS__.configs.axisColor.value
+                        configs.axisColor.value
                     ]
                 },
             },
             splitArea: {
-                show: __ECHARTS__.configs.splitYAreaDisplay.value.toBoolean(),
+                show: configs.splitYAreaDisplay.value.toBoolean(),
             }
         },
         dataZoom: [{
             type: "inside",
-            filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
+            filterMode: configs.dataZoomFilterMode.value,
             start: 0,
             xAxisIndex: 0,
             end: 100
         }, {
             type: "inside",
-            filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
+            filterMode: configs.dataZoomFilterMode.value,
             start: 0,
             yAxisIndex: 0,
             end: 100
         }, {
-            show: __ECHARTS__.configs.dataZoomBarDisplay.value.toBoolean(),
+            show: configs.dataZoomBarDisplay.value.toBoolean(),
             type: "slider",
-            filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
+            filterMode: configs.dataZoomFilterMode.value,
             yAxisIndex: 0,
             start: 0,
             end: 100,
-            width: __ECHARTS__.configs.dataZoomBarWidth.value,
-            height: (100 - toPoint(__ECHARTS__.configs.grid_top.value) - toPoint(__ECHARTS__.configs.grid_bottom.value)) + "%",
-            top: __ECHARTS__.configs.grid_top.value,
-            right: (100 - toPoint(__ECHARTS__.configs.grid_right.value)) + "%",
-            handleIcon: __SYS_IMAGES_PATH__.dataZoomHandleIcon[__ECHARTS__.configs.dataZoomHandleIcon.value],
-            handleSize: __ECHARTS__.configs.dataZoomHandleSize.value,
-            borderColor: __ECHARTS__.configs.dataZoomBarColor.value,
+            width: configs.dataZoomBarWidth.value,
+            height: (100 - toPoint(configs.grid_top.value) - toPoint(configs.grid_bottom.value)) + "%",
+            top: configs.grid_top.value,
+            right: (100 - toPoint(configs.grid_right.value)) + "%",
+            handleIcon: __SYS_IMAGES_PATH__.dataZoomHandleIcon[configs.dataZoomHandleIcon.value],
+            handleSize: configs.dataZoomHandleSize.value,
+            borderColor: configs.dataZoomBarColor.value,
             handleStyle: {
-                color: __ECHARTS__.configs.dataZoomBarColor.value,
+                color: configs.dataZoomBarColor.value,
             }
         }, {
-            show: __ECHARTS__.configs.dataZoomBarDisplay.value.toBoolean(),
+            show: configs.dataZoomBarDisplay.value.toBoolean(),
             type: "slider",
-            filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
+            filterMode: configs.dataZoomFilterMode.value,
             xAxisIndex: 0,
             start: 0,
             end: 100,
-            width: (100 - toPoint(__ECHARTS__.configs.grid_left.value) - toPoint(__ECHARTS__.configs.grid_right.value)) + "%",
-            height: __ECHARTS__.configs.dataZoomBarWidth.value,
-            left: __ECHARTS__.configs.grid_left.value,
-            top: (100 - toPoint(__ECHARTS__.configs.grid_bottom.value)) + "%",
-            handleIcon: __SYS_IMAGES_PATH__.dataZoomHandleIcon[__ECHARTS__.configs.dataZoomHandleIcon.value],
-            handleSize: __ECHARTS__.configs.dataZoomHandleSize.value,
-            borderColor: __ECHARTS__.configs.dataZoomBarColor.value,
+            width: (100 - toPoint(configs.grid_left.value) - toPoint(configs.grid_right.value)) + "%",
+            height: configs.dataZoomBarWidth.value,
+            left: configs.grid_left.value,
+            top: (100 - toPoint(configs.grid_bottom.value)) + "%",
+            handleIcon: __SYS_IMAGES_PATH__.dataZoomHandleIcon[configs.dataZoomHandleIcon.value],
+            handleSize: configs.dataZoomHandleSize.value,
+            borderColor: configs.dataZoomBarColor.value,
             handleStyle: {
-                color: __ECHARTS__.configs.dataZoomBarColor.value,
+                color: configs.dataZoomBarColor.value,
             }
         }],
-        graphic: getGraphic(__SYS_LOGO_LINK__),
+        graphic: getWaterGraphic(__SYS_LOGO_LINK__),
         series: yAxis_series,
     };
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
-    }, Number(__ECHARTS__.configs.loadingTimes.value) * 1000);
+    }, Number(configs.loadingTimes.value) * 1000);
 
+    container.id = getEchartsId();
+    container.draggable = "true";
+    container.ondragstart = function (event) {
+        event.dataTransfer.setData("Text", event.target.id);
+    };
+    __ECHARTS__.history[container.id] = {
+         id: container.id,
+        type: type,
+        configs: configs,
+        dataset: dataset,
+        themes: themes,
+        contrainer: container,
+        width: width,
+        height: height,
+    };
     return container;
 }
 
-function getMarkPoint() {
+function getMarkPoint(configs) {
     let markPoint = {data: []};
-    if (__ECHARTS__.configs.lineMarkPointMin.value.toBoolean())
-        markPoint.data.push({type: "min", name: __ECHARTS__.configs.lineMarkPointMin.name});
-    if (__ECHARTS__.configs.lineMarkPointMax.value.toBoolean())
-        markPoint.data.push({type: "max", name: __ECHARTS__.configs.lineMarkPointMax.name});
+    if (configs.lineMarkPointMin.value.toBoolean())
+        markPoint.data.push({type: "min", name: configs.lineMarkPointMin.name});
+    if (configs.lineMarkPointMax.value.toBoolean())
+        markPoint.data.push({type: "max", name: configs.lineMarkPointMax.name});
     return markPoint;
 }
 
-function getMarkLine() {
+function getMarkLine(configs) {
     let markLine = {data: []};
-    if (__ECHARTS__.configs.lineMarkLineMin.value.toBoolean())
-        markLine.data.push({type: "min", name: __ECHARTS__.configs.lineMarkLineMin.name});
-    if (__ECHARTS__.configs.lineMarkLineMax.value.toBoolean())
-        markLine.data.push({type: "max", name: __ECHARTS__.configs.lineMarkLineMax.name});
-    if (__ECHARTS__.configs.lineMarkLineAvg.value.toBoolean())
-        markLine.data.push({type: "average", name: __ECHARTS__.configs.lineMarkLineAvg.name});
+    if (configs.lineMarkLineMin.value.toBoolean())
+        markLine.data.push({type: "min", name: configs.lineMarkLineMin.name});
+    if (configs.lineMarkLineMax.value.toBoolean())
+        markLine.data.push({type: "max", name: configs.lineMarkLineMax.name});
+    if (configs.lineMarkLineAvg.value.toBoolean())
+        markLine.data.push({type: "average", name: configs.lineMarkLineAvg.name});
     return markLine;
 }
 
-function getLine(container, themes) {
+function getLine(container, themes, width, height, type, dataset, configs) {
+    if (container == null) {
+        container = document.createElement("div");
+        container.className = "echarts-container";
+        container.id = "echarts-container";
+        container.style.width = width;
+        container.style.height = height;
+    }
     var myChart = echarts.init(container, themes);
-    var dataset = __DATASET__["result"][__DATASET__.default.sheet];
+
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
     var columns = [];
@@ -2202,54 +2335,54 @@ function getLine(container, themes) {
                 type: "line",
                 data: [],
                 label: {
-                    show: __ECHARTS__.configs.lineLabelDisplay.value.toBoolean(),
+                    show: configs.lineLabelDisplay.value.toBoolean(),
                     align: "center",
                     verticalAlign: "middle",
                     position: "top",
                     distance: 15,
                     formatter: "{value|{c}}",
-                    rotate: __ECHARTS__.configs.lineLabelRotate.value,
+                    rotate: configs.lineLabelRotate.value,
                     rich: {
                         value: {
-                            color: __ECHARTS__.configs.lineLabelTextColor.value,
-                            fontSize: __ECHARTS__.configs.lineLabelFontSize.value,
+                            color: configs.lineLabelTextColor.value,
+                            fontSize: configs.lineLabelFontSize.value,
                         }
                     }
                 },
                 itemStyle: {},
                 lineStyle: {
-                    width: Number(__ECHARTS__.configs.lineStyleWidth.value),
+                    width: Number(configs.lineStyleWidth.value),
                 },
                 emphasis: {
                     label: {
-                        show: __ECHARTS__.configs.lineEmphasisLabelDisplay.value.toBoolean(),
+                        show: configs.lineEmphasisLabelDisplay.value.toBoolean(),
                         position: "bottom",
                         rotate: 0,
-                        fontSize: __ECHARTS__.configs.lineLabelFontSize.value,
+                        fontSize: configs.lineLabelFontSize.value,
                     }
                 },
-                symbol: __ECHARTS__.configs.lineSymbol.value,
-                symbolSize: __ECHARTS__.configs.lineSymbolSize.value,
-                smooth: __ECHARTS__.configs.lineSmooth.value.toBoolean(),
-                markPoint: getMarkPoint(),
-                markLine: getMarkLine(),
+                symbol: configs.lineSymbol.value,
+                symbolSize: configs.lineSymbolSize.value,
+                smooth: configs.lineSmooth.value.toBoolean(),
+                markPoint: getMarkPoint(configs),
+                markLine: getMarkLine(configs),
                 markArea: {},
 
-                animation: __ECHARTS__.configs.animation.value.toBoolean(),
-                animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
-                animationEasing: getAnimationEasing(),
+                animation: configs.animation.value.toBoolean(),
+                animationThreshold: Number(configs.animationThreshold.value),
+                animationEasing: getAnimationEasing(configs),
                 animationDuration: function (idx) {
-                    return idx * Number(__ECHARTS__.configs.animationDuration.value) + c * Number(__ECHARTS__.configs.animationDuration.value);
+                    return idx * Number(configs.animationDuration.value) + c * Number(configs.animationDuration.value);
                 },
                 animationDelay: function (idx) {
-                    return idx * Number(__ECHARTS__.configs.animationDelay.value) + c * Number(__ECHARTS__.configs.animationDelay.value);
+                    return idx * Number(configs.animationDelay.value) + c * Number(configs.animationDelay.value);
                 },
-                animationEasingUpdate: getAnimationEasingUpdate(),
+                animationEasingUpdate: getAnimationEasingUpdate(configs),
                 animationDurationUpdate: function (idx) {
-                    return idx * Number(__ECHARTS__.configs.animationDurationUpdate.value) + c * Number(__ECHARTS__.configs.animationDurationUpdate.value);
+                    return idx * Number(configs.animationDurationUpdate.value) + c * Number(configs.animationDurationUpdate.value);
                 },
                 animationDelayUpdate: function (idx) {
-                    return idx * Number(__ECHARTS__.configs.animationDelayUpdate.value) + c * Number(__ECHARTS__.configs.animationDelayUpdate.value);
+                    return idx * Number(configs.animationDelayUpdate.value) + c * Number(configs.animationDelayUpdate.value);
                 },
             };
 
@@ -2263,205 +2396,227 @@ function getLine(container, themes) {
 
     var option = {
         grid: {
-            x: __ECHARTS__.configs.grid_left.value,
-            y: __ECHARTS__.configs.grid_top.value,
-            x2: __ECHARTS__.configs.grid_right.value,
-            y2: __ECHARTS__.configs.grid_bottom.value,
-            containLabel: __ECHARTS__.configs.grid_containLabel.value.toBoolean(),
+            x: configs.grid_left.value,
+            y: configs.grid_top.value,
+            x2: configs.grid_right.value,
+            y2: configs.grid_bottom.value,
+            containLabel: configs.grid_containLabel.value.toBoolean(),
             backgroundColor: "transparent"
         },
-        brush: __ECHARTS__.configs.toolboxFeatureBrush.value.toBoolean() ? {
+        brush: configs.toolboxFeatureBrush.value.toBoolean() ? {
             toolbox: ["rect", "polygon", "lineX", "lineY", "keep", "clear"],
             xAxisIndex: 0
         } : null,
         toolbox: {
-            show: __ECHARTS__.configs.toolboxDisplay.value.toBoolean(),
+            show: configs.toolboxDisplay.value.toBoolean(),
             feature: {
                 saveAsImage: {
-                    show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value.toBoolean(),
+                    show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
                     excludeComponents: ["toolbox", "dataZoom", "timeline", "visualMap", "brush"],
-                    backgroundColor:__ECHARTS__.configs.toolboxFeatureSaveAsImageBackgroundColor.value,
+                    backgroundColor:configs.toolboxFeatureSaveAsImageBackgroundColor.value,
                 },
-                restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value.toBoolean()},
-                dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                dataZoom: {show: __ECHARTS__.configs.toolboxFeatureDataView.value.toBoolean()},
+                restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
+                dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
+                dataZoom: {show: configs.toolboxFeatureDataView.value.toBoolean()},
                 magicType: {
-                    show: __ECHARTS__.configs.toolboxFeatureMagicType.value.toBoolean(),
+                    show: configs.toolboxFeatureMagicType.value.toBoolean(),
                     type: ["line", "bar", "stack", "tiled"]
                 },
             },
-            top: __ECHARTS__.configs.toolbox_top.value,
-            left: __ECHARTS__.configs.toolbox_left.value,
-            orient: __ECHARTS__.configs.toolbox_orient.value,
+            top: configs.toolbox_top.value,
+            left: configs.toolbox_left.value,
+            orient: configs.toolbox_orient.value,
             emphasis: {
                 iconStyle: {
-                    textPosition: __ECHARTS__.configs.toolbox_textPosition.value,
+                    textPosition: configs.toolbox_textPosition.value,
                 }
             },
         },
         title: {
-            show: __ECHARTS__.configs.titleDisplay.value.toBoolean(),
-            text: __ECHARTS__.configs.titleText.value,
-            link: __ECHARTS__.configs.titleTextLink.value,
+            show: configs.titleDisplay.value.toBoolean(),
+            text: configs.titleText.value,
+            link: configs.titleTextLink.value,
             target : "blank",
-            subtext: __ECHARTS__.configs.titleSubText.value,
-            sublink: __ECHARTS__.configs.titleSubTextLink.value,
+            subtext: configs.titleSubText.value,
+            sublink: configs.titleSubTextLink.value,
             subtarget: "blank",
             top: "top",
-            left: __ECHARTS__.configs.titlePosition.value,
+            left: configs.titlePosition.value,
             textStyle: {
-                color: __ECHARTS__.configs.titleTextColor.value,
+                color: configs.titleTextColor.value,
             },
             subtextStyle: {
-                color: __ECHARTS__.configs.titleSubTextColor.value,
+                color: configs.titleSubTextColor.value,
             }
         },
         tooltip: {
-            show: __ECHARTS__.configs.tooltipDisplay.value.toBoolean(),
+            show: configs.tooltipDisplay.value.toBoolean(),
             trigger: "axis",
             axisPointer: {
-                type: __ECHARTS__.configs.axisPointerType.value,
+                type: configs.axisPointerType.value,
             },
         },
 
         legend: {
-            show: __ECHARTS__.configs.legendDisplay.value.toBoolean(),
-            icon: __ECHARTS__.configs.legendIcon.value,
-            type: __ECHARTS__.configs.legendType.value,
-            selectedMode: __ECHARTS__.configs.legendSelectedMode.value,
-            top: __ECHARTS__.configs.legendPositionTop.value,
-            left: __ECHARTS__.configs.legendPositionLeft.value,
-            orient: __ECHARTS__.configs.legendOrient.value,
+            show: configs.legendDisplay.value.toBoolean(),
+            icon: configs.legendIcon.value,
+            type: configs.legendType.value,
+            selectedMode: configs.legendSelectedMode.value,
+            top: configs.legendPositionTop.value,
+            left: configs.legendPositionLeft.value,
+            orient: configs.legendOrient.value,
             data: columns.slice(1, columns.length),
             textStyle: {
-                color: __ECHARTS__.configs.legendTextColor.value
+                color: configs.legendTextColor.value
             },
         },
         xAxis: {
             data: xAxis,
-            inverse: __ECHARTS__.configs.xAxisInverse.value.toBoolean(),
+            inverse: configs.xAxisInverse.value.toBoolean(),
             axisLine: {
-                show: __ECHARTS__.configs.axisLineDisplay.value.toBoolean(),
+                show: configs.axisLineDisplay.value.toBoolean(),
                 lineStyle: {
-                    color: __ECHARTS__.configs.axisColor.value
+                    color: configs.axisColor.value
                 },
             },
             axisTick: {
-                show: __ECHARTS__.configs.axisLineDisplay.value.toBoolean(),
+                show: configs.axisLineDisplay.value.toBoolean(),
             },
             axisLabel: {
-                show: __ECHARTS__.configs.axisLineDisplay.value.toBoolean(),
+                show: configs.axisLineDisplay.value.toBoolean(),
                 interval: "auto",
                 margin: 8,
-                rotate: Number(__ECHARTS__.configs.xAxisLabelRotate.value),
+                rotate: Number(configs.xAxisLabelRotate.value),
                 textStyle: {
-                    color: __ECHARTS__.configs.axisTextColor.value
+                    color: configs.axisTextColor.value
                 }
             },
             splitLine: {
-                show: __ECHARTS__.configs.splitXLineDisplay.value.toBoolean(),
+                show: configs.splitXLineDisplay.value.toBoolean(),
                 lineStyle: {
                     color: [
-                        __ECHARTS__.configs.axisColor.value
+                        configs.axisColor.value
                     ]
                 },
             },
             splitArea: {
-                show: __ECHARTS__.configs.splitXAreaDisplay.value.toBoolean(),
+                show: configs.splitXAreaDisplay.value.toBoolean(),
             }
         },
         yAxis: {
-            inverse: __ECHARTS__.configs.yAxisInverse.value.toBoolean(),
+            inverse: configs.yAxisInverse.value.toBoolean(),
             axisLine: {
-                show: __ECHARTS__.configs.axisLineDisplay.value.toBoolean(),
+                show: configs.axisLineDisplay.value.toBoolean(),
                 lineStyle: {
-                    color: __ECHARTS__.configs.axisColor.value
+                    color: configs.axisColor.value
                 },
             },
             axisTick: {
-                show: __ECHARTS__.configs.axisLineDisplay.value.toBoolean(),
+                show: configs.axisLineDisplay.value.toBoolean(),
             },
             axisLabel: {
-                show: __ECHARTS__.configs.axisLineDisplay.value.toBoolean(),
-                rotate: Number(__ECHARTS__.configs.yAxisLabelRotate.value),
+                show: configs.axisLineDisplay.value.toBoolean(),
+                rotate: Number(configs.yAxisLabelRotate.value),
                 textStyle: {
-                    color: __ECHARTS__.configs.axisTextColor.value
+                    color: configs.axisTextColor.value
                 }
             },
             splitLine: {
-                show: __ECHARTS__.configs.splitYLineDisplay.value.toBoolean(),
+                show: configs.splitYLineDisplay.value.toBoolean(),
                 lineStyle: {
                     color: [
-                        __ECHARTS__.configs.axisColor.value
+                        configs.axisColor.value
                     ]
                 },
             },
             splitArea: {
-                show: __ECHARTS__.configs.splitYAreaDisplay.value.toBoolean(),
+                show: configs.splitYAreaDisplay.value.toBoolean(),
             }
         },
         dataZoom: [{
             type: "inside",
-            filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
+            filterMode: configs.dataZoomFilterMode.value,
             start: 0,
             xAxisIndex: 0,
             end: 100
         }, {
             type: "inside",
-            filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
+            filterMode: configs.dataZoomFilterMode.value,
             start: 0,
             yAxisIndex: 0,
             end: 100
         }, {
-            show: __ECHARTS__.configs.dataZoomBarDisplay.value.toBoolean(),
+            show: configs.dataZoomBarDisplay.value.toBoolean(),
             type: "slider",
-            filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
+            filterMode: configs.dataZoomFilterMode.value,
             yAxisIndex: 0,
             start: 0,
             end: 100,
-            width: __ECHARTS__.configs.dataZoomBarWidth.value,
-            height: (100 - toPoint(__ECHARTS__.configs.grid_top.value) - toPoint(__ECHARTS__.configs.grid_bottom.value)) + "%",
-            top: __ECHARTS__.configs.grid_top.value,
-            right: (100 - toPoint(__ECHARTS__.configs.grid_right.value)) + "%",
-            handleIcon: __SYS_IMAGES_PATH__.dataZoomHandleIcon[__ECHARTS__.configs.dataZoomHandleIcon.value],
-            handleSize: __ECHARTS__.configs.dataZoomHandleSize.value,
-            borderColor: __ECHARTS__.configs.dataZoomBarColor.value,
+            width: configs.dataZoomBarWidth.value,
+            height: (100 - toPoint(configs.grid_top.value) - toPoint(configs.grid_bottom.value)) + "%",
+            top: configs.grid_top.value,
+            right: (100 - toPoint(configs.grid_right.value)) + "%",
+            handleIcon: __SYS_IMAGES_PATH__.dataZoomHandleIcon[configs.dataZoomHandleIcon.value],
+            handleSize: configs.dataZoomHandleSize.value,
+            borderColor: configs.dataZoomBarColor.value,
             handleStyle: {
-                color: __ECHARTS__.configs.dataZoomBarColor.value,
+                color: configs.dataZoomBarColor.value,
             }
         }, {
-            show: __ECHARTS__.configs.dataZoomBarDisplay.value.toBoolean(),
+            show: configs.dataZoomBarDisplay.value.toBoolean(),
             type: "slider",
-            filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
+            filterMode: configs.dataZoomFilterMode.value,
             xAxisIndex: 0,
             start: 0,
             end: 100,
-            width: (100 - toPoint(__ECHARTS__.configs.grid_left.value) - toPoint(__ECHARTS__.configs.grid_right.value)) + "%",
-            height: __ECHARTS__.configs.dataZoomBarWidth.value,
-            left: __ECHARTS__.configs.grid_left.value,
-            top: (100 - toPoint(__ECHARTS__.configs.grid_bottom.value)) + "%",
-            handleIcon: __SYS_IMAGES_PATH__.dataZoomHandleIcon[__ECHARTS__.configs.dataZoomHandleIcon.value],
-            handleSize: __ECHARTS__.configs.dataZoomHandleSize.value,
-            borderColor: __ECHARTS__.configs.dataZoomBarColor.value,
+            width: (100 - toPoint(configs.grid_left.value) - toPoint(configs.grid_right.value)) + "%",
+            height: configs.dataZoomBarWidth.value,
+            left: configs.grid_left.value,
+            top: (100 - toPoint(configs.grid_bottom.value)) + "%",
+            handleIcon: __SYS_IMAGES_PATH__.dataZoomHandleIcon[configs.dataZoomHandleIcon.value],
+            handleSize: configs.dataZoomHandleSize.value,
+            borderColor: configs.dataZoomBarColor.value,
             handleStyle: {
-                color: __ECHARTS__.configs.dataZoomBarColor.value,
+                color: configs.dataZoomBarColor.value,
             }
         }],
-        graphic: getGraphic(__SYS_LOGO_LINK__),
+        graphic: getWaterGraphic(__SYS_LOGO_LINK__),
         series: yAxis_series,
     };
 
     setTimeout(() => {
         myChart.hideLoading();
         myChart.setOption(option);
-    }, Number(__ECHARTS__.configs.loadingTimes.value) * 1000);
+    }, Number(configs.loadingTimes.value) * 1000);
 
+    container.id = getEchartsId();
+    container.draggable = "true";
+    container.ondragstart = function (event) {
+        event.dataTransfer.setData("Text", event.target.id);
+    };
+    __ECHARTS__.history[container.id] = {
+         id: container.id,
+        type: type,
+        configs: configs,
+        dataset: dataset,
+        themes: themes,
+        contrainer: container,
+        width: width,
+        height: height,
+    };
     return container;
 }
 
-function getBarAndLine(container, themes) {
+function getBarAndLine(container, themes, width, height, type, dataset, configs) {
+    if (container == null) {
+        container = document.createElement("div");
+        container.className = "echarts-container";
+        container.id = "echarts-container";
+        container.style.width = width;
+        container.style.height = height;
+    }
     var myChart = echarts.init(container, themes);
-    var dataset = __DATASET__["result"][__DATASET__.default.sheet];
+
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
     var columns = [];
@@ -2484,53 +2639,53 @@ function getBarAndLine(container, themes) {
                     type: "line",
                     data: [],
                     lineStyle: {
-                        width: Number(__ECHARTS__.configs.lineStyleWidth.value),
+                        width: Number(configs.lineStyleWidth.value),
                     },
                     label: {
-                        show: __ECHARTS__.configs.lineLabelDisplay.value.toBoolean(),
+                        show: configs.lineLabelDisplay.value.toBoolean(),
                         align: "center",
                         verticalAlign: "middle",
                         position: "top",
                         distance: 15,
                         formatter: "{value|{c}}",
-                        rotate: __ECHARTS__.configs.lineLabelRotate.value,
+                        rotate: configs.lineLabelRotate.value,
                         rich: {
                             value: {
-                                color: __ECHARTS__.configs.lineLabelTextColor.value,
-                                fontSize: __ECHARTS__.configs.lineLabelFontSize.value,
+                                color: configs.lineLabelTextColor.value,
+                                fontSize: configs.lineLabelFontSize.value,
                             }
                         }
                     },
                     emphasis: {
                         label: {
-                            show: __ECHARTS__.configs.lineEmphasisLabelDisplay.value.toBoolean(),
+                            show: configs.lineEmphasisLabelDisplay.value.toBoolean(),
                             position: "bottom",
                             rotate: 0,
-                            fontSize: __ECHARTS__.configs.lineLabelFontSize.value,
+                            fontSize: configs.lineLabelFontSize.value,
                         }
                     },
                     itemStyle: {},
-                    symbol: __ECHARTS__.configs.lineSymbol.value,
-                    symbolSize: __ECHARTS__.configs.lineSymbolSize.value,
-                    smooth: __ECHARTS__.configs.lineSmooth.value.toBoolean(),
-                    markPoint: getMarkPoint(),
-                    markLine: getMarkLine(),
+                    symbol: configs.lineSymbol.value,
+                    symbolSize: configs.lineSymbolSize.value,
+                    smooth: configs.lineSmooth.value.toBoolean(),
+                    markPoint: getMarkPoint(configs),
+                    markLine: getMarkLine(configs),
                     markArea: {},
-                    animation: __ECHARTS__.configs.animation.value.toBoolean(),
-                    animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
-                    animationEasing: getAnimationEasing(),
+                    animation: configs.animation.value.toBoolean(),
+                    animationThreshold: Number(configs.animationThreshold.value),
+                    animationEasing: getAnimationEasing(configs),
                     animationDuration: function (idx) {
-                        return idx * Number(__ECHARTS__.configs.animationDuration.value) + c * Number(__ECHARTS__.configs.animationDuration.value);
+                        return idx * Number(configs.animationDuration.value) + c * Number(configs.animationDuration.value);
                     },
                     animationDelay: function (idx) {
-                        return idx * Number(__ECHARTS__.configs.animationDelay.value) + c * Number(__ECHARTS__.configs.animationDelay.value);
+                        return idx * Number(configs.animationDelay.value) + c * Number(configs.animationDelay.value);
                     },
-                    animationEasingUpdate: getAnimationEasingUpdate(),
+                    animationEasingUpdate: getAnimationEasingUpdate(configs),
                     animationDurationUpdate: function (idx) {
-                        return idx * Number(__ECHARTS__.configs.animationDurationUpdate.value) + c * Number(__ECHARTS__.configs.animationDurationUpdate.value);
+                        return idx * Number(configs.animationDurationUpdate.value) + c * Number(configs.animationDurationUpdate.value);
                     },
                     animationDelayUpdate: function (idx) {
-                        return idx * Number(__ECHARTS__.configs.animationDelayUpdate.value) + c * Number(__ECHARTS__.configs.animationDelayUpdate.value);
+                        return idx * Number(configs.animationDelayUpdate.value) + c * Number(configs.animationDelayUpdate.value);
                     },
                 };
 
@@ -2541,52 +2696,52 @@ function getBarAndLine(container, themes) {
                     type: "bar",
                     data: [],
                     label: {
-                        show: __ECHARTS__.configs.barLabelDisplay.value.toBoolean(),
+                        show: configs.barLabelDisplay.value.toBoolean(),
                         align: "center",
                         verticalAlign: "middle",
-                        position: __ECHARTS__.configs.barLabelPosition.value,
+                        position: configs.barLabelPosition.value,
                         distance: 15,
                         formatter: "{value|{c}}",
-                        rotate: __ECHARTS__.configs.barLabelRotate.value,
+                        rotate: configs.barLabelRotate.value,
                         rich: {
                             value: {
-                                color: __ECHARTS__.configs.labelBarTextColor.value,
-                                fontSize: __ECHARTS__.configs.labelBarFontSize.value,
+                                color: configs.labelBarTextColor.value,
+                                fontSize: configs.labelBarFontSize.value,
                             }
                         }
                     },
                     emphasis: {
                         label: {
-                            show: __ECHARTS__.configs.barEmphasisLabelDisplay.value.toBoolean(),
+                            show: configs.barEmphasisLabelDisplay.value.toBoolean(),
                             align: "center",
                             verticalAlign: "middle",
-                            position: __ECHARTS__.configs.barLabelPosition.value,
+                            position: configs.barLabelPosition.value,
                             distance: 15,
                             formatter: "{value|{c}}",
                             rotate: 0,
                             rich: {
                                 value: {
-                                    color: __ECHARTS__.configs.labelBarTextColor.value,
-                                    fontSize: __ECHARTS__.configs.labelBarFontSize.value,
+                                    color: configs.labelBarTextColor.value,
+                                    fontSize: configs.labelBarFontSize.value,
                                 }
                             }
                         }
                     },
-                    animation: __ECHARTS__.configs.animation.value.toBoolean(),
-                    animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
-                    animationEasing: getAnimationEasing(),
+                    animation: configs.animation.value.toBoolean(),
+                    animationThreshold: Number(configs.animationThreshold.value),
+                    animationEasing: getAnimationEasing(configs),
                     animationDuration: function (idx) {
-                        return idx * Number(__ECHARTS__.configs.animationDuration.value) + c * Number(__ECHARTS__.configs.animationDuration.value);
+                        return idx * Number(configs.animationDuration.value) + c * Number(configs.animationDuration.value);
                     },
                     animationDelay: function (idx) {
-                        return idx * Number(__ECHARTS__.configs.animationDelay.value) + c * Number(__ECHARTS__.configs.animationDelay.value);
+                        return idx * Number(configs.animationDelay.value) + c * Number(configs.animationDelay.value);
                     },
-                    animationEasingUpdate: getAnimationEasingUpdate(),
+                    animationEasingUpdate: getAnimationEasingUpdate(configs),
                     animationDurationUpdate: function (idx) {
-                        return idx * Number(__ECHARTS__.configs.animationDurationUpdate.value) + c * Number(__ECHARTS__.configs.animationDurationUpdate.value);
+                        return idx * Number(configs.animationDurationUpdate.value) + c * Number(configs.animationDurationUpdate.value);
                     },
                     animationDelayUpdate: function (idx) {
-                        return idx * Number(__ECHARTS__.configs.animationDelayUpdate.value) + c * Number(__ECHARTS__.configs.animationDelayUpdate.value);
+                        return idx * Number(configs.animationDelayUpdate.value) + c * Number(configs.animationDelayUpdate.value);
                     },
                 }
             }
@@ -2601,203 +2756,225 @@ function getBarAndLine(container, themes) {
 
     var option = {
         grid: {
-            x: __ECHARTS__.configs.grid_left.value,
-            y: __ECHARTS__.configs.grid_top.value,
-            x2: __ECHARTS__.configs.grid_right.value,
-            y2: __ECHARTS__.configs.grid_bottom.value,
-            containLabel: __ECHARTS__.configs.grid_containLabel.value.toBoolean(),
+            x: configs.grid_left.value,
+            y: configs.grid_top.value,
+            x2: configs.grid_right.value,
+            y2: configs.grid_bottom.value,
+            containLabel: configs.grid_containLabel.value.toBoolean(),
             backgroundColor: "transparent"
         },
-        brush:  __ECHARTS__.configs.toolboxFeatureBrush.value.toBoolean()?{
+        brush:  configs.toolboxFeatureBrush.value.toBoolean()?{
             toolbox: ["rect", "polygon", "lineX", "lineY", "keep", "clear"],
             xAxisIndex: 0
         }:null,
         toolbox: {
-            show: __ECHARTS__.configs.toolboxDisplay.value.toBoolean(),
+            show: configs.toolboxDisplay.value.toBoolean(),
             feature: {
                 saveAsImage: {
-                    show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value.toBoolean(),
+                    show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
                     excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"],
-                    backgroundColor:__ECHARTS__.configs.toolboxFeatureSaveAsImageBackgroundColor.value,
+                    backgroundColor:configs.toolboxFeatureSaveAsImageBackgroundColor.value,
                 },
-                restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value.toBoolean()},
-                dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                dataZoom: {show: __ECHARTS__.configs.toolboxFeatureDataView.value.toBoolean()},
+                restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
+                dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
+                dataZoom: {show: configs.toolboxFeatureDataView.value.toBoolean()},
                 magicType: {
-                    show: __ECHARTS__.configs.toolboxFeatureMagicType.value.toBoolean(),
+                    show: configs.toolboxFeatureMagicType.value.toBoolean(),
                     type: ["stack", "tiled"]
                 },
             },
-            top: __ECHARTS__.configs.toolbox_top.value,
-            left:__ECHARTS__.configs.toolbox_left.value,
-            orient: __ECHARTS__.configs.toolbox_orient.value,
+            top: configs.toolbox_top.value,
+            left:configs.toolbox_left.value,
+            orient: configs.toolbox_orient.value,
             emphasis: {
                 iconStyle: {
-                    textPosition: __ECHARTS__.configs.toolbox_textPosition.value,
+                    textPosition: configs.toolbox_textPosition.value,
                 }
             },
         },
         title: {
-            show: __ECHARTS__.configs.titleDisplay.value.toBoolean(),
-            text: __ECHARTS__.configs.titleText.value,
-            link: __ECHARTS__.configs.titleTextLink.value,
+            show: configs.titleDisplay.value.toBoolean(),
+            text: configs.titleText.value,
+            link: configs.titleTextLink.value,
             target : "blank",
-            subtext: __ECHARTS__.configs.titleSubText.value,
-            sublink: __ECHARTS__.configs.titleSubTextLink.value,
+            subtext: configs.titleSubText.value,
+            sublink: configs.titleSubTextLink.value,
             subtarget: "blank",
             top: "top",
-            left: __ECHARTS__.configs.titlePosition.value,
+            left: configs.titlePosition.value,
             textStyle: {
-                color: __ECHARTS__.configs.titleTextColor.value,
+                color: configs.titleTextColor.value,
             },
             subtextStyle: {
-                color: __ECHARTS__.configs.titleSubTextColor.value,
+                color: configs.titleSubTextColor.value,
             }
         },
         tooltip: {
-            show: __ECHARTS__.configs.tooltipDisplay.value.toBoolean(),
+            show: configs.tooltipDisplay.value.toBoolean(),
             trigger: "axis",
             axisPointer: {
-                type: __ECHARTS__.configs.axisPointerType.value,
+                type: configs.axisPointerType.value,
             },
         },
         legend: {
-            show: __ECHARTS__.configs.legendDisplay.value.toBoolean(),
-            icon: __ECHARTS__.configs.legendIcon.value,
-            type: __ECHARTS__.configs.legendType.value,
-            selectedMode: __ECHARTS__.configs.legendSelectedMode.value,
-            top: __ECHARTS__.configs.legendPositionTop.value,
-            left: __ECHARTS__.configs.legendPositionLeft.value,
-            orient: __ECHARTS__.configs.legendOrient.value,
+            show: configs.legendDisplay.value.toBoolean(),
+            icon: configs.legendIcon.value,
+            type: configs.legendType.value,
+            selectedMode: configs.legendSelectedMode.value,
+            top: configs.legendPositionTop.value,
+            left: configs.legendPositionLeft.value,
+            orient: configs.legendOrient.value,
             data: columns.slice(1, columns.length),
             textStyle: {
-                color: __ECHARTS__.configs.legendTextColor.value
+                color: configs.legendTextColor.value
             },
         },
         xAxis: {
             data: xAxis,
-            inverse: __ECHARTS__.configs.xAxisInverse.value.toBoolean(),
+            inverse: configs.xAxisInverse.value.toBoolean(),
             axisLine: {
-                show: __ECHARTS__.configs.axisLineDisplay.value.toBoolean(),
+                show: configs.axisLineDisplay.value.toBoolean(),
                 lineStyle: {
-                    color: __ECHARTS__.configs.axisColor.value
+                    color: configs.axisColor.value
                 },
             },
             axisTick:{
-                show: __ECHARTS__.configs.axisLineDisplay.value.toBoolean(),
+                show: configs.axisLineDisplay.value.toBoolean(),
             },
             axisLabel: {
-                show: __ECHARTS__.configs.axisLineDisplay.value.toBoolean(),
+                show: configs.axisLineDisplay.value.toBoolean(),
                 interval: "auto",
                 margin: 8,
-                rotate: Number(__ECHARTS__.configs.xAxisLabelRotate.value),
+                rotate: Number(configs.xAxisLabelRotate.value),
                 textStyle: {
-                    color: __ECHARTS__.configs.axisTextColor.value
+                    color: configs.axisTextColor.value
                 }
             },
             splitLine: {
-                show: __ECHARTS__.configs.splitXLineDisplay.value.toBoolean(),
+                show: configs.splitXLineDisplay.value.toBoolean(),
                 lineStyle: {
                     color: [
-                        __ECHARTS__.configs.axisColor.value
+                        configs.axisColor.value
                     ]
                 },
             },
             splitArea: {
-                show: __ECHARTS__.configs.splitXAreaDisplay.value.toBoolean(),
+                show: configs.splitXAreaDisplay.value.toBoolean(),
             }
         },
         yAxis: {
-            inverse: __ECHARTS__.configs.yAxisInverse.value.toBoolean(),
+            inverse: configs.yAxisInverse.value.toBoolean(),
             axisLine: {
-                show: __ECHARTS__.configs.axisLineDisplay.value.toBoolean(),
+                show: configs.axisLineDisplay.value.toBoolean(),
                 lineStyle: {
-                    color: __ECHARTS__.configs.axisColor.value
+                    color: configs.axisColor.value
                 },
             },
             axisTick:{
-                show: __ECHARTS__.configs.axisLineDisplay.value.toBoolean(),
+                show: configs.axisLineDisplay.value.toBoolean(),
             },
             axisLabel: {
-                show: __ECHARTS__.configs.axisLineDisplay.value.toBoolean(),
-                rotate: Number(__ECHARTS__.configs.yAxisLabelRotate.value),
+                show: configs.axisLineDisplay.value.toBoolean(),
+                rotate: Number(configs.yAxisLabelRotate.value),
                 textStyle: {
-                    color: __ECHARTS__.configs.axisTextColor.value
+                    color: configs.axisTextColor.value
                 }
             },
             splitLine: {
-                show: __ECHARTS__.configs.splitYLineDisplay.value.toBoolean(),
+                show: configs.splitYLineDisplay.value.toBoolean(),
                 lineStyle: {
                     color: [
-                        __ECHARTS__.configs.axisColor.value
+                        configs.axisColor.value
                     ]
                 },
             },
             splitArea: {
-                show: __ECHARTS__.configs.splitYAreaDisplay.value.toBoolean(),
+                show: configs.splitYAreaDisplay.value.toBoolean(),
             }
         },
         dataZoom: [{
             type: "inside",
-            filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
+            filterMode: configs.dataZoomFilterMode.value,
             start: 0,
             xAxisIndex: 0,
             end: 100
         }, {
             type: "inside",
-            filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
+            filterMode: configs.dataZoomFilterMode.value,
             start: 0,
             yAxisIndex: 0,
             end: 100
         }, {
-            show: __ECHARTS__.configs.dataZoomBarDisplay.value.toBoolean(),
+            show: configs.dataZoomBarDisplay.value.toBoolean(),
             type: "slider",
-            filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
+            filterMode: configs.dataZoomFilterMode.value,
             yAxisIndex: 0,
             start: 0,
             end: 100,
-            width: __ECHARTS__.configs.dataZoomBarWidth.value,
-            height: (100 - toPoint(__ECHARTS__.configs.grid_top.value) - toPoint(__ECHARTS__.configs.grid_bottom.value)) + "%",
-            top: __ECHARTS__.configs.grid_top.value,
-            right: (100 - toPoint(__ECHARTS__.configs.grid_right.value)) + "%",
-            handleIcon: __SYS_IMAGES_PATH__.dataZoomHandleIcon[__ECHARTS__.configs.dataZoomHandleIcon.value],
-            handleSize: __ECHARTS__.configs.dataZoomHandleSize.value,
-            borderColor: __ECHARTS__.configs.dataZoomBarColor.value,
+            width: configs.dataZoomBarWidth.value,
+            height: (100 - toPoint(configs.grid_top.value) - toPoint(configs.grid_bottom.value)) + "%",
+            top: configs.grid_top.value,
+            right: (100 - toPoint(configs.grid_right.value)) + "%",
+            handleIcon: __SYS_IMAGES_PATH__.dataZoomHandleIcon[configs.dataZoomHandleIcon.value],
+            handleSize: configs.dataZoomHandleSize.value,
+            borderColor: configs.dataZoomBarColor.value,
             handleStyle: {
-                color: __ECHARTS__.configs.dataZoomBarColor.value,
+                color: configs.dataZoomBarColor.value,
             }
         }, {
-            show: __ECHARTS__.configs.dataZoomBarDisplay.value.toBoolean(),
+            show: configs.dataZoomBarDisplay.value.toBoolean(),
             type: "slider",
-            filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
+            filterMode: configs.dataZoomFilterMode.value,
             xAxisIndex: 0,
             start: 0,
             end: 100,
-            width: (100 - toPoint(__ECHARTS__.configs.grid_left.value) - toPoint(__ECHARTS__.configs.grid_right.value)) + "%",
-            height: __ECHARTS__.configs.dataZoomBarWidth.value,
-            left: __ECHARTS__.configs.grid_left.value,
-            top: (100 - toPoint(__ECHARTS__.configs.grid_bottom.value)) + "%",
-            handleIcon: __SYS_IMAGES_PATH__.dataZoomHandleIcon[__ECHARTS__.configs.dataZoomHandleIcon.value],
-            handleSize: __ECHARTS__.configs.dataZoomHandleSize.value,
-            borderColor: __ECHARTS__.configs.dataZoomBarColor.value,
+            width: (100 - toPoint(configs.grid_left.value) - toPoint(configs.grid_right.value)) + "%",
+            height: configs.dataZoomBarWidth.value,
+            left: configs.grid_left.value,
+            top: (100 - toPoint(configs.grid_bottom.value)) + "%",
+            handleIcon: __SYS_IMAGES_PATH__.dataZoomHandleIcon[configs.dataZoomHandleIcon.value],
+            handleSize: configs.dataZoomHandleSize.value,
+            borderColor: configs.dataZoomBarColor.value,
             handleStyle: {
-                color: __ECHARTS__.configs.dataZoomBarColor.value,
+                color: configs.dataZoomBarColor.value,
             }
         }],
-        graphic: getGraphic(__SYS_LOGO_LINK__),
+        graphic: getWaterGraphic(__SYS_LOGO_LINK__),
         series: yAxis_series,
     };
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
-    }, Number(__ECHARTS__.configs.loadingTimes.value) * 1000);
+    }, Number(configs.loadingTimes.value) * 1000);
 
+    container.id = getEchartsId();
+    container.draggable = "true";
+    container.ondragstart = function (event) {
+        event.dataTransfer.setData("Text", event.target.id);
+    };
+    __ECHARTS__.history[container.id] = {
+         id: container.id,
+        type: type,
+        configs: configs,
+        dataset: dataset,
+        themes: themes,
+        contrainer: container,
+        width: width,
+        height: height,
+    };
     return container;
 }
 
-function getAreaStyle(container, themes) {
+function getAreaStyle(container, themes, width, height, type, dataset, configs) {
+    if (container == null) {
+        container = document.createElement("div");
+        container.className = "echarts-container";
+        container.id = "echarts-container";
+        container.style.width = width;
+        container.style.height = height;
+    }
     var myChart = echarts.init(container, themes);
-    var dataset = __DATASET__["result"][__DATASET__.default.sheet];
+
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
     var columns = [];
@@ -2835,53 +3012,53 @@ function getAreaStyle(container, themes) {
                 },
                 data: [],
                 lineStyle: {
-                    width: Number(__ECHARTS__.configs.lineStyleWidth.value),
+                    width: Number(configs.lineStyleWidth.value),
                 },
                 label: {
-                    show: __ECHARTS__.configs.lineLabelDisplay.value.toBoolean(),
+                    show: configs.lineLabelDisplay.value.toBoolean(),
                     align: "center",
                     verticalAlign: "middle",
                     position: "top",
                     distance: 15,
                     formatter: "{value|{c}}",
-                    rotate: __ECHARTS__.configs.lineLabelRotate.value,
+                    rotate: configs.lineLabelRotate.value,
                     rich: {
                         value: {
-                            color: __ECHARTS__.configs.lineLabelTextColor.value,
-                            fontSize: __ECHARTS__.configs.lineLabelFontSize.value,
+                            color: configs.lineLabelTextColor.value,
+                            fontSize: configs.lineLabelFontSize.value,
                         }
                     }
                 },
                 emphasis: {
                     label: {
-                        show: __ECHARTS__.configs.lineEmphasisLabelDisplay.value.toBoolean(),
+                        show: configs.lineEmphasisLabelDisplay.value.toBoolean(),
                         position: "bottom",
                         rotate:0,
-                        fontSize: __ECHARTS__.configs.lineLabelFontSize.value,
+                        fontSize: configs.lineLabelFontSize.value,
                     }
                 },
-                symbol: __ECHARTS__.configs.lineSymbol.value,
-                symbolSize: __ECHARTS__.configs.lineSymbolSize.value,
-                smooth: __ECHARTS__.configs.lineSmooth.value.toBoolean(),
-                markPoint: getMarkPoint(),
-                markLine: getMarkLine(),
+                symbol: configs.lineSymbol.value,
+                symbolSize: configs.lineSymbolSize.value,
+                smooth: configs.lineSmooth.value.toBoolean(),
+                markPoint: getMarkPoint(configs),
+                markLine: getMarkLine(configs),
                 markArea: {},
 
-                animation: __ECHARTS__.configs.animation.value.toBoolean(),
-                animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
-                animationEasing: getAnimationEasing(),
+                animation: configs.animation.value.toBoolean(),
+                animationThreshold: Number(configs.animationThreshold.value),
+                animationEasing: getAnimationEasing(configs),
                 animationDuration: function (idx) {
-                    return idx * Number(__ECHARTS__.configs.animationDuration.value) + c * Number(__ECHARTS__.configs.animationDuration.value);
+                    return idx * Number(configs.animationDuration.value) + c * Number(configs.animationDuration.value);
                 },
                 animationDelay: function (idx) {
-                    return idx * Number(__ECHARTS__.configs.animationDelay.value) + c * Number(__ECHARTS__.configs.animationDelay.value);
+                    return idx * Number(configs.animationDelay.value) + c * Number(configs.animationDelay.value);
                 },
-                animationEasingUpdate: getAnimationEasingUpdate(),
+                animationEasingUpdate: getAnimationEasingUpdate(configs),
                 animationDurationUpdate: function (idx) {
-                    return idx * Number(__ECHARTS__.configs.animationDurationUpdate.value) + c * Number(__ECHARTS__.configs.animationDurationUpdate.value);
+                    return idx * Number(configs.animationDurationUpdate.value) + c * Number(configs.animationDurationUpdate.value);
                 },
                 animationDelayUpdate: function (idx) {
-                    return idx * Number(__ECHARTS__.configs.animationDelayUpdate.value) + c * Number(__ECHARTS__.configs.animationDelayUpdate.value);
+                    return idx * Number(configs.animationDelayUpdate.value) + c * Number(configs.animationDelayUpdate.value);
                 },
             };
             for (var i = 0; i < dataset["data"].length; i++) {
@@ -2894,61 +3071,61 @@ function getAreaStyle(container, themes) {
 
     var option = {
         grid: {
-            x: __ECHARTS__.configs.grid_left.value,
-            y: __ECHARTS__.configs.grid_top.value,
-            x2: __ECHARTS__.configs.grid_right.value,
-            y2: __ECHARTS__.configs.grid_bottom.value,
-            containLabel: __ECHARTS__.configs.grid_containLabel.value.toBoolean(),
+            x: configs.grid_left.value,
+            y: configs.grid_top.value,
+            x2: configs.grid_right.value,
+            y2: configs.grid_bottom.value,
+            containLabel: configs.grid_containLabel.value.toBoolean(),
             backgroundColor: "transparent"
         },
-        brush:  __ECHARTS__.configs.toolboxFeatureBrush.value.toBoolean()?{
+        brush:  configs.toolboxFeatureBrush.value.toBoolean()?{
             toolbox: ["rect", "polygon", "lineX", "lineY", "keep", "clear"],
             xAxisIndex: 0
         }:null,
         toolbox: {
-            show: __ECHARTS__.configs.toolboxDisplay.value.toBoolean(),
+            show: configs.toolboxDisplay.value.toBoolean(),
             feature: {
                 saveAsImage: {
-                    show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value.toBoolean(),
+                    show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
                     excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"],
-                    backgroundColor:__ECHARTS__.configs.toolboxFeatureSaveAsImageBackgroundColor.value,
+                    backgroundColor:configs.toolboxFeatureSaveAsImageBackgroundColor.value,
                 },
-                restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value.toBoolean()},
-                dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                dataZoom: {show: __ECHARTS__.configs.toolboxFeatureDataView.value.toBoolean()},
+                restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
+                dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
+                dataZoom: {show: configs.toolboxFeatureDataView.value.toBoolean()},
                 magicType: {
-                    show: __ECHARTS__.configs.toolboxFeatureMagicType.value.toBoolean(),
+                    show: configs.toolboxFeatureMagicType.value.toBoolean(),
                     type: ["stack", "tiled"]
                 },
             },
-            top: __ECHARTS__.configs.toolbox_top.value,
-            left:__ECHARTS__.configs.toolbox_left.value,
-            orient: __ECHARTS__.configs.toolbox_orient.value,
+            top: configs.toolbox_top.value,
+            left:configs.toolbox_left.value,
+            orient: configs.toolbox_orient.value,
             emphasis: {
                 iconStyle: {
-                    textPosition: __ECHARTS__.configs.toolbox_textPosition.value,
+                    textPosition: configs.toolbox_textPosition.value,
                 }
             },
         },
         title: {
-            show: __ECHARTS__.configs.titleDisplay.value.toBoolean(),
-            text: __ECHARTS__.configs.titleText.value,
-            link: __ECHARTS__.configs.titleTextLink.value,
+            show: configs.titleDisplay.value.toBoolean(),
+            text: configs.titleText.value,
+            link: configs.titleTextLink.value,
             target : "blank",
-            subtext: __ECHARTS__.configs.titleSubText.value,
-            sublink: __ECHARTS__.configs.titleSubTextLink.value,
+            subtext: configs.titleSubText.value,
+            sublink: configs.titleSubTextLink.value,
             subtarget: "blank",
             top: "top",
-            left: __ECHARTS__.configs.titlePosition.value,
+            left: configs.titlePosition.value,
             textStyle: {
-                color: __ECHARTS__.configs.titleTextColor.value,
+                color: configs.titleTextColor.value,
             },
             subtextStyle: {
-                color: __ECHARTS__.configs.titleSubTextColor.value,
+                color: configs.titleSubTextColor.value,
             }
         },
         tooltip: {
-            show: __ECHARTS__.configs.tooltipDisplay.value.toBoolean(),
+            show: configs.tooltipDisplay.value.toBoolean(),
             //显示活动标尺线.
             trigger: "axis",
             position: function (pt) {
@@ -2956,142 +3133,164 @@ function getAreaStyle(container, themes) {
             }
         },
         legend: {
-            show: __ECHARTS__.configs.legendDisplay.value.toBoolean(),
-            icon: __ECHARTS__.configs.legendIcon.value,
-            type: __ECHARTS__.configs.legendType.value,
-            selectedMode: __ECHARTS__.configs.legendSelectedMode.value,
-            top: __ECHARTS__.configs.legendPositionTop.value,
-            left: __ECHARTS__.configs.legendPositionLeft.value,
-            orient: __ECHARTS__.configs.legendOrient.value,
+            show: configs.legendDisplay.value.toBoolean(),
+            icon: configs.legendIcon.value,
+            type: configs.legendType.value,
+            selectedMode: configs.legendSelectedMode.value,
+            top: configs.legendPositionTop.value,
+            left: configs.legendPositionLeft.value,
+            orient: configs.legendOrient.value,
             data: columns.slice(1, columns.length),
             textStyle: {
-                color: __ECHARTS__.configs.legendTextColor.value
+                color: configs.legendTextColor.value
             },
         },
         xAxis: {
             data: xAxis,
-            inverse: __ECHARTS__.configs.xAxisInverse.value.toBoolean(),
+            inverse: configs.xAxisInverse.value.toBoolean(),
             axisLine: {
-                show: __ECHARTS__.configs.axisLineDisplay.value.toBoolean(),
+                show: configs.axisLineDisplay.value.toBoolean(),
                 lineStyle: {
-                    color: __ECHARTS__.configs.axisColor.value
+                    color: configs.axisColor.value
                 },
             },
             axisTick:{
-                show: __ECHARTS__.configs.axisLineDisplay.value.toBoolean(),
+                show: configs.axisLineDisplay.value.toBoolean(),
             },
             axisLabel: {
-                show: __ECHARTS__.configs.axisLineDisplay.value.toBoolean(),
+                show: configs.axisLineDisplay.value.toBoolean(),
                 interval: "auto",
                 margin: 8,
-                rotate: Number(__ECHARTS__.configs.xAxisLabelRotate.value),
+                rotate: Number(configs.xAxisLabelRotate.value),
                 textStyle: {
-                    color: __ECHARTS__.configs.axisTextColor.value
+                    color: configs.axisTextColor.value
                 }
             },
             splitLine: {
-                show: __ECHARTS__.configs.splitXLineDisplay.value.toBoolean(),
+                show: configs.splitXLineDisplay.value.toBoolean(),
                 lineStyle: {
                     color: [
-                        __ECHARTS__.configs.axisColor.value
+                        configs.axisColor.value
                     ]
                 },
             },
             splitArea: {
-                show: __ECHARTS__.configs.splitXAreaDisplay.value.toBoolean(),
+                show: configs.splitXAreaDisplay.value.toBoolean(),
             }
         },
         yAxis: {
-            inverse: __ECHARTS__.configs.yAxisInverse.value.toBoolean(),
+            inverse: configs.yAxisInverse.value.toBoolean(),
             axisLine: {
-                show: __ECHARTS__.configs.axisLineDisplay.value.toBoolean(),
+                show: configs.axisLineDisplay.value.toBoolean(),
                 lineStyle: {
-                    color: __ECHARTS__.configs.axisColor.value
+                    color: configs.axisColor.value
                 },
             },
             axisTick:{
-                show: __ECHARTS__.configs.axisLineDisplay.value.toBoolean(),
+                show: configs.axisLineDisplay.value.toBoolean(),
             },
             axisLabel: {
-                show: __ECHARTS__.configs.axisLineDisplay.value.toBoolean(),
-                rotate: Number(__ECHARTS__.configs.yAxisLabelRotate.value),
+                show: configs.axisLineDisplay.value.toBoolean(),
+                rotate: Number(configs.yAxisLabelRotate.value),
                 textStyle: {
-                    color: __ECHARTS__.configs.axisTextColor.value
+                    color: configs.axisTextColor.value
                 }
             },
             splitLine: {
-                show: __ECHARTS__.configs.splitYLineDisplay.value.toBoolean(),
+                show: configs.splitYLineDisplay.value.toBoolean(),
                 lineStyle: {
                     color: [
-                        __ECHARTS__.configs.axisColor.value
+                        configs.axisColor.value
                     ]
                 },
             },
             splitArea: {
-                show: __ECHARTS__.configs.splitYAreaDisplay.value.toBoolean(),
+                show: configs.splitYAreaDisplay.value.toBoolean(),
             }
         },
         dataZoom: [{
             type: "inside",
-            filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
+            filterMode: configs.dataZoomFilterMode.value,
             start: 0,
             xAxisIndex: 0,
             end: 100
         }, {
             type: "inside",
-            filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
+            filterMode: configs.dataZoomFilterMode.value,
             start: 0,
             yAxisIndex: 0,
             end: 100
         }, {
-            show: __ECHARTS__.configs.dataZoomBarDisplay.value.toBoolean(),
+            show: configs.dataZoomBarDisplay.value.toBoolean(),
             type: "slider",
-            filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
+            filterMode: configs.dataZoomFilterMode.value,
             yAxisIndex: 0,
             start: 0,
             end: 100,
-            width: __ECHARTS__.configs.dataZoomBarWidth.value,
-            height: (100 - toPoint(__ECHARTS__.configs.grid_top.value) - toPoint(__ECHARTS__.configs.grid_bottom.value)) + "%",
-            top: __ECHARTS__.configs.grid_top.value,
-            right: (100 - toPoint(__ECHARTS__.configs.grid_right.value)) + "%",
-            handleIcon: __SYS_IMAGES_PATH__.dataZoomHandleIcon[__ECHARTS__.configs.dataZoomHandleIcon.value],
-            handleSize: __ECHARTS__.configs.dataZoomHandleSize.value,
-            borderColor: __ECHARTS__.configs.dataZoomBarColor.value,
+            width: configs.dataZoomBarWidth.value,
+            height: (100 - toPoint(configs.grid_top.value) - toPoint(configs.grid_bottom.value)) + "%",
+            top: configs.grid_top.value,
+            right: (100 - toPoint(configs.grid_right.value)) + "%",
+            handleIcon: __SYS_IMAGES_PATH__.dataZoomHandleIcon[configs.dataZoomHandleIcon.value],
+            handleSize: configs.dataZoomHandleSize.value,
+            borderColor: configs.dataZoomBarColor.value,
             handleStyle: {
-                color: __ECHARTS__.configs.dataZoomBarColor.value,
+                color: configs.dataZoomBarColor.value,
             }
         }, {
-            show: __ECHARTS__.configs.dataZoomBarDisplay.value.toBoolean(),
+            show: configs.dataZoomBarDisplay.value.toBoolean(),
             type: "slider",
-            filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
+            filterMode: configs.dataZoomFilterMode.value,
             xAxisIndex: 0,
             start: 0,
             end: 100,
-            width: (100 - toPoint(__ECHARTS__.configs.grid_left.value) - toPoint(__ECHARTS__.configs.grid_right.value)) + "%",
-            height: __ECHARTS__.configs.dataZoomBarWidth.value,
-            left: __ECHARTS__.configs.grid_left.value,
-            top: (100 - toPoint(__ECHARTS__.configs.grid_bottom.value)) + "%",
-            handleIcon: __SYS_IMAGES_PATH__.dataZoomHandleIcon[__ECHARTS__.configs.dataZoomHandleIcon.value],
-            handleSize: __ECHARTS__.configs.dataZoomHandleSize.value,
-            borderColor: __ECHARTS__.configs.dataZoomBarColor.value,
+            width: (100 - toPoint(configs.grid_left.value) - toPoint(configs.grid_right.value)) + "%",
+            height: configs.dataZoomBarWidth.value,
+            left: configs.grid_left.value,
+            top: (100 - toPoint(configs.grid_bottom.value)) + "%",
+            handleIcon: __SYS_IMAGES_PATH__.dataZoomHandleIcon[configs.dataZoomHandleIcon.value],
+            handleSize: configs.dataZoomHandleSize.value,
+            borderColor: configs.dataZoomBarColor.value,
             handleStyle: {
-                color: __ECHARTS__.configs.dataZoomBarColor.value,
+                color: configs.dataZoomBarColor.value,
             }
         }],
-        graphic: getGraphic(__SYS_LOGO_LINK__),
+        graphic: getWaterGraphic(__SYS_LOGO_LINK__),
         series: yAxis_series,
     };
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
-    }, Number(__ECHARTS__.configs.loadingTimes.value) * 1000);
+    }, Number(configs.loadingTimes.value) * 1000);
 
+    container.id = getEchartsId();
+    container.draggable = "true";
+    container.ondragstart = function (event) {
+        event.dataTransfer.setData("Text", event.target.id);
+    };
+    __ECHARTS__.history[container.id] = {
+         id: container.id,
+        type: type,
+        configs: configs,
+        dataset: dataset,
+        themes: themes,
+        contrainer: container,
+        width: width,
+        height: height,
+    };
     return container;
 }
 
-function getPolarBar(container, themes) {
+function getPolarBar(container, themes, width, height, type, dataset, configs) {
+    if (container == null) {
+        container = document.createElement("div");
+        container.className = "echarts-container";
+        container.id = "echarts-container";
+        container.style.width = width;
+        container.style.height = height;
+    }
     var myChart = echarts.init(container, themes);
-    var dataset = __DATASET__["result"][__DATASET__.default.sheet];
+
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
     var columns = [];
@@ -3112,21 +3311,21 @@ function getPolarBar(container, themes) {
                 type: "bar",
                 coordinateSystem: "polar",
                 data: [],
-                animation: __ECHARTS__.configs.animation.value.toBoolean(),
-                animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
-                animationEasing: getAnimationEasing(),
+                animation: configs.animation.value.toBoolean(),
+                animationThreshold: Number(configs.animationThreshold.value),
+                animationEasing: getAnimationEasing(configs),
                 animationDuration: function (idx) {
-                    return idx * Number(__ECHARTS__.configs.animationDuration.value) + c * Number(__ECHARTS__.configs.animationDuration.value);
+                    return idx * Number(configs.animationDuration.value) + c * Number(configs.animationDuration.value);
                 },
                 animationDelay: function (idx) {
-                    return idx * Number(__ECHARTS__.configs.animationDelay.value) + c * Number(__ECHARTS__.configs.animationDelay.value);
+                    return idx * Number(configs.animationDelay.value) + c * Number(configs.animationDelay.value);
                 },
-                animationEasingUpdate: getAnimationEasingUpdate(),
+                animationEasingUpdate: getAnimationEasingUpdate(configs),
                 animationDurationUpdate: function (idx) {
-                    return idx * Number(__ECHARTS__.configs.animationDurationUpdate.value) + c * Number(__ECHARTS__.configs.animationDurationUpdate.value);
+                    return idx * Number(configs.animationDurationUpdate.value) + c * Number(configs.animationDurationUpdate.value);
                 },
                 animationDelayUpdate: function (idx) {
-                    return idx * Number(__ECHARTS__.configs.animationDelayUpdate.value) + c * Number(__ECHARTS__.configs.animationDelayUpdate.value);
+                    return idx * Number(configs.animationDelayUpdate.value) + c * Number(configs.animationDelayUpdate.value);
                 },
             };
 
@@ -3141,94 +3340,94 @@ function getPolarBar(container, themes) {
 
     var option = {
         title: {
-            show: __ECHARTS__.configs.titleDisplay.value.toBoolean(),
-            text: __ECHARTS__.configs.titleText.value,
-            link: __ECHARTS__.configs.titleTextLink.value,
+            show: configs.titleDisplay.value.toBoolean(),
+            text: configs.titleText.value,
+            link: configs.titleTextLink.value,
             target : "blank",
-            subtext: __ECHARTS__.configs.titleSubText.value,
-            sublink: __ECHARTS__.configs.titleSubTextLink.value,
+            subtext: configs.titleSubText.value,
+            sublink: configs.titleSubTextLink.value,
             subtarget: "blank",
             top: "top",
-            left: __ECHARTS__.configs.titlePosition.value,
+            left: configs.titlePosition.value,
             textStyle: {
-                color: __ECHARTS__.configs.titleTextColor.value,
+                color: configs.titleTextColor.value,
             },
             subtextStyle: {
-                color: __ECHARTS__.configs.titleSubTextColor.value,
+                color: configs.titleSubTextColor.value,
             }
         },
         toolbox: {
-            show: __ECHARTS__.configs.toolboxDisplay.value.toBoolean(),
+            show: configs.toolboxDisplay.value.toBoolean(),
             feature: {
                 saveAsImage: {
-                    show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value.toBoolean(),
+                    show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
                     excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"],
-                    backgroundColor:__ECHARTS__.configs.toolboxFeatureSaveAsImageBackgroundColor.value,
+                    backgroundColor:configs.toolboxFeatureSaveAsImageBackgroundColor.value,
                 },
-                restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value.toBoolean()},
-                dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                dataZoom: {show: __ECHARTS__.configs.toolboxFeatureDataView.value.toBoolean()},
+                restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
+                dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
+                dataZoom: {show: configs.toolboxFeatureDataView.value.toBoolean()},
                 magicType: {
-                    show: __ECHARTS__.configs.toolboxFeatureMagicType.value.toBoolean(),
+                    show: configs.toolboxFeatureMagicType.value.toBoolean(),
                     type: ["stack", "tiled"]
                 },
             },
-            top: __ECHARTS__.configs.toolbox_top.value,
-            left:__ECHARTS__.configs.toolbox_left.value,
-            orient: __ECHARTS__.configs.toolbox_orient.value,
+            top: configs.toolbox_top.value,
+            left:configs.toolbox_left.value,
+            orient: configs.toolbox_orient.value,
             emphasis: {
                 iconStyle: {
-                    textPosition: __ECHARTS__.configs.toolbox_textPosition.value,
+                    textPosition: configs.toolbox_textPosition.value,
                 }
             },
         },
         angleAxis: {
             axisLabel: {
-                show: __ECHARTS__.configs.axisLineDisplay.value.toBoolean(),
+                show: configs.axisLineDisplay.value.toBoolean(),
                 textStyle: {
-                    color: __ECHARTS__.configs.axisTextColor.value
+                    color: configs.axisTextColor.value
                 }
             },
             axisLine: {
-                show: __ECHARTS__.configs.axisLineDisplay.value.toBoolean(),
+                show: configs.axisLineDisplay.value.toBoolean(),
                 lineStyle: {
-                    color: __ECHARTS__.configs.axisColor.value,
+                    color: configs.axisColor.value,
                 },
             },
             splitLine: {
-                show: __ECHARTS__.configs.splitXLineDisplay.value.toBoolean(),
+                show: configs.splitXLineDisplay.value.toBoolean(),
                 lineStyle: {
-                    color: __ECHARTS__.configs.axisColor.value
+                    color: configs.axisColor.value
                 },
             },
             axisTick:{
-                show: __ECHARTS__.configs.axisLineDisplay.value.toBoolean(),
+                show: configs.axisLineDisplay.value.toBoolean(),
                 lineStyle: {
-                    color: __ECHARTS__.configs.axisColor.value,
+                    color: configs.axisColor.value,
                 },
             },
             z: 10
         },
         radiusAxis: {
             axisLabel: {
-                show: __ECHARTS__.configs.axisLineDisplay.value.toBoolean(),
+                show: configs.axisLineDisplay.value.toBoolean(),
                 textStyle: {
-                    color: __ECHARTS__.configs.axisTextColor.value
+                    color: configs.axisTextColor.value
                 }
             },
             axisLine: {
-                show: __ECHARTS__.configs.axisLineDisplay.value.toBoolean(),
+                show: configs.axisLineDisplay.value.toBoolean(),
                 lineStyle: {
-                    color: __ECHARTS__.configs.axisColor.value
+                    color: configs.axisColor.value
                 },
             },
             splitArea: {
-                show: __ECHARTS__.configs.splitYAreaDisplay.value.toBoolean(),
+                show: configs.splitYAreaDisplay.value.toBoolean(),
             },
             axisTick:{
-                show: __ECHARTS__.configs.axisLineDisplay.value.toBoolean(),
+                show: configs.axisLineDisplay.value.toBoolean(),
                 lineStyle: {
-                    color: __ECHARTS__.configs.axisColor.value,
+                    color: configs.axisColor.value,
                 },
             },
             type: "category",
@@ -3236,54 +3435,76 @@ function getPolarBar(container, themes) {
             z: 10,
         },
         polar: {
-            center:[(toPoint(__ECHARTS__.configs.grid_left.value) + (100-toPoint(__ECHARTS__.configs.grid_left.value)-toPoint(__ECHARTS__.configs.grid_right.value))/2) + "%",
-            (toPoint(__ECHARTS__.configs.grid_top.value) + (100-toPoint(__ECHARTS__.configs.grid_top.value)-toPoint(__ECHARTS__.configs.grid_bottom.value))/2) + "%"],
+            center:[(toPoint(configs.grid_left.value) + (100-toPoint(configs.grid_left.value)-toPoint(configs.grid_right.value))/2) + "%",
+            (toPoint(configs.grid_top.value) + (100-toPoint(configs.grid_top.value)-toPoint(configs.grid_bottom.value))/2) + "%"],
         },
         series: yAxis_series,
         legend: {
-            show: __ECHARTS__.configs.legendDisplay.value.toBoolean(),
-            icon: __ECHARTS__.configs.legendIcon.value,
-            type: __ECHARTS__.configs.legendType.value,
-            selectedMode: __ECHARTS__.configs.legendSelectedMode.value,
-            top: __ECHARTS__.configs.legendPositionTop.value,
-            left: __ECHARTS__.configs.legendPositionLeft.value,
-            orient: __ECHARTS__.configs.legendOrient.value,
+            show: configs.legendDisplay.value.toBoolean(),
+            icon: configs.legendIcon.value,
+            type: configs.legendType.value,
+            selectedMode: configs.legendSelectedMode.value,
+            top: configs.legendPositionTop.value,
+            left: configs.legendPositionLeft.value,
+            orient: configs.legendOrient.value,
             data: columns.slice(1, columns.length),
             textStyle: {
-                color: __ECHARTS__.configs.legendTextColor.value
+                color: configs.legendTextColor.value
             },
         },
         tooltip: {
-            show: __ECHARTS__.configs.tooltipDisplay.value.toBoolean(),
+            show: configs.tooltipDisplay.value.toBoolean(),
             trigger: "item",
             formatter: "{a} <br/>{b}: {c}"
         },
         dataZoom: [{
             type: "inside",
-            filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
+            filterMode: configs.dataZoomFilterMode.value,
             start: 0,
             end: 100,
             angleAxis: 0,
         }, {
             type: "inside",
-            filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
+            filterMode: configs.dataZoomFilterMode.value,
             start: 0,
             end: 100,
             radiusAxis: 0
         }],
-        graphic: getGraphic(__SYS_LOGO_LINK__),
+        graphic: getWaterGraphic(__SYS_LOGO_LINK__),
 
     };
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
-    }, Number(__ECHARTS__.configs.loadingTimes.value) * 1000);
+    }, Number(configs.loadingTimes.value) * 1000);
+    container.id = getEchartsId();
+    container.draggable = "true";
+    container.ondragstart = function (event) {
+        event.dataTransfer.setData("Text", event.target.id);
+    };
+    __ECHARTS__.history[container.id] = {
+         id: container.id,
+        type: type,
+        configs: configs,
+        dataset: dataset,
+        themes: themes,
+        contrainer: container,
+        width: width,
+        height: height,
+    };
     return container;
 }
 
-function getPolarArea(container, themes) {
+function getPolarArea(container, themes, width, height, type, dataset, configs) {
+    if (container == null) {
+        container = document.createElement("div");
+        container.className = "echarts-container";
+        container.id = "echarts-container";
+        container.style.width = width;
+        container.style.height = height;
+    }
     var myChart = echarts.init(container, themes);
-    var dataset = __DATASET__["result"][__DATASET__.default.sheet];
+
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
     var columns = [];
@@ -3304,21 +3525,21 @@ function getPolarArea(container, themes) {
                 type: "bar",
                 coordinateSystem: "polar",
                 data: [],
-                animation: __ECHARTS__.configs.animation.value.toBoolean(),
-                animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
-                animationEasing: getAnimationEasing(),
+                animation: configs.animation.value.toBoolean(),
+                animationThreshold: Number(configs.animationThreshold.value),
+                animationEasing: getAnimationEasing(configs),
                 animationDuration: function (idx) {
-                    return idx * Number(__ECHARTS__.configs.animationDuration.value) + c * Number(__ECHARTS__.configs.animationDuration.value);
+                    return idx * Number(configs.animationDuration.value) + c * Number(configs.animationDuration.value);
                 },
                 animationDelay: function (idx) {
-                    return idx * Number(__ECHARTS__.configs.animationDelay.value) + c * Number(__ECHARTS__.configs.animationDelay.value);
+                    return idx * Number(configs.animationDelay.value) + c * Number(configs.animationDelay.value);
                 },
-                animationEasingUpdate: getAnimationEasingUpdate(),
+                animationEasingUpdate: getAnimationEasingUpdate(configs),
                 animationDurationUpdate: function (idx) {
-                    return idx * Number(__ECHARTS__.configs.animationDurationUpdate.value) + c * Number(__ECHARTS__.configs.animationDurationUpdate.value);
+                    return idx * Number(configs.animationDurationUpdate.value) + c * Number(configs.animationDurationUpdate.value);
                 },
                 animationDelayUpdate: function (idx) {
-                    return idx * Number(__ECHARTS__.configs.animationDelayUpdate.value) + c * Number(__ECHARTS__.configs.animationDelayUpdate.value);
+                    return idx * Number(configs.animationDelayUpdate.value) + c * Number(configs.animationDelayUpdate.value);
                 },
             };
 
@@ -3332,68 +3553,68 @@ function getPolarArea(container, themes) {
 
     var option = {
         title: {
-            show: __ECHARTS__.configs.titleDisplay.value.toBoolean(),
-            text: __ECHARTS__.configs.titleText.value,
-            link: __ECHARTS__.configs.titleTextLink.value,
+            show: configs.titleDisplay.value.toBoolean(),
+            text: configs.titleText.value,
+            link: configs.titleTextLink.value,
             target : "blank",
-            subtext: __ECHARTS__.configs.titleSubText.value,
-            sublink: __ECHARTS__.configs.titleSubTextLink.value,
+            subtext: configs.titleSubText.value,
+            sublink: configs.titleSubTextLink.value,
             subtarget: "blank",
             top:"top",
-            left:__ECHARTS__.configs.titlePosition.value,
+            left:configs.titlePosition.value,
             textStyle:{
-                color:__ECHARTS__.configs.titleTextColor.value,
+                color:configs.titleTextColor.value,
             },
             subtextStyle:{
-                color:__ECHARTS__.configs.titleSubTextColor.value,
+                color:configs.titleSubTextColor.value,
             }
         },
         toolbox: {
-            show: __ECHARTS__.configs.toolboxDisplay.value.toBoolean(),
+            show: configs.toolboxDisplay.value.toBoolean(),
             feature: {
                 saveAsImage: {
-                    show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value.toBoolean(),
+                    show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
                     excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"],
-                    backgroundColor:__ECHARTS__.configs.toolboxFeatureSaveAsImageBackgroundColor.value,
+                    backgroundColor:configs.toolboxFeatureSaveAsImageBackgroundColor.value,
                 },
-                restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value.toBoolean()},
-                dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                dataZoom: {show: __ECHARTS__.configs.toolboxFeatureDataView.value.toBoolean()},
+                restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
+                dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
+                dataZoom: {show: configs.toolboxFeatureDataView.value.toBoolean()},
                 magicType: {
-                    show: __ECHARTS__.configs.toolboxFeatureMagicType.value.toBoolean(),
+                    show: configs.toolboxFeatureMagicType.value.toBoolean(),
                     type: ["stack", "tiled"]
                 },
             },
-            top: __ECHARTS__.configs.toolbox_top.value,
-            left:__ECHARTS__.configs.toolbox_left.value,
-            orient: __ECHARTS__.configs.toolbox_orient.value,
+            top: configs.toolbox_top.value,
+            left:configs.toolbox_left.value,
+            orient: configs.toolbox_orient.value,
             emphasis: {
                 iconStyle: {
-                    textPosition: __ECHARTS__.configs.toolbox_textPosition.value,
+                    textPosition: configs.toolbox_textPosition.value,
                 }
             },
         },
         angleAxis: {
             axisLabel:{
-                show: __ECHARTS__.configs.axisLineDisplay.value.toBoolean(),
+                show: configs.axisLineDisplay.value.toBoolean(),
                 textStyle:{
-                    color: __ECHARTS__.configs.axisTextColor.value,
+                    color: configs.axisTextColor.value,
                 }
             },
             axisLine: {
-                show: __ECHARTS__.configs.axisLineDisplay.value.toBoolean(),
+                show: configs.axisLineDisplay.value.toBoolean(),
                 lineStyle: {
-                    color: __ECHARTS__.configs.axisColor.value
+                    color: configs.axisColor.value
                 },
             },
             axisTick:{
-                show: __ECHARTS__.configs.axisLineDisplay.value.toBoolean(),
+                show: configs.axisLineDisplay.value.toBoolean(),
                 lineStyle: {
-                    color: __ECHARTS__.configs.axisColor.value,
+                    color: configs.axisColor.value,
                 },
             },
             splitArea: {
-                show: __ECHARTS__.configs.splitXAreaDisplay.value.toBoolean(),
+                show: configs.splitXAreaDisplay.value.toBoolean(),
             },
             type: "category",
             data: xAxis,
@@ -3401,79 +3622,101 @@ function getPolarArea(container, themes) {
         },
         radiusAxis: {
             axisLabel:{
-                show: __ECHARTS__.configs.axisLineDisplay.value.toBoolean(),
+                show: configs.axisLineDisplay.value.toBoolean(),
                 textStyle:{
-                    color: __ECHARTS__.configs.axisTextColor.value,
+                    color: configs.axisTextColor.value,
                 }
             },
             axisLine: {
-                show: __ECHARTS__.configs.axisLineDisplay.value.toBoolean(),
+                show: configs.axisLineDisplay.value.toBoolean(),
                 lineStyle: {
-                    color: __ECHARTS__.configs.axisColor.value
+                    color: configs.axisColor.value
                 },
             },
             axisTick:{
-                show: __ECHARTS__.configs.axisLineDisplay.value.toBoolean(),
+                show: configs.axisLineDisplay.value.toBoolean(),
                 lineStyle: {
-                    color: __ECHARTS__.configs.axisColor.value,
+                    color: configs.axisColor.value,
                 },
             },
             splitLine: {
-                show: __ECHARTS__.configs.splitYLineDisplay.value.toBoolean(),
+                show: configs.splitYLineDisplay.value.toBoolean(),
                 lineStyle: {
-                    color: __ECHARTS__.configs.axisColor.value
+                    color: configs.axisColor.value
                 },
             },
             z:10
         },
         polar: {
-            center:[(toPoint(__ECHARTS__.configs.grid_left.value) + (100-toPoint(__ECHARTS__.configs.grid_left.value)-toPoint(__ECHARTS__.configs.grid_right.value))/2) + "%",
-            (toPoint(__ECHARTS__.configs.grid_top.value) + (100-toPoint(__ECHARTS__.configs.grid_top.value)-toPoint(__ECHARTS__.configs.grid_bottom.value))/2) + "%"],
+            center:[(toPoint(configs.grid_left.value) + (100-toPoint(configs.grid_left.value)-toPoint(configs.grid_right.value))/2) + "%",
+            (toPoint(configs.grid_top.value) + (100-toPoint(configs.grid_top.value)-toPoint(configs.grid_bottom.value))/2) + "%"],
         },
         series: yAxis_series,
         legend: {
-            show:__ECHARTS__.configs.legendDisplay.value.toBoolean(),
-            icon: __ECHARTS__.configs.legendIcon.value,
-            type: __ECHARTS__.configs.legendType.value,
-            selectedMode: __ECHARTS__.configs.legendSelectedMode.value,
-            top: __ECHARTS__.configs.legendPositionTop.value,
-            left: __ECHARTS__.configs.legendPositionLeft.value,
-            orient:__ECHARTS__.configs.legendOrient.value,
+            show:configs.legendDisplay.value.toBoolean(),
+            icon: configs.legendIcon.value,
+            type: configs.legendType.value,
+            selectedMode: configs.legendSelectedMode.value,
+            top: configs.legendPositionTop.value,
+            left: configs.legendPositionLeft.value,
+            orient:configs.legendOrient.value,
             data: columns.slice(1, columns.length),
             textStyle: {
-                color: __ECHARTS__.configs.legendTextColor.value
+                color: configs.legendTextColor.value
             },
         },
         tooltip: {
-            show:__ECHARTS__.configs.tooltipDisplay.value.toBoolean(),
+            show:configs.tooltipDisplay.value.toBoolean(),
             trigger: "item",
             formatter: "{a} <br/>{b}: {c}"
         },
         dataZoom: [{
             type: "inside",
-            filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
+            filterMode: configs.dataZoomFilterMode.value,
             start: 0,
             end: 100,
             angleAxis: 0,
         },{
             type: "inside",
-            filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
+            filterMode: configs.dataZoomFilterMode.value,
             start: 0,
             end: 100,
             radiusAxis:0
         }],
-        graphic: getGraphic(__SYS_LOGO_LINK__),
+        graphic: getWaterGraphic(__SYS_LOGO_LINK__),
     };
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
-    }, Number(__ECHARTS__.configs.loadingTimes.value) * 1000);
+    }, Number(configs.loadingTimes.value) * 1000);
+    container.id = getEchartsId();
+    container.draggable = "true";
+    container.ondragstart = function (event) {
+        event.dataTransfer.setData("Text", event.target.id);
+    };
+    __ECHARTS__.history[container.id] = {
+         id: container.id,
+        type: type,
+        configs: configs,
+        dataset: dataset,
+        themes: themes,
+        contrainer: container,
+        width: width,
+        height: height,
+    };
     return container;
 }
 
-function getPie(container,themes) {
+function getPie(container, themes, width, height, type, dataset, configs) {
+    if (container == null) {
+        container = document.createElement("div");
+        container.className = "echarts-container";
+        container.id = "echarts-container";
+        container.style.width = width;
+        container.style.height = height;
+    }
     var myChart = echarts.init(container, themes);
-    var dataset = __DATASET__["result"][__DATASET__.default.sheet];
+
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
     var columns = [];
@@ -3492,18 +3735,18 @@ function getPie(container,themes) {
             var serie = {
                 name: columns[c],
                 type: "pie",
-                radius: __ECHARTS__.configs.outRadius.value,
-                selectedMode: __ECHARTS__.configs.pieSelectedMode.value,
+                radius: configs.outRadius.value,
+                selectedMode: configs.pieSelectedMode.value,
                 label: {
-                    show: __ECHARTS__.configs.pieLabelDisplay.value.toBoolean(),
+                    show: configs.pieLabelDisplay.value.toBoolean(),
                     //控制label是否显示
                     // position: "center"
-                    alignTo: __ECHARTS__.configs.pieLabelAlignTo.value,
+                    alignTo: configs.pieLabelAlignTo.value,
                     bleedMargin: 5,
                     margin: 20,
                 },
                 labelLine: {
-                    show: __ECHARTS__.configs.pieLabelDisplay.value.toBoolean(),
+                    show: configs.pieLabelDisplay.value.toBoolean(),
                 },
                 emphasis: {
                     label: {
@@ -3522,9 +3765,9 @@ function getPie(container,themes) {
                 avoidLabelOverlap: true,
                 hoverAnimation: true,
                 data: [],
-                animation: __ECHARTS__.configs.animation.value.toBoolean(),
-                animationType: __ECHARTS__.configs.animationType.value,
-                animationTypeUpdate: __ECHARTS__.configs.animationTypeUpdate.value,
+                animation: configs.animation.value.toBoolean(),
+                animationType: configs.animationType.value,
+                animationTypeUpdate: configs.animationTypeUpdate.value,
             };
             for (var i = 0; i < dataset["data"].length; i++) {
                 var r = dataset["data"][i];
@@ -3534,88 +3777,88 @@ function getPie(container,themes) {
         }
     }
 
-    let top = toPoint(__ECHARTS__.configs.grid_top.value);
-    let left = toPoint(__ECHARTS__.configs.grid_left.value);
-    let groupWith = __ECHARTS__.configs.groupWith.value;
+    let top = toPoint(configs.grid_top.value);
+    let left = toPoint(configs.grid_left.value);
+    let groupWith = configs.groupWith.value;
     let lines = parseInt(series.length / groupWith + 0.5);
-    let height = parseInt((100 - toPoint(__ECHARTS__.configs.grid_top.value)- toPoint(__ECHARTS__.configs.grid_bottom.value)) / lines);
-    let width = (100 - toPoint(__ECHARTS__.configs.grid_left.value)- toPoint(__ECHARTS__.configs.grid_right.value))/groupWith;
+    let h = parseInt((100 - toPoint(configs.grid_top.value)- toPoint(configs.grid_bottom.value)) / lines);
+    let w = (100 - toPoint(configs.grid_left.value)- toPoint(configs.grid_right.value))/groupWith;
     for (var i = 0; i < series.length; i++) {
-        series[i].top = ((top + parseInt(i / groupWith) * height) + parseInt(i / groupWith) * top) + "%";
-        series[i].left = (left + (i % groupWith) * width) + "%";
-        series[i].width = width + "%";
-        series[i].height = height + "%";
+        series[i].top = ((top + parseInt(i / groupWith) * h) + parseInt(i / groupWith) * top) + "%";
+        series[i].left = (left + (i % groupWith) * w) + "%";
+        series[i].width = w + "%";
+        series[i].height = h + "%";
     }
 
     var option = {
         title: {
-            show: __ECHARTS__.configs.titleDisplay.value.toBoolean(),
-            text: __ECHARTS__.configs.titleText.value,
-            link: __ECHARTS__.configs.titleTextLink.value,
+            show: configs.titleDisplay.value.toBoolean(),
+            text: configs.titleText.value,
+            link: configs.titleTextLink.value,
             target : "blank",
-            subtext: __ECHARTS__.configs.titleSubText.value,
-            sublink: __ECHARTS__.configs.titleSubTextLink.value,
+            subtext: configs.titleSubText.value,
+            sublink: configs.titleSubTextLink.value,
             subtarget: "blank",
             top: "top",
-            left: __ECHARTS__.configs.titlePosition.value,
+            left: configs.titlePosition.value,
             textStyle: {
-                color: __ECHARTS__.configs.titleTextColor.value,
+                color: configs.titleTextColor.value,
             },
             subtextStyle: {
-                color: __ECHARTS__.configs.titleSubTextColor.value,
+                color: configs.titleSubTextColor.value,
             }
         },
         toolbox: {
-            show: __ECHARTS__.configs.toolboxDisplay.value.toBoolean(),
+            show: configs.toolboxDisplay.value.toBoolean(),
             feature: {
                 saveAsImage: {
-                    show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value.toBoolean(),
+                    show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
                     excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"],
-                    backgroundColor:__ECHARTS__.configs.toolboxFeatureSaveAsImageBackgroundColor.value,
+                    backgroundColor:configs.toolboxFeatureSaveAsImageBackgroundColor.value,
                 },
-                restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value.toBoolean()},
-                dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                dataZoom: {show: __ECHARTS__.configs.toolboxFeatureDataView.value.toBoolean()},
+                restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
+                dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
+                dataZoom: {show: configs.toolboxFeatureDataView.value.toBoolean()},
                 magicType: {
-                    show: __ECHARTS__.configs.toolboxFeatureMagicType.value.toBoolean(),
+                    show: configs.toolboxFeatureMagicType.value.toBoolean(),
                     type: ["pie", "funnel"]
                 },
             },
-            top: __ECHARTS__.configs.toolbox_top.value,
-            left: __ECHARTS__.configs.toolbox_left.value,
-            orient: __ECHARTS__.configs.toolbox_orient.value,
+            top: configs.toolbox_top.value,
+            left: configs.toolbox_left.value,
+            orient: configs.toolbox_orient.value,
             emphasis: {
                 iconStyle: {
-                    textPosition: __ECHARTS__.configs.toolbox_textPosition.value,
+                    textPosition: configs.toolbox_textPosition.value,
                 }
             },
         },
         tooltip: {
-            show: __ECHARTS__.configs.tooltipDisplay.value.toBoolean(),
+            show: configs.tooltipDisplay.value.toBoolean(),
             trigger: "item",
             formatter: "{a} <br/>{b}: {c} ({d}%)"
         },
         legend: {
-            show: __ECHARTS__.configs.legendDisplay.value.toBoolean(),
-            icon: __ECHARTS__.configs.legendIcon.value,
-            type: __ECHARTS__.configs.legendType.value,
-            selectedMode: __ECHARTS__.configs.legendSelectedMode.value,
-            top: __ECHARTS__.configs.legendPositionTop.value,
-            left: __ECHARTS__.configs.legendPositionLeft.value,
-            orient: __ECHARTS__.configs.legendOrient.value,
+            show: configs.legendDisplay.value.toBoolean(),
+            icon: configs.legendIcon.value,
+            type: configs.legendType.value,
+            selectedMode: configs.legendSelectedMode.value,
+            top: configs.legendPositionTop.value,
+            left: configs.legendPositionLeft.value,
+            orient: configs.legendOrient.value,
             data: legends,
             textStyle: {
-                color: __ECHARTS__.configs.legendTextColor.value
+                color: configs.legendTextColor.value
             },
         },
         series: series,
-        graphic: getGraphic(__SYS_LOGO_LINK__),
+        graphic: getWaterGraphic(__SYS_LOGO_LINK__),
         label: {
-            fontSize: __ECHARTS__.configs.pieLabelFontSize.value,
+            fontSize: configs.pieLabelFontSize.value,
         },
     };
 
-    if (__ECHARTS__.configs.richTextLabel.value.toBoolean()) {
+    if (configs.richTextLabel.value.toBoolean()) {
         //富文本
         option.label = {
             formatter: "{a|{a}}{abg|}\n{hr|}\n  {b|{b}：}{c}  {per|{d}%}  ",
@@ -3664,13 +3907,35 @@ function getPie(container,themes) {
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
-    }, Number(__ECHARTS__.configs.loadingTimes.value) * 1000);
+    }, Number(configs.loadingTimes.value) * 1000);
+    container.id = getEchartsId();
+    container.draggable = "true";
+    container.ondragstart = function (event) {
+        event.dataTransfer.setData("Text", event.target.id);
+    };
+    __ECHARTS__.history[container.id] = {
+         id: container.id,
+        type: type,
+        configs: configs,
+        dataset: dataset,
+        themes: themes,
+        contrainer: container,
+        width: width,
+        height: height,
+    };
     return container;
 }
 
-function getRing(container,themes) {
+function getRing(container, themes, width, height, type, dataset, configs) {
+    if (container == null) {
+        container = document.createElement("div");
+        container.className = "echarts-container";
+        container.id = "echarts-container";
+        container.style.width = width;
+        container.style.height = height;
+    }
     var myChart = echarts.init(container, themes);
-    var dataset = __DATASET__["result"][__DATASET__.default.sheet];
+
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
     var columns = [];
@@ -3689,18 +3954,18 @@ function getRing(container,themes) {
             var serie = {
                 name: columns[c],
                 type: "pie",
-                selectedMode: __ECHARTS__.configs.pieSelectedMode.value,
-                radius: [__ECHARTS__.configs.inRadius.value, __ECHARTS__.configs.outRadius.value],
+                selectedMode: configs.pieSelectedMode.value,
+                radius: [configs.inRadius.value, configs.outRadius.value],
                 avoidLabelOverlap: false,
                 label: {
-                    show: __ECHARTS__.configs.pieLabelDisplay.value.toBoolean(),
+                    show: configs.pieLabelDisplay.value.toBoolean(),
                     //position: "center"
-                    alignTo: __ECHARTS__.configs.pieLabelAlignTo.value,
+                    alignTo: configs.pieLabelAlignTo.value,
                     bleedMargin: 5,
                     margin: 20,
                 },
                 labelLine: {
-                    show: __ECHARTS__.configs.pieLabelDisplay.value.toBoolean(),
+                    show: configs.pieLabelDisplay.value.toBoolean(),
                 },
                 emphasis: {
                     label: {
@@ -3719,9 +3984,9 @@ function getRing(container,themes) {
                 avoidLabelOverlap: true,
                 hoverAnimation: true,
                 data: [],
-                animation: __ECHARTS__.configs.animation.value.toBoolean(),
-                animationType: __ECHARTS__.configs.animationType.value,
-                animationTypeUpdate: __ECHARTS__.configs.animationTypeUpdate.value,
+                animation: configs.animation.value.toBoolean(),
+                animationType: configs.animationType.value,
+                animationTypeUpdate: configs.animationTypeUpdate.value,
             };
             for (var i = 0; i < dataset["data"].length; i++) {
                 var r = dataset["data"][i];
@@ -3731,88 +3996,88 @@ function getRing(container,themes) {
         }
     }
 
-    let top = toPoint(__ECHARTS__.configs.grid_top.value);
-    let left = toPoint(__ECHARTS__.configs.grid_left.value);
-    let groupWith = __ECHARTS__.configs.groupWith.value;
+    let top = toPoint(configs.grid_top.value);
+    let left = toPoint(configs.grid_left.value);
+    let groupWith = configs.groupWith.value;
     let lines = parseInt(series.length / groupWith + 0.5);
-    let height = parseInt((100 - toPoint(__ECHARTS__.configs.grid_top.value)- toPoint(__ECHARTS__.configs.grid_bottom.value)) / lines);
-    let width = (100 - toPoint(__ECHARTS__.configs.grid_left.value)- toPoint(__ECHARTS__.configs.grid_right.value))/groupWith;
+    let h = parseInt((100 - toPoint(configs.grid_top.value)- toPoint(configs.grid_bottom.value)) / lines);
+    let w = (100 - toPoint(configs.grid_left.value)- toPoint(configs.grid_right.value))/groupWith;
     for (var i = 0; i < series.length; i++) {
-        series[i].top = ((top + parseInt(i / groupWith) * height) + parseInt(i / groupWith) * top) + "%";
-        series[i].left = (left + (i % groupWith) * width) + "%";
-        series[i].width = width + "%";
-        series[i].height = height + "%";
+        series[i].top = ((top + parseInt(i / groupWith) * h) + parseInt(i / groupWith) * top) + "%";
+        series[i].left = (left + (i % groupWith) * w) + "%";
+        series[i].width = w + "%";
+        series[i].height = h + "%";
     }
 
     var option = {
         title: {
-            show: __ECHARTS__.configs.titleDisplay.value.toBoolean(),
-            text: __ECHARTS__.configs.titleText.value,
-            link: __ECHARTS__.configs.titleTextLink.value,
+            show: configs.titleDisplay.value.toBoolean(),
+            text: configs.titleText.value,
+            link: configs.titleTextLink.value,
             target : "blank",
-            subtext: __ECHARTS__.configs.titleSubText.value,
-            sublink: __ECHARTS__.configs.titleSubTextLink.value,
+            subtext: configs.titleSubText.value,
+            sublink: configs.titleSubTextLink.value,
             subtarget: "blank",
             top:"top",
-            left:__ECHARTS__.configs.titlePosition.value,
+            left:configs.titlePosition.value,
             textStyle:{
-                color:__ECHARTS__.configs.titleTextColor.value,
+                color:configs.titleTextColor.value,
             },
             subtextStyle:{
-                color:__ECHARTS__.configs.titleSubTextColor.value,
+                color:configs.titleSubTextColor.value,
             }
         },
         toolbox: {
-            show: __ECHARTS__.configs.toolboxDisplay.value.toBoolean(),
+            show: configs.toolboxDisplay.value.toBoolean(),
             feature: {
                 saveAsImage: {
-                    show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value.toBoolean(),
+                    show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
                     excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"],
-                    backgroundColor:__ECHARTS__.configs.toolboxFeatureSaveAsImageBackgroundColor.value,
+                    backgroundColor:configs.toolboxFeatureSaveAsImageBackgroundColor.value,
                 },
-                restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value.toBoolean()},
-                dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                dataZoom: {show: __ECHARTS__.configs.toolboxFeatureDataView.value.toBoolean()},
+                restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
+                dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
+                dataZoom: {show: configs.toolboxFeatureDataView.value.toBoolean()},
                 magicType: {
-                    show: __ECHARTS__.configs.toolboxFeatureMagicType.value.toBoolean(),
+                    show: configs.toolboxFeatureMagicType.value.toBoolean(),
                     type: ["pie", "funnel"]
                 },
             },
-            top: __ECHARTS__.configs.toolbox_top.value,
-            left:__ECHARTS__.configs.toolbox_left.value,
-            orient: __ECHARTS__.configs.toolbox_orient.value,
+            top: configs.toolbox_top.value,
+            left:configs.toolbox_left.value,
+            orient: configs.toolbox_orient.value,
             emphasis: {
                 iconStyle: {
-                    textPosition: __ECHARTS__.configs.toolbox_textPosition.value,
+                    textPosition: configs.toolbox_textPosition.value,
                 }
             },
         },
         legend: {
-            show:__ECHARTS__.configs.legendDisplay.value.toBoolean(),
-            icon: __ECHARTS__.configs.legendIcon.value,
-            type: __ECHARTS__.configs.legendType.value,
-            selectedMode: __ECHARTS__.configs.legendSelectedMode.value,
-            top: __ECHARTS__.configs.legendPositionTop.value,
-            left: __ECHARTS__.configs.legendPositionLeft.value,
-            orient:__ECHARTS__.configs.legendOrient.value,
+            show:configs.legendDisplay.value.toBoolean(),
+            icon: configs.legendIcon.value,
+            type: configs.legendType.value,
+            selectedMode: configs.legendSelectedMode.value,
+            top: configs.legendPositionTop.value,
+            left: configs.legendPositionLeft.value,
+            orient:configs.legendOrient.value,
             data: legends,
             textStyle: {
-                color: __ECHARTS__.configs.legendTextColor.value
+                color: configs.legendTextColor.value
             },
         },
         tooltip: {
-            show:__ECHARTS__.configs.tooltipDisplay.value.toBoolean(),
+            show:configs.tooltipDisplay.value.toBoolean(),
             trigger: "item",
             formatter: "{a} <br/>{b}: {c} ({d}%)"
         },
         series: series,
-        graphic: getGraphic(__SYS_LOGO_LINK__),
+        graphic: getWaterGraphic(__SYS_LOGO_LINK__),
         label: {
-            fontSize: __ECHARTS__.configs.pieLabelFontSize.value,
+            fontSize: configs.pieLabelFontSize.value,
         },
 
     };
-    if (__ECHARTS__.configs.richTextLabel.value.toBoolean()) {
+    if (configs.richTextLabel.value.toBoolean()) {
         //富文本
         option.label = {
             formatter: "{a|{a}}{abg|}\n{hr|}\n  {b|{b}：}{c}  {per|{d}%}  ",
@@ -3860,25 +4125,47 @@ function getRing(container,themes) {
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
-    }, Number(__ECHARTS__.configs.loadingTimes.value) * 1000);
+    }, Number(configs.loadingTimes.value) * 1000);
 
+    container.id = getEchartsId();
+    container.draggable = "true";
+    container.ondragstart = function (event) {
+        event.dataTransfer.setData("Text", event.target.id);
+    };
+    __ECHARTS__.history[container.id] = {
+         id: container.id,
+        type: type,
+        configs: configs,
+        dataset: dataset,
+        themes: themes,
+        contrainer: container,
+        width: width,
+        height: height,
+    };
     return container;
 }
 
-function getRose(container,themes) {
+function getRose(container, themes, width, height, type, dataset, configs) {
+    if (container == null) {
+        container = document.createElement("div");
+        container.className = "echarts-container";
+        container.id = "echarts-container";
+        container.style.width = width;
+        container.style.height = height;
+    }
     var myChart = echarts.init(container, themes);
-    var dataset = __DATASET__["result"][__DATASET__.default.sheet];
+
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
     var columns = [];
-    for (var i=0; i<dataset["columns"].length;i++){
+    for (var i = 0; i < dataset["columns"].length; i++) {
         columns.push(dataset["columns"][i].name);
     }
     var legends = [];
     var series = [];
-    for (var c=0;c<columns.length;c++) {
-        if ( c==0 ){
-           for (var i = 0; i < dataset["data"].length; i++) {
+    for (var c = 0; c < columns.length; c++) {
+        if (c == 0) {
+            for (var i = 0; i < dataset["data"].length; i++) {
                 var r = dataset["data"][i];
                 legends.push(r[columns[c]].value);
             }
@@ -3886,19 +4173,19 @@ function getRose(container,themes) {
             var serie = {
                 name: columns[c],
                 type: "pie",
-                selectedMode: __ECHARTS__.configs.pieSelectedMode.value,
-                radius: [__ECHARTS__.configs.inRadius.value, __ECHARTS__.configs.outRadius.value],
+                selectedMode: configs.pieSelectedMode.value,
+                radius: [configs.inRadius.value, configs.outRadius.value],
                 center: ["50%", "50%"],
                 roseType: "area",
                 label: {
-                    show: __ECHARTS__.configs.pieLabelDisplay.value.toBoolean(),
+                    show: configs.pieLabelDisplay.value.toBoolean(),
                     //position: "center"
-                    alignTo: __ECHARTS__.configs.pieLabelAlignTo.value,
+                    alignTo: configs.pieLabelAlignTo.value,
                     bleedMargin: 5,
                     margin: 20,
                 },
                 labelLine: {
-                    show: __ECHARTS__.configs.pieLabelDisplay.value.toBoolean(),
+                    show: configs.pieLabelDisplay.value.toBoolean(),
                 },
                 emphasis: {
                     label: {
@@ -3917,99 +4204,99 @@ function getRose(container,themes) {
                 avoidLabelOverlap: true,
                 hoverAnimation: true,
                 data: [],
-                animation: __ECHARTS__.configs.animation.value.toBoolean(),
-                animationType: __ECHARTS__.configs.animationType.value,
-                animationTypeUpdate: __ECHARTS__.configs.animationTypeUpdate.value,
+                animation: configs.animation.value.toBoolean(),
+                animationType: configs.animationType.value,
+                animationTypeUpdate: configs.animationTypeUpdate.value,
             };
 
             for (var i = 0; i < dataset["data"].length; i++) {
                 var r = dataset["data"][i];
-                serie.data.push({"value": r[columns[c]].value,"name": legends[i]});
+                serie.data.push({"value": r[columns[c]].value, "name": legends[i]});
             }
             series.push(serie);
         }
     }
-    let top = toPoint(__ECHARTS__.configs.grid_top.value);
-    let left = toPoint(__ECHARTS__.configs.grid_left.value);
-    let groupWith = __ECHARTS__.configs.groupWith.value;
+    let top = toPoint(configs.grid_top.value);
+    let left = toPoint(configs.grid_left.value);
+    let groupWith = configs.groupWith.value;
     let lines = parseInt(series.length / groupWith + 0.5);
-    let height = parseInt((100 - toPoint(__ECHARTS__.configs.grid_top.value)- toPoint(__ECHARTS__.configs.grid_bottom.value)) / lines);
-    let width = (100 - toPoint(__ECHARTS__.configs.grid_left.value)- toPoint(__ECHARTS__.configs.grid_right.value))/groupWith;
+    let h = parseInt((100 - toPoint(configs.grid_top.value) - toPoint(configs.grid_bottom.value)) / lines);
+    let w = (100 - toPoint(configs.grid_left.value) - toPoint(configs.grid_right.value)) / groupWith;
     for (var i = 0; i < series.length; i++) {
-        series[i].top = ((top + parseInt(i / groupWith) * height) + parseInt(i / groupWith) * top) + "%";
-        series[i].left = (left + (i % groupWith) * width) + "%";
-        series[i].width = width + "%";
-        series[i].height = height + "%";
+        series[i].top = ((top + parseInt(i / groupWith) * h) + parseInt(i / groupWith) * top) + "%";
+        series[i].left = (left + (i % groupWith) * w) + "%";
+        series[i].width = w + "%";
+        series[i].height = h + "%";
     }
 
     var option = {
         title: {
-            show: __ECHARTS__.configs.titleDisplay.value.toBoolean(),
-            text: __ECHARTS__.configs.titleText.value,
-            link: __ECHARTS__.configs.titleTextLink.value,
-            target : "blank",
-            subtext: __ECHARTS__.configs.titleSubText.value,
-            sublink: __ECHARTS__.configs.titleSubTextLink.value,
+            show: configs.titleDisplay.value.toBoolean(),
+            text: configs.titleText.value,
+            link: configs.titleTextLink.value,
+            target: "blank",
+            subtext: configs.titleSubText.value,
+            sublink: configs.titleSubTextLink.value,
             subtarget: "blank",
-            top:"top",
-            left:__ECHARTS__.configs.titlePosition.value,
-            textStyle:{
-                color:__ECHARTS__.configs.titleTextColor.value,
+            top: "top",
+            left: configs.titlePosition.value,
+            textStyle: {
+                color: configs.titleTextColor.value,
             },
-            subtextStyle:{
-                color:__ECHARTS__.configs.titleSubTextColor.value,
+            subtextStyle: {
+                color: configs.titleSubTextColor.value,
             }
         },
         toolbox: {
-            show: __ECHARTS__.configs.toolboxDisplay.value.toBoolean(),
+            show: configs.toolboxDisplay.value.toBoolean(),
             feature: {
                 saveAsImage: {
-                    show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value.toBoolean(),
-                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"],
-                    backgroundColor:__ECHARTS__.configs.toolboxFeatureSaveAsImageBackgroundColor.value,
+                    show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
+                    excludeComponents: ["toolbox", "dataZoom", "timeline", "visualMap", "brush"],
+                    backgroundColor: configs.toolboxFeatureSaveAsImageBackgroundColor.value,
                 },
-                restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value.toBoolean()},
-                dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                dataZoom: {show: __ECHARTS__.configs.toolboxFeatureDataView.value.toBoolean()},
+                restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
+                dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
+                dataZoom: {show: configs.toolboxFeatureDataView.value.toBoolean()},
                 magicType: {
-                    show: __ECHARTS__.configs.toolboxFeatureMagicType.value.toBoolean(),
+                    show: configs.toolboxFeatureMagicType.value.toBoolean(),
                     type: ["pie", "funnel"]
                 },
             },
-            top: __ECHARTS__.configs.toolbox_top.value,
-            left:__ECHARTS__.configs.toolbox_left.value,
-            orient: __ECHARTS__.configs.toolbox_orient.value,
+            top: configs.toolbox_top.value,
+            left: configs.toolbox_left.value,
+            orient: configs.toolbox_orient.value,
             emphasis: {
                 iconStyle: {
-                    textPosition: __ECHARTS__.configs.toolbox_textPosition.value,
+                    textPosition: configs.toolbox_textPosition.value,
                 }
             },
         },
         legend: {
-            show:__ECHARTS__.configs.legendDisplay.value.toBoolean(),
-            icon: __ECHARTS__.configs.legendIcon.value,
-            type: __ECHARTS__.configs.legendType.value,
-            selectedMode: __ECHARTS__.configs.legendSelectedMode.value,
-            top: __ECHARTS__.configs.legendPositionTop.value,
-            left: __ECHARTS__.configs.legendPositionLeft.value,
-            orient:__ECHARTS__.configs.legendOrient.value,
+            show: configs.legendDisplay.value.toBoolean(),
+            icon: configs.legendIcon.value,
+            type: configs.legendType.value,
+            selectedMode: configs.legendSelectedMode.value,
+            top: configs.legendPositionTop.value,
+            left: configs.legendPositionLeft.value,
+            orient: configs.legendOrient.value,
             data: legends,
             textStyle: {
-                color: __ECHARTS__.configs.legendTextColor.value
+                color: configs.legendTextColor.value
             },
         },
         tooltip: {
-            show:__ECHARTS__.configs.tooltipDisplay.value.toBoolean(),
+            show: configs.tooltipDisplay.value.toBoolean(),
             trigger: "item",
             formatter: "{a} <br/>{b}: {c} ({d}%)"
         },
         series: series,
-        graphic: getGraphic(__SYS_LOGO_LINK__),
+        graphic: getWaterGraphic(__SYS_LOGO_LINK__),
         label: {
-            fontSize: __ECHARTS__.configs.pieLabelFontSize.value,
+            fontSize: configs.pieLabelFontSize.value,
         },
     };
-    if (__ECHARTS__.configs.richTextLabel.value.toBoolean()) {
+    if (configs.richTextLabel.value.toBoolean()) {
         //富文本
         option.label = {
             formatter: "{a|{a}}{abg|}\n{hr|}\n  {b|{b}：}{c}  {per|{d}%}  ",
@@ -4054,16 +4341,38 @@ function getRose(container,themes) {
             }
         };
     }
-   setTimeout(() => {
-      myChart.hideLoading();
-      myChart.setOption(option);
-    }, Number(__ECHARTS__.configs.loadingTimes.value) * 1000);
+    setTimeout(() => {
+        myChart.hideLoading();
+        myChart.setOption(option);
+    }, Number(configs.loadingTimes.value) * 1000);
+    container.id = getEchartsId();
+    container.draggable = "true";
+    container.ondragstart = function (event) {
+        event.dataTransfer.setData("Text", event.target.id);
+    };
+    __ECHARTS__.history[container.id] = {
+        id: container.id,
+        type: type,
+        configs: configs,
+        dataset: dataset,
+        themes: themes,
+        contrainer: container,
+        width: width,
+        height: height,
+    };
     return container;
 }
 
-function getRadar(container, themes) {
+function getRadar(container, themes, width, height, type, dataset, configs) {
+    if (container == null) {
+        container = document.createElement("div");
+        container.className = "echarts-container";
+        container.id = "echarts-container";
+        container.style.width = width;
+        container.style.height = height;
+    }
     var myChart = echarts.init(container, themes);
-    var dataset = __DATASET__["result"][__DATASET__.default.sheet];
+
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
     var columns = [];
@@ -4097,7 +4406,7 @@ function getRadar(container, themes) {
                 var r = dataset["data"][i];
                 xAxis.push({
                     name: r[columns[c]].value,
-                    max: __ECHARTS__.configs.radarSameMax.value.toBoolean()?all_max:xAxis_max[r[columns[c]].value],
+                    max: configs.radarSameMax.value.toBoolean()?all_max:xAxis_max[r[columns[c]].value],
                 });
             }
         } else {
@@ -4105,25 +4414,25 @@ function getRadar(container, themes) {
                 name: columns[c],
                 type: "radar",
                 areaStyle: {
-                    show: __ECHARTS__.configs.radarAreaDisplay.value.toBoolean(),
+                    show: configs.radarAreaDisplay.value.toBoolean(),
                     normal: {}
                 },
                 data: [],
-                animation: __ECHARTS__.configs.animation.value.toBoolean(),
-                animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
-                animationEasing: getAnimationEasing(),
+                animation: configs.animation.value.toBoolean(),
+                animationThreshold: Number(configs.animationThreshold.value),
+                animationEasing: getAnimationEasing(configs),
                 animationDuration: function (idx) {
-                    return idx * Number(__ECHARTS__.configs.animationDuration.value) + c * Number(__ECHARTS__.configs.animationDuration.value);
+                    return idx * Number(configs.animationDuration.value) + c * Number(configs.animationDuration.value);
                 },
                 animationDelay: function (idx) {
-                    return idx * Number(__ECHARTS__.configs.animationDelay.value) + c * Number(__ECHARTS__.configs.animationDelay.value);
+                    return idx * Number(configs.animationDelay.value) + c * Number(configs.animationDelay.value);
                 },
-                animationEasingUpdate: getAnimationEasingUpdate(),
+                animationEasingUpdate: getAnimationEasingUpdate(configs),
                 animationDurationUpdate: function (idx) {
-                    return idx * Number(__ECHARTS__.configs.animationDurationUpdate.value) + c * Number(__ECHARTS__.configs.animationDurationUpdate.value);
+                    return idx * Number(configs.animationDurationUpdate.value) + c * Number(configs.animationDurationUpdate.value);
                 },
                 animationDelayUpdate: function (idx) {
-                    return idx * Number(__ECHARTS__.configs.animationDelayUpdate.value) + c * Number(__ECHARTS__.configs.animationDelayUpdate.value);
+                    return idx * Number(configs.animationDelayUpdate.value) + c * Number(configs.animationDelayUpdate.value);
                 },
             };
 
@@ -4139,75 +4448,75 @@ function getRadar(container, themes) {
 
     var option = {
         grid: {
-            x: __ECHARTS__.configs.grid_left.value,
-            y: __ECHARTS__.configs.grid_top.value,
-            x2: __ECHARTS__.configs.grid_right.value,
-            y2: __ECHARTS__.configs.grid_bottom.value,
-            containLabel: __ECHARTS__.configs.grid_containLabel.value.toBoolean(),
+            x: configs.grid_left.value,
+            y: configs.grid_top.value,
+            x2: configs.grid_right.value,
+            y2: configs.grid_bottom.value,
+            containLabel: configs.grid_containLabel.value.toBoolean(),
             backgroundColor: "transparent"
         },
         title: {
-            show: __ECHARTS__.configs.titleDisplay.value.toBoolean(),
-            text: __ECHARTS__.configs.titleText.value,
-            link: __ECHARTS__.configs.titleTextLink.value,
+            show: configs.titleDisplay.value.toBoolean(),
+            text: configs.titleText.value,
+            link: configs.titleTextLink.value,
             target : "blank",
-            subtext: __ECHARTS__.configs.titleSubText.value,
-            sublink: __ECHARTS__.configs.titleSubTextLink.value,
+            subtext: configs.titleSubText.value,
+            sublink: configs.titleSubTextLink.value,
             subtarget: "blank",
             top: "top",
-            left: __ECHARTS__.configs.titlePosition.value,
+            left: configs.titlePosition.value,
             textStyle: {
-                color: __ECHARTS__.configs.titleTextColor.value,
+                color: configs.titleTextColor.value,
             },
             subtextStyle: {
-                color: __ECHARTS__.configs.titleSubTextColor.value,
+                color: configs.titleSubTextColor.value,
             }
         },
         legend: {
-            show: __ECHARTS__.configs.legendDisplay.value.toBoolean(),
-            icon: __ECHARTS__.configs.legendIcon.value,
-            type: __ECHARTS__.configs.legendType.value,
-            selectedMode: __ECHARTS__.configs.legendSelectedMode.value,
-            top: __ECHARTS__.configs.legendPositionTop.value,
-            left: __ECHARTS__.configs.legendPositionLeft.value,
-            orient: __ECHARTS__.configs.legendOrient.value,
+            show: configs.legendDisplay.value.toBoolean(),
+            icon: configs.legendIcon.value,
+            type: configs.legendType.value,
+            selectedMode: configs.legendSelectedMode.value,
+            top: configs.legendPositionTop.value,
+            left: configs.legendPositionLeft.value,
+            orient: configs.legendOrient.value,
             data: columns.slice(1),
             textStyle: {
-                color: __ECHARTS__.configs.legendTextColor.value
+                color: configs.legendTextColor.value
             },
         },
         tooltip: {
-            show: __ECHARTS__.configs.tooltipDisplay.value.toBoolean(),
+            show: configs.tooltipDisplay.value.toBoolean(),
         },
         toolbox: {
-            show: __ECHARTS__.configs.toolboxDisplay.value.toBoolean(),
+            show: configs.toolboxDisplay.value.toBoolean(),
             feature: {
                 saveAsImage: {
-                    show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value.toBoolean(),
+                    show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
                     excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"],
-                    backgroundColor:__ECHARTS__.configs.toolboxFeatureSaveAsImageBackgroundColor.value,
+                    backgroundColor:configs.toolboxFeatureSaveAsImageBackgroundColor.value,
                 },
-                restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value.toBoolean()},
-                dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
+                restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
+                dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
             },
-            top: __ECHARTS__.configs.toolbox_top.value,
-            left: __ECHARTS__.configs.toolbox_left.value,
-            orient: __ECHARTS__.configs.toolbox_orient.value,
+            top: configs.toolbox_top.value,
+            left: configs.toolbox_left.value,
+            orient: configs.toolbox_orient.value,
             emphasis: {
                 iconStyle: {
-                    textPosition: __ECHARTS__.configs.toolbox_textPosition.value,
+                    textPosition: configs.toolbox_textPosition.value,
                 }
             },
         },
         radar: {
-            center:[(toPoint(__ECHARTS__.configs.grid_left.value) + (100-toPoint(__ECHARTS__.configs.grid_left.value)-toPoint(__ECHARTS__.configs.grid_right.value))/2) + "%",
-            (toPoint(__ECHARTS__.configs.grid_top.value) + (100-toPoint(__ECHARTS__.configs.grid_top.value)-toPoint(__ECHARTS__.configs.grid_bottom.value))/2) + "%"],
-            shape: __ECHARTS__.configs.radarShape.value,
-            splitNumber:__ECHARTS__.configs.radarSplitNumber.value,
+            center:[(toPoint(configs.grid_left.value) + (100-toPoint(configs.grid_left.value)-toPoint(configs.grid_right.value))/2) + "%",
+            (toPoint(configs.grid_top.value) + (100-toPoint(configs.grid_top.value)-toPoint(configs.grid_bottom.value))/2) + "%"],
+            shape: configs.radarShape.value,
+            splitNumber:configs.radarSplitNumber.value,
             name: {
-                show: __ECHARTS__.configs.radarNameDisplay.value.toBoolean(),
+                show: configs.radarNameDisplay.value.toBoolean(),
                 textStyle: {
-                    color: __ECHARTS__.configs.axisTextColor.value,
+                    color: configs.axisTextColor.value,
                     backgroundColor: "#999",
                     borderRadius: 3,
                     padding: [3, 5],
@@ -4216,43 +4525,65 @@ function getRadar(container, themes) {
             indicator: xAxis,
 
             axisLabel: {
-                show: __ECHARTS__.configs.splitYLineDisplay.value.toBoolean(),
+                show: configs.splitYLineDisplay.value.toBoolean(),
                 textStyle: {
-                    color: __ECHARTS__.configs.axisTextColor.value,
+                    color: configs.axisTextColor.value,
                 },
-                rotate:__ECHARTS__.configs.radarLabelRotate.value,
+                rotate:configs.radarLabelRotate.value,
             },
             axisLine: {
-                show: __ECHARTS__.configs.axisLineDisplay.value.toBoolean(),
+                show: configs.axisLineDisplay.value.toBoolean(),
                 lineStyle: {
-                    color: __ECHARTS__.configs.axisColor.value
+                    color: configs.axisColor.value
                 },
             },
             splitLine:{
-                show: __ECHARTS__.configs.splitYLineDisplay.value.toBoolean(),
+                show: configs.splitYLineDisplay.value.toBoolean(),
                 lineStyle: {
-                    color: __ECHARTS__.configs.axisColor.value
+                    color: configs.axisColor.value
                 },
             },
             splitArea: {
-                show: __ECHARTS__.configs.splitYAreaDisplay.value.toBoolean(),
+                show: configs.splitYAreaDisplay.value.toBoolean(),
                 interval:1
             },
         },
         series: series,
-        graphic: getGraphic(__SYS_LOGO_LINK__),
+        graphic: getWaterGraphic(__SYS_LOGO_LINK__),
     };
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
-    }, Number(__ECHARTS__.configs.loadingTimes.value) * 1000);
+    }, Number(configs.loadingTimes.value) * 1000);
+    container.id = getEchartsId();
+    container.draggable = "true";
+    container.ondragstart = function (event) {
+        event.dataTransfer.setData("Text", event.target.id);
+    };
+    __ECHARTS__.history[container.id] = {
+         id: container.id,
+        type: type,
+        configs: configs,
+        dataset: dataset,
+        themes: themes,
+        contrainer: container,
+        width: width,
+        height: height,
+    };
     return container;
 
 }
 
-function getRegression(container, themes) {
+function getRegression(container, themes, width, height, type, dataset, configs) {
+    if (container == null) {
+        container = document.createElement("div");
+        container.className = "echarts-container";
+        container.id = "echarts-container";
+        container.style.width = width;
+        container.style.height = height;
+    }
     var myChart = echarts.init(container, themes);
-    var dataset = __DATASET__["result"][__DATASET__.default.sheet];
+
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
     var regressionType = {"直线": "linear", "指数": "exponential", "对数": "logarithmic", "多项式": "polynomial"};
@@ -4264,9 +4595,9 @@ function getRegression(container, themes) {
     var xAxis = [];
     var series = [];
 
-    var selectType = __ECHARTS__.configs.regressionType.value;
-    var forwardPeroids = Number(__ECHARTS__.configs.regressionForwardPeroids.value);
-    var regressionPolynomialOrder = Number(__ECHARTS__.configs.regressionPolynomialOrder.value);
+    var selectType = configs.regressionType.value;
+    var forwardPeroids = Number(configs.regressionForwardPeroids.value);
+    var regressionPolynomialOrder = Number(configs.regressionPolynomialOrder.value);
 
     function init() {
         for (var c = 0; c < columns.length; c++) {
@@ -4280,51 +4611,51 @@ function getRegression(container, themes) {
                     name: columns[c],
                     type: "line",
                     lineStyle: {
-                        width: Number(__ECHARTS__.configs.lineStyleWidth.value),
+                        width: Number(configs.lineStyleWidth.value),
                     },
                     label: {
-                        show: __ECHARTS__.configs.lineLabelDisplay.value.toBoolean(),
+                        show: configs.lineLabelDisplay.value.toBoolean(),
                         align: "center",
                         verticalAlign: "middle",
                         position: "top",
                         distance: 15,
                         formatter: "{value|{c}}",
-                        rotate: __ECHARTS__.configs.lineLabelRotate.value,
+                        rotate: configs.lineLabelRotate.value,
                         rich: {
                             value: {
-                                color: __ECHARTS__.configs.lineLabelTextColor.value,
-                                fontSize: __ECHARTS__.configs.lineLabelFontSize.value,
+                                color: configs.lineLabelTextColor.value,
+                                fontSize: configs.lineLabelFontSize.value,
                             }
                         }
                     },
                     emphasis: {
                         label: {
-                            show: __ECHARTS__.configs.lineEmphasisLabelDisplay.value.toBoolean(),
+                            show: configs.lineEmphasisLabelDisplay.value.toBoolean(),
                             position: "bottom",
                             rotate: 0,
-                            fontSize: __ECHARTS__.configs.lineLabelFontSize.value,
+                            fontSize: configs.lineLabelFontSize.value,
                         }
                     },
-                    smooth: __ECHARTS__.configs.lineSmooth.value.toBoolean(),
-                    symbol: __ECHARTS__.configs.lineSymbol.value,
-                    symbolSize: __ECHARTS__.configs.lineSymbolSize.value,
+                    smooth: configs.lineSmooth.value.toBoolean(),
+                    symbol: configs.lineSymbol.value,
+                    symbolSize: configs.lineSymbolSize.value,
                     data: [],
 
-                    animation: __ECHARTS__.configs.animation.value.toBoolean(),
-                    animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
-                    animationEasing: getAnimationEasing(),
+                    animation: configs.animation.value.toBoolean(),
+                    animationThreshold: Number(configs.animationThreshold.value),
+                    animationEasing: getAnimationEasing(configs),
                     animationDuration: function (idx) {
-                        return idx * Number(__ECHARTS__.configs.animationDuration.value) + c * Number(__ECHARTS__.configs.animationDuration.value);
+                        return idx * Number(configs.animationDuration.value) + c * Number(configs.animationDuration.value);
                     },
                     animationDelay: function (idx) {
-                        return idx * Number(__ECHARTS__.configs.animationDelay.value) + c * Number(__ECHARTS__.configs.animationDelay.value);
+                        return idx * Number(configs.animationDelay.value) + c * Number(configs.animationDelay.value);
                     },
-                    animationEasingUpdate: getAnimationEasingUpdate(),
+                    animationEasingUpdate: getAnimationEasingUpdate(configs),
                     animationDurationUpdate: function (idx) {
-                        return idx * Number(__ECHARTS__.configs.animationDurationUpdate.value) + c * Number(__ECHARTS__.configs.animationDurationUpdate.value);
+                        return idx * Number(configs.animationDurationUpdate.value) + c * Number(configs.animationDurationUpdate.value);
                     },
                     animationDelayUpdate: function (idx) {
-                        return idx * Number(__ECHARTS__.configs.animationDelayUpdate.value) + c * Number(__ECHARTS__.configs.animationDelayUpdate.value);
+                        return idx * Number(configs.animationDelayUpdate.value) + c * Number(configs.animationDelayUpdate.value);
                     },
                 };
 
@@ -4355,10 +4686,10 @@ function getRegression(container, themes) {
         var regline = {
             name: type + "(" + column + ")",
             type: "line",
-            smooth: __ECHARTS__.configs.lineSmooth.value.toBoolean(),
+            smooth: configs.lineSmooth.value.toBoolean(),
             showSymbol: false,
-            symbol: __ECHARTS__.configs.lineSymbol.value,
-            symbolSize: __ECHARTS__.configs.lineSymbolSize.value,
+            symbol: configs.lineSymbol.value,
+            symbolSize: configs.lineSymbolSize.value,
             data: data,
             lineStyle: {
                 type: "dotted",     //"solid/dashed/dotted"
@@ -4368,31 +4699,31 @@ function getRegression(container, themes) {
                     color: "transparent"
                 },
                 label: {
-                    show: __ECHARTS__.configs.regressionExpressionDisplay.value.toBoolean(),
+                    show: configs.regressionExpressionDisplay.value.toBoolean(),
                     position: "left",
                     formatter: myRegression.expression.replaceAll("+ -", " - "),
-                    color: __ECHARTS__.configs.regressionExpressionColor.value,
-                    fontSize: __ECHARTS__.configs.lineLabelFontSize.value,
+                    color: configs.regressionExpressionColor.value,
+                    fontSize: configs.lineLabelFontSize.value,
                 },
                 data: [{
                     coord: data[data.length - 1]
                 }],
             },
-            animation: __ECHARTS__.configs.animation.value.toBoolean(),
-            animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
-            animationEasing: getAnimationEasing(),
+            animation: configs.animation.value.toBoolean(),
+            animationThreshold: Number(configs.animationThreshold.value),
+            animationEasing: getAnimationEasing(configs),
             animationDuration: function (idx) {
-                return idx * Number(__ECHARTS__.configs.animationDuration.value);
+                return idx * Number(configs.animationDuration.value);
             },
             animationDelay: function (idx) {
-                return idx * Number(__ECHARTS__.configs.animationDelay.value);
+                return idx * Number(configs.animationDelay.value);
             },
-            animationEasingUpdate: getAnimationEasingUpdate(),
+            animationEasingUpdate: getAnimationEasingUpdate(configs),
             animationDurationUpdate: function (idx) {
-                return idx * Number(__ECHARTS__.configs.animationDurationUpdate.value);
+                return idx * Number(configs.animationDurationUpdate.value);
             },
             animationDelayUpdate: function (idx) {
-                return idx * Number(__ECHARTS__.configs.animationDelayUpdate.value);
+                return idx * Number(configs.animationDelayUpdate.value);
             },
         };
         series.push(regline);
@@ -4470,204 +4801,226 @@ function getRegression(container, themes) {
 
     var option = {
         grid: {
-            x: __ECHARTS__.configs.grid_left.value,
-            y: __ECHARTS__.configs.grid_top.value,
-            x2: __ECHARTS__.configs.grid_right.value,
-            y2: __ECHARTS__.configs.grid_bottom.value,
-            containLabel: __ECHARTS__.configs.grid_containLabel.value.toBoolean(),
+            x: configs.grid_left.value,
+            y: configs.grid_top.value,
+            x2: configs.grid_right.value,
+            y2: configs.grid_bottom.value,
+            containLabel: configs.grid_containLabel.value.toBoolean(),
             backgroundColor: "transparent"
         },
-        brush:  __ECHARTS__.configs.toolboxFeatureBrush.value.toBoolean()?{
+        brush:  configs.toolboxFeatureBrush.value.toBoolean()?{
             toolbox: ["rect", "polygon", "lineX", "lineY", "keep", "clear"],
             xAxisIndex: 0
         }:null,
         toolbox: {
-            show: __ECHARTS__.configs.toolboxDisplay.value.toBoolean(),
+            show: configs.toolboxDisplay.value.toBoolean(),
             feature: {
                 saveAsImage: {
-                    show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value.toBoolean(),
+                    show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
                     excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"],
-                    backgroundColor:__ECHARTS__.configs.toolboxFeatureSaveAsImageBackgroundColor.value,
+                    backgroundColor:configs.toolboxFeatureSaveAsImageBackgroundColor.value,
                 },
-                restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value.toBoolean()},
-                dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                dataZoom: {show: __ECHARTS__.configs.toolboxFeatureDataView.value.toBoolean()},
+                restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
+                dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
+                dataZoom: {show: configs.toolboxFeatureDataView.value.toBoolean()},
                 magicType: {
-                    show: __ECHARTS__.configs.toolboxFeatureMagicType.value.toBoolean(),
+                    show: configs.toolboxFeatureMagicType.value.toBoolean(),
                     type: ["line", "bar",]
                 },
             },
-            top: __ECHARTS__.configs.toolbox_top.value,
-            left:__ECHARTS__.configs.toolbox_left.value,
-            orient: __ECHARTS__.configs.toolbox_orient.value,
+            top: configs.toolbox_top.value,
+            left:configs.toolbox_left.value,
+            orient: configs.toolbox_orient.value,
             emphasis: {
                 iconStyle: {
-                    textPosition: __ECHARTS__.configs.toolbox_textPosition.value,
+                    textPosition: configs.toolbox_textPosition.value,
                 }
             },
         },
         title: {
-            show: __ECHARTS__.configs.titleDisplay.value.toBoolean(),
-            text: __ECHARTS__.configs.titleText.value,
-            link: __ECHARTS__.configs.titleTextLink.value,
+            show: configs.titleDisplay.value.toBoolean(),
+            text: configs.titleText.value,
+            link: configs.titleTextLink.value,
             target : "blank",
-            subtext: __ECHARTS__.configs.titleSubText.value,
-            sublink: __ECHARTS__.configs.titleSubTextLink.value,
+            subtext: configs.titleSubText.value,
+            sublink: configs.titleSubTextLink.value,
             subtarget: "blank",
             top: "top",
-            left: __ECHARTS__.configs.titlePosition.value,
+            left: configs.titlePosition.value,
             textStyle: {
-                color: __ECHARTS__.configs.titleTextColor.value,
+                color: configs.titleTextColor.value,
             },
             subtextStyle: {
-                color: __ECHARTS__.configs.titleSubTextColor.value,
+                color: configs.titleSubTextColor.value,
             }
         },
         legend: {
-            show: __ECHARTS__.configs.legendDisplay.value.toBoolean(),
-            icon: __ECHARTS__.configs.legendIcon.value,
-            type: __ECHARTS__.configs.legendType.value,
-            selectedMode: __ECHARTS__.configs.legendSelectedMode.value,
-            top: __ECHARTS__.configs.legendPositionTop.value,
-            left: __ECHARTS__.configs.legendPositionLeft.value,
-            orient: __ECHARTS__.configs.legendOrient.value,
+            show: configs.legendDisplay.value.toBoolean(),
+            icon: configs.legendIcon.value,
+            type: configs.legendType.value,
+            selectedMode: configs.legendSelectedMode.value,
+            top: configs.legendPositionTop.value,
+            left: configs.legendPositionLeft.value,
+            orient: configs.legendOrient.value,
             data: columns.slice(1, columns.length).concat(columns_add),
             textStyle: {
-                color: __ECHARTS__.configs.legendTextColor.value
+                color: configs.legendTextColor.value
             },
         },
         tooltip: {
-            show: __ECHARTS__.configs.tooltipDisplay.value.toBoolean(),
+            show: configs.tooltipDisplay.value.toBoolean(),
             trigger: "axis",
             axisPointer: {
-                type: __ECHARTS__.configs.axisPointerType.value,
+                type: configs.axisPointerType.value,
             }
         },
         xAxis: {
             data: xAxis,
-            inverse: __ECHARTS__.configs.xAxisInverse.value.toBoolean(),
+            inverse: configs.xAxisInverse.value.toBoolean(),
             axisLine: {
-                show: __ECHARTS__.configs.axisLineDisplay.value.toBoolean(),
+                show: configs.axisLineDisplay.value.toBoolean(),
                 lineStyle: {
-                    color: __ECHARTS__.configs.axisColor.value
+                    color: configs.axisColor.value
                 },
             },
             splitNumber: 20,
             axisTick:{
-                show: __ECHARTS__.configs.axisLineDisplay.value.toBoolean(),
+                show: configs.axisLineDisplay.value.toBoolean(),
             },
             axisLabel: {
-                show: __ECHARTS__.configs.axisLineDisplay.value.toBoolean(),
+                show: configs.axisLineDisplay.value.toBoolean(),
                 interval: "auto",
                 textStyle: {
-                    color: __ECHARTS__.configs.axisTextColor.value
+                    color: configs.axisTextColor.value
                 },
                 margin: 8,
-                rotate: Number(__ECHARTS__.configs.xAxisLabelRotate.value),
+                rotate: Number(configs.xAxisLabelRotate.value),
             },
             splitLine: {
-                show: __ECHARTS__.configs.splitXLineDisplay.value.toBoolean(),
+                show: configs.splitXLineDisplay.value.toBoolean(),
                 lineStyle: {
                     color: [
-                        __ECHARTS__.configs.axisColor.value
+                        configs.axisColor.value
                     ]
                 },
             },
             splitArea: {
-                show: __ECHARTS__.configs.splitXAreaDisplay.value.toBoolean(),
+                show: configs.splitXAreaDisplay.value.toBoolean(),
             }
         },
         yAxis: {
             type: "value",
-            inverse: __ECHARTS__.configs.yAxisInverse.value.toBoolean(),
+            inverse: configs.yAxisInverse.value.toBoolean(),
             axisLine: {
-                show: __ECHARTS__.configs.axisLineDisplay.value.toBoolean(),
+                show: configs.axisLineDisplay.value.toBoolean(),
                 lineStyle: {
-                    color: __ECHARTS__.configs.axisColor.value
+                    color: configs.axisColor.value
                 },
             },
             axisTick:{
-                show: __ECHARTS__.configs.axisLineDisplay.value.toBoolean(),
+                show: configs.axisLineDisplay.value.toBoolean(),
             },
             axisLabel: {
-                show: __ECHARTS__.configs.axisLineDisplay.value.toBoolean(),
-                rotate: Number(__ECHARTS__.configs.yAxisLabelRotate.value),
+                show: configs.axisLineDisplay.value.toBoolean(),
+                rotate: Number(configs.yAxisLabelRotate.value),
                 textStyle: {
-                    color: __ECHARTS__.configs.axisTextColor.value
+                    color: configs.axisTextColor.value
                 }
             },
             splitLine: {
-                show: __ECHARTS__.configs.splitYLineDisplay.value.toBoolean(),
+                show: configs.splitYLineDisplay.value.toBoolean(),
                 lineStyle: {
                     color: [
-                        __ECHARTS__.configs.axisColor.value
+                        configs.axisColor.value
                     ]
                 },
             },
             splitArea: {
-                show: __ECHARTS__.configs.splitYAreaDisplay.value.toBoolean(),
+                show: configs.splitYAreaDisplay.value.toBoolean(),
             }
         },
         dataZoom: [{
             type: "inside",
-            filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
+            filterMode: configs.dataZoomFilterMode.value,
             start: 0,
             xAxisIndex: 0,
             end: 100
         }, {
             type: "inside",
-            filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
+            filterMode: configs.dataZoomFilterMode.value,
             start: 0,
             yAxisIndex: 0,
             end: 100
         }, {
-            show: __ECHARTS__.configs.dataZoomBarDisplay.value.toBoolean(),
+            show: configs.dataZoomBarDisplay.value.toBoolean(),
             type: "slider",
-            filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
+            filterMode: configs.dataZoomFilterMode.value,
             yAxisIndex: 0,
             start: 0,
             end: 100,
-            width: __ECHARTS__.configs.dataZoomBarWidth.value,
-            height: (100 - toPoint(__ECHARTS__.configs.grid_top.value) - toPoint(__ECHARTS__.configs.grid_bottom.value)) + "%",
-            top: __ECHARTS__.configs.grid_top.value,
-            right: (100 - toPoint(__ECHARTS__.configs.grid_right.value)) + "%",
-            handleIcon: __SYS_IMAGES_PATH__.dataZoomHandleIcon[__ECHARTS__.configs.dataZoomHandleIcon.value],
-            handleSize: __ECHARTS__.configs.dataZoomHandleSize.value,
-            borderColor: __ECHARTS__.configs.dataZoomBarColor.value,
+            width: configs.dataZoomBarWidth.value,
+            height: (100 - toPoint(configs.grid_top.value) - toPoint(configs.grid_bottom.value)) + "%",
+            top: configs.grid_top.value,
+            right: (100 - toPoint(configs.grid_right.value)) + "%",
+            handleIcon: __SYS_IMAGES_PATH__.dataZoomHandleIcon[configs.dataZoomHandleIcon.value],
+            handleSize: configs.dataZoomHandleSize.value,
+            borderColor: configs.dataZoomBarColor.value,
             handleStyle: {
-                color: __ECHARTS__.configs.dataZoomBarColor.value,
+                color: configs.dataZoomBarColor.value,
             }
         }, {
-            show: __ECHARTS__.configs.dataZoomBarDisplay.value.toBoolean(),
+            show: configs.dataZoomBarDisplay.value.toBoolean(),
             type: "slider",
-            filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
+            filterMode: configs.dataZoomFilterMode.value,
             xAxisIndex: 0,
             start: 0,
             end: 100,
-            width: (100 - toPoint(__ECHARTS__.configs.grid_left.value) - toPoint(__ECHARTS__.configs.grid_right.value)) + "%",
-            height: __ECHARTS__.configs.dataZoomBarWidth.value,
-            left: __ECHARTS__.configs.grid_left.value,
-            top: (100 - toPoint(__ECHARTS__.configs.grid_bottom.value)) + "%",
-            handleIcon: __SYS_IMAGES_PATH__.dataZoomHandleIcon[__ECHARTS__.configs.dataZoomHandleIcon.value],
-            handleSize: __ECHARTS__.configs.dataZoomHandleSize.value,
-            borderColor: __ECHARTS__.configs.dataZoomBarColor.value,
+            width: (100 - toPoint(configs.grid_left.value) - toPoint(configs.grid_right.value)) + "%",
+            height: configs.dataZoomBarWidth.value,
+            left: configs.grid_left.value,
+            top: (100 - toPoint(configs.grid_bottom.value)) + "%",
+            handleIcon: __SYS_IMAGES_PATH__.dataZoomHandleIcon[configs.dataZoomHandleIcon.value],
+            handleSize: configs.dataZoomHandleSize.value,
+            borderColor: configs.dataZoomBarColor.value,
             handleStyle: {
-                color: __ECHARTS__.configs.dataZoomBarColor.value,
+                color: configs.dataZoomBarColor.value,
             }
         }],
         series: series,
-        graphic: getGraphic(__SYS_LOGO_LINK__),
+        graphic: getWaterGraphic(__SYS_LOGO_LINK__),
     };
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
-    }, Number(__ECHARTS__.configs.loadingTimes.value) * 1000);
+    }, Number(configs.loadingTimes.value) * 1000);
+    container.id = getEchartsId();
+    container.draggable = "true";
+    container.ondragstart = function (event) {
+        event.dataTransfer.setData("Text", event.target.id);
+    };
+    __ECHARTS__.history[container.id] = {
+         id: container.id,
+        type: type,
+        configs: configs,
+        dataset: dataset,
+        themes: themes,
+        contrainer: container,
+        width: width,
+        height: height,
+    };
     return container;
 }
 
-function  getRelationship(container, themes) {
+function  getRelationship(container, themes, width, height, type, dataset, configs) {
+    if (container == null) {
+        container = document.createElement("div");
+        container.className = "echarts-container";
+        container.id = "echarts-container";
+        container.style.width = width;
+        container.style.height = height;
+    }
     var myChart = echarts.init(container, themes);
-    var dataset = __DATASET__["result"][__DATASET__.default.sheet];
+
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
     var columns = [];
@@ -4760,72 +5113,72 @@ function  getRelationship(container, themes) {
                 width: 2.5
             }
         },
-        animation: __ECHARTS__.configs.animation.value.toBoolean(),
-        animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
-        animationEasing: getAnimationEasing(),
+        animation: configs.animation.value.toBoolean(),
+        animationThreshold: Number(configs.animationThreshold.value),
+        animationEasing: getAnimationEasing(configs),
         animationDuration: function (idx) {
-            return idx * Number(__ECHARTS__.configs.animationDuration.value);
+            return idx * Number(configs.animationDuration.value);
         },
         animationDelay: function (idx) {
-            return idx * Number(__ECHARTS__.configs.animationDelay.value);
+            return idx * Number(configs.animationDelay.value);
         },
-        animationEasingUpdate: getAnimationEasingUpdate(),
+        animationEasingUpdate: getAnimationEasingUpdate(configs),
         animationDurationUpdate: function (idx) {
-            return idx * Number(__ECHARTS__.configs.animationDurationUpdate.value);
+            return idx * Number(configs.animationDurationUpdate.value);
         },
         animationDelayUpdate: function (idx) {
-            return idx * Number(__ECHARTS__.configs.animationDelayUpdate.value);
+            return idx * Number(configs.animationDelayUpdate.value);
         },
     };
 
     var option = {
         grid: {
-            x: __ECHARTS__.configs.grid_left.value,
-            y: __ECHARTS__.configs.grid_top.value,
-            x2: __ECHARTS__.configs.grid_right.value,
-            y2: __ECHARTS__.configs.grid_bottom.value,
-            containLabel: __ECHARTS__.configs.grid_containLabel.value.toBoolean(),
+            x: configs.grid_left.value,
+            y: configs.grid_top.value,
+            x2: configs.grid_right.value,
+            y2: configs.grid_bottom.value,
+            containLabel: configs.grid_containLabel.value.toBoolean(),
             backgroundColor: "transparent"
         },
         toolbox: {
-            show: __ECHARTS__.configs.toolboxDisplay.value.toBoolean(),
+            show: configs.toolboxDisplay.value.toBoolean(),
             feature: {
                 saveAsImage: {
-                    show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value.toBoolean(),
+                    show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
                     excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"],
-                    backgroundColor:__ECHARTS__.configs.toolboxFeatureSaveAsImageBackgroundColor.value,
+                    backgroundColor:configs.toolboxFeatureSaveAsImageBackgroundColor.value,
                 },
-                restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value.toBoolean()},
-                dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
+                restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
+                dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
             },
-            top: __ECHARTS__.configs.toolbox_top.value,
-            left:__ECHARTS__.configs.toolbox_left.value,
-            orient: __ECHARTS__.configs.toolbox_orient.value,
+            top: configs.toolbox_top.value,
+            left:configs.toolbox_left.value,
+            orient: configs.toolbox_orient.value,
             emphasis: {
                 iconStyle: {
-                    textPosition: __ECHARTS__.configs.toolbox_textPosition.value,
+                    textPosition: configs.toolbox_textPosition.value,
                 }
             },
         },
         title: {
-            show: __ECHARTS__.configs.titleDisplay.value.toBoolean(),
-            text: __ECHARTS__.configs.titleText.value,
-            link: __ECHARTS__.configs.titleTextLink.value,
+            show: configs.titleDisplay.value.toBoolean(),
+            text: configs.titleText.value,
+            link: configs.titleTextLink.value,
             target : "blank",
-            subtext: __ECHARTS__.configs.titleSubText.value,
-            sublink: __ECHARTS__.configs.titleSubTextLink.value,
+            subtext: configs.titleSubText.value,
+            sublink: configs.titleSubTextLink.value,
             subtarget: "blank",
             top:"top",
-            left:__ECHARTS__.configs.titlePosition.value,
+            left:configs.titlePosition.value,
             textStyle:{
-                color:__ECHARTS__.configs.titleTextColor.value,
+                color:configs.titleTextColor.value,
             },
             subtextStyle:{
-                color:__ECHARTS__.configs.titleSubTextColor.value,
+                color:configs.titleSubTextColor.value,
             }
         },
         tooltip: {
-            show:__ECHARTS__.configs.tooltipDisplay.value.toBoolean(),
+            show:configs.tooltipDisplay.value.toBoolean(),
         },
         series: [serie],
         lineStyle: {
@@ -4833,13 +5186,13 @@ function  getRelationship(container, themes) {
             width: 2,
             curveness: 0.2
         },
-        graphic: getGraphic(__SYS_LOGO_LINK__),
+        graphic: getWaterGraphic(__SYS_LOGO_LINK__),
     };
 
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
-    }, Number(__ECHARTS__.configs.loadingTimes.value) * 1000);
+    }, Number(configs.loadingTimes.value) * 1000);
 
      //以下代码是为解决节点拖动
     initInvisibleGraphic();
@@ -4887,12 +5240,34 @@ function  getRelationship(container, themes) {
         myChart.setOption(option);
         updatePosition();
     }
+    container.id = getEchartsId();
+    container.draggable = "true";
+    container.ondragstart = function (event) {
+        event.dataTransfer.setData("Text", event.target.id);
+    };
+    __ECHARTS__.history[container.id] = {
+         id: container.id,
+        type: type,
+        configs: configs,
+        dataset: dataset,
+        themes: themes,
+        contrainer: container,
+        width: width,
+        height: height,
+    };
     return container;
 }
 
-function  getOrganizationStructure(container, themes) {
+function  getOrganizationStructure(container, themes, width, height, type, dataset, configs) {
+    if (container == null) {
+        container = document.createElement("div");
+        container.className = "echarts-container";
+        container.id = "echarts-container";
+        container.style.width = width;
+        container.style.height = height;
+    }
     var myChart = echarts.init(container, themes);
-    var dataset = __DATASET__["result"][__DATASET__.default.sheet];
+
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
     var columns = [];
@@ -5034,21 +5409,21 @@ function  getOrganizationStructure(container, themes) {
                     children: getChildren(nodes[i].name)
                 }],
                 symbolSize: 7,
-                animation: __ECHARTS__.configs.animation.value.toBoolean(),
-                animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
-                animationEasing: getAnimationEasing(),
+                animation: configs.animation.value.toBoolean(),
+                animationThreshold: Number(configs.animationThreshold.value),
+                animationEasing: getAnimationEasing(configs),
                 animationDuration: function (idx) {
-                    return idx * Number(__ECHARTS__.configs.animationDuration.value);
+                    return idx * Number(configs.animationDuration.value);
                 },
                 animationDelay: function (idx) {
-                    return idx * Number(__ECHARTS__.configs.animationDelay.value);
+                    return idx * Number(configs.animationDelay.value);
                 },
-                animationEasingUpdate: getAnimationEasingUpdate(),
+                animationEasingUpdate: getAnimationEasingUpdate(configs),
                 animationDurationUpdate: function (idx) {
-                    return idx * Number(__ECHARTS__.configs.animationDurationUpdate.value);
+                    return idx * Number(configs.animationDurationUpdate.value);
                 },
                 animationDelayUpdate: function (idx) {
-                    return idx * Number(__ECHARTS__.configs.animationDelayUpdate.value);
+                    return idx * Number(configs.animationDelayUpdate.value);
                 },
             };
             series.push(Object.assign(serie, getType()));
@@ -5057,83 +5432,105 @@ function  getOrganizationStructure(container, themes) {
 
     var option = {
         grid: {
-            x: __ECHARTS__.configs.grid_left.value,
-            y: __ECHARTS__.configs.grid_top.value,
-            x2: __ECHARTS__.configs.grid_right.value,
-            y2: __ECHARTS__.configs.grid_bottom.value,
-            containLabel: __ECHARTS__.configs.grid_containLabel.value.toBoolean(),
+            x: configs.grid_left.value,
+            y: configs.grid_top.value,
+            x2: configs.grid_right.value,
+            y2: configs.grid_bottom.value,
+            containLabel: configs.grid_containLabel.value.toBoolean(),
             backgroundColor: "transparent"
         },
         title: {
-            show: __ECHARTS__.configs.titleDisplay.value.toBoolean(),
-            text: __ECHARTS__.configs.titleText.value,
-            link: __ECHARTS__.configs.titleTextLink.value,
+            show: configs.titleDisplay.value.toBoolean(),
+            text: configs.titleText.value,
+            link: configs.titleTextLink.value,
             target : "blank",
-            subtext: __ECHARTS__.configs.titleSubText.value,
-            sublink: __ECHARTS__.configs.titleSubTextLink.value,
+            subtext: configs.titleSubText.value,
+            sublink: configs.titleSubTextLink.value,
             subtarget: "blank",
             top:"top",
-            left:__ECHARTS__.configs.titlePosition.value,
+            left:configs.titlePosition.value,
             textStyle:{
-                color:__ECHARTS__.configs.titleTextColor.value,
+                color:configs.titleTextColor.value,
             },
             subtextStyle:{
-                color:__ECHARTS__.configs.titleSubTextColor.value,
+                color:configs.titleSubTextColor.value,
             }
         },
         toolbox: {
-            show: __ECHARTS__.configs.toolboxDisplay.value.toBoolean(),
+            show: configs.toolboxDisplay.value.toBoolean(),
             feature: {
                 saveAsImage: {
-                    show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value.toBoolean(),
+                    show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
                     excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"],
-                    backgroundColor:__ECHARTS__.configs.toolboxFeatureSaveAsImageBackgroundColor.value,
+                    backgroundColor:configs.toolboxFeatureSaveAsImageBackgroundColor.value,
                 },
-                restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value.toBoolean()},
-                dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
+                restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
+                dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
             },
-            top: __ECHARTS__.configs.toolbox_top.value,
-            left:__ECHARTS__.configs.toolbox_left.value,
-            orient: __ECHARTS__.configs.toolbox_orient.value,
+            top: configs.toolbox_top.value,
+            left:configs.toolbox_left.value,
+            orient: configs.toolbox_orient.value,
             emphasis: {
                 iconStyle: {
-                    textPosition: __ECHARTS__.configs.toolbox_textPosition.value,
+                    textPosition: configs.toolbox_textPosition.value,
                 }
             },
         },
         tooltip: {
-            show:__ECHARTS__.configs.tooltipDisplay.value.toBoolean(),
+            show:configs.tooltipDisplay.value.toBoolean(),
             trigger: "item",
             triggerOn: "mousemove"
         },
         legend: {
-            show:__ECHARTS__.configs.legendDisplay.value.toBoolean(),
-            icon: __ECHARTS__.configs.legendIcon.value,
-            type: __ECHARTS__.configs.legendType.value,
-            selectedMode: __ECHARTS__.configs.legendSelectedMode.value,
-            top: __ECHARTS__.configs.legendPositionTop.value,
-            left: __ECHARTS__.configs.legendPositionLeft.value,
-            orient:__ECHARTS__.configs.legendOrient.value,
+            show:configs.legendDisplay.value.toBoolean(),
+            icon: configs.legendIcon.value,
+            type: configs.legendType.value,
+            selectedMode: configs.legendSelectedMode.value,
+            top: configs.legendPositionTop.value,
+            left: configs.legendPositionLeft.value,
+            orient:configs.legendOrient.value,
             data: legends,
             textStyle: {
-                color: __ECHARTS__.configs.legendTextColor.value
+                color: configs.legendTextColor.value
             },
         },
         series:series,
         draggable: true,
-        graphic: getGraphic(__SYS_LOGO_LINK__),
+        graphic: getWaterGraphic(__SYS_LOGO_LINK__),
     };
 
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
-    }, Number(__ECHARTS__.configs.loadingTimes.value) * 1000);
+    }, Number(configs.loadingTimes.value) * 1000);
+    container.id = getEchartsId();
+    container.draggable = "true";
+    container.ondragstart = function (event) {
+        event.dataTransfer.setData("Text", event.target.id);
+    };
+    __ECHARTS__.history[container.id] = {
+         id: container.id,
+        type: type,
+        configs: configs,
+        dataset: dataset,
+        themes: themes,
+        contrainer: container,
+        width: width,
+        height: height,
+    };
     return container;
 }
 
-function getWebkitDep(container, themes) {
+function getWebkitDep(container, themes, width, height, type, dataset, configs) {
+    if (container == null) {
+        container = document.createElement("div");
+        container.className = "echarts-container";
+        container.id = "echarts-container";
+        container.style.width = width;
+        container.style.height = height;
+    }
     var myChart = echarts.init(container, themes);
-    var dataset = __DATASET__["result"][__DATASET__.default.sheet];
+
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
     var columns = [];
@@ -5200,60 +5597,60 @@ function getWebkitDep(container, themes) {
 
     var option = {
         grid: {
-            x: __ECHARTS__.configs.grid_left.value,
-            y: __ECHARTS__.configs.grid_top.value,
-            x2: __ECHARTS__.configs.grid_right.value,
-            y2: __ECHARTS__.configs.grid_bottom.value,
-            containLabel: __ECHARTS__.configs.grid_containLabel.value.toBoolean(),
+            x: configs.grid_left.value,
+            y: configs.grid_top.value,
+            x2: configs.grid_right.value,
+            y2: configs.grid_bottom.value,
+            containLabel: configs.grid_containLabel.value.toBoolean(),
             backgroundColor: "transparent"
         },
         title: {
-            show: __ECHARTS__.configs.titleDisplay.value.toBoolean(),
-            text: __ECHARTS__.configs.titleText.value,
-            link: __ECHARTS__.configs.titleTextLink.value,
+            show: configs.titleDisplay.value.toBoolean(),
+            text: configs.titleText.value,
+            link: configs.titleTextLink.value,
             target : "blank",
-            subtext: __ECHARTS__.configs.titleSubText.value,
-            sublink: __ECHARTS__.configs.titleSubTextLink.value,
+            subtext: configs.titleSubText.value,
+            sublink: configs.titleSubTextLink.value,
             subtarget: "blank",
             top:"top",
-            left:__ECHARTS__.configs.titlePosition.value,
+            left:configs.titlePosition.value,
             textStyle:{
-                color:__ECHARTS__.configs.titleTextColor.value,
+                color:configs.titleTextColor.value,
             },
             subtextStyle:{
-                color:__ECHARTS__.configs.titleSubTextColor.value,
+                color:configs.titleSubTextColor.value,
             }
         },
         legend: {
-            show:__ECHARTS__.configs.legendDisplay.value.toBoolean(),
-            icon: __ECHARTS__.configs.legendIcon.value,
-            type: __ECHARTS__.configs.legendType.value,
-            selectedMode: __ECHARTS__.configs.legendSelectedMode.value,
-            top: __ECHARTS__.configs.legendPositionTop.value,
-            left: __ECHARTS__.configs.legendPositionLeft.value,
-            orient:__ECHARTS__.configs.legendOrient.value,
+            show:configs.legendDisplay.value.toBoolean(),
+            icon: configs.legendIcon.value,
+            type: configs.legendType.value,
+            selectedMode: configs.legendSelectedMode.value,
+            top: configs.legendPositionTop.value,
+            left: configs.legendPositionLeft.value,
+            orient:configs.legendOrient.value,
             data: columns,
             textStyle: {
-                color: __ECHARTS__.configs.legendTextColor.value
+                color: configs.legendTextColor.value
             },
         },
         toolbox: {
-            show: __ECHARTS__.configs.toolboxDisplay.value.toBoolean(),
+            show: configs.toolboxDisplay.value.toBoolean(),
             feature: {
                 saveAsImage: {
-                    show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value.toBoolean(),
+                    show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
                     excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"],
-                    backgroundColor:__ECHARTS__.configs.toolboxFeatureSaveAsImageBackgroundColor.value,
+                    backgroundColor:configs.toolboxFeatureSaveAsImageBackgroundColor.value,
                 },
-                restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value.toBoolean()},
-                dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
+                restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
+                dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
             },
-            top: __ECHARTS__.configs.toolbox_top.value,
-            left:__ECHARTS__.configs.toolbox_left.value,
-            orient: __ECHARTS__.configs.toolbox_orient.value,
+            top: configs.toolbox_top.value,
+            left:configs.toolbox_left.value,
+            orient: configs.toolbox_orient.value,
             emphasis: {
                 iconStyle: {
-                    textPosition: __ECHARTS__.configs.toolbox_textPosition.value,
+                    textPosition: configs.toolbox_textPosition.value,
                 }
             },
         },
@@ -5278,19 +5675,41 @@ function getWebkitDep(container, themes) {
             },
             edges: webkitDep.links
         }],
-        graphic: getGraphic(__SYS_LOGO_LINK__),
+        graphic: getWaterGraphic(__SYS_LOGO_LINK__),
     };
 
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
-    }, Number(__ECHARTS__.configs.loadingTimes.value) * 1000);
+    }, Number(configs.loadingTimes.value) * 1000);
+    container.id = getEchartsId();
+    container.draggable = "true";
+    container.ondragstart = function (event) {
+        event.dataTransfer.setData("Text", event.target.id);
+    };
+    __ECHARTS__.history[container.id] = {
+         id: container.id,
+        type: type,
+        configs: configs,
+        dataset: dataset,
+        themes: themes,
+        contrainer: container,
+        width: width,
+        height: height,
+    };
     return container;
 }
 
-function getScatter(container, themes) {
+function getScatter(container, themes, width, height, type, dataset, configs) {
+    if (container == null) {
+        container = document.createElement("div");
+        container.className = "echarts-container";
+        container.id = "echarts-container";
+        container.style.width = width;
+        container.style.height = height;
+    }
     var myChart = echarts.init(container, themes);
-    var dataset = __DATASET__["result"][__DATASET__.default.sheet];
+
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
     var regressionType = {"直线": "linear", "指数": "exponential", "对数": "logarithmic", "多项式": "polynomial"};
@@ -5299,9 +5718,9 @@ function getScatter(container, themes) {
     var minvalue = 0;
     var maxvalue = 1;
     var columns_add = [];
-    var selectType = __ECHARTS__.configs.regressionType.value;
-    var forwardPeroids = Number(__ECHARTS__.configs.regressionForwardPeroids.value);
-    var regressionPolynomialOrder = Number(__ECHARTS__.configs.regressionPolynomialOrder.value);
+    var selectType = configs.regressionType.value;
+    var forwardPeroids = Number(configs.regressionForwardPeroids.value);
+    var regressionPolynomialOrder = Number(configs.regressionPolynomialOrder.value);
 
     function init() {
         for (var i = 0; i < dataset["columns"].length; i++) {
@@ -5323,7 +5742,7 @@ function getScatter(container, themes) {
                     }
                 },
                 //symbolSize: [10, 70],
-                symbol: __ECHARTS__.configs.scatterSymbolShape.value,
+                symbol: configs.scatterSymbolShape.value,
                 symbolSize: function (data) {
                     //if (maxvalue != minvalue) {
                     //    if ((maxvalue - minvalue) >= (30 - 5))
@@ -5332,7 +5751,7 @@ function getScatter(container, themes) {
                     //        return ((maxvalue - minvalue) / (30 - 5)) * Math.abs(data[1]) + 5;
 
                     //} else
-                    return __ECHARTS__.configs.scatterSymbolSize.value;
+                    return configs.scatterSymbolSize.value;
                 },
                 itemStyle: {
                     opacity: 0.8,
@@ -5340,21 +5759,21 @@ function getScatter(container, themes) {
                     shadowOffsetX: 0,
                     shadowOffsetY: 0,
                 },
-                animation: __ECHARTS__.configs.animation.value.toBoolean(),
-                animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
-                animationEasing: getAnimationEasing(),
+                animation: configs.animation.value.toBoolean(),
+                animationThreshold: Number(configs.animationThreshold.value),
+                animationEasing: getAnimationEasing(configs),
                 animationDuration: function (idx) {
-                    return idx * Number(__ECHARTS__.configs.animationDuration.value) + c * Number(__ECHARTS__.configs.animationDuration.value);
+                    return idx * Number(configs.animationDuration.value) + c * Number(configs.animationDuration.value);
                 },
                 animationDelay: function (idx) {
-                    return idx * Number(__ECHARTS__.configs.animationDelay.value) + c * Number(__ECHARTS__.configs.animationDelay.value);
+                    return idx * Number(configs.animationDelay.value) + c * Number(configs.animationDelay.value);
                 },
-                animationEasingUpdate: getAnimationEasingUpdate(),
+                animationEasingUpdate: getAnimationEasingUpdate(configs),
                 animationDurationUpdate: function (idx) {
-                    return idx * Number(__ECHARTS__.configs.animationDurationUpdate.value) + c * Number(__ECHARTS__.configs.animationDurationUpdate.value);
+                    return idx * Number(configs.animationDurationUpdate.value) + c * Number(configs.animationDurationUpdate.value);
                 },
                 animationDelayUpdate: function (idx) {
-                    return idx * Number(__ECHARTS__.configs.animationDelayUpdate.value) + c * Number(__ECHARTS__.configs.animationDelayUpdate.value);
+                    return idx * Number(configs.animationDelayUpdate.value) + c * Number(configs.animationDelayUpdate.value);
                 },
             };
             for (var i = 0; i < dataset["data"].length; i++) {
@@ -5439,7 +5858,7 @@ function getScatter(container, themes) {
             name: type + "(" + column + ")",
             type: "line",
             showSymbol: false,
-            smooth: __ECHARTS__.configs.lineSmooth.value.toBoolean(),
+            smooth: configs.lineSmooth.value.toBoolean(),
             data: data,
             lineStyle: {
                 type: "dotted",     //"solid/dashed/dotted"
@@ -5458,21 +5877,21 @@ function getScatter(container, themes) {
                     coord: data[data.length - 1]
                 }],
             },
-            animation: __ECHARTS__.configs.animation.value.toBoolean(),
-            animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
-            animationEasing: getAnimationEasing(),
+            animation: configs.animation.value.toBoolean(),
+            animationThreshold: Number(configs.animationThreshold.value),
+            animationEasing: getAnimationEasing(configs),
             animationDuration: function (idx) {
-                return idx * Number(__ECHARTS__.configs.animationDuration.value);
+                return idx * Number(configs.animationDuration.value);
             },
             animationDelay: function (idx) {
-                return idx * Number(__ECHARTS__.configs.animationDelay.value);
+                return idx * Number(configs.animationDelay.value);
             },
-            animationEasingUpdate: getAnimationEasingUpdate(),
+            animationEasingUpdate: getAnimationEasingUpdate(configs),
             animationDurationUpdate: function (idx) {
-                return idx * Number(__ECHARTS__.configs.animationDurationUpdate.value);
+                return idx * Number(configs.animationDurationUpdate.value);
             },
             animationDelayUpdate: function (idx) {
-                return idx * Number(__ECHARTS__.configs.animationDelayUpdate.value);
+                return idx * Number(configs.animationDelayUpdate.value);
             },
         };
         series.push(regline);
@@ -5482,180 +5901,180 @@ function getScatter(container, themes) {
 
     var option = {
         grid: {
-            x: __ECHARTS__.configs.grid_left.value,
-            y: __ECHARTS__.configs.grid_top.value,
-            x2: __ECHARTS__.configs.grid_right.value,
-            y2: __ECHARTS__.configs.grid_bottom.value,
-            containLabel: __ECHARTS__.configs.grid_containLabel.value.toBoolean(),
+            x: configs.grid_left.value,
+            y: configs.grid_top.value,
+            x2: configs.grid_right.value,
+            y2: configs.grid_bottom.value,
+            containLabel: configs.grid_containLabel.value.toBoolean(),
             backgroundColor: "transparent"
         },
         title: {
-            show: __ECHARTS__.configs.titleDisplay.value.toBoolean(),
-            text: __ECHARTS__.configs.titleText.value,
-            link: __ECHARTS__.configs.titleTextLink.value,
+            show: configs.titleDisplay.value.toBoolean(),
+            text: configs.titleText.value,
+            link: configs.titleTextLink.value,
             target : "blank",
-            subtext: __ECHARTS__.configs.titleSubText.value,
-            sublink: __ECHARTS__.configs.titleSubTextLink.value,
+            subtext: configs.titleSubText.value,
+            sublink: configs.titleSubTextLink.value,
             subtarget: "blank",
             top: "top",
-            left: __ECHARTS__.configs.titlePosition.value,
+            left: configs.titlePosition.value,
             textStyle: {
-                color: __ECHARTS__.configs.titleTextColor.value,
+                color: configs.titleTextColor.value,
             },
             subtextStyle: {
-                color: __ECHARTS__.configs.titleSubTextColor.value,
+                color: configs.titleSubTextColor.value,
             }
         },
         legend: {
-            show: __ECHARTS__.configs.legendDisplay.value.toBoolean(),
-            icon: __ECHARTS__.configs.legendIcon.value,
-            type: __ECHARTS__.configs.legendType.value,
-            selectedMode: __ECHARTS__.configs.legendSelectedMode.value,
-            top: __ECHARTS__.configs.legendPositionTop.value,
-            left: __ECHARTS__.configs.legendPositionLeft.value,
-            orient: __ECHARTS__.configs.legendOrient.value,
+            show: configs.legendDisplay.value.toBoolean(),
+            icon: configs.legendIcon.value,
+            type: configs.legendType.value,
+            selectedMode: configs.legendSelectedMode.value,
+            top: configs.legendPositionTop.value,
+            left: configs.legendPositionLeft.value,
+            orient: configs.legendOrient.value,
             data: columns.slice().concat(columns_add),
             textStyle: {
-                color: __ECHARTS__.configs.legendTextColor.value
+                color: configs.legendTextColor.value
             },
         },
         toolbox: {
-            show: __ECHARTS__.configs.toolboxDisplay.value.toBoolean(),
+            show: configs.toolboxDisplay.value.toBoolean(),
             feature: {
                 saveAsImage: {
-                    show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value.toBoolean(),
+                    show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
                     excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"],
-                    backgroundColor:__ECHARTS__.configs.toolboxFeatureSaveAsImageBackgroundColor.value,
+                    backgroundColor:configs.toolboxFeatureSaveAsImageBackgroundColor.value,
                 },
-                restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value.toBoolean()},
-                dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
+                restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
+                dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
             },
-            top: __ECHARTS__.configs.toolbox_top.value,
-            left:__ECHARTS__.configs.toolbox_left.value,
-            orient: __ECHARTS__.configs.toolbox_orient.value,
+            top: configs.toolbox_top.value,
+            left:configs.toolbox_left.value,
+            orient: configs.toolbox_orient.value,
             emphasis: {
                 iconStyle: {
-                    textPosition: __ECHARTS__.configs.toolbox_textPosition.value,
+                    textPosition: configs.toolbox_textPosition.value,
                 }
             },
         },
         tooltip: {
-            show: __ECHARTS__.configs.tooltipDisplay.value.toBoolean(),
+            show: configs.tooltipDisplay.value.toBoolean(),
             trigger: "axis",
             axisPointer: {
-                type: __ECHARTS__.configs.axisPointerType.value,
+                type: configs.axisPointerType.value,
             }
         },
         xAxis: {
-            inverse: __ECHARTS__.configs.xAxisInverse.value.toBoolean(),
+            inverse: configs.xAxisInverse.value.toBoolean(),
             axisLine: {
-                show: __ECHARTS__.configs.axisLineDisplay.value.toBoolean(),
+                show: configs.axisLineDisplay.value.toBoolean(),
                 lineStyle: {
-                    color: __ECHARTS__.configs.axisColor.value
+                    color: configs.axisColor.value
                 },
             },
             axisTick:{
-                show: __ECHARTS__.configs.axisLineDisplay.value.toBoolean(),
+                show: configs.axisLineDisplay.value.toBoolean(),
             },
             axisLabel: {
-                show: __ECHARTS__.configs.axisLineDisplay.value.toBoolean(),
+                show: configs.axisLineDisplay.value.toBoolean(),
                 textStyle: {
-                    color: __ECHARTS__.configs.axisTextColor.value
+                    color: configs.axisTextColor.value
                 }
             },
             splitLine: {
-                show: __ECHARTS__.configs.splitXLineDisplay.value.toBoolean(),
+                show: configs.splitXLineDisplay.value.toBoolean(),
                 lineStyle: {
                     type: "dashed",
                     color: [
-                        __ECHARTS__.configs.axisColor.value
+                        configs.axisColor.value
                     ]
                 }
             },
             splitArea: {
-                show: __ECHARTS__.configs.splitXAreaDisplay.value.toBoolean(),
+                show: configs.splitXAreaDisplay.value.toBoolean(),
             }
         },
         yAxis: {
-            inverse: __ECHARTS__.configs.yAxisInverse.value.toBoolean(),
+            inverse: configs.yAxisInverse.value.toBoolean(),
             scale: true,
             axisLine: {
-                show: __ECHARTS__.configs.axisLineDisplay.value.toBoolean(),
+                show: configs.axisLineDisplay.value.toBoolean(),
                 lineStyle: {
-                    color: __ECHARTS__.configs.axisColor.value
+                    color: configs.axisColor.value
                 },
             },
             axisTick:{
-                show: __ECHARTS__.configs.axisLineDisplay.value.toBoolean(),
+                show: configs.axisLineDisplay.value.toBoolean(),
             },
             axisLabel: {
-                show: __ECHARTS__.configs.axisLineDisplay.value.toBoolean(),
+                show: configs.axisLineDisplay.value.toBoolean(),
                 textStyle: {
-                    color: __ECHARTS__.configs.axisTextColor.value
+                    color: configs.axisTextColor.value
                 }
             },
             splitLine: {
-                show: __ECHARTS__.configs.splitYLineDisplay.value.toBoolean(),
+                show: configs.splitYLineDisplay.value.toBoolean(),
                 lineStyle: {
                     type: "dashed",
                     color: [
-                        __ECHARTS__.configs.axisColor.value
+                        configs.axisColor.value
                     ]
                 },
             },
             splitArea: {
-                show: __ECHARTS__.configs.splitYAreaDisplay.value.toBoolean(),
+                show: configs.splitYAreaDisplay.value.toBoolean(),
             }
         },
         dataZoom: [{
             type: "inside",
-            filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
+            filterMode: configs.dataZoomFilterMode.value,
             start: 0,
             xAxisIndex: 0,
             end: 100
         }, {
             type: "inside",
-            filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
+            filterMode: configs.dataZoomFilterMode.value,
             start: 0,
             yAxisIndex: 0,
             end: 100
         }, {
-            show: __ECHARTS__.configs.dataZoomBarDisplay.value.toBoolean(),
+            show: configs.dataZoomBarDisplay.value.toBoolean(),
             type: "slider",
-            filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
+            filterMode: configs.dataZoomFilterMode.value,
             yAxisIndex: 0,
             start: 0,
             end: 100,
-            width: __ECHARTS__.configs.dataZoomBarWidth.value,
-            height: (100 - toPoint(__ECHARTS__.configs.grid_top.value) - toPoint(__ECHARTS__.configs.grid_bottom.value)) + "%",
-            top: __ECHARTS__.configs.grid_top.value,
-            right: (100 - toPoint(__ECHARTS__.configs.grid_right.value)) + "%",
-            handleIcon: __SYS_IMAGES_PATH__.dataZoomHandleIcon[__ECHARTS__.configs.dataZoomHandleIcon.value],
-            handleSize: __ECHARTS__.configs.dataZoomHandleSize.value,
-            borderColor: __ECHARTS__.configs.dataZoomBarColor.value,
+            width: configs.dataZoomBarWidth.value,
+            height: (100 - toPoint(configs.grid_top.value) - toPoint(configs.grid_bottom.value)) + "%",
+            top: configs.grid_top.value,
+            right: (100 - toPoint(configs.grid_right.value)) + "%",
+            handleIcon: __SYS_IMAGES_PATH__.dataZoomHandleIcon[configs.dataZoomHandleIcon.value],
+            handleSize: configs.dataZoomHandleSize.value,
+            borderColor: configs.dataZoomBarColor.value,
             handleStyle: {
-                color: __ECHARTS__.configs.dataZoomBarColor.value,
+                color: configs.dataZoomBarColor.value,
             }
         }, {
-            show: __ECHARTS__.configs.dataZoomBarDisplay.value.toBoolean(),
+            show: configs.dataZoomBarDisplay.value.toBoolean(),
             type: "slider",
-            filterMode: __ECHARTS__.configs.dataZoomFilterMode.value,
+            filterMode: configs.dataZoomFilterMode.value,
             xAxisIndex: 0,
             start: 0,
             end: 100,
-            width: (100 - toPoint(__ECHARTS__.configs.grid_left.value) - toPoint(__ECHARTS__.configs.grid_right.value)) + "%",
-            height: __ECHARTS__.configs.dataZoomBarWidth.value,
-            left: __ECHARTS__.configs.grid_left.value,
-            top: (100 - toPoint(__ECHARTS__.configs.grid_bottom.value)) + "%",
-            handleIcon: __SYS_IMAGES_PATH__.dataZoomHandleIcon[__ECHARTS__.configs.dataZoomHandleIcon.value],
-            handleSize: __ECHARTS__.configs.dataZoomHandleSize.value,
-            borderColor: __ECHARTS__.configs.dataZoomBarColor.value,
+            width: (100 - toPoint(configs.grid_left.value) - toPoint(configs.grid_right.value)) + "%",
+            height: configs.dataZoomBarWidth.value,
+            left: configs.grid_left.value,
+            top: (100 - toPoint(configs.grid_bottom.value)) + "%",
+            handleIcon: __SYS_IMAGES_PATH__.dataZoomHandleIcon[configs.dataZoomHandleIcon.value],
+            handleSize: configs.dataZoomHandleSize.value,
+            borderColor: configs.dataZoomBarColor.value,
             handleStyle: {
-                color: __ECHARTS__.configs.dataZoomBarColor.value,
+                color: configs.dataZoomBarColor.value,
             }
         }],
         series: series,
-        graphic: getGraphic(__SYS_LOGO_LINK__),
+        graphic: getWaterGraphic(__SYS_LOGO_LINK__),
         animationDurationUpdate: 1500,
         animationEasingUpdate: "quinticInOut",
     };
@@ -5663,13 +6082,35 @@ function getScatter(container, themes) {
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
-    }, Number(__ECHARTS__.configs.loadingTimes.value) * 1000);
+    }, Number(configs.loadingTimes.value) * 1000);
+    container.id = getEchartsId();
+    container.draggable = "true";
+    container.ondragstart = function (event) {
+        event.dataTransfer.setData("Text", event.target.id);
+    };
+    __ECHARTS__.history[container.id] = {
+         id: container.id,
+        type: type,
+        configs: configs,
+        dataset: dataset,
+        themes: themes,
+        contrainer: container,
+        width: width,
+        height: height,
+    };
     return container;
 }
 
-function getFunnel(container, themes) {
+function getFunnel(container, themes, width, height, type, dataset, configs) {
+    if (container == null) {
+        container = document.createElement("div");
+        container.className = "echarts-container";
+        container.id = "echarts-container";
+        container.style.width = width;
+        container.style.height = height;
+    }
     var myChart = echarts.init(container, themes);
-    var dataset = __DATASET__["result"][__DATASET__.default.sheet];
+
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
     var series = [];
@@ -5718,21 +6159,21 @@ function getFunnel(container, themes) {
                         }
                     },
                     data: [],
-                    animation: __ECHARTS__.configs.animation.value.toBoolean(),
-                    animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
-                    animationEasing: getAnimationEasing(),
+                    animation: configs.animation.value.toBoolean(),
+                    animationThreshold: Number(configs.animationThreshold.value),
+                    animationEasing: getAnimationEasing(configs),
                     animationDuration: function (idx) {
-                        return idx * Number(__ECHARTS__.configs.animationDuration.value) + c * Number(__ECHARTS__.configs.animationDuration.value);
+                        return idx * Number(configs.animationDuration.value) + c * Number(configs.animationDuration.value);
                     },
                     animationDelay: function (idx) {
-                        return idx * Number(__ECHARTS__.configs.animationDelay.value) + c * Number(__ECHARTS__.configs.animationDelay.value);
+                        return idx * Number(configs.animationDelay.value) + c * Number(configs.animationDelay.value);
                     },
-                    animationEasingUpdate: getAnimationEasingUpdate(),
+                    animationEasingUpdate: getAnimationEasingUpdate(configs),
                     animationDurationUpdate: function (idx) {
-                        return idx * Number(__ECHARTS__.configs.animationDurationUpdate.value) + c * Number(__ECHARTS__.configs.animationDurationUpdate.value);
+                        return idx * Number(configs.animationDurationUpdate.value) + c * Number(configs.animationDurationUpdate.value);
                     },
                     animationDelayUpdate: function (idx) {
-                        return idx * Number(__ECHARTS__.configs.animationDelayUpdate.value) + c * Number(__ECHARTS__.configs.animationDelayUpdate.value);
+                        return idx * Number(configs.animationDelayUpdate.value) + c * Number(configs.animationDelayUpdate.value);
                     },
                 };
                 for (var i = 0; i < dataset["data"].length; i++) {
@@ -5743,11 +6184,11 @@ function getFunnel(container, themes) {
             }
         }
 
-        let top = toPoint(__ECHARTS__.configs.grid_top.value);
-        let left = toPoint(__ECHARTS__.configs.grid_left.value);
+        let top = toPoint(configs.grid_top.value);
+        let left = toPoint(configs.grid_left.value);
         let lines = parseInt(series.length / 2 + 0.5);
-        let height = parseInt((100 - toPoint(__ECHARTS__.configs.grid_top.value) - toPoint(__ECHARTS__.configs.grid_bottom.value)) / lines);
-        let width = 100 - toPoint(__ECHARTS__.configs.grid_left.value) - toPoint(__ECHARTS__.configs.grid_right.value);
+        let height = parseInt((100 - toPoint(configs.grid_top.value) - toPoint(configs.grid_bottom.value)) / lines);
+        let width = 100 - toPoint(configs.grid_left.value) - toPoint(configs.grid_right.value);
 
         if (series.length > 1)
             width = 40;
@@ -5777,74 +6218,96 @@ function getFunnel(container, themes) {
 
     var option = {
         title: {
-            show: __ECHARTS__.configs.titleDisplay.value.toBoolean(),
-            text: __ECHARTS__.configs.titleText.value,
-            link: __ECHARTS__.configs.titleTextLink.value,
+            show: configs.titleDisplay.value.toBoolean(),
+            text: configs.titleText.value,
+            link: configs.titleTextLink.value,
             target : "blank",
-            subtext: __ECHARTS__.configs.titleSubText.value,
-            sublink: __ECHARTS__.configs.titleSubTextLink.value,
+            subtext: configs.titleSubText.value,
+            sublink: configs.titleSubTextLink.value,
             subtarget: "blank",
             top:"top",
-            left:__ECHARTS__.configs.titlePosition.value,
+            left:configs.titlePosition.value,
             textStyle:{
-                color:__ECHARTS__.configs.titleTextColor.value,
+                color:configs.titleTextColor.value,
             },
             subtextStyle:{
-                color:__ECHARTS__.configs.titleSubTextColor.value,
+                color:configs.titleSubTextColor.value,
             }
         },
         tooltip: {
-            show:__ECHARTS__.configs.tooltipDisplay.value.toBoolean(),
+            show:configs.tooltipDisplay.value.toBoolean(),
             trigger: "item",
             formatter: "{a} <br/>{b} : {c}"
         },
         toolbox: {
-            show: __ECHARTS__.configs.toolboxDisplay.value.toBoolean(),
+            show: configs.toolboxDisplay.value.toBoolean(),
             feature: {
                 saveAsImage: {
-                    show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value.toBoolean(),
+                    show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
                     excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"],
-                    backgroundColor:__ECHARTS__.configs.toolboxFeatureSaveAsImageBackgroundColor.value,
+                    backgroundColor:configs.toolboxFeatureSaveAsImageBackgroundColor.value,
                 },
-                restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value.toBoolean()},
-                dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
+                restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
+                dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
             },
-            top: __ECHARTS__.configs.toolbox_top.value,
-            left:__ECHARTS__.configs.toolbox_left.value,
-            orient: __ECHARTS__.configs.toolbox_orient.value,
+            top: configs.toolbox_top.value,
+            left:configs.toolbox_left.value,
+            orient: configs.toolbox_orient.value,
             emphasis: {
                 iconStyle: {
-                    textPosition: __ECHARTS__.configs.toolbox_textPosition.value,
+                    textPosition: configs.toolbox_textPosition.value,
                 }
             },
         },
         legend: {
-            show:__ECHARTS__.configs.legendDisplay.value.toBoolean(),
-            icon: __ECHARTS__.configs.legendIcon.value,
-            type: __ECHARTS__.configs.legendType.value,
-            selectedMode: __ECHARTS__.configs.legendSelectedMode.value,
-            top: __ECHARTS__.configs.legendPositionTop.value,
-            left: __ECHARTS__.configs.legendPositionLeft.value,
-            orient:__ECHARTS__.configs.legendOrient.value,
+            show:configs.legendDisplay.value.toBoolean(),
+            icon: configs.legendIcon.value,
+            type: configs.legendType.value,
+            selectedMode: configs.legendSelectedMode.value,
+            top: configs.legendPositionTop.value,
+            left: configs.legendPositionLeft.value,
+            orient:configs.legendOrient.value,
             data: legends,//columns.slice(1),
             textStyle: {
-                color: __ECHARTS__.configs.legendTextColor.value
+                color: configs.legendTextColor.value
             },
         },
         series: series,
-        graphic: getGraphic(__SYS_LOGO_LINK__),
+        graphic: getWaterGraphic(__SYS_LOGO_LINK__),
     };
 
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
-    }, Number(__ECHARTS__.configs.loadingTimes.value) * 1000);
+    }, Number(configs.loadingTimes.value) * 1000);
+    container.id = getEchartsId();
+    container.draggable = "true";
+    container.ondragstart = function (event) {
+        event.dataTransfer.setData("Text", event.target.id);
+    };
+    __ECHARTS__.history[container.id] = {
+         id: container.id,
+        type: type,
+        configs: configs,
+        dataset: dataset,
+        themes: themes,
+        contrainer: container,
+        width: width,
+        height: height,
+    };
     return container;
 }
 
-function getWordCloud(container, themes) {
+function getWordCloud(container, themes, width, height, type, dataset, configs) {
+    if (container == null) {
+        container = document.createElement("div");
+        container.className = "echarts-container";
+        container.id = "echarts-container";
+        container.style.width = width;
+        container.style.height = height;
+    }
     var myChart = echarts.init(container, themes);
-    var dataset = __DATASET__["result"][__DATASET__.default.sheet];
+
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
     var series = [];
@@ -5869,9 +6332,9 @@ function getWordCloud(container, themes) {
                     name: columns[c],
                     type: "wordCloud",
                     gridSize: 2,
-                    sizeRange: [__ECHARTS__.configs.wordCloudMinFontSize.value, __ECHARTS__.configs.wordCloudMaxFontSize.value],//[最小字号,最大字号],
-                    rotationRange: [-1 * __ECHARTS__.configs.wordCloudRotationRange.value, __ECHARTS__.configs.wordCloudRotationRange.value],//[旋转角度,旋转角度]
-                    shape: __ECHARTS__.configs.wordCloudShape.value,
+                    sizeRange: [configs.wordCloudMinFontSize.value, configs.wordCloudMaxFontSize.value],//[最小字号,最大字号],
+                    rotationRange: [-1 * configs.wordCloudRotationRange.value, configs.wordCloudRotationRange.value],//[旋转角度,旋转角度]
+                    shape: configs.wordCloudShape.value,
                     //"circle", "cardioid", "diamond", "triangle-forward", "triangle", "pentagon", "star"
                     //maskImage: maskImage,
                     drawOutOfBound: false,
@@ -5904,21 +6367,21 @@ function getWordCloud(container, themes) {
                             }
                         }
                     ],
-                    animation: __ECHARTS__.configs.animation.value.toBoolean(),
-                    animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
-                    animationEasing: getAnimationEasing(),
+                    animation: configs.animation.value.toBoolean(),
+                    animationThreshold: Number(configs.animationThreshold.value),
+                    animationEasing: getAnimationEasing(configs),
                     animationDuration: function (idx) {
-                        return idx * Number(__ECHARTS__.configs.animationDuration.value) + c * Number(__ECHARTS__.configs.animationDuration.value);
+                        return idx * Number(configs.animationDuration.value) + c * Number(configs.animationDuration.value);
                     },
                     animationDelay: function (idx) {
-                        return idx * Number(__ECHARTS__.configs.animationDelay.value) + c * Number(__ECHARTS__.configs.animationDelay.value);
+                        return idx * Number(configs.animationDelay.value) + c * Number(configs.animationDelay.value);
                     },
-                    animationEasingUpdate: getAnimationEasingUpdate(),
+                    animationEasingUpdate: getAnimationEasingUpdate(configs),
                     animationDurationUpdate: function (idx) {
-                        return idx * Number(__ECHARTS__.configs.animationDurationUpdate.value) + c * Number(__ECHARTS__.configs.animationDurationUpdate.value);
+                        return idx * Number(configs.animationDurationUpdate.value) + c * Number(configs.animationDurationUpdate.value);
                     },
                     animationDelayUpdate: function (idx) {
-                        return idx * Number(__ECHARTS__.configs.animationDelayUpdate.value) + c * Number(__ECHARTS__.configs.animationDelayUpdate.value);
+                        return idx * Number(configs.animationDelayUpdate.value) + c * Number(configs.animationDelayUpdate.value);
                     },
                 };
                 serie.data = [];
@@ -5930,12 +6393,12 @@ function getWordCloud(container, themes) {
             }
         }
 
-        let top = toPoint(__ECHARTS__.configs.grid_top.value);
-        let left = toPoint(__ECHARTS__.configs.grid_left.value);
-        let groupWith = __ECHARTS__.configs.groupWith.value;
+        let top = toPoint(configs.grid_top.value);
+        let left = toPoint(configs.grid_left.value);
+        let groupWith = configs.groupWith.value;
         let lines = parseInt(series.length / groupWith + 0.5);
-        let height = parseInt((100 - toPoint(__ECHARTS__.configs.grid_top.value) - toPoint(__ECHARTS__.configs.grid_bottom.value)) / lines);
-        let width = (100 - toPoint(__ECHARTS__.configs.grid_left.value) - toPoint(__ECHARTS__.configs.grid_right.value)) / groupWith;
+        let height = parseInt((100 - toPoint(configs.grid_top.value) - toPoint(configs.grid_bottom.value)) / lines);
+        let width = (100 - toPoint(configs.grid_left.value) - toPoint(configs.grid_right.value)) / groupWith;
 
         for (var i = 0; i < series.length; i++) {
             series[i].top = ((top + parseInt(i / groupWith) * height) + parseInt(i / groupWith) * top) + "%";
@@ -5949,84 +6412,106 @@ function getWordCloud(container, themes) {
 
     var option = {
         grid: {
-            x: __ECHARTS__.configs.grid_left.value,
-            y: __ECHARTS__.configs.grid_top.value,
-            x2: __ECHARTS__.configs.grid_right.value,
-            y2: __ECHARTS__.configs.grid_bottom.value,
-            containLabel: __ECHARTS__.configs.grid_containLabel.value.toBoolean(),
+            x: configs.grid_left.value,
+            y: configs.grid_top.value,
+            x2: configs.grid_right.value,
+            y2: configs.grid_bottom.value,
+            containLabel: configs.grid_containLabel.value.toBoolean(),
             backgroundColor: "transparent"
         },
         title: {
-            show: __ECHARTS__.configs.titleDisplay.value.toBoolean(),
-            text: __ECHARTS__.configs.titleText.value,
-            link: __ECHARTS__.configs.titleTextLink.value,
+            show: configs.titleDisplay.value.toBoolean(),
+            text: configs.titleText.value,
+            link: configs.titleTextLink.value,
             target : "blank",
-            subtext: __ECHARTS__.configs.titleSubText.value,
-            sublink: __ECHARTS__.configs.titleSubTextLink.value,
+            subtext: configs.titleSubText.value,
+            sublink: configs.titleSubTextLink.value,
             subtarget: "blank",
             top:"top",
-            left:__ECHARTS__.configs.titlePosition.value,
+            left:configs.titlePosition.value,
             textStyle:{
-                color:__ECHARTS__.configs.titleTextColor.value,
+                color:configs.titleTextColor.value,
             },
             subtextStyle:{
-                color:__ECHARTS__.configs.titleSubTextColor.value,
+                color:configs.titleSubTextColor.value,
             }
         },
         tooltip: {
-            show:__ECHARTS__.configs.tooltipDisplay.value.toBoolean(),
+            show:configs.tooltipDisplay.value.toBoolean(),
             formatter: function (param) {
                 return param.name + "<br>" + param.seriesName + ":"
                     + param.value;
             }
         },
         legend: {
-            show:__ECHARTS__.configs.legendDisplay.value.toBoolean(),
-            icon: __ECHARTS__.configs.legendIcon.value,
-            type: __ECHARTS__.configs.legendType.value,
-            selectedMode: __ECHARTS__.configs.legendSelectedMode.value,
-            top: __ECHARTS__.configs.legendPositionTop.value,
-            left: __ECHARTS__.configs.legendPositionLeft.value,
-            orient:__ECHARTS__.configs.legendOrient.value,
+            show:configs.legendDisplay.value.toBoolean(),
+            icon: configs.legendIcon.value,
+            type: configs.legendType.value,
+            selectedMode: configs.legendSelectedMode.value,
+            top: configs.legendPositionTop.value,
+            left: configs.legendPositionLeft.value,
+            orient:configs.legendOrient.value,
             data: columns.slice(1),
             textStyle: {
-                color: __ECHARTS__.configs.legendTextColor.value
+                color: configs.legendTextColor.value
             },
         },
         toolbox: {
-            show: __ECHARTS__.configs.toolboxDisplay.value.toBoolean(),
+            show: configs.toolboxDisplay.value.toBoolean(),
             feature: {
                 saveAsImage: {
-                    show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value.toBoolean(),
+                    show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
                     excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"],
-                    backgroundColor:__ECHARTS__.configs.toolboxFeatureSaveAsImageBackgroundColor.value,
+                    backgroundColor:configs.toolboxFeatureSaveAsImageBackgroundColor.value,
                 },
-                restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value.toBoolean()},
-                dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
+                restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
+                dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
             },
-            top: __ECHARTS__.configs.toolbox_top.value,
-            left:__ECHARTS__.configs.toolbox_left.value,
-            orient: __ECHARTS__.configs.toolbox_orient.value,
+            top: configs.toolbox_top.value,
+            left:configs.toolbox_left.value,
+            orient: configs.toolbox_orient.value,
             emphasis: {
                 iconStyle: {
-                    textPosition: __ECHARTS__.configs.toolbox_textPosition.value,
+                    textPosition: configs.toolbox_textPosition.value,
                 }
             },
         },
         series: series,
-        graphic: getGraphic(__SYS_LOGO_LINK__),
+        graphic: getWaterGraphic(__SYS_LOGO_LINK__),
     };
 
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
-    }, Number(__ECHARTS__.configs.loadingTimes.value) * 1000);
+    }, Number(configs.loadingTimes.value) * 1000);
+    container.id = getEchartsId();
+    container.draggable = "true";
+    container.ondragstart = function (event) {
+        event.dataTransfer.setData("Text", event.target.id);
+    };
+    __ECHARTS__.history[container.id] = {
+         id: container.id,
+        type: type,
+        configs: configs,
+        dataset: dataset,
+        themes: themes,
+        contrainer: container,
+        width: width,
+        height: height,
+    };
     return container;
 }
 
-function getLiqiud(container, themes) {
+function getLiqiud(container, themes, width, height, type, dataset, configs) {
+    if (container == null) {
+        container = document.createElement("div");
+        container.className = "echarts-container";
+        container.id = "echarts-container";
+        container.style.width = width;
+        container.style.height = height;
+    }
     var myChart = echarts.init(container, themes);
-    var dataset = __DATASET__["result"][__DATASET__.default.sheet];
+
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
     var columns = [];
@@ -6051,9 +6536,9 @@ function getLiqiud(container, themes) {
                 phase: "auto",
                 period: "auto",
                 direction: "right",
-                smooth: __ECHARTS__.configs.lineSmooth.value.toBoolean(),
+                smooth: configs.lineSmooth.value.toBoolean(),
 
-                shape: __ECHARTS__.configs.liqiudShape.value,
+                shape: configs.liqiudShape.value,
 
                 waveAnimation: true,
 
@@ -6082,7 +6567,7 @@ function getLiqiud(container, themes) {
                 label: {
                     show: true,
                     insideColor: "#fff",
-                    fontSize: __ECHARTS__.configs.liqiudFontSize.value,
+                    fontSize: configs.liqiudFontSize.value,
                     fontWeight: "bold",
                     align: "center",
                     baseline: "middle",
@@ -6094,21 +6579,21 @@ function getLiqiud(container, themes) {
                         opacity: 0.8
                     }
                 },
-                animation: __ECHARTS__.configs.animation.value.toBoolean(),
-                animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
-                animationEasing: getAnimationEasing(),
+                animation: configs.animation.value.toBoolean(),
+                animationThreshold: Number(configs.animationThreshold.value),
+                animationEasing: getAnimationEasing(configs),
                 animationDuration: function (idx) {
-                    return idx * Number(__ECHARTS__.configs.animationDuration.value);
+                    return idx * Number(configs.animationDuration.value);
                 },
                 animationDelay: function (idx) {
-                    return idx * Number(__ECHARTS__.configs.animationDelay.value);
+                    return idx * Number(configs.animationDelay.value);
                 },
-                animationEasingUpdate: getAnimationEasingUpdate(),
+                animationEasingUpdate: getAnimationEasingUpdate(configs),
                 animationDurationUpdate: function (idx) {
-                    return idx * Number(__ECHARTS__.configs.animationDurationUpdate.value);
+                    return idx * Number(configs.animationDurationUpdate.value);
                 },
                 animationDelayUpdate: function (idx) {
-                    return idx * Number(__ECHARTS__.configs.animationDelayUpdate.value);
+                    return idx * Number(configs.animationDelayUpdate.value);
                 },
             };
             for (var c = 0; c < columns.length; c++) {
@@ -6125,7 +6610,7 @@ function getLiqiud(container, themes) {
             series.push(serie);
         }
 
-        var groupWith = __ECHARTS__.configs.groupWith.value;
+        var groupWith = configs.groupWith.value;
         var lines = parseInt(series.length / groupWith + 0.5);
         var radius = 80 / (lines>groupWith?lines:groupWith);
         for (var i = 0; i < series.length; i++) {
@@ -6139,56 +6624,56 @@ function getLiqiud(container, themes) {
     init();
     var option = {
         tooltip: {
-            show:__ECHARTS__.configs.tooltipDisplay.value.toBoolean(),
+            show:configs.tooltipDisplay.value.toBoolean(),
         },
         title: {
-            show: __ECHARTS__.configs.titleDisplay.value.toBoolean(),
-            text: __ECHARTS__.configs.titleText.value,
-            link: __ECHARTS__.configs.titleTextLink.value,
+            show: configs.titleDisplay.value.toBoolean(),
+            text: configs.titleText.value,
+            link: configs.titleTextLink.value,
             target : "blank",
-            subtext: __ECHARTS__.configs.titleSubText.value,
-            sublink: __ECHARTS__.configs.titleSubTextLink.value,
+            subtext: configs.titleSubText.value,
+            sublink: configs.titleSubTextLink.value,
             subtarget: "blank",
             top:"top",
-            left:__ECHARTS__.configs.titlePosition.value,
+            left:configs.titlePosition.value,
             textStyle:{
-                color:__ECHARTS__.configs.titleTextColor.value,
+                color:configs.titleTextColor.value,
             },
             subtextStyle:{
-                color:__ECHARTS__.configs.titleSubTextColor.value,
+                color:configs.titleSubTextColor.value,
             }
         },
         legend: {
-            show:__ECHARTS__.configs.legendDisplay.value.toBoolean(),
-            icon: __ECHARTS__.configs.legendIcon.value,
-            type: __ECHARTS__.configs.legendType.value,
-            selectedMode: __ECHARTS__.configs.legendSelectedMode.value,
-            top: __ECHARTS__.configs.legendPositionTop.value,
-            left: __ECHARTS__.configs.legendPositionLeft.value,
-            orient:__ECHARTS__.configs.legendOrient.value,
+            show:configs.legendDisplay.value.toBoolean(),
+            icon: configs.legendIcon.value,
+            type: configs.legendType.value,
+            selectedMode: configs.legendSelectedMode.value,
+            top: configs.legendPositionTop.value,
+            left: configs.legendPositionLeft.value,
+            orient:configs.legendOrient.value,
             data: legends,
             textStyle: {
-                color: __ECHARTS__.configs.legendTextColor.value
+                color: configs.legendTextColor.value
             },
         },
         toolbox: {
-            show: __ECHARTS__.configs.toolboxDisplay.value.toBoolean(),
+            show: configs.toolboxDisplay.value.toBoolean(),
             feature: {
                 saveAsImage: {
-                    show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value.toBoolean(),
+                    show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
                     excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"],
-                    backgroundColor:__ECHARTS__.configs.toolboxFeatureSaveAsImageBackgroundColor.value,
+                    backgroundColor:configs.toolboxFeatureSaveAsImageBackgroundColor.value,
                 },
-                restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value.toBoolean()},
-                dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
+                restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
+                dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
 
             },
-            top: __ECHARTS__.configs.toolbox_top.value,
-            left:__ECHARTS__.configs.toolbox_left.value,
-            orient: __ECHARTS__.configs.toolbox_orient.value,
+            top: configs.toolbox_top.value,
+            left:configs.toolbox_left.value,
+            orient: configs.toolbox_orient.value,
             emphasis: {
                 iconStyle: {
-                    textPosition: __ECHARTS__.configs.toolbox_textPosition.value,
+                    textPosition: configs.toolbox_textPosition.value,
                 }
             },
         },
@@ -6200,13 +6685,13 @@ function getLiqiud(container, themes) {
             },
         },
         series: series,
-        graphic: getGraphic(__SYS_LOGO_LINK__),
+        graphic: getWaterGraphic(__SYS_LOGO_LINK__),
     };
 
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
-    }, Number(__ECHARTS__.configs.loadingTimes.value) * 1000);
+    }, Number(configs.loadingTimes.value) * 1000);
 
     myChart.on("mouseover", function (params) {
         stopTimer();
@@ -6230,7 +6715,7 @@ function getLiqiud(container, themes) {
     }
 
     function startTimer() {
-        timer = setInterval(doing,  __ECHARTS__.configs.seriesLoopPlayInterval.value * 1000);
+        timer = setInterval(doing,  configs.seriesLoopPlayInterval.value * 1000);
     }
 
     function stopTimer() {
@@ -6238,13 +6723,35 @@ function getLiqiud(container, themes) {
         timer=null;
     }
 
-    setTimeout(startTimer,  __ECHARTS__.configs.seriesLoopPlayInterval.value * 1000);
+    setTimeout(startTimer,  configs.seriesLoopPlayInterval.value * 1000);
+    container.id = getEchartsId();
+    container.draggable = "true";
+    container.ondragstart = function (event) {
+        event.dataTransfer.setData("Text", event.target.id);
+    };
+    __ECHARTS__.history[container.id] = {
+         id: container.id,
+        type: type,
+        configs: configs,
+        dataset: dataset,
+        themes: themes,
+        contrainer: container,
+        width: width,
+        height: height,
+    };
     return container;
 }
 
-function getGaugeWithAll(container, themes) {
+function getGaugeWithAll(container, themes, width, height, type, dataset, configs) {
+    if (container == null) {
+        container = document.createElement("div");
+        container.className = "echarts-container";
+        container.id = "echarts-container";
+        container.style.width = width;
+        container.style.height = height;
+    }
     var myChart = echarts.init(container, themes);
-    var dataset = __DATASET__["result"][__DATASET__.default.sheet];
+
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
     var columns = [];
@@ -6261,14 +6768,14 @@ function getGaugeWithAll(container, themes) {
             type: "gauge",
             title: {
                 fontWeight: "bolder",
-                fontSize: __ECHARTS__.configs.gaugeTitleFontSize.value,
+                fontSize: configs.gaugeTitleFontSize.value,
                 color: "gray",
                 textShadowColor: "rgba(0, 0, 0, 0.5)",
                 textShadowBlur: 10,
             },
             axisLine: {
                 lineStyle: {
-                    width: __ECHARTS__.configs.gaugeAxisLineWidth.value,//10, //圆X轴宽度
+                    width: configs.gaugeAxisLineWidth.value,//10, //圆X轴宽度
                     shadowColor: "rgba(0, 0, 0, 0.5)",
                     shadowBlur: 10,
                     color: [[0.2, "#3CB371"], [0.8, "#6388ae"], [1, "#DB7093"]]
@@ -6276,7 +6783,7 @@ function getGaugeWithAll(container, themes) {
                 }
             },
             axisLabel: {
-                fontSize: __ECHARTS__.configs.gaugeAxisLabelFontSize.value,
+                fontSize: configs.gaugeAxisLabelFontSize.value,
                 textShadowColor: "rgba(0, 0, 0, 0.5)",
                 textShadowBlur: 10,
             },
@@ -6289,26 +6796,26 @@ function getGaugeWithAll(container, themes) {
             },
             detail: {
                 formatter: ["{value}%", ""].join("\n"),
-                fontSize: __ECHARTS__.configs.gaugeLabelFontSize.value,
+                fontSize: configs.gaugeLabelFontSize.value,
                 textShadowColor: "rgba(0, 0, 0, 0.5)",
                 textShadowBlur: 10,
             },
             data: [],
-            animation: __ECHARTS__.configs.animation.value.toBoolean(),
-            animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
-            animationEasing: getAnimationEasing(),
+            animation: configs.animation.value.toBoolean(),
+            animationThreshold: Number(configs.animationThreshold.value),
+            animationEasing: getAnimationEasing(configs),
             animationDuration: function (idx) {
-                return idx * Number(__ECHARTS__.configs.animationDuration.value) + c * Number(__ECHARTS__.configs.animationDuration.value);
+                return idx * Number(configs.animationDuration.value) + c * Number(configs.animationDuration.value);
             },
             animationDelay: function (idx) {
-                return idx * Number(__ECHARTS__.configs.animationDelay.value) + c * Number(__ECHARTS__.configs.animationDelay.value);
+                return idx * Number(configs.animationDelay.value) + c * Number(configs.animationDelay.value);
             },
-            animationEasingUpdate: getAnimationEasingUpdate(),
+            animationEasingUpdate: getAnimationEasingUpdate(configs),
             animationDurationUpdate: function (idx) {
-                return idx * Number(__ECHARTS__.configs.animationDurationUpdate.value) + c * Number(__ECHARTS__.configs.animationDurationUpdate.value);
+                return idx * Number(configs.animationDurationUpdate.value) + c * Number(configs.animationDurationUpdate.value);
             },
             animationDelayUpdate: function (idx) {
-                return idx * Number(__ECHARTS__.configs.animationDelayUpdate.value) + c * Number(__ECHARTS__.configs.animationDelayUpdate.value);
+                return idx * Number(configs.animationDelayUpdate.value) + c * Number(configs.animationDelayUpdate.value);
             },
         };
         for (var c = 0; c < columns.length; c++) {
@@ -6329,7 +6836,7 @@ function getGaugeWithAll(container, themes) {
         series.push(serie);
     }
 
-    var groupWith = __ECHARTS__.configs.groupWith.value;
+    var groupWith = configs.groupWith.value;
     var lines = parseInt(series.length / groupWith + 0.5);
     var radius = 80 / (lines > groupWith ? lines : groupWith);
     for (var i = 0; i < series.length; i++) {
@@ -6341,57 +6848,57 @@ function getGaugeWithAll(container, themes) {
 
     var option = {
         grid: {
-            x: __ECHARTS__.configs.grid_left.value,
-            y: __ECHARTS__.configs.grid_top.value,
-            x2: __ECHARTS__.configs.grid_right.value,
-            y2: __ECHARTS__.configs.grid_bottom.value,
-            containLabel: __ECHARTS__.configs.grid_containLabel.value.toBoolean(),
+            x: configs.grid_left.value,
+            y: configs.grid_top.value,
+            x2: configs.grid_right.value,
+            y2: configs.grid_bottom.value,
+            containLabel: configs.grid_containLabel.value.toBoolean(),
             backgroundColor: "transparent"
         },
         title: {
-            show: __ECHARTS__.configs.titleDisplay.value.toBoolean(),
-            text: __ECHARTS__.configs.titleText.value,
-            link: __ECHARTS__.configs.titleTextLink.value,
+            show: configs.titleDisplay.value.toBoolean(),
+            text: configs.titleText.value,
+            link: configs.titleTextLink.value,
             target : "blank",
-            subtext: __ECHARTS__.configs.titleSubText.value,
-            sublink: __ECHARTS__.configs.titleSubTextLink.value,
+            subtext: configs.titleSubText.value,
+            sublink: configs.titleSubTextLink.value,
             subtarget: "blank",
             top:"top",
-            left:__ECHARTS__.configs.titlePosition.value,
+            left:configs.titlePosition.value,
             textStyle:{
-                color:__ECHARTS__.configs.titleTextColor.value,
+                color:configs.titleTextColor.value,
             },
             subtextStyle:{
-                color:__ECHARTS__.configs.titleSubTextColor.value,
+                color:configs.titleSubTextColor.value,
             }
         },
         legend: {
-            show:__ECHARTS__.configs.legendDisplay.value.toBoolean(),
-            icon: __ECHARTS__.configs.legendIcon.value,
-            type: __ECHARTS__.configs.legendType.value,
-            selectedMode: __ECHARTS__.configs.legendSelectedMode.value,
-            top: __ECHARTS__.configs.legendPositionTop.value,
-            left: __ECHARTS__.configs.legendPositionLeft.value,
-            orient:__ECHARTS__.configs.legendOrient.value,
+            show:configs.legendDisplay.value.toBoolean(),
+            icon: configs.legendIcon.value,
+            type: configs.legendType.value,
+            selectedMode: configs.legendSelectedMode.value,
+            top: configs.legendPositionTop.value,
+            left: configs.legendPositionLeft.value,
+            orient:configs.legendOrient.value,
             data: legends,
             textStyle: {
-                color: __ECHARTS__.configs.legendTextColor.value
+                color: configs.legendTextColor.value
             },
         },
         tooltip: {
-            show:__ECHARTS__.configs.tooltipDisplay.value.toBoolean(),
+            show:configs.tooltipDisplay.value.toBoolean(),
             formatter: "{b} : {c}%"
         },
         toolbox: {
-            show: __ECHARTS__.configs.toolboxDisplay.value.toBoolean(),
+            show: configs.toolboxDisplay.value.toBoolean(),
             feature: {
                 saveAsImage: {
-                    show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value.toBoolean(),
+                    show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
                     excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"],
-                    backgroundColor:__ECHARTS__.configs.toolboxFeatureSaveAsImageBackgroundColor.value,
+                    backgroundColor:configs.toolboxFeatureSaveAsImageBackgroundColor.value,
                 },
-                restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value.toBoolean()},
-                dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
+                restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
+                dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
             },
             right: "10",
             orient: "vertical",
@@ -6407,7 +6914,7 @@ function getGaugeWithAll(container, themes) {
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
-    }, Number(__ECHARTS__.configs.loadingTimes.value) * 1000);
+    }, Number(configs.loadingTimes.value) * 1000);
     var timer;
     myChart.on("mouseover", function (params) {
         stopTimer();
@@ -6429,7 +6936,7 @@ function getGaugeWithAll(container, themes) {
     }
 
     function startTimer() {
-        timer = setInterval(doing,  __ECHARTS__.configs.seriesLoopPlayInterval.value * 1000);
+        timer = setInterval(doing,  configs.seriesLoopPlayInterval.value * 1000);
     }
 
     function stopTimer() {
@@ -6437,13 +6944,35 @@ function getGaugeWithAll(container, themes) {
         timer=null;
     }
 
-    setTimeout(startTimer,  __ECHARTS__.configs.seriesLoopPlayInterval.value * 1000);
+    setTimeout(startTimer,  configs.seriesLoopPlayInterval.value * 1000);
+    container.id = getEchartsId();
+    container.draggable = "true";
+    container.ondragstart = function (event) {
+        event.dataTransfer.setData("Text", event.target.id);
+    };
+    __ECHARTS__.history[container.id] = {
+         id: container.id,
+        type: type,
+        configs: configs,
+        dataset: dataset,
+        themes: themes,
+        contrainer: container,
+        width: width,
+        height: height,
+    };
     return container;
 }
 
-function getGaugeWithOne(container, themes) {
+function getGaugeWithOne(container, themes, width, height, type, dataset, configs) {
+    if (container == null) {
+        container = document.createElement("div");
+        container.className = "echarts-container";
+        container.id = "echarts-container";
+        container.style.width = width;
+        container.style.height = height;
+    }
     var myChart = echarts.init(container, themes);
-    var dataset = __DATASET__["result"][__DATASET__.default.sheet];
+
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
     var columns = [];
@@ -6466,14 +6995,14 @@ function getGaugeWithOne(container, themes) {
                     type: "gauge",
                     title: {
                         fontWeight: "bolder",
-                        fontSize: __ECHARTS__.configs.gaugeTitleFontSize.value,
+                        fontSize: configs.gaugeTitleFontSize.value,
                         color: "gray",
                         textShadowColor: "rgba(0, 0, 0, 0.5)",
                         textShadowBlur: 10,
                     },
                     axisLine: {
                         lineStyle: {
-                            width: __ECHARTS__.configs.gaugeAxisLineWidth.value,//10, //圆X轴宽度
+                            width: configs.gaugeAxisLineWidth.value,//10, //圆X轴宽度
                             shadowColor: "rgba(0, 0, 0, 0.5)",
                             shadowBlur: 10,
                             color: [[0.2, "#3CB371"], [0.8, "#6388ae"], [1, "#DB7093"]]
@@ -6481,7 +7010,7 @@ function getGaugeWithOne(container, themes) {
                         }
                     },
                     axisLabel: {
-                        fontSize: __ECHARTS__.configs.gaugeAxisLabelFontSize.value,
+                        fontSize: configs.gaugeAxisLabelFontSize.value,
                         textShadowColor: "rgba(0, 0, 0, 0.5)",
                         textShadowBlur: 10,
                     },
@@ -6494,26 +7023,26 @@ function getGaugeWithOne(container, themes) {
                     },
                     detail: {
                         formatter: ["{value}%", ""].join("\n"),
-                        fontSize: __ECHARTS__.configs.gaugeLabelFontSize.value,
+                        fontSize: configs.gaugeLabelFontSize.value,
                         textShadowColor: "rgba(0, 0, 0, 0.5)",
                         textShadowBlur: 10,
                     },
                     data: [],
-                    animation: __ECHARTS__.configs.animation.value.toBoolean(),
-                    animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
-                    animationEasing: getAnimationEasing(),
+                    animation: configs.animation.value.toBoolean(),
+                    animationThreshold: Number(configs.animationThreshold.value),
+                    animationEasing: getAnimationEasing(configs),
                     animationDuration: function (idx) {
-                        return idx * Number(__ECHARTS__.configs.animationDuration.value) + c * Number(__ECHARTS__.configs.animationDuration.value);
+                        return idx * Number(configs.animationDuration.value) + c * Number(configs.animationDuration.value);
                     },
                     animationDelay: function (idx) {
-                        return idx * Number(__ECHARTS__.configs.animationDelay.value) + c * Number(__ECHARTS__.configs.animationDelay.value);
+                        return idx * Number(configs.animationDelay.value) + c * Number(configs.animationDelay.value);
                     },
-                    animationEasingUpdate: getAnimationEasingUpdate(),
+                    animationEasingUpdate: getAnimationEasingUpdate(configs),
                     animationDurationUpdate: function (idx) {
-                        return idx * Number(__ECHARTS__.configs.animationDurationUpdate.value) + c * Number(__ECHARTS__.configs.animationDurationUpdate.value);
+                        return idx * Number(configs.animationDurationUpdate.value) + c * Number(configs.animationDurationUpdate.value);
                     },
                     animationDelayUpdate: function (idx) {
-                        return idx * Number(__ECHARTS__.configs.animationDelayUpdate.value) + c * Number(__ECHARTS__.configs.animationDelayUpdate.value);
+                        return idx * Number(configs.animationDelayUpdate.value) + c * Number(configs.animationDelayUpdate.value);
                     },
                 };
                 serie.data.push({
@@ -6530,7 +7059,7 @@ function getGaugeWithOne(container, themes) {
         seriesgroup.push(series);
     }
 
-    var groupWith = __ECHARTS__.configs.groupWith.value;
+    var groupWith = configs.groupWith.value;
     for (var g = 0; g < seriesgroup.length; g++) {
         var lines = parseInt(seriesgroup[g].length / groupWith + 0.5);
         var radius = 80 / (lines > groupWith ? lines : groupWith);
@@ -6544,66 +7073,66 @@ function getGaugeWithOne(container, themes) {
 
     var option = {
         title: {
-            show: __ECHARTS__.configs.titleDisplay.value.toBoolean(),
-            text: __ECHARTS__.configs.titleText.value,
-            link: __ECHARTS__.configs.titleTextLink.value,
+            show: configs.titleDisplay.value.toBoolean(),
+            text: configs.titleText.value,
+            link: configs.titleTextLink.value,
             target : "blank",
-            subtext: __ECHARTS__.configs.titleSubText.value,
-            sublink: __ECHARTS__.configs.titleSubTextLink.value,
+            subtext: configs.titleSubText.value,
+            sublink: configs.titleSubTextLink.value,
             subtarget: "blank",
             top:"top",
-            left:__ECHARTS__.configs.titlePosition.value,
+            left:configs.titlePosition.value,
             textStyle:{
-                color:__ECHARTS__.configs.titleTextColor.value,
+                color:configs.titleTextColor.value,
             },
             subtextStyle:{
-                color:__ECHARTS__.configs.titleSubTextColor.value,
+                color:configs.titleSubTextColor.value,
             }
         },
         legend: {
-            show: __ECHARTS__.configs.legendDisplay.value.toBoolean(),
-            icon: __ECHARTS__.configs.legendIcon.value,
-            type: __ECHARTS__.configs.legendType.value,
-            selectedMode: __ECHARTS__.configs.legendSelectedMode.value,
-            top: __ECHARTS__.configs.legendPositionTop.value,
-            left: __ECHARTS__.configs.legendPositionLeft.value,
-            orient: __ECHARTS__.configs.legendOrient.value,
+            show: configs.legendDisplay.value.toBoolean(),
+            icon: configs.legendIcon.value,
+            type: configs.legendType.value,
+            selectedMode: configs.legendSelectedMode.value,
+            top: configs.legendPositionTop.value,
+            left: configs.legendPositionLeft.value,
+            orient: configs.legendOrient.value,
             data: legends,
             textStyle: {
-                color: __ECHARTS__.configs.legendTextColor.value
+                color: configs.legendTextColor.value
             },
         },
         tooltip: {
-            show:__ECHARTS__.configs.tooltipDisplay.value.toBoolean(),
+            show:configs.tooltipDisplay.value.toBoolean(),
             formatter: "{b} : {c}%"
         },
         toolbox: {
-            show: __ECHARTS__.configs.toolboxDisplay.value.toBoolean(),
+            show: configs.toolboxDisplay.value.toBoolean(),
             feature: {
                 saveAsImage: {
-                    show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value.toBoolean(),
+                    show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
                     excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"],
-                    backgroundColor:__ECHARTS__.configs.toolboxFeatureSaveAsImageBackgroundColor.value,
+                    backgroundColor:configs.toolboxFeatureSaveAsImageBackgroundColor.value,
                 },
-                restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value.toBoolean()},
-                dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
+                restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
+                dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
             },
-            top: __ECHARTS__.configs.toolbox_top.value,
-            left:__ECHARTS__.configs.toolbox_left.value,
-            orient: __ECHARTS__.configs.toolbox_orient.value,
+            top: configs.toolbox_top.value,
+            left:configs.toolbox_left.value,
+            orient: configs.toolbox_orient.value,
             emphasis: {
                 iconStyle: {
-                    textPosition: __ECHARTS__.configs.toolbox_textPosition.value,
+                    textPosition: configs.toolbox_textPosition.value,
                 }
             },
         },
         series: seriesgroup[index],
-        graphic: getGraphic(__SYS_LOGO_LINK__),
+        graphic: getWaterGraphic(__SYS_LOGO_LINK__),
     };
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
-    }, Number(__ECHARTS__.configs.loadingTimes.value) * 1000);
+    }, Number(configs.loadingTimes.value) * 1000);
 
     var timer;
     myChart.on("mouseover", function (params) {
@@ -6624,7 +7153,7 @@ function getGaugeWithOne(container, themes) {
     }
 
     function startTimer() {
-        timer = setInterval(doing,  __ECHARTS__.configs.seriesLoopPlayInterval.value * 1000);
+        timer = setInterval(doing,  configs.seriesLoopPlayInterval.value * 1000);
     }
 
     function stopTimer() {
@@ -6632,13 +7161,35 @@ function getGaugeWithOne(container, themes) {
         timer=null;
     }
 
-    setTimeout(startTimer,  __ECHARTS__.configs.seriesLoopPlayInterval.value * 1000);
+    setTimeout(startTimer,  configs.seriesLoopPlayInterval.value * 1000);
+    container.id = getEchartsId();
+    container.draggable = "true";
+    container.ondragstart = function (event) {
+        event.dataTransfer.setData("Text", event.target.id);
+    };
+    __ECHARTS__.history[container.id] = {
+         id: container.id,
+        type: type,
+        configs: configs,
+        dataset: dataset,
+        themes: themes,
+        contrainer: container,
+        width: width,
+        height: height,
+    };
     return container;
 }
 
-function getCalendar(container, themes) {
+function getCalendar(container, themes, width, height, type, dataset, configs) {
+    if (container == null) {
+        container = document.createElement("div");
+        container.className = "echarts-container";
+        container.id = "echarts-container";
+        container.style.width = width;
+        container.style.height = height;
+    }
     var myChart = echarts.init(container, themes);
-    var dataset = __DATASET__["result"][__DATASET__.default.sheet];
+
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
     var columns = [];
@@ -6646,8 +7197,8 @@ function getCalendar(container, themes) {
         columns.push(dataset["columns"][i].name);
     }
 
-    var containerWidth = Number(container.style.width.slice(0).replace(/px/i, ""));
-    var containerHeight = Number(container.style.height.slice(0).replace(/px/i, ""));
+    var containerWidth = Number(width.replace(/px/i, ""));
+    var containerHeight = Number(height.replace(/px/i, ""));
     var series = [];
     var visualMaps = [];
     var calendars = [];
@@ -6670,30 +7221,30 @@ function getCalendar(container, themes) {
             } else {
                 var serie = {
                     name: columns[c],
-                    type: __ECHARTS__.configs.calendarType.value, //["heatmap","scatter","effectScatter"]
+                    type: configs.calendarType.value, //["heatmap","scatter","effectScatter"]
                     coordinateSystem: "calendar",
                     calendarIndex: c - 1,
                     data: [],
-                    animation: __ECHARTS__.configs.animation.value.toBoolean(),
-                    animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
-                    animationEasing: getAnimationEasing(),
+                    animation: configs.animation.value.toBoolean(),
+                    animationThreshold: Number(configs.animationThreshold.value),
+                    animationEasing: getAnimationEasing(configs),
                     animationDuration: function (idx) {
-                        return idx * Number(__ECHARTS__.configs.animationDuration.value) + c * Number(__ECHARTS__.configs.animationDuration.value);
+                        return idx * Number(configs.animationDuration.value) + c * Number(configs.animationDuration.value);
                     },
                     animationDelay: function (idx) {
-                        return idx * Number(__ECHARTS__.configs.animationDelay.value) + c * Number(__ECHARTS__.configs.animationDelay.value);
+                        return idx * Number(configs.animationDelay.value) + c * Number(configs.animationDelay.value);
                     },
-                    animationEasingUpdate: getAnimationEasingUpdate(),
+                    animationEasingUpdate: getAnimationEasingUpdate(configs),
                     animationDurationUpdate: function (idx) {
-                        return idx * Number(__ECHARTS__.configs.animationDurationUpdate.value) + c * Number(__ECHARTS__.configs.animationDurationUpdate.value);
+                        return idx * Number(configs.animationDurationUpdate.value) + c * Number(configs.animationDurationUpdate.value);
                     },
                     animationDelayUpdate: function (idx) {
-                        return idx * Number(__ECHARTS__.configs.animationDelayUpdate.value) + c * Number(__ECHARTS__.configs.animationDelayUpdate.value);
+                        return idx * Number(configs.animationDelayUpdate.value) + c * Number(configs.animationDelayUpdate.value);
                     },
                 };
                 var visualMap = {
                     //type: "piecewise",
-                    show:__ECHARTS__.configs.visualMapDisplay.value.toBoolean(),
+                    show:configs.visualMapDisplay.value.toBoolean(),
                     calculable: true,
                     //orient: "vertical",//"horizontal"
                     //left: 10,
@@ -6705,7 +7256,7 @@ function getCalendar(container, themes) {
                     }
                 };
                 var calendar = {
-                    orient: __ECHARTS__.configs.calendarOrient.value, //"vertical",//"horizontal"
+                    orient: configs.calendarOrient.value, //"vertical",//"horizontal"
                     left: "10%",
                     right: "10%",
                     cellSize: ["auto", "auto"],
@@ -6733,22 +7284,22 @@ function getCalendar(container, themes) {
                         }
                     }
                 }
-                if (__ECHARTS__.configs.calendarType.value == "effectScatter" || __ECHARTS__.configs.calendarType.value == "scatter") {
+                if (configs.calendarType.value == "effectScatter" || configs.calendarType.value == "scatter") {
                     serie.symbolSize = function (val) {
-                        var value = val[1] / (valueMax / __ECHARTS__.configs.scatterSymbolSize.value);
+                        var value = val[1] / (valueMax / configs.scatterSymbolSize.value);
                         return value < 5 ? 5 : value;
                     };
                 }
                 visualMap.min = valueMin;
                 visualMap.max = valueMax;
-                visualMap.show = __ECHARTS__.configs.visualMapDisplay.value.toBoolean(),
+                visualMap.show = configs.visualMapDisplay.value.toBoolean(),
                 calendar.range = [rangeMin, rangeMax];
                 calendars.push(calendar);
                 series.push(serie);
                 visualMaps.push(visualMap);
             }
         }
-        if (__ECHARTS__.configs.calendarOrient.value == "vertical") {
+        if (configs.calendarOrient.value == "vertical") {
             var width = (80 - 15 * calendars.length) / calendars.length;
             for (var i = 0; i < calendars.length; i++) {
                 calendars[i].top =  "15%";
@@ -6778,32 +7329,32 @@ function getCalendar(container, themes) {
     init();
     var option = {
         grid: {
-            x: __ECHARTS__.configs.grid_left.value,
-            y: __ECHARTS__.configs.grid_top.value,
-            x2: __ECHARTS__.configs.grid_right.value,
-            y2: __ECHARTS__.configs.grid_bottom.value,
-            containLabel: __ECHARTS__.configs.grid_containLabel.value.toBoolean(),
+            x: configs.grid_left.value,
+            y: configs.grid_top.value,
+            x2: configs.grid_right.value,
+            y2: configs.grid_bottom.value,
+            containLabel: configs.grid_containLabel.value.toBoolean(),
             backgroundColor: "transparent"
         },
         title: {
-            show: __ECHARTS__.configs.titleDisplay.value.toBoolean(),
-            text: __ECHARTS__.configs.titleText.value,
-            link: __ECHARTS__.configs.titleTextLink.value,
+            show: configs.titleDisplay.value.toBoolean(),
+            text: configs.titleText.value,
+            link: configs.titleTextLink.value,
             target : "blank",
-            subtext: __ECHARTS__.configs.titleSubText.value,
-            sublink: __ECHARTS__.configs.titleSubTextLink.value,
+            subtext: configs.titleSubText.value,
+            sublink: configs.titleSubTextLink.value,
             subtarget: "blank",
             top:"top",
-            left:__ECHARTS__.configs.titlePosition.value,
+            left:configs.titlePosition.value,
             textStyle:{
-                color:__ECHARTS__.configs.titleTextColor.value,
+                color:configs.titleTextColor.value,
             },
             subtextStyle:{
-                color:__ECHARTS__.configs.titleSubTextColor.value,
+                color:configs.titleSubTextColor.value,
             }
         },
         tooltip: {
-            show:__ECHARTS__.configs.tooltipDisplay.value.toBoolean(),
+            show:configs.tooltipDisplay.value.toBoolean(),
             position: "top",
             formatter: function (p) {
                 var format = echarts.format.formatTime("yyyy-MM-dd", p.data[0]);
@@ -6811,41 +7362,63 @@ function getCalendar(container, themes) {
             }
         },
         toolbox: {
-            show: __ECHARTS__.configs.toolboxDisplay.value.toBoolean(),
+            show: configs.toolboxDisplay.value.toBoolean(),
             feature: {
                 saveAsImage: {
-                    show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value.toBoolean(),
+                    show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
                     excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"],
-                    backgroundColor:__ECHARTS__.configs.toolboxFeatureSaveAsImageBackgroundColor.value,
+                    backgroundColor:configs.toolboxFeatureSaveAsImageBackgroundColor.value,
                 },
-                restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value.toBoolean()},
-                dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
+                restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
+                dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
             },
-            top: __ECHARTS__.configs.toolbox_top.value,
-            left:__ECHARTS__.configs.toolbox_left.value,
-            orient: __ECHARTS__.configs.toolbox_orient.value,
+            top: configs.toolbox_top.value,
+            left:configs.toolbox_left.value,
+            orient: configs.toolbox_orient.value,
             emphasis: {
                 iconStyle: {
-                    textPosition: __ECHARTS__.configs.toolbox_textPosition.value,
+                    textPosition: configs.toolbox_textPosition.value,
                 }
             },
         },
         visualMap: visualMaps,
         calendar: calendars,
         series: series,
-        graphic: getGraphic(__SYS_LOGO_LINK__),
+        graphic: getWaterGraphic(__SYS_LOGO_LINK__),
     };
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
-    }, Number(__ECHARTS__.configs.loadingTimes.value) * 1000);
+    }, Number(configs.loadingTimes.value) * 1000);
+    container.id = getEchartsId();
+    container.draggable = "true";
+    container.ondragstart = function (event) {
+        event.dataTransfer.setData("Text", event.target.id);
+    };
+    __ECHARTS__.history[container.id] = {
+         id: container.id,
+        type: type,
+        configs: configs,
+        dataset: dataset,
+        themes: themes,
+        contrainer: container,
+        width: width,
+        height: height,
+    };
     return container;
 
 }
 
-function getGeoOfChina(container, themes) {
+function getGeoOfChina(container, themes, width, height, type, dataset, configs) {
+    if (container == null) {
+        container = document.createElement("div");
+        container.className = "echarts-container";
+        container.id = "echarts-container";
+        container.style.width = width;
+        container.style.height = height;
+    }
     var myChart = echarts.init(container, themes);
-    var dataset = __DATASET__["result"][__DATASET__.default.sheet];
+
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
     var columns = [];
@@ -6853,8 +7426,8 @@ function getGeoOfChina(container, themes) {
         columns.push(dataset["columns"][i].name);
     }
 
-    var containerWidth = Number(container.style.width.slice(0).replace(/px/i, ""));
-    var containerHeight = Number(container.style.height.slice(0).replace(/px/i, ""));
+    var containerWidth = Number(width.replace(/px/i, ""));
+    var containerHeight = Number(height.replace(/px/i, ""));
     var series = [];
     var index = 0;
 
@@ -6928,53 +7501,53 @@ function getGeoOfChina(container, themes) {
 
     var option = {
         grid: {
-            x: __ECHARTS__.configs.grid_left.value,
-            y: __ECHARTS__.configs.grid_top.value,
-            x2: __ECHARTS__.configs.grid_right.value,
-            y2: __ECHARTS__.configs.grid_bottom.value,
-            containLabel: __ECHARTS__.configs.grid_containLabel.value.toBoolean(),
+            x: configs.grid_left.value,
+            y: configs.grid_top.value,
+            x2: configs.grid_right.value,
+            y2: configs.grid_bottom.value,
+            containLabel: configs.grid_containLabel.value.toBoolean(),
             backgroundColor: "transparent"
         },
-        //backgroundColor: __ECHARTS__.configs.geoBackgroundColor.value,
+        //backgroundColor: configs.geoBackgroundColor.value,
         title: {
-            show: __ECHARTS__.configs.titleDisplay.value.toBoolean(),
-            text: __ECHARTS__.configs.titleText.value,
-            link: __ECHARTS__.configs.titleTextLink.value,
+            show: configs.titleDisplay.value.toBoolean(),
+            text: configs.titleText.value,
+            link: configs.titleTextLink.value,
             target : "blank",
-            subtext: __ECHARTS__.configs.titleSubText.value,
-            sublink: __ECHARTS__.configs.titleSubTextLink.value,
+            subtext: configs.titleSubText.value,
+            sublink: configs.titleSubTextLink.value,
             subtarget: "blank",
             top: "top",
-            left: __ECHARTS__.configs.titlePosition.value,
+            left: configs.titlePosition.value,
             textStyle: {
-                color: __ECHARTS__.configs.titleTextColor.value,
+                color: configs.titleTextColor.value,
             },
             subtextStyle: {
-                color: __ECHARTS__.configs.titleSubTextColor.value,
+                color: configs.titleSubTextColor.value,
             }
         },
         toolbox: {
-            show: __ECHARTS__.configs.toolboxDisplay.value.toBoolean(),
+            show: configs.toolboxDisplay.value.toBoolean(),
             feature: {
                 saveAsImage: {
-                    show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value.toBoolean(),
+                    show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
                     excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"],
-                    backgroundColor:__ECHARTS__.configs.toolboxFeatureSaveAsImageBackgroundColor.value,
+                    backgroundColor:configs.toolboxFeatureSaveAsImageBackgroundColor.value,
                 },
-                restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value.toBoolean()},
-                dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
+                restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
+                dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
             },
-            top: __ECHARTS__.configs.toolbox_top.value,
-            left: __ECHARTS__.configs.toolbox_left.value,
-            orient: __ECHARTS__.configs.toolbox_orient.value,
+            top: configs.toolbox_top.value,
+            left: configs.toolbox_left.value,
+            orient: configs.toolbox_orient.value,
             emphasis: {
                 iconStyle: {
-                    textPosition: __ECHARTS__.configs.toolbox_textPosition.value,
+                    textPosition: configs.toolbox_textPosition.value,
                 }
             },
         },
         tooltip: {
-            show: __ECHARTS__.configs.tooltipDisplay.value.toBoolean(),
+            show: configs.tooltipDisplay.value.toBoolean(),
             formatter: function (params) {
                 var value = "";
                 try {
@@ -6985,20 +7558,20 @@ function getGeoOfChina(container, themes) {
             },
         },
         visualMap: {
-            show: __ECHARTS__.configs.visualMapDisplay.value.toBoolean(),
+            show: configs.visualMapDisplay.value.toBoolean(),
             min: series[index].min,
             max: series[index].max,
-            type: __ECHARTS__.configs.visualMap_type.value,
+            type: configs.visualMap_type.value,
             calculable: true,
-            top: __ECHARTS__.configs.visualMap_top.value,
-            left: __ECHARTS__.configs.visualMap_left.value,
-            itemWidth: __ECHARTS__.configs.visualMap_width.value,
-            orient: __ECHARTS__.configs.visualMap_orient.value,
-            itemHeight: __ECHARTS__.configs.visualMap_height.value,
+            top: configs.visualMap_top.value,
+            left: configs.visualMap_left.value,
+            itemWidth: configs.visualMap_width.value,
+            orient: configs.visualMap_orient.value,
+            itemHeight: configs.visualMap_height.value,
             textStyle: {
-                color: __ECHARTS__.configs.visualMap_textColor.value,
+                color: configs.visualMap_textColor.value,
             },
-            splitNumber: __ECHARTS__.configs.visualMap_piecewise_splitNumber.value,
+            splitNumber: configs.visualMap_piecewise_splitNumber.value,
         },
         geo: {
             map: "china",
@@ -7009,23 +7582,23 @@ function getGeoOfChina(container, themes) {
             },
             label: {
                 normal: {
-                    show: __ECHARTS__.configs.geoAreaNameDisplay.value.toBoolean(),
-                    color: __ECHARTS__.configs.geoAreaNameColor.value,
+                    show: configs.geoAreaNameDisplay.value.toBoolean(),
+                    color: configs.geoAreaNameColor.value,
                 },
                 emphasis: {
                     show: true,
-                    color: __ECHARTS__.configs.geoAreaNameColor.value,
+                    color: configs.geoAreaNameColor.value,
                 }
             },
             itemStyle: {
                 normal: {
-                    areaColor: __ECHARTS__.configs.geoAreaColor.value,
-                    borderColor: __ECHARTS__.configs.geoBorderColor.value,
+                    areaColor: configs.geoAreaColor.value,
+                    borderColor: configs.geoBorderColor.value,
                     shadowBlur: 50,
                     shadowColor: "rgba(0, 0, 0, 0.2)",
                 },
                 emphasis: {
-                    areaColor: __ECHARTS__.configs.geoHotAreaColor.value
+                    areaColor: configs.geoHotAreaColor.value
                 }
             },
         },
@@ -7044,7 +7617,7 @@ function getGeoOfChina(container, themes) {
                     return b.value - a.value;
                 })),
                 symbolSize: function (val) {
-                    var value = val[2] / (series[index].max / __ECHARTS__.configs.scatterSymbolSize.value);
+                    var value = val[2] / (series[index].max / configs.scatterSymbolSize.value);
                     return value < 5 ? 5 : value;
                 },
                 showEffectOn: "render",
@@ -7057,12 +7630,12 @@ function getGeoOfChina(container, themes) {
                         formatter: "{b}",
                         position: "top",
                         show: true,
-                        color: __ECHARTS__.configs.geoAreaNameColor.value,
+                        color: configs.geoAreaNameColor.value,
                     }
                 },
                 itemStyle: {
                     normal: {
-                        color: __ECHARTS__.configs.geoAreaColor.value,
+                        color: configs.geoAreaColor.value,
                         shadowBlur: 10,
                         shadowColor: "rgba(0, 0, 0, 0.2)",
                     }
@@ -7070,28 +7643,28 @@ function getGeoOfChina(container, themes) {
                 zlevel: 1
             }
         ],
-        graphic: getGraphic(__SYS_LOGO_LINK__),
-        animation: __ECHARTS__.configs.animation.value.toBoolean(),
-        animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
-        animationEasing: getAnimationEasing(),
+        graphic: getWaterGraphic(__SYS_LOGO_LINK__),
+        animation: configs.animation.value.toBoolean(),
+        animationThreshold: Number(configs.animationThreshold.value),
+        animationEasing: getAnimationEasing(configs),
         animationDuration: function (idx) {
-            return idx * Number(__ECHARTS__.configs.animationDuration.value);
+            return idx * Number(configs.animationDuration.value);
         },
         animationDelay: function (idx) {
-            return idx * Number(__ECHARTS__.configs.animationDelay.value);
+            return idx * Number(configs.animationDelay.value);
         },
-        animationEasingUpdate: getAnimationEasingUpdate(),
+        animationEasingUpdate: getAnimationEasingUpdate(configs),
         animationDurationUpdate: function (idx) {
-            return idx * Number(__ECHARTS__.configs.animationDurationUpdate.value);
+            return idx * Number(configs.animationDurationUpdate.value);
         },
         animationDelayUpdate: function (idx) {
-            return idx * Number(__ECHARTS__.configs.animationDelayUpdate.value);
+            return idx * Number(configs.animationDelayUpdate.value);
         },
     };
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
-    }, Number(__ECHARTS__.configs.loadingTimes.value) * 1000);
+    }, Number(configs.loadingTimes.value) * 1000);
 
     var timer;
     myChart.on("mouseover", function (params) {
@@ -7111,20 +7684,20 @@ function getGeoOfChina(container, themes) {
         option.series[0].name = series[index].name;
         option.series[1].name = series[index].name;
         option.visualMap = {
-            show: __ECHARTS__.configs.visualMapDisplay.value.toBoolean(),
+            show: configs.visualMapDisplay.value.toBoolean(),
             min: series[index].min,
             max: series[index].max,
-            type: __ECHARTS__.configs.visualMap_type.value,
+            type: configs.visualMap_type.value,
             calculable: true,
-            top: __ECHARTS__.configs.visualMap_top.value,
-            left: __ECHARTS__.configs.visualMap_left.value,
-            itemWidth: __ECHARTS__.configs.visualMap_width.value,
-            orient: __ECHARTS__.configs.visualMap_orient.value,
-            itemHeight: __ECHARTS__.configs.visualMap_height.value,
+            top: configs.visualMap_top.value,
+            left: configs.visualMap_left.value,
+            itemWidth: configs.visualMap_width.value,
+            orient: configs.visualMap_orient.value,
+            itemHeight: configs.visualMap_height.value,
             textStyle: {
-                color: __ECHARTS__.configs.visualMap_textColor.value,
+                color: configs.visualMap_textColor.value,
             },
-            splitNumber: __ECHARTS__.configs.visualMap_piecewise_splitNumber.value,
+            splitNumber: configs.visualMap_piecewise_splitNumber.value,
         };
         option.series[0].data = series[index].data;
         option.series[1].data = convertData(series[index].data.sort(function (a, b) {
@@ -7134,11 +7707,11 @@ function getGeoOfChina(container, themes) {
         setTimeout(() => {
             myChart.hideLoading();
             myChart.setOption(option);
-        }, Number(__ECHARTS__.configs.loadingTimes.value) * 1000);
+        }, Number(configs.loadingTimes.value) * 1000);
     }
 
     function startTimer() {
-        timer = setInterval(doing,  __ECHARTS__.configs.seriesLoopPlayInterval.value * 1000);
+        timer = setInterval(doing,  configs.seriesLoopPlayInterval.value * 1000);
     }
 
     function stopTimer() {
@@ -7146,14 +7719,36 @@ function getGeoOfChina(container, themes) {
         timer = null;
     }
 
-    setTimeout(startTimer,  __ECHARTS__.configs.seriesLoopPlayInterval.value * 1000);
+    setTimeout(startTimer,  configs.seriesLoopPlayInterval.value * 1000);
 
+    container.id = getEchartsId();
+    container.draggable = "true";
+    container.ondragstart = function (event) {
+        event.dataTransfer.setData("Text", event.target.id);
+    };
+    __ECHARTS__.history[container.id] = {
+         id: container.id,
+        type: type,
+        configs: configs,
+        dataset: dataset,
+        themes: themes,
+        contrainer: container,
+        width: width,
+        height: height,
+    };
     return container;
 }
 
-function getGeoOfLocal(container, themes) {
+function getGeoOfLocal(container, themes, width, height, type, dataset, configs) {
+    if (container == null) {
+        container = document.createElement("div");
+        container.className = "echarts-container";
+        container.id = "echarts-container";
+        container.style.width = width;
+        container.style.height = height;
+    }
     var myChart = echarts.init(container, themes);
-    var dataset = __DATASET__["result"][__DATASET__.default.sheet];
+
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
     var columns = [];
@@ -7161,8 +7756,8 @@ function getGeoOfLocal(container, themes) {
         columns.push(dataset["columns"][i].name);
     }
 
-    var containerWidth = Number(container.style.width.slice(0).replace(/px/i, ""));
-    var containerHeight = Number(container.style.height.slice(0).replace(/px/i, ""));
+    var containerWidth = Number(width.replace(/px/i, ""));
+    var containerHeight = Number(height.replace(/px/i, ""));
     var series = [];
     var index = 0;
 
@@ -7229,54 +7824,54 @@ function getGeoOfLocal(container, themes) {
 
     var option = {
         grid: {
-            x: __ECHARTS__.configs.grid_left.value,
-            y: __ECHARTS__.configs.grid_top.value,
-            x2: __ECHARTS__.configs.grid_right.value,
-            y2: __ECHARTS__.configs.grid_bottom.value,
-            containLabel: __ECHARTS__.configs.grid_containLabel.value.toBoolean(),
+            x: configs.grid_left.value,
+            y: configs.grid_top.value,
+            x2: configs.grid_right.value,
+            y2: configs.grid_bottom.value,
+            containLabel: configs.grid_containLabel.value.toBoolean(),
             backgroundColor: "transparent"
         },
-        //backgroundColor: __ECHARTS__.configs.geoBackgroundColor.value,
+        //backgroundColor: configs.geoBackgroundColor.value,
         title: {
-            show: __ECHARTS__.configs.titleDisplay.value.toBoolean(),
-            text: __ECHARTS__.configs.titleText.value,
-            link: __ECHARTS__.configs.titleTextLink.value,
+            show: configs.titleDisplay.value.toBoolean(),
+            text: configs.titleText.value,
+            link: configs.titleTextLink.value,
             target : "blank",
-            subtext: __ECHARTS__.configs.titleSubText.value,
-            sublink: __ECHARTS__.configs.titleSubTextLink.value,
+            subtext: configs.titleSubText.value,
+            sublink: configs.titleSubTextLink.value,
             subtarget: "blank",
             top:"top",
-            left:__ECHARTS__.configs.titlePosition.value,
+            left:configs.titlePosition.value,
             textStyle:{
-                color:__ECHARTS__.configs.titleTextColor.value,
+                color:configs.titleTextColor.value,
             },
             subtextStyle:{
-                color:__ECHARTS__.configs.titleSubTextColor.value,
+                color:configs.titleSubTextColor.value,
             }
         },
         toolbox: {
-            show: __ECHARTS__.configs.toolboxDisplay.value.toBoolean(),
+            show: configs.toolboxDisplay.value.toBoolean(),
             feature: {
                 saveAsImage: {
-                    show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value.toBoolean(),
+                    show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
                     excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"],
-                    backgroundColor:__ECHARTS__.configs.toolboxFeatureSaveAsImageBackgroundColor.value,
+                    backgroundColor:configs.toolboxFeatureSaveAsImageBackgroundColor.value,
                 },
-                restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value.toBoolean()},
-                dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
+                restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
+                dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
             },
-            top: __ECHARTS__.configs.toolbox_top.value,
-            left:__ECHARTS__.configs.toolbox_left.value,
-            orient: __ECHARTS__.configs.toolbox_orient.value,
+            top: configs.toolbox_top.value,
+            left:configs.toolbox_left.value,
+            orient: configs.toolbox_orient.value,
             emphasis: {
                 iconStyle: {
-                    textPosition: __ECHARTS__.configs.toolbox_textPosition.value,
+                    textPosition: configs.toolbox_textPosition.value,
                 }
             },
         },
 
         tooltip: {
-            show:__ECHARTS__.configs.tooltipDisplay.value.toBoolean(),
+            show:configs.tooltipDisplay.value.toBoolean(),
             formatter: function (params) {
                 var value = "";
                 try {
@@ -7287,20 +7882,20 @@ function getGeoOfLocal(container, themes) {
             },
         },
         visualMap: {
-            show:__ECHARTS__.configs.visualMapDisplay.value.toBoolean(),
+            show:configs.visualMapDisplay.value.toBoolean(),
             min: series[index].min,
             max: series[index].max,
-            type: __ECHARTS__.configs.visualMap_type.value,
+            type: configs.visualMap_type.value,
             calculable: true,
-            top: __ECHARTS__.configs.visualMap_top.value,
-            left: __ECHARTS__.configs.visualMap_left.value,
-            itemWidth: __ECHARTS__.configs.visualMap_width.value,
-            orient:__ECHARTS__.configs.visualMap_orient.value,
-            itemHeight: __ECHARTS__.configs.visualMap_height.value,
+            top: configs.visualMap_top.value,
+            left: configs.visualMap_left.value,
+            itemWidth: configs.visualMap_width.value,
+            orient:configs.visualMap_orient.value,
+            itemHeight: configs.visualMap_height.value,
             textStyle: {
-                color: __ECHARTS__.configs.visualMap_textColor.value,
+                color: configs.visualMap_textColor.value,
             },
-            splitNumber:__ECHARTS__.configs.visualMap_piecewise_splitNumber.value,
+            splitNumber:configs.visualMap_piecewise_splitNumber.value,
         },
         //backgroundColor: "#013954",
         geo: {
@@ -7312,23 +7907,23 @@ function getGeoOfLocal(container, themes) {
             },
             label: {
                 normal: {
-                    show: __ECHARTS__.configs.geoAreaNameDisplay.value.toBoolean(),
-                    color: __ECHARTS__.configs.geoAreaNameColor.value,
+                    show: configs.geoAreaNameDisplay.value.toBoolean(),
+                    color: configs.geoAreaNameColor.value,
                 },
                 emphasis: {
                     show: true,
-                    color: __ECHARTS__.configs.geoAreaNameColor.value,
+                    color: configs.geoAreaNameColor.value,
                 }
             },
             itemStyle: {
                 normal: {
-                    areaColor: __ECHARTS__.configs.geoAreaColor.value,
-                    borderColor: __ECHARTS__.configs.geoBorderColor.value,
+                    areaColor: configs.geoAreaColor.value,
+                    borderColor: configs.geoBorderColor.value,
                     shadowBlur: 50,
                     shadowColor: "rgba(0, 0, 0, 0.2)",
                 },
                 emphasis: {
-                    areaColor: __ECHARTS__.configs.geoHotAreaColor.value
+                    areaColor: configs.geoHotAreaColor.value
                 }
             },
         },
@@ -7347,7 +7942,7 @@ function getGeoOfLocal(container, themes) {
                     return b.value - a.value;
                 })),
                 symbolSize: function (val) {
-                    var value = val[2] / (series[index].max / __ECHARTS__.configs.scatterSymbolSize.value);
+                    var value = val[2] / (series[index].max / configs.scatterSymbolSize.value);
                     return value<5?5:value;
                 },
                 showEffectOn: "render",
@@ -7365,7 +7960,7 @@ function getGeoOfLocal(container, themes) {
                 },
                 itemStyle: {
                     normal: {
-                        color: __ECHARTS__.configs.geoAreaColor.value,
+                        color: configs.geoAreaColor.value,
                         shadowBlur: 10,
                         shadowColor: "rgba(0, 0, 0, 0.2)",
                     }
@@ -7374,29 +7969,29 @@ function getGeoOfLocal(container, themes) {
             }
         ],
 
-        graphic: getGraphic(__SYS_LOGO_LINK__),
-        animation: __ECHARTS__.configs.animation.value.toBoolean(),
-        animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
-        animationEasing: getAnimationEasing(),
+        graphic: getWaterGraphic(__SYS_LOGO_LINK__),
+        animation: configs.animation.value.toBoolean(),
+        animationThreshold: Number(configs.animationThreshold.value),
+        animationEasing: getAnimationEasing(configs),
         animationDuration: function (idx) {
-            return idx * Number(__ECHARTS__.configs.animationDuration.value);
+            return idx * Number(configs.animationDuration.value);
         },
         animationDelay: function (idx) {
-            return idx * Number(__ECHARTS__.configs.animationDelay.value);
+            return idx * Number(configs.animationDelay.value);
         },
-        animationEasingUpdate: getAnimationEasingUpdate(),
+        animationEasingUpdate: getAnimationEasingUpdate(configs),
         animationDurationUpdate: function (idx) {
-            return idx * Number(__ECHARTS__.configs.animationDurationUpdate.value);
+            return idx * Number(configs.animationDurationUpdate.value);
         },
         animationDelayUpdate: function (idx) {
-            return idx * Number(__ECHARTS__.configs.animationDelayUpdate.value);
+            return idx * Number(configs.animationDelayUpdate.value);
         },
     };
 
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
-    }, Number(__ECHARTS__.configs.loadingTimes.value) * 1000);
+    }, Number(configs.loadingTimes.value) * 1000);
 
     var timer;
     myChart.on("mouseover", function (params) {
@@ -7416,20 +8011,20 @@ function getGeoOfLocal(container, themes) {
         option.series[0].name = series[index].name;
         option.series[1].name = series[index].name;
         option.visualMap = {
-            show: __ECHARTS__.configs.visualMapDisplay.value.toBoolean(),
+            show: configs.visualMapDisplay.value.toBoolean(),
             min: series[index].min,
             max: series[index].max,
-            type: __ECHARTS__.configs.visualMap_type.value,
+            type: configs.visualMap_type.value,
             calculable: true,
-            top: __ECHARTS__.configs.visualMap_top.value,
-            left: __ECHARTS__.configs.visualMap_left.value,
-            itemWidth: __ECHARTS__.configs.visualMap_width.value,
-            orient: __ECHARTS__.configs.visualMap_orient.value,
-            itemHeight: __ECHARTS__.configs.visualMap_height.value,
+            top: configs.visualMap_top.value,
+            left: configs.visualMap_left.value,
+            itemWidth: configs.visualMap_width.value,
+            orient: configs.visualMap_orient.value,
+            itemHeight: configs.visualMap_height.value,
             textStyle: {
-                color: __ECHARTS__.configs.visualMap_textColor.value,
+                color: configs.visualMap_textColor.value,
             },
-            splitNumber: __ECHARTS__.configs.visualMap_piecewise_splitNumber.value,
+            splitNumber: configs.visualMap_piecewise_splitNumber.value,
         };
         option.series[0].data = series[index].data;
         option.series[1].data = convertData(series[index].data.sort(function (a, b) {
@@ -7440,7 +8035,7 @@ function getGeoOfLocal(container, themes) {
     }
 
     function startTimer() {
-        timer = setInterval(doing, __ECHARTS__.configs.seriesLoopPlayInterval.value * 1000);
+        timer = setInterval(doing, configs.seriesLoopPlayInterval.value * 1000);
     }
 
     function stopTimer() {
@@ -7448,18 +8043,40 @@ function getGeoOfLocal(container, themes) {
         timer = null;
     }
 
-    setTimeout(startTimer,  __ECHARTS__.configs.seriesLoopPlayInterval.value * 1000);
+    setTimeout(startTimer,  configs.seriesLoopPlayInterval.value * 1000);
 
+    container.id = getEchartsId();
+    container.draggable = "true";
+    container.ondragstart = function (event) {
+        event.dataTransfer.setData("Text", event.target.id);
+    };
+    __ECHARTS__.history[container.id] = {
+         id: container.id,
+        type: type,
+        configs: configs,
+        dataset: dataset,
+        themes: themes,
+        contrainer: container,
+        width: width,
+        height: height,
+    };
     return container;
 }
 
-function getBar3D(container, themes) {
+function getBar3D(container, themes, width, height, type, dataset, configs) {
+    if (container == null) {
+        container = document.createElement("div");
+        container.className = "echarts-container";
+        container.id = "echarts-container";
+        container.style.width = width;
+        container.style.height = height;
+    }
     var myChart = echarts.init(container, themes);
-    var dataset = __DATASET__["result"][__DATASET__.default.sheet];
+
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
-    var containerWidth = Number(container.style.width.slice(0).replace(/px/i, ""));
-    var containerHeight = Number(container.style.height.slice(0).replace(/px/i, ""));
+    var containerWidth = Number(width.replace(/px/i, ""));
+    var containerHeight = Number(height.replace(/px/i, ""));
     var columns = [];
     var rows = [];
     var valueMin = null;
@@ -7505,15 +8122,15 @@ function getBar3D(container, themes) {
                 },
 
                 itemStyle: {
-                    opacity: __ECHARTS__.configs.ItemStyleOpacityFor3D.value,
+                    opacity: configs.ItemStyleOpacityFor3D.value,
                     //柱子的透明度,取值范围[0-1]
                 },
 
                 label: {
-                    show: __ECHARTS__.configs.LabelOf3DDisplay.value.toBoolean(),
+                    show: configs.LabelOf3DDisplay.value.toBoolean(),
                     textStyle: {
-                        color: __ECHARTS__.configs.label3DTextColor.value,
-                        fontSize: __ECHARTS__.configs.label3DFontSize.value,
+                        color: configs.label3DTextColor.value,
+                        fontSize: configs.label3DFontSize.value,
                         borderWidth: 1
                     },
                     formatter: function (params) {
@@ -7523,26 +8140,26 @@ function getBar3D(container, themes) {
                 emphasis: {
                     label: {
                         textStyle: {
-                            fontSize: __ECHARTS__.configs.label3DFontSize.value,
+                            fontSize: configs.label3DFontSize.value,
                         }
                     },
                     itemStyle: {}
                 },
-                animation: __ECHARTS__.configs.animation.value.toBoolean(),
-                animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
-                animationEasing: getAnimationEasing(),
+                animation: configs.animation.value.toBoolean(),
+                animationThreshold: Number(configs.animationThreshold.value),
+                animationEasing: getAnimationEasing(configs),
                 animationDuration: function (idx) {
-                    return idx * Number(__ECHARTS__.configs.animationDuration.value) + c * Number(__ECHARTS__.configs.animationDuration.value);
+                    return idx * Number(configs.animationDuration.value) + c * Number(configs.animationDuration.value);
                 },
                 animationDelay: function (idx) {
-                    return idx * Number(__ECHARTS__.configs.animationDelay.value) + c * Number(__ECHARTS__.configs.animationDelay.value);
+                    return idx * Number(configs.animationDelay.value) + c * Number(configs.animationDelay.value);
                 },
-                animationEasingUpdate: getAnimationEasingUpdate(),
+                animationEasingUpdate: getAnimationEasingUpdate(configs),
                 animationDurationUpdate: function (idx) {
-                    return idx * Number(__ECHARTS__.configs.animationDurationUpdate.value) + c * Number(__ECHARTS__.configs.animationDurationUpdate.value);
+                    return idx * Number(configs.animationDurationUpdate.value) + c * Number(configs.animationDurationUpdate.value);
                 },
                 animationDelayUpdate: function (idx) {
-                    return idx * Number(__ECHARTS__.configs.animationDelayUpdate.value) + c * Number(__ECHARTS__.configs.animationDelayUpdate.value);
+                    return idx * Number(configs.animationDelayUpdate.value) + c * Number(configs.animationDelayUpdate.value);
                 },
             };
             for (var i = 0; i < dataset["data"].length; i++) {
@@ -7564,81 +8181,81 @@ function getBar3D(container, themes) {
 
     var option = {
         grid: {
-            x: __ECHARTS__.configs.grid_left.value,
-            y: __ECHARTS__.configs.grid_top.value,
-            x2: __ECHARTS__.configs.grid_right.value,
-            y2: __ECHARTS__.configs.grid_bottom.value,
-            containLabel: __ECHARTS__.configs.grid_containLabel.value.toBoolean(),
+            x: configs.grid_left.value,
+            y: configs.grid_top.value,
+            x2: configs.grid_right.value,
+            y2: configs.grid_bottom.value,
+            containLabel: configs.grid_containLabel.value.toBoolean(),
             backgroundColor: "transparent"
         },
         title: {
-            show: __ECHARTS__.configs.titleDisplay.value.toBoolean(),
-            text: __ECHARTS__.configs.titleText.value,
-            link: __ECHARTS__.configs.titleTextLink.value,
+            show: configs.titleDisplay.value.toBoolean(),
+            text: configs.titleText.value,
+            link: configs.titleTextLink.value,
             target : "blank",
-            subtext: __ECHARTS__.configs.titleSubText.value,
-            sublink: __ECHARTS__.configs.titleSubTextLink.value,
+            subtext: configs.titleSubText.value,
+            sublink: configs.titleSubTextLink.value,
             subtarget: "blank",
             top: "top",
-            left: __ECHARTS__.configs.titlePosition.value,
+            left: configs.titlePosition.value,
             textStyle: {
-                color: __ECHARTS__.configs.titleTextColor.value,
+                color: configs.titleTextColor.value,
             },
             subtextStyle: {
-                color: __ECHARTS__.configs.titleSubTextColor.value,
+                color: configs.titleSubTextColor.value,
             }
         },
         legend: {
-            show: __ECHARTS__.configs.legendDisplay.value.toBoolean(),
-            icon: __ECHARTS__.configs.legendIcon.value,
-            type: __ECHARTS__.configs.legendType.value,
-            selectedMode: __ECHARTS__.configs.legendSelectedMode.value,
-            top: __ECHARTS__.configs.legendPositionTop.value,
-            left: __ECHARTS__.configs.legendPositionLeft.value,
-            orient: __ECHARTS__.configs.legendOrient.value,
+            show: configs.legendDisplay.value.toBoolean(),
+            icon: configs.legendIcon.value,
+            type: configs.legendType.value,
+            selectedMode: configs.legendSelectedMode.value,
+            top: configs.legendPositionTop.value,
+            left: configs.legendPositionLeft.value,
+            orient: configs.legendOrient.value,
             data: columns.slice(1, columns.length),
             textStyle: {
-                color: __ECHARTS__.configs.legendTextColor.value
+                color: configs.legendTextColor.value
             },
         },
         tooltip: {
-            show: __ECHARTS__.configs.tooltipDisplay.value.toBoolean(),
+            show: configs.tooltipDisplay.value.toBoolean(),
         },
         toolbox: {
-            show: __ECHARTS__.configs.toolboxDisplay.value.toBoolean(),
+            show: configs.toolboxDisplay.value.toBoolean(),
             feature: {
                 saveAsImage: {
-                    show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value.toBoolean(),
+                    show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
                     excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"],
-                    backgroundColor:__ECHARTS__.configs.toolboxFeatureSaveAsImageBackgroundColor.value,
+                    backgroundColor:configs.toolboxFeatureSaveAsImageBackgroundColor.value,
                 },
-                restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value.toBoolean()},
-                dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
+                restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
+                dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
             },
-            top: __ECHARTS__.configs.toolbox_top.value,
-            left: __ECHARTS__.configs.toolbox_left.value,
-            orient: __ECHARTS__.configs.toolbox_orient.value,
+            top: configs.toolbox_top.value,
+            left: configs.toolbox_left.value,
+            orient: configs.toolbox_orient.value,
             emphasis: {
                 iconStyle: {
-                    textPosition: __ECHARTS__.configs.toolbox_textPosition.value,
+                    textPosition: configs.toolbox_textPosition.value,
                 }
             },
         },
         visualMap: {
-            show: __ECHARTS__.configs.visualMapDisplay.value.toBoolean(),
+            show: configs.visualMapDisplay.value.toBoolean(),
             min: valueMin,
             max: valueMax,
-            type: __ECHARTS__.configs.visualMap_type.value,
+            type: configs.visualMap_type.value,
             calculable: true,
-            top: __ECHARTS__.configs.visualMap_top.value,
-            left: __ECHARTS__.configs.visualMap_left.value,
-            itemWidth: __ECHARTS__.configs.visualMap_width.value,
-            orient: __ECHARTS__.configs.visualMap_orient.value,
-            itemHeight: __ECHARTS__.configs.visualMap_height.value,
+            top: configs.visualMap_top.value,
+            left: configs.visualMap_left.value,
+            itemWidth: configs.visualMap_width.value,
+            orient: configs.visualMap_orient.value,
+            itemHeight: configs.visualMap_height.value,
             textStyle: {
-                color: __ECHARTS__.configs.visualMap_textColor.value,
+                color: configs.visualMap_textColor.value,
             },
-            splitNumber: __ECHARTS__.configs.visualMap_piecewise_splitNumber.value,
+            splitNumber: configs.visualMap_piecewise_splitNumber.value,
         },
         xAxis3D: {
             type: "category",
@@ -7653,59 +8270,59 @@ function getBar3D(container, themes) {
             type: "value",
             axisLine: {
                 lineStyle: {
-                    color: __ECHARTS__.configs.axisColor.value
+                    color: configs.axisColor.value
                 },
             },
         },
         grid3D: {
-            boxWidth: __ECHARTS__.configs.BoxWidthFor3D.value,
-            boxDepth: __ECHARTS__.configs.BoxDepthFor3D.value,
+            boxWidth: configs.BoxWidthFor3D.value,
+            boxDepth: configs.BoxDepthFor3D.value,
             viewControl: {
-                autoRotate: __ECHARTS__.configs.AutoRotateFor3D.value.toBoolean(),
-                autoRotateSpeed: __ECHARTS__.configs.AutoRotateSpeedFor3D.value,
+                autoRotate: configs.AutoRotateFor3D.value.toBoolean(),
+                autoRotateSpeed: configs.AutoRotateSpeedFor3D.value,
                 projection: "orthographic",
-                animation: __ECHARTS__.configs.animation.value.toBoolean(),
-                animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
-                animationEasing: getAnimationEasing(),
+                animation: configs.animation.value.toBoolean(),
+                animationThreshold: Number(configs.animationThreshold.value),
+                animationEasing: getAnimationEasing(configs),
                 animationDuration: function (idx) {
-                    return idx * Number(__ECHARTS__.configs.animationDuration.value);
+                    return idx * Number(configs.animationDuration.value);
                 },
                 animationDelay: function (idx) {
-                    return idx * Number(__ECHARTS__.configs.animationDelay.value);
+                    return idx * Number(configs.animationDelay.value);
                 },
-                animationEasingUpdate: getAnimationEasingUpdate(),
+                animationEasingUpdate: getAnimationEasingUpdate(configs),
                 animationDurationUpdate: function (idx) {
-                    return idx * Number(__ECHARTS__.configs.animationDurationUpdate.value);
+                    return idx * Number(configs.animationDurationUpdate.value);
                 },
                 animationDelayUpdate: function (idx) {
-                    return idx * Number(__ECHARTS__.configs.animationDelayUpdate.value);
+                    return idx * Number(configs.animationDelayUpdate.value);
                 },
             },
             axisLine: {
-                show: __ECHARTS__.configs.axisLineDisplay.value.toBoolean(),
+                show: configs.axisLineDisplay.value.toBoolean(),
                 lineStyle: {
-                    color: __ECHARTS__.configs.axisColor.value
+                    color: configs.axisColor.value
                 },
             },
             splitLine: {
-                show: __ECHARTS__.configs.splitXLineDisplay.value.toBoolean() || __ECHARTS__.configs.splitYLineDisplay.value.toBoolean(),
+                show: configs.splitXLineDisplay.value.toBoolean() || configs.splitYLineDisplay.value.toBoolean(),
                 lineStyle: {
-                    color: __ECHARTS__.configs.axisColor.value
+                    color: configs.axisColor.value
                 },
             },
             splitArea: {
-                show: __ECHARTS__.configs.splitXAreaDisplay.value.toBoolean() || __ECHARTS__.configs.splitYAreaDisplay.value.toBoolean(),
+                show: configs.splitXAreaDisplay.value.toBoolean() || configs.splitYAreaDisplay.value.toBoolean(),
             },
             axisPointer: {
-                show: __ECHARTS__.configs.axisPointerDisplay.value.toBoolean(),
+                show: configs.axisPointerDisplay.value.toBoolean(),
                 lineStyle: {
-                    color: __ECHARTS__.configs.axisColor.value
+                    color: configs.axisColor.value
                 },
             },
             light: {
                 main: {
                     intensity: 1.2,
-                    shadow: __ECHARTS__.configs.LightShadowFor3D.value.toBoolean(),
+                    shadow: configs.LightShadowFor3D.value.toBoolean(),
                 },
                 ambient: {
                     intensity: 0.3
@@ -7713,22 +8330,45 @@ function getBar3D(container, themes) {
             },
         },
         series: series,
-        graphic: getGraphic(__SYS_LOGO_LINK__),
+        graphic: getWaterGraphic(__SYS_LOGO_LINK__),
     };
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
-    }, Number(__ECHARTS__.configs.loadingTimes.value) * 1000);
+    }, Number(configs.loadingTimes.value) * 1000);
+
+    container.id = getEchartsId();
+    container.draggable = "true";
+    container.ondragstart = function (event) {
+        event.dataTransfer.setData("Text", event.target.id);
+    };
+    __ECHARTS__.history[container.id] = {
+         id: container.id,
+        type: type,
+        configs: configs,
+        dataset: dataset,
+        themes: themes,
+        contrainer: container,
+        width: width,
+        height: height,
+    };
     return container;
 }
 
-function getLine3D(container, themes) {
+function getLine3D(container, themes, width, height, type, dataset, configs) {
+    if (container == null) {
+        container = document.createElement("div");
+        container.className = "echarts-container";
+        container.id = "echarts-container";
+        container.style.width = width;
+        container.style.height = height;
+    }
     var myChart = echarts.init(container, themes);
-    var dataset = __DATASET__["result"][__DATASET__.default.sheet];
+
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
-    var containerWidth = Number(container.style.width.slice(0).replace(/px/i, ""));
-    var containerHeight = Number(container.style.height.slice(0).replace(/px/i, ""));
+    var containerWidth = Number(width.replace(/px/i, ""));
+    var containerHeight = Number(height.replace(/px/i, ""));
     var columns = [];
     var rows = [];
     var series = [];
@@ -7749,17 +8389,17 @@ function getLine3D(container, themes) {
                 name: columns[c],
                 type: "line3D",
                 data: [],
-                smooth: __ECHARTS__.configs.lineSmooth.value.toBoolean(),
+                smooth: configs.lineSmooth.value.toBoolean(),
                 lineStyle: {
-                    opacity: __ECHARTS__.configs.ItemStyleOpacityFor3D.value,
-                    width: __ECHARTS__.configs.lineStyleWidth.value,
+                    opacity: configs.ItemStyleOpacityFor3D.value,
+                    width: configs.lineStyleWidth.value,
                 },
                 itemStyle : {},
                 label: {
-                    show: __ECHARTS__.configs.LabelOf3DDisplay.value.toBoolean(),
+                    show: configs.LabelOf3DDisplay.value.toBoolean(),
                     textStyle: {
-                        color: __ECHARTS__.configs.label3DTextColor.value,
-                        fontSize: __ECHARTS__.configs.label3DFontSize.value,
+                        color: configs.label3DTextColor.value,
+                        fontSize: configs.label3DFontSize.value,
                         borderWidth: 1
                     },
                     formatter: function (params) {
@@ -7769,7 +8409,7 @@ function getLine3D(container, themes) {
                 emphasis: {
                     label: {
                         textStyle: {
-                            fontSize: __ECHARTS__.configs.label3DFontSize.value,
+                            fontSize: configs.label3DFontSize.value,
                             //color: "#900"
                         }
                     },
@@ -7777,21 +8417,21 @@ function getLine3D(container, themes) {
 
                     }
                 },
-                animation: __ECHARTS__.configs.animation.value.toBoolean(),
-                animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
-                animationEasing: getAnimationEasing(),
+                animation: configs.animation.value.toBoolean(),
+                animationThreshold: Number(configs.animationThreshold.value),
+                animationEasing: getAnimationEasing(configs),
                 animationDuration: function (idx) {
-                    return idx * Number(__ECHARTS__.configs.animationDuration.value) + c * Number(__ECHARTS__.configs.animationDuration.value);
+                    return idx * Number(configs.animationDuration.value) + c * Number(configs.animationDuration.value);
                 },
                 animationDelay: function (idx) {
-                    return idx * Number(__ECHARTS__.configs.animationDelay.value) + c * Number(__ECHARTS__.configs.animationDelay.value);
+                    return idx * Number(configs.animationDelay.value) + c * Number(configs.animationDelay.value);
                 },
-                animationEasingUpdate: getAnimationEasingUpdate(),
+                animationEasingUpdate: getAnimationEasingUpdate(configs),
                 animationDurationUpdate: function (idx) {
-                    return idx * Number(__ECHARTS__.configs.animationDurationUpdate.value) + c * Number(__ECHARTS__.configs.animationDurationUpdate.value);
+                    return idx * Number(configs.animationDurationUpdate.value) + c * Number(configs.animationDurationUpdate.value);
                 },
                 animationDelayUpdate: function (idx) {
-                    return idx * Number(__ECHARTS__.configs.animationDelayUpdate.value) + c * Number(__ECHARTS__.configs.animationDelayUpdate.value);
+                    return idx * Number(configs.animationDelayUpdate.value) + c * Number(configs.animationDelayUpdate.value);
                 },
             };
             var data = [];
@@ -7814,81 +8454,81 @@ function getLine3D(container, themes) {
 
     var option = {
         grid: {
-            x: __ECHARTS__.configs.grid_left.value,
-            y: __ECHARTS__.configs.grid_top.value,
-            x2: __ECHARTS__.configs.grid_right.value,
-            y2: __ECHARTS__.configs.grid_bottom.value,
-            containLabel: __ECHARTS__.configs.grid_containLabel.value.toBoolean(),
+            x: configs.grid_left.value,
+            y: configs.grid_top.value,
+            x2: configs.grid_right.value,
+            y2: configs.grid_bottom.value,
+            containLabel: configs.grid_containLabel.value.toBoolean(),
             backgroundColor: "transparent"
         },
         title: {
-            show: __ECHARTS__.configs.titleDisplay.value.toBoolean(),
-            text: __ECHARTS__.configs.titleText.value,
-            link: __ECHARTS__.configs.titleTextLink.value,
+            show: configs.titleDisplay.value.toBoolean(),
+            text: configs.titleText.value,
+            link: configs.titleTextLink.value,
             target : "blank",
-            subtext: __ECHARTS__.configs.titleSubText.value,
-            sublink: __ECHARTS__.configs.titleSubTextLink.value,
+            subtext: configs.titleSubText.value,
+            sublink: configs.titleSubTextLink.value,
             subtarget: "blank",
             top:"top",
-            left:__ECHARTS__.configs.titlePosition.value,
+            left:configs.titlePosition.value,
             textStyle:{
-                color:__ECHARTS__.configs.titleTextColor.value,
+                color:configs.titleTextColor.value,
             },
             subtextStyle:{
-                color:__ECHARTS__.configs.titleSubTextColor.value,
+                color:configs.titleSubTextColor.value,
             }
         },
         legend: {
-            show: __ECHARTS__.configs.legendDisplay.value.toBoolean(),
-            icon: __ECHARTS__.configs.legendIcon.value,
-            type: __ECHARTS__.configs.legendType.value,
-            selectedMode: __ECHARTS__.configs.legendSelectedMode.value,
-            top: __ECHARTS__.configs.legendPositionTop.value,
-            left: __ECHARTS__.configs.legendPositionLeft.value,
-            orient: __ECHARTS__.configs.legendOrient.value,
+            show: configs.legendDisplay.value.toBoolean(),
+            icon: configs.legendIcon.value,
+            type: configs.legendType.value,
+            selectedMode: configs.legendSelectedMode.value,
+            top: configs.legendPositionTop.value,
+            left: configs.legendPositionLeft.value,
+            orient: configs.legendOrient.value,
             data: columns.slice(1, columns.length),
             textStyle: {
-                color: __ECHARTS__.configs.legendTextColor.value
+                color: configs.legendTextColor.value
             },
         },
         tooltip: {
-            show:__ECHARTS__.configs.tooltipDisplay.value.toBoolean(),
+            show:configs.tooltipDisplay.value.toBoolean(),
         },
         toolbox: {
-            show: __ECHARTS__.configs.toolboxDisplay.value.toBoolean(),
+            show: configs.toolboxDisplay.value.toBoolean(),
             feature: {
                 saveAsImage: {
-                    show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value.toBoolean(),
+                    show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
                     excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"],
-                    backgroundColor:__ECHARTS__.configs.toolboxFeatureSaveAsImageBackgroundColor.value,
+                    backgroundColor:configs.toolboxFeatureSaveAsImageBackgroundColor.value,
                 },
-                restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value.toBoolean()},
-                dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
+                restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
+                dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
             },
-            top: __ECHARTS__.configs.toolbox_top.value,
-            left:__ECHARTS__.configs.toolbox_left.value,
-            orient: __ECHARTS__.configs.toolbox_orient.value,
+            top: configs.toolbox_top.value,
+            left:configs.toolbox_left.value,
+            orient: configs.toolbox_orient.value,
             emphasis: {
                 iconStyle: {
-                    textPosition: __ECHARTS__.configs.toolbox_textPosition.value,
+                    textPosition: configs.toolbox_textPosition.value,
                 }
             },
         },
         visualMap: {
-            show:__ECHARTS__.configs.visualMapDisplay.value.toBoolean(),
+            show:configs.visualMapDisplay.value.toBoolean(),
             min: valueMin,
             max: valueMax,
-            type: __ECHARTS__.configs.visualMap_type.value,
+            type: configs.visualMap_type.value,
             calculable: true,
-            top: __ECHARTS__.configs.visualMap_top.value,
-            left: __ECHARTS__.configs.visualMap_left.value,
-            itemWidth: __ECHARTS__.configs.visualMap_width.value,
-            orient:__ECHARTS__.configs.visualMap_orient.value,
-            itemHeight: __ECHARTS__.configs.visualMap_height.value,
+            top: configs.visualMap_top.value,
+            left: configs.visualMap_left.value,
+            itemWidth: configs.visualMap_width.value,
+            orient:configs.visualMap_orient.value,
+            itemHeight: configs.visualMap_height.value,
             textStyle: {
-                color: __ECHARTS__.configs.visualMap_textColor.value,
+                color: configs.visualMap_textColor.value,
             },
-            splitNumber:__ECHARTS__.configs.visualMap_piecewise_splitNumber.value,
+            splitNumber:configs.visualMap_piecewise_splitNumber.value,
         },
 
         xAxis3D: {
@@ -7897,7 +8537,7 @@ function getLine3D(container, themes) {
             axisLine: {
                 show: true,
                 lineStyle: {
-                    color: __ECHARTS__.configs.axisColor.value
+                    color: configs.axisColor.value
                 },
             },
         },
@@ -7907,7 +8547,7 @@ function getLine3D(container, themes) {
             axisLine: {
                 show: true,
                 lineStyle: {
-                    color: __ECHARTS__.configs.axisColor.value
+                    color: configs.axisColor.value
                 },
             },
         },
@@ -7916,59 +8556,59 @@ function getLine3D(container, themes) {
             axisLine: {
                 show: true,
                 lineStyle: {
-                    color: __ECHARTS__.configs.axisColor.value
+                    color: configs.axisColor.value
                 },
             },
         },
         grid3D: {
-            boxWidth: __ECHARTS__.configs.BoxWidthFor3D.value,
-            boxDepth: __ECHARTS__.configs.BoxDepthFor3D.value,
+            boxWidth: configs.BoxWidthFor3D.value,
+            boxDepth: configs.BoxDepthFor3D.value,
             viewControl: {
-                autoRotate: __ECHARTS__.configs.AutoRotateFor3D.value.toBoolean(),
-                autoRotateSpeed: __ECHARTS__.configs.AutoRotateSpeedFor3D.value,
+                autoRotate: configs.AutoRotateFor3D.value.toBoolean(),
+                autoRotateSpeed: configs.AutoRotateSpeedFor3D.value,
                 projection: "orthographic",
-                animation: __ECHARTS__.configs.animation.value.toBoolean(),
-                animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
-                animationEasing: getAnimationEasing(),
+                animation: configs.animation.value.toBoolean(),
+                animationThreshold: Number(configs.animationThreshold.value),
+                animationEasing: getAnimationEasing(configs),
                 animationDuration: function (idx) {
-                    return idx * Number(__ECHARTS__.configs.animationDuration.value);
+                    return idx * Number(configs.animationDuration.value);
                 },
                 animationDelay: function (idx) {
-                    return idx * Number(__ECHARTS__.configs.animationDelay.value);
+                    return idx * Number(configs.animationDelay.value);
                 },
-                animationEasingUpdate: getAnimationEasingUpdate(),
+                animationEasingUpdate: getAnimationEasingUpdate(configs),
                 animationDurationUpdate: function (idx) {
-                    return idx * Number(__ECHARTS__.configs.animationDurationUpdate.value);
+                    return idx * Number(configs.animationDurationUpdate.value);
                 },
                 animationDelayUpdate: function (idx) {
-                    return idx * Number(__ECHARTS__.configs.animationDelayUpdate.value);
+                    return idx * Number(configs.animationDelayUpdate.value);
                 },
             },
             axisLine: {
-                show:__ECHARTS__.configs.axisLineDisplay.value.toBoolean(),
+                show:configs.axisLineDisplay.value.toBoolean(),
                 lineStyle: {
-                    color: __ECHARTS__.configs.axisColor.value
+                    color: configs.axisColor.value
                 },
             },
             splitLine: {
-                show: __ECHARTS__.configs.splitXLineDisplay.value.toBoolean() || __ECHARTS__.configs.splitYLineDisplay.value.toBoolean(),
+                show: configs.splitXLineDisplay.value.toBoolean() || configs.splitYLineDisplay.value.toBoolean(),
                 lineStyle: {
-                    color: __ECHARTS__.configs.axisColor.value
+                    color: configs.axisColor.value
                 },
             },
             splitArea: {
-                show: __ECHARTS__.configs.splitXAreaDisplay.value.toBoolean() || __ECHARTS__.configs.splitYAreaDisplay.value.toBoolean(),
+                show: configs.splitXAreaDisplay.value.toBoolean() || configs.splitYAreaDisplay.value.toBoolean(),
             },
             axisPointer: {
-                show: __ECHARTS__.configs.axisPointerDisplay.value.toBoolean(),
+                show: configs.axisPointerDisplay.value.toBoolean(),
                 lineStyle: {
-                    color: __ECHARTS__.configs.axisColor.value
+                    color: configs.axisColor.value
                 },
             },
             light: {
                 main: {
                     intensity: 1.2,
-                    shadow: __ECHARTS__.configs.LightShadowFor3D.value.toBoolean(),
+                    shadow: configs.LightShadowFor3D.value.toBoolean(),
                 },
                 ambient: {
                     intensity: 0.3
@@ -7976,22 +8616,45 @@ function getLine3D(container, themes) {
             },
         },
         series: series,
-        graphic: getGraphic(__SYS_LOGO_LINK__),
+        graphic: getWaterGraphic(__SYS_LOGO_LINK__),
     };
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
-    }, Number(__ECHARTS__.configs.loadingTimes.value) * 1000);
+    }, Number(configs.loadingTimes.value) * 1000);
+
+    container.id = getEchartsId();
+    container.draggable = "true";
+    container.ondragstart = function (event) {
+        event.dataTransfer.setData("Text", event.target.id);
+    };
+    __ECHARTS__.history[container.id] = {
+         id: container.id,
+        type: type,
+        configs: configs,
+        dataset: dataset,
+        themes: themes,
+        contrainer: container,
+        width: width,
+        height: height,
+    };
     return container;
 }
 
-function getScatter3D(container, themes) {
+function getScatter3D(container, themes, width, height, type, dataset, configs) {
+    if (container == null) {
+        container = document.createElement("div");
+        container.className = "echarts-container";
+        container.id = "echarts-container";
+        container.style.width = width;
+        container.style.height = height;
+    }
     var myChart = echarts.init(container, themes);
-    var dataset = __DATASET__["result"][__DATASET__.default.sheet];
+
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
-    var containerWidth = Number(container.style.width.slice(0).replace(/px/i, ""));
-    var containerHeight = Number(container.style.height.slice(0).replace(/px/i, ""));
+    var containerWidth = Number(width.replace(/px/i, ""));
+    var containerHeight = Number(height.replace(/px/i, ""));
     var columns = [];
     var rows = [];
     var series = [];
@@ -8012,19 +8675,19 @@ function getScatter3D(container, themes) {
                 name: columns[c],
                 type: "scatter3D",
                 data: [],
-                symbolSize: __ECHARTS__.configs.scatterSymbolSize.value,
-                symbol: __ECHARTS__.configs.scatterSymbolShape.value,
+                symbolSize: configs.scatterSymbolSize.value,
+                symbol: configs.scatterSymbolShape.value,
                 //"circle", "rect", "roundRect", "triangle", "diamond", "pin", "arrow", "none"
                 itemStyle: {
                     borderWidth: 1,
                     borderColor: "rgba(255,255,255,0.8)",
-                    opacity: __ECHARTS__.configs.ItemStyleOpacityFor3D.value,
+                    opacity: configs.ItemStyleOpacityFor3D.value,
                 },
                 label: {
-                    show: __ECHARTS__.configs.LabelOf3DDisplay.value.toBoolean(),
+                    show: configs.LabelOf3DDisplay.value.toBoolean(),
                     textStyle: {
-                        color: __ECHARTS__.configs.label3DTextColor.value,
-                        fontSize: __ECHARTS__.configs.label3DFontSize.value,
+                        color: configs.label3DTextColor.value,
+                        fontSize: configs.label3DFontSize.value,
                         borderWidth: 1
                     },
                     formatter: function (params) {
@@ -8034,7 +8697,7 @@ function getScatter3D(container, themes) {
                 emphasis: {
                     label: {
                         textStyle: {
-                            fontSize: __ECHARTS__.configs.label3DFontSize.value,
+                            fontSize: configs.label3DFontSize.value,
                             //color: "#900"
                         }
                     },
@@ -8042,21 +8705,21 @@ function getScatter3D(container, themes) {
                         //color: "#900"
                     }
                 },
-                animation: __ECHARTS__.configs.animation.value.toBoolean(),
-                animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
-                animationEasing: getAnimationEasing(),
+                animation: configs.animation.value.toBoolean(),
+                animationThreshold: Number(configs.animationThreshold.value),
+                animationEasing: getAnimationEasing(configs),
                 animationDuration: function (idx) {
-                    return idx * Number(__ECHARTS__.configs.animationDuration.value) + c * Number(__ECHARTS__.configs.animationDuration.value);
+                    return idx * Number(configs.animationDuration.value) + c * Number(configs.animationDuration.value);
                 },
                 animationDelay: function (idx) {
-                    return idx * Number(__ECHARTS__.configs.animationDelay.value) + c * Number(__ECHARTS__.configs.animationDelay.value);
+                    return idx * Number(configs.animationDelay.value) + c * Number(configs.animationDelay.value);
                 },
-                animationEasingUpdate: getAnimationEasingUpdate(),
+                animationEasingUpdate: getAnimationEasingUpdate(configs),
                 animationDurationUpdate: function (idx) {
-                    return idx * Number(__ECHARTS__.configs.animationDurationUpdate.value) + c * Number(__ECHARTS__.configs.animationDurationUpdate.value);
+                    return idx * Number(configs.animationDurationUpdate.value) + c * Number(configs.animationDurationUpdate.value);
                 },
                 animationDelayUpdate: function (idx) {
-                    return idx * Number(__ECHARTS__.configs.animationDelayUpdate.value) + c * Number(__ECHARTS__.configs.animationDelayUpdate.value);
+                    return idx * Number(configs.animationDelayUpdate.value) + c * Number(configs.animationDelayUpdate.value);
                 },
             };
             var data = [];
@@ -8079,81 +8742,81 @@ function getScatter3D(container, themes) {
 
     var option = {
         grid: {
-            x: __ECHARTS__.configs.grid_left.value,
-            y: __ECHARTS__.configs.grid_top.value,
-            x2: __ECHARTS__.configs.grid_right.value,
-            y2: __ECHARTS__.configs.grid_bottom.value,
-            containLabel: __ECHARTS__.configs.grid_containLabel.value.toBoolean(),
+            x: configs.grid_left.value,
+            y: configs.grid_top.value,
+            x2: configs.grid_right.value,
+            y2: configs.grid_bottom.value,
+            containLabel: configs.grid_containLabel.value.toBoolean(),
             backgroundColor: "transparent"
         },
         title: {
-            show: __ECHARTS__.configs.titleDisplay.value.toBoolean(),
-            text: __ECHARTS__.configs.titleText.value,
-            link: __ECHARTS__.configs.titleTextLink.value,
+            show: configs.titleDisplay.value.toBoolean(),
+            text: configs.titleText.value,
+            link: configs.titleTextLink.value,
             target : "blank",
-            subtext: __ECHARTS__.configs.titleSubText.value,
-            sublink: __ECHARTS__.configs.titleSubTextLink.value,
+            subtext: configs.titleSubText.value,
+            sublink: configs.titleSubTextLink.value,
             subtarget: "blank",
             top:"top",
-            left:__ECHARTS__.configs.titlePosition.value,
+            left:configs.titlePosition.value,
             textStyle:{
-                color:__ECHARTS__.configs.titleTextColor.value,
+                color:configs.titleTextColor.value,
             },
             subtextStyle:{
-                color:__ECHARTS__.configs.titleSubTextColor.value,
+                color:configs.titleSubTextColor.value,
             }
         },
         legend: {
-            show: __ECHARTS__.configs.legendDisplay.value.toBoolean(),
-            icon: __ECHARTS__.configs.legendIcon.value,
-            type: __ECHARTS__.configs.legendType.value,
-            selectedMode: __ECHARTS__.configs.legendSelectedMode.value,
-            top: __ECHARTS__.configs.legendPositionTop.value,
-            left: __ECHARTS__.configs.legendPositionLeft.value,
-            orient: __ECHARTS__.configs.legendOrient.value,
+            show: configs.legendDisplay.value.toBoolean(),
+            icon: configs.legendIcon.value,
+            type: configs.legendType.value,
+            selectedMode: configs.legendSelectedMode.value,
+            top: configs.legendPositionTop.value,
+            left: configs.legendPositionLeft.value,
+            orient: configs.legendOrient.value,
             data: columns.slice(1, columns.length),
             textStyle: {
-                color: __ECHARTS__.configs.legendTextColor.value
+                color: configs.legendTextColor.value
             },
         },
         tooltip: {
-           show:__ECHARTS__.configs.tooltipDisplay.value.toBoolean(),
+           show:configs.tooltipDisplay.value.toBoolean(),
         },
         toolbox: {
-            show: __ECHARTS__.configs.toolboxDisplay.value.toBoolean(),
+            show: configs.toolboxDisplay.value.toBoolean(),
             feature: {
                 saveAsImage: {
-                    show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value.toBoolean(),
+                    show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
                     excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"],
-                    backgroundColor:__ECHARTS__.configs.toolboxFeatureSaveAsImageBackgroundColor.value,
+                    backgroundColor:configs.toolboxFeatureSaveAsImageBackgroundColor.value,
                 },
-                restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value.toBoolean()},
-                dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
+                restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
+                dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
             },
-            top: __ECHARTS__.configs.toolbox_top.value,
-            left:__ECHARTS__.configs.toolbox_left.value,
-            orient: __ECHARTS__.configs.toolbox_orient.value,
+            top: configs.toolbox_top.value,
+            left:configs.toolbox_left.value,
+            orient: configs.toolbox_orient.value,
             emphasis: {
                 iconStyle: {
-                    textPosition: __ECHARTS__.configs.toolbox_textPosition.value,
+                    textPosition: configs.toolbox_textPosition.value,
                 }
             },
         },
         visualMap: {
-            show:__ECHARTS__.configs.visualMapDisplay.value.toBoolean(),
+            show:configs.visualMapDisplay.value.toBoolean(),
             min: valueMin,
             max: valueMax,
-            type: __ECHARTS__.configs.visualMap_type.value,
+            type: configs.visualMap_type.value,
             calculable: true,
-            top: __ECHARTS__.configs.visualMap_top.value,
-            left: __ECHARTS__.configs.visualMap_left.value,
-            itemWidth: __ECHARTS__.configs.visualMap_width.value,
-            orient:__ECHARTS__.configs.visualMap_orient.value,
-            itemHeight: __ECHARTS__.configs.visualMap_height.value,
+            top: configs.visualMap_top.value,
+            left: configs.visualMap_left.value,
+            itemWidth: configs.visualMap_width.value,
+            orient:configs.visualMap_orient.value,
+            itemHeight: configs.visualMap_height.value,
             textStyle: {
-                color: __ECHARTS__.configs.visualMap_textColor.value,
+                color: configs.visualMap_textColor.value,
             },
-            splitNumber:__ECHARTS__.configs.visualMap_piecewise_splitNumber.value,
+            splitNumber:configs.visualMap_piecewise_splitNumber.value,
         },
 
         xAxis3D: {
@@ -8162,7 +8825,7 @@ function getScatter3D(container, themes) {
             axisLine: {
                 show: true,
                 lineStyle: {
-                    color: __ECHARTS__.configs.axisColor.value
+                    color: configs.axisColor.value
                 },
             },
         },
@@ -8172,7 +8835,7 @@ function getScatter3D(container, themes) {
             axisLine: {
                 show: true,
                 lineStyle: {
-                    color: __ECHARTS__.configs.axisColor.value
+                    color: configs.axisColor.value
                 },
             },
         },
@@ -8181,59 +8844,59 @@ function getScatter3D(container, themes) {
             axisLine: {
                 show: true,
                 lineStyle: {
-                    color: __ECHARTS__.configs.axisColor.value
+                    color: configs.axisColor.value
                 },
             },
         },
         grid3D: {
-            boxWidth: __ECHARTS__.configs.BoxWidthFor3D.value,
-            boxDepth: __ECHARTS__.configs.BoxDepthFor3D.value,
+            boxWidth: configs.BoxWidthFor3D.value,
+            boxDepth: configs.BoxDepthFor3D.value,
             viewControl: {
-                autoRotate: __ECHARTS__.configs.AutoRotateFor3D.value.toBoolean(),
+                autoRotate: configs.AutoRotateFor3D.value.toBoolean(),
                 autoRotateSpeed: 10,
                 projection: "orthographic",
-                animation: __ECHARTS__.configs.animation.value.toBoolean(),
-                animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
-                animationEasing: getAnimationEasing(),
+                animation: configs.animation.value.toBoolean(),
+                animationThreshold: Number(configs.animationThreshold.value),
+                animationEasing: getAnimationEasing(configs),
                 animationDuration: function (idx) {
-                    return idx * Number(__ECHARTS__.configs.animationDuration.value);
+                    return idx * Number(configs.animationDuration.value);
                 },
                 animationDelay: function (idx) {
-                    return idx * Number(__ECHARTS__.configs.animationDelay.value);
+                    return idx * Number(configs.animationDelay.value);
                 },
-                animationEasingUpdate: getAnimationEasingUpdate(),
+                animationEasingUpdate: getAnimationEasingUpdate(configs),
                 animationDurationUpdate: function (idx) {
-                    return idx * Number(__ECHARTS__.configs.animationDurationUpdate.value);
+                    return idx * Number(configs.animationDurationUpdate.value);
                 },
                 animationDelayUpdate: function (idx) {
-                    return idx * Number(__ECHARTS__.configs.animationDelayUpdate.value);
+                    return idx * Number(configs.animationDelayUpdate.value);
                 },
             },
             axisLine: {
-                show:__ECHARTS__.configs.axisLineDisplay.value.toBoolean(),
+                show:configs.axisLineDisplay.value.toBoolean(),
                 lineStyle: {
-                    color: __ECHARTS__.configs.axisColor.value
+                    color: configs.axisColor.value
                 },
             },
             splitLine: {
-                show: __ECHARTS__.configs.splitXLineDisplay.value.toBoolean() || __ECHARTS__.configs.splitYLineDisplay.value.toBoolean(),
+                show: configs.splitXLineDisplay.value.toBoolean() || configs.splitYLineDisplay.value.toBoolean(),
                 lineStyle: {
-                    color: __ECHARTS__.configs.axisColor.value
+                    color: configs.axisColor.value
                 },
             },
             splitArea: {
-                show: __ECHARTS__.configs.splitXAreaDisplay.value.toBoolean() || __ECHARTS__.configs.splitYAreaDisplay.value.toBoolean(),
+                show: configs.splitXAreaDisplay.value.toBoolean() || configs.splitYAreaDisplay.value.toBoolean(),
             },
             axisPointer: {
-                show: __ECHARTS__.configs.axisPointerDisplay.value.toBoolean(),
+                show: configs.axisPointerDisplay.value.toBoolean(),
                 lineStyle: {
-                    color: __ECHARTS__.configs.axisColor.value
+                    color: configs.axisColor.value
                 },
             },
             light: {
                 main: {
                     intensity: 1.2,
-                    shadow: __ECHARTS__.configs.LightShadowFor3D.value.toBoolean(),
+                    shadow: configs.LightShadowFor3D.value.toBoolean(),
                 },
                 ambient: {
                     intensity: 0.3
@@ -8241,22 +8904,44 @@ function getScatter3D(container, themes) {
             },
         },
         series: series,
-        graphic: getGraphic(__SYS_LOGO_LINK__),
+        graphic: getWaterGraphic(__SYS_LOGO_LINK__),
     };
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
-    }, Number(__ECHARTS__.configs.loadingTimes.value) * 1000);
+    }, Number(configs.loadingTimes.value) * 1000);
+    container.id = getEchartsId();
+    container.draggable = "true";
+    container.ondragstart = function (event) {
+        event.dataTransfer.setData("Text", event.target.id);
+    };
+    __ECHARTS__.history[container.id] = {
+         id: container.id,
+        type: type,
+        configs: configs,
+        dataset: dataset,
+        themes: themes,
+        contrainer: container,
+        width: width,
+        height: height,
+    };
     return container;
 }
 
-function getCategoryLine(container, themes) {
+function getCategoryLine(container, themes, width, height, type, dataset, configs) {
+    if (container == null) {
+        container = document.createElement("div");
+        container.className = "echarts-container";
+        container.id = "echarts-container";
+        container.style.width = width;
+        container.style.height = height;
+    }
     var myChart = echarts.init(container, themes);
-    var dataset = __DATASET__["result"][__DATASET__.default.sheet];
+
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
-    var containerWidth = Number(container.style.width.slice(0).replace(/px/i, ""));
-    var containerHeight = Number(container.style.height.slice(0).replace(/px/i, ""));
+    var containerWidth = Number(width.replace(/px/i, ""));
+    var containerHeight = Number(height.replace(/px/i, ""));
 
     var columns = [];
     var times = [];
@@ -8278,70 +8963,70 @@ function getCategoryLine(container, themes) {
         var serie = {
             name: row[columns[0]].value,
             data: data,
-            animation: __ECHARTS__.configs.animation.value.toBoolean(),
-            animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
-            animationEasing: getAnimationEasing(),
+            animation: configs.animation.value.toBoolean(),
+            animationThreshold: Number(configs.animationThreshold.value),
+            animationEasing: getAnimationEasing(configs),
             animationDuration: function (idx) {
-                return idx * Number(__ECHARTS__.configs.animationDuration.value) ;
+                return idx * Number(configs.animationDuration.value) ;
             },
             animationDelay: function (idx) {
-                return idx * Number(__ECHARTS__.configs.animationDelay.value);
+                return idx * Number(configs.animationDelay.value);
             },
-            animationEasingUpdate: getAnimationEasingUpdate(),
+            animationEasingUpdate: getAnimationEasingUpdate(configs),
             animationDurationUpdate: function (idx) {
-                return idx * Number(__ECHARTS__.configs.animationDurationUpdate.value);
+                return idx * Number(configs.animationDurationUpdate.value);
             },
             animationDelayUpdate: function (idx) {
-                return idx * Number(__ECHARTS__.configs.animationDelayUpdate.value);
+                return idx * Number(configs.animationDelayUpdate.value);
             },
         };
-        if (__ECHARTS__.configs.categoryLineType.value == "bar") {
+        if (configs.categoryLineType.value == "bar") {
             serie.label = {
-                show: __ECHARTS__.configs.barLabelDisplay.value.toBoolean(),
-                rotate: __ECHARTS__.configs.barLabelRotate.value,
+                show: configs.barLabelDisplay.value.toBoolean(),
+                rotate: configs.barLabelRotate.value,
                 align: "center",
                 verticalAlign: "middle",
-                position: __ECHARTS__.configs.barLabelPosition.value,
+                position: configs.barLabelPosition.value,
                 distance: 15,
                 formatter: "{value|{c}}",
                 rich: {
                     value: {
-                        color: __ECHARTS__.configs.labelBarTextColor.value,
-                        fontSize: __ECHARTS__.configs.labelBarFontSize.value,
+                        color: configs.labelBarTextColor.value,
+                        fontSize: configs.labelBarFontSize.value,
                     }
                 }
             };
             serie.emphasis = {
                 label: {
-                    show: __ECHARTS__.configs.barEmphasisLabelDisplay.value.toBoolean(),
+                    show: configs.barEmphasisLabelDisplay.value.toBoolean(),
                     align: "center",
                     verticalAlign: "middle",
-                    position: __ECHARTS__.configs.barLabelPosition.value,
+                    position: configs.barLabelPosition.value,
                     distance: 15,
                     formatter: "{value|{c}}",
                     rotate: 0,
                     rich: {
                         value: {
-                            color: __ECHARTS__.configs.labelBarTextColor.value,
-                            fontSize: __ECHARTS__.configs.labelBarFontSize.value,
+                            color: configs.labelBarTextColor.value,
+                            fontSize: configs.labelBarFontSize.value,
                         }
                     }
                 }
             };
         }
-        if (__ECHARTS__.configs.categoryLineType.value == "pie") {
-            serie.radius = __ECHARTS__.configs.outRadius.value;
-            serie.selectedMode = __ECHARTS__.configs.pieSelectedMode.value;
+        if (configs.categoryLineType.value == "pie") {
+            serie.radius = configs.outRadius.value;
+            serie.selectedMode = configs.pieSelectedMode.value;
             serie.label = {
                 show: true,
-                alignTo: __ECHARTS__.configs.pieLabelAlignTo.value,
+                alignTo: configs.pieLabelAlignTo.value,
                 bleedMargin: 5,
                 margin: 20
             };
-            serie.animationType = __ECHARTS__.configs.animationType.value;
-            serie.animationTypeUpdate = __ECHARTS__.configs.animationTypeUpdate.value;
+            serie.animationType = configs.animationType.value;
+            serie.animationTypeUpdate = configs.animationTypeUpdate.value;
 
-            if (__ECHARTS__.configs.richTextLabel.value.toBoolean()) {
+            if (configs.richTextLabel.value.toBoolean()) {
                 serie.label = {
                     formatter: "{a|{a}}{abg|}\n{hr|}\n  {b|{b}：}{c}  {per|{d}%}  ",
                     backgroundColor: "#eee",
@@ -8389,40 +9074,40 @@ function getCategoryLine(container, themes) {
                 show: true
             };
         }
-        if (__ECHARTS__.configs.categoryLineType.value == "line" || __ECHARTS__.configs.categoryLineType.value == "areaStyle") {
-            serie.smooth = __ECHARTS__.configs.lineSmooth.value.toBoolean();
+        if (configs.categoryLineType.value == "line" || configs.categoryLineType.value == "areaStyle") {
+            serie.smooth = configs.lineSmooth.value.toBoolean();
             serie.lineStyle = {
-                width: Number(__ECHARTS__.configs.lineStyleWidth.value),
+                width: Number(configs.lineStyleWidth.value),
             };
             serie.label = {
-                show: __ECHARTS__.configs.lineLabelDisplay.value.toBoolean(),
+                show: configs.lineLabelDisplay.value.toBoolean(),
                 align: "center",
                 verticalAlign: "middle",
                 position: "top",
                 distance: 15,
                 formatter: "{value|{c}}",
-                rotate: __ECHARTS__.configs.lineLabelRotate.value,
+                rotate: configs.lineLabelRotate.value,
                 rich: {
                     value: {
-                        color: __ECHARTS__.configs.lineLabelTextColor.value,
-                        fontSize: __ECHARTS__.configs.lineLabelFontSize.value,
+                        color: configs.lineLabelTextColor.value,
+                        fontSize: configs.lineLabelFontSize.value,
                     }
                 }
             };
             serie.emphasis = {
                 label: {
-                    show: __ECHARTS__.configs.lineEmphasisLabelDisplay.value.toBoolean(),
+                    show: configs.lineEmphasisLabelDisplay.value.toBoolean(),
                     position: "bottom",
                     rotate:0,
-                    fontSize: __ECHARTS__.configs.lineLabelFontSize.value,
+                    fontSize: configs.lineLabelFontSize.value,
                 }
             };
-            serie.symbol = __ECHARTS__.configs.lineSymbol.value;
-            serie.symbolSize = __ECHARTS__.configs.lineSymbolSize.value;
-            serie.markPoint = getMarkPoint();
-            serie.markLine = getMarkLine();
+            serie.symbol = configs.lineSymbol.value;
+            serie.symbolSize = configs.lineSymbolSize.value;
+            serie.markPoint = getMarkPoint(configs);
+            serie.markLine = getMarkLine(configs);
             serie.markArea = {};
-            if (__ECHARTS__.configs.categoryLineType.value == "areaStyle") {
+            if (configs.categoryLineType.value == "areaStyle") {
                 serie.areaStyle = {};
             }
         }
@@ -8433,32 +9118,32 @@ function getCategoryLine(container, themes) {
     var option = {
         baseOption: {
             grid: {
-                x: __ECHARTS__.configs.grid_left.value,
-                y: __ECHARTS__.configs.grid_top.value,
-                x2: __ECHARTS__.configs.grid_right.value,
-                y2: __ECHARTS__.configs.grid_bottom.value,
-                containLabel: __ECHARTS__.configs.grid_containLabel.value.toBoolean(),
+                x: configs.grid_left.value,
+                y: configs.grid_top.value,
+                x2: configs.grid_right.value,
+                y2: configs.grid_bottom.value,
+                containLabel: configs.grid_containLabel.value.toBoolean(),
                 backgroundColor: "transparent"
             },
             title: {
-                show: __ECHARTS__.configs.titleDisplay.value.toBoolean(),
-                text: __ECHARTS__.configs.titleText.value,
-                link: __ECHARTS__.configs.titleTextLink.value,
+                show: configs.titleDisplay.value.toBoolean(),
+                text: configs.titleText.value,
+                link: configs.titleTextLink.value,
                 target: "blank",
-                subtext: __ECHARTS__.configs.titleSubText.value,
-                sublink: __ECHARTS__.configs.titleSubTextLink.value,
+                subtext: configs.titleSubText.value,
+                sublink: configs.titleSubTextLink.value,
                 subtarget: "blank",
                 top: "top",
-                left: __ECHARTS__.configs.titlePosition.value,
+                left: configs.titlePosition.value,
                 textStyle: {
-                    color: __ECHARTS__.configs.titleTextColor.value,
+                    color: configs.titleTextColor.value,
                 },
                 subtextStyle: {
-                    color: __ECHARTS__.configs.titleSubTextColor.value,
+                    color: configs.titleSubTextColor.value,
                 }
             },
             timeline: {
-                show: __ECHARTS__.configs.timelineDisplay.value.toBoolean(),
+                show: configs.timelineDisplay.value.toBoolean(),
                 axisType: "category",
                 //考虑数据通用性，使用类目轴
                 //"value" 数值轴，适用于连续数据。
@@ -8471,7 +9156,7 @@ function getCategoryLine(container, themes) {
                 autoPlay: true,
                 //自动播放
                 // currentIndex: 2,
-                playInterval: __ECHARTS__.configs.seriesLoopPlayInterval.value * 1000,
+                playInterval: configs.seriesLoopPlayInterval.value * 1000,
                 // controlStyle: {
                 //     position: "left"
                 // },
@@ -8487,117 +9172,139 @@ function getCategoryLine(container, themes) {
                 //bottom: 10
             },
             tooltip: {
-                show: __ECHARTS__.configs.tooltipDisplay.value.toBoolean(),
+                show: configs.tooltipDisplay.value.toBoolean(),
                 trigger: "axis",
                 axisPointer: {
-                    type: __ECHARTS__.configs.categoryLineType.value != "pie" ? __ECHARTS__.configs.axisPointerType.value : "none",
+                    type: configs.categoryLineType.value != "pie" ? configs.axisPointerType.value : "none",
                 },
             },
             toolbox: {
-                show: __ECHARTS__.configs.toolboxDisplay.value.toBoolean(),
+                show: configs.toolboxDisplay.value.toBoolean(),
                 feature: {
                     saveAsImage: {
-                        show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value.toBoolean(),
+                        show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
                         excludeComponents: ["toolbox", "dataZoom", "timeline", "visualMap", "brush"],
-                        backgroundColor: __ECHARTS__.configs.toolboxFeatureSaveAsImageBackgroundColor.value,
+                        backgroundColor: configs.toolboxFeatureSaveAsImageBackgroundColor.value,
                     },
-                    restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value.toBoolean()},
-                    dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
+                    restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
+                    dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
                 },
-                top: __ECHARTS__.configs.toolbox_top.value,
-                left: __ECHARTS__.configs.toolbox_left.value,
-                orient: __ECHARTS__.configs.toolbox_orient.value,
+                top: configs.toolbox_top.value,
+                left: configs.toolbox_left.value,
+                orient: configs.toolbox_orient.value,
                 emphasis: {
                     iconStyle: {
-                        textPosition: __ECHARTS__.configs.toolbox_textPosition.value,
+                        textPosition: configs.toolbox_textPosition.value,
                     }
                 },
             },
             xAxis: {
                 type: "category",
                 data: columns.slice(1),
-                inverse: __ECHARTS__.configs.xAxisInverse.value.toBoolean(),
+                inverse: configs.xAxisInverse.value.toBoolean(),
                 axisLine: {
-                    show: __ECHARTS__.configs.axisLineDisplay.value.toBoolean() && __ECHARTS__.configs.categoryLineType.value != "pie",
+                    show: configs.axisLineDisplay.value.toBoolean() && configs.categoryLineType.value != "pie",
                     lineStyle: {
-                        color: __ECHARTS__.configs.axisColor.value
+                        color: configs.axisColor.value
                     },
                 },
                 axisTick: {
-                    show: __ECHARTS__.configs.axisLineDisplay.value.toBoolean() && __ECHARTS__.configs.categoryLineType.value != "pie",
+                    show: configs.axisLineDisplay.value.toBoolean() && configs.categoryLineType.value != "pie",
                 },
                 axisLabel: {
-                    show: __ECHARTS__.configs.axisLineDisplay.value.toBoolean() && __ECHARTS__.configs.categoryLineType.value != "pie",
-                    rotate: Number(__ECHARTS__.configs.xAxisLabelRotate.value),
+                    show: configs.axisLineDisplay.value.toBoolean() && configs.categoryLineType.value != "pie",
+                    rotate: Number(configs.xAxisLabelRotate.value),
                     textStyle: {
-                        color: __ECHARTS__.configs.axisTextColor.value
+                        color: configs.axisTextColor.value
                     }
                 },
                 splitLine: {
-                    show: __ECHARTS__.configs.splitXLineDisplay.value.toBoolean() && __ECHARTS__.configs.categoryLineType.value != "pie",
+                    show: configs.splitXLineDisplay.value.toBoolean() && configs.categoryLineType.value != "pie",
                     lineStyle: {
                         color: [
-                            __ECHARTS__.configs.axisColor.value
+                            configs.axisColor.value
                         ]
                     },
                 },
                 splitArea: {
-                    show: __ECHARTS__.configs.splitXAreaDisplay.value.toBoolean() && __ECHARTS__.configs.categoryLineType.value != "pie",
+                    show: configs.splitXAreaDisplay.value.toBoolean() && configs.categoryLineType.value != "pie",
                 }
             },
             yAxis: {
                 type: "value",
-                inverse: __ECHARTS__.configs.yAxisInverse.value.toBoolean(),
+                inverse: configs.yAxisInverse.value.toBoolean(),
                 axisLine: {
-                    show: __ECHARTS__.configs.axisLineDisplay.value.toBoolean() && __ECHARTS__.configs.categoryLineType.value != "pie",
+                    show: configs.axisLineDisplay.value.toBoolean() && configs.categoryLineType.value != "pie",
                     lineStyle: {
-                        color: __ECHARTS__.configs.axisColor.value
+                        color: configs.axisColor.value
                     },
                 },
                 axisTick: {
-                    show: __ECHARTS__.configs.axisLineDisplay.value.toBoolean() && __ECHARTS__.configs.categoryLineType.value != "pie",
+                    show: configs.axisLineDisplay.value.toBoolean() && configs.categoryLineType.value != "pie",
                 },
                 axisLabel: {
-                    show: __ECHARTS__.configs.axisLineDisplay.value.toBoolean() && __ECHARTS__.configs.categoryLineType.value != "pie",
-                    rotate: Number(__ECHARTS__.configs.yAxisLabelRotate.value),
+                    show: configs.axisLineDisplay.value.toBoolean() && configs.categoryLineType.value != "pie",
+                    rotate: Number(configs.yAxisLabelRotate.value),
                     textStyle: {
-                        color: __ECHARTS__.configs.axisTextColor.value
+                        color: configs.axisTextColor.value
                     }
                 },
                 splitLine: {
-                    show: __ECHARTS__.configs.splitYLineDisplay.value.toBoolean() && __ECHARTS__.configs.categoryLineType.value != "pie",
+                    show: configs.splitYLineDisplay.value.toBoolean() && configs.categoryLineType.value != "pie",
                     lineStyle: {
                         color: [
-                            __ECHARTS__.configs.axisColor.value
+                            configs.axisColor.value
                         ]
                     },
                 },
                 splitArea: {
-                    show: __ECHARTS__.configs.splitYAreaDisplay.value.toBoolean() && __ECHARTS__.configs.categoryLineType.value != "pie",
+                    show: configs.splitYAreaDisplay.value.toBoolean() && configs.categoryLineType.value != "pie",
                 }
             },
             series: {
-                type: __ECHARTS__.configs.categoryLineType.value == "areaStyle" ? "line" : __ECHARTS__.configs.categoryLineType.value,
+                type: configs.categoryLineType.value == "areaStyle" ? "line" : configs.categoryLineType.value,
             },
-            graphic: getGraphic(__SYS_LOGO_LINK__),
+            graphic: getWaterGraphic(__SYS_LOGO_LINK__),
         },
         options: options
     };
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
-    }, Number(__ECHARTS__.configs.loadingTimes.value) * 1000);
+    }, Number(configs.loadingTimes.value) * 1000);
+    container.id = getEchartsId();
+    container.draggable = "true";
+    container.ondragstart = function (event) {
+        event.dataTransfer.setData("Text", event.target.id);
+    };
+    __ECHARTS__.history[container.id] = {
+         id: container.id,
+        type: type,
+        configs: configs,
+        dataset: dataset,
+        themes: themes,
+        contrainer: container,
+        width: width,
+        height: height,
+    };
     return container;
 }
 
-function getGeoMigrateLinesOfChinaCity(container, themes) {
+function getGeoMigrateLinesOfChinaCity(container, themes, width, height, type, dataset, configs) {
     //数据结构:fromCity|toCity|value or text
+    if (container == null) {
+        container = document.createElement("div");
+        container.className = "echarts-container";
+        container.id = "echarts-container";
+        container.style.width = width;
+        container.style.height = height;
+    }
     var myChart = echarts.init(container, themes);
-    var dataset = __DATASET__["result"][__DATASET__.default.sheet];
+
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
-    var containerWidth = Number(container.style.width.slice(0).replace(/px/i, ""));
-    var containerHeight = Number(container.style.height.slice(0).replace(/px/i, ""));
+    var containerWidth = Number(width.replace(/px/i, ""));
+    var containerHeight = Number(height.replace(/px/i, ""));
 
     var columns = [];
     for (var i = 0; i < dataset["columns"].length; i++) {
@@ -8737,7 +9444,7 @@ function getGeoMigrateLinesOfChinaCity(container, themes) {
                     zlevel: 1,
                     effect: {
                         show: true,
-                        period: __ECHARTS__.configs.geoLinePeriod.value,
+                        period: configs.geoLinePeriod.value,
                         trailLength: 0.2,
                         //拖尾
                         color: "#fff",
@@ -8749,7 +9456,7 @@ function getGeoMigrateLinesOfChinaCity(container, themes) {
                             color: colors[index],
                             width: 0,
                             opacity: 0.1,
-                            curveness: __ECHARTS__.configs.geoLineCurveness.value,
+                            curveness: configs.geoLineCurveness.value,
                             //曲率
                         }
                     },
@@ -8763,18 +9470,18 @@ function getGeoMigrateLinesOfChinaCity(container, themes) {
                     symbolSize: 5,
                     effect: {
                         show: true,
-                        period: __ECHARTS__.configs.geoLinePeriod.value,
+                        period: configs.geoLinePeriod.value,
                         trailLength: 0,
                         //拖尾
-                        symbol: (__ECHARTS__.configs.geoLineSymbol.value == "plane" || __ECHARTS__.configs.geoLineSymbol.value == "rocket") ? __SYS_IMAGES_PATH__[__ECHARTS__.configs.geoLineSymbol.value] : __ECHARTS__.configs.geoLineSymbol.value,
-                        symbolSize: __ECHARTS__.configs.geoLineSymbolSize.value,
+                        symbol: (configs.geoLineSymbol.value == "plane" || configs.geoLineSymbol.value == "rocket") ? __SYS_IMAGES_PATH__[configs.geoLineSymbol.value] : configs.geoLineSymbol.value,
+                        symbolSize: configs.geoLineSymbolSize.value,
                     },
                     lineStyle: {
                         normal: {
                             color: colors[index],
                             width: 1,
                             opacity: 0.3,
-                            curveness: __ECHARTS__.configs.geoLineCurveness.value,
+                            curveness: configs.geoLineCurveness.value,
                             //曲率
                         }
                     },
@@ -8798,7 +9505,7 @@ function getGeoMigrateLinesOfChinaCity(container, themes) {
                     },
                     symbolSize: function (val) {
                         //return val[2] / 8;
-                        return __ECHARTS__.configs.scatterSymbolSize.value;
+                        return configs.scatterSymbolSize.value;
                     },
                     itemStyle: {
                         normal: {
@@ -8811,54 +9518,54 @@ function getGeoMigrateLinesOfChinaCity(container, themes) {
 
         var option = {
             grid: {
-                x: __ECHARTS__.configs.grid_left.value,
-                y: __ECHARTS__.configs.grid_top.value,
-                x2: __ECHARTS__.configs.grid_right.value,
-                y2: __ECHARTS__.configs.grid_bottom.value,
-                containLabel: __ECHARTS__.configs.grid_containLabel.value.toBoolean(),
+                x: configs.grid_left.value,
+                y: configs.grid_top.value,
+                x2: configs.grid_right.value,
+                y2: configs.grid_bottom.value,
+                containLabel: configs.grid_containLabel.value.toBoolean(),
                 backgroundColor: "transparent"
             },
-            //backgroundColor: __ECHARTS__.configs.geoBackgroundColor.value,
+            //backgroundColor: configs.geoBackgroundColor.value,
             title: {
-                show: __ECHARTS__.configs.titleDisplay.value.toBoolean(),
-                text: __ECHARTS__.configs.titleText.value,
-                link: __ECHARTS__.configs.titleTextLink.value,
+                show: configs.titleDisplay.value.toBoolean(),
+                text: configs.titleText.value,
+                link: configs.titleTextLink.value,
                 target: "blank",
-                subtext: __ECHARTS__.configs.titleSubText.value,
-                sublink: __ECHARTS__.configs.titleSubTextLink.value,
+                subtext: configs.titleSubText.value,
+                sublink: configs.titleSubTextLink.value,
                 subtarget: "blank",
                 top: "top",
-                left: __ECHARTS__.configs.titlePosition.value,
+                left: configs.titlePosition.value,
                 textStyle: {
-                    color: __ECHARTS__.configs.titleTextColor.value,
+                    color: configs.titleTextColor.value,
                 },
                 subtextStyle: {
-                    color: __ECHARTS__.configs.titleSubTextColor.value,
+                    color: configs.titleSubTextColor.value,
                 }
             },
             toolbox: {
-                show: __ECHARTS__.configs.toolboxDisplay.value.toBoolean(),
+                show: configs.toolboxDisplay.value.toBoolean(),
                 feature: {
                     saveAsImage: {
-                        show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value.toBoolean(),
+                        show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
                         excludeComponents: ["toolbox", "dataZoom", "timeline", "visualMap", "brush"],
-                        backgroundColor: __ECHARTS__.configs.toolboxFeatureSaveAsImageBackgroundColor.value,
+                        backgroundColor: configs.toolboxFeatureSaveAsImageBackgroundColor.value,
                     },
-                    restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value.toBoolean()},
-                    dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
+                    restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
+                    dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
                 },
-                top: __ECHARTS__.configs.toolbox_top.value,
-                left: __ECHARTS__.configs.toolbox_left.value,
-                orient: __ECHARTS__.configs.toolbox_orient.value,
+                top: configs.toolbox_top.value,
+                left: configs.toolbox_left.value,
+                orient: configs.toolbox_orient.value,
                 emphasis: {
                     iconStyle: {
-                        textPosition: __ECHARTS__.configs.toolbox_textPosition.value,
+                        textPosition: configs.toolbox_textPosition.value,
                     }
                 },
             },
             tooltip: {
                 //trigger: "item"
-                show: __ECHARTS__.configs.tooltipDisplay.value.toBoolean(),
+                show: configs.tooltipDisplay.value.toBoolean(),
                 formatter: function (params) {
                     var value = "";
                     if (params.seriesType == "lines")
@@ -8870,45 +9577,45 @@ function getGeoMigrateLinesOfChinaCity(container, themes) {
                 },
             },
             legend: {
-                show: __ECHARTS__.configs.legendDisplay.value.toBoolean(),
-                icon: __ECHARTS__.configs.legendIcon.value,
-                type: __ECHARTS__.configs.legendType.value,
-                selectedMode: __ECHARTS__.configs.legendSelectedMode.value,
-                top: __ECHARTS__.configs.legendPositionTop.value,
-                left: __ECHARTS__.configs.legendPositionLeft.value,
-                orient: __ECHARTS__.configs.legendOrient.value,
+                show: configs.legendDisplay.value.toBoolean(),
+                icon: configs.legendIcon.value,
+                type: configs.legendType.value,
+                selectedMode: configs.legendSelectedMode.value,
+                top: configs.legendPositionTop.value,
+                left: configs.legendPositionLeft.value,
+                orient: configs.legendOrient.value,
                 data: getSerieNames(seriedata),
                 textStyle: {
-                    color: __ECHARTS__.configs.legendTextColor.value
+                    color: configs.legendTextColor.value
                 },
             },
             geo: {
                 map: "china",
                 label: {
                     normal: {
-                        show: __ECHARTS__.configs.geoAreaNameDisplay.value.toBoolean(),
-                        color: __ECHARTS__.configs.geoAreaNameColor.value,
+                        show: configs.geoAreaNameDisplay.value.toBoolean(),
+                        color: configs.geoAreaNameColor.value,
                     },
                     emphasis: {
                         show: true,
-                        color: __ECHARTS__.configs.geoAreaNameColor.value,
+                        color: configs.geoAreaNameColor.value,
                     }
                 },
                 roam: true,
                 itemStyle: {
                     normal: {
-                        areaColor: __ECHARTS__.configs.geoAreaColor.value,
-                        borderColor: __ECHARTS__.configs.geoBorderColor.value,
+                        areaColor: configs.geoAreaColor.value,
+                        borderColor: configs.geoBorderColor.value,
                         shadowBlur: 50,
                         shadowColor: "rgba(0, 0, 0, 0.2)",
                     },
                     emphasis: {
-                        areaColor: __ECHARTS__.configs.geoHotAreaColor.value
+                        areaColor: configs.geoHotAreaColor.value
                     }
                 }
             },
             series: series,
-            graphic: getGraphic(__SYS_LOGO_LINK__),
+            graphic: getWaterGraphic(__SYS_LOGO_LINK__),
         };
     } else {
         alert("该视图需要[源城市]、[目标城市]和[详细信息]等三个数据指标.")
@@ -8916,17 +9623,39 @@ function getGeoMigrateLinesOfChinaCity(container, themes) {
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
-    }, Number(__ECHARTS__.configs.loadingTimes.value) * 1000);
+    }, Number(configs.loadingTimes.value) * 1000);
+    container.id = getEchartsId();
+    container.draggable = "true";
+    container.ondragstart = function (event) {
+        event.dataTransfer.setData("Text", event.target.id);
+    };
+    __ECHARTS__.history[container.id] = {
+         id: container.id,
+        type: type,
+        configs: configs,
+        dataset: dataset,
+        themes: themes,
+        contrainer: container,
+        width: width,
+        height: height,
+    };
     return container;
 }
 
-function getCategoryLineForGauge(container, themes) {
+function getCategoryLineForGauge(container, themes, width, height, type, dataset, configs) {
+    if (container == null) {
+        container = document.createElement("div");
+        container.className = "echarts-container";
+        container.id = "echarts-container";
+        container.style.width = width;
+        container.style.height = height;
+    }
     var myChart = echarts.init(container, themes);
-    var dataset = __DATASET__["result"][__DATASET__.default.sheet];
+
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
-    var containerWidth = Number(container.style.width.slice(0).replace(/px/i, ""));
-    var containerHeight = Number(container.style.height.slice(0).replace(/px/i, ""));
+    var containerWidth = Number(width.replace(/px/i, ""));
+    var containerHeight = Number(height.replace(/px/i, ""));
 
     var columns = [];
     var times = [];
@@ -8947,14 +9676,14 @@ function getCategoryLineForGauge(container, themes) {
                 type: "gauge",
                 title: {
                     fontWeight: "bolder",
-                    fontSize: __ECHARTS__.configs.gaugeTitleFontSize.value,
+                    fontSize: configs.gaugeTitleFontSize.value,
                     color: "gray",
                     textShadowColor: "rgba(0, 0, 0, 0.5)",
                     textShadowBlur: 10,
                 },
                 axisLine: {
                     lineStyle: {
-                        width: __ECHARTS__.configs.gaugeAxisLineWidth.value,//10, //圆X轴宽度
+                        width: configs.gaugeAxisLineWidth.value,//10, //圆X轴宽度
                         shadowColor: "rgba(0, 0, 0, 0.5)",
                         shadowBlur: 10,
                         color: [[0.2, "#3CB371"], [0.8, "#6388ae"], [1, "#DB7093"]]
@@ -8962,7 +9691,7 @@ function getCategoryLineForGauge(container, themes) {
                     }
                 },
                 axisLabel: {
-                    fontSize: __ECHARTS__.configs.gaugeAxisLabelFontSize.value,
+                    fontSize: configs.gaugeAxisLabelFontSize.value,
                     textShadowColor: "rgba(0, 0, 0, 0.5)",
                     textShadowBlur: 10,
                 },
@@ -8975,14 +9704,14 @@ function getCategoryLineForGauge(container, themes) {
                 },
                 detail: {
                     formatter: ["{value}%", ""].join("\n"),
-                    fontSize: __ECHARTS__.configs.gaugeLabelFontSize.value,
+                    fontSize: configs.gaugeLabelFontSize.value,
                     textShadowColor: "rgba(0, 0, 0, 0.5)",
                     textShadowBlur: 10,
                 },
                 data: [],
-                animation: __ECHARTS__.configs.animation.value.toBoolean(),
-                animationEasing: getAnimationEasing(),
-                animationEasingUpdate: getAnimationEasingUpdate(),
+                animation: configs.animation.value.toBoolean(),
+                animationEasing: getAnimationEasing(configs),
+                animationEasingUpdate: getAnimationEasingUpdate(configs),
             };
             serie.data.push({
                 "name": row[columns[0]].value + "\r\n" + columns[c],
@@ -8993,8 +9722,8 @@ function getCategoryLineForGauge(container, themes) {
                 }
             });
 
-            let left = (toPoint(__ECHARTS__.configs.grid_left.value) + (100-toPoint(__ECHARTS__.configs.grid_left.value) - toPoint(__ECHARTS__.configs.grid_right.value))/2);
-            let top = (toPoint(__ECHARTS__.configs.grid_top.value) + (100-toPoint(__ECHARTS__.configs.grid_top.value) - toPoint(__ECHARTS__.configs.grid_bottom.value))/2);
+            let left = (toPoint(configs.grid_left.value) + (100-toPoint(configs.grid_left.value) - toPoint(configs.grid_right.value))/2);
+            let top = (toPoint(configs.grid_top.value) + (100-toPoint(configs.grid_top.value) - toPoint(configs.grid_bottom.value))/2);
             serie.center = [(c*left/(columns.length-1)) + left/(columns.length-1)*(c-1) + "%",top + "%"];
             opt.series.push(serie);
         }
@@ -9005,24 +9734,24 @@ function getCategoryLineForGauge(container, themes) {
     var option = {
         baseOption: {
             title: {
-                show: __ECHARTS__.configs.titleDisplay.value.toBoolean(),
-                text: __ECHARTS__.configs.titleText.value,
-                link: __ECHARTS__.configs.titleTextLink.value,
+                show: configs.titleDisplay.value.toBoolean(),
+                text: configs.titleText.value,
+                link: configs.titleTextLink.value,
                 target: "blank",
-                subtext: __ECHARTS__.configs.titleSubText.value,
-                sublink: __ECHARTS__.configs.titleSubTextLink.value,
+                subtext: configs.titleSubText.value,
+                sublink: configs.titleSubTextLink.value,
                 subtarget: "blank",
                 top: "top",
-                left: __ECHARTS__.configs.titlePosition.value,
+                left: configs.titlePosition.value,
                 textStyle: {
-                    color: __ECHARTS__.configs.titleTextColor.value,
+                    color: configs.titleTextColor.value,
                 },
                 subtextStyle: {
-                    color: __ECHARTS__.configs.titleSubTextColor.value,
+                    color: configs.titleSubTextColor.value,
                 }
             },
             timeline: {
-                show: __ECHARTS__.configs.timelineDisplay.value.toBoolean(),
+                show: configs.timelineDisplay.value.toBoolean(),
                 axisType: "category",
                 //考虑数据通用性，使用类目轴
                 //"value" 数值轴，适用于连续数据。
@@ -9035,7 +9764,7 @@ function getCategoryLineForGauge(container, themes) {
                 autoPlay: true,
                 //自动播放
                 // currentIndex: 2,
-                playInterval: __ECHARTS__.configs.seriesLoopPlayInterval.value * 1000,
+                playInterval: configs.seriesLoopPlayInterval.value * 1000,
                 // controlStyle: {
                 //     position: "left"
                 // },
@@ -9051,53 +9780,75 @@ function getCategoryLineForGauge(container, themes) {
                 bottom: 15
             },
             tooltip: {
-                show: __ECHARTS__.configs.tooltipDisplay.value.toBoolean(),
+                show: configs.tooltipDisplay.value.toBoolean(),
                 formatter: function (params) {
                     var value = params.data.name.replace("\r\n", "<br>") + ":" + params.data.value;
                     return value
                 },
             },
             toolbox: {
-                show: __ECHARTS__.configs.toolboxDisplay.value.toBoolean(),
+                show: configs.toolboxDisplay.value.toBoolean(),
                 feature: {
                 saveAsImage: {
-                    show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value.toBoolean(),
+                    show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
                     excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"],
-                    backgroundColor:__ECHARTS__.configs.toolboxFeatureSaveAsImageBackgroundColor.value,
+                    backgroundColor:configs.toolboxFeatureSaveAsImageBackgroundColor.value,
                 },
-                restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value.toBoolean()},
-                dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
+                restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
+                dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
             },
-                top: __ECHARTS__.configs.toolbox_top.value,
-                left: __ECHARTS__.configs.toolbox_left.value,
-                orient: __ECHARTS__.configs.toolbox_orient.value,
+                top: configs.toolbox_top.value,
+                left: configs.toolbox_left.value,
+                orient: configs.toolbox_orient.value,
                 emphasis: {
                     iconStyle: {
-                        textPosition: __ECHARTS__.configs.toolbox_textPosition.value,
+                        textPosition: configs.toolbox_textPosition.value,
                     }
                 },
             },
             series: {
                 type: "gauge",
             },
-            graphic: getGraphic(__SYS_LOGO_LINK__),
+            graphic: getWaterGraphic(__SYS_LOGO_LINK__),
         },
         options: options
     };
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
-    }, Number(__ECHARTS__.configs.loadingTimes.value) * 1000);
+    }, Number(configs.loadingTimes.value) * 1000);
+    container.id = getEchartsId();
+    container.draggable = "true";
+    container.ondragstart = function (event) {
+        event.dataTransfer.setData("Text", event.target.id);
+    };
+    __ECHARTS__.history[container.id] = {
+         id: container.id,
+        type: type,
+        configs: configs,
+        dataset: dataset,
+        themes: themes,
+        contrainer: container,
+        width: width,
+        height: height,
+    };
     return container;
 }
 
-function getCategoryLineForLiqiud(container, themes) {
+function getCategoryLineForLiqiud(container, themes, width, height, type, dataset, configs) {
+    if (container == null) {
+        container = document.createElement("div");
+        container.className = "echarts-container";
+        container.id = "echarts-container";
+        container.style.width = width;
+        container.style.height = height;
+    }
     var myChart = echarts.init(container, themes);
-    var dataset = __DATASET__["result"][__DATASET__.default.sheet];
+
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
-    var containerWidth = Number(container.style.width.slice(0).replace(/px/i, ""));
-    var containerHeight = Number(container.style.height.slice(0).replace(/px/i, ""));
+    var containerWidth = Number(width.replace(/px/i, ""));
+    var containerHeight = Number(height.replace(/px/i, ""));
 
     var columns = [];
     var times = [];
@@ -9125,9 +9876,9 @@ function getCategoryLineForLiqiud(container, themes) {
                 phase: "auto",
                 period: "auto",
                 direction: "right",
-                smooth: __ECHARTS__.configs.lineSmooth.value.toBoolean(),
+                smooth: configs.lineSmooth.value.toBoolean(),
 
-                shape: __ECHARTS__.configs.liqiudShape.value=="whale"?__SYS_IMAGES_PATH__.whale:__ECHARTS__.configs.liqiudShape.value,
+                shape: configs.liqiudShape.value=="whale"?__SYS_IMAGES_PATH__.whale:configs.liqiudShape.value,
 
                 waveAnimation: true,
 
@@ -9156,7 +9907,7 @@ function getCategoryLineForLiqiud(container, themes) {
                 label: {
                     show: true,
                     insideColor: "#fff",
-                    fontSize: __ECHARTS__.configs.liqiudFontSize.value,
+                    fontSize: configs.liqiudFontSize.value,
                     fontWeight: "bold",
                     align: "center",
                     baseline: "middle",
@@ -9168,18 +9919,18 @@ function getCategoryLineForLiqiud(container, themes) {
                         opacity: 0.8
                     }
                 },
-                animation: __ECHARTS__.configs.animation.value.toBoolean(),
-                animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
-                animationEasing: getAnimationEasing(),
-                animationEasingUpdate: getAnimationEasingUpdate(),
+                animation: configs.animation.value.toBoolean(),
+                animationThreshold: Number(configs.animationThreshold.value),
+                animationEasing: getAnimationEasing(configs),
+                animationEasingUpdate: getAnimationEasingUpdate(configs),
             };
             serie.data.push({
                 name: columns[c],
                 value: row[columns[c]].value
             });
 
-            let left = (toPoint(__ECHARTS__.configs.grid_left.value) + (100-toPoint(__ECHARTS__.configs.grid_left.value) - toPoint(__ECHARTS__.configs.grid_right.value))/2);
-            let top = (toPoint(__ECHARTS__.configs.grid_top.value) + (100-toPoint(__ECHARTS__.configs.grid_top.value) - toPoint(__ECHARTS__.configs.grid_bottom.value))/2);
+            let left = (toPoint(configs.grid_left.value) + (100-toPoint(configs.grid_left.value) - toPoint(configs.grid_right.value))/2);
+            let top = (toPoint(configs.grid_top.value) + (100-toPoint(configs.grid_top.value) - toPoint(configs.grid_bottom.value))/2);
             serie.center = [(c*left/(columns.length-1)) + 50/(columns.length-1)*(c-1) + "%", top + "%"];
             opt.series.push(serie);
         }
@@ -9190,24 +9941,24 @@ function getCategoryLineForLiqiud(container, themes) {
     var option = {
         baseOption: {
             title: {
-                show: __ECHARTS__.configs.titleDisplay.value.toBoolean(),
-                text: __ECHARTS__.configs.titleText.value,
-                link: __ECHARTS__.configs.titleTextLink.value,
+                show: configs.titleDisplay.value.toBoolean(),
+                text: configs.titleText.value,
+                link: configs.titleTextLink.value,
                 target: "blank",
-                subtext: __ECHARTS__.configs.titleSubText.value,
-                sublink: __ECHARTS__.configs.titleSubTextLink.value,
+                subtext: configs.titleSubText.value,
+                sublink: configs.titleSubTextLink.value,
                 subtarget: "blank",
                 top: "top",
-                left: __ECHARTS__.configs.titlePosition.value,
+                left: configs.titlePosition.value,
                 textStyle: {
-                    color: __ECHARTS__.configs.titleTextColor.value,
+                    color: configs.titleTextColor.value,
                 },
                 subtextStyle: {
-                    color: __ECHARTS__.configs.titleSubTextColor.value,
+                    color: configs.titleSubTextColor.value,
                 }
             },
             timeline: {
-                show: __ECHARTS__.configs.timelineDisplay.value.toBoolean(),
+                show: configs.timelineDisplay.value.toBoolean(),
                 axisType: "category",
                 //考虑数据通用性，使用类目轴
                 //"value" 数值轴，适用于连续数据。
@@ -9220,7 +9971,7 @@ function getCategoryLineForLiqiud(container, themes) {
                 autoPlay: true,
                 //自动播放
                 // currentIndex: 2,
-                playInterval: __ECHARTS__.configs.seriesLoopPlayInterval.value * 1000,
+                playInterval: configs.seriesLoopPlayInterval.value * 1000,
                 // controlStyle: {
                 //     position: "left"
                 // },
@@ -9236,47 +9987,70 @@ function getCategoryLineForLiqiud(container, themes) {
                 bottom: 15
             },
             tooltip: {
-                show: __ECHARTS__.configs.tooltipDisplay.value.toBoolean(),
+                show: configs.tooltipDisplay.value.toBoolean(),
                 formatter: function (params) {
                     var value = params.seriesName + "<br>" + params.data.name + ":" + params.data.value * 100 + "%";
                     return value
                 },
             },
             toolbox: {
-                show: __ECHARTS__.configs.toolboxDisplay.value.toBoolean(),
+                show: configs.toolboxDisplay.value.toBoolean(),
                 feature: {
                     saveAsImage: {
-                        show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value.toBoolean(),
+                        show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
                         excludeComponents: ["toolbox", "dataZoom", "timeline", "visualMap", "brush"],
-                    backgroundColor:__ECHARTS__.configs.toolboxFeatureSaveAsImageBackgroundColor.value,
+                    backgroundColor:configs.toolboxFeatureSaveAsImageBackgroundColor.value,
                     },
-                    restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value.toBoolean()},
-                    dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
+                    restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
+                    dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
 
                 },
-                top: __ECHARTS__.configs.toolbox_top.value,
-                left: __ECHARTS__.configs.toolbox_left.value,
-                orient: __ECHARTS__.configs.toolbox_orient.value,
+                top: configs.toolbox_top.value,
+                left: configs.toolbox_left.value,
+                orient: configs.toolbox_orient.value,
                 emphasis: {
                     iconStyle: {
-                        textPosition: __ECHARTS__.configs.toolbox_textPosition.value,
+                        textPosition: configs.toolbox_textPosition.value,
                     }
                 },
             },
-            graphic: getGraphic(__SYS_LOGO_LINK__),
+            graphic: getWaterGraphic(__SYS_LOGO_LINK__),
         },
         options: options
     };
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
-    }, Number(__ECHARTS__.configs.loadingTimes.value) * 1000);
+    }, Number(configs.loadingTimes.value) * 1000);
+
+    container.id = getEchartsId();
+    container.draggable = "true";
+    container.ondragstart = function (event) {
+        event.dataTransfer.setData("Text", event.target.id);
+    };
+    __ECHARTS__.history[container.id] = {
+         id: container.id,
+        type: type,
+        configs: configs,
+        dataset: dataset,
+        themes: themes,
+        contrainer: container,
+        width: width,
+        height: height,
+    };
     return container;
 }
 
-function getCategoryLineForGeoOfChina(container, themes) {
+function getCategoryLineForGeoOfChina(container, themes, width, height, type, dataset, configs) {
+    if (container == null) {
+        container = document.createElement("div");
+        container.className = "echarts-container";
+        container.id = "echarts-container";
+        container.style.width = width;
+        container.style.height = height;
+    }
     var myChart = echarts.init(container, themes);
-    var dataset = __DATASET__["result"][__DATASET__.default.sheet];
+
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
     var columns = [];
@@ -9284,8 +10058,8 @@ function getCategoryLineForGeoOfChina(container, themes) {
         columns.push(dataset["columns"][i].name);
     }
 
-    var containerWidth = Number(container.style.width.slice(0).replace(/px/i, ""));
-    var containerHeight = Number(container.style.height.slice(0).replace(/px/i, ""));
+    var containerWidth = Number(width.replace(/px/i, ""));
+    var containerHeight = Number(height.replace(/px/i, ""));
     var times = [];
 
     var options = [];
@@ -9354,37 +10128,37 @@ function getCategoryLineForGeoOfChina(container, themes) {
                 }
                 let opt = {
                     grid: {
-                        x: __ECHARTS__.configs.grid_left.value,
-                        y: __ECHARTS__.configs.grid_top.value,
-                        x2: __ECHARTS__.configs.grid_right.value,
-                        y2: __ECHARTS__.configs.grid_bottom.value,
-                        containLabel: __ECHARTS__.configs.grid_containLabel.value.toBoolean(),
+                        x: configs.grid_left.value,
+                        y: configs.grid_top.value,
+                        x2: configs.grid_right.value,
+                        y2: configs.grid_bottom.value,
+                        containLabel: configs.grid_containLabel.value.toBoolean(),
                         backgroundColor: "transparent"
                     },
-                    //backgroundColor: __ECHARTS__.configs.geoBackgroundColor.value,
+                    //backgroundColor: configs.geoBackgroundColor.value,
                     toolbox: {
-                        show: __ECHARTS__.configs.toolboxDisplay.value.toBoolean(),
+                        show: configs.toolboxDisplay.value.toBoolean(),
                         feature: {
                             saveAsImage: {
-                                show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value.toBoolean(),
+                                show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
                                 excludeComponents: ["toolbox", "dataZoom", "timeline", "visualMap", "brush"],
-                    backgroundColor:__ECHARTS__.configs.toolboxFeatureSaveAsImageBackgroundColor.value,
+                    backgroundColor:configs.toolboxFeatureSaveAsImageBackgroundColor.value,
                             },
-                            restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value.toBoolean()},
-                            dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
+                            restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
+                            dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
 
                         },
-                        top: __ECHARTS__.configs.toolbox_top.value,
-                        left: __ECHARTS__.configs.toolbox_left.value,
-                        orient: __ECHARTS__.configs.toolbox_orient.value,
+                        top: configs.toolbox_top.value,
+                        left: configs.toolbox_left.value,
+                        orient: configs.toolbox_orient.value,
                         emphasis: {
                             iconStyle: {
-                                textPosition: __ECHARTS__.configs.toolbox_textPosition.value,
+                                textPosition: configs.toolbox_textPosition.value,
                             }
                         },
                     },
                     tooltip: {
-                        show: __ECHARTS__.configs.tooltipDisplay.value.toBoolean(),
+                        show: configs.tooltipDisplay.value.toBoolean(),
                         formatter: function (params) {
                             var value = "";
                             try {
@@ -9395,20 +10169,20 @@ function getCategoryLineForGeoOfChina(container, themes) {
                         },
                     },
                     visualMap: {
-                        show: __ECHARTS__.configs.visualMapDisplay.value.toBoolean(),
+                        show: configs.visualMapDisplay.value.toBoolean(),
                         min: min,
                         max: max,
-                        type: __ECHARTS__.configs.visualMap_type.value,
+                        type: configs.visualMap_type.value,
                         calculable: true,
-                        top: __ECHARTS__.configs.visualMap_top.value,
-                        left: __ECHARTS__.configs.visualMap_left.value,
-                        itemWidth: __ECHARTS__.configs.visualMap_width.value,
-                        orient: __ECHARTS__.configs.visualMap_orient.value,
-                        itemHeight: __ECHARTS__.configs.visualMap_height.value,
+                        top: configs.visualMap_top.value,
+                        left: configs.visualMap_left.value,
+                        itemWidth: configs.visualMap_width.value,
+                        orient: configs.visualMap_orient.value,
+                        itemHeight: configs.visualMap_height.value,
                         textStyle: {
-                            color: __ECHARTS__.configs.visualMap_textColor.value,
+                            color: configs.visualMap_textColor.value,
                         },
-                        splitNumber: __ECHARTS__.configs.visualMap_piecewise_splitNumber.value,
+                        splitNumber: configs.visualMap_piecewise_splitNumber.value,
                     },
                     geo: {
                         map: "china",
@@ -9419,7 +10193,7 @@ function getCategoryLineForGeoOfChina(container, themes) {
                         },
                         label: {
                             normal: {
-                                show: __ECHARTS__.configs.geoAreaNameDisplay.value.toBoolean(),
+                                show: configs.geoAreaNameDisplay.value.toBoolean(),
                                 color: "gray",
                             },
                             emphasis: {
@@ -9429,13 +10203,13 @@ function getCategoryLineForGeoOfChina(container, themes) {
                         },
                         itemStyle: {
                             normal: {
-                                areaColor: __ECHARTS__.configs.geoAreaColor.value,
-                                borderColor: __ECHARTS__.configs.geoBorderColor.value,
+                                areaColor: configs.geoAreaColor.value,
+                                borderColor: configs.geoBorderColor.value,
                                 shadowBlur: 50,
                                 shadowColor: "rgba(0, 0, 0, 0.2)",
                             },
                             emphasis: {
-                                areaColor: __ECHARTS__.configs.geoHotAreaColor.value
+                                areaColor: configs.geoHotAreaColor.value
                             }
                         },
                     },
@@ -9454,7 +10228,7 @@ function getCategoryLineForGeoOfChina(container, themes) {
                                 return b.value - a.value;
                             })),
                             symbolSize: function (val) {
-                                var value = val[2] / (max / __ECHARTS__.configs.scatterSymbolSize.value);
+                                var value = val[2] / (max / configs.scatterSymbolSize.value);
                                 return value < 5 ? 5 : value;
                             },
                             showEffectOn: "render",
@@ -9472,7 +10246,7 @@ function getCategoryLineForGeoOfChina(container, themes) {
                             },
                             itemStyle: {
                                 normal: {
-                                    color: __ECHARTS__.configs.geoAreaColor.value,
+                                    color: configs.geoAreaColor.value,
                                     shadowBlur: 10,
                                     shadowColor: "rgba(0, 0, 0, 0.2)",
                                 }
@@ -9480,23 +10254,23 @@ function getCategoryLineForGeoOfChina(container, themes) {
                             zlevel: 1
                         }
                     ],
-                    graphic: getGraphic(__SYS_LOGO_LINK__),
+                    graphic: getWaterGraphic(__SYS_LOGO_LINK__),
 
-                    animation: __ECHARTS__.configs.animation.value.toBoolean(),
-                    animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
-                    animationEasing: getAnimationEasing(),
+                    animation: configs.animation.value.toBoolean(),
+                    animationThreshold: Number(configs.animationThreshold.value),
+                    animationEasing: getAnimationEasing(configs),
                     animationDuration: function (idx) {
-                        return idx * Number(__ECHARTS__.configs.animationDuration.value) + c * Number(__ECHARTS__.configs.animationDuration.value);
+                        return idx * Number(configs.animationDuration.value) + c * Number(configs.animationDuration.value);
                     },
                     animationDelay: function (idx) {
-                        return idx * Number(__ECHARTS__.configs.animationDelay.value) + c * Number(__ECHARTS__.configs.animationDelay.value);
+                        return idx * Number(configs.animationDelay.value) + c * Number(configs.animationDelay.value);
                     },
-                    animationEasingUpdate: getAnimationEasingUpdate(),
+                    animationEasingUpdate: getAnimationEasingUpdate(configs),
                     animationDurationUpdate: function (idx) {
-                        return idx * Number(__ECHARTS__.configs.animationDurationUpdate.value) + c * Number(__ECHARTS__.configs.animationDurationUpdate.value);
+                        return idx * Number(configs.animationDurationUpdate.value) + c * Number(configs.animationDurationUpdate.value);
                     },
                     animationDelayUpdate: function (idx) {
-                        return idx * Number(__ECHARTS__.configs.animationDelayUpdate.value) + c * Number(__ECHARTS__.configs.animationDelayUpdate.value);
+                        return idx * Number(configs.animationDelayUpdate.value) + c * Number(configs.animationDelayUpdate.value);
                     },
                 };
                 options.push(opt);
@@ -9509,32 +10283,32 @@ function getCategoryLineForGeoOfChina(container, themes) {
     var option = {
         baseOption: {
             grid: {
-                x: __ECHARTS__.configs.grid_left.value,
-                y: __ECHARTS__.configs.grid_top.value,
-                x2: __ECHARTS__.configs.grid_right.value,
-                y2: __ECHARTS__.configs.grid_bottom.value,
-                containLabel: __ECHARTS__.configs.grid_containLabel.value.toBoolean(),
+                x: configs.grid_left.value,
+                y: configs.grid_top.value,
+                x2: configs.grid_right.value,
+                y2: configs.grid_bottom.value,
+                containLabel: configs.grid_containLabel.value.toBoolean(),
                 backgroundColor: "transparent"
             },
             title: {
-                show: __ECHARTS__.configs.titleDisplay.value.toBoolean(),
-                text: __ECHARTS__.configs.titleText.value,
-                link: __ECHARTS__.configs.titleTextLink.value,
+                show: configs.titleDisplay.value.toBoolean(),
+                text: configs.titleText.value,
+                link: configs.titleTextLink.value,
                 target: "blank",
-                subtext: __ECHARTS__.configs.titleSubText.value,
-                sublink: __ECHARTS__.configs.titleSubTextLink.value,
+                subtext: configs.titleSubText.value,
+                sublink: configs.titleSubTextLink.value,
                 subtarget: "blank",
                 top: "top",
-                left: __ECHARTS__.configs.titlePosition.value,
+                left: configs.titlePosition.value,
                 textStyle: {
-                    color: __ECHARTS__.configs.titleTextColor.value,
+                    color: configs.titleTextColor.value,
                 },
                 subtextStyle: {
-                    color: __ECHARTS__.configs.titleSubTextColor.value,
+                    color: configs.titleSubTextColor.value,
                 }
             },
             timeline: {
-                show: __ECHARTS__.configs.timelineDisplay.value.toBoolean(),
+                show: configs.timelineDisplay.value.toBoolean(),
                 axisType: "category",
                 //考虑数据通用性，使用类目轴
                 //"value" 数值轴，适用于连续数据。
@@ -9547,7 +10321,7 @@ function getCategoryLineForGeoOfChina(container, themes) {
                 autoPlay: true,
                 //自动播放
                 // currentIndex: 2,
-                playInterval: __ECHARTS__.configs.seriesLoopPlayInterval.value * 1000,
+                playInterval: configs.seriesLoopPlayInterval.value * 1000,
                 // controlStyle: {
                 //     position: "left"
                 // },
@@ -9563,43 +10337,66 @@ function getCategoryLineForGeoOfChina(container, themes) {
                 bottom: 15
             },
             tooltip: {
-                show: __ECHARTS__.configs.tooltipDisplay.value.toBoolean(),
+                show: configs.tooltipDisplay.value.toBoolean(),
             },
             toolbox: {
-                show: __ECHARTS__.configs.toolboxDisplay.value.toBoolean(),
+                show: configs.toolboxDisplay.value.toBoolean(),
                 feature: {
                 saveAsImage: {
-                    show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value.toBoolean(),
+                    show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
                     excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"],
-                    backgroundColor:__ECHARTS__.configs.toolboxFeatureSaveAsImageBackgroundColor.value,
+                    backgroundColor:configs.toolboxFeatureSaveAsImageBackgroundColor.value,
                 },
-                restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value.toBoolean()},
-                dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
+                restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
+                dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
 
             },
-                top: __ECHARTS__.configs.toolbox_top.value,
-                left: __ECHARTS__.configs.toolbox_left.value,
-                orient: __ECHARTS__.configs.toolbox_orient.value,
+                top: configs.toolbox_top.value,
+                left: configs.toolbox_left.value,
+                orient: configs.toolbox_orient.value,
                 emphasis: {
                     iconStyle: {
-                        textPosition: __ECHARTS__.configs.toolbox_textPosition.value,
+                        textPosition: configs.toolbox_textPosition.value,
                     }
                 },
             },
-            graphic: getGraphic(__SYS_LOGO_LINK__),
+            graphic: getWaterGraphic(__SYS_LOGO_LINK__),
         },
         options: options
     };
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
-    }, Number(__ECHARTS__.configs.loadingTimes.value) * 1000);
+    }, Number(configs.loadingTimes.value) * 1000);
+
+    container.id = getEchartsId();
+    container.draggable = "true";
+    container.ondragstart = function (event) {
+        event.dataTransfer.setData("Text", event.target.id);
+    };
+    __ECHARTS__.history[container.id] = {
+         id: container.id,
+        type: type,
+        configs: configs,
+        dataset: dataset,
+        themes: themes,
+        contrainer: container,
+        width: width,
+        height: height,
+    };
     return container;
 }
 
-function getCategoryLineForGeoOfLocal(container, themes) {
+function getCategoryLineForGeoOfLocal(container, themes, width, height, type, dataset, configs) {
+    if (container == null) {
+        container = document.createElement("div");
+        container.className = "echarts-container";
+        container.id = "echarts-container";
+        container.style.width = width;
+        container.style.height = height;
+    }
     var myChart = echarts.init(container, themes);
-    var dataset = __DATASET__["result"][__DATASET__.default.sheet];
+
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
     var columns = [];
@@ -9607,8 +10404,8 @@ function getCategoryLineForGeoOfLocal(container, themes) {
         columns.push(dataset["columns"][i].name);
     }
 
-    var containerWidth = Number(container.style.width.slice(0).replace(/px/i, ""));
-    var containerHeight = Number(container.style.height.slice(0).replace(/px/i, ""));
+    var containerWidth = Number(width.replace(/px/i, ""));
+    var containerHeight = Number(height.replace(/px/i, ""));
     let times = [];
     let options = []
 
@@ -9670,38 +10467,38 @@ function getCategoryLineForGeoOfLocal(container, themes) {
 
                 let opt = {
                     grid: {
-                        x: __ECHARTS__.configs.grid_left.value,
-                        y: __ECHARTS__.configs.grid_top.value,
-                        x2: __ECHARTS__.configs.grid_right.value,
-                        y2: __ECHARTS__.configs.grid_bottom.value,
-                        containLabel: __ECHARTS__.configs.grid_containLabel.value.toBoolean(),
+                        x: configs.grid_left.value,
+                        y: configs.grid_top.value,
+                        x2: configs.grid_right.value,
+                        y2: configs.grid_bottom.value,
+                        containLabel: configs.grid_containLabel.value.toBoolean(),
                         backgroundColor: "transparent"
                     },
-                    //backgroundColor: __ECHARTS__.configs.geoBackgroundColor.value,
+                    //backgroundColor: configs.geoBackgroundColor.value,
                     toolbox: {
-                        show: __ECHARTS__.configs.toolboxDisplay.value.toBoolean(),
+                        show: configs.toolboxDisplay.value.toBoolean(),
                         feature: {
                             saveAsImage: {
-                                show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value.toBoolean(),
+                                show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
                                 excludeComponents: ["toolbox", "dataZoom", "timeline", "visualMap", "brush"],
-                                backgroundColor: __ECHARTS__.configs.toolboxFeatureSaveAsImageBackgroundColor.value,
+                                backgroundColor: configs.toolboxFeatureSaveAsImageBackgroundColor.value,
                             },
-                            restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value.toBoolean()},
-                            dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
+                            restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
+                            dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
 
                         },
-                        top: __ECHARTS__.configs.toolbox_top.value,
-                        left: __ECHARTS__.configs.toolbox_left.value,
-                        orient: __ECHARTS__.configs.toolbox_orient.value,
+                        top: configs.toolbox_top.value,
+                        left: configs.toolbox_left.value,
+                        orient: configs.toolbox_orient.value,
                         emphasis: {
                             iconStyle: {
-                                textPosition: __ECHARTS__.configs.toolbox_textPosition.value,
+                                textPosition: configs.toolbox_textPosition.value,
                             }
                         },
                     },
 
                     tooltip: {
-                        show: __ECHARTS__.configs.tooltipDisplay.value.toBoolean(),
+                        show: configs.tooltipDisplay.value.toBoolean(),
                         formatter: function (params) {
                             var value = "";
                             try {
@@ -9712,20 +10509,20 @@ function getCategoryLineForGeoOfLocal(container, themes) {
                         },
                     },
                     visualMap: {
-                        show: __ECHARTS__.configs.visualMapDisplay.value.toBoolean(),
+                        show: configs.visualMapDisplay.value.toBoolean(),
                         min: min,
                         max: max,
-                        type: __ECHARTS__.configs.visualMap_type.value,
+                        type: configs.visualMap_type.value,
                         calculable: true,
-                        top: __ECHARTS__.configs.visualMap_top.value,
-                        left: __ECHARTS__.configs.visualMap_left.value,
-                        itemWidth: __ECHARTS__.configs.visualMap_width.value,
-                        orient: __ECHARTS__.configs.visualMap_orient.value,
-                        itemHeight: __ECHARTS__.configs.visualMap_height.value,
+                        top: configs.visualMap_top.value,
+                        left: configs.visualMap_left.value,
+                        itemWidth: configs.visualMap_width.value,
+                        orient: configs.visualMap_orient.value,
+                        itemHeight: configs.visualMap_height.value,
                         textStyle: {
-                            color: __ECHARTS__.configs.visualMap_textColor.value,
+                            color: configs.visualMap_textColor.value,
                         },
-                        splitNumber: __ECHARTS__.configs.visualMap_piecewise_splitNumber.value,
+                        splitNumber: configs.visualMap_piecewise_splitNumber.value,
                     },
                     //backgroundColor: "#013954",
                     geo: {
@@ -9737,23 +10534,23 @@ function getCategoryLineForGeoOfLocal(container, themes) {
                         },
                         label: {
                             normal: {
-                                show: __ECHARTS__.configs.geoAreaNameDisplay.value.toBoolean(),
-                                color: __ECHARTS__.configs.geoAreaNameColor.value,
+                                show: configs.geoAreaNameDisplay.value.toBoolean(),
+                                color: configs.geoAreaNameColor.value,
                             },
                             emphasis: {
                                 show: true,
-                                color: __ECHARTS__.configs.geoAreaNameColor.value,
+                                color: configs.geoAreaNameColor.value,
                             }
                         },
                         itemStyle: {
                             normal: {
-                                areaColor: __ECHARTS__.configs.geoAreaColor.value,
-                                borderColor: __ECHARTS__.configs.geoBorderColor.value,
+                                areaColor: configs.geoAreaColor.value,
+                                borderColor: configs.geoBorderColor.value,
                                 shadowBlur: 50,
                                 shadowColor: "rgba(0, 0, 0, 0.2)",
                             },
                             emphasis: {
-                                areaColor: __ECHARTS__.configs.geoHotAreaColor.value
+                                areaColor: configs.geoHotAreaColor.value
                             }
                         },
                     },
@@ -9772,7 +10569,7 @@ function getCategoryLineForGeoOfLocal(container, themes) {
                                 return b.value - a.value;
                             })),
                             symbolSize: function (val) {
-                                var value = val[2] / (max / __ECHARTS__.configs.scatterSymbolSize.value);
+                                var value = val[2] / (max / configs.scatterSymbolSize.value);
                                 return value < 5 ? 5 : value;
                             },
                             showEffectOn: "render",
@@ -9785,12 +10582,12 @@ function getCategoryLineForGeoOfLocal(container, themes) {
                                     formatter: "{b}",
                                     position: "top",
                                     show: true,
-                                    color: __ECHARTS__.configs.geoAreaNameColor.value,
+                                    color: configs.geoAreaNameColor.value,
                                 }
                             },
                             itemStyle: {
                                 normal: {
-                                    color: __ECHARTS__.configs.geoAreaColor.value,
+                                    color: configs.geoAreaColor.value,
                                     shadowBlur: 10,
                                     shadowColor: "rgba(0, 0, 0, 0.2)",
                                 }
@@ -9798,22 +10595,22 @@ function getCategoryLineForGeoOfLocal(container, themes) {
                             zlevel: 1
                         }
                     ],
-                    graphic: getGraphic(__SYS_LOGO_LINK__),
-                    animation: __ECHARTS__.configs.animation.value.toBoolean(),
-                    animationThreshold: Number(__ECHARTS__.configs.animationThreshold.value),
-                    animationEasing: getAnimationEasing(),
+                    graphic: getWaterGraphic(__SYS_LOGO_LINK__),
+                    animation: configs.animation.value.toBoolean(),
+                    animationThreshold: Number(configs.animationThreshold.value),
+                    animationEasing: getAnimationEasing(configs),
                     animationDuration: function (idx) {
-                        return idx * Number(__ECHARTS__.configs.animationDuration.value) + c * Number(__ECHARTS__.configs.animationDuration.value);
+                        return idx * Number(configs.animationDuration.value) + c * Number(configs.animationDuration.value);
                     },
                     animationDelay: function (idx) {
-                        return idx * Number(__ECHARTS__.configs.animationDelay.value) + c * Number(__ECHARTS__.configs.animationDelay.value);
+                        return idx * Number(configs.animationDelay.value) + c * Number(configs.animationDelay.value);
                     },
-                    animationEasingUpdate: getAnimationEasingUpdate(),
+                    animationEasingUpdate: getAnimationEasingUpdate(configs),
                     animationDurationUpdate: function (idx) {
-                        return idx * Number(__ECHARTS__.configs.animationDurationUpdate.value) + c * Number(__ECHARTS__.configs.animationDurationUpdate.value);
+                        return idx * Number(configs.animationDurationUpdate.value) + c * Number(configs.animationDurationUpdate.value);
                     },
                     animationDelayUpdate: function (idx) {
-                        return idx * Number(__ECHARTS__.configs.animationDelayUpdate.value) + c * Number(__ECHARTS__.configs.animationDelayUpdate.value);
+                        return idx * Number(configs.animationDelayUpdate.value) + c * Number(configs.animationDelayUpdate.value);
                     },
                 };
                 options.push(opt);
@@ -9825,32 +10622,32 @@ function getCategoryLineForGeoOfLocal(container, themes) {
     var option = {
         baseOption: {
             grid: {
-                x: __ECHARTS__.configs.grid_left.value,
-                y: __ECHARTS__.configs.grid_top.value,
-                x2: __ECHARTS__.configs.grid_right.value,
-                y2: __ECHARTS__.configs.grid_bottom.value,
-                containLabel: __ECHARTS__.configs.grid_containLabel.value.toBoolean(),
+                x: configs.grid_left.value,
+                y: configs.grid_top.value,
+                x2: configs.grid_right.value,
+                y2: configs.grid_bottom.value,
+                containLabel: configs.grid_containLabel.value.toBoolean(),
                 backgroundColor: "transparent"
             },
             title: {
-                show: __ECHARTS__.configs.titleDisplay.value.toBoolean(),
-                text: __ECHARTS__.configs.titleText.value,
-                link: __ECHARTS__.configs.titleTextLink.value,
+                show: configs.titleDisplay.value.toBoolean(),
+                text: configs.titleText.value,
+                link: configs.titleTextLink.value,
                 target: "blank",
-                subtext: __ECHARTS__.configs.titleSubText.value,
-                sublink: __ECHARTS__.configs.titleSubTextLink.value,
+                subtext: configs.titleSubText.value,
+                sublink: configs.titleSubTextLink.value,
                 subtarget: "blank",
                 top: "top",
-                left: __ECHARTS__.configs.titlePosition.value,
+                left: configs.titlePosition.value,
                 textStyle: {
-                    color: __ECHARTS__.configs.titleTextColor.value,
+                    color: configs.titleTextColor.value,
                 },
                 subtextStyle: {
-                    color: __ECHARTS__.configs.titleSubTextColor.value,
+                    color: configs.titleSubTextColor.value,
                 }
             },
             timeline: {
-                show: __ECHARTS__.configs.timelineDisplay.value.toBoolean(),
+                show: configs.timelineDisplay.value.toBoolean(),
                 axisType: "category",
                 //考虑数据通用性，使用类目轴
                 //"value" 数值轴，适用于连续数据。
@@ -9863,7 +10660,7 @@ function getCategoryLineForGeoOfLocal(container, themes) {
                 autoPlay: true,
                 //自动播放
                 // currentIndex: 2,
-                playInterval: __ECHARTS__.configs.seriesLoopPlayInterval.value * 1000,
+                playInterval: configs.seriesLoopPlayInterval.value * 1000,
                 // controlStyle: {
                 //     position: "left"
                 // },
@@ -9879,55 +10676,78 @@ function getCategoryLineForGeoOfLocal(container, themes) {
                 bottom: 15
             },
             tooltip: {
-                show: __ECHARTS__.configs.tooltipDisplay.value.toBoolean(),
+                show: configs.tooltipDisplay.value.toBoolean(),
             },
             toolbox: {
-                show: __ECHARTS__.configs.toolboxDisplay.value.toBoolean(),
+                show: configs.toolboxDisplay.value.toBoolean(),
                 feature: {
                     saveAsImage: {
-                        show: __ECHARTS__.configs.toolboxFeatureSaveAsImage.value.toBoolean(),
+                        show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
                         excludeComponents: ["toolbox", "dataZoom", "timeline", "visualMap", "brush"],
-                        backgroundColor: __ECHARTS__.configs.toolboxFeatureSaveAsImageBackgroundColor.value,
+                        backgroundColor: configs.toolboxFeatureSaveAsImageBackgroundColor.value,
                     },
-                    restore: {show: __ECHARTS__.configs.toolboxFeatureRestore.value.toBoolean()},
-                    dataView: {show: __ECHARTS__.configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
+                    restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
+                    dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
 
                 },
-                top: __ECHARTS__.configs.toolbox_top.value,
-                left: __ECHARTS__.configs.toolbox_left.value,
-                orient: __ECHARTS__.configs.toolbox_orient.value,
+                top: configs.toolbox_top.value,
+                left: configs.toolbox_left.value,
+                orient: configs.toolbox_orient.value,
                 emphasis: {
                     iconStyle: {
-                        textPosition: __ECHARTS__.configs.toolbox_textPosition.value,
+                        textPosition: configs.toolbox_textPosition.value,
                     }
                 },
             },
-            graphic: getGraphic(__SYS_LOGO_LINK__),
+            graphic: getWaterGraphic(__SYS_LOGO_LINK__),
         },
         options: options
     };
     setTimeout(() => {
         myChart.hideLoading();
         myChart.setOption(option);
-    }, Number(__ECHARTS__.configs.loadingTimes.value) * 1000);
+    }, Number(configs.loadingTimes.value) * 1000);
+
+    container.id = getEchartsId();
+    container.draggable = "true";
+    container.ondragstart = function (event) {
+        event.dataTransfer.setData("Text", event.target.id);
+    };
+    __ECHARTS__.history[container.id] = {
+         id: container.id,
+        type: type,
+        configs: configs,
+        dataset: dataset,
+        themes: themes,
+        contrainer: container,
+        width: width,
+        height: height,
+    };
     return container;
 }
 
-function getScrollingScreen(container, themes) {
+function getScrollingScreen(container, themes, width, height, type, dataset, configs) {
+    if (container == null) {
+        container = document.createElement("div");
+        container.className = "echarts-container";
+        container.id = "echarts-container";
+        container.style.width = width;
+        container.style.height = height;
+    }
     var myChart = echarts.init(container, themes);
-    var dataset = __DATASET__["result"][__DATASET__.default.sheet];
+
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
-    var containerWidth = Number(container.style.width.slice(0).replace(/px/i, ""));
-    var containerHeight = Number(container.style.height.slice(0).replace(/px/i, ""));
+    var containerWidth = Number(width.replace(/px/i, ""));
+    var containerHeight = Number(height.replace(/px/i, ""));
     var columns = [];
     var cols = [];
     var data = [];
     var txtOffset = 8;
-    var lineHeight = Number(__ECHARTS__.configs.scrollingScreenFontSize.value) + txtOffset;
+    var lineHeight = Number(configs.scrollingScreenFontSize.value) + txtOffset;
     var groupHeight = lineHeight;
     var timeout = false;
-    var colWidth = Number(__ECHARTS__.configs.scrollingScreenWidth.value)/dataset["columns"].length;
+    var colWidth = Number(configs.scrollingScreenWidth.value) / dataset["columns"].length;
 
     for (var i = 0; i < dataset["columns"].length; i++) {
         columns.push(dataset["columns"][i].name);
@@ -9942,9 +10762,9 @@ function getScrollingScreen(container, themes) {
             },
             style: {
                 lineWidth: 0.5,
-                fill: __ECHARTS__.configs.scrollingScreenBackColor.value,//'rgba(0,0,0,0.2)',
-                stroke: __ECHARTS__.configs.scrollingScreenBorderColor.value,
-                opacity: Number(__ECHARTS__.configs.scrollingScreenOpacity.value) + 0.5,
+                fill: configs.scrollingScreenBackColor.value,//'rgba(0,0,0,0.2)',
+                stroke: configs.scrollingScreenBorderColor.value,
+                opacity: Number(configs.scrollingScreenOpacity.value) + 0.5,
             },
         }, {
             type: 'text',
@@ -9955,8 +10775,8 @@ function getScrollingScreen(container, themes) {
             bounding: 'raw',
             style: {
                 text: dataset["columns"][i].name,
-                font: __ECHARTS__.configs.scrollingScreenFontSize.value + 'px "Microsoft YaHei", sans-serif',
-                fill: __ECHARTS__.configs.scrollingScreenColumnFontFillColor.value,
+                font: configs.scrollingScreenFontSize.value + 'px "Microsoft YaHei", sans-serif',
+                fill: configs.scrollingScreenColumnFontFillColor.value,
             }
         });
     }
@@ -9982,9 +10802,9 @@ function getScrollingScreen(container, themes) {
                 },
                 style: {
                     lineWidth: 0.5,
-                    fill: i % 2 > 0 ? __ECHARTS__.configs.scrollingScreenBackColor.value : "transparent",//'rgba(0,0,0,0.2)',
-                    stroke: __ECHARTS__.configs.scrollingScreenBorderColor.value,
-                    opacity: __ECHARTS__.configs.scrollingScreenOpacity.value,
+                    fill: i % 2 > 0 ? configs.scrollingScreenBackColor.value : "transparent",//'rgba(0,0,0,0.2)',
+                    stroke: configs.scrollingScreenBorderColor.value,
+                    opacity: configs.scrollingScreenOpacity.value,
                 },
             }, {
                 type: 'text',
@@ -9995,7 +10815,7 @@ function getScrollingScreen(container, themes) {
                 bounding: 'raw',
                 style: {
                     text: r[columns[c]].value,
-                    font: __ECHARTS__.configs.scrollingScreenFontSize.value + 'px "Microsoft YaHei", sans-serif',
+                    font: configs.scrollingScreenFontSize.value + 'px "Microsoft YaHei", sans-serif',
                     fill: colorPalette[i % colorPalette.length],
                 },
             });
@@ -10005,29 +10825,29 @@ function getScrollingScreen(container, themes) {
 
     var option = {
         title: {
-            show: __ECHARTS__.configs.titleDisplay.value.toBoolean(),
-            text: __ECHARTS__.configs.titleText.value,
-            link: __ECHARTS__.configs.titleTextLink.value,
-            target : "blank",
-            subtext: __ECHARTS__.configs.titleSubText.value,
-            sublink: __ECHARTS__.configs.titleSubTextLink.value,
+            show: configs.titleDisplay.value.toBoolean(),
+            text: configs.titleText.value,
+            link: configs.titleTextLink.value,
+            target: "blank",
+            subtext: configs.titleSubText.value,
+            sublink: configs.titleSubTextLink.value,
             subtarget: "blank",
             top: "top",
-            left: __ECHARTS__.configs.titlePosition.value,
+            left: configs.titlePosition.value,
             textStyle: {
-                color: __ECHARTS__.configs.titleTextColor.value,
+                color: configs.titleTextColor.value,
             },
             subtextStyle: {
-                color: __ECHARTS__.configs.titleSubTextColor.value,
+                color: configs.titleSubTextColor.value,
             }
         },
 
-        graphic: getGraphic(__SYS_LOGO_LINK__)
+        graphic: getWaterGraphic(__SYS_LOGO_LINK__)
     };
     option.graphic.push({
             type: 'group',
             id: 'scrollingColumn',
-            left: __ECHARTS__.configs.scrollingScreenLeft.value,
+            left: configs.scrollingScreenLeft.value,
             children: cols,
             onmouseover: function () {
                 timeout = true;
@@ -10039,7 +10859,7 @@ function getScrollingScreen(container, themes) {
         {
             type: 'group',
             id: 'scrollingData',
-            left: __ECHARTS__.configs.scrollingScreenLeft.value,
+            left: configs.scrollingScreenLeft.value,
             children: data,
             onmouseover: function () {
                 timeout = true;
@@ -10051,7 +10871,7 @@ function getScrollingScreen(container, themes) {
     setTimeout(() => {
         myChart.hideLoading();
         myChart.setOption(option);
-    }, Number(__ECHARTS__.configs.loadingTimes.value) * 1000);
+    }, Number(configs.loadingTimes.value) * 1000);
 
     let top = containerHeight;
     setInterval(function () {
@@ -10060,21 +10880,38 @@ function getScrollingScreen(container, themes) {
                 top = top - 2;
             else
                 top = containerHeight;
+
             myChart.setOption(
                 {
                     graphic: [
                         {
                             id: 'scrollingColumn',
-                            top: (top - lineHeight)<=0?0:(top - lineHeight),
+                            top: (top - lineHeight) <= 0 ? 0 : (top - lineHeight),
                         },
                         {
-                        id: 'scrollingData',
-                        top: top,
-                    }]
+                            id: 'scrollingData',
+                            top: top,
+                        }]
                 }
             );
         }
-    }, Number(__ECHARTS__.configs.scrollingScreenSpeed.value));
+    }, Number(configs.scrollingScreenSpeed.value));
+
+    container.id = getEchartsId();
+    container.draggable = "true";
+    container.ondragstart = function (event) {
+        event.dataTransfer.setData("Text", event.target.id);
+    };
+    __ECHARTS__.history[container.id] = {
+        id: container.id,
+        type: type,
+        configs: configs,
+        dataset: dataset,
+        themes: themes,
+        contrainer: container,
+        width: width,
+        height: height,
+    };
 
     return container;
 }
