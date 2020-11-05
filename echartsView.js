@@ -24,6 +24,18 @@ function getEchartsId(){
     return stringToHex(id).replaceAll(",","").toUpperCase();
 }
 
+function addSet(id) {
+    let ex = false;
+    for (let i = 0; i < __ECHARTS__.sets.length; i++) {
+        if (__ECHARTS__.sets[i] == id) {
+            ex = true;
+            break;
+        }
+    }
+    if (ex == false)
+        __ECHARTS__.sets.push(id);
+}
+
 var __ECHARTS__ = {
     history:{},
     sets:[],
@@ -102,9 +114,9 @@ var __ECHARTS__ = {
         "回归序列": "Regression",
         "散点图": "Scatter",
         "散点图(3D)": "Scatter3D",
-        "金字塔": "Funnel",
-        "资金流向": "Relationship",
-        "组织结构": "OrganizationStructure",
+        "漏斗/金字塔": "Funnel",
+        "流向关系": "Relationship",
+        "树形结构": "Tree",
         "分类集中": "WebkitDep",
         "词云图": "WordCloud",
         "水球图": "Liqiud",
@@ -165,6 +177,7 @@ var __ECHARTS__ = {
         toolboxFeatureDataZoom: {name: "数据缩放", value: "true", options: [new Option("是","true"), new Option("否","false")], type: "select"},
         toolboxFeatureMagicType: {name: "图像转换", value: "true", options: [new Option("是","true"), new Option("否","false")], type: "select"},
         toolboxFeatureBrush: {name: "区域选择", value: "false", options: [new Option("是","true"), new Option("否","false")], type: "select"},
+        toolboxFeatureMultiScreen: {name: "组合大屏", value: "false", options: [new Option("是","true"), new Option("否","false")], type: "select"},
 
         hr_tooltip: {name: "提示组件", value: "", type: "hr"},
         tooltipDisplay: {name: "是否显示", value: "true", options: [new Option("是","true"), new Option("否","false")], type: "select"},
@@ -397,6 +410,68 @@ var __ECHARTS__ = {
             type: "select"
         },
         seriesLoopPlayInterval: {name: "间隔(秒)", value: 3, type: "input"},
+
+        hr_tree:{name: "树形结构", value: "", type: "hr"},
+         treeLayout: {
+            name: "布局类型",
+            value: "orthogonal",
+            options: [new Option("正交", "orthogonal"), new Option("径向", "radial")],
+            type: "select"
+        },
+        treeEdgeShape:{
+            name: "边线类型",
+            value: "curve",
+            options: [new Option("曲线", "curve"), new Option("折线", "polyline")],
+            type: "select"
+        },
+        treeOrient: {
+            name: "布局方向",
+            value: "LR",
+            options: [new Option("向右", "LR"), new Option("向左", "RL"), new Option("向下", "TB"), new Option("向上", "BT")],
+            type: "select"
+        },
+        treeLineColor: {value: "#404a59", name: "线条颜色", type: "color"},
+        treeLineWidth: {name: "线条宽度", value: 1.5, type: "input"},
+        treeLineCurveness: {name: "线条曲率", value: 0.5, type: "input"},
+        treeLabelRotate: {name: "标签旋转度数", value: 0, type: "input"},
+        treeLabelColor: {value: "#404a59", name: "标签颜色", type: "color"},
+        treeSymbolSize: {name: "节点大小", value: 7, type: "input"},
+        treeEmphasisColor: {value: "#404a59", name: "节点颜色", type: "color"},
+
+        hr_funnel:{name: "漏斗/金字塔", value: "", type: "hr"},
+        funnelAlign:{
+            name: "对齐方式",
+            value: "auto",
+            options: [new Option("自动", "auto"), new Option("左对齐", "left"), new Option("右对齐", "right"), new Option("居中", "center")],
+            type: "select"
+        },
+        funnelSort:{
+            name: "排序",
+            value: "none",
+            options: [new Option("原始", "none"), new Option("顺序", "ascending"), new Option("倒序", "descending")],
+            type: "select"
+        },
+        funnelGap:{name: "间距", value: 2, type: "input"},
+        FunnelMinSize:{name: "最小比例", value: "0%", type: "input"},
+        funnelLabelFontSize:{name: "标签字号", value: 12, type: "input"},
+        funnelLabelPosition: {
+            name: "标签位置",
+            value: "inside",
+            options: [new Option("居中", "inside"), new Option("居左", "left"), new Option("居右", "right")],
+            type: "select"
+        },
+
+        hr_relationShip:{name: "流向关系", value: "", type: "hr"},
+        relationShipColor:{value: "#404a59", name: "节点颜色", type: "color"},
+        relationShipLineWidth:{name: "线条宽度", value: 1.5, type: "input"},
+        relationShipLineColor:{value: "#404a59", name: "线条颜色", type: "color"},
+        relationShipLineCurveness:{name: "线条曲率", value: 0.2, type: "input"},
+
+        hr_webkitDep:{name: "分类集中", value: "", type: "hr"},
+        webkitDepSymbolSize:{name: "节点大小", value: 10, type: "input"},
+        webkitDepRepulsion: {name: "排斥力", value: 100, type: "input"},
+        webkitDepGravity: {name: "引力", value: 0.4, type: "input"},
+        webkitDepEdgeLength: {name: "节点距离", value: 50, type: "input"},
 
         hr_scrollingScreen:{name: "数据滚屏", value: "", type: "hr"},
         scrollingScreenLeft:{name: "左边距(%)", value: "20%", type: "input"},
@@ -1550,8 +1625,8 @@ function getEcharts(container, type, width, height, themes, dataset, configs) {
         case "Relationship":
             return getRelationship(container, themes, width, height, type, dataset,configs);
             break;
-        case "OrganizationStructure":
-            return getOrganizationStructure(container, themes, width, height, type, dataset,configs);
+        case "Tree":
+            return getTree(container, themes, width, height, type, dataset,configs);
             break;
         case "WebkitDep":
             return getWebkitDep(container, themes, width, height, type, dataset,configs);
@@ -1683,6 +1758,7 @@ function getBar(container, themes, width, height, type, dataset, configs) {
         container.style.width = width;
         container.style.height = height;
     }
+    container.id = getEchartsId();
     var myChart = echarts.init(container, themes);
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
@@ -1790,6 +1866,14 @@ function getBar(container, themes, width, height, type, dataset, configs) {
                 magicType: {
                     show: configs.toolboxFeatureMagicType.value.toBoolean(),
                     type: ["line", "bar", "stack", "tiled"]
+                },
+                myMultiScreen: {
+                    show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
+                    title: '组合大屏',
+                    icon: __SYS_IMAGES_PATH__.eye,
+                    onclick: function () {
+                        addSet(container.id);
+                    }
                 },
             },
             top: configs.toolbox_top.value,
@@ -1966,8 +2050,6 @@ function getBar(container, themes, width, height, type, dataset, configs) {
         myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-
-    container.id = getEchartsId();
     container.draggable = "true";
     container.ondragstart = function (event) {
         event.dataTransfer.setData("Text", event.target.id);
@@ -1994,6 +2076,7 @@ function getTransversBar(container, themes, width, height, type, dataset, config
         container.style.width = width;
         container.style.height = height;
     }
+    container.id = getEchartsId();
     var myChart = echarts.init(container, themes);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
@@ -2100,6 +2183,14 @@ function getTransversBar(container, themes, width, height, type, dataset, config
                 magicType: {
                     show: configs.toolboxFeatureMagicType.value.toBoolean(),
                     type: ["stack", "tiled"]
+                },
+                myMultiScreen: {
+                    show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
+                    title: '组合大屏',
+                    icon: __SYS_IMAGES_PATH__.eye,
+                    onclick: function () {
+                        addSet(container.id);
+                    }
                 },
             },
             top: configs.toolbox_top.value,
@@ -2267,7 +2358,6 @@ function getTransversBar(container, themes, width, height, type, dataset, config
       myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    container.id = getEchartsId();
     container.draggable = "true";
     container.ondragstart = function (event) {
         event.dataTransfer.setData("Text", event.target.id);
@@ -2313,6 +2403,7 @@ function getLine(container, themes, width, height, type, dataset, configs) {
         container.style.width = width;
         container.style.height = height;
     }
+    container.id = getEchartsId();
     var myChart = echarts.init(container, themes);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
@@ -2421,6 +2512,14 @@ function getLine(container, themes, width, height, type, dataset, configs) {
                 magicType: {
                     show: configs.toolboxFeatureMagicType.value.toBoolean(),
                     type: ["line", "bar", "stack", "tiled"]
+                },
+                myMultiScreen: {
+                    show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
+                    title: '组合大屏',
+                    icon: __SYS_IMAGES_PATH__.eye,
+                    onclick: function () {
+                        addSet(container.id);
+                    }
                 },
             },
             top: configs.toolbox_top.value,
@@ -2589,7 +2688,6 @@ function getLine(container, themes, width, height, type, dataset, configs) {
         myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    container.id = getEchartsId();
     container.draggable = "true";
     container.ondragstart = function (event) {
         event.dataTransfer.setData("Text", event.target.id);
@@ -2615,6 +2713,7 @@ function getBarAndLine(container, themes, width, height, type, dataset, configs)
         container.style.width = width;
         container.style.height = height;
     }
+    container.id = getEchartsId();
     var myChart = echarts.init(container, themes);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
@@ -2782,6 +2881,14 @@ function getBarAndLine(container, themes, width, height, type, dataset, configs)
                     show: configs.toolboxFeatureMagicType.value.toBoolean(),
                     type: ["stack", "tiled"]
                 },
+                myMultiScreen: {
+                    show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
+                    title: '组合大屏',
+                    icon: __SYS_IMAGES_PATH__.eye,
+                    onclick: function () {
+                        addSet(container.id);
+                    }
+                },
             },
             top: configs.toolbox_top.value,
             left:configs.toolbox_left.value,
@@ -2947,7 +3054,6 @@ function getBarAndLine(container, themes, width, height, type, dataset, configs)
       myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    container.id = getEchartsId();
     container.draggable = "true";
     container.ondragstart = function (event) {
         event.dataTransfer.setData("Text", event.target.id);
@@ -2973,6 +3079,7 @@ function getAreaStyle(container, themes, width, height, type, dataset, configs) 
         container.style.width = width;
         container.style.height = height;
     }
+    container.id = getEchartsId();
     var myChart = echarts.init(container, themes);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
@@ -3096,6 +3203,14 @@ function getAreaStyle(container, themes, width, height, type, dataset, configs) 
                 magicType: {
                     show: configs.toolboxFeatureMagicType.value.toBoolean(),
                     type: ["stack", "tiled"]
+                },
+                myMultiScreen: {
+                    show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
+                    title: '组合大屏',
+                    icon: __SYS_IMAGES_PATH__.eye,
+                    onclick: function () {
+                        addSet(container.id);
+                    }
                 },
             },
             top: configs.toolbox_top.value,
@@ -3263,7 +3378,6 @@ function getAreaStyle(container, themes, width, height, type, dataset, configs) 
       myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    container.id = getEchartsId();
     container.draggable = "true";
     container.ondragstart = function (event) {
         event.dataTransfer.setData("Text", event.target.id);
@@ -3289,6 +3403,7 @@ function getPolarBar(container, themes, width, height, type, dataset, configs) {
         container.style.width = width;
         container.style.height = height;
     }
+    container.id = getEchartsId();
     var myChart = echarts.init(container, themes);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
@@ -3370,6 +3485,14 @@ function getPolarBar(container, themes, width, height, type, dataset, configs) {
                 magicType: {
                     show: configs.toolboxFeatureMagicType.value.toBoolean(),
                     type: ["stack", "tiled"]
+                },
+                myMultiScreen: {
+                    show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
+                    title: '组合大屏',
+                    icon: __SYS_IMAGES_PATH__.eye,
+                    onclick: function () {
+                        addSet(container.id);
+                    }
                 },
             },
             top: configs.toolbox_top.value,
@@ -3477,7 +3600,7 @@ function getPolarBar(container, themes, width, height, type, dataset, configs) {
       myChart.hideLoading();
       myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
-    container.id = getEchartsId();
+
     container.draggable = "true";
     container.ondragstart = function (event) {
         event.dataTransfer.setData("Text", event.target.id);
@@ -3503,6 +3626,7 @@ function getPolarArea(container, themes, width, height, type, dataset, configs) 
         container.style.width = width;
         container.style.height = height;
     }
+    container.id = getEchartsId();
     var myChart = echarts.init(container, themes);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
@@ -3583,6 +3707,14 @@ function getPolarArea(container, themes, width, height, type, dataset, configs) 
                 magicType: {
                     show: configs.toolboxFeatureMagicType.value.toBoolean(),
                     type: ["stack", "tiled"]
+                },
+                myMultiScreen: {
+                    show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
+                    title: '组合大屏',
+                    icon: __SYS_IMAGES_PATH__.eye,
+                    onclick: function () {
+                        addSet(container.id);
+                    }
                 },
             },
             top: configs.toolbox_top.value,
@@ -3689,7 +3821,7 @@ function getPolarArea(container, themes, width, height, type, dataset, configs) 
       myChart.hideLoading();
       myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
-    container.id = getEchartsId();
+
     container.draggable = "true";
     container.ondragstart = function (event) {
         event.dataTransfer.setData("Text", event.target.id);
@@ -3715,6 +3847,7 @@ function getPie(container, themes, width, height, type, dataset, configs) {
         container.style.width = width;
         container.style.height = height;
     }
+    container.id = getEchartsId();
     var myChart = echarts.init(container, themes);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
@@ -3823,6 +3956,14 @@ function getPie(container, themes, width, height, type, dataset, configs) {
                     show: configs.toolboxFeatureMagicType.value.toBoolean(),
                     type: ["pie", "funnel"]
                 },
+                myMultiScreen: {
+                    show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
+                    title: '组合大屏',
+                    icon: __SYS_IMAGES_PATH__.eye,
+                    onclick: function () {
+                        addSet(container.id);
+                    }
+                },
             },
             top: configs.toolbox_top.value,
             left: configs.toolbox_left.value,
@@ -3908,7 +4049,7 @@ function getPie(container, themes, width, height, type, dataset, configs) {
       myChart.hideLoading();
       myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
-    container.id = getEchartsId();
+
     container.draggable = "true";
     container.ondragstart = function (event) {
         event.dataTransfer.setData("Text", event.target.id);
@@ -3934,6 +4075,7 @@ function getRing(container, themes, width, height, type, dataset, configs) {
         container.style.width = width;
         container.style.height = height;
     }
+    container.id = getEchartsId();
     var myChart = echarts.init(container, themes);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
@@ -4042,6 +4184,14 @@ function getRing(container, themes, width, height, type, dataset, configs) {
                     show: configs.toolboxFeatureMagicType.value.toBoolean(),
                     type: ["pie", "funnel"]
                 },
+                myMultiScreen: {
+                    show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
+                    title: '组合大屏',
+                    icon: __SYS_IMAGES_PATH__.eye,
+                    onclick: function () {
+                        addSet(container.id);
+                    }
+                },
             },
             top: configs.toolbox_top.value,
             left:configs.toolbox_left.value,
@@ -4127,7 +4277,6 @@ function getRing(container, themes, width, height, type, dataset, configs) {
       myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    container.id = getEchartsId();
     container.draggable = "true";
     container.ondragstart = function (event) {
         event.dataTransfer.setData("Text", event.target.id);
@@ -4153,6 +4302,7 @@ function getRose(container, themes, width, height, type, dataset, configs) {
         container.style.width = width;
         container.style.height = height;
     }
+    container.id = getEchartsId();
     var myChart = echarts.init(container, themes);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
@@ -4262,6 +4412,14 @@ function getRose(container, themes, width, height, type, dataset, configs) {
                     show: configs.toolboxFeatureMagicType.value.toBoolean(),
                     type: ["pie", "funnel"]
                 },
+                myMultiScreen: {
+                    show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
+                    title: '组合大屏',
+                    icon: __SYS_IMAGES_PATH__.eye,
+                    onclick: function () {
+                        addSet(container.id);
+                    }
+                },
             },
             top: configs.toolbox_top.value,
             left: configs.toolbox_left.value,
@@ -4345,7 +4503,7 @@ function getRose(container, themes, width, height, type, dataset, configs) {
         myChart.hideLoading();
         myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
-    container.id = getEchartsId();
+
     container.draggable = "true";
     container.ondragstart = function (event) {
         event.dataTransfer.setData("Text", event.target.id);
@@ -4371,6 +4529,7 @@ function getRadar(container, themes, width, height, type, dataset, configs) {
         container.style.width = width;
         container.style.height = height;
     }
+    container.id = getEchartsId();
     var myChart = echarts.init(container, themes);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
@@ -4498,6 +4657,14 @@ function getRadar(container, themes, width, height, type, dataset, configs) {
                 },
                 restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
                 dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
+                myMultiScreen: {
+                    show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
+                    title: '组合大屏',
+                    icon: __SYS_IMAGES_PATH__.eye,
+                    onclick: function () {
+                        addSet(container.id);
+                    }
+                },
             },
             top: configs.toolbox_top.value,
             left: configs.toolbox_left.value,
@@ -4555,7 +4722,7 @@ function getRadar(container, themes, width, height, type, dataset, configs) {
       myChart.hideLoading();
       myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
-    container.id = getEchartsId();
+
     container.draggable = "true";
     container.ondragstart = function (event) {
         event.dataTransfer.setData("Text", event.target.id);
@@ -4582,6 +4749,7 @@ function getRegression(container, themes, width, height, type, dataset, configs)
         container.style.width = width;
         container.style.height = height;
     }
+    container.id = getEchartsId();
     var myChart = echarts.init(container, themes);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
@@ -4827,6 +4995,14 @@ function getRegression(container, themes, width, height, type, dataset, configs)
                     show: configs.toolboxFeatureMagicType.value.toBoolean(),
                     type: ["line", "bar",]
                 },
+                myMultiScreen: {
+                    show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
+                    title: '组合大屏',
+                    icon: __SYS_IMAGES_PATH__.eye,
+                    onclick: function () {
+                        addSet(container.id);
+                    }
+                },
             },
             top: configs.toolbox_top.value,
             left:configs.toolbox_left.value,
@@ -4993,7 +5169,7 @@ function getRegression(container, themes, width, height, type, dataset, configs)
       myChart.hideLoading();
       myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
-    container.id = getEchartsId();
+
     container.draggable = "true";
     container.ondragstart = function (event) {
         event.dataTransfer.setData("Text", event.target.id);
@@ -5019,8 +5195,9 @@ function  getRelationship(container, themes, width, height, type, dataset, confi
         container.style.width = width;
         container.style.height = height;
     }
-    var myChart = echarts.init(container, themes);
+    container.id = getEchartsId();
 
+    var myChart = echarts.init(container, themes);
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
     var columns = [];
@@ -5052,7 +5229,7 @@ function  getRelationship(container, themes, width, height, type, dataset, confi
                     y: Math.floor(Math.random() * window.innerHeight),
                     value: nodes.length + 1,
                     //如果修改为layout= force,则draggable配置生效
-                    draggable: true,
+                    //draggable: false
                 };
                 nodes.push(node);
             }
@@ -5088,10 +5265,12 @@ function  getRelationship(container, themes, width, height, type, dataset, confi
         },
         data: nodes,
         links: links,
+        draggable: false,
         lineStyle: {
-            opacity: 0.9,
-            width: 2,
-            curveness: 0.2
+            opacity: 0.7,
+            width: Number(configs.relationShipLineWidth.value),
+            curveness: Number(configs.relationShipLineCurveness.value),
+            color: configs.relationShipLineColor.value
         },
         itemStyle: {
             shadowBlur: 10,
@@ -5099,18 +5278,17 @@ function  getRelationship(container, themes, width, height, type, dataset, confi
             shadowOffsetY: 5,
             color: new echarts.graphic.RadialGradient(0.4, 0.3, 1, [{
                 offset: 0,
-                color: "rgb(251, 118, 123)"
+                color: configs.relationShipColor.value,//"rgb(251, 118, 123)"
             }, {
                 offset: 1,
-                color: "rgb(204, 46, 72)"
+                color: configs.relationShipColor.value//"rgb(204, 46, 72)"
             }])
         },
-        roam: true,
         focusNodeAdjacency: true,
         emphasis: {
             lineStyle: {
                 opacity: 1,
-                width: 2.5
+                width: Number(configs.relationShipLineWidth.value),
             }
         },
         animation: configs.animation.value.toBoolean(),
@@ -5145,11 +5323,19 @@ function  getRelationship(container, themes, width, height, type, dataset, confi
             feature: {
                 saveAsImage: {
                     show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
-                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"],
-                    backgroundColor:configs.toolboxFeatureSaveAsImageBackgroundColor.value,
+                    excludeComponents: ["toolbox", "dataZoom", "timeline", "visualMap", "brush"],
+                    backgroundColor: configs.toolboxFeatureSaveAsImageBackgroundColor.value,
                 },
                 restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
                 dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
+                myMultiScreen: {
+                    show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
+                    title: '组合大屏',
+                    icon: __SYS_IMAGES_PATH__.eye,
+                    onclick: function () {
+                        addSet(container.id);
+                    }
+                },
             },
             top: configs.toolbox_top.value,
             left:configs.toolbox_left.value,
@@ -5181,70 +5367,71 @@ function  getRelationship(container, themes, width, height, type, dataset, confi
             show:configs.tooltipDisplay.value.toBoolean(),
         },
         series: [serie],
-        lineStyle: {
-            opacity: 0.9,
-            width: 2,
-            curveness: 0.2
-        },
+
         graphic: getWaterGraphic(__SYS_LOGO_LINK__),
     };
 
     setTimeout(() => {
-      myChart.hideLoading();
-      myChart.setOption(option);
+        myChart.hideLoading();
+        myChart.setOption(option);
+        initInvisibleGraphic();
+        window.addEventListener("resize", updatePosition);
+        myChart.on("dataZoom", updatePosition);
+        myChart.on("graphRoam", updatePosition);
     }, Number(configs.loadingTimes.value) * 1000);
 
      //以下代码是为解决节点拖动
-    initInvisibleGraphic();
-    function initInvisibleGraphic() {
-        myChart.setOption({
-            graphic: echarts.util.map(option.series[0].data, function (item, dataIndex) {
-                //使用图形元素组件在节点上划出一个隐形的图形覆盖住节点，小于原节点，留出部分用户显示当前节点与其他节点关系显示。
-                var tmpPos = myChart.convertToPixel({"seriesIndex": 0},[item.x,item.y]);
-                return {
-                    type: "circle",
-                    id: dataIndex,
-                    position: tmpPos,
-                    shape: {
-                        cx: 0,
-                        cy: 0,
-                        r: 20
-                    },
-                    // silent:true,
-                    invisible: true,
-                    draggable: true,
-                    ondrag: echarts.util.curry(onPointDragging, dataIndex),
-                    z: 100
-                };
-            })
-        });
-        window.addEventListener("resize", updatePosition);
-        myChart.on("dataZoom", updatePosition);
-    }
-    myChart.on("graphRoam", updatePosition);
+     function initInvisibleGraphic() {
+         let graphic = {
+             graphic: echarts.util.map(option.series[0].data, function (item, dataIndex) {
+                 //使用图形元素组件在节点上划出一个隐形的图形覆盖住节点，小于原节点，留出部分用户显示当前节点与其他节点关系显示。
+                 let tmpPos = myChart.convertToPixel({"seriesIndex": 0}, [item.x, item.y]);
+                 return {
+                     type: "circle",
+                     id: dataIndex,
+                     position: tmpPos,
+                     shape: {
+                         cx: 0,
+                         cy: 0,
+                         r: 20
+                     },
+                     silent:false,
+                     invisible: true,
+                     draggable: true,
+                     ondrag: echarts.util.curry(onPointDragging, dataIndex),
+                     z: 100
+                 };
+             })
+         };
+         myChart.setOption(graphic);
+     }
+
     function updatePosition(){
         myChart.setOption({
             graphic: echarts.util.map(option.series[0].data, function (item, dataIndex) {
-                var tmpPos = myChart.convertToPixel({"seriesIndex": 0},[item.x,item.y]);
+                let tmpPos = myChart.convertToPixel({"seriesIndex": 0},[item.x,item.y]);
                 return {
-                    position: tmpPos
+                    id: dataIndex,
+                    //务必注意
+                    position: tmpPos,
                 };
             })
         });
     }
     function onPointDragging(dataIndex) {
         //节点上图层拖拽执行的函数
-        var tmpPos = myChart.convertFromPixel({"seriesIndex": 0},this.position);
+        let tmpPos = myChart.convertFromPixel({"seriesIndex": 0}, this.position);
         option.series[0].data[dataIndex].x = tmpPos[0];
         option.series[0].data[dataIndex].y = tmpPos[1];
-        myChart.setOption(option);
         updatePosition();
+        myChart.setOption(option);
     }
-    container.id = getEchartsId();
+
     container.draggable = "true";
     container.ondragstart = function (event) {
         event.dataTransfer.setData("Text", event.target.id);
     };
+
     __ECHARTS__.history[container.id] = {
          id: container.id,
         type: type,
@@ -5258,7 +5445,7 @@ function  getRelationship(container, themes, width, height, type, dataset, confi
     return container;
 }
 
-function  getOrganizationStructure(container, themes, width, height, type, dataset, configs) {
+function getTree(container, themes, width, height, type, dataset, configs) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
@@ -5266,6 +5453,7 @@ function  getOrganizationStructure(container, themes, width, height, type, datas
         container.style.width = width;
         container.style.height = height;
     }
+    container.id = getEchartsId();
     var myChart = echarts.init(container, themes);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
@@ -5325,77 +5513,7 @@ function  getOrganizationStructure(container, themes, width, height, type, datas
         return children;
     }
 
-    function getType() {
-        var i = Math.floor(Math.random() * 10);
-        if(i >= 7){
-            //##################树型结构###########################
-            return {
-                top: "2%",
-                left: "15%",
-                bottom: "2%",
-                right: "20%",
-                expandAndCollapse: true,
-                animationDuration: 550,
-                animationDurationUpdate: 750,
-                label: {
-                    position: "left",
-                    verticalAlign: "middle",
-                    align: "right"
-                },
-                leaves: {
-                    label: {
-                        position: "right",
-                        verticalAlign: "middle",
-                        align: "left"
-                    }
-                }
-            };
-        } else if (i >= 4){
-            return {
-                top: "20%",
-                left: "10%",
-                bottom: "30%",
-                right: "10%",
-                orient: "vertical",
-                edgeShape: "polyline",
-                edgeForkPosition: "63%",
-                initialTreeDepth: 3,
 
-                expandAndCollapse: true,
-                animationDuration: 550,
-                animationDurationUpdate: 750,
-                label: {
-                    position: "top",
-                    rotate: -90,
-                    verticalAlign: "middle",
-                    align: "right",
-                    //fontSize: 9
-                },
-
-                leaves: {
-                    label: {
-                        position: "bottom",
-                        rotate: -90,
-                        verticalAlign: "middle",
-                        align: "left"
-                    }
-                },
-            };
-        } else {
-            //#####################圆型结构#######################
-            return {
-                top: "18%",
-                bottom: "14%",
-                layout: "radial",
-                symbol: "emptyCircle",
-                initialTreeDepth: 3,
-                animationDurationUpdate: 750
-            };
-        }
-
-    }
-
-    //转换为JSON系列
     var series = [];
     var legends = [];
     for (var i=0; i<nodes.length; i++) {
@@ -5404,11 +5522,41 @@ function  getOrganizationStructure(container, themes, width, height, type, datas
             var serie = {
                 type: "tree",
                 name: nodes[i].name,
+                layout: configs.treeLayout.value,
+                orient: configs.treeOrient.value,
+                edgeShape: configs.treeLayout.value == "radial"?"curve":configs.treeEdgeShape.value,
+                roam: true,
+                expandAndCollapse: true,
+                initialTreeDepth: 2,
+                lineStyle: {
+                    color: configs.treeLineColor.value,
+                    width: Number(configs.treeLineWidth.value),
+                    curveness: Number(configs.treeLineCurveness.value)
+                },
+                label: {
+                    color: configs.treeLabelColor.value,
+                    position: "left",
+                    verticalAlign: "middle",
+                    align: "right",
+                    rotate: Number(configs.treeLabelRotate.value),
+                },
+                leaves: {
+                    label: {
+                        position: "right",
+                        verticalAlign: "middle",
+                        align: "left"
+                    }
+                },
+                emphasis:{
+                    itemStyle:{
+                        color: configs.treeEmphasisColor.value,
+                    }
+                },
+                symbolSize: Number(configs.treeSymbolSize.value),
                 data: [{
                     name: nodes[i].name,
                     children: getChildren(nodes[i].name)
                 }],
-                symbolSize: 7,
                 animation: configs.animation.value.toBoolean(),
                 animationThreshold: Number(configs.animationThreshold.value),
                 animationEasing: getAnimationEasing(configs),
@@ -5426,7 +5574,7 @@ function  getOrganizationStructure(container, themes, width, height, type, datas
                     return idx * Number(configs.animationDelayUpdate.value);
                 },
             };
-            series.push(Object.assign(serie, getType()));
+            series.push(serie);
         }
     }
 
@@ -5466,6 +5614,14 @@ function  getOrganizationStructure(container, themes, width, height, type, datas
                 },
                 restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
                 dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
+                myMultiScreen: {
+                    show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
+                    title: '组合大屏',
+                    icon: __SYS_IMAGES_PATH__.eye,
+                    onclick: function () {
+                        addSet(container.id);
+                    }
+                },
             },
             top: configs.toolbox_top.value,
             left:configs.toolbox_left.value,
@@ -5503,7 +5659,7 @@ function  getOrganizationStructure(container, themes, width, height, type, datas
       myChart.hideLoading();
       myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
-    container.id = getEchartsId();
+
     container.draggable = "true";
     container.ondragstart = function (event) {
         event.dataTransfer.setData("Text", event.target.id);
@@ -5529,6 +5685,7 @@ function getWebkitDep(container, themes, width, height, type, dataset, configs) 
         container.style.width = width;
         container.style.height = height;
     }
+    container.id = getEchartsId();
     var myChart = echarts.init(container, themes);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
@@ -5561,7 +5718,8 @@ function getWebkitDep(container, themes, width, height, type, dataset, configs) 
             var node = {
                 name: name,
                 value: name,
-                category: category
+                category: category,
+                symbolSize: Number(configs.webkitDepSymbolSize.value),
             };
             nodes.push(node);
             index = nodes.length - 1;
@@ -5644,6 +5802,14 @@ function getWebkitDep(container, themes, width, height, type, dataset, configs) 
                 },
                 restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
                 dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
+                myMultiScreen: {
+                    show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
+                    title: '组合大屏',
+                    icon: __SYS_IMAGES_PATH__.eye,
+                    onclick: function () {
+                        addSet(container.id);
+                    }
+                },
             },
             top: configs.toolbox_top.value,
             left:configs.toolbox_left.value,
@@ -5657,7 +5823,8 @@ function getWebkitDep(container, themes, width, height, type, dataset, configs) 
         series: [{
             type: "graph",
             layout: "force",
-            animation: false,
+            animation: true,
+            //roam: true,
             label: {
                 position: "right",
                 formatter: "{b}",
@@ -5669,9 +5836,9 @@ function getWebkitDep(container, themes, width, height, type, dataset, configs) 
             }),
             categories: webkitDep.categories,
             force: {
-                edgeLength: 5,
-                repulsion: 40,
-                gravity: 0.2
+                edgeLength: Number(configs.webkitDepEdgeLength.value),
+                repulsion: Number(configs.webkitDepRepulsion.value),
+                gravity: Number(configs.webkitDepGravity.value),
             },
             edges: webkitDep.links
         }],
@@ -5682,7 +5849,7 @@ function getWebkitDep(container, themes, width, height, type, dataset, configs) 
       myChart.hideLoading();
       myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
-    container.id = getEchartsId();
+
     container.draggable = "true";
     container.ondragstart = function (event) {
         event.dataTransfer.setData("Text", event.target.id);
@@ -5708,6 +5875,7 @@ function getScatter(container, themes, width, height, type, dataset, configs) {
         container.style.width = width;
         container.style.height = height;
     }
+    container.id = getEchartsId();
     var myChart = echarts.init(container, themes);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
@@ -5948,6 +6116,14 @@ function getScatter(container, themes, width, height, type, dataset, configs) {
                 },
                 restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
                 dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
+                myMultiScreen: {
+                    show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
+                    title: '组合大屏',
+                    icon: __SYS_IMAGES_PATH__.eye,
+                    onclick: function () {
+                        addSet(container.id);
+                    }
+                },
             },
             top: configs.toolbox_top.value,
             left:configs.toolbox_left.value,
@@ -6083,7 +6259,7 @@ function getScatter(container, themes, width, height, type, dataset, configs) {
       myChart.hideLoading();
       myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
-    container.id = getEchartsId();
+
     container.draggable = "true";
     container.ondragstart = function (event) {
         event.dataTransfer.setData("Text", event.target.id);
@@ -6109,6 +6285,7 @@ function getFunnel(container, themes, width, height, type, dataset, configs) {
         container.style.width = width;
         container.style.height = height;
     }
+    container.id = getEchartsId();
     var myChart = echarts.init(container, themes);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
@@ -6129,21 +6306,25 @@ function getFunnel(container, themes, width, height, type, dataset, configs) {
                     legends.push(row[columns[c]].value);
                 }
             } else {
-                var serie = {
+                let min = null;
+                let max = null;
+                let serie = {
                     name: columns[c],
                     type: "funnel",
                     min: 0,
                     max: 100,
-                    minSize: "0%",
+                    minSize: configs.FunnelMinSize.value,
                     maxSize: "100%",
-                    sort: "ascending",//descending/ascending
-                    //gap: 2,
+                    sort: configs.funnelSort.value,
+                    gap: Number(configs.funnelGap.value),
                     label: {
                         show: true,
-                        position: "inside",
+                        position: configs.funnelLabelPosition.value,
+                        fontSize: Number(configs.funnelLabelFontSize.value),
+                        verticalAlign: "middle"
                     },
                     labelLine: {
-                        length: 10,
+                        length: 20,
                         lineStyle: {
                             width: 1,
                             type: "solid"
@@ -6179,7 +6360,14 @@ function getFunnel(container, themes, width, height, type, dataset, configs) {
                 for (var i = 0; i < dataset["data"].length; i++) {
                     var row = dataset["data"][i];
                     serie.data.push({name: row[columns[0]].value, value: row[columns[c]].value});
+                    if (min == null || row[columns[c]].value<min)
+                        min = row[columns[c]].value
+                    if (max == null || row[columns[c]].value>max)
+                        max = row[columns[c]].value
+
                 }
+                serie.min = min;
+                serie.max = max;
                 series.push(serie);
             }
         }
@@ -6195,19 +6383,23 @@ function getFunnel(container, themes, width, height, type, dataset, configs) {
         for (var i = 0; i < series.length; i++) {
             series[i].top = ((top + parseInt(i / 2) * height) + parseInt(i / 2) * top) + "%";
             series[i].left = (left + (i % 2) * 40) + "%";
-            if (series.length == 1) {
-                series[i].funnelAlign = "center";
-                series[i].label.position = "inside";
-            }
+            if (configs.funnelAlign.value == "auto") {
+                if (series.length == 1) {
+                    series[i].funnelAlign = "center";
+                    series[i].label.position = "inside";
+                }
 
-            if (series.length > 1 && (i % 2) == 0) {
-                series[i].funnelAlign = "right";
-                series[i].label.position = "inside";
-            }
+                if (series.length > 1 && (i % 2) == 0) {
+                    series[i].funnelAlign = "right";
+                    series[i].label.position = "inside";
+                }
 
-            if (series.length > 1 && (i % 2) != 0) {
-                series[i].funnelAlign = "left";
-                series[i].label.position = "inside";
+                if (series.length > 1 && (i % 2) != 0) {
+                    series[i].funnelAlign = "left";
+                    series[i].label.position = "inside";
+                }
+            } else {
+                series[i].funnelAlign = configs.funnelAlign.value;
             }
             series[i].width = width + "%";
             series[i].height = height + "%";
@@ -6249,6 +6441,14 @@ function getFunnel(container, themes, width, height, type, dataset, configs) {
                 },
                 restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
                 dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
+                myMultiScreen: {
+                    show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
+                    title: '组合大屏',
+                    icon: __SYS_IMAGES_PATH__.eye,
+                    onclick: function () {
+                        addSet(container.id);
+                    }
+                },
             },
             top: configs.toolbox_top.value,
             left:configs.toolbox_left.value,
@@ -6280,7 +6480,7 @@ function getFunnel(container, themes, width, height, type, dataset, configs) {
       myChart.hideLoading();
       myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
-    container.id = getEchartsId();
+
     container.draggable = "true";
     container.ondragstart = function (event) {
         event.dataTransfer.setData("Text", event.target.id);
@@ -6306,6 +6506,7 @@ function getWordCloud(container, themes, width, height, type, dataset, configs) 
         container.style.width = width;
         container.style.height = height;
     }
+    container.id = getEchartsId();
     var myChart = echarts.init(container, themes);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
@@ -6466,6 +6667,14 @@ function getWordCloud(container, themes, width, height, type, dataset, configs) 
                 },
                 restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
                 dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
+                myMultiScreen: {
+                    show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
+                    title: '组合大屏',
+                    icon: __SYS_IMAGES_PATH__.eye,
+                    onclick: function () {
+                        addSet(container.id);
+                    }
+                },
             },
             top: configs.toolbox_top.value,
             left:configs.toolbox_left.value,
@@ -6484,7 +6693,7 @@ function getWordCloud(container, themes, width, height, type, dataset, configs) 
       myChart.hideLoading();
       myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
-    container.id = getEchartsId();
+
     container.draggable = "true";
     container.ondragstart = function (event) {
         event.dataTransfer.setData("Text", event.target.id);
@@ -6510,6 +6719,7 @@ function getLiqiud(container, themes, width, height, type, dataset, configs) {
         container.style.width = width;
         container.style.height = height;
     }
+    container.id = getEchartsId();
     var myChart = echarts.init(container, themes);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
@@ -6666,6 +6876,14 @@ function getLiqiud(container, themes, width, height, type, dataset, configs) {
                 },
                 restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
                 dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
+                myMultiScreen: {
+                    show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
+                    title: '组合大屏',
+                    icon: __SYS_IMAGES_PATH__.eye,
+                    onclick: function () {
+                        addSet(container.id);
+                    }
+                },
 
             },
             top: configs.toolbox_top.value,
@@ -6724,7 +6942,7 @@ function getLiqiud(container, themes, width, height, type, dataset, configs) {
     }
 
     setTimeout(startTimer,  configs.seriesLoopPlayInterval.value * 1000);
-    container.id = getEchartsId();
+
     container.draggable = "true";
     container.ondragstart = function (event) {
         event.dataTransfer.setData("Text", event.target.id);
@@ -6750,6 +6968,7 @@ function getGaugeWithAll(container, themes, width, height, type, dataset, config
         container.style.width = width;
         container.style.height = height;
     }
+    container.id = getEchartsId();
     var myChart = echarts.init(container, themes);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
@@ -6899,6 +7118,14 @@ function getGaugeWithAll(container, themes, width, height, type, dataset, config
                 },
                 restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
                 dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
+                myMultiScreen: {
+                    show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
+                    title: '组合大屏',
+                    icon: __SYS_IMAGES_PATH__.eye,
+                    onclick: function () {
+                        addSet(container.id);
+                    }
+                },
             },
             right: "10",
             orient: "vertical",
@@ -6945,7 +7172,7 @@ function getGaugeWithAll(container, themes, width, height, type, dataset, config
     }
 
     setTimeout(startTimer,  configs.seriesLoopPlayInterval.value * 1000);
-    container.id = getEchartsId();
+
     container.draggable = "true";
     container.ondragstart = function (event) {
         event.dataTransfer.setData("Text", event.target.id);
@@ -6971,6 +7198,7 @@ function getGaugeWithOne(container, themes, width, height, type, dataset, config
         container.style.width = width;
         container.style.height = height;
     }
+    container.id = getEchartsId();
     var myChart = echarts.init(container, themes);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
@@ -7116,6 +7344,14 @@ function getGaugeWithOne(container, themes, width, height, type, dataset, config
                 },
                 restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
                 dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
+                myMultiScreen: {
+                    show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
+                    title: '组合大屏',
+                    icon: __SYS_IMAGES_PATH__.eye,
+                    onclick: function () {
+                        addSet(container.id);
+                    }
+                },
             },
             top: configs.toolbox_top.value,
             left:configs.toolbox_left.value,
@@ -7162,7 +7398,7 @@ function getGaugeWithOne(container, themes, width, height, type, dataset, config
     }
 
     setTimeout(startTimer,  configs.seriesLoopPlayInterval.value * 1000);
-    container.id = getEchartsId();
+
     container.draggable = "true";
     container.ondragstart = function (event) {
         event.dataTransfer.setData("Text", event.target.id);
@@ -7188,6 +7424,7 @@ function getCalendar(container, themes, width, height, type, dataset, configs) {
         container.style.width = width;
         container.style.height = height;
     }
+    container.id = getEchartsId();
     var myChart = echarts.init(container, themes);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
@@ -7371,6 +7608,14 @@ function getCalendar(container, themes, width, height, type, dataset, configs) {
                 },
                 restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
                 dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
+                myMultiScreen: {
+                    show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
+                    title: '组合大屏',
+                    icon: __SYS_IMAGES_PATH__.eye,
+                    onclick: function () {
+                        addSet(container.id);
+                    }
+                },
             },
             top: configs.toolbox_top.value,
             left:configs.toolbox_left.value,
@@ -7390,7 +7635,7 @@ function getCalendar(container, themes, width, height, type, dataset, configs) {
       myChart.hideLoading();
       myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
-    container.id = getEchartsId();
+
     container.draggable = "true";
     container.ondragstart = function (event) {
         event.dataTransfer.setData("Text", event.target.id);
@@ -7417,6 +7662,7 @@ function getGeoOfChina(container, themes, width, height, type, dataset, configs)
         container.style.width = width;
         container.style.height = height;
     }
+    container.id = getEchartsId();
     var myChart = echarts.init(container, themes);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
@@ -7536,6 +7782,14 @@ function getGeoOfChina(container, themes, width, height, type, dataset, configs)
                 },
                 restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
                 dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
+                myMultiScreen: {
+                    show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
+                    title: '组合大屏',
+                    icon: __SYS_IMAGES_PATH__.eye,
+                    onclick: function () {
+                        addSet(container.id);
+                    }
+                },
             },
             top: configs.toolbox_top.value,
             left: configs.toolbox_left.value,
@@ -7721,7 +7975,6 @@ function getGeoOfChina(container, themes, width, height, type, dataset, configs)
 
     setTimeout(startTimer,  configs.seriesLoopPlayInterval.value * 1000);
 
-    container.id = getEchartsId();
     container.draggable = "true";
     container.ondragstart = function (event) {
         event.dataTransfer.setData("Text", event.target.id);
@@ -7747,6 +8000,7 @@ function getGeoOfLocal(container, themes, width, height, type, dataset, configs)
         container.style.width = width;
         container.style.height = height;
     }
+    container.id = getEchartsId();
     var myChart = echarts.init(container, themes);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
@@ -7859,6 +8113,14 @@ function getGeoOfLocal(container, themes, width, height, type, dataset, configs)
                 },
                 restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
                 dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
+                myMultiScreen: {
+                    show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
+                    title: '组合大屏',
+                    icon: __SYS_IMAGES_PATH__.eye,
+                    onclick: function () {
+                        addSet(container.id);
+                    }
+                },
             },
             top: configs.toolbox_top.value,
             left:configs.toolbox_left.value,
@@ -8045,7 +8307,6 @@ function getGeoOfLocal(container, themes, width, height, type, dataset, configs)
 
     setTimeout(startTimer,  configs.seriesLoopPlayInterval.value * 1000);
 
-    container.id = getEchartsId();
     container.draggable = "true";
     container.ondragstart = function (event) {
         event.dataTransfer.setData("Text", event.target.id);
@@ -8071,6 +8332,7 @@ function getBar3D(container, themes, width, height, type, dataset, configs) {
         container.style.width = width;
         container.style.height = height;
     }
+    container.id = getEchartsId();
     var myChart = echarts.init(container, themes);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
@@ -8231,6 +8493,14 @@ function getBar3D(container, themes, width, height, type, dataset, configs) {
                 },
                 restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
                 dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
+                myMultiScreen: {
+                    show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
+                    title: '组合大屏',
+                    icon: __SYS_IMAGES_PATH__.eye,
+                    onclick: function () {
+                        addSet(container.id);
+                    }
+                },
             },
             top: configs.toolbox_top.value,
             left: configs.toolbox_left.value,
@@ -8337,7 +8607,6 @@ function getBar3D(container, themes, width, height, type, dataset, configs) {
       myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    container.id = getEchartsId();
     container.draggable = "true";
     container.ondragstart = function (event) {
         event.dataTransfer.setData("Text", event.target.id);
@@ -8363,6 +8632,7 @@ function getLine3D(container, themes, width, height, type, dataset, configs) {
         container.style.width = width;
         container.style.height = height;
     }
+    container.id = getEchartsId();
     var myChart = echarts.init(container, themes);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
@@ -8504,6 +8774,14 @@ function getLine3D(container, themes, width, height, type, dataset, configs) {
                 },
                 restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
                 dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
+                myMultiScreen: {
+                    show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
+                    title: '组合大屏',
+                    icon: __SYS_IMAGES_PATH__.eye,
+                    onclick: function () {
+                        addSet(container.id);
+                    }
+                },
             },
             top: configs.toolbox_top.value,
             left:configs.toolbox_left.value,
@@ -8623,7 +8901,6 @@ function getLine3D(container, themes, width, height, type, dataset, configs) {
       myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    container.id = getEchartsId();
     container.draggable = "true";
     container.ondragstart = function (event) {
         event.dataTransfer.setData("Text", event.target.id);
@@ -8649,6 +8926,7 @@ function getScatter3D(container, themes, width, height, type, dataset, configs) 
         container.style.width = width;
         container.style.height = height;
     }
+    container.id = getEchartsId();
     var myChart = echarts.init(container, themes);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
@@ -8792,6 +9070,14 @@ function getScatter3D(container, themes, width, height, type, dataset, configs) 
                 },
                 restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
                 dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
+                myMultiScreen: {
+                    show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
+                    title: '组合大屏',
+                    icon: __SYS_IMAGES_PATH__.eye,
+                    onclick: function () {
+                        addSet(container.id);
+                    }
+                },
             },
             top: configs.toolbox_top.value,
             left:configs.toolbox_left.value,
@@ -8910,7 +9196,7 @@ function getScatter3D(container, themes, width, height, type, dataset, configs) 
       myChart.hideLoading();
       myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
-    container.id = getEchartsId();
+
     container.draggable = "true";
     container.ondragstart = function (event) {
         event.dataTransfer.setData("Text", event.target.id);
@@ -8936,6 +9222,7 @@ function getCategoryLine(container, themes, width, height, type, dataset, config
         container.style.width = width;
         container.style.height = height;
     }
+    container.id = getEchartsId();
     var myChart = echarts.init(container, themes);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
@@ -9188,6 +9475,14 @@ function getCategoryLine(container, themes, width, height, type, dataset, config
                     },
                     restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
                     dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
+                    myMultiScreen: {
+                        show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
+                        title: '组合大屏',
+                        icon: __SYS_IMAGES_PATH__.eye,
+                        onclick: function () {
+                            addSet(container.id);
+                        }
+                    },
                 },
                 top: configs.toolbox_top.value,
                 left: configs.toolbox_left.value,
@@ -9272,7 +9567,7 @@ function getCategoryLine(container, themes, width, height, type, dataset, config
       myChart.hideLoading();
       myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
-    container.id = getEchartsId();
+
     container.draggable = "true";
     container.ondragstart = function (event) {
         event.dataTransfer.setData("Text", event.target.id);
@@ -9299,6 +9594,7 @@ function getGeoMigrateLinesOfChinaCity(container, themes, width, height, type, d
         container.style.width = width;
         container.style.height = height;
     }
+    container.id = getEchartsId();
     var myChart = echarts.init(container, themes);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
@@ -9553,6 +9849,14 @@ function getGeoMigrateLinesOfChinaCity(container, themes, width, height, type, d
                     },
                     restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
                     dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
+                    myMultiScreen: {
+                    show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
+                    title: '组合大屏',
+                    icon: __SYS_IMAGES_PATH__.eye,
+                    onclick: function () {
+                        addSet(container.id);
+                    }
+                },
                 },
                 top: configs.toolbox_top.value,
                 left: configs.toolbox_left.value,
@@ -9624,7 +9928,7 @@ function getGeoMigrateLinesOfChinaCity(container, themes, width, height, type, d
       myChart.hideLoading();
       myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
-    container.id = getEchartsId();
+
     container.draggable = "true";
     container.ondragstart = function (event) {
         event.dataTransfer.setData("Text", event.target.id);
@@ -9650,6 +9954,7 @@ function getCategoryLineForGauge(container, themes, width, height, type, dataset
         container.style.width = width;
         container.style.height = height;
     }
+    container.id = getEchartsId();
     var myChart = echarts.init(container, themes);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
@@ -9789,14 +10094,22 @@ function getCategoryLineForGauge(container, themes, width, height, type, dataset
             toolbox: {
                 show: configs.toolboxDisplay.value.toBoolean(),
                 feature: {
-                saveAsImage: {
-                    show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
-                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"],
-                    backgroundColor:configs.toolboxFeatureSaveAsImageBackgroundColor.value,
+                    saveAsImage: {
+                        show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
+                        excludeComponents: ["toolbox", "dataZoom", "timeline", "visualMap", "brush"],
+                        backgroundColor: configs.toolboxFeatureSaveAsImageBackgroundColor.value,
+                    },
+                    restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
+                    dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
+                    myMultiScreen: {
+                        show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
+                        title: '组合大屏',
+                        icon: __SYS_IMAGES_PATH__.eye,
+                        onclick: function () {
+                            addSet(container.id);
+                        }
+                    },
                 },
-                restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
-                dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-            },
                 top: configs.toolbox_top.value,
                 left: configs.toolbox_left.value,
                 orient: configs.toolbox_orient.value,
@@ -9817,7 +10130,7 @@ function getCategoryLineForGauge(container, themes, width, height, type, dataset
       myChart.hideLoading();
       myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
-    container.id = getEchartsId();
+
     container.draggable = "true";
     container.ondragstart = function (event) {
         event.dataTransfer.setData("Text", event.target.id);
@@ -9843,6 +10156,7 @@ function getCategoryLineForLiqiud(container, themes, width, height, type, datase
         container.style.width = width;
         container.style.height = height;
     }
+    container.id = getEchartsId();
     var myChart = echarts.init(container, themes);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
@@ -9999,11 +10313,18 @@ function getCategoryLineForLiqiud(container, themes, width, height, type, datase
                     saveAsImage: {
                         show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
                         excludeComponents: ["toolbox", "dataZoom", "timeline", "visualMap", "brush"],
-                    backgroundColor:configs.toolboxFeatureSaveAsImageBackgroundColor.value,
+                        backgroundColor: configs.toolboxFeatureSaveAsImageBackgroundColor.value,
                     },
                     restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
                     dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-
+                    myMultiScreen: {
+                        show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
+                        title: '组合大屏',
+                        icon: __SYS_IMAGES_PATH__.eye,
+                        onclick: function () {
+                            addSet(container.id);
+                        }
+                    },
                 },
                 top: configs.toolbox_top.value,
                 left: configs.toolbox_left.value,
@@ -10023,7 +10344,6 @@ function getCategoryLineForLiqiud(container, themes, width, height, type, datase
       myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    container.id = getEchartsId();
     container.draggable = "true";
     container.ondragstart = function (event) {
         event.dataTransfer.setData("Text", event.target.id);
@@ -10049,6 +10369,7 @@ function getCategoryLineForGeoOfChina(container, themes, width, height, type, da
         container.style.width = width;
         container.style.height = height;
     }
+    container.id = getEchartsId();
     var myChart = echarts.init(container, themes);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
@@ -10142,10 +10463,18 @@ function getCategoryLineForGeoOfChina(container, themes, width, height, type, da
                             saveAsImage: {
                                 show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
                                 excludeComponents: ["toolbox", "dataZoom", "timeline", "visualMap", "brush"],
-                    backgroundColor:configs.toolboxFeatureSaveAsImageBackgroundColor.value,
+                                backgroundColor: configs.toolboxFeatureSaveAsImageBackgroundColor.value,
                             },
                             restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
                             dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
+                            myMultiScreen: {
+                                show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
+                                title: '组合大屏',
+                                icon: __SYS_IMAGES_PATH__.eye,
+                                onclick: function () {
+                                    addSet(container.id);
+                                }
+                            },
 
                         },
                         top: configs.toolbox_top.value,
@@ -10342,15 +10671,22 @@ function getCategoryLineForGeoOfChina(container, themes, width, height, type, da
             toolbox: {
                 show: configs.toolboxDisplay.value.toBoolean(),
                 feature: {
-                saveAsImage: {
-                    show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
-                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"],
-                    backgroundColor:configs.toolboxFeatureSaveAsImageBackgroundColor.value,
+                    saveAsImage: {
+                        show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
+                        excludeComponents: ["toolbox", "dataZoom", "timeline", "visualMap", "brush"],
+                        backgroundColor: configs.toolboxFeatureSaveAsImageBackgroundColor.value,
+                    },
+                    restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
+                    dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
+                    myMultiScreen: {
+                        show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
+                        title: '组合大屏',
+                        icon: __SYS_IMAGES_PATH__.eye,
+                        onclick: function () {
+                            addSet(container.id);
+                        }
+                    },
                 },
-                restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
-                dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-
-            },
                 top: configs.toolbox_top.value,
                 left: configs.toolbox_left.value,
                 orient: configs.toolbox_orient.value,
@@ -10369,7 +10705,6 @@ function getCategoryLineForGeoOfChina(container, themes, width, height, type, da
       myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    container.id = getEchartsId();
     container.draggable = "true";
     container.ondragstart = function (event) {
         event.dataTransfer.setData("Text", event.target.id);
@@ -10395,6 +10730,7 @@ function getCategoryLineForGeoOfLocal(container, themes, width, height, type, da
         container.style.width = width;
         container.style.height = height;
     }
+    container.id = getEchartsId();
     var myChart = echarts.init(container, themes);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
@@ -10485,7 +10821,14 @@ function getCategoryLineForGeoOfLocal(container, themes, width, height, type, da
                             },
                             restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
                             dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-
+                            myMultiScreen: {
+                                show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
+                                title: '组合大屏',
+                                icon: __SYS_IMAGES_PATH__.eye,
+                                onclick: function () {
+                                    addSet(container.id);
+                                }
+                            },
                         },
                         top: configs.toolbox_top.value,
                         left: configs.toolbox_left.value,
@@ -10688,7 +11031,14 @@ function getCategoryLineForGeoOfLocal(container, themes, width, height, type, da
                     },
                     restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
                     dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-
+                    myMultiScreen: {
+                        show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
+                        title: '组合大屏',
+                        icon: __SYS_IMAGES_PATH__.eye,
+                        onclick: function () {
+                            addSet(container.id);
+                        }
+                    },
                 },
                 top: configs.toolbox_top.value,
                 left: configs.toolbox_left.value,
@@ -10708,7 +11058,6 @@ function getCategoryLineForGeoOfLocal(container, themes, width, height, type, da
         myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    container.id = getEchartsId();
     container.draggable = "true";
     container.ondragstart = function (event) {
         event.dataTransfer.setData("Text", event.target.id);
@@ -10734,6 +11083,7 @@ function getScrollingScreen(container, themes, width, height, type, dataset, con
         container.style.width = width;
         container.style.height = height;
     }
+    container.id = getEchartsId();
     var myChart = echarts.init(container, themes);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
@@ -10897,7 +11247,6 @@ function getScrollingScreen(container, themes, width, height, type, dataset, con
         }
     }, Number(configs.scrollingScreenSpeed.value));
 
-    container.id = getEchartsId();
     container.draggable = "true";
     container.ondragstart = function (event) {
         event.dataTransfer.setData("Text", event.target.id);

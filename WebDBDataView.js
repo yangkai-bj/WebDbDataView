@@ -2852,7 +2852,7 @@ function init() {
         if (event.target.id == "dataset-to-multi-echarts") {
             event.target.style.border = "0px dotted var(--main-border-color)";
             let id = event.dataTransfer.getData("Text");
-            __ECHARTS__.sets.push(id);
+            addSet(id);
         }
     }
     toMultiEcharts.ondragleave = function (event) {
@@ -2861,7 +2861,7 @@ function init() {
         }
     };
 
-    setTooltip(toMultiEcharts, "显示<br>视图集合");
+    setTooltip(toMultiEcharts, "拖入视图<br>组合大屏");
 
     var toecharts = document.createElement("div");
     datatools.appendChild(toecharts);
