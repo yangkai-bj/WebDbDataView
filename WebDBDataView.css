@@ -1106,6 +1106,45 @@ hr.br{
     100% {
         opacity: 1;
     }
+
 }
 
+.drag-nook {
+    position: absolute;
+    -webkit-animation: drag-nook-reset 1s 1;
+    animation: drag-nook-reset 1s 1;
+    width: 16px;
+    height: 16px;
+}
+.drag-nook:hover {
+    -webkit-animation: drag-nook-show 1s 1;
+    animation: drag-nook-show 1s 1;
+    width: 100px;
+    height: 100px;
+}
+
+@keyframes drag-nook-reset
+{
+	from {width:100px;height: 100px;}
+	to {width:16px;height:16px;}
+}
+
+@-webkit-keyframes drag-nook-reset /*Safari and Chrome*/
+{
+	from {width:100px;height: 100px;}
+	to {width:16px;height:16px;}
+}
+
+
+@keyframes drag-nook-show
+{
+	from {width:16px;height: 16px;}
+	to {width:100px;height:100px;}
+}
+
+@-webkit-keyframes drag-nook-show /*Safari and Chrome*/
+{
+	from {width:16px;height: 16px;}
+	to {width:100px;height:100px;}
+}
 

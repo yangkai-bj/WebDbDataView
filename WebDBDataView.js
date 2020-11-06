@@ -2852,7 +2852,7 @@ function init() {
         if (event.target.id == "dataset-to-multi-echarts") {
             event.target.style.border = "0px dotted var(--main-border-color)";
             let id = event.dataTransfer.getData("Text");
-            addSet(id);
+            __ECHARTS__.sets.add(id);
         }
     }
     toMultiEcharts.ondragleave = function (event) {
@@ -2861,7 +2861,7 @@ function init() {
         }
     };
 
-    setTooltip(toMultiEcharts, "拖入视图<br>组合大屏");
+    setTooltip(toMultiEcharts, "组合<br>大屏");
 
     var toecharts = document.createElement("div");
     datatools.appendChild(toecharts);
@@ -2951,6 +2951,7 @@ function init() {
                 __DATASET__["result"][__DATASET__.default.sheet],
                 __ECHARTS__.configs);
             container.appendChild(echart);
+            setDragNook(container,echart.id);
             setUserConfig("echartsthemes", this.value);
         } catch (e) {
             console.log(e);
@@ -2983,6 +2984,7 @@ function init() {
                 __DATASET__["result"][__DATASET__.default.sheet],
                 __ECHARTS__.configs);
             container.appendChild(echart);
+            setDragNook(container,echart.id);
         } catch (e) {
             console.log(e);
         }
@@ -3013,6 +3015,7 @@ function init() {
                 __DATASET__["result"][__DATASET__.default.sheet],
                 __ECHARTS__.configs);
             container.appendChild(echart);
+            setDragNook(container,echart.id);
         } catch (e) {
             console.log(e);
         }
@@ -4174,6 +4177,7 @@ function setMultiEchartsView(parent, template) {
                             echart.themes,
                             echart.dataset,
                             echart.configs);
+                        setDragNook(this,this.id);
                     } catch (e) {
                         console.log(e);
                     }
@@ -4290,8 +4294,8 @@ function getMultiEcharts() {
         echartsList.id = echartsList.className = "multi-echarts-list";
         multiEcharts.appendChild(echartsList);
 
-        for (let i = 0; i < __ECHARTS__.sets.length; i++) {
-            let echart = __ECHARTS__.history[__ECHARTS__.sets[i]];
+        for (let i = 0; i < __ECHARTS__.sets.data.length; i++) {
+            let echart = __ECHARTS__.history[__ECHARTS__.sets.data[i]];
             let row = document.createElement("div");
             row.className = "multi-echarts-list-row";
             row.id = echart.id;
@@ -4309,11 +4313,11 @@ function getMultiEcharts() {
             del.onclick = function () {
                 let row = $(this.getAttribute("id"));
                 let data = [];
-                for (let i = 0; i < __ECHARTS__.sets.length; i++) {
-                    if (__ECHARTS__.sets[i] != this.getAttribute("id"))
-                        data.push(__ECHARTS__.sets[i]);
+                for (let i = 0; i < __ECHARTS__.sets.data.length; i++) {
+                    if (__ECHARTS__.sets.data[i] != this.getAttribute("id"))
+                        data.push(__ECHARTS__.sets.data[i]);
                 }
-                __ECHARTS__.sets = data;
+                __ECHARTS__.sets.data = data;
                 row.parentElement.removeChild(row);
             };
             ;
