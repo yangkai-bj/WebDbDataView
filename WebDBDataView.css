@@ -279,16 +279,17 @@ img.title_close_button:hover{
 }
 
 .tableContainer{
+    position: relative;
+    margin: 2px;
     font-size: 95%;
     width: 100%;
     float:left;
     height: 61%;
     overflow: scroll;
-    position: relative;
 }
 
 .table {
-    margin: 2px;
+    margin: 1px;
     line-height:12px;
     border-collapse:collapse;
     cursor: pointer;
@@ -1115,6 +1116,7 @@ hr.br{
     animation: drag-nook-reset 1s 1;
     width: 16px;
     height: 16px;
+    z:100;
 }
 .drag-nook:hover {
     -webkit-animation: drag-nook-show 1s 1;

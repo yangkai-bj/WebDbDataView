@@ -19,11 +19,6 @@ function stringToHex(str){
     return val;
 }
 
-function getEchartsId(){
-    let id = new Date().Format("yyyyMMddhhmmssS") + "&" + Math.floor(Math.random() * 100);
-    return stringToHex(id).replaceAll(",","").toUpperCase();
-}
-
 var __ECHARTS__ = {
     history: {},
     sets: {
@@ -819,12 +814,187 @@ var __ECHARTS__ = {
             options: ["100%", "110%", "120%", "130%", "140%", "150%"],
             type: "select"
         },
+    },
+    getEchartsConfigs: function (parent) {
+        let config = getUserConfig("echartsconfig");
+        if (config != null) {
+            config = JSON.parse(config);
+            for (key in config) {
+                try {
+                    __ECHARTS__.configs[key].value = config[key];
+                } catch (e) {
+                }
+            }
+        }
+        //报表名称取编辑器文档名称
+        let title = __SQLEDITOR__.title;
+        if (title != null) {
+            for (var param in __SQLEDITOR__.parameter) {
+                title = title.replaceAll("{" + param.toString() + "}", __SQLEDITOR__.parameter[param].toString());
+            }
+            title = title.split("_");
+            __ECHARTS__.configs.titleText.value = title[0];
+            if (title.length > 1) {
+                __ECHARTS__.configs.titleSubText.value = title[1];
+            } else {
+                __ECHARTS__.configs.titleSubText.value = "";
+            }
+        }
+
+        var container = document.createElement("div");
+        container.type = "div";
+        container.className = "echarts-configs-Content";
+        container.id = "echarts-configs-Content";
+
+        var d = document.createElement("div");
+        var span = document.createElement("span");
+        span.innerHTML = "报表及图形参数: ";
+        d.appendChild(span);
+        let toconfig = document.createElement("select");
+        toconfig.onchange = function () {
+            $(this.value).scrollIntoView({behavior: "smooth", block: "start", inline: "nearest"});
+            //滚动参数
+            //behavior: 定义缓动动画， "auto", "instant", 或 "smooth"。默认为 "auto"。
+            //block: "start", "center", "end", 或 "nearest"。默认为 "start"。
+            //inline:"start", "center", "end", 或 "nearest"。默认为 "nearest"。
+        };
+        d.appendChild(toconfig);
+        let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
+        d.appendChild(close);
+
+        container.appendChild(d);
+
+        let hr = document.createElement("hr");
+        container.appendChild(hr);
+
+        var itemcontainer = document.createElement("div");
+        itemcontainer.className = "echarts-configs-container";
+        container.appendChild(itemcontainer);
+
+        for (var name in __ECHARTS__.configs) {
+            let d = document.createElement("div");
+            d.className = "echarts-configs-item";
+            itemcontainer.appendChild(d);
+            let s = document.createElement("span");
+            s.className = "echarts-config-name";
+            s.innerHTML = __ECHARTS__.configs[name].name + ":";
+            d.appendChild(s);
+            if (__ECHARTS__.configs[name].type == "input") {
+                var input = document.createElement("input");
+                input.style.cssFloat = "right";
+                input.id = name;
+                input.type = "input";
+                input.className = "editinput";
+                input.value = __ECHARTS__.configs[name].value;
+                input.onchange = function () {
+                    __ECHARTS__.configs[this.id].value = this.value;
+                };
+                d.appendChild(input);
+            } else if (__ECHARTS__.configs[name].type == "select") {
+                var input = document.createElement("select");
+                input.style.cssFloat = "right";
+                input.id = name;
+                input.type = "select";
+                input.className = "editinput";
+                for (var i = 0; i < __ECHARTS__.configs[name].options.length; i++) {
+                    if (typeof __ECHARTS__.configs[name].options[i] === "object")
+                        input.options.add(__ECHARTS__.configs[name].options[i]);
+                    else
+                        input.options.add(new Option(__ECHARTS__.configs[name].options[i]));
+                }
+                input.value = __ECHARTS__.configs[name].value;
+                input.onchange = function () {
+                    __ECHARTS__.configs[this.id].value = this.value;
+                };
+                d.appendChild(input);
+            } else if (__ECHARTS__.configs[name].type == "color") {
+                var input = document.createElement("input");
+                input.style.cssFloat = "right";
+                input.id = name;
+                input.type = "color";
+                input.className = "editinput";
+                input.value = __ECHARTS__.configs[name].value;
+                input.onchange = function () {
+                    __ECHARTS__.configs[this.id].value = this.value;
+                };
+                d.appendChild(input);
+            } else if (__ECHARTS__.configs[name].type == "hr") {
+                s.innerHTML = "[ " + __ECHARTS__.configs[name].name + " ]";
+                s.style.color = "var(--main-title-color)";
+                let c = document.createElement("div");
+                c.style.width = "70%";
+                c.style.cssFloat = "right";
+                d.appendChild(c);
+                d.id = name;
+                toconfig.options.add(new Option(__ECHARTS__.configs[name].name, name));
+                //设置锚点
+                let h = document.createElement("hr");
+                h.style.marginTop = "10px";
+                c.appendChild(h)
+                //d.innerHTML = "";
+                //d.appendChild(h);
+            }
+        }
+
+        let br = document.createElement("hr");
+        br.className = "br";
+        container.appendChild(br);
+
+        var c = document.createElement("div");
+        c.className = "groupbar";
+        container.appendChild(c);
+        var b = document.createElement("a");
+        b.className = "button";
+        b.innerHTML = "确定";
+        b.onclick = function () {
+            let configs = $("echarts-configs-Content").getElementsByClassName("editinput");
+            let config = {};
+            for (var i = 0; i < configs.length; i++) {
+                __ECHARTS__.configs[configs[i].id].value = configs[i].value;
+                config[configs[i].id] = configs[i].value;
+            }
+            setUserConfig("echartsconfig", JSON.stringify(config));
+            try {
+                try {
+                    parent.removeAttribute("_echarts_instance_");
+                    parent.innerHTML = "";
+                } catch (e) {
+                }
+                var _width = (getAbsolutePosition(parent).width * 1) + "px";
+                var _height = (getAbsolutePosition(parent).height * 1) + "px";
+                parent.innerHTML = "";
+                var echart = getEcharts(
+                    parent,
+                    __DATASET__.echarts.type,
+                    _width,
+                    _height,
+                    __DATASET__.echarts.theme,
+                    __DATASET__["result"][__DATASET__.default.sheet],
+                    __ECHARTS__.configs);
+                setDragNook(parent, echart.getAttribute("_echarts_instance_"));
+            } catch (e) {
+
+            }
+            var m = $("echarts-configs-Content");
+            m.parentNode.removeChild(m);
+        };
+        c.appendChild(b);
+
+        b = document.createElement("a");
+        b.className = "button";
+        b.innerHTML = "退出";
+        b.onclick = close.onclick = function () {
+            var m = $("echarts-configs-Content");
+            m.parentNode.removeChild(m);
+        };
+        c.appendChild(b);
+        return container;
     }
 };
 
 var geoCoordMap = {
     LocalMap: "北京",
-    Region:{},
+    Region: {},
     City: {
         北京市: [116.3809433, 39.9236145],
         天津市: [117.2034988, 39.13111877],
@@ -1226,7 +1396,7 @@ var geoCoordMap = {
         "东大街支行": [116.29375030014799, 39.85819699521394],
         "石景山支行": [116.21864308331297, 39.90668464367193],
         "朝阳支行": [116.4471458337097, 39.92249673687234],
-        "科创支行": [116.3052827705002,39.98240552960808],
+        "科创支行": [116.3052827705002, 39.98240552960808],
         "大兴支行": [116.33653153393553, 39.7276962248458],
         "房山支行": [116.14051799007413, 39.74332826725758],
         "门头沟支行": [116.1108721865082, 39.93625766035245],
@@ -1236,368 +1406,363 @@ var geoCoordMap = {
         "怀柔支行": [116.63073676322934, 40.3111677351932],
         "密云支行": [116.8505806441803, 40.370657044797],
         "平谷支行": [117.11137734722138, 40.13446326684633],
-    }
-};
+    },
+    getMapConfig: function () {
+        let container = document.createElement("div");
+        container.id = "local-map-config-Content";
+        container.className = "local-map-config-Content";
+        let d = document.createElement("div");
+        let span = document.createElement("span");
+        span.innerHTML = "地图设置 : ";
+        d.appendChild(span);
+        let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
+        d.appendChild(close);
+        container.appendChild(d);
 
-function toPoint(percent) {
-    return Number(percent.replace("%",""));
-}
+        let hr = document.createElement("hr");
+        container.appendChild(hr);
 
-function getMapConfig() {
-    let container = document.createElement("div");
-    container.id = "local-map-config-Content";
-    container.className = "local-map-config-Content";
-    let d = document.createElement("div");
-    let span = document.createElement("span");
-    span.innerHTML = "地图设置 : ";
-    d.appendChild(span);
-    let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
-    d.appendChild(close);
-    container.appendChild(d);
-
-    let hr = document.createElement("hr");
-    container.appendChild(hr);
-
-    d = document.createElement("div");
-    d.className = "toolbar";
-    let b = document.createElement("a");
-    b.className = "button";
-    b.innerHTML = "国内城市";
-    b.onclick = function () {
-        $("city-coord-table").style.display = "block";
-        $("custom-coord-table").style.display = "none";
-    };
-    d.appendChild(b);
-    b = document.createElement("a");
-    b.className = "button";
-    b.innerHTML = "用户定义";
-    b.onclick = function () {
-        $("city-coord-table").style.display = "none";
-        $("custom-coord-table").style.display = "block";
-    };
-    d.appendChild(b);
+        d = document.createElement("div");
+        d.className = "toolbar";
+        let b = document.createElement("a");
+        b.className = "button";
+        b.innerHTML = "国内城市";
+        b.onclick = function () {
+            $("city-coord-table").style.display = "block";
+            $("custom-coord-table").style.display = "none";
+        };
+        d.appendChild(b);
+        b = document.createElement("a");
+        b.className = "button";
+        b.innerHTML = "用户定义";
+        b.onclick = function () {
+            $("city-coord-table").style.display = "none";
+            $("custom-coord-table").style.display = "block";
+        };
+        d.appendChild(b);
 
 
-    let localmap = document.createElement("select");
-    localmap.id = "set-local-map";
-    let regions = echarts.getMap("china").geoJson.features;
-    let region = [];
-    for (var i = 0; i < regions.length; i++) {
-        region.push(regions[i].properties.name);
-    }
-    regions= sortAsc(region);
-    for (var i = 0; i < regions.length; i++) {
-        localmap.options.add(new Option(regions[i], regions[i]));
-    }
-    try {
-        let map = getUserConfig("localMap");
-        if (map != null) {
-            geoCoordMap.LocalMap = map;
-            localmap.value = map;
-        } else
-            localmap.selectedIndex = 0;
-    } catch (e) {
-        console.log(e);
-    }
-    localmap.onchange = function () {
-        geoCoordMap.LocalMap = this.value;
-    };
-    d.appendChild(localmap);
-    container.appendChild(d);
+        let localmap = document.createElement("select");
+        localmap.id = "set-local-map";
+        let regions = echarts.getMap("china").geoJson.features;
+        let region = [];
+        for (var i = 0; i < regions.length; i++) {
+            region.push(regions[i].properties.name);
+        }
+        regions = sortAsc(region);
+        for (var i = 0; i < regions.length; i++) {
+            localmap.options.add(new Option(regions[i], regions[i]));
+        }
+        try {
+            let map = getUserConfig("localMap");
+            if (map != null) {
+                geoCoordMap.LocalMap = map;
+                localmap.value = map;
+            } else
+                localmap.selectedIndex = 0;
+        } catch (e) {
+            console.log(e);
+        }
+        localmap.onchange = function () {
+            geoCoordMap.LocalMap = this.value;
+        };
+        d.appendChild(localmap);
+        container.appendChild(d);
 
-    b = document.createElement("a");
-    b.className = "button";
-    b.innerHTML = "本地地图:";
-    b.style.cssFloat= "right";
-    d.appendChild(b);
+        b = document.createElement("a");
+        b.className = "button";
+        b.innerHTML = "本地地图:";
+        b.style.cssFloat = "right";
+        d.appendChild(b);
 
-    let tablecontainer = document.createElement("div");
-    tablecontainer.className = "map-config-table-container";
-    container.appendChild(tablecontainer);
+        let tablecontainer = document.createElement("div");
+        tablecontainer.className = "map-config-table-container";
+        container.appendChild(tablecontainer);
 
-    let table = document.createElement("table");
-    tablecontainer.appendChild(table);
-    table.id = "city-coord-table";
-    table.style.display = "block";
-    table.className = "table";
-    table.style.width = "100%";
+        let table = document.createElement("table");
+        tablecontainer.appendChild(table);
+        table.id = "city-coord-table";
+        table.style.display = "block";
+        table.className = "table";
+        table.style.width = "100%";
 
-    table.innerText = "";
-    let tr = document.createElement("tr");
-    tr.className = "tr";
-    table.appendChild(tr);
-
-    let th = document.createElement("th");
-    th.className = "th";
-    th.style.width = "36px";
-    th.innerText = "选择";
-    tr.appendChild(th);
-
-    th = document.createElement("th");
-    th.className = "th";
-    th.innerText = "名称";
-    tr.appendChild(th);
-    th = document.createElement("th");
-    th.className = "th";
-    th.innerText = "经度";
-    tr.appendChild(th);
-    th = document.createElement("th");
-    th.className = "th";
-    th.innerText = "纬度";
-    tr.appendChild(th);
-    let coord = geoCoordMap.City;
-    for (city in coord) {
+        table.innerText = "";
         let tr = document.createElement("tr");
         tr.className = "tr";
         table.appendChild(tr);
 
-        tr.onclick = function () {
-            if (this.getElementsByClassName("geocoord-checkbox")[0].checked == true)
-                this.getElementsByClassName("geocoord-checkbox")[0].removeAttribute("checked");
-            else
-                this.getElementsByClassName("geocoord-checkbox")[0].setAttribute("checked", "checked");
-        };
+        let th = document.createElement("th");
+        th.className = "th";
+        th.style.width = "36px";
+        th.innerText = "选择";
+        tr.appendChild(th);
 
-        let td = document.createElement("td");
-        let check = document.createElement("input");
-        check.type = "checkbox";
-        check.className = "geocoord-checkbox";
-        check.style.width = check.style.height = "16px";
-        check.setAttribute("value", city);
-        td.style.textAlign = "center";
-        td.appendChild(check);
-        tr.appendChild(td);
+        th = document.createElement("th");
+        th.className = "th";
+        th.innerText = "名称";
+        tr.appendChild(th);
+        th = document.createElement("th");
+        th.className = "th";
+        th.innerText = "经度";
+        tr.appendChild(th);
+        th = document.createElement("th");
+        th.className = "th";
+        th.innerText = "纬度";
+        tr.appendChild(th);
+        let coord = geoCoordMap.City;
+        for (city in coord) {
+            let tr = document.createElement("tr");
+            tr.className = "tr";
+            table.appendChild(tr);
 
-
-        td = document.createElement("td");
-        td.innerText = city;
-        td.setAttribute("value", city);
-        tr.appendChild(td);
-
-        td = document.createElement("td");
-        td.innerText = coord[city][0];
-        td.setAttribute("value", city);
-        tr.appendChild(td);
-        td.ondblclick = function () {
-            let textBox = document.createElement("input");
-            textBox.value = this.innerText;
-            this.innerText = "";
-            this.appendChild(textBox);
-            textBox.style = this.style;
-            textBox.focus();
-            textBox.onblur = function () {
-                geoCoordMap.City[this.parentNode.getAttribute("value")][0] = Number(this.value);
-                this.parentNode.innerText = this.value;
+            tr.onclick = function () {
+                if (this.getElementsByClassName("geocoord-checkbox")[0].checked == true)
+                    this.getElementsByClassName("geocoord-checkbox")[0].removeAttribute("checked");
+                else
+                    this.getElementsByClassName("geocoord-checkbox")[0].setAttribute("checked", "checked");
             };
-        };
 
-        td = document.createElement("td");
-        td.innerText = coord[city][1];
-        td.setAttribute("value", city);
-        tr.appendChild(td);
-        td.ondblclick = function () {
-            let textBox = document.createElement("input");
-            textBox.value = this.innerText;
-            this.innerText = "";
-            this.appendChild(textBox);
-            textBox.style = this.style;
-            textBox.focus();
-            textBox.onblur = function () {
-                geoCoordMap.City[this.parentNode.getAttribute("value")][1] = Number(this.value);
-                this.parentNode.innerText = this.value;
+            let td = document.createElement("td");
+            let check = document.createElement("input");
+            check.type = "checkbox";
+            check.className = "geocoord-checkbox";
+            check.style.width = check.style.height = "16px";
+            check.setAttribute("value", city);
+            td.style.textAlign = "center";
+            td.appendChild(check);
+            tr.appendChild(td);
+
+
+            td = document.createElement("td");
+            td.innerText = city;
+            td.setAttribute("value", city);
+            tr.appendChild(td);
+
+            td = document.createElement("td");
+            td.innerText = coord[city][0];
+            td.setAttribute("value", city);
+            tr.appendChild(td);
+            td.ondblclick = function () {
+                let textBox = document.createElement("input");
+                textBox.value = this.innerText;
+                this.innerText = "";
+                this.appendChild(textBox);
+                textBox.style = this.style;
+                textBox.focus();
+                textBox.onblur = function () {
+                    geoCoordMap.City[this.parentNode.getAttribute("value")][0] = Number(this.value);
+                    this.parentNode.innerText = this.value;
+                };
             };
-        };
-    }
 
-    table = document.createElement("table");
-    tablecontainer.appendChild(table);
-    table.id = "custom-coord-table";
-    table.style.display = "none";
-    table.className = "table";
-    table.style.width = "100%";
+            td = document.createElement("td");
+            td.innerText = coord[city][1];
+            td.setAttribute("value", city);
+            tr.appendChild(td);
+            td.ondblclick = function () {
+                let textBox = document.createElement("input");
+                textBox.value = this.innerText;
+                this.innerText = "";
+                this.appendChild(textBox);
+                textBox.style = this.style;
+                textBox.focus();
+                textBox.onblur = function () {
+                    geoCoordMap.City[this.parentNode.getAttribute("value")][1] = Number(this.value);
+                    this.parentNode.innerText = this.value;
+                };
+            };
+        }
 
-    table.innerText = "";
-    tr = document.createElement("tr");
-    tr.className = "tr";
-    table.appendChild(tr);
+        table = document.createElement("table");
+        tablecontainer.appendChild(table);
+        table.id = "custom-coord-table";
+        table.style.display = "none";
+        table.className = "table";
+        table.style.width = "100%";
 
-    th = document.createElement("th");
-    th.className = "th";
-    th.style.width = "36px";
-    th.innerText = "选择";
-    tr.appendChild(th);
-
-    th = document.createElement("th");
-    th.className = "th";
-    th.innerText = "名称";
-    tr.appendChild(th);
-    th = document.createElement("th");
-    th.className = "th";
-    th.innerText = "经度";
-    tr.appendChild(th);
-    th = document.createElement("th");
-    th.className = "th";
-    th.innerText = "纬度";
-    tr.appendChild(th);
-    coord = geoCoordMap.Custom;
-    for (city in coord) {
-        let tr = document.createElement("tr");
+        table.innerText = "";
+        tr = document.createElement("tr");
         tr.className = "tr";
         table.appendChild(tr);
 
-        tr.onclick = function () {
-            if (this.getElementsByClassName("geocoord-checkbox")[0].checked == true)
-                this.getElementsByClassName("geocoord-checkbox")[0].removeAttribute("checked");
-            else
-                this.getElementsByClassName("geocoord-checkbox")[0].setAttribute("checked", "checked");
-        };
+        th = document.createElement("th");
+        th.className = "th";
+        th.style.width = "36px";
+        th.innerText = "选择";
+        tr.appendChild(th);
 
-        let td = document.createElement("td");
-        let check = document.createElement("input");
-        check.type = "checkbox";
-        check.className = "geocoord-checkbox";
-        check.style.width = check.style.height = "16px";
-        check.setAttribute("value", city);
-        td.style.textAlign = "center";
-        td.appendChild(check);
-        tr.appendChild(td);
+        th = document.createElement("th");
+        th.className = "th";
+        th.innerText = "名称";
+        tr.appendChild(th);
+        th = document.createElement("th");
+        th.className = "th";
+        th.innerText = "经度";
+        tr.appendChild(th);
+        th = document.createElement("th");
+        th.className = "th";
+        th.innerText = "纬度";
+        tr.appendChild(th);
+        coord = geoCoordMap.Custom;
+        for (city in coord) {
+            let tr = document.createElement("tr");
+            tr.className = "tr";
+            table.appendChild(tr);
 
-        td = document.createElement("td");
-        td.innerText = city;
-        td.setAttribute("value", city);
-        tr.appendChild(td);
-
-        td = document.createElement("td");
-        td.innerText = coord[city][0];
-        td.setAttribute("value", city);
-        tr.appendChild(td);
-        td.ondblclick = function () {
-            let textBox = document.createElement("input");
-            textBox.value = this.innerText;
-            this.innerText = "";
-            this.appendChild(textBox);
-            textBox.style = this.style;
-            textBox.focus();
-            textBox.onblur = function () {
-                geoCoordMap.Custom[this.parentNode.getAttribute("value")][0] = Number(this.value);
-                this.parentNode.innerText = this.value;
+            tr.onclick = function () {
+                if (this.getElementsByClassName("geocoord-checkbox")[0].checked == true)
+                    this.getElementsByClassName("geocoord-checkbox")[0].removeAttribute("checked");
+                else
+                    this.getElementsByClassName("geocoord-checkbox")[0].setAttribute("checked", "checked");
             };
-        };
 
-        td = document.createElement("td");
-        td.innerText = coord[city][1];
-        td.setAttribute("value", city);
-        tr.appendChild(td);
-        td.ondblclick = function () {
-            let textBox = document.createElement("input");
-            textBox.value = this.innerText;
-            this.innerText = "";
-            this.appendChild(textBox);
-            textBox.style = this.style;
-            textBox.focus();
-            textBox.onblur = function () {
-                geoCoordMap.Custom[this.parentNode.getAttribute("value")][1] = Number(this.value);
-                this.parentNode.innerText = this.value;
+            let td = document.createElement("td");
+            let check = document.createElement("input");
+            check.type = "checkbox";
+            check.className = "geocoord-checkbox";
+            check.style.width = check.style.height = "16px";
+            check.setAttribute("value", city);
+            td.style.textAlign = "center";
+            td.appendChild(check);
+            tr.appendChild(td);
+
+            td = document.createElement("td");
+            td.innerText = city;
+            td.setAttribute("value", city);
+            tr.appendChild(td);
+
+            td = document.createElement("td");
+            td.innerText = coord[city][0];
+            td.setAttribute("value", city);
+            tr.appendChild(td);
+            td.ondblclick = function () {
+                let textBox = document.createElement("input");
+                textBox.value = this.innerText;
+                this.innerText = "";
+                this.appendChild(textBox);
+                textBox.style = this.style;
+                textBox.focus();
+                textBox.onblur = function () {
+                    geoCoordMap.Custom[this.parentNode.getAttribute("value")][0] = Number(this.value);
+                    this.parentNode.innerText = this.value;
+                };
             };
+
+            td = document.createElement("td");
+            td.innerText = coord[city][1];
+            td.setAttribute("value", city);
+            tr.appendChild(td);
+            td.ondblclick = function () {
+                let textBox = document.createElement("input");
+                textBox.value = this.innerText;
+                this.innerText = "";
+                this.appendChild(textBox);
+                textBox.style = this.style;
+                textBox.focus();
+                textBox.onblur = function () {
+                    geoCoordMap.Custom[this.parentNode.getAttribute("value")][1] = Number(this.value);
+                    this.parentNode.innerText = this.value;
+                };
+            };
+        }
+
+        let br = document.createElement("p");
+        container.appendChild(br);
+
+        d = document.createElement("div");
+        d.className = "groupbar";
+        container.appendChild(d);
+        b = document.createElement("a");
+        b.className = "button";
+        b.innerHTML = "增加";
+        b.onclick = function () {
+            if ($("city-coord-table").style.display == "block")
+                geoCoordMap.addGeoCoord($("city-coord-table"), geoCoordMap.City);
+            if ($("custom-coord-table").style.display == "block")
+                geoCoordMap.addGeoCoord($("custom-coord-table"), geoCoordMap.Custom);
+
         };
-    }
+        d.appendChild(b);
 
-    let br = document.createElement("p");
-    container.appendChild(br);
-
-    d = document.createElement("div");
-    d.className = "groupbar";
-    container.appendChild(d);
-    b = document.createElement("a");
-    b.className = "button";
-    b.innerHTML = "增加";
-    b.onclick = function () {
-        if ($("city-coord-table").style.display == "block")
-            AddGeoCoord($("city-coord-table"), geoCoordMap.City);
-        if ($("custom-coord-table").style.display == "block")
-            AddGeoCoord($("custom-coord-table"), geoCoordMap.Custom);
-
-    };
-    d.appendChild(b);
-
-    b = document.createElement("a");
-    b.className = "button";
-    b.innerHTML = "删除";
-    b.onclick = function () {
-        if ($("city-coord-table").style.display == "block") {
-            let trs = $("city-coord-table").getElementsByTagName("tr");
-            for (var i = 0; i < trs.length; i++) {
-                try {
-                    let check = trs[i].getElementsByClassName("geocoord-checkbox")[0];
-                    if (check.checked == true) {
-                        delete geoCoordMap.City[check.getAttribute("value")];
-                        $("city-coord-table").removeChild(trs[i]);
+        b = document.createElement("a");
+        b.className = "button";
+        b.innerHTML = "删除";
+        b.onclick = function () {
+            if ($("city-coord-table").style.display == "block") {
+                let trs = $("city-coord-table").getElementsByTagName("tr");
+                for (var i = 0; i < trs.length; i++) {
+                    try {
+                        let check = trs[i].getElementsByClassName("geocoord-checkbox")[0];
+                        if (check.checked == true) {
+                            delete geoCoordMap.City[check.getAttribute("value")];
+                            $("city-coord-table").removeChild(trs[i]);
+                        }
+                    } catch (e) {
+                        console.log(e);
                     }
-                } catch (e) {
-                    console.log(e);
                 }
             }
-        }
-        if ($("custom-coord-table").style.display == "block") {
-            let trs = $("custom-coord-table").getElementsByTagName("tr");
-            for (var i = 0; i < trs.length; i++) {
-                try {
-                    let check = trs[i].getElementsByClassName("geocoord-checkbox")[0];
-                    if (check.checked == true) {
-                        delete geoCoordMap.Custom[check.getAttribute("value")];
-                        $("custom-coord-table").removeChild(trs[i]);
-                        console.log(geoCoordMap.Custom);
+            if ($("custom-coord-table").style.display == "block") {
+                let trs = $("custom-coord-table").getElementsByTagName("tr");
+                for (var i = 0; i < trs.length; i++) {
+                    try {
+                        let check = trs[i].getElementsByClassName("geocoord-checkbox")[0];
+                        if (check.checked == true) {
+                            delete geoCoordMap.Custom[check.getAttribute("value")];
+                            $("custom-coord-table").removeChild(trs[i]);
+                            console.log(geoCoordMap.Custom);
+                        }
+                    } catch (e) {
+                        console.log(e);
                     }
-                } catch (e) {
-                    console.log(e);
                 }
             }
-        }
-    };
-    d.appendChild(b);
+        };
+        d.appendChild(b);
 
-    b = document.createElement("a");
-    b.className = "button";
-    b.innerHTML = "保存";
-    b.onclick = function () {
-        setUserConfig("geoCoordMapCity", JSON.stringify(geoCoordMap.City));
-        setUserConfig("geoCoordMapCustom", JSON.stringify(geoCoordMap.Custom));
-        $("local-map-config-Content").parentNode.removeChild($("local-map-config-Content"));
-    };
-    d.appendChild(b);
+        b = document.createElement("a");
+        b.className = "button";
+        b.innerHTML = "保存";
+        b.onclick = function () {
+            setUserConfig("geoCoordMapCity", JSON.stringify(geoCoordMap.City));
+            setUserConfig("geoCoordMapCustom", JSON.stringify(geoCoordMap.Custom));
+            $("local-map-config-Content").parentNode.removeChild($("local-map-config-Content"));
+        };
+        d.appendChild(b);
 
-    b = document.createElement("a");
-    b.className = "button";
-    b.innerHTML = "退出";
-    b.onclick = close.onclick = function () {
-        let citychanged = Compare(JSON.parse(getUserConfig("geoCoordMapCity") == null ? "{}" : getUserConfig("geoCoordMapCity")),geoCoordMap.City);
-        let customchanged = Compare(JSON.parse(getUserConfig("geoCoordMapCustom") == null ? "{}" : getUserConfig("geoCoordMapCustom")),geoCoordMap.Custom);
-        let localmapchanged = getUserConfig("localMap") == geoCoordMap.LocalMap;
-        if (!citychanged ) {
-            let r = confirm("国内城市地图数据已修改,您需要保存吗?");
-            if (r == true) {
-                setUserConfig("geoCoordMapCity", JSON.stringify(geoCoordMap.City));
+        b = document.createElement("a");
+        b.className = "button";
+        b.innerHTML = "退出";
+        b.onclick = close.onclick = function () {
+            let citychanged = Compare(JSON.parse(getUserConfig("geoCoordMapCity") == null ? "{}" : getUserConfig("geoCoordMapCity")), geoCoordMap.City);
+            let customchanged = Compare(JSON.parse(getUserConfig("geoCoordMapCustom") == null ? "{}" : getUserConfig("geoCoordMapCustom")), geoCoordMap.Custom);
+            let localmapchanged = getUserConfig("localMap") == geoCoordMap.LocalMap;
+            if (!citychanged) {
+                let r = confirm("国内城市地图数据已修改,您需要保存吗?");
+                if (r == true) {
+                    setUserConfig("geoCoordMapCity", JSON.stringify(geoCoordMap.City));
+                }
             }
-        }
-        if (!customchanged) {
-            let r = confirm("自定义地图数据已修改,您需要保存吗?");
-            if (r == true) {
-                setUserConfig("geoCoordMapCustom", JSON.stringify(geoCoordMap.Custom));
+            if (!customchanged) {
+                let r = confirm("自定义地图数据已修改,您需要保存吗?");
+                if (r == true) {
+                    setUserConfig("geoCoordMapCustom", JSON.stringify(geoCoordMap.Custom));
+                }
             }
-        }
-        if (!localmapchanged){
-            let r = confirm("本地地图设置已修改,您需要保存吗?");
-            if (r == true) {
-                setUserConfig("localMap", geoCoordMap.LocalMap);
+            if (!localmapchanged) {
+                let r = confirm("本地地图设置已修改,您需要保存吗?");
+                if (r == true) {
+                    setUserConfig("localMap", geoCoordMap.LocalMap);
+                }
             }
-        }
-        $("local-map-config-Content").parentNode.removeChild($("local-map-config-Content"));
-    };
-    d.appendChild(b);
+            $("local-map-config-Content").parentNode.removeChild($("local-map-config-Content"));
+        };
+        d.appendChild(b);
 
-    return container;
+        return container;
+    },
 
-    function AddGeoCoord(table, coords) {
+    addGeoCoord: function (table, coords) {
         let city = prompt("请输入城市或地区名称: ");
         let ex = false;
         for (coord in coords) {
@@ -1666,180 +1831,11 @@ function getMapConfig() {
                 };
             };
         }
-    }
-}
+    },
+};
 
-function getEchartsConfigs(parent) {
-    let config = getUserConfig("echartsconfig");
-    if (config != null) {
-        config = JSON.parse(config);
-        for (key in config) {
-            try {
-                __ECHARTS__.configs[key].value = config[key];
-            } catch (e) {
-            }
-        }
-    }
-    //报表名称取编辑器文档名称
-    let title = __SQLEDITOR__.title;
-    if (title != null) {
-        for (var param in __SQLEDITOR__.parameter) {
-            title = title.replaceAll("{" + param.toString() + "}", __SQLEDITOR__.parameter[param].toString());
-        }
-        title = title.split("_");
-        __ECHARTS__.configs.titleText.value = title[0];
-        if (title.length > 1) {
-            __ECHARTS__.configs.titleSubText.value = title[1];
-        } else {
-            __ECHARTS__.configs.titleSubText.value = "";
-        }
-    }
-
-    var container = document.createElement("div");
-    container.type = "div";
-    container.className = "echarts-configs-Content";
-    container.id = "echarts-configs-Content";
-
-    var d = document.createElement("div");
-    var span = document.createElement("span");
-    span.innerHTML = "报表及图形参数: ";
-    d.appendChild(span);
-    let toconfig = document.createElement("select");
-    toconfig.onchange = function(){
-        $(this.value).scrollIntoView({behavior: "smooth", block: "start", inline: "nearest"});
-        //滚动参数
-        //behavior: 定义缓动动画， "auto", "instant", 或 "smooth"。默认为 "auto"。
-        //block: "start", "center", "end", 或 "nearest"。默认为 "start"。
-        //inline:"start", "center", "end", 或 "nearest"。默认为 "nearest"。
-    };
-    d.appendChild(toconfig);
-    let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
-    d.appendChild(close);
-
-    container.appendChild(d);
-
-    let hr = document.createElement("hr");
-    container.appendChild(hr);
-
-    var itemcontainer = document.createElement("div");
-    itemcontainer.className = "echarts-configs-container";
-    container.appendChild(itemcontainer);
-
-    for (var name in __ECHARTS__.configs) {
-        let d = document.createElement("div");
-        d.className = "echarts-configs-item";
-        itemcontainer.appendChild(d);
-        let s = document.createElement("span");
-        s.className = "echarts-config-name";
-        s.innerHTML = __ECHARTS__.configs[name].name + ":";
-        d.appendChild(s);
-        if (__ECHARTS__.configs[name].type == "input") {
-            var input = document.createElement("input");
-            input.style.cssFloat = "right";
-            input.id = name;
-            input.type = "input";
-            input.className = "editinput";
-            input.value = __ECHARTS__.configs[name].value;
-            input.onchange = function () {
-                __ECHARTS__.configs[this.id].value = this.value;
-            };
-            d.appendChild(input);
-        } else if (__ECHARTS__.configs[name].type == "select") {
-            var input = document.createElement("select");
-            input.style.cssFloat = "right";
-            input.id = name;
-            input.type = "select";
-            input.className = "editinput";
-            for (var i = 0; i < __ECHARTS__.configs[name].options.length; i++) {
-                if (typeof __ECHARTS__.configs[name].options[i] === "object")
-                     input.options.add(__ECHARTS__.configs[name].options[i]);
-                else
-                    input.options.add(new Option(__ECHARTS__.configs[name].options[i]));
-            }
-            input.value = __ECHARTS__.configs[name].value;
-            input.onchange = function () {
-                __ECHARTS__.configs[this.id].value = this.value;
-            };
-            d.appendChild(input);
-        } else if (__ECHARTS__.configs[name].type == "color") {
-            var input = document.createElement("input");
-            input.style.cssFloat = "right";
-            input.id = name;
-            input.type = "color";
-            input.className = "editinput";
-            input.value = __ECHARTS__.configs[name].value;
-            input.onchange = function () {
-                __ECHARTS__.configs[this.id].value = this.value;
-            };
-            d.appendChild(input);
-        } else if (__ECHARTS__.configs[name].type == "hr") {
-            s.innerHTML = "[ " + __ECHARTS__.configs[name].name + " ]";
-            s.style.color = "var(--main-title-color)";
-            let c = document.createElement("div");
-            c.style.width = "70%";
-            c.style.cssFloat = "right";
-            d.appendChild(c);
-            d.id = name;
-            toconfig.options.add(new Option(__ECHARTS__.configs[name].name, name));
-            //设置锚点
-            let h = document.createElement("hr");
-            h.style.marginTop = "10px";
-            c.appendChild(h)
-            //d.innerHTML = "";
-            //d.appendChild(h);
-        }
-    }
-
-    let br = document.createElement("hr");
-    br.className = "br";
-    container.appendChild(br);
-
-    var c = document.createElement("div");
-    c.className = "groupbar";
-    container.appendChild(c);
-    var b = document.createElement("a");
-    b.className = "button";
-    b.innerHTML = "确定";
-    b.onclick = function () {
-        let configs = $("echarts-configs-Content").getElementsByClassName("editinput");
-        let config = {};
-        for (var i = 0; i < configs.length; i++) {
-            __ECHARTS__.configs[configs[i].id].value = configs[i].value;
-            config[configs[i].id] = configs[i].value;
-        }
-        setUserConfig("echartsconfig", JSON.stringify(config));
-        try {
-            //var container = $("tableContainer");
-            var _width = (getAbsolutePosition(parent).width * 1) + "px";
-            var _height = (getAbsolutePosition(parent).height * 1) + "px";
-            parent.innerHTML = "";
-            var echart = getEcharts(
-                null,
-                __DATASET__.echarts.type,
-                _width,
-                _height,
-                __DATASET__.echarts.theme,
-                __DATASET__["result"][__DATASET__.default.sheet],
-                __ECHARTS__.configs);
-            parent.appendChild(echart);
-            setDragNook(parent,echart.id);
-        } catch (e) {
-
-        }
-        var m = $("echarts-configs-Content");
-        m.parentNode.removeChild(m);
-    };
-    c.appendChild(b);
-
-    b = document.createElement("a");
-    b.className = "button";
-    b.innerHTML = "退出";
-    b.onclick = close.onclick = function () {
-        var m = $("echarts-configs-Content");
-        m.parentNode.removeChild(m);
-    };
-    c.appendChild(b);
-    return container;
+function toPoint(percent) {
+    return Number(percent.replace("%",""));
 }
 
 function getEcharts(container, type, width, height, themes, dataset, configs) {
@@ -1959,60 +1955,6 @@ function getLoading(text){
     };
 }
 
-function setDragNook(parent, id){
-    let nook = document.createElement("div");
-    nook.className = "drag-nook";
-    nook.id = id;
-    nook.draggable = "true";
-    nook.style.right = "0%";
-    nook.style.top = "0%";
-    nook.style.borderTop = "2px solid var(--drag-border-color)";
-    nook.style.borderRight = "2px solid var(--drag-border-color)";
-    nook.ondragstart = function (event) {
-        event.dataTransfer.setData("Text", event.target.id);
-    };
-    parent.appendChild(nook);
-
-    nook = document.createElement("div");
-    nook.className = "drag-nook";
-    nook.id = id;
-    nook.draggable = "true";
-    nook.style.left = "0%";
-    nook.style.top = "0%";
-    nook.style.borderTop = "2px solid var(--drag-border-color)";
-    nook.style.borderLeft = "2px solid var(--drag-border-color)";
-    nook.ondragstart = function (event) {
-        event.dataTransfer.setData("Text", event.target.id);
-    };
-    parent.appendChild(nook);
-
-    nook = document.createElement("div");
-    nook.className = "drag-nook";
-    nook.id = id;
-    nook.draggable = "true";
-    nook.style.left = "0%";
-    nook.style.bottom = "0%";
-    nook.style.borderBottom = "2px solid var(--drag-border-color)";
-    nook.style.borderLeft = "2px solid var(--drag-border-color)";
-    nook.ondragstart = function (event) {
-        event.dataTransfer.setData("Text", event.target.id);
-    };
-    parent.appendChild(nook);
-
-    nook = document.createElement("div");
-    nook.className = "drag-nook";
-    nook.id = id;
-    nook.draggable = "true";
-    nook.style.right = "0%";
-    nook.style.bottom = "0%";
-    nook.style.borderBottom = "2px solid var(--drag-border-color)";
-    nook.style.borderRight = "2px solid var(--drag-border-color)";
-    nook.ondragstart = function (event) {
-        event.dataTransfer.setData("Text", event.target.id);
-    };
-    parent.appendChild(nook);
-}
-
 function getWaterGraphic(link) {
     let graphic = [
         {
@@ -2078,8 +2020,9 @@ function getBar(container, themes, width, height, type, dataset, configs) {
         container.style.width = width;
         container.style.height = height;
     }
-    container.id = getEchartsId();
+
     var myChart = echarts.init(container, themes);
+
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
     var columns = [];
@@ -2192,7 +2135,7 @@ function getBar(container, themes, width, height, type, dataset, configs) {
                     title: '组合大屏',
                     icon: __SYS_IMAGES_PATH__.eye,
                     onclick: function () {
-                        __ECHARTS__.sets.add(container.id);
+                        __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
                         alert("视图已提交组合大屏列表.");
                     }
                 },
@@ -2371,8 +2314,9 @@ function getBar(container, themes, width, height, type, dataset, configs) {
         myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.history[container.id] = {
-        id: container.id,
+    let id =container.getAttribute("_echarts_instance_");
+    __ECHARTS__.history[id] = {
+        id: id,
         type: type,
         configs: configs,
         dataset: dataset,
@@ -2392,7 +2336,7 @@ function getTransversBar(container, themes, width, height, type, dataset, config
         container.style.width = width;
         container.style.height = height;
     }
-    container.id = getEchartsId();
+
     var myChart = echarts.init(container, themes);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
@@ -2505,7 +2449,7 @@ function getTransversBar(container, themes, width, height, type, dataset, config
                     title: '组合大屏',
                     icon: __SYS_IMAGES_PATH__.eye,
                     onclick: function () {
-                        __ECHARTS__.sets.add(container.id);
+                        __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
                         alert("视图已提交组合大屏列表.");
                     }
                 },
@@ -2675,8 +2619,9 @@ function getTransversBar(container, themes, width, height, type, dataset, config
       myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.history[container.id] = {
-         id: container.id,
+    let id =container.getAttribute("_echarts_instance_");
+    __ECHARTS__.history[id] = {
+         id: id,
         type: type,
         configs: configs,
         dataset: dataset,
@@ -2716,7 +2661,7 @@ function getLine(container, themes, width, height, type, dataset, configs) {
         container.style.width = width;
         container.style.height = height;
     }
-    container.id = getEchartsId();
+
     var myChart = echarts.init(container, themes);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
@@ -2831,7 +2776,7 @@ function getLine(container, themes, width, height, type, dataset, configs) {
                     title: '组合大屏',
                     icon: __SYS_IMAGES_PATH__.eye,
                     onclick: function () {
-                        __ECHARTS__.sets.add(container.id);
+                        __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
                         alert("视图已提交组合大屏列表.");
                     }
                 },
@@ -3002,8 +2947,9 @@ function getLine(container, themes, width, height, type, dataset, configs) {
         myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.history[container.id] = {
-         id: container.id,
+    let id =container.getAttribute("_echarts_instance_");
+    __ECHARTS__.history[id] = {
+        id: id,
         type: type,
         configs: configs,
         dataset: dataset,
@@ -3023,7 +2969,7 @@ function getBarAndLine(container, themes, width, height, type, dataset, configs)
         container.style.width = width;
         container.style.height = height;
     }
-    container.id = getEchartsId();
+
     var myChart = echarts.init(container, themes);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
@@ -3196,7 +3142,7 @@ function getBarAndLine(container, themes, width, height, type, dataset, configs)
                     title: '组合大屏',
                     icon: __SYS_IMAGES_PATH__.eye,
                     onclick: function () {
-                        __ECHARTS__.sets.add(container.id);
+                        __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
                         alert("视图已提交组合大屏列表.");
                     }
                 },
@@ -3365,8 +3311,9 @@ function getBarAndLine(container, themes, width, height, type, dataset, configs)
       myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.history[container.id] = {
-         id: container.id,
+    let id =container.getAttribute("_echarts_instance_");
+    __ECHARTS__.history[id] = {
+         id: id,
         type: type,
         configs: configs,
         dataset: dataset,
@@ -3386,7 +3333,7 @@ function getAreaStyle(container, themes, width, height, type, dataset, configs) 
         container.style.width = width;
         container.style.height = height;
     }
-    container.id = getEchartsId();
+
     var myChart = echarts.init(container, themes);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
@@ -3516,7 +3463,7 @@ function getAreaStyle(container, themes, width, height, type, dataset, configs) 
                     title: '组合大屏',
                     icon: __SYS_IMAGES_PATH__.eye,
                     onclick: function () {
-                        __ECHARTS__.sets.add(container.id);
+                        __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
                         alert("视图已提交组合大屏列表.");
                     }
                 },
@@ -3686,8 +3633,9 @@ function getAreaStyle(container, themes, width, height, type, dataset, configs) 
       myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.history[container.id] = {
-         id: container.id,
+    let id =container.getAttribute("_echarts_instance_");
+    __ECHARTS__.history[id] = {
+         id: id,
         type: type,
         configs: configs,
         dataset: dataset,
@@ -3707,7 +3655,7 @@ function getPolarBar(container, themes, width, height, type, dataset, configs) {
         container.style.width = width;
         container.style.height = height;
     }
-    container.id = getEchartsId();
+
     var myChart = echarts.init(container, themes);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
@@ -3795,7 +3743,7 @@ function getPolarBar(container, themes, width, height, type, dataset, configs) {
                     title: '组合大屏',
                     icon: __SYS_IMAGES_PATH__.eye,
                     onclick: function () {
-                        __ECHARTS__.sets.add(container.id);
+                        __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
                         alert("视图已提交组合大屏列表.");
                     }
                 },
@@ -3906,8 +3854,9 @@ function getPolarBar(container, themes, width, height, type, dataset, configs) {
       myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.history[container.id] = {
-         id: container.id,
+    let id =container.getAttribute("_echarts_instance_");
+    __ECHARTS__.history[id] = {
+         id: id,
         type: type,
         configs: configs,
         dataset: dataset,
@@ -3927,7 +3876,7 @@ function getPolarArea(container, themes, width, height, type, dataset, configs) 
         container.style.width = width;
         container.style.height = height;
     }
-    container.id = getEchartsId();
+
     var myChart = echarts.init(container, themes);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
@@ -4014,7 +3963,7 @@ function getPolarArea(container, themes, width, height, type, dataset, configs) 
                     title: '组合大屏',
                     icon: __SYS_IMAGES_PATH__.eye,
                     onclick: function () {
-                        __ECHARTS__.sets.add(container.id);
+                        __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
                         alert("视图已提交组合大屏列表.");
                     }
                 },
@@ -4124,8 +4073,9 @@ function getPolarArea(container, themes, width, height, type, dataset, configs) 
       myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.history[container.id] = {
-         id: container.id,
+    let id =container.getAttribute("_echarts_instance_");
+    __ECHARTS__.history[id] = {
+         id: id,
         type: type,
         configs: configs,
         dataset: dataset,
@@ -4145,7 +4095,7 @@ function getPie(container, themes, width, height, type, dataset, configs) {
         container.style.width = width;
         container.style.height = height;
     }
-    container.id = getEchartsId();
+
     var myChart = echarts.init(container, themes);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
@@ -4259,7 +4209,7 @@ function getPie(container, themes, width, height, type, dataset, configs) {
                     title: '组合大屏',
                     icon: __SYS_IMAGES_PATH__.eye,
                     onclick: function () {
-                        __ECHARTS__.sets.add(container.id);
+                        __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
                         alert("视图已提交组合大屏列表.");
                     }
                 },
@@ -4349,8 +4299,9 @@ function getPie(container, themes, width, height, type, dataset, configs) {
       myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.history[container.id] = {
-         id: container.id,
+    let id =container.getAttribute("_echarts_instance_");
+    __ECHARTS__.history[id] = {
+         id: id,
         type: type,
         configs: configs,
         dataset: dataset,
@@ -4370,7 +4321,7 @@ function getRing(container, themes, width, height, type, dataset, configs) {
         container.style.width = width;
         container.style.height = height;
     }
-    container.id = getEchartsId();
+
     var myChart = echarts.init(container, themes);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
@@ -4484,7 +4435,7 @@ function getRing(container, themes, width, height, type, dataset, configs) {
                     title: '组合大屏',
                     icon: __SYS_IMAGES_PATH__.eye,
                     onclick: function () {
-                        __ECHARTS__.sets.add(container.id);
+                        __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
                         alert("视图已提交组合大屏列表.");
                     }
                 },
@@ -4573,8 +4524,9 @@ function getRing(container, themes, width, height, type, dataset, configs) {
       myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.history[container.id] = {
-         id: container.id,
+    let id =container.getAttribute("_echarts_instance_");
+    __ECHARTS__.history[id] = {
+         id: id,
         type: type,
         configs: configs,
         dataset: dataset,
@@ -4594,7 +4546,7 @@ function getRose(container, themes, width, height, type, dataset, configs) {
         container.style.width = width;
         container.style.height = height;
     }
-    container.id = getEchartsId();
+
     var myChart = echarts.init(container, themes);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
@@ -4709,7 +4661,7 @@ function getRose(container, themes, width, height, type, dataset, configs) {
                     title: '组合大屏',
                     icon: __SYS_IMAGES_PATH__.eye,
                     onclick: function () {
-                        __ECHARTS__.sets.add(container.id);
+                        __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
                         alert("视图已提交组合大屏列表.");
                     }
                 },
@@ -4797,8 +4749,9 @@ function getRose(container, themes, width, height, type, dataset, configs) {
         myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.history[container.id] = {
-        id: container.id,
+    let id =container.getAttribute("_echarts_instance_");
+    __ECHARTS__.history[id] = {
+        id: id,
         type: type,
         configs: configs,
         dataset: dataset,
@@ -4818,7 +4771,7 @@ function getRadar(container, themes, width, height, type, dataset, configs) {
         container.style.width = width;
         container.style.height = height;
     }
-    container.id = getEchartsId();
+
     var myChart = echarts.init(container, themes);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
@@ -4951,7 +4904,7 @@ function getRadar(container, themes, width, height, type, dataset, configs) {
                     title: '组合大屏',
                     icon: __SYS_IMAGES_PATH__.eye,
                     onclick: function () {
-                        __ECHARTS__.sets.add(container.id);
+                        __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
                         alert("视图已提交组合大屏列表.");
                     }
                 },
@@ -5013,8 +4966,9 @@ function getRadar(container, themes, width, height, type, dataset, configs) {
       myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.history[container.id] = {
-         id: container.id,
+    let id =container.getAttribute("_echarts_instance_");
+    __ECHARTS__.history[id] = {
+         id: id,
         type: type,
         configs: configs,
         dataset: dataset,
@@ -5035,7 +4989,7 @@ function getRegression(container, themes, width, height, type, dataset, configs)
         container.style.width = width;
         container.style.height = height;
     }
-    container.id = getEchartsId();
+
     var myChart = echarts.init(container, themes);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
@@ -5286,7 +5240,7 @@ function getRegression(container, themes, width, height, type, dataset, configs)
                     title: '组合大屏',
                     icon: __SYS_IMAGES_PATH__.eye,
                     onclick: function () {
-                        __ECHARTS__.sets.add(container.id);
+                        __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
                         alert("视图已提交组合大屏列表.");
                     }
                 },
@@ -5457,8 +5411,9 @@ function getRegression(container, themes, width, height, type, dataset, configs)
       myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.history[container.id] = {
-         id: container.id,
+    let id =container.getAttribute("_echarts_instance_");
+    __ECHARTS__.history[id] = {
+         id: id,
         type: type,
         configs: configs,
         dataset: dataset,
@@ -5478,7 +5433,6 @@ function  getRelation(container, themes, width, height, type, dataset, configs) 
         container.style.width = width;
         container.style.height = height;
     }
-    container.id = getEchartsId();
 
     var myChart = echarts.init(container, themes);
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
@@ -5619,7 +5573,7 @@ function  getRelation(container, themes, width, height, type, dataset, configs) 
                     title: '组合大屏',
                     icon: __SYS_IMAGES_PATH__.eye,
                     onclick: function () {
-                        __ECHARTS__.sets.add(container.id);
+                        __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
                         alert("视图已提交组合大屏列表.");
                     }
                 },
@@ -5715,8 +5669,9 @@ function  getRelation(container, themes, width, height, type, dataset, configs) 
         myChart.setOption(option);
     }
 
-    __ECHARTS__.history[container.id] = {
-         id: container.id,
+    let id =container.getAttribute("_echarts_instance_");
+    __ECHARTS__.history[id] = {
+         id: id,
         type: type,
         configs: configs,
         dataset: dataset,
@@ -5736,7 +5691,7 @@ function getTree(container, themes, width, height, type, dataset, configs) {
         container.style.width = width;
         container.style.height = height;
     }
-    container.id = getEchartsId();
+
     var myChart = echarts.init(container, themes);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
@@ -5904,7 +5859,7 @@ function getTree(container, themes, width, height, type, dataset, configs) {
                     title: '组合大屏',
                     icon: __SYS_IMAGES_PATH__.eye,
                     onclick: function () {
-                        __ECHARTS__.sets.add(container.id);
+                        __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
                         alert("视图已提交组合大屏列表.");
                     }
                 },
@@ -5946,8 +5901,9 @@ function getTree(container, themes, width, height, type, dataset, configs) {
       myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.history[container.id] = {
-         id: container.id,
+    let id =container.getAttribute("_echarts_instance_");
+    __ECHARTS__.history[id] = {
+         id: id,
         type: type,
         configs: configs,
         dataset: dataset,
@@ -5967,7 +5923,7 @@ function getWebkitDep(container, themes, width, height, type, dataset, configs) 
         container.style.width = width;
         container.style.height = height;
     }
-    container.id = getEchartsId();
+
     var myChart = echarts.init(container, themes);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
@@ -6089,7 +6045,7 @@ function getWebkitDep(container, themes, width, height, type, dataset, configs) 
                     title: '组合大屏',
                     icon: __SYS_IMAGES_PATH__.eye,
                     onclick: function () {
-                        __ECHARTS__.sets.add(container.id);
+                        __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
                         alert("视图已提交组合大屏列表.");
                     }
                 },
@@ -6133,8 +6089,9 @@ function getWebkitDep(container, themes, width, height, type, dataset, configs) 
       myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.history[container.id] = {
-         id: container.id,
+    let id =container.getAttribute("_echarts_instance_");
+    __ECHARTS__.history[id] = {
+         id: id,
         type: type,
         configs: configs,
         dataset: dataset,
@@ -6154,7 +6111,7 @@ function getScatter(container, themes, width, height, type, dataset, configs) {
         container.style.width = width;
         container.style.height = height;
     }
-    container.id = getEchartsId();
+
     var myChart = echarts.init(container, themes);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
@@ -6400,7 +6357,7 @@ function getScatter(container, themes, width, height, type, dataset, configs) {
                     title: '组合大屏',
                     icon: __SYS_IMAGES_PATH__.eye,
                     onclick: function () {
-                        __ECHARTS__.sets.add(container.id);
+                        __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
                         alert("视图已提交组合大屏列表.");
                     }
                 },
@@ -6540,8 +6497,9 @@ function getScatter(container, themes, width, height, type, dataset, configs) {
       myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.history[container.id] = {
-         id: container.id,
+    let id =container.getAttribute("_echarts_instance_");
+    __ECHARTS__.history[id] = {
+         id: id,
         type: type,
         configs: configs,
         dataset: dataset,
@@ -6561,7 +6519,7 @@ function getFunnel(container, themes, width, height, type, dataset, configs) {
         container.style.width = width;
         container.style.height = height;
     }
-    container.id = getEchartsId();
+
     var myChart = echarts.init(container, themes);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
@@ -6722,7 +6680,7 @@ function getFunnel(container, themes, width, height, type, dataset, configs) {
                     title: '组合大屏',
                     icon: __SYS_IMAGES_PATH__.eye,
                     onclick: function () {
-                        __ECHARTS__.sets.add(container.id);
+                        __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
                         alert("视图已提交组合大屏列表.");
                     }
                 },
@@ -6758,8 +6716,9 @@ function getFunnel(container, themes, width, height, type, dataset, configs) {
       myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.history[container.id] = {
-         id: container.id,
+    let id =container.getAttribute("_echarts_instance_");
+    __ECHARTS__.history[id] = {
+         id: id,
         type: type,
         configs: configs,
         dataset: dataset,
@@ -6779,7 +6738,7 @@ function getWordCloud(container, themes, width, height, type, dataset, configs) 
         container.style.width = width;
         container.style.height = height;
     }
-    container.id = getEchartsId();
+
     var myChart = echarts.init(container, themes);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
@@ -6945,7 +6904,7 @@ function getWordCloud(container, themes, width, height, type, dataset, configs) 
                     title: '组合大屏',
                     icon: __SYS_IMAGES_PATH__.eye,
                     onclick: function () {
-                        __ECHARTS__.sets.add(container.id);
+                        __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
                         alert("视图已提交组合大屏列表.");
                     }
                 },
@@ -6968,8 +6927,9 @@ function getWordCloud(container, themes, width, height, type, dataset, configs) 
       myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.history[container.id] = {
-         id: container.id,
+    let id =container.getAttribute("_echarts_instance_");
+    __ECHARTS__.history[id] = {
+         id: id,
         type: type,
         configs: configs,
         dataset: dataset,
@@ -6989,7 +6949,7 @@ function getLiqiud(container, themes, width, height, type, dataset, configs) {
         container.style.width = width;
         container.style.height = height;
     }
-    container.id = getEchartsId();
+
     var myChart = echarts.init(container, themes);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
@@ -7151,7 +7111,7 @@ function getLiqiud(container, themes, width, height, type, dataset, configs) {
                     title: '组合大屏',
                     icon: __SYS_IMAGES_PATH__.eye,
                     onclick: function () {
-                        __ECHARTS__.sets.add(container.id);
+                        __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
                         alert("视图已提交组合大屏列表.");
                     }
                 },
@@ -7214,8 +7174,9 @@ function getLiqiud(container, themes, width, height, type, dataset, configs) {
 
     setTimeout(startTimer,  configs.seriesLoopPlayInterval.value * 1000);
 
-    __ECHARTS__.history[container.id] = {
-         id: container.id,
+    let id =container.getAttribute("_echarts_instance_");
+    __ECHARTS__.history[id] = {
+         id: id,
         type: type,
         configs: configs,
         dataset: dataset,
@@ -7235,7 +7196,7 @@ function getGaugeWithAll(container, themes, width, height, type, dataset, config
         container.style.width = width;
         container.style.height = height;
     }
-    container.id = getEchartsId();
+
     var myChart = echarts.init(container, themes);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
@@ -7390,7 +7351,7 @@ function getGaugeWithAll(container, themes, width, height, type, dataset, config
                     title: '组合大屏',
                     icon: __SYS_IMAGES_PATH__.eye,
                     onclick: function () {
-                        __ECHARTS__.sets.add(container.id);
+                        __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
                         alert("视图已提交组合大屏列表.");
                     }
                 },
@@ -7441,8 +7402,9 @@ function getGaugeWithAll(container, themes, width, height, type, dataset, config
 
     setTimeout(startTimer,  configs.seriesLoopPlayInterval.value * 1000);
 
-    __ECHARTS__.history[container.id] = {
-         id: container.id,
+    let id =container.getAttribute("_echarts_instance_");
+    __ECHARTS__.history[id] = {
+         id: id,
         type: type,
         configs: configs,
         dataset: dataset,
@@ -7462,7 +7424,7 @@ function getGaugeWithOne(container, themes, width, height, type, dataset, config
         container.style.width = width;
         container.style.height = height;
     }
-    container.id = getEchartsId();
+
     var myChart = echarts.init(container, themes);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
@@ -7613,7 +7575,7 @@ function getGaugeWithOne(container, themes, width, height, type, dataset, config
                     title: '组合大屏',
                     icon: __SYS_IMAGES_PATH__.eye,
                     onclick: function () {
-                        __ECHARTS__.sets.add(container.id);
+                        __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
                         alert("视图已提交组合大屏列表.");
                     }
                 },
@@ -7664,8 +7626,9 @@ function getGaugeWithOne(container, themes, width, height, type, dataset, config
 
     setTimeout(startTimer,  configs.seriesLoopPlayInterval.value * 1000);
 
-    __ECHARTS__.history[container.id] = {
-         id: container.id,
+    let id =container.getAttribute("_echarts_instance_");
+    __ECHARTS__.history[id] = {
+         id: id,
         type: type,
         configs: configs,
         dataset: dataset,
@@ -7685,7 +7648,7 @@ function getCalendar(container, themes, width, height, type, dataset, configs) {
         container.style.width = width;
         container.style.height = height;
     }
-    container.id = getEchartsId();
+
     var myChart = echarts.init(container, themes);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
@@ -7874,7 +7837,7 @@ function getCalendar(container, themes, width, height, type, dataset, configs) {
                     title: '组合大屏',
                     icon: __SYS_IMAGES_PATH__.eye,
                     onclick: function () {
-                        __ECHARTS__.sets.add(container.id);
+                        __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
                         alert("视图已提交组合大屏列表.");
                     }
                 },
@@ -7898,8 +7861,9 @@ function getCalendar(container, themes, width, height, type, dataset, configs) {
       myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.history[container.id] = {
-         id: container.id,
+    let id =container.getAttribute("_echarts_instance_");
+    __ECHARTS__.history[id] = {
+         id: id,
         type: type,
         configs: configs,
         dataset: dataset,
@@ -7920,7 +7884,7 @@ function getGeoOfChina(container, themes, width, height, type, dataset, configs)
         container.style.width = width;
         container.style.height = height;
     }
-    container.id = getEchartsId();
+
     var myChart = echarts.init(container, themes);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
@@ -8045,7 +8009,7 @@ function getGeoOfChina(container, themes, width, height, type, dataset, configs)
                     title: '组合大屏',
                     icon: __SYS_IMAGES_PATH__.eye,
                     onclick: function () {
-                        __ECHARTS__.sets.add(container.id);
+                        __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
                         alert("视图已提交组合大屏列表.");
                     }
                 },
@@ -8234,8 +8198,9 @@ function getGeoOfChina(container, themes, width, height, type, dataset, configs)
 
     setTimeout(startTimer,  configs.seriesLoopPlayInterval.value * 1000);
 
-    __ECHARTS__.history[container.id] = {
-         id: container.id,
+    let id =container.getAttribute("_echarts_instance_");
+    __ECHARTS__.history[id] = {
+         id: id,
         type: type,
         configs: configs,
         dataset: dataset,
@@ -8255,7 +8220,7 @@ function getGeoOfLocal(container, themes, width, height, type, dataset, configs)
         container.style.width = width;
         container.style.height = height;
     }
-    container.id = getEchartsId();
+
     var myChart = echarts.init(container, themes);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
@@ -8373,7 +8338,7 @@ function getGeoOfLocal(container, themes, width, height, type, dataset, configs)
                     title: '组合大屏',
                     icon: __SYS_IMAGES_PATH__.eye,
                     onclick: function () {
-                        __ECHARTS__.sets.add(container.id);
+                        __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
                         alert("视图已提交组合大屏列表.");
                     }
                 },
@@ -8563,8 +8528,9 @@ function getGeoOfLocal(container, themes, width, height, type, dataset, configs)
 
     setTimeout(startTimer,  configs.seriesLoopPlayInterval.value * 1000);
 
-    __ECHARTS__.history[container.id] = {
-         id: container.id,
+    let id =container.getAttribute("_echarts_instance_");
+    __ECHARTS__.history[id] = {
+         id: id,
         type: type,
         configs: configs,
         dataset: dataset,
@@ -8584,7 +8550,7 @@ function getBar3D(container, themes, width, height, type, dataset, configs) {
         container.style.width = width;
         container.style.height = height;
     }
-    container.id = getEchartsId();
+
     var myChart = echarts.init(container, themes);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
@@ -8750,7 +8716,7 @@ function getBar3D(container, themes, width, height, type, dataset, configs) {
                     title: '组合大屏',
                     icon: __SYS_IMAGES_PATH__.eye,
                     onclick: function () {
-                        __ECHARTS__.sets.add(container.id);
+                        __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
                         alert("视图已提交组合大屏列表.");
                     }
                 },
@@ -8860,8 +8826,9 @@ function getBar3D(container, themes, width, height, type, dataset, configs) {
       myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.history[container.id] = {
-         id: container.id,
+    let id =container.getAttribute("_echarts_instance_");
+    __ECHARTS__.history[id] = {
+         id: id,
         type: type,
         configs: configs,
         dataset: dataset,
@@ -8881,7 +8848,7 @@ function getLine3D(container, themes, width, height, type, dataset, configs) {
         container.style.width = width;
         container.style.height = height;
     }
-    container.id = getEchartsId();
+
     var myChart = echarts.init(container, themes);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
@@ -9028,7 +8995,7 @@ function getLine3D(container, themes, width, height, type, dataset, configs) {
                     title: '组合大屏',
                     icon: __SYS_IMAGES_PATH__.eye,
                     onclick: function () {
-                        __ECHARTS__.sets.add(container.id);
+                        __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
                         alert("视图已提交组合大屏列表.");
                     }
                 },
@@ -9151,8 +9118,9 @@ function getLine3D(container, themes, width, height, type, dataset, configs) {
       myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.history[container.id] = {
-         id: container.id,
+    let id =container.getAttribute("_echarts_instance_");
+    __ECHARTS__.history[id] = {
+         id: id,
         type: type,
         configs: configs,
         dataset: dataset,
@@ -9172,7 +9140,7 @@ function getScatter3D(container, themes, width, height, type, dataset, configs) 
         container.style.width = width;
         container.style.height = height;
     }
-    container.id = getEchartsId();
+
     var myChart = echarts.init(container, themes);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
@@ -9321,7 +9289,7 @@ function getScatter3D(container, themes, width, height, type, dataset, configs) 
                     title: '组合大屏',
                     icon: __SYS_IMAGES_PATH__.eye,
                     onclick: function () {
-                        __ECHARTS__.sets.add(container.id);
+                        __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
                         alert("视图已提交组合大屏列表.");
                     }
                 },
@@ -9444,8 +9412,9 @@ function getScatter3D(container, themes, width, height, type, dataset, configs) 
       myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.history[container.id] = {
-         id: container.id,
+    let id =container.getAttribute("_echarts_instance_");
+    __ECHARTS__.history[id] = {
+         id: id,
         type: type,
         configs: configs,
         dataset: dataset,
@@ -9465,7 +9434,7 @@ function getCategoryLine(container, themes, width, height, type, dataset, config
         container.style.width = width;
         container.style.height = height;
     }
-    container.id = getEchartsId();
+
     var myChart = echarts.init(container, themes);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
@@ -9723,7 +9692,7 @@ function getCategoryLine(container, themes, width, height, type, dataset, config
                         title: '组合大屏',
                         icon: __SYS_IMAGES_PATH__.eye,
                         onclick: function () {
-                            __ECHARTS__.sets.add(container.id);
+                            __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
                         alert("视图已提交组合大屏列表.");
                         }
                     },
@@ -9812,8 +9781,9 @@ function getCategoryLine(container, themes, width, height, type, dataset, config
       myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.history[container.id] = {
-         id: container.id,
+    let id =container.getAttribute("_echarts_instance_");
+    __ECHARTS__.history[id] = {
+         id: id,
         type: type,
         configs: configs,
         dataset: dataset,
@@ -9834,7 +9804,7 @@ function getGeoMigrateLinesOfChinaCity(container, themes, width, height, type, d
         container.style.width = width;
         container.style.height = height;
     }
-    container.id = getEchartsId();
+
     var myChart = echarts.init(container, themes);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
@@ -10094,7 +10064,7 @@ function getGeoMigrateLinesOfChinaCity(container, themes, width, height, type, d
                         title: '组合大屏',
                         icon: __SYS_IMAGES_PATH__.eye,
                         onclick: function () {
-                            __ECHARTS__.sets.add(container.id);
+                            __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
                             alert("视图已提交组合大屏列表.");
                         },
                     }
@@ -10170,8 +10140,9 @@ function getGeoMigrateLinesOfChinaCity(container, themes, width, height, type, d
       myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.history[container.id] = {
-         id: container.id,
+    let id =container.getAttribute("_echarts_instance_");
+    __ECHARTS__.history[id] = {
+         id: id,
         type: type,
         configs: configs,
         dataset: dataset,
@@ -10191,7 +10162,7 @@ function getCategoryLineForGauge(container, themes, width, height, type, dataset
         container.style.width = width;
         container.style.height = height;
     }
-    container.id = getEchartsId();
+
     var myChart = echarts.init(container, themes);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
@@ -10343,7 +10314,7 @@ function getCategoryLineForGauge(container, themes, width, height, type, dataset
                         title: '组合大屏',
                         icon: __SYS_IMAGES_PATH__.eye,
                         onclick: function () {
-                            __ECHARTS__.sets.add(container.id);
+                            __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
                         alert("视图已提交组合大屏列表.");
                         }
                     },
@@ -10369,8 +10340,9 @@ function getCategoryLineForGauge(container, themes, width, height, type, dataset
       myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.history[container.id] = {
-         id: container.id,
+    let id =container.getAttribute("_echarts_instance_");
+    __ECHARTS__.history[id] = {
+         id: id,
         type: type,
         configs: configs,
         dataset: dataset,
@@ -10390,7 +10362,7 @@ function getCategoryLineForLiqiud(container, themes, width, height, type, datase
         container.style.width = width;
         container.style.height = height;
     }
-    container.id = getEchartsId();
+
     var myChart = echarts.init(container, themes);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
@@ -10556,7 +10528,7 @@ function getCategoryLineForLiqiud(container, themes, width, height, type, datase
                         title: '组合大屏',
                         icon: __SYS_IMAGES_PATH__.eye,
                         onclick: function () {
-                            __ECHARTS__.sets.add(container.id);
+                            __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
                             alert("视图已提交组合大屏列表.");
                         }
                     },
@@ -10579,8 +10551,9 @@ function getCategoryLineForLiqiud(container, themes, width, height, type, datase
       myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.history[container.id] = {
-         id: container.id,
+    let id =container.getAttribute("_echarts_instance_");
+    __ECHARTS__.history[id] = {
+         id: id,
         type: type,
         configs: configs,
         dataset: dataset,
@@ -10600,7 +10573,7 @@ function getCategoryLineForGeoOfChina(container, themes, width, height, type, da
         container.style.width = width;
         container.style.height = height;
     }
-    container.id = getEchartsId();
+
     var myChart = echarts.init(container, themes);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
@@ -10703,7 +10676,7 @@ function getCategoryLineForGeoOfChina(container, themes, width, height, type, da
                                 title: '组合大屏',
                                 icon: __SYS_IMAGES_PATH__.eye,
                                 onclick: function () {
-                                    __ECHARTS__.sets.add(container.id);
+                                    __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
                                     alert("视图已提交组合大屏列表.");
                                 }
                             },
@@ -10915,7 +10888,7 @@ function getCategoryLineForGeoOfChina(container, themes, width, height, type, da
                         title: '组合大屏',
                         icon: __SYS_IMAGES_PATH__.eye,
                         onclick: function () {
-                            __ECHARTS__.sets.add(container.id);
+                            __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
                             alert("视图已提交组合大屏列表.");
                         }
                     },
@@ -10938,8 +10911,9 @@ function getCategoryLineForGeoOfChina(container, themes, width, height, type, da
       myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.history[container.id] = {
-         id: container.id,
+    let id =container.getAttribute("_echarts_instance_");
+    __ECHARTS__.history[id] = {
+         id: id,
         type: type,
         configs: configs,
         dataset: dataset,
@@ -10959,7 +10933,7 @@ function getCategoryLineForGeoOfLocal(container, themes, width, height, type, da
         container.style.width = width;
         container.style.height = height;
     }
-    container.id = getEchartsId();
+
     var myChart = echarts.init(container, themes);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
@@ -11055,7 +11029,7 @@ function getCategoryLineForGeoOfLocal(container, themes, width, height, type, da
                                 title: '组合大屏',
                                 icon: __SYS_IMAGES_PATH__.eye,
                                 onclick: function () {
-                                    __ECHARTS__.sets.add(container.id);
+                                    __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
                                     alert("视图已提交组合大屏列表.");
                                 }
                             },
@@ -11266,7 +11240,7 @@ function getCategoryLineForGeoOfLocal(container, themes, width, height, type, da
                         title: '组合大屏',
                         icon: __SYS_IMAGES_PATH__.eye,
                         onclick: function () {
-                            __ECHARTS__.sets.add(container.id);
+                            __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
                             alert("视图已提交组合大屏列表.");
                         }
                     },
@@ -11289,8 +11263,9 @@ function getCategoryLineForGeoOfLocal(container, themes, width, height, type, da
         myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.history[container.id] = {
-         id: container.id,
+    let id =container.getAttribute("_echarts_instance_");
+    __ECHARTS__.history[id] = {
+         id: id,
         type: type,
         configs: configs,
         dataset: dataset,
@@ -11310,7 +11285,7 @@ function getScrollingScreen(container, themes, width, height, type, dataset, con
         container.style.width = width;
         container.style.height = height;
     }
-    container.id = getEchartsId();
+
     var myChart = echarts.init(container, themes);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
@@ -11474,8 +11449,9 @@ function getScrollingScreen(container, themes, width, height, type, dataset, con
         }
     }, Number(configs.scrollingScreenSpeed.value));
 
-    __ECHARTS__.history[container.id] = {
-        id: container.id,
+    let id =container.getAttribute("_echarts_instance_");
+    __ECHARTS__.history[id] = {
+        id: id,
         type: type,
         configs: configs,
         dataset: dataset,

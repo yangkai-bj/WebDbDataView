@@ -2888,14 +2888,14 @@ function init() {
                 }
             });
             let echart = getEcharts(
-                null,
+                mecharts,
                 __DATASET__.echarts.type,
                 (getAbsolutePosition($("page")).width+5) + "px",
                 (getAbsolutePosition($("page")).height+20) + "px",
                 __DATASET__.echarts.theme,
                 __DATASET__["result"][__DATASET__.default.sheet],
                 __ECHARTS__.configs);
-            mecharts.appendChild(echart);
+            setDragNook(mecharts,echart.getAttribute("_echarts_instance_"));
             $("page").appendChild(mecharts);
         } catch (e) {
             console.log(e);
@@ -2912,7 +2912,7 @@ function init() {
     toconfigs.id = "dataset-to-configs";
     let help_echartsConfigs = $("help-select-echarts-configs");
     toconfigs.onclick = help_echartsConfigs.onclick = function () {
-        var configs = getEchartsConfigs($("tableContainer"));
+        var configs = __ECHARTS__.getEchartsConfigs($("tableContainer"));
         setCenterPosition($("page"), configs);
     };
     setTooltip(toconfigs, "更多图<br>形参数");
@@ -2938,20 +2938,23 @@ function init() {
     echartsThemes.onchange = help_echartsThemes.onchange = function () {
         try {
             __DATASET__.echarts.theme = this.value;
-            var container = $("tableContainer");
-            var _width = (getAbsolutePosition(container).width * 1) + "px";
-            var _height = (getAbsolutePosition(container).height * 1) + "px";
+            let container = $("tableContainer");
+            try {
+                container.removeAttribute("_echarts_instance_");
+            }catch (e) {
+            }
+            let _width = (getAbsolutePosition(container).width * 1) + "px";
+            let _height = (getAbsolutePosition(container).height * 1) + "px";
             container.innerHTML = "";
-            var echart = getEcharts(
-                null,
+            let echart = getEcharts(
+                container,
                 __DATASET__.echarts.type,
                 _width,
                 _height,
                 __DATASET__.echarts.theme,
                 __DATASET__["result"][__DATASET__.default.sheet],
                 __ECHARTS__.configs);
-            container.appendChild(echart);
-            setDragNook(container,echart.id);
+            setDragNook(container,echart.getAttribute("_echarts_instance_"));
             setUserConfig("echartsthemes", this.value);
         } catch (e) {
             console.log(e);
@@ -2971,26 +2974,29 @@ function init() {
     echartsType.onchange = help_echartsType.onchange = function () {
         try {
             __DATASET__.echarts.type = this.value;
-            var container = $("tableContainer");
-            var _width = (getAbsolutePosition(container).width * 1) + "px";
-            var _height = (getAbsolutePosition(container).height * 1) + "px";
+            let container = $("tableContainer");
+            try {
+                container.removeAttribute("_echarts_instance_");
+            }catch (e) {
+            }
+            let _width = (getAbsolutePosition(container).width * 1) + "px";
+            let _height = (getAbsolutePosition(container).height * 1) + "px";
             container.innerHTML = "";
-            var echart = getEcharts(
-                null,
+            let echart = getEcharts(
+                container,
                 __DATASET__.echarts.type,
                 _width,
                 _height,
                 __DATASET__.echarts.theme,
                 __DATASET__["result"][__DATASET__.default.sheet],
                 __ECHARTS__.configs);
-            container.appendChild(echart);
-            setDragNook(container,echart.id);
+            setDragNook(container,echart.getAttribute("_echarts_instance_"));
         } catch (e) {
             console.log(e);
         }
     };
     datatools.appendChild(echartsType);
-    setTooltip(echartsType, "视图<br>类别");
+    setTooltip(echartsType, "视图<br>类型");
 
     var echarts = document.createElement("div");
     datatools.appendChild(echarts);
@@ -3002,20 +3008,23 @@ function init() {
     let help_echarts = $("help-dataset-echarts");
     echarts.onclick = help_echarts.onclick = function () {
         try {
-            var container = $("tableContainer");
-            var _width = (getAbsolutePosition(container).width * 1) + "px";
-            var _height = (getAbsolutePosition(container).height * 1) + "px";
+            let container = $("tableContainer");
+            try {
+                container.removeAttribute("_echarts_instance_");
+            }catch (e) {
+            }
+            let _width = (getAbsolutePosition(container).width * 1) + "px";
+            let _height = (getAbsolutePosition(container).height * 1) + "px";
             container.innerHTML = "";
-            var echart = getEcharts(
-                null,
+            let echart = getEcharts(
+                container,
                 __DATASET__.echarts.type,
                 _width,
                 _height,
                 __DATASET__.echarts.theme,
                 __DATASET__["result"][__DATASET__.default.sheet],
                 __ECHARTS__.configs);
-            container.appendChild(echart);
-            setDragNook(container,echart.id);
+            setDragNook(container,echart.getAttribute("_echarts_instance_"));
         } catch (e) {
             console.log(e);
         }
@@ -4047,7 +4056,7 @@ function setPageThemes() {
     let mapconfig = $("help-local-map-config");
     let localmap = $("help-local-map");
     mapconfig.onclick = localmap.onclick = function () {
-        let config = getMapConfig();
+        let config = geoCoordMap.getMapConfig();
         setCenterPosition($("page"),config);
     }
 }
@@ -4120,6 +4129,57 @@ function CompareObj(objA, objB, flag) {
     return flag;
 }
 
+function setEchartDrag(ec) {
+    ec.ondragenter = function (event) {
+        if (event.target.className == "multi-echarts-view-contain") {
+            event.target.style.border = "1px dotted red";
+        }
+    };
+    ec.ondragover = function (event) {
+        if (event.target.className == "multi-echarts-view-contain") {
+            event.preventDefault();
+        }
+    };
+    ec.ondrop = function (event) {
+        if (event.target.className == "multi-echarts-view-contain") {
+            try {
+                this.removeAttribute("_echarts_instance_");
+            }catch (e) {
+            }
+            event.target.style.border = "0px dotted var(--main-border-color)";
+            let id = event.dataTransfer.getData("Text");
+            let echart = __ECHARTS__.history[id];
+            if (echart != null) {
+                try {
+                    let posi = getAbsolutePosition(this);
+                    let _width = posi.width + "px";
+                    let _height = posi.height + "px";
+                    let ec = getEcharts(
+                        this,
+                        echart.type,
+                        _width,
+                        _height,
+                        echart.themes,
+                        echart.dataset,
+                        echart.configs);
+                    setDragNook(ec, ec.getAttribute("_echarts_instance_"));
+                    setEchartDrag(this);
+                } catch (e) {
+                    console.log(e);
+                }
+            } else {
+                setMultiEchartsView(this, id);
+                this.style.border = "0px dotted var(--main-border-color)";
+            }
+        }
+    };
+    ec.ondragleave = function (event) {
+        if (event.target.className == "multi-echarts-view-contain") {
+            event.target.style.border = "1px dotted var(--main-border-color)";
+        }
+    };
+}
+
 function setMultiEchartsView(parent, template) {
     parent.innerHTML = "";
     let views = __ECHARTS__.layouts[template];
@@ -4149,49 +4209,7 @@ function setMultiEchartsView(parent, template) {
         parent.appendChild(contain);
         contain.style.lineHeight = getAbsolutePosition(parent).height * view[3] / 100 + "px";
         contain.innerHTML = "请从右侧拖入布局框架或从左侧拖入数据视图。";
-        contain.ondragenter = function (event) {
-            if (event.target.className == "multi-echarts-view-contain") {
-                event.target.style.border = "1px dotted red";
-            }
-        };
-        contain.ondragover = function (event) {
-            if (event.target.className == "multi-echarts-view-contain") {
-                event.preventDefault();
-            }
-        };
-        contain.ondrop = function (event) {
-            if (event.target.className == "multi-echarts-view-contain") {
-                event.target.style.border = "0px dotted var(--main-border-color)";
-                let id = event.dataTransfer.getData("Text");
-                let echart = __ECHARTS__.history[id];
-                if (echart != null) {
-                    try {
-                        let posi = getAbsolutePosition(this);
-                        let _width = posi.width + "px";
-                        let _height = posi.height + "px";
-                        let e = getEcharts(
-                            this,
-                            echart.type,
-                            _width,
-                            _height,
-                            echart.themes,
-                            echart.dataset,
-                            echart.configs);
-                        setDragNook(this,this.id);
-                    } catch (e) {
-                        console.log(e);
-                    }
-                } else {
-                    setMultiEchartsView(this, id);
-                    this.style.border = "0px dotted var(--main-border-color)";
-                }
-            }
-        };
-        contain.ondragleave = function (event) {
-            if (event.target.className == "multi-echarts-view-contain") {
-                event.target.style.border = "1px dotted var(--main-border-color)";
-            }
-        };
+        setEchartDrag(contain);
     }
     if (parent.className == "multi-echarts-view-contain") {
         parent.ondragenter = null;
@@ -4296,6 +4314,7 @@ function getMultiEcharts() {
 
         for (let i = 0; i < __ECHARTS__.sets.data.length; i++) {
             let echart = __ECHARTS__.history[__ECHARTS__.sets.data[i]];
+            console.log(echart);
             let row = document.createElement("div");
             row.className = "multi-echarts-list-row";
             row.id = echart.id;
@@ -4399,6 +4418,58 @@ function getMultiEcharts() {
     } catch (e) {
         console.log(e);
     }
+}
+
+function setDragNook(parent, id) {
+    function setDrag(nook) {
+        nook.ondragstart = function (event) {
+            event.dataTransfer.setData("Text", event.target.id);
+        };
+    }
+
+    let nook = document.createElement("div");
+    nook.className = "drag-nook";
+    nook.id = id;
+    nook.draggable = "true";
+    nook.style.right = "0%";
+    nook.style.top = "0%";
+    nook.style.borderTop = "2px solid var(--drag-border-color)";
+    nook.style.borderRight = "2px solid var(--drag-border-color)";
+    parent.appendChild(nook);
+    setDrag(nook);
+
+    nook = document.createElement("div");
+    nook.className = "drag-nook";
+    nook.id = id;
+    nook.draggable = "true";
+    nook.style.left = "0%";
+    nook.style.top = "0%";
+    nook.style.borderTop = "2px solid var(--drag-border-color)";
+    nook.style.borderLeft = "2px solid var(--drag-border-color)";
+    parent.appendChild(nook);
+    setDrag(nook);
+
+    nook = document.createElement("div");
+    nook.className = "drag-nook";
+    nook.id = id;
+    nook.draggable = "true";
+    nook.style.left = "0%";
+    nook.style.bottom = "0%";
+    nook.style.borderBottom = "2px solid var(--drag-border-color)";
+    nook.style.borderLeft = "2px solid var(--drag-border-color)";
+    parent.appendChild(nook);
+    setDrag(nook);
+
+    nook = document.createElement("div");
+    nook.className = "drag-nook";
+    nook.id = id;
+    nook.draggable = "true";
+    nook.style.right = "0%";
+    nook.style.bottom = "0%";
+    nook.style.borderBottom = "2px solid var(--drag-border-color)";
+    nook.style.borderRight = "2px solid var(--drag-border-color)";
+    parent.appendChild(nook);
+    setDrag(nook);
 }
 
 
