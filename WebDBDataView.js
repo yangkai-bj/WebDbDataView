@@ -1527,6 +1527,11 @@ function datasetTranspose(index) {
 
 function viewDataset(index){
     let container = $("tableContainer");
+    try {
+        container.removeAttribute("_echarts_instance_");
+        echarts.getInstanceByDom(container).dispose();
+    }catch (e) {
+    }
     container.innerText = "";
     let columns = __DATASET__["result"][index].columns;
     let data = __DATASET__["result"][index].data;
@@ -2883,8 +2888,13 @@ function init() {
                 //keypress无法获取Esc键值,keydown和keyup可以.
                 var keycode = e.which || e.keyCode;
                 if (keycode == 27) {
-                    if ($("echarts-full-screen") != null)
+                    if ($("echarts-full-screen") != null) {
+                        try {
+                            echarts.getInstanceByDom($("echarts-full-screen")).dispose();
+                        } catch (e) {
+                        }
                         $("echarts-full-screen").parentElement.removeChild($("echarts-full-screen"));
+                    }
                 }
             });
             let echart = getEcharts(
@@ -2941,6 +2951,7 @@ function init() {
             let container = $("tableContainer");
             try {
                 container.removeAttribute("_echarts_instance_");
+                echarts.getInstanceByDom(container).dispose();
             }catch (e) {
             }
             let _width = (getAbsolutePosition(container).width * 1) + "px";
@@ -2977,6 +2988,7 @@ function init() {
             let container = $("tableContainer");
             try {
                 container.removeAttribute("_echarts_instance_");
+                echarts.getInstanceByDom(container).dispose();
             }catch (e) {
             }
             let _width = (getAbsolutePosition(container).width * 1) + "px";
@@ -3011,6 +3023,7 @@ function init() {
             let container = $("tableContainer");
             try {
                 container.removeAttribute("_echarts_instance_");
+                echarts.getInstanceByDom(container).dispose();
             }catch (e) {
             }
             let _width = (getAbsolutePosition(container).width * 1) + "px";
@@ -4143,29 +4156,30 @@ function setEchartDrag(ec) {
     ec.ondrop = function (event) {
         if (event.target.className == "multi-echarts-view-contain") {
             try {
-                this.removeAttribute("_echarts_instance_");
+                echarts.getInstanceByDom(this).dispose();
             }catch (e) {
             }
             event.target.style.border = "0px dotted var(--main-border-color)";
             let id = event.dataTransfer.getData("Text");
-            let echart = __ECHARTS__.history[id];
-            if (echart != null) {
+            let history = __ECHARTS__.history[id];
+            if (history != null) {
+                history = JSON.parse(history);
                 try {
                     let posi = getAbsolutePosition(this);
                     let _width = posi.width + "px";
                     let _height = posi.height + "px";
-                    let ec = getEcharts(
+                    let e = getEcharts(
                         this,
-                        echart.type,
+                        history.type,
                         _width,
                         _height,
-                        echart.themes,
-                        echart.dataset,
-                        echart.configs);
-                    setDragNook(ec, ec.getAttribute("_echarts_instance_"));
+                        history.themes,
+                        history.dataset,
+                        history.configs);
+                    setDragNook(e, e.getAttribute("_echarts_instance_"));
                     setEchartDrag(this);
-                } catch (e) {
-                    console.log(e);
+                } catch (err) {
+                    console.log(err);
                 }
             } else {
                 setMultiEchartsView(this, id);
@@ -4313,22 +4327,21 @@ function getMultiEcharts() {
         multiEcharts.appendChild(echartsList);
 
         for (let i = 0; i < __ECHARTS__.sets.data.length; i++) {
-            let echart = __ECHARTS__.history[__ECHARTS__.sets.data[i]];
-            console.log(echart);
+            let history = JSON.parse(__ECHARTS__.history[__ECHARTS__.sets.data[i]]);
             let row = document.createElement("div");
             row.className = "multi-echarts-list-row";
-            row.id = echart.id;
+            row.id = history.id;
 
             let title = document.createElement("div");
             let text = document.createElement("span");
             title.appendChild(text);
-            text.innerHTML = echart.configs.titleText.value != "" ? echart.configs.titleText.value : echart.id;
+            text.innerHTML = history.configs.titleText.value != "" ? history.configs.titleText.value : echart.id;
             row.appendChild(title);
 
             let del = document.createElement("span");
             del.className = "clickable";
             del.innerText = "✘";
-            del.setAttribute("id", echart.id);
+            del.setAttribute("id", history.id);
             del.onclick = function () {
                 let row = $(this.getAttribute("id"));
                 let data = [];
@@ -4344,10 +4357,10 @@ function getMultiEcharts() {
 
             let detail = document.createElement("div");
             let type = document.createElement("span");
-            type.innerText = echart.type;
+            type.innerText = history.type;
             detail.appendChild(type);
             let themes = document.createElement("span");
-            themes.innerText = echart.themes;
+            themes.innerText = history.themes;
             detail.appendChild(themes);
             row.appendChild(detail);
 
@@ -4410,8 +4423,16 @@ function getMultiEcharts() {
             //keypress无法获取Esc键值,keydown和keyup可以.
             var keycode = e.which || e.keyCode;
             if (keycode == 27) {
-                if ($("multi-echarts") != null)
+                if ($("multi-echarts") != null) {
+                    let mul = $("multi-echarts").getElementsByClassName("multi-echarts-view-contain");
+                    for (i = 0; i < mul.length; i++) {
+                        try {
+                            echarts.getInstanceByDom(mul[i]).dispose();
+                        }catch (e) {
+                        }
+                    }
                     $("multi-echarts").parentElement.removeChild($("multi-echarts"));
+                }
             }
         });
         return multiEcharts;

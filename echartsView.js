@@ -21,6 +21,19 @@ function stringToHex(str){
 
 var __ECHARTS__ = {
     history: {},
+    addHistory: function(container, type, configs, dataset, themes, width, height) {
+        let id = container.getAttribute("_echarts_instance_");
+        __ECHARTS__.history[id] = JSON.stringify({
+            id: id,
+            type: type,
+            configs: configs,
+            dataset: dataset,
+            themes: themes,
+            contrainer: container,
+            width: width,
+            height: height,
+        });
+    },
     sets: {
         data: [],
         add: function (id) {
@@ -957,7 +970,7 @@ var __ECHARTS__ = {
             try {
                 try {
                     parent.removeAttribute("_echarts_instance_");
-                    parent.innerHTML = "";
+                    echarts.getInstanceByDom(parent).dispose();
                 } catch (e) {
                 }
                 var _width = (getAbsolutePosition(parent).width * 1) + "px";
@@ -2314,17 +2327,7 @@ function getBar(container, themes, width, height, type, dataset, configs) {
         myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    let id =container.getAttribute("_echarts_instance_");
-    __ECHARTS__.history[id] = {
-        id: id,
-        type: type,
-        configs: configs,
-        dataset: dataset,
-        themes: themes,
-        contrainer: container,
-        width: width,
-        height: height,
-    };
+    __ECHARTS__.addHistory(container, type, configs, dataset, themes, width, height);
     return container;
 }
 
@@ -2619,17 +2622,7 @@ function getTransversBar(container, themes, width, height, type, dataset, config
       myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    let id =container.getAttribute("_echarts_instance_");
-    __ECHARTS__.history[id] = {
-         id: id,
-        type: type,
-        configs: configs,
-        dataset: dataset,
-        themes: themes,
-        contrainer: container,
-        width: width,
-        height: height,
-    };
+    __ECHARTS__.addHistory(container, type, configs, dataset, themes, width, height);
     return container;
 }
 
@@ -2947,17 +2940,7 @@ function getLine(container, themes, width, height, type, dataset, configs) {
         myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    let id =container.getAttribute("_echarts_instance_");
-    __ECHARTS__.history[id] = {
-        id: id,
-        type: type,
-        configs: configs,
-        dataset: dataset,
-        themes: themes,
-        contrainer: container,
-        width: width,
-        height: height,
-    };
+    __ECHARTS__.addHistory(container, type, configs, dataset, themes, width, height);
     return container;
 }
 
@@ -3311,17 +3294,7 @@ function getBarAndLine(container, themes, width, height, type, dataset, configs)
       myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    let id =container.getAttribute("_echarts_instance_");
-    __ECHARTS__.history[id] = {
-         id: id,
-        type: type,
-        configs: configs,
-        dataset: dataset,
-        themes: themes,
-        contrainer: container,
-        width: width,
-        height: height,
-    };
+    __ECHARTS__.addHistory(container, type, configs, dataset, themes, width, height);
     return container;
 }
 
@@ -3633,17 +3606,7 @@ function getAreaStyle(container, themes, width, height, type, dataset, configs) 
       myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    let id =container.getAttribute("_echarts_instance_");
-    __ECHARTS__.history[id] = {
-         id: id,
-        type: type,
-        configs: configs,
-        dataset: dataset,
-        themes: themes,
-        contrainer: container,
-        width: width,
-        height: height,
-    };
+    __ECHARTS__.addHistory(container, type, configs, dataset, themes, width, height);
     return container;
 }
 
@@ -3854,17 +3817,7 @@ function getPolarBar(container, themes, width, height, type, dataset, configs) {
       myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    let id =container.getAttribute("_echarts_instance_");
-    __ECHARTS__.history[id] = {
-         id: id,
-        type: type,
-        configs: configs,
-        dataset: dataset,
-        themes: themes,
-        contrainer: container,
-        width: width,
-        height: height,
-    };
+    __ECHARTS__.addHistory(container, type, configs, dataset, themes, width, height);
     return container;
 }
 
@@ -4073,17 +4026,7 @@ function getPolarArea(container, themes, width, height, type, dataset, configs) 
       myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    let id =container.getAttribute("_echarts_instance_");
-    __ECHARTS__.history[id] = {
-         id: id,
-        type: type,
-        configs: configs,
-        dataset: dataset,
-        themes: themes,
-        contrainer: container,
-        width: width,
-        height: height,
-    };
+    __ECHARTS__.addHistory(container, type, configs, dataset, themes, width, height);
     return container;
 }
 
@@ -4299,17 +4242,7 @@ function getPie(container, themes, width, height, type, dataset, configs) {
       myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    let id =container.getAttribute("_echarts_instance_");
-    __ECHARTS__.history[id] = {
-         id: id,
-        type: type,
-        configs: configs,
-        dataset: dataset,
-        themes: themes,
-        contrainer: container,
-        width: width,
-        height: height,
-    };
+    __ECHARTS__.addHistory(container, type, configs, dataset, themes, width, height);
     return container;
 }
 
@@ -4524,17 +4457,7 @@ function getRing(container, themes, width, height, type, dataset, configs) {
       myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    let id =container.getAttribute("_echarts_instance_");
-    __ECHARTS__.history[id] = {
-         id: id,
-        type: type,
-        configs: configs,
-        dataset: dataset,
-        themes: themes,
-        contrainer: container,
-        width: width,
-        height: height,
-    };
+    __ECHARTS__.addHistory(container, type, configs, dataset, themes, width, height);
     return container;
 }
 
@@ -4749,17 +4672,7 @@ function getRose(container, themes, width, height, type, dataset, configs) {
         myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    let id =container.getAttribute("_echarts_instance_");
-    __ECHARTS__.history[id] = {
-        id: id,
-        type: type,
-        configs: configs,
-        dataset: dataset,
-        themes: themes,
-        contrainer: container,
-        width: width,
-        height: height,
-    };
+    __ECHARTS__.addHistory(container, type, configs, dataset, themes, width, height);
     return container;
 }
 
@@ -4966,17 +4879,7 @@ function getRadar(container, themes, width, height, type, dataset, configs) {
       myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    let id =container.getAttribute("_echarts_instance_");
-    __ECHARTS__.history[id] = {
-         id: id,
-        type: type,
-        configs: configs,
-        dataset: dataset,
-        themes: themes,
-        contrainer: container,
-        width: width,
-        height: height,
-    };
+    __ECHARTS__.addHistory(container, type, configs, dataset, themes, width, height);
     return container;
 
 }
@@ -5411,17 +5314,7 @@ function getRegression(container, themes, width, height, type, dataset, configs)
       myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    let id =container.getAttribute("_echarts_instance_");
-    __ECHARTS__.history[id] = {
-         id: id,
-        type: type,
-        configs: configs,
-        dataset: dataset,
-        themes: themes,
-        contrainer: container,
-        width: width,
-        height: height,
-    };
+    __ECHARTS__.addHistory(container, type, configs, dataset, themes, width, height);
     return container;
 }
 
@@ -5465,8 +5358,6 @@ function  getRelation(container, themes, width, height, type, dataset, configs) 
                     x: Math.floor(Math.random() * window.innerWidth),
                     y: Math.floor(Math.random() * window.innerHeight),
                     value: nodes.length + 1,
-                    //如果修改为layout= force,则draggable配置生效
-                    //draggable: false
                 };
                 nodes.push(node);
             }
@@ -5612,16 +5503,6 @@ function  getRelation(container, themes, width, height, type, dataset, configs) 
         graphic: getWaterGraphic(__SYS_LOGO_LINK__),
     };
 
-    setTimeout(() => {
-        myChart.hideLoading();
-        myChart.setOption(option);
-        if (configs.relationLayout.value == "none")
-            initInvisibleGraphic();
-        window.addEventListener("resize", updatePosition);
-        myChart.on("dataZoom", updatePosition);
-        myChart.on("graphRoam", updatePosition);
-    }, Number(configs.loadingTimes.value) * 1000);
-
      //以下代码是为解决节点拖动
      function initInvisibleGraphic() {
          let graphic = {
@@ -5645,21 +5526,25 @@ function  getRelation(container, themes, width, height, type, dataset, configs) 
                  };
              })
          };
+         graphic.graphic.concat(getWaterGraphic(__SYS_LOGO_LINK__));
          myChart.setOption(graphic);
      }
 
-    function updatePosition(){
-        myChart.setOption({
+    function updatePosition() {
+        let graphic = {
             graphic: echarts.util.map(option.series[0].data, function (item, dataIndex) {
-                let tmpPos = myChart.convertToPixel({"seriesIndex": 0},[item.x,item.y]);
+                let tmpPos = myChart.convertToPixel({"seriesIndex": 0}, [item.x, item.y]);
                 return {
                     id: dataIndex,
                     //务必注意
                     position: tmpPos,
                 };
             })
-        });
+        };
+        graphic.graphic.concat(getWaterGraphic(__SYS_LOGO_LINK__));
+        myChart.setOption(graphic);
     }
+
     function onPointDragging(dataIndex) {
         //节点上图层拖拽执行的函数
         let tmpPos = myChart.convertFromPixel({"seriesIndex": 0}, this.position);
@@ -5669,9 +5554,22 @@ function  getRelation(container, themes, width, height, type, dataset, configs) 
         myChart.setOption(option);
     }
 
+    setTimeout(() => {
+        myChart.hideLoading();
+        myChart.setOption(option);
+
+        if (configs.relationLayout.value == "none")
+            initInvisibleGraphic();
+        //window.addEventListener("resize", updatePosition);
+        myChart.on("dataZoom", updatePosition);
+        myChart.on("graphRoam", updatePosition);
+
+    }, Number(configs.loadingTimes.value) * 1000);
+
+
     let id =container.getAttribute("_echarts_instance_");
-    __ECHARTS__.history[id] = {
-         id: id,
+    __ECHARTS__.history[id] = JSON.stringify({
+        id: id,
         type: type,
         configs: configs,
         dataset: dataset,
@@ -5679,7 +5577,8 @@ function  getRelation(container, themes, width, height, type, dataset, configs) 
         contrainer: container,
         width: width,
         height: height,
-    };
+    });
+    console.log(__ECHARTS__.history[id]);
     return container;
 }
 
@@ -5901,17 +5800,7 @@ function getTree(container, themes, width, height, type, dataset, configs) {
       myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    let id =container.getAttribute("_echarts_instance_");
-    __ECHARTS__.history[id] = {
-         id: id,
-        type: type,
-        configs: configs,
-        dataset: dataset,
-        themes: themes,
-        contrainer: container,
-        width: width,
-        height: height,
-    };
+    __ECHARTS__.addHistory(container, type, configs, dataset, themes, width, height);
     return container;
 }
 
@@ -6089,17 +5978,7 @@ function getWebkitDep(container, themes, width, height, type, dataset, configs) 
       myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    let id =container.getAttribute("_echarts_instance_");
-    __ECHARTS__.history[id] = {
-         id: id,
-        type: type,
-        configs: configs,
-        dataset: dataset,
-        themes: themes,
-        contrainer: container,
-        width: width,
-        height: height,
-    };
+    __ECHARTS__.addHistory(container, type, configs, dataset, themes, width, height);
     return container;
 }
 
@@ -6497,17 +6376,7 @@ function getScatter(container, themes, width, height, type, dataset, configs) {
       myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    let id =container.getAttribute("_echarts_instance_");
-    __ECHARTS__.history[id] = {
-         id: id,
-        type: type,
-        configs: configs,
-        dataset: dataset,
-        themes: themes,
-        contrainer: container,
-        width: width,
-        height: height,
-    };
+    __ECHARTS__.addHistory(container, type, configs, dataset, themes, width, height);
     return container;
 }
 
@@ -6716,17 +6585,7 @@ function getFunnel(container, themes, width, height, type, dataset, configs) {
       myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    let id =container.getAttribute("_echarts_instance_");
-    __ECHARTS__.history[id] = {
-         id: id,
-        type: type,
-        configs: configs,
-        dataset: dataset,
-        themes: themes,
-        contrainer: container,
-        width: width,
-        height: height,
-    };
+    __ECHARTS__.addHistory(container, type, configs, dataset, themes, width, height);
     return container;
 }
 
@@ -6927,17 +6786,7 @@ function getWordCloud(container, themes, width, height, type, dataset, configs) 
       myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    let id =container.getAttribute("_echarts_instance_");
-    __ECHARTS__.history[id] = {
-         id: id,
-        type: type,
-        configs: configs,
-        dataset: dataset,
-        themes: themes,
-        contrainer: container,
-        width: width,
-        height: height,
-    };
+    __ECHARTS__.addHistory(container, type, configs, dataset, themes, width, height);
     return container;
 }
 
@@ -7174,17 +7023,7 @@ function getLiqiud(container, themes, width, height, type, dataset, configs) {
 
     setTimeout(startTimer,  configs.seriesLoopPlayInterval.value * 1000);
 
-    let id =container.getAttribute("_echarts_instance_");
-    __ECHARTS__.history[id] = {
-         id: id,
-        type: type,
-        configs: configs,
-        dataset: dataset,
-        themes: themes,
-        contrainer: container,
-        width: width,
-        height: height,
-    };
+    __ECHARTS__.addHistory(container, type, configs, dataset, themes, width, height);
     return container;
 }
 
@@ -7402,17 +7241,7 @@ function getGaugeWithAll(container, themes, width, height, type, dataset, config
 
     setTimeout(startTimer,  configs.seriesLoopPlayInterval.value * 1000);
 
-    let id =container.getAttribute("_echarts_instance_");
-    __ECHARTS__.history[id] = {
-         id: id,
-        type: type,
-        configs: configs,
-        dataset: dataset,
-        themes: themes,
-        contrainer: container,
-        width: width,
-        height: height,
-    };
+    __ECHARTS__.addHistory(container, type, configs, dataset, themes, width, height);
     return container;
 }
 
@@ -7626,17 +7455,7 @@ function getGaugeWithOne(container, themes, width, height, type, dataset, config
 
     setTimeout(startTimer,  configs.seriesLoopPlayInterval.value * 1000);
 
-    let id =container.getAttribute("_echarts_instance_");
-    __ECHARTS__.history[id] = {
-         id: id,
-        type: type,
-        configs: configs,
-        dataset: dataset,
-        themes: themes,
-        contrainer: container,
-        width: width,
-        height: height,
-    };
+    __ECHARTS__.addHistory(container, type, configs, dataset, themes, width, height);
     return container;
 }
 
@@ -7861,17 +7680,7 @@ function getCalendar(container, themes, width, height, type, dataset, configs) {
       myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    let id =container.getAttribute("_echarts_instance_");
-    __ECHARTS__.history[id] = {
-         id: id,
-        type: type,
-        configs: configs,
-        dataset: dataset,
-        themes: themes,
-        contrainer: container,
-        width: width,
-        height: height,
-    };
+    __ECHARTS__.addHistory(container, type, configs, dataset, themes, width, height);
     return container;
 
 }
@@ -8198,17 +8007,7 @@ function getGeoOfChina(container, themes, width, height, type, dataset, configs)
 
     setTimeout(startTimer,  configs.seriesLoopPlayInterval.value * 1000);
 
-    let id =container.getAttribute("_echarts_instance_");
-    __ECHARTS__.history[id] = {
-         id: id,
-        type: type,
-        configs: configs,
-        dataset: dataset,
-        themes: themes,
-        contrainer: container,
-        width: width,
-        height: height,
-    };
+    __ECHARTS__.addHistory(container, type, configs, dataset, themes, width, height);
     return container;
 }
 
@@ -8528,17 +8327,7 @@ function getGeoOfLocal(container, themes, width, height, type, dataset, configs)
 
     setTimeout(startTimer,  configs.seriesLoopPlayInterval.value * 1000);
 
-    let id =container.getAttribute("_echarts_instance_");
-    __ECHARTS__.history[id] = {
-         id: id,
-        type: type,
-        configs: configs,
-        dataset: dataset,
-        themes: themes,
-        contrainer: container,
-        width: width,
-        height: height,
-    };
+    __ECHARTS__.addHistory(container, type, configs, dataset, themes, width, height);
     return container;
 }
 
@@ -8826,17 +8615,7 @@ function getBar3D(container, themes, width, height, type, dataset, configs) {
       myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    let id =container.getAttribute("_echarts_instance_");
-    __ECHARTS__.history[id] = {
-         id: id,
-        type: type,
-        configs: configs,
-        dataset: dataset,
-        themes: themes,
-        contrainer: container,
-        width: width,
-        height: height,
-    };
+    __ECHARTS__.addHistory(container, type, configs, dataset, themes, width, height);
     return container;
 }
 
@@ -9118,17 +8897,7 @@ function getLine3D(container, themes, width, height, type, dataset, configs) {
       myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    let id =container.getAttribute("_echarts_instance_");
-    __ECHARTS__.history[id] = {
-         id: id,
-        type: type,
-        configs: configs,
-        dataset: dataset,
-        themes: themes,
-        contrainer: container,
-        width: width,
-        height: height,
-    };
+    __ECHARTS__.addHistory(container, type, configs, dataset, themes, width, height);
     return container;
 }
 
@@ -9412,17 +9181,7 @@ function getScatter3D(container, themes, width, height, type, dataset, configs) 
       myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    let id =container.getAttribute("_echarts_instance_");
-    __ECHARTS__.history[id] = {
-         id: id,
-        type: type,
-        configs: configs,
-        dataset: dataset,
-        themes: themes,
-        contrainer: container,
-        width: width,
-        height: height,
-    };
+    __ECHARTS__.addHistory(container, type, configs, dataset, themes, width, height);
     return container;
 }
 
@@ -9781,17 +9540,7 @@ function getCategoryLine(container, themes, width, height, type, dataset, config
       myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    let id =container.getAttribute("_echarts_instance_");
-    __ECHARTS__.history[id] = {
-         id: id,
-        type: type,
-        configs: configs,
-        dataset: dataset,
-        themes: themes,
-        contrainer: container,
-        width: width,
-        height: height,
-    };
+    __ECHARTS__.addHistory(container, type, configs, dataset, themes, width, height);
     return container;
 }
 
@@ -10140,17 +9889,7 @@ function getGeoMigrateLinesOfChinaCity(container, themes, width, height, type, d
       myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    let id =container.getAttribute("_echarts_instance_");
-    __ECHARTS__.history[id] = {
-         id: id,
-        type: type,
-        configs: configs,
-        dataset: dataset,
-        themes: themes,
-        contrainer: container,
-        width: width,
-        height: height,
-    };
+    __ECHARTS__.addHistory(container, type, configs, dataset, themes, width, height);
     return container;
 }
 
@@ -10340,17 +10079,7 @@ function getCategoryLineForGauge(container, themes, width, height, type, dataset
       myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    let id =container.getAttribute("_echarts_instance_");
-    __ECHARTS__.history[id] = {
-         id: id,
-        type: type,
-        configs: configs,
-        dataset: dataset,
-        themes: themes,
-        contrainer: container,
-        width: width,
-        height: height,
-    };
+    __ECHARTS__.addHistory(container, type, configs, dataset, themes, width, height);
     return container;
 }
 
@@ -10551,17 +10280,7 @@ function getCategoryLineForLiqiud(container, themes, width, height, type, datase
       myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    let id =container.getAttribute("_echarts_instance_");
-    __ECHARTS__.history[id] = {
-         id: id,
-        type: type,
-        configs: configs,
-        dataset: dataset,
-        themes: themes,
-        contrainer: container,
-        width: width,
-        height: height,
-    };
+    __ECHARTS__.addHistory(container, type, configs, dataset, themes, width, height);
     return container;
 }
 
@@ -10911,17 +10630,7 @@ function getCategoryLineForGeoOfChina(container, themes, width, height, type, da
       myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    let id =container.getAttribute("_echarts_instance_");
-    __ECHARTS__.history[id] = {
-         id: id,
-        type: type,
-        configs: configs,
-        dataset: dataset,
-        themes: themes,
-        contrainer: container,
-        width: width,
-        height: height,
-    };
+    __ECHARTS__.addHistory(container, type, configs, dataset, themes, width, height);
     return container;
 }
 
@@ -11263,17 +10972,7 @@ function getCategoryLineForGeoOfLocal(container, themes, width, height, type, da
         myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    let id =container.getAttribute("_echarts_instance_");
-    __ECHARTS__.history[id] = {
-         id: id,
-        type: type,
-        configs: configs,
-        dataset: dataset,
-        themes: themes,
-        contrainer: container,
-        width: width,
-        height: height,
-    };
+    __ECHARTS__.addHistory(container, type, configs, dataset, themes, width, height);
     return container;
 }
 
@@ -11449,17 +11148,7 @@ function getScrollingScreen(container, themes, width, height, type, dataset, con
         }
     }, Number(configs.scrollingScreenSpeed.value));
 
-    let id =container.getAttribute("_echarts_instance_");
-    __ECHARTS__.history[id] = {
-        id: id,
-        type: type,
-        configs: configs,
-        dataset: dataset,
-        themes: themes,
-        contrainer: container,
-        width: width,
-        height: height,
-    };
+    __ECHARTS__.addHistory(container, type, configs, dataset, themes, width, height);
 
     return container;
 }
