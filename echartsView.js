@@ -5566,19 +5566,7 @@ function  getRelation(container, themes, width, height, type, dataset, configs) 
 
     }, Number(configs.loadingTimes.value) * 1000);
 
-
-    let id =container.getAttribute("_echarts_instance_");
-    __ECHARTS__.history[id] = JSON.stringify({
-        id: id,
-        type: type,
-        configs: configs,
-        dataset: dataset,
-        themes: themes,
-        contrainer: container,
-        width: width,
-        height: height,
-    });
-    console.log(__ECHARTS__.history[id]);
+    __ECHARTS__.addHistory(container, type, configs, dataset, themes, width, height);
     return container;
 }
 
