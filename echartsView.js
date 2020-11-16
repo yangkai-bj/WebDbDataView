@@ -231,7 +231,7 @@ var __ECHARTS__ = {
             type: "select"
         },
         toolboxFeatureMultiScreen: {
-            name: "组合大屏",
+            name: "视图组合",
             value: "false",
             options: [new Option("是", "true"), new Option("否", "false")],
             type: "select"
@@ -1478,6 +1478,7 @@ var geoCoordMap = {
         }
         localmap.onchange = function () {
             geoCoordMap.LocalMap = this.value;
+            setUserConfig("localMap", geoCoordMap.LocalMap);
         };
         d.appendChild(localmap);
         container.appendChild(d);
@@ -2145,11 +2146,11 @@ function getBar(container, themes, width, height, type, dataset, configs) {
                 },
                 myMultiScreen: {
                     show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
-                    title: '组合大屏',
-                    icon: __SYS_IMAGES_PATH__.eye,
+                    title: '视图组合',
+                    icon: __SYS_IMAGES_PATH__.viewCombination,
                     onclick: function () {
                         __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
-                        alert("视图已提交组合大屏列表.");
+                        alert("视图已提交组合列表.");
                     }
                 },
             },
@@ -2449,11 +2450,11 @@ function getTransversBar(container, themes, width, height, type, dataset, config
                 },
                 myMultiScreen: {
                     show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
-                    title: '组合大屏',
-                    icon: __SYS_IMAGES_PATH__.eye,
+                    title: '视图组合',
+                    icon: __SYS_IMAGES_PATH__.viewCombination,
                     onclick: function () {
                         __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
-                        alert("视图已提交组合大屏列表.");
+                        alert("视图已提交组合列表.");
                     }
                 },
             },
@@ -2766,11 +2767,11 @@ function getLine(container, themes, width, height, type, dataset, configs) {
                 },
                 myMultiScreen: {
                     show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
-                    title: '组合大屏',
-                    icon: __SYS_IMAGES_PATH__.eye,
+                    title: '视图组合',
+                    icon: __SYS_IMAGES_PATH__.viewCombination,
                     onclick: function () {
                         __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
-                        alert("视图已提交组合大屏列表.");
+                        alert("视图已提交组合列表.");
                     }
                 },
             },
@@ -3122,11 +3123,11 @@ function getBarAndLine(container, themes, width, height, type, dataset, configs)
                 },
                 myMultiScreen: {
                     show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
-                    title: '组合大屏',
-                    icon: __SYS_IMAGES_PATH__.eye,
+                    title: '视图组合',
+                    icon: __SYS_IMAGES_PATH__.viewCombination,
                     onclick: function () {
                         __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
-                        alert("视图已提交组合大屏列表.");
+                        alert("视图已提交组合列表.");
                     }
                 },
             },
@@ -3433,11 +3434,11 @@ function getAreaStyle(container, themes, width, height, type, dataset, configs) 
                 },
                 myMultiScreen: {
                     show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
-                    title: '组合大屏',
-                    icon: __SYS_IMAGES_PATH__.eye,
+                    title: '视图组合',
+                    icon: __SYS_IMAGES_PATH__.viewCombination,
                     onclick: function () {
                         __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
-                        alert("视图已提交组合大屏列表.");
+                        alert("视图已提交组合列表.");
                     }
                 },
             },
@@ -3703,11 +3704,11 @@ function getPolarBar(container, themes, width, height, type, dataset, configs) {
                 },
                 myMultiScreen: {
                     show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
-                    title: '组合大屏',
-                    icon: __SYS_IMAGES_PATH__.eye,
+                    title: '视图组合',
+                    icon: __SYS_IMAGES_PATH__.viewCombination,
                     onclick: function () {
                         __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
-                        alert("视图已提交组合大屏列表.");
+                        alert("视图已提交组合列表.");
                     }
                 },
             },
@@ -3913,11 +3914,11 @@ function getPolarArea(container, themes, width, height, type, dataset, configs) 
                 },
                 myMultiScreen: {
                     show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
-                    title: '组合大屏',
-                    icon: __SYS_IMAGES_PATH__.eye,
+                    title: '视图组合',
+                    icon: __SYS_IMAGES_PATH__.viewCombination,
                     onclick: function () {
                         __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
-                        alert("视图已提交组合大屏列表.");
+                        alert("视图已提交组合列表.");
                     }
                 },
             },
@@ -4149,11 +4150,11 @@ function getPie(container, themes, width, height, type, dataset, configs) {
                 },
                 myMultiScreen: {
                     show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
-                    title: '组合大屏',
-                    icon: __SYS_IMAGES_PATH__.eye,
+                    title: '视图组合',
+                    icon: __SYS_IMAGES_PATH__.viewCombination,
                     onclick: function () {
                         __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
-                        alert("视图已提交组合大屏列表.");
+                        alert("视图已提交组合列表.");
                     }
                 },
             },
@@ -4365,11 +4366,11 @@ function getRing(container, themes, width, height, type, dataset, configs) {
                 },
                 myMultiScreen: {
                     show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
-                    title: '组合大屏',
-                    icon: __SYS_IMAGES_PATH__.eye,
+                    title: '视图组合',
+                    icon: __SYS_IMAGES_PATH__.viewCombination,
                     onclick: function () {
                         __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
-                        alert("视图已提交组合大屏列表.");
+                        alert("视图已提交组合列表.");
                     }
                 },
             },
@@ -4581,11 +4582,11 @@ function getRose(container, themes, width, height, type, dataset, configs) {
                 },
                 myMultiScreen: {
                     show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
-                    title: '组合大屏',
-                    icon: __SYS_IMAGES_PATH__.eye,
+                    title: '视图组合',
+                    icon: __SYS_IMAGES_PATH__.viewCombination,
                     onclick: function () {
                         __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
-                        alert("视图已提交组合大屏列表.");
+                        alert("视图已提交组合列表.");
                     }
                 },
             },
@@ -4814,11 +4815,11 @@ function getRadar(container, themes, width, height, type, dataset, configs) {
                 dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
                 myMultiScreen: {
                     show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
-                    title: '组合大屏',
-                    icon: __SYS_IMAGES_PATH__.eye,
+                    title: '视图组合',
+                    icon: __SYS_IMAGES_PATH__.viewCombination,
                     onclick: function () {
                         __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
-                        alert("视图已提交组合大屏列表.");
+                        alert("视图已提交组合列表.");
                     }
                 },
             },
@@ -5140,11 +5141,11 @@ function getRegression(container, themes, width, height, type, dataset, configs)
                 },
                 myMultiScreen: {
                     show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
-                    title: '组合大屏',
-                    icon: __SYS_IMAGES_PATH__.eye,
+                    title: '视图组合',
+                    icon: __SYS_IMAGES_PATH__.viewCombination,
                     onclick: function () {
                         __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
-                        alert("视图已提交组合大屏列表.");
+                        alert("视图已提交组合列表.");
                     }
                 },
             },
@@ -5461,11 +5462,11 @@ function  getRelation(container, themes, width, height, type, dataset, configs) 
                 dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
                 myMultiScreen: {
                     show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
-                    title: '组合大屏',
-                    icon: __SYS_IMAGES_PATH__.eye,
+                    title: '视图组合',
+                    icon: __SYS_IMAGES_PATH__.viewCombination,
                     onclick: function () {
                         __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
-                        alert("视图已提交组合大屏列表.");
+                        alert("视图已提交组合列表.");
                     }
                 },
             },
@@ -5743,11 +5744,11 @@ function getTree(container, themes, width, height, type, dataset, configs) {
                 dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
                 myMultiScreen: {
                     show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
-                    title: '组合大屏',
-                    icon: __SYS_IMAGES_PATH__.eye,
+                    title: '视图组合',
+                    icon: __SYS_IMAGES_PATH__.viewCombination,
                     onclick: function () {
                         __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
-                        alert("视图已提交组合大屏列表.");
+                        alert("视图已提交组合列表.");
                     }
                 },
             },
@@ -5919,11 +5920,11 @@ function getWebkitDep(container, themes, width, height, type, dataset, configs) 
                 dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
                 myMultiScreen: {
                     show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
-                    title: '组合大屏',
-                    icon: __SYS_IMAGES_PATH__.eye,
+                    title: '视图组合',
+                    icon: __SYS_IMAGES_PATH__.viewCombination,
                     onclick: function () {
                         __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
-                        alert("视图已提交组合大屏列表.");
+                        alert("视图已提交组合列表.");
                     }
                 },
             },
@@ -6221,11 +6222,11 @@ function getScatter(container, themes, width, height, type, dataset, configs) {
                 dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
                 myMultiScreen: {
                     show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
-                    title: '组合大屏',
-                    icon: __SYS_IMAGES_PATH__.eye,
+                    title: '视图组合',
+                    icon: __SYS_IMAGES_PATH__.viewCombination,
                     onclick: function () {
                         __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
-                        alert("视图已提交组合大屏列表.");
+                        alert("视图已提交组合列表.");
                     }
                 },
             },
@@ -6534,11 +6535,11 @@ function getFunnel(container, themes, width, height, type, dataset, configs) {
                 dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
                 myMultiScreen: {
                     show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
-                    title: '组合大屏',
-                    icon: __SYS_IMAGES_PATH__.eye,
+                    title: '视图组合',
+                    icon: __SYS_IMAGES_PATH__.viewCombination,
                     onclick: function () {
                         __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
-                        alert("视图已提交组合大屏列表.");
+                        alert("视图已提交组合列表.");
                     }
                 },
             },
@@ -6748,11 +6749,11 @@ function getWordCloud(container, themes, width, height, type, dataset, configs) 
                 dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
                 myMultiScreen: {
                     show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
-                    title: '组合大屏',
-                    icon: __SYS_IMAGES_PATH__.eye,
+                    title: '视图组合',
+                    icon: __SYS_IMAGES_PATH__.viewCombination,
                     onclick: function () {
                         __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
-                        alert("视图已提交组合大屏列表.");
+                        alert("视图已提交组合列表.");
                     }
                 },
             },
@@ -6945,11 +6946,11 @@ function getLiqiud(container, themes, width, height, type, dataset, configs) {
                 dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
                 myMultiScreen: {
                     show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
-                    title: '组合大屏',
-                    icon: __SYS_IMAGES_PATH__.eye,
+                    title: '视图组合',
+                    icon: __SYS_IMAGES_PATH__.viewCombination,
                     onclick: function () {
                         __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
-                        alert("视图已提交组合大屏列表.");
+                        alert("视图已提交组合列表.");
                     }
                 },
 
@@ -7175,11 +7176,11 @@ function getGaugeWithAll(container, themes, width, height, type, dataset, config
                 dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
                 myMultiScreen: {
                     show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
-                    title: '组合大屏',
-                    icon: __SYS_IMAGES_PATH__.eye,
+                    title: '视图组合',
+                    icon: __SYS_IMAGES_PATH__.viewCombination,
                     onclick: function () {
                         __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
-                        alert("视图已提交组合大屏列表.");
+                        alert("视图已提交组合列表.");
                     }
                 },
             },
@@ -7389,11 +7390,11 @@ function getGaugeWithOne(container, themes, width, height, type, dataset, config
                 dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
                 myMultiScreen: {
                     show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
-                    title: '组合大屏',
-                    icon: __SYS_IMAGES_PATH__.eye,
+                    title: '视图组合',
+                    icon: __SYS_IMAGES_PATH__.viewCombination,
                     onclick: function () {
                         __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
-                        alert("视图已提交组合大屏列表.");
+                        alert("视图已提交组合列表.");
                     }
                 },
             },
@@ -7641,11 +7642,11 @@ function getCalendar(container, themes, width, height, type, dataset, configs) {
                 dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
                 myMultiScreen: {
                     show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
-                    title: '组合大屏',
-                    icon: __SYS_IMAGES_PATH__.eye,
+                    title: '视图组合',
+                    icon: __SYS_IMAGES_PATH__.viewCombination,
                     onclick: function () {
                         __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
-                        alert("视图已提交组合大屏列表.");
+                        alert("视图已提交组合列表.");
                     }
                 },
             },
@@ -7803,11 +7804,11 @@ function getGeoOfChina(container, themes, width, height, type, dataset, configs)
                 dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
                 myMultiScreen: {
                     show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
-                    title: '组合大屏',
-                    icon: __SYS_IMAGES_PATH__.eye,
+                    title: '视图组合',
+                    icon: __SYS_IMAGES_PATH__.viewCombination,
                     onclick: function () {
                         __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
-                        alert("视图已提交组合大屏列表.");
+                        alert("视图已提交组合列表.");
                     }
                 },
             },
@@ -8122,11 +8123,11 @@ function getGeoOfLocal(container, themes, width, height, type, dataset, configs)
                 dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
                 myMultiScreen: {
                     show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
-                    title: '组合大屏',
-                    icon: __SYS_IMAGES_PATH__.eye,
+                    title: '视图组合',
+                    icon: __SYS_IMAGES_PATH__.viewCombination,
                     onclick: function () {
                         __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
-                        alert("视图已提交组合大屏列表.");
+                        alert("视图已提交组合列表.");
                     }
                 },
             },
@@ -8490,11 +8491,11 @@ function getBar3D(container, themes, width, height, type, dataset, configs) {
                 dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
                 myMultiScreen: {
                     show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
-                    title: '组合大屏',
-                    icon: __SYS_IMAGES_PATH__.eye,
+                    title: '视图组合',
+                    icon: __SYS_IMAGES_PATH__.viewCombination,
                     onclick: function () {
                         __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
-                        alert("视图已提交组合大屏列表.");
+                        alert("视图已提交组合列表.");
                     }
                 },
             },
@@ -8759,11 +8760,11 @@ function getLine3D(container, themes, width, height, type, dataset, configs) {
                 dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
                 myMultiScreen: {
                     show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
-                    title: '组合大屏',
-                    icon: __SYS_IMAGES_PATH__.eye,
+                    title: '视图组合',
+                    icon: __SYS_IMAGES_PATH__.viewCombination,
                     onclick: function () {
                         __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
-                        alert("视图已提交组合大屏列表.");
+                        alert("视图已提交组合列表.");
                     }
                 },
             },
@@ -9043,11 +9044,11 @@ function getScatter3D(container, themes, width, height, type, dataset, configs) 
                 dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
                 myMultiScreen: {
                     show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
-                    title: '组合大屏',
-                    icon: __SYS_IMAGES_PATH__.eye,
+                    title: '视图组合',
+                    icon: __SYS_IMAGES_PATH__.viewCombination,
                     onclick: function () {
                         __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
-                        alert("视图已提交组合大屏列表.");
+                        alert("视图已提交组合列表.");
                     }
                 },
             },
@@ -9436,11 +9437,11 @@ function getCategoryLine(container, themes, width, height, type, dataset, config
                     dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
                     myMultiScreen: {
                         show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
-                        title: '组合大屏',
-                        icon: __SYS_IMAGES_PATH__.eye,
+                        title: '视图组合',
+                        icon: __SYS_IMAGES_PATH__.viewCombination,
                         onclick: function () {
                             __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
-                        alert("视图已提交组合大屏列表.");
+                        alert("视图已提交组合列表.");
                         }
                     },
                 },
@@ -9798,11 +9799,11 @@ function getGeoMigrateLinesOfChinaCity(container, themes, width, height, type, d
                     dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
                     myMultiScreen: {
                         show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
-                        title: '组合大屏',
-                        icon: __SYS_IMAGES_PATH__.eye,
+                        title: '视图组合',
+                        icon: __SYS_IMAGES_PATH__.viewCombination,
                         onclick: function () {
                             __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
-                            alert("视图已提交组合大屏列表.");
+                            alert("视图已提交组合列表.");
                         },
                     }
                 },
@@ -10038,11 +10039,11 @@ function getCategoryLineForGauge(container, themes, width, height, type, dataset
                     dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
                     myMultiScreen: {
                         show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
-                        title: '组合大屏',
-                        icon: __SYS_IMAGES_PATH__.eye,
+                        title: '视图组合',
+                        icon: __SYS_IMAGES_PATH__.viewCombination,
                         onclick: function () {
                             __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
-                        alert("视图已提交组合大屏列表.");
+                        alert("视图已提交组合列表.");
                         }
                     },
                 },
@@ -10242,11 +10243,11 @@ function getCategoryLineForLiqiud(container, themes, width, height, type, datase
                     dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
                     myMultiScreen: {
                         show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
-                        title: '组合大屏',
-                        icon: __SYS_IMAGES_PATH__.eye,
+                        title: '视图组合',
+                        icon: __SYS_IMAGES_PATH__.viewCombination,
                         onclick: function () {
                             __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
-                            alert("视图已提交组合大屏列表.");
+                            alert("视图已提交组合列表.");
                         }
                     },
                 },
@@ -10380,11 +10381,11 @@ function getCategoryLineForGeoOfChina(container, themes, width, height, type, da
                             dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
                             myMultiScreen: {
                                 show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
-                                title: '组合大屏',
-                                icon: __SYS_IMAGES_PATH__.eye,
+                                title: '视图组合',
+                                icon: __SYS_IMAGES_PATH__.viewCombination,
                                 onclick: function () {
                                     __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
-                                    alert("视图已提交组合大屏列表.");
+                                    alert("视图已提交组合列表.");
                                 }
                             },
 
@@ -10592,11 +10593,11 @@ function getCategoryLineForGeoOfChina(container, themes, width, height, type, da
                     dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
                     myMultiScreen: {
                         show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
-                        title: '组合大屏',
-                        icon: __SYS_IMAGES_PATH__.eye,
+                        title: '视图组合',
+                        icon: __SYS_IMAGES_PATH__.viewCombination,
                         onclick: function () {
                             __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
-                            alert("视图已提交组合大屏列表.");
+                            alert("视图已提交组合列表.");
                         }
                     },
                 },
@@ -10723,11 +10724,11 @@ function getCategoryLineForGeoOfLocal(container, themes, width, height, type, da
                             dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
                             myMultiScreen: {
                                 show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
-                                title: '组合大屏',
-                                icon: __SYS_IMAGES_PATH__.eye,
+                                title: '视图组合',
+                                icon: __SYS_IMAGES_PATH__.viewCombination,
                                 onclick: function () {
                                     __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
-                                    alert("视图已提交组合大屏列表.");
+                                    alert("视图已提交组合列表.");
                                 }
                             },
                         },
@@ -10934,11 +10935,11 @@ function getCategoryLineForGeoOfLocal(container, themes, width, height, type, da
                     dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
                     myMultiScreen: {
                         show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
-                        title: '组合大屏',
-                        icon: __SYS_IMAGES_PATH__.eye,
+                        title: '视图组合',
+                        icon: __SYS_IMAGES_PATH__.viewCombination,
                         onclick: function () {
                             __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
-                            alert("视图已提交组合大屏列表.");
+                            alert("视图已提交组合列表.");
                         }
                     },
                 },

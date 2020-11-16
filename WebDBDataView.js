@@ -2865,8 +2865,7 @@ function init() {
             event.target.style.border = "1px dotted var(--main-border-color)";
         }
     };
-
-    setTooltip(toMultiEcharts, "组合<br>大屏");
+    setTooltip(toMultiEcharts, "视图<br>组合");
 
     var toecharts = document.createElement("div");
     datatools.appendChild(toecharts);
