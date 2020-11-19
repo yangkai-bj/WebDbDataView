@@ -106,7 +106,8 @@ var __ECHARTS__ = {
             position: "absolute"
         }
     },
-    type: {
+    type: "Bar",
+    types: {
         "柱状图": "Bar",
         "柱状图(3D)": "Bar3D",
         "线型图": "Line",
@@ -137,6 +138,7 @@ var __ECHARTS__ = {
         "迁徙地图": "GeoMigrateLinesOfChinaCity",
         "数据滚屏": "ScrollingScreen",
     },
+    theme: "",
     themes: {
         "Default": "",
         "Chalk": "Chalk",
@@ -631,6 +633,9 @@ var __ECHARTS__ = {
             options: [new Option("是", "true"), new Option("否", "false")],
             type: "select"
         },
+        timelineLabelColor: {value: "#304654", name: "标签颜色", type: "color"},
+        timelineLabelFontSize: {name: "字号", value: 12, type: "input"},
+        timeLineStyleColor: {value: "#304654", name: "轴线颜色", type: "color"},
         categoryLineType: {
             name: "序列图形",
             value: "bar",
@@ -978,10 +983,10 @@ var __ECHARTS__ = {
                 parent.innerHTML = "";
                 var echart = getEcharts(
                     parent,
-                    __DATASET__.echarts.type,
+                    __ECHARTS__.type,
                     _width,
                     _height,
-                    __DATASET__.echarts.theme,
+                    __ECHARTS__.theme,
                     __DATASET__["result"][__DATASET__.default.sheet],
                     __ECHARTS__.configs);
                 setDragNook(parent, echart.getAttribute("_echarts_instance_"));
@@ -9412,11 +9417,16 @@ function getCategoryLine(container, themes, width, height, type, dataset, config
                 symbolSize: 2,
                 data: times,
                 label: {
+                    color: configs.timelineLabelColor.value,
+                    fontSize : Number(configs.timelineLabelFontSize.value),
                     formatter: function (s) {
                         return s;
                     }
                 },
-                //bottom: 10
+                lineStyle:{
+                    color: configs.timeLineStyleColor.value,
+                },
+                bottom: 10
             },
             tooltip: {
                 show: configs.tooltipDisplay.value.toBoolean(),
@@ -10014,9 +10024,14 @@ function getCategoryLineForGauge(container, themes, width, height, type, dataset
                 symbolSize: 2,
                 data: times,
                 label: {
+                    color: configs.timelineLabelColor.value,
+                    fontSize : Number(configs.timelineLabelFontSize.value),
                     formatter: function (s) {
                         return s;
                     }
+                },
+                lineStyle:{
+                    color: configs.timeLineStyleColor.value,
                 },
                 bottom: 15
             },
@@ -10218,9 +10233,14 @@ function getCategoryLineForLiqiud(container, themes, width, height, type, datase
                 symbolSize: 2,
                 data: times,
                 label: {
+                    color: configs.timelineLabelColor.value,
+                    fontSize : Number(configs.timelineLabelFontSize.value),
                     formatter: function (s) {
                         return s;
                     }
+                },
+                lineStyle:{
+                    color: configs.timeLineStyleColor.value,
                 },
                 bottom: 15
             },
@@ -10572,9 +10592,14 @@ function getCategoryLineForGeoOfChina(container, themes, width, height, type, da
                 symbolSize: 2,
                 data: times,
                 label: {
+                    color: configs.timelineLabelColor.value,
+                    fontSize : Number(configs.timelineLabelFontSize.value),
                     formatter: function (s) {
                         return s;
                     }
+                },
+                lineStyle:{
+                    color: configs.timeLineStyleColor.value,
                 },
                 bottom: 15
             },
@@ -10914,9 +10939,14 @@ function getCategoryLineForGeoOfLocal(container, themes, width, height, type, da
                 symbolSize: 2,
                 data: times,
                 label: {
+                    color: configs.timelineLabelColor.value,
+                    fontSize : Number(configs.timelineLabelFontSize.value),
                     formatter: function (s) {
                         return s;
                     }
+                },
+                lineStyle:{
+                    color: configs.timeLineStyleColor.value,
                 },
                 bottom: 15
             },

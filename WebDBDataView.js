@@ -49,10 +49,6 @@ var __CONFIGS__ = {
      result: [],
      default: {sheet: 0, column: null, cell: []},
      pages: {size: 200, total: 0, default: 1},
-     echarts: {
-         type: "Bar",
-         theme: "",
-     },
      table: {
          entity: null,
          tomove: null,
@@ -2898,10 +2894,10 @@ function init() {
             });
             let echart = getEcharts(
                 mecharts,
-                __DATASET__.echarts.type,
+                __ECHARTS__.type,
                 (getAbsolutePosition($("page")).width+5) + "px",
                 (getAbsolutePosition($("page")).height+20) + "px",
-                __DATASET__.echarts.theme,
+                __ECHARTS__.theme,
                 __DATASET__["result"][__DATASET__.default.sheet],
                 __ECHARTS__.configs);
             setDragNook(mecharts,echart.getAttribute("_echarts_instance_"));
@@ -2936,17 +2932,18 @@ function init() {
         help_echartsThemes.options.add(new Option(theme, __ECHARTS__.themes[theme]));
     }
     try {
-        let theme = getUserConfig("echartsthemes");
-        if (theme != null)
+        let theme = getUserConfig("echartstheme");
+        if (theme != null) {
             echartsThemes.value = theme;
-        else
+            __ECHARTS__.theme = theme;
+        }else
             echartsThemes.selectedIndex = 0;
     } catch (e) {
         console.log(e);
     }
     echartsThemes.onchange = help_echartsThemes.onchange = function () {
         try {
-            __DATASET__.echarts.theme = this.value;
+            __ECHARTS__.theme = this.value;
             let container = $("tableContainer");
             try {
                 container.removeAttribute("_echarts_instance_");
@@ -2958,14 +2955,14 @@ function init() {
             container.innerHTML = "";
             let echart = getEcharts(
                 container,
-                __DATASET__.echarts.type,
+                __ECHARTS__.type,
                 _width,
                 _height,
-                __DATASET__.echarts.theme,
+                __ECHARTS__.theme,
                 __DATASET__["result"][__DATASET__.default.sheet],
                 __ECHARTS__.configs);
             setDragNook(container,echart.getAttribute("_echarts_instance_"));
-            setUserConfig("echartsthemes", this.value);
+            setUserConfig("echartstheme", this.value);
         } catch (e) {
             console.log(e);
         }
@@ -2977,31 +2974,43 @@ function init() {
     echartsType.type = "select";
     echartsType.id = "dataset-select-echarts-type";
     let help_echartsType = $("help-select-echarts-type");
-    for (var type in __ECHARTS__.type) {
-        echartsType.options.add(new Option(type, __ECHARTS__.type[type]));
-        help_echartsType.options.add(new Option(type, __ECHARTS__.type[type]));
+    for (var type in __ECHARTS__.types) {
+        echartsType.options.add(new Option(type, __ECHARTS__.types[type]));
+        help_echartsType.options.add(new Option(type, __ECHARTS__.types[type]));
+    }
+    try {
+        let type = getUserConfig("echartstype");
+        if (type != null) {
+            echartsType.value = type;
+            __ECHARTS__.type = type;
+        }else
+            echartsType.selectedIndex = 0;
+    } catch (e) {
+        console.log(e);
     }
     echartsType.onchange = help_echartsType.onchange = function () {
         try {
-            __DATASET__.echarts.type = this.value;
+            __ECHARTS__.type = this.value;
+
             let container = $("tableContainer");
             try {
                 container.removeAttribute("_echarts_instance_");
                 echarts.getInstanceByDom(container).dispose();
-            }catch (e) {
+            } catch (e) {
             }
             let _width = (getAbsolutePosition(container).width * 1) + "px";
             let _height = (getAbsolutePosition(container).height * 1) + "px";
             container.innerHTML = "";
             let echart = getEcharts(
                 container,
-                __DATASET__.echarts.type,
+                __ECHARTS__.type,
                 _width,
                 _height,
-                __DATASET__.echarts.theme,
+                __ECHARTS__.theme,
                 __DATASET__["result"][__DATASET__.default.sheet],
                 __ECHARTS__.configs);
-            setDragNook(container,echart.getAttribute("_echarts_instance_"));
+            setDragNook(container, echart.getAttribute("_echarts_instance_"));
+            setUserConfig("echartstype", this.value);
         } catch (e) {
             console.log(e);
         }
@@ -3030,10 +3039,10 @@ function init() {
             container.innerHTML = "";
             let echart = getEcharts(
                 container,
-                __DATASET__.echarts.type,
+                __ECHARTS__.type,
                 _width,
                 _height,
-                __DATASET__.echarts.theme,
+                __ECHARTS__.theme,
                 __DATASET__["result"][__DATASET__.default.sheet],
                 __ECHARTS__.configs);
             setDragNook(container,echart.getAttribute("_echarts_instance_"));
