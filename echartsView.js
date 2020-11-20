@@ -21,14 +21,12 @@ function stringToHex(str){
 
 var __ECHARTS__ = {
     history: {},
-    addHistory: function(container, type, configs, dataset, themes, width, height) {
+    addHistory: function(container, configs, dataset, width, height) {
         let id = container.getAttribute("_echarts_instance_");
         __ECHARTS__.history[id] = JSON.stringify({
             id: id,
-            type: type,
             configs: configs,
             dataset: dataset,
-            themes: themes,
             contrainer: container,
             width: width,
             height: height,
@@ -106,56 +104,63 @@ var __ECHARTS__ = {
             position: "absolute"
         }
     },
-    type: "Bar",
-    types: {
-        "柱状图": "Bar",
-        "柱状图(3D)": "Bar3D",
-        "线型图": "Line",
-        "线型图(3D)": "Line3D",
-        "柱状&线型": "BarAndLine",
-        "条形图": "TransversBar",
-        "面积图": "AreaStyle",
-        "饼图": "Pie",
-        "圆环图": "Ring",
-        "玫瑰图": "Rose",
-        "雷达图": "Radar",
-        "极坐标柱状图": "PolarBar",
-        "极坐标面积图": "PolarArea",
-        "回归序列": "Regression",
-        "散点图": "Scatter",
-        "散点图(3D)": "Scatter3D",
-        "漏斗/金字塔": "Funnel",
-        "树形结构": "Tree",
-        "关系图": "Relation",
-        "分类集中": "WebkitDep",
-        "词云图": "WordCloud",
-        "水球图": "Liqiud",
-        "仪表盘": "Gauge",
-        "日历图": "Calendar",
-        "类目轴": "CategoryLine",
-        "全国地图": "GeoOfChina",
-        "本地地图": "GeoOfLocal",
-        "迁徙地图": "GeoMigrateLinesOfChinaCity",
-        "数据滚屏": "ScrollingScreen",
-    },
-    theme: "",
-    themes: {
-        "Default": "",
-        "Chalk": "Chalk",
-        "Dark": "Dark",
-        "Essos": "Essos",
-        "Infographic": "Infographic",
-        "Light": "light",
-        "Macarons": "Macarons",
-        "Purple": "Purple",
-        "Roma": "Roma",
-        "Shine": "Shine",
-        "Vintage": "Vintage",
-        "Walden": "Walden",
-        "Westeros": "Westeros",
-        "Wonderland": "Wonderland"
-    },
     configs: {
+        hr_echarts_basic: {name: "基本参数", value: "", type: "hr"},
+        echartsType: {
+            name: "视图类型",
+            value: "Bar",
+            options: [
+                new Option("柱状图", "Bar"),
+                new Option("柱状图(3D)", "Bar3D"),
+                new Option("线型图", "Line"),
+                new Option("线型图(3D)", "Line3D"),
+                new Option("柱状&线型", "BarAndLine"),
+                new Option("条形图", "TransversBar"),
+                new Option("面积图", "AreaStyle"),
+                new Option("饼图", "Pie"),
+                new Option("圆环图", "Ring"),
+                new Option("玫瑰图", "Rose"),
+                new Option("雷达图", "Radar"),
+                new Option("极坐标柱状图", "PolarBar"),
+                new Option("极坐标面积图", "PolarArea"),
+                new Option("回归序列", "Regression"),
+                new Option("散点图", "Scatter"),
+                new Option("散点图(3D)", "Scatter3D"),
+                new Option("漏斗/金字塔", "Funnel"),
+                new Option("树形结构", "Tree"),
+                new Option("关系图", "Relation"),
+                new Option("分类集中", "WebkitDep"),
+                new Option("词云图", "WordCloud"),
+                new Option("水球图", "Liqiud"),
+                new Option("仪表盘", "Gauge"),
+                new Option("日历图", "Calendar"),
+                new Option("类目轴", "CategoryLine"),
+                new Option("全国地图", "GeoOfChina"),
+                new Option("本地地图", "GeoOfLocal"),
+                new Option("迁徙地图", "GeoMigrateLinesOfChinaCity"),
+                new Option("数据滚屏", "ScrollingScreen")],
+            type: "select"
+        },
+        echartsTheme: {
+            name: "视图主题",
+            value: "",
+            options: [
+                new Option("Default", ""),
+                new Option("Chalk", "Chalk"),
+                new Option("Dark", "Dark"),
+                new Option("Essos", "Essos"),
+                new Option("Infographic", "Infographic"),
+                new Option("Light", "light"),
+                new Option("Macarons", "Macarons"),
+                new Option("Purple", "Purple"),
+                new Option("Roma", "Roma"),
+                new Option("Shine", "Shine"),
+                new Option("Vintage", "Vintage"),
+                new Option("Walden", "Walden"),
+                new Option("Westeros", "Westeros"),
+                new Option("Wonderland", "Wonderland")],
+            type: "select"
+        },
         hr_grid: {name: "整体布局", value: "", type: "hr"},
         loadingTimes: {name: "载入时间(秒)", value: 2, type: "input"},
         grid_top: {name: "上边距(%)", value: "10%", type: "input"},
@@ -169,7 +174,7 @@ var __ECHARTS__ = {
             type: "select"
         },
 
-        hr_toolbox: {name: "图形工具", value: "", type: "hr"},
+        hr_toolbox: {name: "视图工具", value: "", type: "hr"},
         toolboxDisplay: {
             name: "是否显示",
             value: "true",
@@ -268,9 +273,11 @@ var __ECHARTS__ = {
         },
         titleText: {name: "主标题名称", value: "", type: "input"},
         titleTextColor: {value: "#e6e6e6", name: "主标题颜色", type: "color"},
+        titleTextFontSize: {name: "主标题字号", value: 16, type: "input"},
         titleTextLink: {name: "主标题超链接", value: "", type: "input"},
         titleSubText: {name: "副标题名称", value: "", type: "input"},
         titleSubTextColor: {value: "#e6e6e6", name: "副标题颜色", type: "color"},
+        titleSubTextFontSize: {name: "副标题字号", value: 12, type: "input"},
         titleSubTextLink: {name: "副标题超链接", value: "", type: "input"},
 
         hr_legend: {name: "图例", value: "", type: "hr"},
@@ -626,24 +633,6 @@ var __ECHARTS__ = {
         geoLineCurveness: {name: "线路曲率", value: 0.2, type: "input"},
         geoLinePeriod: {name: "周期速度(秒)", value: 5, type: "input"},
 
-        hr_timeline: {name: "时间/类目轴", value: "", type: "hr"},
-        timelineDisplay: {
-            name: "是否显示",
-            value: "true",
-            options: [new Option("是", "true"), new Option("否", "false")],
-            type: "select"
-        },
-        timelineLabelColor: {value: "#304654", name: "标签颜色", type: "color"},
-        timelineLabelFontSize: {name: "字号", value: 12, type: "input"},
-        timeLineStyleColor: {value: "#304654", name: "轴线颜色", type: "color"},
-        categoryLineType: {
-            name: "序列图形",
-            value: "bar",
-            options: [new Option("柱状图", "bar"), new Option("线型图", "line"), new Option("面积图", "areaStyle"), new Option("饼图", "pie")],
-            type: "select"
-        },
-        seriesLoopPlayInterval: {name: "间隔(秒)", value: 3, type: "input"},
-
         hr_tree: {name: "树形结构", value: "", type: "hr"},
         treeLayout: {
             name: "布局类型",
@@ -745,6 +734,24 @@ var __ECHARTS__ = {
         scrollingScreenOpacity: {value: 0.4, name: "透明度", type: "input"},
         scrollingScreenFontSize: {name: "字号", value: 16, type: "input"},
         scrollingScreenSpeed: {name: "速度(毫秒)", value: 10, type: "input"},
+
+        hr_timeline: {name: "时间/类目轴", value: "", type: "hr"},
+        timelineDisplay: {
+            name: "是否显示",
+            value: "true",
+            options: [new Option("是", "true"), new Option("否", "false")],
+            type: "select"
+        },
+        timelineLabelColor: {value: "#304654", name: "标签颜色", type: "color"},
+        timelineLabelFontSize: {name: "字号", value: 12, type: "input"},
+        timeLineStyleColor: {value: "#304654", name: "轴线颜色", type: "color"},
+        categoryLineType: {
+            name: "序列图形",
+            value: "bar",
+            options: [new Option("柱状图", "bar"), new Option("线型图", "line"), new Option("面积图", "areaStyle"), new Option("饼图", "pie")],
+            type: "select"
+        },
+        seriesLoopPlayInterval: {name: "间隔(秒)", value: 3, type: "input"},
 
         hr_dataZoom: {name: "数据缩放", value: "", type: "hr"},
         dataZoomBarDisplay: {
@@ -983,10 +990,8 @@ var __ECHARTS__ = {
                 parent.innerHTML = "";
                 var echart = getEcharts(
                     parent,
-                    __ECHARTS__.type,
                     _width,
                     _height,
-                    __ECHARTS__.theme,
                     __DATASET__["result"][__DATASET__.default.sheet],
                     __ECHARTS__.configs);
                 setDragNook(parent, echart.getAttribute("_echarts_instance_"));
@@ -1857,102 +1862,102 @@ function toPoint(percent) {
     return Number(percent.replace("%",""));
 }
 
-function getEcharts(container, type, width, height, themes, dataset, configs) {
+function getEcharts(container, width, height, dataset, configs) {
     $("copyright").innerHTML = getUserConfig("CopyRight");
-    switch (type) {
+    switch (configs.echartsType.value) {
         case "Bar":
-            return getBar(container, themes, width, height, type, dataset,configs);
+            return getBar(container, width, height, dataset,configs);
             break;
         case "PolarBar":
-            return getPolarBar(container, themes, width, height, type, dataset,configs);
+            return getPolarBar(container, width, height, dataset,configs);
             break;
         case "PolarArea":
-            return getPolarArea(container, themes, width, height, type, dataset,configs);
+            return getPolarArea(container, width, height, dataset,configs);
             break;
         case "Line":
-            return getLine(container, themes, width, height, type, dataset,configs);
+            return getLine(container, width, height, dataset,configs);
             break;
         case "Line3D":
-            return getLine3D(container, themes, width, height, type, dataset,configs);
+            return getLine3D(container, width, height, dataset,configs);
             break;
         case "BarAndLine":
-            return getBarAndLine(container, themes, width, height, type, dataset,configs);
+            return getBarAndLine(container, width, height, dataset,configs);
             break;
         case "AreaStyle":
-            return getAreaStyle(container, themes, width, height, type, dataset,configs);
+            return getAreaStyle(container, width, height, dataset,configs);
             break;
         case "TransversBar":
-            return getTransversBar(container, themes, width, height, type, dataset,configs);
+            return getTransversBar(container, width, height, dataset,configs);
             break;
         case "Pie":
-            return getPie(container, themes, width, height, type, dataset,configs);
+            return getPie(container, width, height, dataset,configs);
             break;
         case "Ring":
-            return getRing(container, themes, width, height, type, dataset,configs);
+            return getRing(container, width, height, dataset,configs);
             break;
         case "Rose":
-            return getRose(container, themes, width, height, type, dataset,configs);
+            return getRose(container, width, height, dataset,configs);
             break;
         case "Gauge":
-            //return getGaugeWithOne(container, themes, width, height, type, dataset,configs);
-            return getCategoryLineForGauge(container, themes, width, height, type, dataset,configs);
+            //return getGaugeWithOne(container, width, height, dataset,configs);
+            return getCategoryLineForGauge(container, width, height, dataset,configs);
             break;
         case "Radar":
-            return getRadar(container, themes, width, height, type, dataset,configs);
+            return getRadar(container, width, height, dataset,configs);
             break;
         case "Regression":
-            return getRegression(container, themes, width, height, type, dataset,configs);
+            return getRegression(container, width, height, dataset,configs);
             break;
         case "Relation":
-            return getRelation(container, themes, width, height, type, dataset,configs);
+            return getRelation(container, width, height, dataset,configs);
             break;
         case "Tree":
-            return getTree(container, themes, width, height, type, dataset,configs);
+            return getTree(container, width, height, dataset,configs);
             break;
         case "WebkitDep":
-            return getWebkitDep(container, themes, width, height, type, dataset,configs);
+            return getWebkitDep(container, width, height, dataset,configs);
             break;
         case "Scatter":
-            return getScatter(container, themes, width, height, type, dataset,configs);
+            return getScatter(container, width, height, dataset,configs);
             break;
         case "Funnel":
-            return getFunnel(container, themes, width, height, type, dataset,configs);
+            return getFunnel(container, width, height, dataset,configs);
             break;
         case "WordCloud":
-            return getWordCloud(container, themes, width, height, type, dataset,configs);
+            return getWordCloud(container, width, height, dataset,configs);
             break;
         case "Liqiud":
-            //return getLiqiud(container, themes, width, height, type, dataset,configs);
-            return getCategoryLineForLiqiud(container, themes, width, height, type, dataset,configs);
+            //return getLiqiud(container, width, height, dataset,configs);
+            return getCategoryLineForLiqiud(container, width, height, dataset,configs);
             break;
         case "Calendar":
-            return getCalendar(container, themes, width, height, type, dataset,configs);
+            return getCalendar(container, width, height, dataset,configs);
             break;
         case "GeoOfChina":
-            //return getGeoOfChina(container, themes, width, height, type, dataset,configs);
-            return getCategoryLineForGeoOfChina(container, themes, width, height, type, dataset,configs);
+            //return getGeoOfChina(container, width, height, dataset,configs);
+            return getCategoryLineForGeoOfChina(container, width, height, dataset,configs);
             break;
         case "GeoOfLocal":
-            //return getGeoOfLocal(container, themes, width, height, type, dataset,configs);
-            return getCategoryLineForGeoOfLocal(container, themes, width, height, type, dataset,configs);
+            //return getGeoOfLocal(container, width, height, dataset,configs);
+            return getCategoryLineForGeoOfLocal(container, width, height, dataset,configs);
             break;
         case "Bar3D":
-            return getBar3D(container, themes, width, height, type, dataset,configs);
+            return getBar3D(container, width, height, dataset,configs);
             break;
         case "Scatter3D":
-            return getScatter3D(container, themes, width, height, type, dataset,configs);
+            return getScatter3D(container, width, height, dataset,configs);
             break;
         case "CategoryLine":
-            return getCategoryLine(container, themes, width, height, type, dataset,configs);
+            return getCategoryLine(container, width, height, dataset,configs);
             break;
         case "FunctionLine":
-            return getFunctionLine(container, themes, width, height, type, dataset,configs);
+            return getFunctionLine(container, width, height, dataset,configs);
             break;
         case "GeoMigrateLinesOfChinaCity":
-            return getGeoMigrateLinesOfChinaCity(container, themes, width, height, type, dataset,configs);
+            return getGeoMigrateLinesOfChinaCity(container, width, height, dataset,configs);
             break;
         case "ScrollingScreen":
-            return getScrollingScreen(container, themes, width, height, type, dataset,configs);
+            return getScrollingScreen(container, width, height, dataset,configs);
     }
 }
 
@@ -2031,7 +2036,7 @@ function getWaterGraphic(link) {
     return graphic;
 }
 
-function getBar(container, themes, width, height, type, dataset, configs) {
+function getBar(container, width, height, dataset, configs) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
@@ -2040,7 +2045,7 @@ function getBar(container, themes, width, height, type, dataset, configs) {
         container.style.height = height;
     }
 
-    var myChart = echarts.init(container, themes);
+    var myChart = echarts.init(container, configs.echartsTheme.value);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
@@ -2180,9 +2185,11 @@ function getBar(container, themes, width, height, type, dataset, configs) {
             left: configs.titlePosition.value,
             textStyle: {
                 color: configs.titleTextColor.value,
+                fontSize: Number(configs.titleTextFontSize.value),
             },
             subtextStyle: {
                 color: configs.titleSubTextColor.value,
+                fontSize: Number(configs.titleSubTextFontSize.value),
             }
         },
         legend: {
@@ -2333,11 +2340,11 @@ function getBar(container, themes, width, height, type, dataset, configs) {
         myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.addHistory(container, type, configs, dataset, themes, width, height);
+    __ECHARTS__.addHistory(container, configs, dataset, width, height);
     return container;
 }
 
-function getTransversBar(container, themes, width, height, type, dataset, configs) {
+function getTransversBar(container, width, height, dataset, configs) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
@@ -2346,7 +2353,7 @@ function getTransversBar(container, themes, width, height, type, dataset, config
         container.style.height = height;
     }
 
-    var myChart = echarts.init(container, themes);
+    var myChart = echarts.init(container, configs.echartsTheme.value);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
@@ -2484,9 +2491,11 @@ function getTransversBar(container, themes, width, height, type, dataset, config
             left: configs.titlePosition.value,
             textStyle: {
                 color: configs.titleTextColor.value,
+                fontSize: Number(configs.titleTextFontSize.value),
             },
             subtextStyle: {
                 color: configs.titleSubTextColor.value,
+                fontSize: Number(configs.titleSubTextFontSize.value),
             }
         },
         tooltip: {
@@ -2628,7 +2637,7 @@ function getTransversBar(container, themes, width, height, type, dataset, config
       myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.addHistory(container, type, configs, dataset, themes, width, height);
+    __ECHARTS__.addHistory(container, configs, dataset, width, height);
     return container;
 }
 
@@ -2652,7 +2661,7 @@ function getMarkLine(configs) {
     return markLine;
 }
 
-function getLine(container, themes, width, height, type, dataset, configs) {
+function getLine(container, width, height, dataset, configs) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
@@ -2661,7 +2670,7 @@ function getLine(container, themes, width, height, type, dataset, configs) {
         container.style.height = height;
     }
 
-    var myChart = echarts.init(container, themes);
+    var myChart = echarts.init(container, configs.echartsTheme.value);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
@@ -2801,9 +2810,11 @@ function getLine(container, themes, width, height, type, dataset, configs) {
             left: configs.titlePosition.value,
             textStyle: {
                 color: configs.titleTextColor.value,
+                fontSize: Number(configs.titleTextFontSize.value),
             },
             subtextStyle: {
                 color: configs.titleSubTextColor.value,
+                fontSize: Number(configs.titleSubTextFontSize.value),
             }
         },
         tooltip: {
@@ -2946,11 +2957,11 @@ function getLine(container, themes, width, height, type, dataset, configs) {
         myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.addHistory(container, type, configs, dataset, themes, width, height);
+    __ECHARTS__.addHistory(container, configs, dataset, width, height);
     return container;
 }
 
-function getBarAndLine(container, themes, width, height, type, dataset, configs) {
+function getBarAndLine(container, width, height, dataset, configs) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
@@ -2959,7 +2970,7 @@ function getBarAndLine(container, themes, width, height, type, dataset, configs)
         container.style.height = height;
     }
 
-    var myChart = echarts.init(container, themes);
+    var myChart = echarts.init(container, configs.echartsTheme.value);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
@@ -3157,9 +3168,11 @@ function getBarAndLine(container, themes, width, height, type, dataset, configs)
             left: configs.titlePosition.value,
             textStyle: {
                 color: configs.titleTextColor.value,
+                fontSize: Number(configs.titleTextFontSize.value),
             },
             subtextStyle: {
                 color: configs.titleSubTextColor.value,
+                fontSize: Number(configs.titleSubTextFontSize.value),
             }
         },
         tooltip: {
@@ -3300,11 +3313,11 @@ function getBarAndLine(container, themes, width, height, type, dataset, configs)
       myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.addHistory(container, type, configs, dataset, themes, width, height);
+    __ECHARTS__.addHistory(container, configs, dataset, width, height);
     return container;
 }
 
-function getAreaStyle(container, themes, width, height, type, dataset, configs) {
+function getAreaStyle(container, width, height, dataset, configs) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
@@ -3313,7 +3326,7 @@ function getAreaStyle(container, themes, width, height, type, dataset, configs) 
         container.style.height = height;
     }
 
-    var myChart = echarts.init(container, themes);
+    var myChart = echarts.init(container, configs.echartsTheme.value);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
@@ -3468,9 +3481,11 @@ function getAreaStyle(container, themes, width, height, type, dataset, configs) 
             left: configs.titlePosition.value,
             textStyle: {
                 color: configs.titleTextColor.value,
+                fontSize: Number(configs.titleTextFontSize.value),
             },
             subtextStyle: {
                 color: configs.titleSubTextColor.value,
+                fontSize: Number(configs.titleSubTextFontSize.value),
             }
         },
         tooltip: {
@@ -3612,11 +3627,11 @@ function getAreaStyle(container, themes, width, height, type, dataset, configs) 
       myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.addHistory(container, type, configs, dataset, themes, width, height);
+    __ECHARTS__.addHistory(container, configs, dataset, width, height);
     return container;
 }
 
-function getPolarBar(container, themes, width, height, type, dataset, configs) {
+function getPolarBar(container, width, height, dataset, configs) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
@@ -3625,7 +3640,7 @@ function getPolarBar(container, themes, width, height, type, dataset, configs) {
         container.style.height = height;
     }
 
-    var myChart = echarts.init(container, themes);
+    var myChart = echarts.init(container, configs.echartsTheme.value);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
@@ -3687,9 +3702,11 @@ function getPolarBar(container, themes, width, height, type, dataset, configs) {
             left: configs.titlePosition.value,
             textStyle: {
                 color: configs.titleTextColor.value,
+                fontSize: Number(configs.titleTextFontSize.value),
             },
             subtextStyle: {
                 color: configs.titleSubTextColor.value,
+                fontSize: Number(configs.titleSubTextFontSize.value),
             }
         },
         toolbox: {
@@ -3823,11 +3840,11 @@ function getPolarBar(container, themes, width, height, type, dataset, configs) {
       myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.addHistory(container, type, configs, dataset, themes, width, height);
+    __ECHARTS__.addHistory(container, configs, dataset, width, height);
     return container;
 }
 
-function getPolarArea(container, themes, width, height, type, dataset, configs) {
+function getPolarArea(container, width, height, dataset, configs) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
@@ -3836,7 +3853,7 @@ function getPolarArea(container, themes, width, height, type, dataset, configs) 
         container.style.height = height;
     }
 
-    var myChart = echarts.init(container, themes);
+    var myChart = echarts.init(container, configs.echartsTheme.value);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
@@ -3895,11 +3912,13 @@ function getPolarArea(container, themes, width, height, type, dataset, configs) 
             subtarget: "blank",
             top:"top",
             left:configs.titlePosition.value,
-            textStyle:{
-                color:configs.titleTextColor.value,
+            textStyle: {
+                color: configs.titleTextColor.value,
+                fontSize: Number(configs.titleTextFontSize.value),
             },
-            subtextStyle:{
-                color:configs.titleSubTextColor.value,
+            subtextStyle: {
+                color: configs.titleSubTextColor.value,
+                fontSize: Number(configs.titleSubTextFontSize.value),
             }
         },
         toolbox: {
@@ -4032,11 +4051,11 @@ function getPolarArea(container, themes, width, height, type, dataset, configs) 
       myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.addHistory(container, type, configs, dataset, themes, width, height);
+    __ECHARTS__.addHistory(container, configs, dataset, width, height);
     return container;
 }
 
-function getPie(container, themes, width, height, type, dataset, configs) {
+function getPie(container, width, height, dataset, configs) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
@@ -4045,7 +4064,7 @@ function getPie(container, themes, width, height, type, dataset, configs) {
         container.style.height = height;
     }
 
-    var myChart = echarts.init(container, themes);
+    var myChart = echarts.init(container, configs.echartsTheme.value);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
@@ -4133,9 +4152,11 @@ function getPie(container, themes, width, height, type, dataset, configs) {
             left: configs.titlePosition.value,
             textStyle: {
                 color: configs.titleTextColor.value,
+                fontSize: Number(configs.titleTextFontSize.value),
             },
             subtextStyle: {
                 color: configs.titleSubTextColor.value,
+                fontSize: Number(configs.titleSubTextFontSize.value),
             }
         },
         toolbox: {
@@ -4248,11 +4269,11 @@ function getPie(container, themes, width, height, type, dataset, configs) {
       myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.addHistory(container, type, configs, dataset, themes, width, height);
+    __ECHARTS__.addHistory(container, configs, dataset, width, height);
     return container;
 }
 
-function getRing(container, themes, width, height, type, dataset, configs) {
+function getRing(container, width, height, dataset, configs) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
@@ -4261,7 +4282,7 @@ function getRing(container, themes, width, height, type, dataset, configs) {
         container.style.height = height;
     }
 
-    var myChart = echarts.init(container, themes);
+    var myChart = echarts.init(container, configs.echartsTheme.value);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
@@ -4347,11 +4368,13 @@ function getRing(container, themes, width, height, type, dataset, configs) {
             subtarget: "blank",
             top:"top",
             left:configs.titlePosition.value,
-            textStyle:{
-                color:configs.titleTextColor.value,
+            textStyle: {
+                color: configs.titleTextColor.value,
+                fontSize: Number(configs.titleTextFontSize.value),
             },
-            subtextStyle:{
-                color:configs.titleSubTextColor.value,
+            subtextStyle: {
+                color: configs.titleSubTextColor.value,
+                fontSize: Number(configs.titleSubTextFontSize.value),
             }
         },
         toolbox: {
@@ -4463,11 +4486,11 @@ function getRing(container, themes, width, height, type, dataset, configs) {
       myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.addHistory(container, type, configs, dataset, themes, width, height);
+    __ECHARTS__.addHistory(container, configs, dataset, width, height);
     return container;
 }
 
-function getRose(container, themes, width, height, type, dataset, configs) {
+function getRose(container, width, height, dataset, configs) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
@@ -4476,7 +4499,7 @@ function getRose(container, themes, width, height, type, dataset, configs) {
         container.style.height = height;
     }
 
-    var myChart = echarts.init(container, themes);
+    var myChart = echarts.init(container, configs.echartsTheme.value);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
@@ -4565,9 +4588,11 @@ function getRose(container, themes, width, height, type, dataset, configs) {
             left: configs.titlePosition.value,
             textStyle: {
                 color: configs.titleTextColor.value,
+                fontSize: Number(configs.titleTextFontSize.value),
             },
             subtextStyle: {
                 color: configs.titleSubTextColor.value,
+                fontSize: Number(configs.titleSubTextFontSize.value),
             }
         },
         toolbox: {
@@ -4678,11 +4703,11 @@ function getRose(container, themes, width, height, type, dataset, configs) {
         myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.addHistory(container, type, configs, dataset, themes, width, height);
+    __ECHARTS__.addHistory(container, configs, dataset, width, height);
     return container;
 }
 
-function getRadar(container, themes, width, height, type, dataset, configs) {
+function getRadar(container, width, height, dataset, configs) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
@@ -4691,7 +4716,7 @@ function getRadar(container, themes, width, height, type, dataset, configs) {
         container.style.height = height;
     }
 
-    var myChart = echarts.init(container, themes);
+    var myChart = echarts.init(container, configs.echartsTheme.value);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
@@ -4787,9 +4812,11 @@ function getRadar(container, themes, width, height, type, dataset, configs) {
             left: configs.titlePosition.value,
             textStyle: {
                 color: configs.titleTextColor.value,
+                fontSize: Number(configs.titleTextFontSize.value),
             },
             subtextStyle: {
                 color: configs.titleSubTextColor.value,
+                fontSize: Number(configs.titleSubTextFontSize.value),
             }
         },
         legend: {
@@ -4885,12 +4912,12 @@ function getRadar(container, themes, width, height, type, dataset, configs) {
       myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.addHistory(container, type, configs, dataset, themes, width, height);
+    __ECHARTS__.addHistory(container, configs, dataset, width, height);
     return container;
 
 }
 
-function getRegression(container, themes, width, height, type, dataset, configs) {
+function getRegression(container, width, height, dataset, configs) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
@@ -4899,7 +4926,7 @@ function getRegression(container, themes, width, height, type, dataset, configs)
         container.style.height = height;
     }
 
-    var myChart = echarts.init(container, themes);
+    var myChart = echarts.init(container, configs.echartsTheme.value);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
@@ -5175,9 +5202,11 @@ function getRegression(container, themes, width, height, type, dataset, configs)
             left: configs.titlePosition.value,
             textStyle: {
                 color: configs.titleTextColor.value,
+                fontSize: Number(configs.titleTextFontSize.value),
             },
             subtextStyle: {
                 color: configs.titleSubTextColor.value,
+                fontSize: Number(configs.titleSubTextFontSize.value),
             }
         },
         legend: {
@@ -5320,11 +5349,11 @@ function getRegression(container, themes, width, height, type, dataset, configs)
       myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.addHistory(container, type, configs, dataset, themes, width, height);
+    __ECHARTS__.addHistory(container, configs, dataset, width, height);
     return container;
 }
 
-function  getRelation(container, themes, width, height, type, dataset, configs) {
+function  getRelation(container, width, height, dataset, configs) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
@@ -5333,7 +5362,7 @@ function  getRelation(container, themes, width, height, type, dataset, configs) 
         container.style.height = height;
     }
 
-    var myChart = echarts.init(container, themes);
+    var myChart = echarts.init(container, configs.echartsTheme.value);
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
     var columns = [];
@@ -5494,11 +5523,13 @@ function  getRelation(container, themes, width, height, type, dataset, configs) 
             subtarget: "blank",
             top:"top",
             left:configs.titlePosition.value,
-            textStyle:{
-                color:configs.titleTextColor.value,
+            textStyle: {
+                color: configs.titleTextColor.value,
+                fontSize: Number(configs.titleTextFontSize.value),
             },
-            subtextStyle:{
-                color:configs.titleSubTextColor.value,
+            subtextStyle: {
+                color: configs.titleSubTextColor.value,
+                fontSize: Number(configs.titleSubTextFontSize.value),
             }
         },
         tooltip: {
@@ -5572,11 +5603,11 @@ function  getRelation(container, themes, width, height, type, dataset, configs) 
 
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.addHistory(container, type, configs, dataset, themes, width, height);
+    __ECHARTS__.addHistory(container, configs, dataset, width, height);
     return container;
 }
 
-function getTree(container, themes, width, height, type, dataset, configs) {
+function getTree(container, width, height, dataset, configs) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
@@ -5585,7 +5616,7 @@ function getTree(container, themes, width, height, type, dataset, configs) {
         container.style.height = height;
     }
 
-    var myChart = echarts.init(container, themes);
+    var myChart = echarts.init(container, configs.echartsTheme.value);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
@@ -5730,11 +5761,13 @@ function getTree(container, themes, width, height, type, dataset, configs) {
             subtarget: "blank",
             top:"top",
             left:configs.titlePosition.value,
-            textStyle:{
-                color:configs.titleTextColor.value,
+            textStyle: {
+                color: configs.titleTextColor.value,
+                fontSize: Number(configs.titleTextFontSize.value),
             },
-            subtextStyle:{
-                color:configs.titleSubTextColor.value,
+            subtextStyle: {
+                color: configs.titleSubTextColor.value,
+                fontSize: Number(configs.titleSubTextFontSize.value),
             }
         },
         toolbox: {
@@ -5794,11 +5827,11 @@ function getTree(container, themes, width, height, type, dataset, configs) {
       myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.addHistory(container, type, configs, dataset, themes, width, height);
+    __ECHARTS__.addHistory(container, configs, dataset, width, height);
     return container;
 }
 
-function getWebkitDep(container, themes, width, height, type, dataset, configs) {
+function getWebkitDep(container, width, height, dataset, configs) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
@@ -5807,7 +5840,7 @@ function getWebkitDep(container, themes, width, height, type, dataset, configs) 
         container.style.height = height;
     }
 
-    var myChart = echarts.init(container, themes);
+    var myChart = echarts.init(container, configs.echartsTheme.value);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
@@ -5893,11 +5926,13 @@ function getWebkitDep(container, themes, width, height, type, dataset, configs) 
             subtarget: "blank",
             top:"top",
             left:configs.titlePosition.value,
-            textStyle:{
-                color:configs.titleTextColor.value,
+            textStyle: {
+                color: configs.titleTextColor.value,
+                fontSize: Number(configs.titleTextFontSize.value),
             },
-            subtextStyle:{
-                color:configs.titleSubTextColor.value,
+            subtextStyle: {
+                color: configs.titleSubTextColor.value,
+                fontSize: Number(configs.titleSubTextFontSize.value),
             }
         },
         legend: {
@@ -5972,11 +6007,11 @@ function getWebkitDep(container, themes, width, height, type, dataset, configs) 
       myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.addHistory(container, type, configs, dataset, themes, width, height);
+    __ECHARTS__.addHistory(container, configs, dataset, width, height);
     return container;
 }
 
-function getScatter(container, themes, width, height, type, dataset, configs) {
+function getScatter(container, width, height, dataset, configs) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
@@ -5985,7 +6020,7 @@ function getScatter(container, themes, width, height, type, dataset, configs) {
         container.style.height = height;
     }
 
-    var myChart = echarts.init(container, themes);
+    var myChart = echarts.init(container, configs.echartsTheme.value);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
@@ -6197,9 +6232,11 @@ function getScatter(container, themes, width, height, type, dataset, configs) {
             left: configs.titlePosition.value,
             textStyle: {
                 color: configs.titleTextColor.value,
+                fontSize: Number(configs.titleTextFontSize.value),
             },
             subtextStyle: {
                 color: configs.titleSubTextColor.value,
+                fontSize: Number(configs.titleSubTextFontSize.value),
             }
         },
         legend: {
@@ -6370,11 +6407,11 @@ function getScatter(container, themes, width, height, type, dataset, configs) {
       myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.addHistory(container, type, configs, dataset, themes, width, height);
+    __ECHARTS__.addHistory(container, configs, dataset, width, height);
     return container;
 }
 
-function getFunnel(container, themes, width, height, type, dataset, configs) {
+function getFunnel(container, width, height, dataset, configs) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
@@ -6383,7 +6420,7 @@ function getFunnel(container, themes, width, height, type, dataset, configs) {
         container.style.height = height;
     }
 
-    var myChart = echarts.init(container, themes);
+    var myChart = echarts.init(container, configs.echartsTheme.value);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
@@ -6516,11 +6553,13 @@ function getFunnel(container, themes, width, height, type, dataset, configs) {
             subtarget: "blank",
             top:"top",
             left:configs.titlePosition.value,
-            textStyle:{
-                color:configs.titleTextColor.value,
+            textStyle: {
+                color: configs.titleTextColor.value,
+                fontSize: Number(configs.titleTextFontSize.value),
             },
-            subtextStyle:{
-                color:configs.titleSubTextColor.value,
+            subtextStyle: {
+                color: configs.titleSubTextColor.value,
+                fontSize: Number(configs.titleSubTextFontSize.value),
             }
         },
         tooltip: {
@@ -6579,11 +6618,11 @@ function getFunnel(container, themes, width, height, type, dataset, configs) {
       myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.addHistory(container, type, configs, dataset, themes, width, height);
+    __ECHARTS__.addHistory(container, configs, dataset, width, height);
     return container;
 }
 
-function getWordCloud(container, themes, width, height, type, dataset, configs) {
+function getWordCloud(container, width, height, dataset, configs) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
@@ -6592,7 +6631,7 @@ function getWordCloud(container, themes, width, height, type, dataset, configs) 
         container.style.height = height;
     }
 
-    var myChart = echarts.init(container, themes);
+    var myChart = echarts.init(container, configs.echartsTheme.value);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
@@ -6715,11 +6754,13 @@ function getWordCloud(container, themes, width, height, type, dataset, configs) 
             subtarget: "blank",
             top:"top",
             left:configs.titlePosition.value,
-            textStyle:{
-                color:configs.titleTextColor.value,
+            textStyle: {
+                color: configs.titleTextColor.value,
+                fontSize: Number(configs.titleTextFontSize.value),
             },
-            subtextStyle:{
-                color:configs.titleSubTextColor.value,
+            subtextStyle: {
+                color: configs.titleSubTextColor.value,
+                fontSize: Number(configs.titleSubTextFontSize.value),
             }
         },
         tooltip: {
@@ -6780,11 +6821,11 @@ function getWordCloud(container, themes, width, height, type, dataset, configs) 
       myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.addHistory(container, type, configs, dataset, themes, width, height);
+    __ECHARTS__.addHistory(container, configs, dataset, width, height);
     return container;
 }
 
-function getLiqiud(container, themes, width, height, type, dataset, configs) {
+function getLiqiud(container, width, height, dataset, configs) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
@@ -6793,7 +6834,7 @@ function getLiqiud(container, themes, width, height, type, dataset, configs) {
         container.style.height = height;
     }
 
-    var myChart = echarts.init(container, themes);
+    var myChart = echarts.init(container, configs.echartsTheme.value);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
@@ -6919,11 +6960,13 @@ function getLiqiud(container, themes, width, height, type, dataset, configs) {
             subtarget: "blank",
             top:"top",
             left:configs.titlePosition.value,
-            textStyle:{
-                color:configs.titleTextColor.value,
+            textStyle: {
+                color: configs.titleTextColor.value,
+                fontSize: Number(configs.titleTextFontSize.value),
             },
-            subtextStyle:{
-                color:configs.titleSubTextColor.value,
+            subtextStyle: {
+                color: configs.titleSubTextColor.value,
+                fontSize: Number(configs.titleSubTextFontSize.value),
             }
         },
         legend: {
@@ -7017,11 +7060,11 @@ function getLiqiud(container, themes, width, height, type, dataset, configs) {
 
     setTimeout(startTimer,  configs.seriesLoopPlayInterval.value * 1000);
 
-    __ECHARTS__.addHistory(container, type, configs, dataset, themes, width, height);
+    __ECHARTS__.addHistory(container, configs, dataset, width, height);
     return container;
 }
 
-function getGaugeWithAll(container, themes, width, height, type, dataset, configs) {
+function getGaugeWithAll(container, width, height, dataset, configs) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
@@ -7030,7 +7073,7 @@ function getGaugeWithAll(container, themes, width, height, type, dataset, config
         container.style.height = height;
     }
 
-    var myChart = echarts.init(container, themes);
+    var myChart = echarts.init(container, configs.echartsTheme.value);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
@@ -7145,11 +7188,13 @@ function getGaugeWithAll(container, themes, width, height, type, dataset, config
             subtarget: "blank",
             top:"top",
             left:configs.titlePosition.value,
-            textStyle:{
-                color:configs.titleTextColor.value,
+            textStyle: {
+                color: configs.titleTextColor.value,
+                fontSize: Number(configs.titleTextFontSize.value),
             },
-            subtextStyle:{
-                color:configs.titleSubTextColor.value,
+            subtextStyle: {
+                color: configs.titleSubTextColor.value,
+                fontSize: Number(configs.titleSubTextFontSize.value),
             }
         },
         legend: {
@@ -7235,11 +7280,11 @@ function getGaugeWithAll(container, themes, width, height, type, dataset, config
 
     setTimeout(startTimer,  configs.seriesLoopPlayInterval.value * 1000);
 
-    __ECHARTS__.addHistory(container, type, configs, dataset, themes, width, height);
+    __ECHARTS__.addHistory(container, configs, dataset, width, height);
     return container;
 }
 
-function getGaugeWithOne(container, themes, width, height, type, dataset, configs) {
+function getGaugeWithOne(container, width, height, dataset, configs) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
@@ -7248,7 +7293,7 @@ function getGaugeWithOne(container, themes, width, height, type, dataset, config
         container.style.height = height;
     }
 
-    var myChart = echarts.init(container, themes);
+    var myChart = echarts.init(container, configs.echartsTheme.value);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
@@ -7359,11 +7404,13 @@ function getGaugeWithOne(container, themes, width, height, type, dataset, config
             subtarget: "blank",
             top:"top",
             left:configs.titlePosition.value,
-            textStyle:{
-                color:configs.titleTextColor.value,
+            textStyle: {
+                color: configs.titleTextColor.value,
+                fontSize: Number(configs.titleTextFontSize.value),
             },
-            subtextStyle:{
-                color:configs.titleSubTextColor.value,
+            subtextStyle: {
+                color: configs.titleSubTextColor.value,
+                fontSize: Number(configs.titleSubTextFontSize.value),
             }
         },
         legend: {
@@ -7449,11 +7496,11 @@ function getGaugeWithOne(container, themes, width, height, type, dataset, config
 
     setTimeout(startTimer,  configs.seriesLoopPlayInterval.value * 1000);
 
-    __ECHARTS__.addHistory(container, type, configs, dataset, themes, width, height);
+    __ECHARTS__.addHistory(container, configs, dataset, width, height);
     return container;
 }
 
-function getCalendar(container, themes, width, height, type, dataset, configs) {
+function getCalendar(container, width, height, dataset, configs) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
@@ -7462,7 +7509,7 @@ function getCalendar(container, themes, width, height, type, dataset, configs) {
         container.style.height = height;
     }
 
-    var myChart = echarts.init(container, themes);
+    var myChart = echarts.init(container, configs.echartsTheme.value);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
@@ -7620,11 +7667,13 @@ function getCalendar(container, themes, width, height, type, dataset, configs) {
             subtarget: "blank",
             top:"top",
             left:configs.titlePosition.value,
-            textStyle:{
-                color:configs.titleTextColor.value,
+            textStyle: {
+                color: configs.titleTextColor.value,
+                fontSize: Number(configs.titleTextFontSize.value),
             },
-            subtextStyle:{
-                color:configs.titleSubTextColor.value,
+            subtextStyle: {
+                color: configs.titleSubTextColor.value,
+                fontSize: Number(configs.titleSubTextFontSize.value),
             }
         },
         tooltip: {
@@ -7674,12 +7723,12 @@ function getCalendar(container, themes, width, height, type, dataset, configs) {
       myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.addHistory(container, type, configs, dataset, themes, width, height);
+    __ECHARTS__.addHistory(container, configs, dataset, width, height);
     return container;
 
 }
 
-function getGeoOfChina(container, themes, width, height, type, dataset, configs) {
+function getGeoOfChina(container, width, height, dataset, configs) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
@@ -7688,7 +7737,7 @@ function getGeoOfChina(container, themes, width, height, type, dataset, configs)
         container.style.height = height;
     }
 
-    var myChart = echarts.init(container, themes);
+    var myChart = echarts.init(container, configs.echartsTheme.value);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
@@ -7792,9 +7841,11 @@ function getGeoOfChina(container, themes, width, height, type, dataset, configs)
             left: configs.titlePosition.value,
             textStyle: {
                 color: configs.titleTextColor.value,
+                fontSize: Number(configs.titleTextFontSize.value),
             },
             subtextStyle: {
                 color: configs.titleSubTextColor.value,
+                fontSize: Number(configs.titleSubTextFontSize.value),
             }
         },
         toolbox: {
@@ -8001,11 +8052,11 @@ function getGeoOfChina(container, themes, width, height, type, dataset, configs)
 
     setTimeout(startTimer,  configs.seriesLoopPlayInterval.value * 1000);
 
-    __ECHARTS__.addHistory(container, type, configs, dataset, themes, width, height);
+    __ECHARTS__.addHistory(container, configs, dataset, width, height);
     return container;
 }
 
-function getGeoOfLocal(container, themes, width, height, type, dataset, configs) {
+function getGeoOfLocal(container, width, height, dataset, configs) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
@@ -8014,7 +8065,7 @@ function getGeoOfLocal(container, themes, width, height, type, dataset, configs)
         container.style.height = height;
     }
 
-    var myChart = echarts.init(container, themes);
+    var myChart = echarts.init(container, configs.echartsTheme.value);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
@@ -8109,11 +8160,13 @@ function getGeoOfLocal(container, themes, width, height, type, dataset, configs)
             subtarget: "blank",
             top:"top",
             left:configs.titlePosition.value,
-            textStyle:{
-                color:configs.titleTextColor.value,
+            textStyle: {
+                color: configs.titleTextColor.value,
+                fontSize: Number(configs.titleTextFontSize.value),
             },
-            subtextStyle:{
-                color:configs.titleSubTextColor.value,
+            subtextStyle: {
+                color: configs.titleSubTextColor.value,
+                fontSize: Number(configs.titleSubTextFontSize.value),
             }
         },
         toolbox: {
@@ -8321,11 +8374,11 @@ function getGeoOfLocal(container, themes, width, height, type, dataset, configs)
 
     setTimeout(startTimer,  configs.seriesLoopPlayInterval.value * 1000);
 
-    __ECHARTS__.addHistory(container, type, configs, dataset, themes, width, height);
+    __ECHARTS__.addHistory(container, configs, dataset, width, height);
     return container;
 }
 
-function getBar3D(container, themes, width, height, type, dataset, configs) {
+function getBar3D(container, width, height, dataset, configs) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
@@ -8334,7 +8387,7 @@ function getBar3D(container, themes, width, height, type, dataset, configs) {
         container.style.height = height;
     }
 
-    var myChart = echarts.init(container, themes);
+    var myChart = echarts.init(container, configs.echartsTheme.value);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
@@ -8463,9 +8516,11 @@ function getBar3D(container, themes, width, height, type, dataset, configs) {
             left: configs.titlePosition.value,
             textStyle: {
                 color: configs.titleTextColor.value,
+                fontSize: Number(configs.titleTextFontSize.value),
             },
             subtextStyle: {
                 color: configs.titleSubTextColor.value,
+                fontSize: Number(configs.titleSubTextFontSize.value),
             }
         },
         legend: {
@@ -8609,11 +8664,11 @@ function getBar3D(container, themes, width, height, type, dataset, configs) {
       myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.addHistory(container, type, configs, dataset, themes, width, height);
+    __ECHARTS__.addHistory(container, configs, dataset, width, height);
     return container;
 }
 
-function getLine3D(container, themes, width, height, type, dataset, configs) {
+function getLine3D(container, width, height, dataset, configs) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
@@ -8622,7 +8677,7 @@ function getLine3D(container, themes, width, height, type, dataset, configs) {
         container.style.height = height;
     }
 
-    var myChart = echarts.init(container, themes);
+    var myChart = echarts.init(container, configs.echartsTheme.value);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
@@ -8730,11 +8785,13 @@ function getLine3D(container, themes, width, height, type, dataset, configs) {
             subtarget: "blank",
             top:"top",
             left:configs.titlePosition.value,
-            textStyle:{
-                color:configs.titleTextColor.value,
+            textStyle: {
+                color: configs.titleTextColor.value,
+                fontSize: Number(configs.titleTextFontSize.value),
             },
-            subtextStyle:{
-                color:configs.titleSubTextColor.value,
+            subtextStyle: {
+                color: configs.titleSubTextColor.value,
+                fontSize: Number(configs.titleSubTextFontSize.value),
             }
         },
         legend: {
@@ -8891,11 +8948,11 @@ function getLine3D(container, themes, width, height, type, dataset, configs) {
       myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.addHistory(container, type, configs, dataset, themes, width, height);
+    __ECHARTS__.addHistory(container, configs, dataset, width, height);
     return container;
 }
 
-function getScatter3D(container, themes, width, height, type, dataset, configs) {
+function getScatter3D(container, width, height, dataset, configs) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
@@ -8904,7 +8961,7 @@ function getScatter3D(container, themes, width, height, type, dataset, configs) 
         container.style.height = height;
     }
 
-    var myChart = echarts.init(container, themes);
+    var myChart = echarts.init(container, configs.echartsTheme.value);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
@@ -9014,11 +9071,13 @@ function getScatter3D(container, themes, width, height, type, dataset, configs) 
             subtarget: "blank",
             top:"top",
             left:configs.titlePosition.value,
-            textStyle:{
-                color:configs.titleTextColor.value,
+            textStyle: {
+                color: configs.titleTextColor.value,
+                fontSize: Number(configs.titleTextFontSize.value),
             },
-            subtextStyle:{
-                color:configs.titleSubTextColor.value,
+            subtextStyle: {
+                color: configs.titleSubTextColor.value,
+                fontSize: Number(configs.titleSubTextFontSize.value),
             }
         },
         legend: {
@@ -9175,11 +9234,11 @@ function getScatter3D(container, themes, width, height, type, dataset, configs) 
       myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.addHistory(container, type, configs, dataset, themes, width, height);
+    __ECHARTS__.addHistory(container, configs, dataset, width, height);
     return container;
 }
 
-function getCategoryLine(container, themes, width, height, type, dataset, configs) {
+function getCategoryLine(container, width, height, dataset, configs) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
@@ -9188,7 +9247,7 @@ function getCategoryLine(container, themes, width, height, type, dataset, config
         container.style.height = height;
     }
 
-    var myChart = echarts.init(container, themes);
+    var myChart = echarts.init(container, configs.echartsTheme.value);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
@@ -9389,9 +9448,11 @@ function getCategoryLine(container, themes, width, height, type, dataset, config
                 left: configs.titlePosition.value,
                 textStyle: {
                     color: configs.titleTextColor.value,
+                    fontSize: Number(configs.titleTextFontSize.value),
                 },
                 subtextStyle: {
                     color: configs.titleSubTextColor.value,
+                    fontSize: Number(configs.titleSubTextFontSize.value),
                 }
             },
             timeline: {
@@ -9539,11 +9600,11 @@ function getCategoryLine(container, themes, width, height, type, dataset, config
       myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.addHistory(container, type, configs, dataset, themes, width, height);
+    __ECHARTS__.addHistory(container, configs, dataset, width, height);
     return container;
 }
 
-function getGeoMigrateLinesOfChinaCity(container, themes, width, height, type, dataset, configs) {
+function getGeoMigrateLinesOfChinaCity(container, width, height, dataset, configs) {
     //数据结构:fromCity|toCity|value or text
     if (container == null) {
         container = document.createElement("div");
@@ -9553,7 +9614,7 @@ function getGeoMigrateLinesOfChinaCity(container, themes, width, height, type, d
         container.style.height = height;
     }
 
-    var myChart = echarts.init(container, themes);
+    var myChart = echarts.init(container, configs.echartsTheme.value);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
@@ -9792,9 +9853,11 @@ function getGeoMigrateLinesOfChinaCity(container, themes, width, height, type, d
                 left: configs.titlePosition.value,
                 textStyle: {
                     color: configs.titleTextColor.value,
+                    fontSize: Number(configs.titleTextFontSize.value),
                 },
                 subtextStyle: {
                     color: configs.titleSubTextColor.value,
+                    fontSize: Number(configs.titleSubTextFontSize.value),
                 }
             },
             toolbox: {
@@ -9888,11 +9951,11 @@ function getGeoMigrateLinesOfChinaCity(container, themes, width, height, type, d
       myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.addHistory(container, type, configs, dataset, themes, width, height);
+    __ECHARTS__.addHistory(container, configs, dataset, width, height);
     return container;
 }
 
-function getCategoryLineForGauge(container, themes, width, height, type, dataset, configs) {
+function getCategoryLineForGauge(container, width, height, dataset, configs) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
@@ -9901,7 +9964,7 @@ function getCategoryLineForGauge(container, themes, width, height, type, dataset
         container.style.height = height;
     }
 
-    var myChart = echarts.init(container, themes);
+    var myChart = echarts.init(container, configs.echartsTheme.value);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
@@ -9996,9 +10059,11 @@ function getCategoryLineForGauge(container, themes, width, height, type, dataset
                 left: configs.titlePosition.value,
                 textStyle: {
                     color: configs.titleTextColor.value,
+                    fontSize: Number(configs.titleTextFontSize.value),
                 },
                 subtextStyle: {
                     color: configs.titleSubTextColor.value,
+                    fontSize: Number(configs.titleSubTextFontSize.value),
                 }
             },
             timeline: {
@@ -10083,11 +10148,11 @@ function getCategoryLineForGauge(container, themes, width, height, type, dataset
       myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.addHistory(container, type, configs, dataset, themes, width, height);
+    __ECHARTS__.addHistory(container, configs, dataset, width, height);
     return container;
 }
 
-function getCategoryLineForLiqiud(container, themes, width, height, type, dataset, configs) {
+function getCategoryLineForLiqiud(container, width, height, dataset, configs) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
@@ -10096,7 +10161,7 @@ function getCategoryLineForLiqiud(container, themes, width, height, type, datase
         container.style.height = height;
     }
 
-    var myChart = echarts.init(container, themes);
+    var myChart = echarts.init(container, configs.echartsTheme.value);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
@@ -10205,9 +10270,11 @@ function getCategoryLineForLiqiud(container, themes, width, height, type, datase
                 left: configs.titlePosition.value,
                 textStyle: {
                     color: configs.titleTextColor.value,
+                    fontSize: Number(configs.titleTextFontSize.value),
                 },
                 subtextStyle: {
                     color: configs.titleSubTextColor.value,
+                    fontSize: Number(configs.titleSubTextFontSize.value),
                 }
             },
             timeline: {
@@ -10289,11 +10356,11 @@ function getCategoryLineForLiqiud(container, themes, width, height, type, datase
       myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.addHistory(container, type, configs, dataset, themes, width, height);
+    __ECHARTS__.addHistory(container, configs, dataset, width, height);
     return container;
 }
 
-function getCategoryLineForGeoOfChina(container, themes, width, height, type, dataset, configs) {
+function getCategoryLineForGeoOfChina(container, width, height, dataset, configs) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
@@ -10302,7 +10369,7 @@ function getCategoryLineForGeoOfChina(container, themes, width, height, type, da
         container.style.height = height;
     }
 
-    var myChart = echarts.init(container, themes);
+    var myChart = echarts.init(container, configs.echartsTheme.value);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
@@ -10564,9 +10631,11 @@ function getCategoryLineForGeoOfChina(container, themes, width, height, type, da
                 left: configs.titlePosition.value,
                 textStyle: {
                     color: configs.titleTextColor.value,
+                    fontSize: Number(configs.titleTextFontSize.value),
                 },
                 subtextStyle: {
                     color: configs.titleSubTextColor.value,
+                    fontSize: Number(configs.titleSubTextFontSize.value),
                 }
             },
             timeline: {
@@ -10644,11 +10713,11 @@ function getCategoryLineForGeoOfChina(container, themes, width, height, type, da
       myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.addHistory(container, type, configs, dataset, themes, width, height);
+    __ECHARTS__.addHistory(container, configs, dataset, width, height);
     return container;
 }
 
-function getCategoryLineForGeoOfLocal(container, themes, width, height, type, dataset, configs) {
+function getCategoryLineForGeoOfLocal(container, width, height, dataset, configs) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
@@ -10657,7 +10726,7 @@ function getCategoryLineForGeoOfLocal(container, themes, width, height, type, da
         container.style.height = height;
     }
 
-    var myChart = echarts.init(container, themes);
+    var myChart = echarts.init(container, configs.echartsTheme.value);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
@@ -10911,9 +10980,11 @@ function getCategoryLineForGeoOfLocal(container, themes, width, height, type, da
                 left: configs.titlePosition.value,
                 textStyle: {
                     color: configs.titleTextColor.value,
+                    fontSize: Number(configs.titleTextFontSize.value),
                 },
                 subtextStyle: {
                     color: configs.titleSubTextColor.value,
+                    fontSize: Number(configs.titleSubTextFontSize.value),
                 }
             },
             timeline: {
@@ -10991,11 +11062,11 @@ function getCategoryLineForGeoOfLocal(container, themes, width, height, type, da
         myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.addHistory(container, type, configs, dataset, themes, width, height);
+    __ECHARTS__.addHistory(container, configs, dataset, width, height);
     return container;
 }
 
-function getScrollingScreen(container, themes, width, height, type, dataset, configs) {
+function getScrollingScreen(container, width, height, dataset, configs) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
@@ -11004,7 +11075,7 @@ function getScrollingScreen(container, themes, width, height, type, dataset, con
         container.style.height = height;
     }
 
-    var myChart = echarts.init(container, themes);
+    var myChart = echarts.init(container, configs.echartsTheme.value);
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
@@ -11106,9 +11177,11 @@ function getScrollingScreen(container, themes, width, height, type, dataset, con
             left: configs.titlePosition.value,
             textStyle: {
                 color: configs.titleTextColor.value,
+                fontSize: Number(configs.titleTextFontSize.value),
             },
             subtextStyle: {
                 color: configs.titleSubTextColor.value,
+                fontSize: Number(configs.titleSubTextFontSize.value),
             }
         },
 
@@ -11166,8 +11239,7 @@ function getScrollingScreen(container, themes, width, height, type, dataset, con
             );
         }
     }, Number(configs.scrollingScreenSpeed.value));
-
-    __ECHARTS__.addHistory(container, type, configs, dataset, themes, width, height);
+    __ECHARTS__.addHistory(container, configs, dataset, width, height);
 
     return container;
 }

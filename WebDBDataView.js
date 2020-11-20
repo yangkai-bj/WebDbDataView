@@ -4,7 +4,7 @@ var __CONFIGS__ = {
         DATABASES: "__WEB_SQLITE_DATABASES__",
         SCRIPTS: "__WEB_SQLITE_SCRIPTS__",
         DATASET: "__WEB_SQLITE_DATASET__",
-        CONFIGS: "__WEB_SQLITE_USER_CONFIGS"
+        CONFIGS: "__WEB_SQLITE_USER_CONFIGS__"
     },
     DATABASES: [],
     CURRENT_DATABASE: {index: 0, value: null, connect: null},
@@ -2894,10 +2894,8 @@ function init() {
             });
             let echart = getEcharts(
                 mecharts,
-                __ECHARTS__.type,
                 (getAbsolutePosition($("page")).width+5) + "px",
                 (getAbsolutePosition($("page")).height+20) + "px",
-                __ECHARTS__.theme,
                 __DATASET__["result"][__DATASET__.default.sheet],
                 __ECHARTS__.configs);
             setDragNook(mecharts,echart.getAttribute("_echarts_instance_"));
@@ -2927,23 +2925,21 @@ function init() {
     echartsThemes.type = "select";
     echartsThemes.id = "dataset-select-echarts-theme";
     let help_echartsThemes = $("help-select-echarts-themes");
-    for (var theme in __ECHARTS__.themes) {
-        echartsThemes.options.add(new Option(theme, __ECHARTS__.themes[theme]));
-        help_echartsThemes.options.add(new Option(theme, __ECHARTS__.themes[theme]));
+    for (let i=0;i<__ECHARTS__.configs.echartsTheme.options.length;i++) {
+        let option = __ECHARTS__.configs.echartsTheme.options[i];
+        echartsThemes.options.add(new Option(option.innerText,option.value));
+        help_echartsThemes.options.add(new Option(option.innerText,option.value));
     }
-    try {
-        let theme = getUserConfig("echartstheme");
-        if (theme != null) {
-            echartsThemes.value = theme;
-            __ECHARTS__.theme = theme;
-        }else
-            echartsThemes.selectedIndex = 0;
-    } catch (e) {
-        console.log(e);
-    }
+    echartsThemes.value = help_echartsThemes.value = __ECHARTS__.configs.echartsTheme.value;
     echartsThemes.onchange = help_echartsThemes.onchange = function () {
         try {
-            __ECHARTS__.theme = this.value;
+            __ECHARTS__.configs.echartsTheme.value = this.value;
+            let config = {};
+            for (let key in __ECHARTS__.configs) {
+                config[key] = __ECHARTS__.configs[key].value;
+            }
+            setUserConfig("echartsconfig", JSON.stringify(config));
+
             let container = $("tableContainer");
             try {
                 container.removeAttribute("_echarts_instance_");
@@ -2955,14 +2951,11 @@ function init() {
             container.innerHTML = "";
             let echart = getEcharts(
                 container,
-                __ECHARTS__.type,
                 _width,
                 _height,
-                __ECHARTS__.theme,
                 __DATASET__["result"][__DATASET__.default.sheet],
                 __ECHARTS__.configs);
             setDragNook(container,echart.getAttribute("_echarts_instance_"));
-            setUserConfig("echartstheme", this.value);
         } catch (e) {
             console.log(e);
         }
@@ -2974,23 +2967,20 @@ function init() {
     echartsType.type = "select";
     echartsType.id = "dataset-select-echarts-type";
     let help_echartsType = $("help-select-echarts-type");
-    for (var type in __ECHARTS__.types) {
-        echartsType.options.add(new Option(type, __ECHARTS__.types[type]));
-        help_echartsType.options.add(new Option(type, __ECHARTS__.types[type]));
+    for (let i=0;i<__ECHARTS__.configs.echartsType.options.length;i++) {
+        let option = __ECHARTS__.configs.echartsType.options[i];
+        echartsType.options.add(new Option(option.innerText,option.value));
+        help_echartsType.options.add(new Option(option.innerText,option.value));
     }
-    try {
-        let type = getUserConfig("echartstype");
-        if (type != null) {
-            echartsType.value = type;
-            __ECHARTS__.type = type;
-        }else
-            echartsType.selectedIndex = 0;
-    } catch (e) {
-        console.log(e);
-    }
+    echartsType.value = help_echartsType.value = __ECHARTS__.configs.echartsType.value;
     echartsType.onchange = help_echartsType.onchange = function () {
         try {
-            __ECHARTS__.type = this.value;
+            __ECHARTS__.configs.echartsType.value = this.value;
+            let config = {};
+            for (let key in __ECHARTS__.configs) {
+                config[key] = __ECHARTS__.configs[key].value;
+            }
+            setUserConfig("echartsconfig", JSON.stringify(config));
 
             let container = $("tableContainer");
             try {
@@ -3003,14 +2993,11 @@ function init() {
             container.innerHTML = "";
             let echart = getEcharts(
                 container,
-                __ECHARTS__.type,
                 _width,
                 _height,
-                __ECHARTS__.theme,
                 __DATASET__["result"][__DATASET__.default.sheet],
                 __ECHARTS__.configs);
             setDragNook(container, echart.getAttribute("_echarts_instance_"));
-            setUserConfig("echartstype", this.value);
         } catch (e) {
             console.log(e);
         }
@@ -3039,10 +3026,8 @@ function init() {
             container.innerHTML = "";
             let echart = getEcharts(
                 container,
-                __ECHARTS__.type,
                 _width,
                 _height,
-                __ECHARTS__.theme,
                 __DATASET__["result"][__DATASET__.default.sheet],
                 __ECHARTS__.configs);
             setDragNook(container,echart.getAttribute("_echarts_instance_"));
@@ -4178,10 +4163,8 @@ function setEchartDrag(ec) {
                     let _height = posi.height + "px";
                     let e = getEcharts(
                         this,
-                        history.type,
                         _width,
                         _height,
-                        history.themes,
                         history.dataset,
                         history.configs);
                     setDragNook(e, e.getAttribute("_echarts_instance_"));
@@ -4343,7 +4326,7 @@ function getMultiEcharts() {
             let title = document.createElement("div");
             let text = document.createElement("span");
             title.appendChild(text);
-            text.innerHTML = history.configs.titleText.value != "" ? history.configs.titleText.value : echart.id;
+            text.innerHTML = history.configs.titleText.value != "" ? history.configs.titleText.value : history.id;
             row.appendChild(title);
 
             let del = document.createElement("span");
@@ -4365,10 +4348,10 @@ function getMultiEcharts() {
 
             let detail = document.createElement("div");
             let type = document.createElement("span");
-            type.innerText = history.type;
+            type.innerText = history.configs.echartsType.value;
             detail.appendChild(type);
             let themes = document.createElement("span");
-            themes.innerText = history.themes;
+            themes.innerText = history.configs.echartsTheme.value;
             detail.appendChild(themes);
             row.appendChild(detail);
 
