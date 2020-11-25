@@ -138,7 +138,8 @@ var __ECHARTS__ = {
                 new Option("全国地图", "GeoOfChina"),
                 new Option("本地地图", "GeoOfLocal"),
                 new Option("迁徙地图", "GeoMigrateLinesOfChinaCity"),
-                new Option("数据滚屏", "ScrollingScreen")],
+                new Option("数据滚屏", "ScrollingScreen"),
+                new Option("数据走马灯", "WalkingLantern")],
             type: "select"
         },
         echartsTheme: {
@@ -734,6 +735,17 @@ var __ECHARTS__ = {
         scrollingScreenOpacity: {value: 0.4, name: "透明度", type: "input"},
         scrollingScreenFontSize: {name: "字号", value: 16, type: "input"},
         scrollingScreenSpeed: {name: "速度(毫秒)", value: 10, type: "input"},
+
+        hr_walkingLantern: {name: "数据走马灯", value: "", type: "hr"},
+        walkingLanternTop: {name: "上边距(%)", value: "20%", type: "input"},
+        walkingLanternWidth: {name: "宽度", value: 800, type: "input"},
+        walkingLanternBackColor: {value: "transparent", name: "背景颜色", type: "color"},
+        walkingLanternBorderColor: {value: "transparent", name: "边框颜色", type: "color"},
+        walkingLanternColumnFontFillColor: {value: "#404a59", name: "表头颜色", type: "color"},
+        walkingLanternOpacity: {value: 0.4, name: "透明度", type: "input"},
+        walkingLanternFontSize: {name: "字号", value: 16, type: "input"},
+        walkingLanternLines: {name: "显示行数", value: 10, type: "input"},
+        walkingLanternSpeed: {name: "速度(毫秒)", value: 10, type: "input"},
 
         hr_timeline: {name: "时间/类目轴", value: "", type: "hr"},
         timelineDisplay: {
@@ -1958,6 +1970,8 @@ function getEcharts(container, width, height, dataset, configs) {
             break;
         case "ScrollingScreen":
             return getScrollingScreen(container, width, height, dataset,configs);
+        case "WalkingLantern":
+            return getWalkingLantern(container, width, height, dataset,configs);
     }
 }
 
@@ -11224,21 +11238,291 @@ function getScrollingScreen(container, width, height, dataset, configs) {
             else
                 top = containerHeight;
 
-            myChart.setOption(
-                {
-                    graphic: [
-                        {
-                            id: 'scrollingColumn',
-                            top: (top - lineHeight) <= 0 ? 0 : (top - lineHeight),
-                        },
-                        {
-                            id: 'scrollingData',
-                            top: top,
-                        }]
-                }
-            );
+            try {
+                myChart.setOption(
+                    {
+                        graphic: [
+                            {
+                                id: 'scrollingColumn',
+                                top: (top - lineHeight) <= 0 ? 0 : (top - lineHeight),
+                            },
+                            {
+                                id: 'scrollingData',
+                                top: top,
+                            }]
+                    }
+                );
+            }catch (e) {
+                //console.log(e);
+            }
         }
     }, Number(configs.scrollingScreenSpeed.value));
+    __ECHARTS__.addHistory(container, configs, dataset, width, height);
+
+    return container;
+}
+
+function getWalkingLantern(container, width, height, dataset, configs) {
+    if (container == null) {
+        container = document.createElement("div");
+        container.className = "echarts-container";
+        container.id = "echarts-container";
+        container.style.width = width;
+        container.style.height = height;
+    }
+
+    var myChart = echarts.init(container, configs.echartsTheme.value);
+
+    myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
+
+    var containerWidth = Number(width.replace(/px/i, ""));
+    var containerHeight = Number(height.replace(/px/i, ""));
+    var top = containerHeight*Number(configs.walkingLanternTop.value.replaceAll("%",""))/100;
+    var columns = [];
+    var cols = [];
+    var group = configs.walkingLanternLines.value;
+    var groups = (dataset["data"].length % group) > 0 ? Math.floor(dataset["data"].length / group) : Math.floor(dataset["data"].length / group) - 1;
+    var selectGroup = 0;
+    var graphic = getWaterGraphic(__SYS_LOGO_LINK__);
+    var txtOffset = 8;
+    var lineHeight = Number(configs.walkingLanternFontSize.value) + txtOffset;
+    var groupHeight = lineHeight;
+    var timeout = false;
+    var colWidth = Number(configs.walkingLanternWidth.value) / dataset["columns"].length;
+
+    for (var i = 0; i < dataset["columns"].length; i++) {
+        columns.push(dataset["columns"][i].name);
+        cols.push({
+            type: 'rect',
+            left: colWidth * (i + 1),
+            top: 0,
+            z: 100,
+            shape: {
+                width: colWidth,
+                height: lineHeight,
+            },
+            style: {
+                lineWidth: 0.5,
+                fill: configs.walkingLanternBackColor.value,//'rgba(0,0,0,0.2)',
+                stroke: configs.walkingLanternBorderColor.value,
+                opacity: Number(configs.walkingLanternOpacity.value) + 0.5,
+            },
+        }, {
+            type: 'text',
+            id: 'columns' + i,
+            left: colWidth * (i + 1) + txtOffset,
+            top: txtOffset,
+            z: 100,
+            bounding: 'raw',
+            style: {
+                text: dataset["columns"][i].name,
+                font: configs.walkingLanternFontSize.value + 'px "Microsoft YaHei", sans-serif',
+                fill: configs.walkingLanternColumnFontFillColor.value,
+            }
+        });
+    }
+
+    graphic.push({
+        type: 'group',
+        id: 'scrollingColumn',
+        left: 0,
+        top: top,
+        children: cols,
+        onmouseover: function () {
+            timeout = true;
+        },
+        onmouseout: function () {
+            timeout = false;
+        }
+    });
+
+    var colorPalette = [
+        '#2ec7c9', '#b6a2de', '#5ab1ef', '#ffb980', '#d87a80',
+        '#8d98b3', '#e5cf0d', '#97b552', '#95706d', '#dc69aa',
+        '#07a2a4', '#9a7fd1', '#588dd5', '#f5994e', '#c05050',
+        '#59678c', '#c9ab00', '#7eb00a', '#6f5553', '#c14089'
+    ];
+
+    var option = {
+        title: {
+            show: configs.titleDisplay.value.toBoolean(),
+            text: configs.titleText.value,
+            link: configs.titleTextLink.value,
+            target: "blank",
+            subtext: configs.titleSubText.value,
+            sublink: configs.titleSubTextLink.value,
+            subtarget: "blank",
+            top: "top",
+            left: configs.titlePosition.value,
+            textStyle: {
+                color: configs.titleTextColor.value,
+                fontSize: Number(configs.titleTextFontSize.value),
+            },
+            subtextStyle: {
+                color: configs.titleSubTextColor.value,
+                fontSize: Number(configs.titleSubTextFontSize.value),
+            }
+        },
+    };
+
+    var children = [];
+    for (var i = 0; i < dataset["data"].length; i++) {
+        let index = ((i+1) % group) > 0 ? Math.floor((i+1) / group) : Math.floor((i+1) / group)-1;
+        if (index == selectGroup) {
+            let r = dataset["data"][i];
+            let row = {
+                type: 'group',
+                id: 'scrollingData-' + (i % group),
+                left: 0,
+                top: top + lineHeight * (i + 1),
+                children: [],
+                onmouseover: function () {
+                    timeout = true;
+                },
+                onmouseout: function () {
+                    timeout = false;
+                }
+            };
+            for (var c = 0; c < columns.length; c++) {
+                row.children.push({
+                    type: 'rect',
+                    left: colWidth * (c + 1),
+                    z: 99,
+                    shape: {
+                        width: colWidth,
+                        height: lineHeight,
+                    },
+                    style: {
+                        lineWidth: 0.5,
+                        fill: i % 2 > 0 ? configs.walkingLanternBackColor.value : "transparent",//'rgba(0,0,0,0.2)',
+                        stroke: configs.walkingLanternBorderColor.value,
+                        opacity: configs.walkingLanternOpacity.value,
+                    },
+                });
+                row.children.push({
+                    type: 'text',
+                    left: colWidth * (c + 1) + txtOffset,
+                    top: txtOffset,
+                    z: 99,
+                    bounding: 'raw',
+                    style: {
+                        text: r[columns[c]].value,
+                        font: configs.walkingLanternFontSize.value + 'px "Microsoft YaHei", sans-serif',
+                        fill: colorPalette[i % colorPalette.length],
+                    },
+                });
+            }
+            children.push(row);
+            groupHeight += lineHeight;
+        } else if (index > selectGroup) {
+            break;
+        }
+    }
+    selectGroup += 1;
+    option.graphic = graphic.concat(children);
+
+    setTimeout(() => {
+        myChart.hideLoading();
+        myChart.setOption(option);
+    }, Number(configs.loadingTimes.value) * 1000);
+
+    var left = 0;
+    setInterval(function () {
+        if (!timeout) {
+            if (left <= containerWidth) {
+                left = left + 2;
+
+                myChart.setOption(
+                    {
+                        graphic: [
+                            {
+                                id: 'scrollingColumn',
+                                left: left,
+                            }
+                        ]
+                    }
+                );
+
+                for (let i = 0; i < children.length; i++) {
+                    try {
+                        myChart.setOption(
+                            {
+                                graphic: [
+                                    {
+                                        id: 'scrollingData-' + i,
+                                        left: left,
+                                    }
+                                ]
+                            }
+                        );
+                    } catch (e) {
+                        //console.log(e);
+                    }
+                }
+            } else {
+                left = Number(configs.walkingLanternWidth.value) * (-1);
+                children = [];
+                groupHeight = lineHeight;
+                if (selectGroup > groups)
+                    selectGroup = 0;
+                for (let i = 0; i < dataset["data"].length; i++) {
+                    let index = ((i+1) % group) > 0 ? Math.floor((i+1) / group) : Math.floor((i+1) / group)-1;
+                    if (index == selectGroup) {
+                        let r = dataset["data"][i];
+                        let row = {
+                            type: 'group',
+                            id: 'scrollingData-' + (i % group),
+                            left: left,
+                            top: top + lineHeight * (i % group + 1),
+                            children: [],
+                            onmouseover: function () {
+                                timeout = true;
+                            },
+                            onmouseout: function () {
+                                timeout = false;
+                            }
+                        };
+                        for (var c = 0; c < columns.length; c++) {
+                            row.children.push({
+                                type: 'rect',
+                                left: colWidth * (c + 1),
+                                z: 99,
+                                shape: {
+                                    width: colWidth,
+                                    height: lineHeight,
+                                },
+                                style: {
+                                    lineWidth: 0.5,
+                                    fill: i % 2 > 0 ? configs.walkingLanternBackColor.value : "transparent",//'rgba(0,0,0,0.2)',
+                                    stroke: configs.walkingLanternBorderColor.value,
+                                    opacity: configs.walkingLanternOpacity.value,
+                                },
+                            });
+                            row.children.push({
+                                type: 'text',
+                                left: colWidth * (c + 1) + txtOffset,
+                                top: txtOffset,
+                                z: 99,
+                                bounding: 'raw',
+                                style: {
+                                    text: r[columns[c]].value,
+                                    font: configs.walkingLanternFontSize.value + 'px "Microsoft YaHei", sans-serif',
+                                    fill: colorPalette[i % colorPalette.length],
+                                },
+                            });
+                        }
+                        children.push(row);
+                        groupHeight += lineHeight;
+                    } else if (index > selectGroup) {
+                        break;
+                    }
+                }
+                selectGroup += 1;
+                option.graphic = graphic.concat(children);
+                myChart.setOption(option);
+            }
+        }
+    }, Number(configs.walkingLanternSpeed.value));
     __ECHARTS__.addHistory(container, configs, dataset, width, height);
 
     return container;
