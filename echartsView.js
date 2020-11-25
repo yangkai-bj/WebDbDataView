@@ -737,6 +737,9 @@ var __ECHARTS__ = {
         scrollingScreenSpeed: {name: "速度(毫秒)", value: 10, type: "input"},
 
         hr_walkingLantern: {name: "数据走马灯", value: "", type: "hr"},
+        walkingLanternDirection: {name: "方向", value: "LR",
+            options: [new Option("左向右", "LR"), new Option("右向左", "RL")],
+            type: "select"},
         walkingLanternTop: {name: "上边距(%)", value: "20%", type: "input"},
         walkingLanternWidth: {name: "宽度", value: 800, type: "input"},
         walkingLanternBackColor: {value: "transparent", name: "背景颜色", type: "color"},
@@ -11289,6 +11292,7 @@ function getWalkingLantern(container, width, height, dataset, configs) {
     var groupHeight = lineHeight;
     var timeout = false;
     var colWidth = Number(configs.walkingLanternWidth.value) / dataset["columns"].length;
+    var dire = configs.walkingLanternDirection.value;
 
     for (var i = 0; i < dataset["columns"].length; i++) {
         columns.push(dataset["columns"][i].name);
@@ -11325,7 +11329,7 @@ function getWalkingLantern(container, width, height, dataset, configs) {
     graphic.push({
         type: 'group',
         id: 'scrollingColumn',
-        left: 0,
+        left: dire=="LR"?0:containerWidth,
         top: top,
         children: cols,
         onmouseover: function () {
@@ -11373,7 +11377,7 @@ function getWalkingLantern(container, width, height, dataset, configs) {
             let row = {
                 type: 'group',
                 id: 'scrollingData-' + (i % group),
-                left: 0,
+                left: dire=="LR"?0:containerWidth,
                 top: top + lineHeight * (i + 1),
                 children: [],
                 onmouseover: function () {
@@ -11426,11 +11430,11 @@ function getWalkingLantern(container, width, height, dataset, configs) {
         myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    var left = 0;
+    var left = dire=="LR"?0:containerWidth;
     setInterval(function () {
         if (!timeout) {
-            if (left <= containerWidth) {
-                left = left + 2;
+            if ((dire=="LR" && left <= containerWidth) || (dire=="RL" && left >= (Number(configs.walkingLanternWidth.value)*(-1)))) {
+                left = left + (dire=="LR"?2:-2);
 
                 myChart.setOption(
                     {
@@ -11460,7 +11464,7 @@ function getWalkingLantern(container, width, height, dataset, configs) {
                     }
                 }
             } else {
-                left = Number(configs.walkingLanternWidth.value) * (-1);
+                left = dire=="LR"?Number(configs.walkingLanternWidth.value) * (-1):containerWidth;
                 children = [];
                 groupHeight = lineHeight;
                 if (selectGroup > groups)
