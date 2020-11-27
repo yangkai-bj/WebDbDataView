@@ -139,7 +139,8 @@ var __ECHARTS__ = {
                 new Option("本地地图", "GeoOfLocal"),
                 new Option("迁徙地图", "GeoMigrateLinesOfChinaCity"),
                 new Option("数据滚屏", "ScrollingScreen"),
-                new Option("数据走马灯", "WalkingLantern")],
+                new Option("数据走马灯", "WalkingLantern"),
+                new Option("数据百叶窗", "WindowShades")],
             type: "select"
         },
         echartsTheme: {
@@ -734,7 +735,7 @@ var __ECHARTS__ = {
         scrollingScreenColumnFontFillColor: {value: "#404a59", name: "表头颜色", type: "color"},
         scrollingScreenOpacity: {value: 0.4, name: "透明度", type: "input"},
         scrollingScreenFontSize: {name: "字号", value: 16, type: "input"},
-        scrollingScreenSpeed: {name: "速度(毫秒)", value: 10, type: "input"},
+        scrollingScreenSpeed: {name: "速度(秒)", value: 0.01, type: "input"},
 
         hr_walkingLantern: {name: "数据走马灯", value: "", type: "hr"},
         walkingLanternDirection: {name: "方向", value: "LR",
@@ -748,7 +749,19 @@ var __ECHARTS__ = {
         walkingLanternOpacity: {value: 0.4, name: "透明度", type: "input"},
         walkingLanternFontSize: {name: "字号", value: 16, type: "input"},
         walkingLanternLines: {name: "显示行数", value: 10, type: "input"},
-        walkingLanternSpeed: {name: "速度(毫秒)", value: 10, type: "input"},
+        walkingLanternSpeed: {name: "速度(秒)", value: 0.01, type: "input"},
+
+        hr_windowShades: {name: "数据百叶窗", value: "", type: "hr"},
+        windowShadesTop: {name: "上边距(%)", value: "20%", type: "input"},
+        windowShadesLeft: {name: "左边距(%)", value: "20%", type: "input"},
+        windowShadesWidth: {name: "宽度", value: 800, type: "input"},
+        windowShadesBackColor: {value: "transparent", name: "背景颜色", type: "color"},
+        windowShadesBorderColor: {value: "transparent", name: "边框颜色", type: "color"},
+        windowShadesColumnFontFillColor: {value: "#404a59", name: "表头颜色", type: "color"},
+        windowShadesOpacity: {value: 0.4, name: "透明度", type: "input"},
+        windowShadesFontSize: {name: "字号", value: 16, type: "input"},
+        windowShadesLines: {name: "显示行数", value: 10, type: "input"},
+        windowShadesSpeed: {name: "速度(秒)", value: 0.01, type: "input"},
 
         hr_timeline: {name: "时间/类目轴", value: "", type: "hr"},
         timelineDisplay: {
@@ -1975,6 +1988,8 @@ function getEcharts(container, width, height, dataset, configs) {
             return getScrollingScreen(container, width, height, dataset,configs);
         case "WalkingLantern":
             return getWalkingLantern(container, width, height, dataset,configs);
+        case "WindowShades":
+            return getWindowShades(container, width, height, dataset,configs);
     }
 }
 
@@ -11259,7 +11274,7 @@ function getScrollingScreen(container, width, height, dataset, configs) {
                 //console.log(e);
             }
         }
-    }, Number(configs.scrollingScreenSpeed.value));
+    }, Number(configs.scrollingScreenSpeed.value) * 1000);
     __ECHARTS__.addHistory(container, configs, dataset, width, height);
 
     return container;
@@ -11526,7 +11541,288 @@ function getWalkingLantern(container, width, height, dataset, configs) {
                 myChart.setOption(option);
             }
         }
-    }, Number(configs.walkingLanternSpeed.value));
+    }, Number(configs.walkingLanternSpeed.value) * 1000);
+    __ECHARTS__.addHistory(container, configs, dataset, width, height);
+
+    return container;
+}
+
+//window shade
+function getWindowShades(container, width, height, dataset, configs) {
+    if (container == null) {
+        container = document.createElement("div");
+        container.className = "echarts-container";
+        container.id = "echarts-container";
+        container.style.width = width;
+        container.style.height = height;
+    }
+
+    var myChart = echarts.init(container, configs.echartsTheme.value);
+
+    myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
+
+    var containerWidth = Number(width.replace(/px/i, ""));
+    var containerHeight = Number(height.replace(/px/i, ""));
+    var top = containerHeight*Number(configs.windowShadesTop.value.replaceAll("%",""))/100;
+    var columns = [];
+    var cols = [];
+    var group = configs.windowShadesLines.value;
+    var groups = (dataset["data"].length % group) > 0 ? Math.floor(dataset["data"].length / group) : Math.floor(dataset["data"].length / group) - 1;
+    var selectGroup = 0;
+    var graphic = getWaterGraphic(__SYS_LOGO_LINK__);
+    var txtOffset = 8;
+    var lineHeight = Number(configs.windowShadesFontSize.value) + txtOffset;
+    var groupHeight = lineHeight;
+    var timeout = false;
+    var colWidth = Number(configs.windowShadesWidth.value) / dataset["columns"].length;
+    var rotation = (0 + Math.PI / 300) % (Math.PI * 2);
+    for (var i = 0; i < dataset["columns"].length; i++) {
+        columns.push(dataset["columns"][i].name);
+        cols.push({
+            type: 'rect',
+            left: colWidth * (i + 1),
+            top: 0,
+            z: 100,
+            shape: {
+                width: colWidth,
+                height: lineHeight,
+            },
+            style: {
+                lineWidth: 0.5,
+                fill: configs.windowShadesBackColor.value,//'rgba(0,0,0,0.2)',
+                stroke: configs.windowShadesBorderColor.value,
+                opacity: Number(configs.windowShadesOpacity.value) + 0.5,
+            },
+        }, {
+            type: 'text',
+            id: 'columns' + i,
+            left: colWidth * (i + 1) + txtOffset,
+            top: txtOffset,
+            z: 100,
+            bounding: 'raw',
+            style: {
+                text: dataset["columns"][i].name,
+                font: configs.windowShadesFontSize.value + 'px "Microsoft YaHei", sans-serif',
+                fill: configs.windowShadesColumnFontFillColor.value,
+            }
+        });
+    }
+
+    graphic.push({
+        type: 'group',
+        id: 'scrollingColumn',
+        left: configs.windowShadesLeft.value,
+        top: top,
+        children: cols,
+        rotation: rotation,
+        onmouseover: function () {
+            timeout = true;
+        },
+        onmouseout: function () {
+            timeout = false;
+        }
+    });
+
+    var colorPalette = [
+        '#2ec7c9', '#b6a2de', '#5ab1ef', '#ffb980', '#d87a80',
+        '#8d98b3', '#e5cf0d', '#97b552', '#95706d', '#dc69aa',
+        '#07a2a4', '#9a7fd1', '#588dd5', '#f5994e', '#c05050',
+        '#59678c', '#c9ab00', '#7eb00a', '#6f5553', '#c14089'
+    ];
+
+    var option = {
+        title: {
+            show: configs.titleDisplay.value.toBoolean(),
+            text: configs.titleText.value,
+            link: configs.titleTextLink.value,
+            target: "blank",
+            subtext: configs.titleSubText.value,
+            sublink: configs.titleSubTextLink.value,
+            subtarget: "blank",
+            top: "top",
+            left: configs.titlePosition.value,
+            textStyle: {
+                color: configs.titleTextColor.value,
+                fontSize: Number(configs.titleTextFontSize.value),
+            },
+            subtextStyle: {
+                color: configs.titleSubTextColor.value,
+                fontSize: Number(configs.titleSubTextFontSize.value),
+            }
+        },
+    };
+
+    var children = [];
+    for (var i = 0; i < dataset["data"].length; i++) {
+        let index = ((i+1) % group) > 0 ? Math.floor((i+1) / group) : Math.floor((i+1) / group)-1;
+        if (index == selectGroup) {
+            let r = dataset["data"][i];
+            let row = {
+                type: 'group',
+                id: 'scrollingData-' + (i % group),
+                left: configs.windowShadesLeft.value,
+                top: top + lineHeight * (i + 1),
+                children: [],
+                rotation: rotation,
+                onmouseover: function () {
+                    timeout = true;
+                },
+                onmouseout: function () {
+                    timeout = false;
+                }
+            };
+            for (var c = 0; c < columns.length; c++) {
+                row.children.push({
+                    type: 'rect',
+                    left: colWidth * (c + 1),
+                    z: 100,
+                    shape: {
+                        width: colWidth,
+                        height: lineHeight,
+                    },
+                    style: {
+                        lineWidth: 0.5,
+                        fill: (i % group) % 2 > 0 ? configs.windowShadesBackColor.value : "transparent",//'rgba(0,0,0,0.2)',
+                        stroke: configs.windowShadesBorderColor.value,
+                        opacity: configs.windowShadesOpacity.value,
+                    },
+                });
+                row.children.push({
+                    type: 'text',
+                    left: colWidth * (c + 1) + txtOffset,
+                    top: txtOffset,
+                    z: 99,
+                    bounding: 'raw',
+                    style: {
+                        text: r[columns[c]].value,
+                        font: configs.windowShadesFontSize.value + 'px "Microsoft YaHei", sans-serif',
+                        fill: colorPalette[i % colorPalette.length],
+                    },
+                });
+            }
+            children.push(row);
+            groupHeight += lineHeight;
+        } else if (index > selectGroup) {
+            break;
+        }
+    }
+    selectGroup += 1;
+    option.graphic = graphic.concat(children);
+
+    setTimeout(() => {
+        myChart.hideLoading();
+        myChart.setOption(option);
+    }, Number(configs.loadingTimes.value) * 1000);
+
+    let rowid = children.length * (-1);
+
+    function getText(text,id,rowid,groups){
+        if (rowid < 0){
+            if (groups == rowid * (-1))
+                return "";
+            else if (id>Math.abs(rowid))
+                return "";
+            else
+               return text;
+        } else if (rowid > 0) {
+            if (groups == rowid)
+                return "";
+            else if (id<Math.abs(rowid))
+                return text;
+            else
+                return "";
+        } else {
+            return text
+        }
+    }
+
+    function getOpacity(id,rowid,groups) {
+        if (rowid < 0) {
+            if (groups == rowid * (-1))
+                return 0;
+            else if (id > Math.abs(rowid))
+                return 0;
+            else
+                return configs.windowShadesOpacity.value;
+        } else if (rowid > 0) {
+            if (id < Math.abs(rowid))
+                return configs.windowShadesOpacity.value;
+            else
+                return 0;
+        } else {
+            return configs.windowShadesOpacity.value;
+        }
+    }
+
+    setInterval(function () {
+        if (!timeout) {
+            children = [];
+            groupHeight = lineHeight;
+            if (selectGroup > groups)
+                selectGroup = 0;
+            for (let i = 0; i < dataset["data"].length; i++) {
+                let index = ((i + 1) % group) > 0 ? Math.floor((i + 1) / group) : Math.floor((i + 1) / group) - 1;
+                if (index == selectGroup) {
+                    let r = dataset["data"][i];
+                    let row = {
+                        type: 'group',
+                        id: 'scrollingData-' + (i % group),
+                        left: configs.windowShadesLeft.value,
+                        top: top + lineHeight * (i % group + 1),
+                        children: [],
+                        rotation: rotation,
+                        onmouseover: function () {
+                            timeout = true;
+                        },
+                        onmouseout: function () {
+                            timeout = false;
+                        }
+                    };
+                    for (var c = 0; c < columns.length; c++) {
+                        row.children.push({
+                            type: 'rect',
+                            left: colWidth * (c + 1),
+                            z: 100,
+                            shape: {
+                                width: colWidth,
+                                height: lineHeight,
+                            },
+                            style: {
+                                lineWidth: 0.5,
+                                fill: (i % group) % 2 > 0 ? configs.windowShadesBackColor.value : "transparent",//'rgba(0,0,0,0.2)',
+                                stroke: configs.windowShadesBorderColor.value,
+                                opacity: getOpacity(i % group,rowid, children.length),
+                            },
+                        });
+                        row.children.push({
+                            type: 'text',
+                            left: colWidth * (c + 1) + txtOffset,
+                            top: txtOffset,
+                            z: 100,
+                            bounding: 'raw',
+                            style: {
+                                text: getText(r[columns[c]].value,i % group,rowid,children.length),
+                                font: configs.windowShadesFontSize.value + 'px "Microsoft YaHei", sans-serif',
+                                fill: colorPalette[i % colorPalette.length],
+                            },
+                        });
+                    }
+                    children.push(row);
+                    groupHeight += lineHeight;
+                } else if (index > selectGroup) {
+                    break;
+                }
+            }
+            if (rowid == children.length) {
+                selectGroup += 1;
+                rowid = children.length * (-1);
+            } else {
+                rowid += 1;
+            }
+            option.graphic = graphic.concat(children);
+            myChart.setOption(option);
+        }
+    }, Number(configs.windowShadesSpeed.value) * 1000);
     __ECHARTS__.addHistory(container, configs, dataset, width, height);
 
     return container;
