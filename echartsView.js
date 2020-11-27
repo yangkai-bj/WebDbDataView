@@ -126,6 +126,7 @@ var __ECHARTS__ = {
                 new Option("回归序列", "Regression"),
                 new Option("散点图", "Scatter"),
                 new Option("散点图(3D)", "Scatter3D"),
+                new Option("曲面图(3D)", "Surface"),
                 new Option("漏斗/金字塔", "Funnel"),
                 new Option("树形结构", "Tree"),
                 new Option("关系图", "Relation"),
@@ -1894,102 +1895,104 @@ function getEcharts(container, width, height, dataset, configs) {
     $("copyright").innerHTML = getUserConfig("CopyRight");
     switch (configs.echartsType.value) {
         case "Bar":
-            return getBar(container, width, height, dataset,configs);
+            return getBar(container, width, height, dataset, configs);
             break;
         case "PolarBar":
-            return getPolarBar(container, width, height, dataset,configs);
+            return getPolarBar(container, width, height, dataset, configs);
             break;
         case "PolarArea":
-            return getPolarArea(container, width, height, dataset,configs);
+            return getPolarArea(container, width, height, dataset, configs);
             break;
         case "Line":
-            return getLine(container, width, height, dataset,configs);
+            return getLine(container, width, height, dataset, configs);
             break;
         case "Line3D":
-            return getLine3D(container, width, height, dataset,configs);
+            return getLine3D(container, width, height, dataset, configs);
             break;
         case "BarAndLine":
-            return getBarAndLine(container, width, height, dataset,configs);
+            return getBarAndLine(container, width, height, dataset, configs);
             break;
         case "AreaStyle":
-            return getAreaStyle(container, width, height, dataset,configs);
+            return getAreaStyle(container, width, height, dataset, configs);
             break;
         case "TransversBar":
-            return getTransversBar(container, width, height, dataset,configs);
+            return getTransversBar(container, width, height, dataset, configs);
             break;
         case "Pie":
-            return getPie(container, width, height, dataset,configs);
+            return getPie(container, width, height, dataset, configs);
             break;
         case "Ring":
-            return getRing(container, width, height, dataset,configs);
+            return getRing(container, width, height, dataset, configs);
             break;
         case "Rose":
-            return getRose(container, width, height, dataset,configs);
+            return getRose(container, width, height, dataset, configs);
             break;
         case "Gauge":
             //return getGaugeWithOne(container, width, height, dataset,configs);
-            return getCategoryLineForGauge(container, width, height, dataset,configs);
+            return getCategoryLineForGauge(container, width, height, dataset, configs);
             break;
         case "Radar":
-            return getRadar(container, width, height, dataset,configs);
+            return getRadar(container, width, height, dataset, configs);
             break;
         case "Regression":
-            return getRegression(container, width, height, dataset,configs);
+            return getRegression(container, width, height, dataset, configs);
             break;
         case "Relation":
-            return getRelation(container, width, height, dataset,configs);
+            return getRelation(container, width, height, dataset, configs);
             break;
         case "Tree":
-            return getTree(container, width, height, dataset,configs);
+            return getTree(container, width, height, dataset, configs);
             break;
         case "WebkitDep":
-            return getWebkitDep(container, width, height, dataset,configs);
+            return getWebkitDep(container, width, height, dataset, configs);
             break;
         case "Scatter":
-            return getScatter(container, width, height, dataset,configs);
+            return getScatter(container, width, height, dataset, configs);
             break;
         case "Funnel":
-            return getFunnel(container, width, height, dataset,configs);
+            return getFunnel(container, width, height, dataset, configs);
             break;
         case "WordCloud":
-            return getWordCloud(container, width, height, dataset,configs);
+            return getWordCloud(container, width, height, dataset, configs);
             break;
         case "Liqiud":
             //return getLiqiud(container, width, height, dataset,configs);
-            return getCategoryLineForLiqiud(container, width, height, dataset,configs);
+            return getCategoryLineForLiqiud(container, width, height, dataset, configs);
             break;
         case "Calendar":
-            return getCalendar(container, width, height, dataset,configs);
+            return getCalendar(container, width, height, dataset, configs);
             break;
         case "GeoOfChina":
             //return getGeoOfChina(container, width, height, dataset,configs);
-            return getCategoryLineForGeoOfChina(container, width, height, dataset,configs);
+            return getCategoryLineForGeoOfChina(container, width, height, dataset, configs);
             break;
         case "GeoOfLocal":
             //return getGeoOfLocal(container, width, height, dataset,configs);
-            return getCategoryLineForGeoOfLocal(container, width, height, dataset,configs);
+            return getCategoryLineForGeoOfLocal(container, width, height, dataset, configs);
             break;
         case "Bar3D":
-            return getBar3D(container, width, height, dataset,configs);
+            return getBar3D(container, width, height, dataset, configs);
             break;
         case "Scatter3D":
-            return getScatter3D(container, width, height, dataset,configs);
+            return getScatter3D(container, width, height, dataset, configs);
             break;
         case "CategoryLine":
-            return getCategoryLine(container, width, height, dataset,configs);
+            return getCategoryLine(container, width, height, dataset, configs);
             break;
         case "FunctionLine":
-            return getFunctionLine(container, width, height, dataset,configs);
+            return getFunctionLine(container, width, height, dataset, configs);
             break;
         case "GeoMigrateLinesOfChinaCity":
-            return getGeoMigrateLinesOfChinaCity(container, width, height, dataset,configs);
+            return getGeoMigrateLinesOfChinaCity(container, width, height, dataset, configs);
             break;
         case "ScrollingScreen":
-            return getScrollingScreen(container, width, height, dataset,configs);
+            return getScrollingScreen(container, width, height, dataset, configs);
         case "WalkingLantern":
-            return getWalkingLantern(container, width, height, dataset,configs);
+            return getWalkingLantern(container, width, height, dataset, configs);
         case "WindowShades":
-            return getWindowShades(container, width, height, dataset,configs);
+            return getWindowShades(container, width, height, dataset, configs);
+        case "Surface":
+            return getSurface(container, width, height, dataset, configs);
     }
 }
 
@@ -11825,6 +11828,267 @@ function getWindowShades(container, width, height, dataset, configs) {
     }, Number(configs.windowShadesSpeed.value) * 1000);
     __ECHARTS__.addHistory(container, configs, dataset, width, height);
 
+    return container;
+}
+
+function getSurface(container, width, height, dataset, configs) {
+    if (container == null) {
+        container = document.createElement("div");
+        container.className = "echarts-container";
+        container.id = "echarts-container";
+        container.style.width = width;
+        container.style.height = height;
+    }
+
+    var myChart = echarts.init(container, configs.echartsTheme.value);
+
+    myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
+
+    var containerWidth = Number(width.replace(/px/i, ""));
+    var containerHeight = Number(height.replace(/px/i, ""));
+    var columns = [];
+    var rows = [];
+    var series = [];
+    var valueMin = null;
+    var valueMax = null;
+    for (var i = 0; i < dataset["columns"].length; i++) {
+        columns.push(dataset["columns"][i].name);
+    }
+
+    var serie = {
+        name: configs.titleText.value,
+        type: "surface",
+        data: [],
+        animation: configs.animation.value.toBoolean(),
+        animationThreshold: Number(configs.animationThreshold.value),
+        animationEasing: getAnimationEasing(configs),
+        animationDuration: function (idx) {
+            return idx * Number(configs.animationDuration.value) + c * Number(configs.animationDuration.value);
+        },
+        animationDelay: function (idx) {
+            return idx * Number(configs.animationDelay.value) + c * Number(configs.animationDelay.value);
+        },
+        animationEasingUpdate: getAnimationEasingUpdate(configs),
+        animationDurationUpdate: function (idx) {
+            return idx * Number(configs.animationDurationUpdate.value) + c * Number(configs.animationDurationUpdate.value);
+        },
+        animationDelayUpdate: function (idx) {
+            return idx * Number(configs.animationDelayUpdate.value) + c * Number(configs.animationDelayUpdate.value);
+        },
+    };
+
+    var data = [];
+    for (var c = 0; c < columns.length; c++) {
+        if (c == 0) {
+            for (var i = 0; i < dataset["data"].length; i++) {
+                var r = dataset["data"][i];
+                rows.push(r[columns[c]].value)
+            }
+        } else {
+            for (var i = 0; i < dataset["data"].length; i++) {
+                var r = dataset["data"][i];
+                data.push([i, c - 1, r[columns[c]].value]);
+                if (valueMin == null || valueMin > r[columns[c]].value)
+                    valueMin = r[columns[c]].value;
+                if (valueMax == null || valueMax < r[columns[c]].value)
+                    valueMax = r[columns[c]].value;
+            }
+        }
+    }
+
+    serie.data = data.map(function (item) {
+        return {
+            value: [item[0], item[1], item[2]],
+        }
+    });
+    series.push(serie);
+
+    var option = {
+        grid: {
+            x: configs.grid_left.value,
+            y: configs.grid_top.value,
+            x2: configs.grid_right.value,
+            y2: configs.grid_bottom.value,
+            containLabel: configs.grid_containLabel.value.toBoolean(),
+            backgroundColor: "transparent"
+        },
+        title: {
+            show: configs.titleDisplay.value.toBoolean(),
+            text: configs.titleText.value,
+            link: configs.titleTextLink.value,
+            target: "blank",
+            subtext: configs.titleSubText.value,
+            sublink: configs.titleSubTextLink.value,
+            subtarget: "blank",
+            top: "top",
+            left: configs.titlePosition.value,
+            textStyle: {
+                color: configs.titleTextColor.value,
+                fontSize: Number(configs.titleTextFontSize.value),
+            },
+            subtextStyle: {
+                color: configs.titleSubTextColor.value,
+                fontSize: Number(configs.titleSubTextFontSize.value),
+            }
+        },
+        legend: {
+            show: configs.legendDisplay.value.toBoolean(),
+            icon: configs.legendIcon.value,
+            type: configs.legendType.value,
+            selectedMode: configs.legendSelectedMode.value,
+            top: configs.legendPositionTop.value,
+            left: configs.legendPositionLeft.value,
+            orient: configs.legendOrient.value,
+            data: columns.slice(1, columns.length),
+            textStyle: {
+                color: configs.legendTextColor.value
+            },
+        },
+        tooltip: {
+            show: configs.tooltipDisplay.value.toBoolean(),
+            formatter: function (params) {
+                return rows[params.value[0]] + "<br>" + columns[params.value[1] + 1] + ": " + params.value[2];
+            },
+        },
+        toolbox: {
+            show: configs.toolboxDisplay.value.toBoolean(),
+            feature: {
+                saveAsImage: {
+                    show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
+                    excludeComponents: ["toolbox", "dataZoom", "timeline", "visualMap", "brush"],
+                    backgroundColor: configs.toolboxFeatureSaveAsImageBackgroundColor.value,
+                },
+                restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
+                dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
+                myMultiScreen: {
+                    show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
+                    title: '视图组合',
+                    icon: __SYS_IMAGES_PATH__.viewCombination,
+                    onclick: function () {
+                        __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
+                        alert("视图已提交组合列表.");
+                    }
+                },
+            },
+            top: configs.toolbox_top.value,
+            left: configs.toolbox_left.value,
+            orient: configs.toolbox_orient.value,
+            emphasis: {
+                iconStyle: {
+                    textPosition: configs.toolbox_textPosition.value,
+                },
+            },
+        },
+        visualMap: {
+            show: configs.visualMapDisplay.value.toBoolean(),
+            min: valueMin,
+            max: valueMax,
+            type: configs.visualMap_type.value,
+            calculable: true,
+            top: configs.visualMap_top.value,
+            left: configs.visualMap_left.value,
+            itemWidth: configs.visualMap_width.value,
+            orient: configs.visualMap_orient.value,
+            itemHeight: configs.visualMap_height.value,
+            textStyle: {
+                color: configs.visualMap_textColor.value,
+            },
+            splitNumber: configs.visualMap_piecewise_splitNumber.value,
+        },
+
+        xAxis3D: {
+            type: "category",
+            data: rows,
+            axisLine: {
+                show: true,
+                lineStyle: {
+                    color: configs.axisColor.value
+                },
+            },
+        },
+        yAxis3D: {
+            type: "category",
+            data: columns.slice(1),
+            axisLine: {
+                show: true,
+                lineStyle: {
+                    color: configs.axisColor.value
+                },
+            },
+        },
+        zAxis3D: {
+            type: "value",
+            axisLine: {
+                show: true,
+                lineStyle: {
+                    color: configs.axisColor.value
+                },
+            },
+        },
+        grid3D: {
+            boxWidth: configs.BoxWidthFor3D.value,
+            boxDepth: configs.BoxDepthFor3D.value,
+            viewControl: {
+                autoRotate: configs.AutoRotateFor3D.value.toBoolean(),
+                autoRotateSpeed: 10,
+                projection: "orthographic",
+                animation: configs.animation.value.toBoolean(),
+                animationThreshold: Number(configs.animationThreshold.value),
+                animationEasing: getAnimationEasing(configs),
+                animationDuration: function (idx) {
+                    return idx * Number(configs.animationDuration.value);
+                },
+                animationDelay: function (idx) {
+                    return idx * Number(configs.animationDelay.value);
+                },
+                animationEasingUpdate: getAnimationEasingUpdate(configs),
+                animationDurationUpdate: function (idx) {
+                    return idx * Number(configs.animationDurationUpdate.value);
+                },
+                animationDelayUpdate: function (idx) {
+                    return idx * Number(configs.animationDelayUpdate.value);
+                },
+            },
+            axisLine: {
+                show: configs.axisLineDisplay.value.toBoolean(),
+                lineStyle: {
+                    color: configs.axisColor.value
+                },
+            },
+            splitLine: {
+                show: configs.splitXLineDisplay.value.toBoolean() || configs.splitYLineDisplay.value.toBoolean(),
+                lineStyle: {
+                    color: configs.axisColor.value
+                },
+            },
+            splitArea: {
+                show: configs.splitXAreaDisplay.value.toBoolean() || configs.splitYAreaDisplay.value.toBoolean(),
+            },
+            axisPointer: {
+                show: configs.axisPointerDisplay.value.toBoolean(),
+                lineStyle: {
+                    color: configs.axisColor.value
+                },
+            },
+            light: {
+                main: {
+                    intensity: 1.2,
+                    shadow: configs.LightShadowFor3D.value.toBoolean(),
+                },
+                ambient: {
+                    intensity: 0.3
+                }
+            },
+        },
+        series: series,
+        graphic: getWaterGraphic(__SYS_LOGO_LINK__),
+    };
+    setTimeout(() => {
+        myChart.hideLoading();
+        myChart.setOption(option);
+    }, Number(configs.loadingTimes.value) * 1000);
+
+    __ECHARTS__.addHistory(container, configs, dataset, width, height);
     return container;
 }
 
