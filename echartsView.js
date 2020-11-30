@@ -111,9 +111,7 @@ var __ECHARTS__ = {
             value: "Bar",
             options: [
                 new Option("柱状图", "Bar"),
-                new Option("柱状图(3D)", "Bar3D"),
                 new Option("线型图", "Line"),
-                new Option("线型图(3D)", "Line3D"),
                 new Option("柱状&线型", "BarAndLine"),
                 new Option("条形图", "TransversBar"),
                 new Option("面积图", "AreaStyle"),
@@ -125,8 +123,6 @@ var __ECHARTS__ = {
                 new Option("极坐标面积图", "PolarArea"),
                 new Option("回归序列", "Regression"),
                 new Option("散点图", "Scatter"),
-                new Option("散点图(3D)", "Scatter3D"),
-                new Option("曲面图(3D)", "Surface"),
                 new Option("漏斗/金字塔", "Funnel"),
                 new Option("树形结构", "Tree"),
                 new Option("关系图", "Relation"),
@@ -141,7 +137,11 @@ var __ECHARTS__ = {
                 new Option("迁徙地图", "GeoMigrateLinesOfChinaCity"),
                 new Option("数据滚屏", "ScrollingScreen"),
                 new Option("数据走马灯", "WalkingLantern"),
-                new Option("数据百叶窗", "WindowShades")],
+                new Option("数据百叶窗", "WindowShades"),
+                new Option("柱状图(3D)", "Bar3D"),
+                new Option("线型图(3D)", "Line3D"),
+                new Option("散点图(3D)", "Scatter3D"),
+                new Option("曲面图(3D)", "Surface"),],
             type: "select"
         },
         echartsTheme: {
@@ -534,9 +534,15 @@ var __ECHARTS__ = {
         },
 
         hr_scatter: {name: "散点图", value: "", type: "hr"},
-        scatterSymbolSize: {name: "数据点大小", value: 6, type: "input"},
+        scatterType: {
+            name: "节点类型",
+            value: "scatter",
+            options: [new Option("静态散点", "scatter"), new Option("效应散点", "effectScatter")],
+            type: "select"
+        },
+        scatterSymbolSize: {name: "节点大小", value: "[6,18]", type: "input"},
         scatterSymbolShape: {
-            name: "数据点形状",
+            name: "节点形状",
             value: "circle",
             options: [new Option("圆形", "circle"), new Option("四边形", "rect"), new Option("圆角四边形", "roundRect"), new Option("三角形", "triangle"), new Option("菱形", "diamond"), new Option("图钉", "pin"), new Option("箭头", "arrow"), new Option("不设置", "none")],
             type: "select"
@@ -600,6 +606,13 @@ var __ECHARTS__ = {
         },
         label3DTextColor: {name: "标签颜色", value: "auto", type: "color"},
         label3DFontSize: {name: "标签字号", value: 12, type: "input"},
+        scatterSymbolSizeFor3D: {name: "节点大小", value: "[6,18]", type: "input"},
+        scatterSymbolShapeFor3D: {
+            name: "节点形状",
+            value: "circle",
+            options: [new Option("圆形", "circle"), new Option("四边形", "rect"), new Option("圆角四边形", "roundRect"), new Option("三角形", "triangle"), new Option("菱形", "diamond"), new Option("图钉", "pin"), new Option("箭头", "arrow"), new Option("不设置", "none")],
+            type: "select"
+        },
         ItemStyleOpacityFor3D: {name: "透明度", value: 1, type: "input"},
         LightShadowFor3D: {
             name: "显示光线阴影",
@@ -633,6 +646,13 @@ var __ECHARTS__ = {
             type: "select"
         },
         geoLineSymbolSize: {name: "符号大小", value: 10, type: "input"},
+        geoScatterSymbolSize: {name: "节点大小", value: "[6,18]", type: "input"},
+        geoScatterType: {
+            name: "节点类型",
+            value: "scatter",
+            options: [new Option("静态散点", "scatter"), new Option("效应散点", "effectScatter")],
+            type: "select"
+        },
         geoLineCurveness: {name: "线路曲率", value: 0.2, type: "input"},
         geoLinePeriod: {name: "周期速度(秒)", value: 5, type: "input"},
 
@@ -739,9 +759,11 @@ var __ECHARTS__ = {
         scrollingScreenSpeed: {name: "速度(秒)", value: 0.01, type: "input"},
 
         hr_walkingLantern: {name: "数据走马灯", value: "", type: "hr"},
-        walkingLanternDirection: {name: "方向", value: "LR",
+        walkingLanternDirection: {
+            name: "方向", value: "LR",
             options: [new Option("左向右", "LR"), new Option("右向左", "RL")],
-            type: "select"},
+            type: "select"
+        },
         walkingLanternTop: {name: "上边距(%)", value: "20%", type: "input"},
         walkingLanternWidth: {name: "宽度", value: 800, type: "input"},
         walkingLanternBackColor: {value: "transparent", name: "背景颜色", type: "color"},
@@ -6062,8 +6084,8 @@ function getScatter(container, width, height, dataset, configs) {
     var regressionType = {"直线": "linear", "指数": "exponential", "对数": "logarithmic", "多项式": "polynomial"};
     var series = [];
     var columns = [];
-    var minvalue = 0;
-    var maxvalue = 1;
+    var valueMin = null;
+    var valueMax = null;
     var columns_add = [];
     var selectType = configs.regressionType.value;
     var forwardPeroids = Number(configs.regressionForwardPeroids.value);
@@ -6078,7 +6100,7 @@ function getScatter(container, width, height, dataset, configs) {
             var serie = {
                 name: columns[c],
                 data: [],
-                type: "scatter",//"scatterGL"
+                type: configs.scatterType.value,
                 emphasis: {
                     label: {
                         show: true,
@@ -6088,17 +6110,15 @@ function getScatter(container, width, height, dataset, configs) {
                         position: "top"
                     }
                 },
-                //symbolSize: [10, 70],
                 symbol: configs.scatterSymbolShape.value,
                 symbolSize: function (data) {
-                    //if (maxvalue != minvalue) {
-                    //    if ((maxvalue - minvalue) >= (30 - 5))
-                    //        return ((30 - 5) / (maxvalue - minvalue)) * Math.abs(data[1]) + 5;
-                    //    else
-                    //        return ((maxvalue - minvalue) / (30 - 5)) * Math.abs(data[1]) + 5;
-
-                    //} else
-                    return configs.scatterSymbolSize.value;
+                    let size = eval(configs.scatterSymbolSize.value);
+                    if (size[0] > size[1]){
+                        let tmp = size[1];
+                        size[1] = size[0];
+                        size[0] = tmp;
+                    }
+                    return (size[0]==size[1] || valueMax == valueMin)?size[0]:(data[1]-valueMin)*(size[1] - size[0])/(valueMax-valueMin) + size[0];
                 },
                 itemStyle: {
                     opacity: 0.8,
@@ -6134,10 +6154,10 @@ function getScatter(container, width, height, dataset, configs) {
                 d.push(row[columns[c]].value);
                 if (row[columns[c]].value != "" && row[columns[c]].value != null && !isNaN(Number(row[columns[c]].value))) {
                     serie.data.push(d);
-                    if (Math.abs(d[1]) < minvalue)
-                        minvalue = Math.abs(d[1]);
-                    if (Math.abs(d[1]) > maxvalue)
-                        maxvalue = Math.abs(d[1]);
+                    if (valueMin == null || valueMin > d[1])
+                        valueMin = d[1];
+                    if (valueMax == null || valueMax < d[1])
+                        valueMax = d[1];
                 }
             }
             series.push(serie);
@@ -7982,9 +8002,18 @@ function getGeoOfChina(container, width, height, dataset, configs) {
                 data: convertData(series[index].data.sort(function (a, b) {
                     return b.value - a.value;
                 })),
-                symbolSize: function (val) {
-                    var value = val[2] / (series[index].max / configs.scatterSymbolSize.value);
-                    return value < 5 ? 5 : value;
+                //symbolSize: function (val) {
+                //    var value = val[2] / (series[index].max / configs.scatterSymbolSize.value);
+                //    return value < 5 ? 5 : value;
+                //},
+                symbolSize: function (data) {
+                    let size = eval(configs.geoScatterSymbolSize.value);
+                    if (size[0] > size[1]){
+                        let tmp = size[1];
+                        size[1] = size[0];
+                        size[0] = tmp;
+                    }
+                    return (size[0]==size[1] || series[index].max == series[index].min)?size[0]:(data[2]-series[index].min)*(size[1] - size[0])/(series[index].max-series[index].min) + size[0];
                 },
                 showEffectOn: "render",
                 rippleEffect: {
@@ -8305,9 +8334,18 @@ function getGeoOfLocal(container, width, height, dataset, configs) {
                 data: convertData(series[index].data.sort(function (a, b) {
                     return b.value - a.value;
                 })),
-                symbolSize: function (val) {
-                    var value = val[2] / (series[index].max / configs.scatterSymbolSize.value);
-                    return value<5?5:value;
+                //symbolSize: function (val) {
+                //    var value = val[2] / (series[index].max / configs.scatterSymbolSize.value);
+                //    return value<5?5:value;
+                //},
+                symbolSize: function (data) {
+                    let size = eval(configs.geoScatterSymbolSize.value);
+                    if (size[0] > size[1]){
+                        let tmp = size[1];
+                        size[1] = size[0];
+                        size[0] = tmp;
+                    }
+                    return size[0]==size[1] || series[index].max == series[index].min?size[0]:(data[2]-series[index].min)*(size[1] - size[0])/(series[index].max-series[index].min) + size[0];
                 },
                 showEffectOn: "render",
                 rippleEffect: {
@@ -8573,6 +8611,9 @@ function getBar3D(container, width, height, dataset, configs) {
         },
         tooltip: {
             show: configs.tooltipDisplay.value.toBoolean(),
+            formatter: function (params) {
+                return "X:" + rows[params.value[0]] + "<br>Y:" + columns[params.value[1] + 1] + "<br>Z:" + params.value[2];
+            },
         },
         toolbox: {
             show: configs.toolboxDisplay.value.toBoolean(),
@@ -8844,6 +8885,9 @@ function getLine3D(container, width, height, dataset, configs) {
         },
         tooltip: {
             show:configs.tooltipDisplay.value.toBoolean(),
+            formatter: function (params) {
+                return "X:" + rows[params.value[0]] + "<br>Y:" + columns[params.value[1] + 1] + "<br>Z:" + params.value[2];
+            },
         },
         toolbox: {
             show: configs.toolboxDisplay.value.toBoolean(),
@@ -9022,14 +9066,25 @@ function getScatter3D(container, width, height, dataset, configs) {
                 name: columns[c],
                 type: "scatter3D",
                 data: [],
-                symbolSize: configs.scatterSymbolSize.value,
-                symbol: configs.scatterSymbolShape.value,
-                //"circle", "rect", "roundRect", "triangle", "diamond", "pin", "arrow", "none"
-                itemStyle: {
-                    borderWidth: 1,
-                    borderColor: "rgba(255,255,255,0.8)",
-                    opacity: configs.ItemStyleOpacityFor3D.value,
+                symbolSize: function (data) {
+                    let size = eval(configs.scatterSymbolSizeFor3D.value);
+                    if (size[0] > size[1]){
+                        let tmp = size[1];
+                        size[1] = size[0];
+                        size[0] = tmp;
+                    }
+                    return size[0]==size[1] || valueMax == valueMin?size[0]:(data[2]-valueMin)*(size[1] - size[0])/(valueMax-valueMin) + size[0];
                 },
+                symbol: configs.scatterSymbolShapeFor3D.value,
+                //"circle", "rect", "roundRect", "triangle", "diamond", "pin", "arrow", "none"
+                itemStyle:
+                    {
+                        opacity: configs.ItemStyleOpacityFor3D.value,
+                        shadowBlur: 10,
+                        shadowOffsetX: 0,
+                        shadowOffsetY: 0,
+                        shadowColor: 'rgba(0, 0, 0, 0.5)',
+                    },
                 label: {
                     show: configs.LabelOf3DDisplay.value.toBoolean(),
                     textStyle: {
@@ -9043,13 +9098,15 @@ function getScatter3D(container, width, height, dataset, configs) {
                 },
                 emphasis: {
                     label: {
-                        textStyle: {
-                            fontSize: configs.label3DFontSize.value,
-                            //color: "#900"
-                        }
+                        show: false,
+                        //textStyle: {
+                        //    fontSize: configs.label3DFontSize.value,
+                        //}
                     },
                     itemStyle: {
-                        //color: "#900"
+                        borderWidth: 2,
+                        borderColor: "yellow",//"rgba(255,255,255,0.8)",
+                        opacity: configs.ItemStyleOpacityFor3D.value,
                     }
                 },
                 animation: configs.animation.value.toBoolean(),
@@ -9130,6 +9187,9 @@ function getScatter3D(container, width, height, dataset, configs) {
         },
         tooltip: {
            show:configs.tooltipDisplay.value.toBoolean(),
+            formatter: function (params) {
+                return "X:" + rows[params.value[0]] + "<br>Y:" + columns[params.value[1] + 1] + "<br>Z:" + params.value[2];
+            },
         },
         toolbox: {
             show: configs.toolboxDisplay.value.toBoolean(),
@@ -10586,14 +10646,23 @@ function getCategoryLineForGeoOfChina(container, width, height, dataset, configs
                         },
                         {
                             name: columns[c],
-                            type: "effectScatter",//"scatter",//"effectScatter"
+                            type: configs.geoScatterType.value,
                             coordinateSystem: "geo",
                             data: convertData(data.sort(function (a, b) {
                                 return b.value - a.value;
                             })),
-                            symbolSize: function (val) {
-                                var value = val[2] / (max / configs.scatterSymbolSize.value);
-                                return value < 5 ? 5 : value;
+                            //symbolSize: function (val) {
+                            //    var value = val[2] / (max / configs.scatterSymbolSize.value);
+                            //    return value < 5 ? 5 : value;
+                            //},
+                            symbolSize: function (data) {
+                                let size = eval(configs.geoScatterSymbolSize.value);
+                                if (size[0] > size[1]) {
+                                    let tmp = size[1];
+                                    size[1] = size[0];
+                                    size[0] = tmp;
+                                }
+                                return (size[0] == size[1] || max == min) ? size[0] : (data[2] - min) * (size[1] - size[0]) / (max - min) + size[0];
                             },
                             showEffectOn: "render",
                             rippleEffect: {
@@ -10937,14 +11006,23 @@ function getCategoryLineForGeoOfLocal(container, width, height, dataset, configs
                         },
                         {
                             name: columns[c],
-                            type: "effectScatter",//"scatter",//"effectScatter"
+                            type: configs.geoScatterType.value,
                             coordinateSystem: "geo",
                             data: convertData(data.sort(function (a, b) {
                                 return b.value - a.value;
                             })),
-                            symbolSize: function (val) {
-                                var value = val[2] / (max / configs.scatterSymbolSize.value);
-                                return value < 5 ? 5 : value;
+                            //symbolSize: function (val) {
+                            //    var value = val[2] / (max / configs.scatterSymbolSize.value);
+                            //    return value < 5 ? 5 : value;
+                            //},
+                            symbolSize: function (data) {
+                                let size = eval(configs.geoScatterSymbolSize.value);
+                                if (size[0] > size[1]) {
+                                    let tmp = size[1];
+                                    size[1] = size[0];
+                                    size[0] = tmp;
+                                }
+                                return (size[0] == size[1] || max == min) ? size[0] : (data[2] - min) * (size[1] - size[0]) / (max - min) + size[0];
                             },
                             showEffectOn: "render",
                             rippleEffect: {
@@ -11947,7 +12025,7 @@ function getSurface(container, width, height, dataset, configs) {
         tooltip: {
             show: configs.tooltipDisplay.value.toBoolean(),
             formatter: function (params) {
-                return rows[params.value[0]] + "<br>" + columns[params.value[1] + 1] + ": " + params.value[2];
+                return "X:" + rows[params.value[0]] + "<br>Y:" + columns[params.value[1] + 1] + "<br>Z:" + params.value[2];
             },
         },
         toolbox: {
