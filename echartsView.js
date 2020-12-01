@@ -106,6 +106,7 @@ var __ECHARTS__ = {
     },
     configs: {
         hr_echarts_basic: {name: "基本参数", value: "", type: "hr"},
+        loadingTimes: {name: "载入时间(秒)", value: 2, type: "input"},
         echartsType: {
             name: "视图类型",
             value: "Bar",
@@ -164,8 +165,9 @@ var __ECHARTS__ = {
                 new Option("Wonderland", "Wonderland")],
             type: "select"
         },
+        backgroundColor: {name: "图像背景",value: "transparent",type: "input"},
+
         hr_grid: {name: "整体布局", value: "", type: "hr"},
-        loadingTimes: {name: "载入时间(秒)", value: 2, type: "input"},
         grid_top: {name: "上边距(%)", value: "10%", type: "input"},
         grid_bottom: {name: "下边距(%)", value: "10%", type: "input"},
         grid_left: {name: "左边距(%)", value: "10%", type: "input"},
@@ -2184,6 +2186,10 @@ function getBar(container, width, height, dataset, configs) {
     }
 
     var option = {
+        aria: {
+            show: true,
+        },
+        backgroundColor: configs.backgroundColor.value,
         grid: {
             x: configs.grid_left.value,
             y: configs.grid_top.value,
@@ -2490,6 +2496,7 @@ function getTransversBar(container, width, height, dataset, configs) {
     }
 
     var option = {
+        backgroundColor: configs.backgroundColor.value,
         grid: {
             x: configs.grid_left.value,
             y: configs.grid_top.value,
@@ -2809,6 +2816,7 @@ function getLine(container, width, height, dataset, configs) {
     }
 
     var option = {
+        backgroundColor: configs.backgroundColor.value,
         grid: {
             x: configs.grid_left.value,
             y: configs.grid_top.value,
@@ -3167,6 +3175,7 @@ function getBarAndLine(container, width, height, dataset, configs) {
     }
 
     var option = {
+        backgroundColor: configs.backgroundColor.value,
         grid: {
             x: configs.grid_left.value,
             y: configs.grid_top.value,
@@ -3747,6 +3756,7 @@ function getPolarBar(container, width, height, dataset, configs) {
     }
 
     var option = {
+        backgroundColor: configs.backgroundColor.value,
         title: {
             show: configs.titleDisplay.value.toBoolean(),
             text: configs.titleText.value,
@@ -3959,6 +3969,7 @@ function getPolarArea(container, width, height, dataset, configs) {
     }
 
     var option = {
+        backgroundColor: configs.backgroundColor.value,
         title: {
             show: configs.titleDisplay.value.toBoolean(),
             text: configs.titleText.value,
@@ -4197,6 +4208,7 @@ function getPie(container, width, height, dataset, configs) {
     }
 
     var option = {
+        backgroundColor: configs.backgroundColor.value,
         title: {
             show: configs.titleDisplay.value.toBoolean(),
             text: configs.titleText.value,
@@ -4415,6 +4427,7 @@ function getRing(container, width, height, dataset, configs) {
     }
 
     var option = {
+        backgroundColor: configs.backgroundColor.value,
         title: {
             show: configs.titleDisplay.value.toBoolean(),
             text: configs.titleText.value,
@@ -4633,6 +4646,7 @@ function getRose(container, width, height, dataset, configs) {
     }
 
     var option = {
+        backgroundColor: configs.backgroundColor.value,
         title: {
             show: configs.titleDisplay.value.toBoolean(),
             text: configs.titleText.value,
@@ -4849,6 +4863,7 @@ function getRadar(container, width, height, dataset, configs) {
     }
 
     var option = {
+        backgroundColor: configs.backgroundColor.value,
         grid: {
             x: configs.grid_left.value,
             y: configs.grid_top.value,
@@ -5201,6 +5216,7 @@ function getRegression(container, width, height, dataset, configs) {
     init();
 
     var option = {
+        backgroundColor: configs.backgroundColor.value,
         grid: {
             x: configs.grid_left.value,
             y: configs.grid_top.value,
@@ -5410,7 +5426,7 @@ function getRegression(container, width, height, dataset, configs) {
     return container;
 }
 
-function  getRelation(container, width, height, dataset, configs) {
+function getRelation(container, width, height, dataset, configs) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
@@ -5533,6 +5549,7 @@ function  getRelation(container, width, height, dataset, configs) {
     };
 
     var option = {
+        backgroundColor: configs.backgroundColor.value,
         grid: {
             x: configs.grid_left.value,
             y: configs.grid_top.value,
@@ -5800,6 +5817,7 @@ function getTree(container, width, height, dataset, configs) {
     }
 
     var option = {
+        backgroundColor: configs.backgroundColor.value,
         grid: {
             x: configs.grid_left.value,
             y: configs.grid_top.value,
@@ -5965,6 +5983,7 @@ function getWebkitDep(container, width, height, dataset, configs) {
     };
 
     var option = {
+        backgroundColor: configs.backgroundColor.value,
         grid: {
             x: configs.grid_left.value,
             y: configs.grid_top.value,
@@ -6267,6 +6286,7 @@ function getScatter(container, width, height, dataset, configs) {
     init();
 
     var option = {
+        backgroundColor: configs.backgroundColor.value,
         grid: {
             x: configs.grid_left.value,
             y: configs.grid_top.value,
@@ -6598,6 +6618,7 @@ function getFunnel(container, width, height, dataset, configs) {
     init();
 
     var option = {
+        backgroundColor: configs.backgroundColor.value,
         title: {
             show: configs.titleDisplay.value.toBoolean(),
             text: configs.titleText.value,
@@ -6791,6 +6812,7 @@ function getWordCloud(container, width, height, dataset, configs) {
     init();
 
     var option = {
+        backgroundColor: configs.backgroundColor.value,
         grid: {
             x: configs.grid_left.value,
             y: configs.grid_top.value,
@@ -7002,6 +7024,7 @@ function getLiqiud(container, width, height, dataset, configs) {
 
     init();
     var option = {
+        backgroundColor: configs.backgroundColor.value,
         tooltip: {
             show:configs.tooltipDisplay.value.toBoolean(),
         },
@@ -7225,6 +7248,7 @@ function getGaugeWithAll(container, width, height, dataset, configs) {
     }
 
     var option = {
+        backgroundColor: configs.backgroundColor.value,
         grid: {
             x: configs.grid_left.value,
             y: configs.grid_top.value,
@@ -7449,6 +7473,7 @@ function getGaugeWithOne(container, width, height, dataset, configs) {
     }
 
     var option = {
+        backgroundColor: configs.backgroundColor.value,
         title: {
             show: configs.titleDisplay.value.toBoolean(),
             text: configs.titleText.value,
@@ -7704,6 +7729,7 @@ function getCalendar(container, width, height, dataset, configs) {
 
     init();
     var option = {
+        backgroundColor: configs.backgroundColor.value,
         grid: {
             x: configs.grid_left.value,
             y: configs.grid_top.value,
@@ -7875,6 +7901,7 @@ function getGeoOfChina(container, width, height, dataset, configs) {
     init();
 
     var option = {
+        backgroundColor: configs.backgroundColor.value,
         grid: {
             x: configs.grid_left.value,
             y: configs.grid_top.value,
@@ -8205,6 +8232,7 @@ function getGeoOfLocal(container, width, height, dataset, configs) {
     init();
 
     var option = {
+        backgroundColor: configs.backgroundColor.value,
         grid: {
             x: configs.grid_left.value,
             y: configs.grid_top.value,
@@ -8523,16 +8551,17 @@ function getBar3D(container, width, height, dataset, configs) {
                         borderWidth: 1
                     },
                     formatter: function (params) {
-                        return rows[params.value[0]] + "\n" + columns[params.value[1] + 1] + ": " + params.value[2];
+                        return rows[params.value[0]] + "\t" + columns[params.value[1] + 1] + "\n● " + params.value[2];
                     },
                 },
                 emphasis: {
                     label: {
+                        show: configs.LabelOf3DDisplay.value.toBoolean(),
                         textStyle: {
-                            fontSize: configs.label3DFontSize.value,
+                            fontSize: configs.label3DFontSize.value*1.2,
                         }
                     },
-                    itemStyle: {}
+                    //itemStyle: {}
                 },
                 animation: configs.animation.value.toBoolean(),
                 animationThreshold: Number(configs.animationThreshold.value),
@@ -8569,6 +8598,7 @@ function getBar3D(container, width, height, dataset, configs) {
     }
 
     var option = {
+        backgroundColor: configs.backgroundColor.value,
         grid: {
             x: configs.grid_left.value,
             y: configs.grid_top.value,
@@ -8612,7 +8642,7 @@ function getBar3D(container, width, height, dataset, configs) {
         tooltip: {
             show: configs.tooltipDisplay.value.toBoolean(),
             formatter: function (params) {
-                return "X:" + rows[params.value[0]] + "<br>Y:" + columns[params.value[1] + 1] + "<br>Z:" + params.value[2];
+                return rows[params.value[0]] + "&emsp;" + columns[params.value[1] + 1] + "<br>●&ensp;" + params.value[2];
             },
         },
         toolbox: {
@@ -8798,14 +8828,12 @@ function getLine3D(container, width, height, dataset, configs) {
                 },
                 emphasis: {
                     label: {
+                        show: configs.LabelOf3DDisplay.value.toBoolean(),
                         textStyle: {
-                            fontSize: configs.label3DFontSize.value,
-                            //color: "#900"
+                            fontSize: configs.label3DFontSize.value*1.2,
                         }
                     },
-                    itemStyle: {
-
-                    }
+                    //itemStyle: {}
                 },
                 animation: configs.animation.value.toBoolean(),
                 animationThreshold: Number(configs.animationThreshold.value),
@@ -8843,6 +8871,7 @@ function getLine3D(container, width, height, dataset, configs) {
     }
 
     var option = {
+        backgroundColor: configs.backgroundColor.value,
         grid: {
             x: configs.grid_left.value,
             y: configs.grid_top.value,
@@ -8886,7 +8915,7 @@ function getLine3D(container, width, height, dataset, configs) {
         tooltip: {
             show:configs.tooltipDisplay.value.toBoolean(),
             formatter: function (params) {
-                return "X:" + rows[params.value[0]] + "<br>Y:" + columns[params.value[1] + 1] + "<br>Z:" + params.value[2];
+                return rows[params.value[0]] + "&emsp;" + columns[params.value[1] + 1] + "<br>●&ensp;" + params.value[2];
             },
         },
         toolbox: {
@@ -9076,7 +9105,6 @@ function getScatter3D(container, width, height, dataset, configs) {
                     return size[0]==size[1] || valueMax == valueMin?size[0]:(data[2]-valueMin)*(size[1] - size[0])/(valueMax-valueMin) + size[0];
                 },
                 symbol: configs.scatterSymbolShapeFor3D.value,
-                //"circle", "rect", "roundRect", "triangle", "diamond", "pin", "arrow", "none"
                 itemStyle:
                     {
                         opacity: configs.ItemStyleOpacityFor3D.value,
@@ -9098,16 +9126,12 @@ function getScatter3D(container, width, height, dataset, configs) {
                 },
                 emphasis: {
                     label: {
-                        show: false,
-                        //textStyle: {
-                        //    fontSize: configs.label3DFontSize.value,
-                        //}
+                        show: configs.LabelOf3DDisplay.value.toBoolean(),
+                        textStyle: {
+                            fontSize: configs.label3DFontSize.value*1.2,
+                        }
                     },
-                    itemStyle: {
-                        borderWidth: 2,
-                        borderColor: "yellow",//"rgba(255,255,255,0.8)",
-                        opacity: configs.ItemStyleOpacityFor3D.value,
-                    }
+                    //itemStyle: {}
                 },
                 animation: configs.animation.value.toBoolean(),
                 animationThreshold: Number(configs.animationThreshold.value),
@@ -9145,6 +9169,7 @@ function getScatter3D(container, width, height, dataset, configs) {
     }
 
     var option = {
+        backgroundColor: configs.backgroundColor.value,
         grid: {
             x: configs.grid_left.value,
             y: configs.grid_top.value,
@@ -9186,9 +9211,9 @@ function getScatter3D(container, width, height, dataset, configs) {
             },
         },
         tooltip: {
-           show:configs.tooltipDisplay.value.toBoolean(),
+            show: configs.tooltipDisplay.value.toBoolean(),
             formatter: function (params) {
-                return "X:" + rows[params.value[0]] + "<br>Y:" + columns[params.value[1] + 1] + "<br>Z:" + params.value[2];
+                return rows[params.value[0]] + "&emsp;" + columns[params.value[1] + 1] + "<br>●&ensp;" + params.value[2];
             },
         },
         toolbox: {
@@ -9523,6 +9548,7 @@ function getCategoryLine(container, width, height, dataset, configs) {
 
     var option = {
         baseOption: {
+            backgroundColor: configs.backgroundColor.value,
             grid: {
                 x: configs.grid_left.value,
                 y: configs.grid_top.value,
@@ -9927,6 +9953,7 @@ function getGeoMigrateLinesOfChinaCity(container, width, height, dataset, config
         });
 
         var option = {
+            backgroundColor: configs.backgroundColor.value,
             grid: {
                 x: configs.grid_left.value,
                 y: configs.grid_top.value,
@@ -9935,7 +9962,6 @@ function getGeoMigrateLinesOfChinaCity(container, width, height, dataset, config
                 containLabel: configs.grid_containLabel.value.toBoolean(),
                 backgroundColor: "transparent"
             },
-            //backgroundColor: configs.geoBackgroundColor.value,
             title: {
                 show: configs.titleDisplay.value.toBoolean(),
                 text: configs.titleText.value,
@@ -10142,6 +10168,7 @@ function getCategoryLineForGauge(container, width, height, dataset, configs) {
 
     var option = {
         baseOption: {
+            backgroundColor: configs.backgroundColor.value,
             title: {
                 show: configs.titleDisplay.value.toBoolean(),
                 text: configs.titleText.value,
@@ -10353,6 +10380,7 @@ function getCategoryLineForLiqiud(container, width, height, dataset, configs) {
 
     var option = {
         baseOption: {
+            backgroundColor: configs.backgroundColor.value,
             title: {
                 show: configs.titleDisplay.value.toBoolean(),
                 text: configs.titleText.value,
@@ -10715,6 +10743,7 @@ function getCategoryLineForGeoOfChina(container, width, height, dataset, configs
 
     var option = {
         baseOption: {
+            backgroundColor: configs.backgroundColor.value,
             grid: {
                 x: configs.grid_left.value,
                 y: configs.grid_top.value,
@@ -11073,6 +11102,7 @@ function getCategoryLineForGeoOfLocal(container, width, height, dataset, configs
     init();
     var option = {
         baseOption: {
+            backgroundColor: configs.backgroundColor.value,
             grid: {
                 x: configs.grid_left.value,
                 y: configs.grid_top.value,
@@ -11278,6 +11308,7 @@ function getScrollingScreen(container, width, height, dataset, configs) {
     }
 
     var option = {
+        backgroundColor: configs.backgroundColor.value,
         title: {
             show: configs.titleDisplay.value.toBoolean(),
             text: configs.titleText.value,
@@ -11444,6 +11475,7 @@ function getWalkingLantern(container, width, height, dataset, configs) {
     ];
 
     var option = {
+        backgroundColor: configs.backgroundColor.value,
         title: {
             show: configs.titleDisplay.value.toBoolean(),
             text: configs.titleText.value,
@@ -11712,6 +11744,7 @@ function getWindowShades(container, width, height, dataset, configs) {
     ];
 
     var option = {
+        backgroundColor: configs.backgroundColor.value,
         title: {
             show: configs.titleDisplay.value.toBoolean(),
             text: configs.titleText.value,
@@ -11982,6 +12015,7 @@ function getSurface(container, width, height, dataset, configs) {
     series.push(serie);
 
     var option = {
+        backgroundColor: configs.backgroundColor.value,
         grid: {
             x: configs.grid_left.value,
             y: configs.grid_top.value,
@@ -12025,7 +12059,7 @@ function getSurface(container, width, height, dataset, configs) {
         tooltip: {
             show: configs.tooltipDisplay.value.toBoolean(),
             formatter: function (params) {
-                return "X:" + rows[params.value[0]] + "<br>Y:" + columns[params.value[1] + 1] + "<br>Z:" + params.value[2];
+                return rows[params.value[0]] + "&emsp;" + columns[params.value[1] + 1] + "<br>●&ensp;" + params.value[2];
             },
         },
         toolbox: {
