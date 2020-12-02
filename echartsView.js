@@ -166,6 +166,12 @@ var __ECHARTS__ = {
             type: "select"
         },
         backgroundColor: {name: "图像背景",value: "transparent",type: "input"},
+        ariaLabel:{
+            name: "开启无障碍访问",
+            value: "false",
+            options: [new Option("是", "true"), new Option("否", "false")],
+            type: "select"
+        },
 
         hr_grid: {name: "整体布局", value: "", type: "hr"},
         grid_top: {name: "上边距(%)", value: "10%", type: "input"},
@@ -2187,7 +2193,7 @@ function getBar(container, width, height, dataset, configs) {
 
     var option = {
         aria: {
-            show: true,
+            show: configs.ariaLabel.value.toBoolean(),
         },
         backgroundColor: configs.backgroundColor.value,
         grid: {
@@ -3175,6 +3181,9 @@ function getBarAndLine(container, width, height, dataset, configs) {
     }
 
     var option = {
+        aria: {
+            show: configs.ariaLabel.value.toBoolean(),
+        },
         backgroundColor: configs.backgroundColor.value,
         grid: {
             x: configs.grid_left.value,
@@ -7729,6 +7738,9 @@ function getCalendar(container, width, height, dataset, configs) {
 
     init();
     var option = {
+        aria: {
+            show: configs.ariaLabel.value.toBoolean(),
+        },
         backgroundColor: configs.backgroundColor.value,
         grid: {
             x: configs.grid_left.value,
@@ -8598,6 +8610,9 @@ function getBar3D(container, width, height, dataset, configs) {
     }
 
     var option = {
+        aria: {
+            show: configs.ariaLabel.value.toBoolean(),
+        },
         backgroundColor: configs.backgroundColor.value,
         grid: {
             x: configs.grid_left.value,
@@ -9548,6 +9563,9 @@ function getCategoryLine(container, width, height, dataset, configs) {
 
     var option = {
         baseOption: {
+            aria: {
+            show: configs.ariaLabel.value.toBoolean(),
+        },
             backgroundColor: configs.backgroundColor.value,
             grid: {
                 x: configs.grid_left.value,
@@ -10168,6 +10186,9 @@ function getCategoryLineForGauge(container, width, height, dataset, configs) {
 
     var option = {
         baseOption: {
+            aria: {
+            show: configs.ariaLabel.value.toBoolean(),
+        },
             backgroundColor: configs.backgroundColor.value,
             title: {
                 show: configs.titleDisplay.value.toBoolean(),
@@ -10380,6 +10401,9 @@ function getCategoryLineForLiqiud(container, width, height, dataset, configs) {
 
     var option = {
         baseOption: {
+            aria: {
+                show: configs.ariaLabel.value.toBoolean(),
+            },
             backgroundColor: configs.backgroundColor.value,
             title: {
                 show: configs.titleDisplay.value.toBoolean(),
@@ -10424,12 +10448,12 @@ function getCategoryLineForLiqiud(container, width, height, dataset, configs) {
                 data: times,
                 label: {
                     color: configs.timelineLabelColor.value,
-                    fontSize : Number(configs.timelineLabelFontSize.value),
+                    fontSize: Number(configs.timelineLabelFontSize.value),
                     formatter: function (s) {
                         return s;
                     }
                 },
-                lineStyle:{
+                lineStyle: {
                     color: configs.timeLineStyleColor.value,
                 },
                 bottom: 15
@@ -10743,6 +10767,12 @@ function getCategoryLineForGeoOfChina(container, width, height, dataset, configs
 
     var option = {
         baseOption: {
+            aria: {
+                show: configs.ariaLabel.value.toBoolean(),
+            },
+            aria: {
+                show: configs.ariaLabel.value.toBoolean(),
+            },
             backgroundColor: configs.backgroundColor.value,
             grid: {
                 x: configs.grid_left.value,
@@ -10795,12 +10825,12 @@ function getCategoryLineForGeoOfChina(container, width, height, dataset, configs
                 data: times,
                 label: {
                     color: configs.timelineLabelColor.value,
-                    fontSize : Number(configs.timelineLabelFontSize.value),
+                    fontSize: Number(configs.timelineLabelFontSize.value),
                     formatter: function (s) {
                         return s;
                     }
                 },
-                lineStyle:{
+                lineStyle: {
                     color: configs.timeLineStyleColor.value,
                 },
                 bottom: 15
@@ -11102,6 +11132,9 @@ function getCategoryLineForGeoOfLocal(container, width, height, dataset, configs
     init();
     var option = {
         baseOption: {
+            aria: {
+                show: configs.ariaLabel.value.toBoolean(),
+            },
             backgroundColor: configs.backgroundColor.value,
             grid: {
                 x: configs.grid_left.value,
@@ -11154,12 +11187,12 @@ function getCategoryLineForGeoOfLocal(container, width, height, dataset, configs
                 data: times,
                 label: {
                     color: configs.timelineLabelColor.value,
-                    fontSize : Number(configs.timelineLabelFontSize.value),
+                    fontSize: Number(configs.timelineLabelFontSize.value),
                     formatter: function (s) {
                         return s;
                     }
                 },
-                lineStyle:{
+                lineStyle: {
                     color: configs.timeLineStyleColor.value,
                 },
                 bottom: 15
@@ -11308,6 +11341,9 @@ function getScrollingScreen(container, width, height, dataset, configs) {
     }
 
     var option = {
+        aria: {
+            show: configs.ariaLabel.value.toBoolean(),
+        },
         backgroundColor: configs.backgroundColor.value,
         title: {
             show: configs.titleDisplay.value.toBoolean(),
@@ -11475,6 +11511,9 @@ function getWalkingLantern(container, width, height, dataset, configs) {
     ];
 
     var option = {
+        aria: {
+            show: configs.ariaLabel.value.toBoolean(),
+        },
         backgroundColor: configs.backgroundColor.value,
         title: {
             show: configs.titleDisplay.value.toBoolean(),
@@ -11744,6 +11783,9 @@ function getWindowShades(container, width, height, dataset, configs) {
     ];
 
     var option = {
+        aria: {
+            show: configs.ariaLabel.value.toBoolean(),
+        },
         backgroundColor: configs.backgroundColor.value,
         title: {
             show: configs.titleDisplay.value.toBoolean(),
@@ -12015,6 +12057,9 @@ function getSurface(container, width, height, dataset, configs) {
     series.push(serie);
 
     var option = {
+        aria: {
+            show: configs.ariaLabel.value.toBoolean(),
+        },
         backgroundColor: configs.backgroundColor.value,
         grid: {
             x: configs.grid_left.value,

@@ -4150,7 +4150,7 @@ function setEchartDrag(ec) {
         if (event.target.className == "multi-echarts-view-contain") {
             try {
                 echarts.getInstanceByDom(this).dispose();
-            }catch (e) {
+            } catch (e) {
             }
             event.target.style.border = "0px dotted var(--main-border-color)";
             let id = event.dataTransfer.getData("Text");
@@ -4436,6 +4436,54 @@ function setDragNook(parent, id) {
     function setDrag(nook) {
         nook.ondragstart = function (event) {
             event.dataTransfer.setData("Text", event.target.id);
+        };
+        nook.ondragenter = function (event) {
+            if (event.target.className == "drag-nook") {
+                event.target.parentNode.style.border = "1px dotted red";
+            }
+        };
+        nook.ondragover = function (event) {
+            if (event.target.className == "drag-nook") {
+                event.preventDefault();
+            }
+        };
+        nook.ondrop = function (event) {
+            if (event.target.className == "drag-nook") {
+                let parent = this.parentNode;
+                try {
+                    echarts.getInstanceByDom(parent).dispose();
+                } catch (e) {
+                }
+                parent.style.border = "0px dotted var(--main-border-color)";
+                let id = event.dataTransfer.getData("Text");
+                let history = __ECHARTS__.history[id];
+                if (history != null) {
+                    history = JSON.parse(history);
+                    try {
+                        let posi = getAbsolutePosition(parent);
+                        let _width = posi.width + "px";
+                        let _height = posi.height + "px";
+                        let e = getEcharts(
+                            parent,
+                            _width,
+                            _height,
+                            history.dataset,
+                            history.configs);
+                        setDragNook(e, e.getAttribute("_echarts_instance_"));
+                        setEchartDrag(parent);
+                    } catch (err) {
+                        console.log(err);
+                    }
+                } else {
+                    setMultiEchartsView(parent, id);
+                    parent.style.border = "0px dotted var(--main-border-color)";
+                }
+            }
+        };
+        nook.ondragleave = function (event) {
+            if (event.target.className == "drag-nook") {
+                event.target.parentNode.style.border = "1px dotted var(--main-border-color)";
+            }
         };
     }
 
