@@ -636,7 +636,6 @@ var __ECHARTS__ = {
         },
 
         hr_geo: {name: "地图", value: "", type: "hr"},
-        //geoBackgroundColor: {value: "#404a59", name: "地图背景颜色", type: "color"},
         geoAreaColor: {value: "#323c48", name: "区域颜色", type: "color"},
         geoBorderColor: {value: "#404a59", name: "边界颜色", type: "color"},
         geoHotAreaColor: {value: "#2a333d", name: "热点区域颜色", type: "color"},
@@ -794,16 +793,27 @@ var __ECHARTS__ = {
         windowShadesLines: {name: "显示行数", value: 10, type: "input"},
         windowShadesSpeed: {name: "速度(秒)", value: 0.01, type: "input"},
 
-        hr_timeline: {name: "时间/类目轴", value: "", type: "hr"},
+        hr_timeline: {name: "类目轴", value: "", type: "hr"},
         timelineDisplay: {
             name: "是否显示",
             value: "true",
             options: [new Option("是", "true"), new Option("否", "false")],
             type: "select"
         },
+        timelineOrient:{
+            name: "布局",
+            value: "horizontal",
+            options: [new Option("横向", "horizontal"), new Option("纵向", "vertical")],
+            type: "select"
+        },
+        timelineLeft: {name: "左边距(%)", value: "10%", type: "input"},
+        timelineRight: {name: "右边距(%)", value: "10%", type: "input"},
+        timelineTop: {name: "上边距(%)", value: "10%", type: "input"},
+        timelineBottom: {name: "下边距(%)", value: "10%", type: "input"},
         timelineLabelColor: {value: "#304654", name: "标签颜色", type: "color"},
         timelineLabelFontSize: {name: "字号", value: 12, type: "input"},
-        timeLineStyleColor: {value: "#304654", name: "轴线颜色", type: "color"},
+        timelineStyleColor: {value: "#304654", name: "轴线颜色", type: "color"},
+        timelineEmphasisColor: {value: "#304654", name: "热点颜色", type: "color"},
         categoryLineType: {
             name: "序列图形",
             value: "bar",
@@ -848,16 +858,14 @@ var __ECHARTS__ = {
             options: [new Option("连续", "continuous"), new Option("分段", "piecewise")],
             type: "select"
         },
-        visualMap_top: {name: "上边距(%)", value: "10%", type: "input"},
         visualMap_left: {name: "左边距(%)", value: "1%", type: "input"},
+        visualMap_top: {name: "上边距(%)", value: "10%", type: "input"},
         visualMap_orient: {
             name: "布局方向",
             value: "horizontal",
             options: [new Option("横向", "horizontal"), new Option("纵向", "vertical")],
             type: "select"
         },
-        visualMap_width: {name: "宽度", value: "15", type: "input"},
-        visualMap_height: {name: "高度", value: "30%", type: "input"},
         visualMap_textColor: {name: "标签颜色", value: "#e6e6e6", type: "color"},
         visualMap_piecewise_splitNumber: {name: "分段", value: "5", type: "input"},
 
@@ -7654,7 +7662,7 @@ function getCalendar(container, width, height, dataset, configs) {
                 };
                 var visualMap = {
                     //type: "piecewise",
-                    show:configs.visualMapDisplay.value.toBoolean(),
+                    show: configs.visualMapDisplay.value.toBoolean(),
                     calculable: true,
                     //orient: "vertical",//"horizontal"
                     //left: 10,
@@ -7988,11 +7996,9 @@ function getGeoOfChina(container, width, height, dataset, configs) {
             max: series[index].max,
             type: configs.visualMap_type.value,
             calculable: true,
-            top: configs.visualMap_top.value,
             left: configs.visualMap_left.value,
-            itemWidth: configs.visualMap_width.value,
+            top: configs.visualMap_top.value,
             orient: configs.visualMap_orient.value,
-            itemHeight: configs.visualMap_height.value,
             textStyle: {
                 color: configs.visualMap_textColor.value,
             },
@@ -8125,9 +8131,7 @@ function getGeoOfChina(container, width, height, dataset, configs) {
             calculable: true,
             top: configs.visualMap_top.value,
             left: configs.visualMap_left.value,
-            itemWidth: configs.visualMap_width.value,
             orient: configs.visualMap_orient.value,
-            itemHeight: configs.visualMap_height.value,
             textStyle: {
                 color: configs.visualMap_textColor.value,
             },
@@ -8320,11 +8324,9 @@ function getGeoOfLocal(container, width, height, dataset, configs) {
             max: series[index].max,
             type: configs.visualMap_type.value,
             calculable: true,
-            top: configs.visualMap_top.value,
             left: configs.visualMap_left.value,
-            itemWidth: configs.visualMap_width.value,
-            orient:configs.visualMap_orient.value,
-            itemHeight: configs.visualMap_height.value,
+            top: configs.visualMap_top.value,
+            orient: configs.visualMap_orient.value,
             textStyle: {
                 color: configs.visualMap_textColor.value,
             },
@@ -8460,9 +8462,7 @@ function getGeoOfLocal(container, width, height, dataset, configs) {
             calculable: true,
             top: configs.visualMap_top.value,
             left: configs.visualMap_left.value,
-            itemWidth: configs.visualMap_width.value,
             orient: configs.visualMap_orient.value,
-            itemHeight: configs.visualMap_height.value,
             textStyle: {
                 color: configs.visualMap_textColor.value,
             },
@@ -8695,11 +8695,9 @@ function getBar3D(container, width, height, dataset, configs) {
             max: valueMax,
             type: configs.visualMap_type.value,
             calculable: true,
-            top: configs.visualMap_top.value,
             left: configs.visualMap_left.value,
-            itemWidth: configs.visualMap_width.value,
+            top: configs.visualMap_top.value,
             orient: configs.visualMap_orient.value,
-            itemHeight: configs.visualMap_height.value,
             textStyle: {
                 color: configs.visualMap_textColor.value,
             },
@@ -8968,11 +8966,9 @@ function getLine3D(container, width, height, dataset, configs) {
             max: valueMax,
             type: configs.visualMap_type.value,
             calculable: true,
-            top: configs.visualMap_top.value,
             left: configs.visualMap_left.value,
-            itemWidth: configs.visualMap_width.value,
-            orient:configs.visualMap_orient.value,
-            itemHeight: configs.visualMap_height.value,
+            top: configs.visualMap_top.value,
+            orient: configs.visualMap_orient.value,
             textStyle: {
                 color: configs.visualMap_textColor.value,
             },
@@ -9266,11 +9262,9 @@ function getScatter3D(container, width, height, dataset, configs) {
             max: valueMax,
             type: configs.visualMap_type.value,
             calculable: true,
-            top: configs.visualMap_top.value,
             left: configs.visualMap_left.value,
-            itemWidth: configs.visualMap_width.value,
-            orient:configs.visualMap_orient.value,
-            itemHeight: configs.visualMap_height.value,
+            top: configs.visualMap_top.value,
+            orient: configs.visualMap_orient.value,
             textStyle: {
                 color: configs.visualMap_textColor.value,
             },
@@ -9624,9 +9618,27 @@ function getCategoryLine(container, width, height, dataset, configs) {
                     }
                 },
                 lineStyle:{
-                    color: configs.timeLineStyleColor.value,
+                    color: configs.timelineStyleColor.value,
                 },
-                bottom: 10
+                controlStyle:{
+                    color:configs.timelineStyleColor.value,
+                },
+                emphasis: {
+                    label:{
+                        color: configs.timelineEmphasisColor.value,
+                    },
+                    checkpointStyle: {
+                        color: configs.timelineEmphasisColor.value,
+                    },
+                    controlStyle: {
+                        color: configs.timelineEmphasisColor.value,
+                    },
+                },
+                orient: configs.timelineOrient.value,
+                left: configs.timelineLeft.value,
+                right: configs.timelineRight.value,
+                top: configs.timelineTop.value,
+                bottom: configs.timelineBottom.value,
             },
             tooltip: {
                 show: configs.tooltipDisplay.value.toBoolean(),
@@ -10239,9 +10251,27 @@ function getCategoryLineForGauge(container, width, height, dataset, configs) {
                     }
                 },
                 lineStyle:{
-                    color: configs.timeLineStyleColor.value,
+                    color: configs.timelineStyleColor.value,
                 },
-                bottom: 15
+                controlStyle:{
+                    color:configs.timelineStyleColor.value,
+                },
+                emphasis: {
+                    label:{
+                        color: configs.timelineEmphasisColor.value,
+                    },
+                    checkpointStyle: {
+                        color: configs.timelineEmphasisColor.value,
+                    },
+                    controlStyle: {
+                        color: configs.timelineEmphasisColor.value,
+                    },
+                },
+                orient: configs.timelineOrient.value,
+                left: configs.timelineLeft.value,
+                right: configs.timelineRight.value,
+                top: configs.timelineTop.value,
+                bottom: configs.timelineBottom.value,
             },
             tooltip: {
                 show: configs.tooltipDisplay.value.toBoolean(),
@@ -10453,10 +10483,28 @@ function getCategoryLineForLiqiud(container, width, height, dataset, configs) {
                         return s;
                     }
                 },
-                lineStyle: {
-                    color: configs.timeLineStyleColor.value,
+                lineStyle:{
+                    color: configs.timelineStyleColor.value,
                 },
-                bottom: 15
+                controlStyle:{
+                    color:configs.timelineStyleColor.value,
+                },
+                emphasis: {
+                    label:{
+                        color: configs.timelineEmphasisColor.value,
+                    },
+                    checkpointStyle: {
+                        color: configs.timelineEmphasisColor.value,
+                    },
+                    controlStyle: {
+                        color: configs.timelineEmphasisColor.value,
+                    },
+                },
+                orient: configs.timelineOrient.value,
+                left: configs.timelineLeft.value,
+                right: configs.timelineRight.value,
+                top: configs.timelineTop.value,
+                bottom: configs.timelineBottom.value,
             },
             tooltip: {
                 show: configs.tooltipDisplay.value.toBoolean(),
@@ -10650,11 +10698,9 @@ function getCategoryLineForGeoOfChina(container, width, height, dataset, configs
                         max: max,
                         type: configs.visualMap_type.value,
                         calculable: true,
-                        top: configs.visualMap_top.value,
                         left: configs.visualMap_left.value,
-                        itemWidth: configs.visualMap_width.value,
+                        top: configs.visualMap_top.value,
                         orient: configs.visualMap_orient.value,
-                        itemHeight: configs.visualMap_height.value,
                         textStyle: {
                             color: configs.visualMap_textColor.value,
                         },
@@ -10831,9 +10877,28 @@ function getCategoryLineForGeoOfChina(container, width, height, dataset, configs
                     }
                 },
                 lineStyle: {
-                    color: configs.timeLineStyleColor.value,
+                    color: configs.timelineStyleColor.value,
                 },
-                bottom: 15
+                controlStyle: {
+                    color: configs.timelineStyleColor.value,
+                },
+                emphasis: {
+                    label:{
+                        color: configs.timelineEmphasisColor.value,
+                    },
+                    checkpointStyle: {
+                        color: configs.timelineEmphasisColor.value,
+                    },
+                    controlStyle: {
+                        color: configs.timelineEmphasisColor.value,
+                    },
+                },
+
+                orient: configs.timelineOrient.value,
+                left: configs.timelineLeft.value,
+                right: configs.timelineRight.value,
+                top: configs.timelineTop.value,
+                bottom: configs.timelineBottom.value,
             },
             tooltip: {
                 show: configs.tooltipDisplay.value.toBoolean(),
@@ -11016,11 +11081,9 @@ function getCategoryLineForGeoOfLocal(container, width, height, dataset, configs
                         max: max,
                         type: configs.visualMap_type.value,
                         calculable: true,
-                        top: configs.visualMap_top.value,
                         left: configs.visualMap_left.value,
-                        itemWidth: configs.visualMap_width.value,
+                        top: configs.visualMap_top.value,
                         orient: configs.visualMap_orient.value,
-                        itemHeight: configs.visualMap_height.value,
                         textStyle: {
                             color: configs.visualMap_textColor.value,
                         },
@@ -11192,10 +11255,28 @@ function getCategoryLineForGeoOfLocal(container, width, height, dataset, configs
                         return s;
                     }
                 },
-                lineStyle: {
-                    color: configs.timeLineStyleColor.value,
+                lineStyle:{
+                    color: configs.timelineStyleColor.value,
                 },
-                bottom: 15
+                controlStyle:{
+                    color:configs.timelineStyleColor.value,
+                },
+                emphasis: {
+                    label:{
+                        color: configs.timelineEmphasisColor.value,
+                    },
+                    checkpointStyle: {
+                        color: configs.timelineEmphasisColor.value,
+                    },
+                    controlStyle: {
+                        color: configs.timelineEmphasisColor.value,
+                    },
+                },
+                orient: configs.timelineOrient.value,
+                left: configs.timelineLeft.value,
+                right: configs.timelineRight.value,
+                top: configs.timelineTop.value,
+                bottom: configs.timelineBottom.value,
             },
             tooltip: {
                 show: configs.tooltipDisplay.value.toBoolean(),
@@ -12142,11 +12223,9 @@ function getSurface(container, width, height, dataset, configs) {
             max: valueMax,
             type: configs.visualMap_type.value,
             calculable: true,
-            top: configs.visualMap_top.value,
             left: configs.visualMap_left.value,
-            itemWidth: configs.visualMap_width.value,
+            top: configs.visualMap_top.value,
             orient: configs.visualMap_orient.value,
-            itemHeight: configs.visualMap_height.value,
             textStyle: {
                 color: configs.visualMap_textColor.value,
             },
