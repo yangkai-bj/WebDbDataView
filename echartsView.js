@@ -1,4 +1,6 @@
 
+console.log("EchartsView.js,本模块仅支持Echarts4.9.0版本;Echarts5.0.0版本下,部分功能失效.");
+
 String.prototype.toBoolean = function(){
     let str = this.toString().toLowerCase().trim();
     if (str == "true" || str == "false")
@@ -123,6 +125,7 @@ var __ECHARTS__ = {
                 new Option("极坐标柱状图", "PolarBar"),
                 new Option("极坐标面积图", "PolarArea"),
                 new Option("回归序列", "Regression"),
+                new Option("盒须图", "Boxplot"),
                 new Option("散点图", "Scatter"),
                 new Option("漏斗/金字塔", "Funnel"),
                 new Option("树形结构", "Tree"),
@@ -131,6 +134,7 @@ var __ECHARTS__ = {
                 new Option("词云图", "WordCloud"),
                 new Option("水球图", "Liqiud"),
                 new Option("仪表盘", "Gauge"),
+                new Option("时钟", "Clock"),
                 new Option("日历图", "Calendar"),
                 new Option("类目轴", "CategoryLine"),
                 new Option("全国地图", "GeoOfChina"),
@@ -471,6 +475,33 @@ var __ECHARTS__ = {
         },
         regressionExpressionColor: {name: "表达式颜色", value: "auto", type: "color"},
 
+        hr_Boxplot:{name: "盒须图", value: "", type: "hr"},
+        boxplotScatterType: {
+            name: "节点类型",
+            value: "scatter",
+            options: [new Option("静态散点", "scatter"), new Option("效应散点", "effectScatter")],
+            type: "select"
+        },
+        boxplotScatterSymbolSize: {name: "节点大小", value: "[6,18]", type: "input"},
+        boxplotScatterSymbolShape: {
+            name: "节点形状",
+            value: "circle",
+            options: [new Option("圆形", "circle"), new Option("四边形", "rect"), new Option("圆角四边形", "roundRect"), new Option("三角形", "triangle"), new Option("菱形", "diamond"), new Option("图钉", "pin"), new Option("箭头", "arrow"), new Option("不设置", "none")],
+            type: "select"
+        },
+        boxplotNormalDisplay: {
+            name: "显示正常数据",
+            value: "false",
+            options: [new Option("是", "true"), new Option("否", "false")],
+            type: "select"
+        },
+        boxplotOutlierDisplay: {
+            name: "显示异常数据",
+            value: "true",
+            options: [new Option("是", "true"), new Option("否", "false")],
+            type: "select"
+        },
+
         hr_pie: {name: "饼图/圆环/玫瑰", value: "", type: "hr"},
         outRadius: {name: "外半径(%)", value: "70%", type: "input"},
         inRadius: {name: "内半径(%)", value: "35%", type: "input"},
@@ -581,6 +612,19 @@ var __ECHARTS__ = {
         gaugeTitleFontSize: {name: "标题字号", value: 14, type: "input"},
         gaugeLabelFontSize: {name: "标签字号", value: 18, type: "input"},
         gaugeAxisLineWidth: {name: "圆轴宽度", value: 10, type: "input"},
+
+        hr_clock:{name: "时钟", value: "", type: "hr"},
+        clockLabelColor: {value: "#C0911F", name: "颜色", type: "color"},
+        clockFontSize: {
+            name: "字号",
+            value: "25",
+            type: "input"
+        },
+        clockAxisLabelDistance:{
+            name: "标签位置",
+            value: "15",
+            type: "input"
+        },
 
         hr_calendar: {name: "日历图", value: "", type: "hr"},
         calendarType: {
@@ -2031,6 +2075,10 @@ function getEcharts(container, width, height, dataset, configs) {
             return getWindowShades(container, width, height, dataset, configs);
         case "Surface":
             return getSurface(container, width, height, dataset, configs);
+        case "Boxplot":
+            return getBoxplot(container, width, height, dataset, configs);
+        case "Clock":
+            return getClock(container, width, height, dataset, configs);
     }
 }
 
@@ -2226,7 +2274,7 @@ function getBar(container, width, height, dataset, configs) {
                 },
                 restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
                 dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                dataZoom: {show: configs.toolboxFeatureDataView.value.toBoolean()},
+                dataZoom: {show: configs.toolboxFeatureDataZoom.value.toBoolean(),},
                 magicType: {
                     show: configs.toolboxFeatureMagicType.value.toBoolean(),
                     type: ["line", "bar", "stack", "tiled"]
@@ -2533,7 +2581,7 @@ function getTransversBar(container, width, height, dataset, configs) {
                 },
                 restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
                 dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                dataZoom: {show: configs.toolboxFeatureDataView.value.toBoolean()},
+                dataZoom: {show: configs.toolboxFeatureDataZoom.value.toBoolean()},
                 magicType: {
                     show: configs.toolboxFeatureMagicType.value.toBoolean(),
                     type: ["stack", "tiled"]
@@ -2853,7 +2901,7 @@ function getLine(container, width, height, dataset, configs) {
                 },
                 restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
                 dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                dataZoom: {show: configs.toolboxFeatureDataView.value.toBoolean()},
+                dataZoom: {show: configs.toolboxFeatureDataZoom.value.toBoolean()},
                 magicType: {
                     show: configs.toolboxFeatureMagicType.value.toBoolean(),
                     type: ["line", "bar", "stack", "tiled"]
@@ -3215,7 +3263,7 @@ function getBarAndLine(container, width, height, dataset, configs) {
                 },
                 restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
                 dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                dataZoom: {show: configs.toolboxFeatureDataView.value.toBoolean()},
+                dataZoom: {show: configs.toolboxFeatureDataZoom.value.toBoolean()},
                 magicType: {
                     show: configs.toolboxFeatureMagicType.value.toBoolean(),
                     type: ["stack", "tiled"]
@@ -3528,7 +3576,7 @@ function getAreaStyle(container, width, height, dataset, configs) {
                 },
                 restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
                 dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                dataZoom: {show: configs.toolboxFeatureDataView.value.toBoolean()},
+                dataZoom: {show: configs.toolboxFeatureDataZoom.value.toBoolean()},
                 magicType: {
                     show: configs.toolboxFeatureMagicType.value.toBoolean(),
                     type: ["stack", "tiled"]
@@ -3803,7 +3851,7 @@ function getPolarBar(container, width, height, dataset, configs) {
                 },
                 restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
                 dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                dataZoom: {show: configs.toolboxFeatureDataView.value.toBoolean()},
+                dataZoom: {show: configs.toolboxFeatureDataZoom.value.toBoolean()},
                 magicType: {
                     show: configs.toolboxFeatureMagicType.value.toBoolean(),
                     type: ["stack", "tiled"]
@@ -4016,7 +4064,7 @@ function getPolarArea(container, width, height, dataset, configs) {
                 },
                 restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
                 dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                dataZoom: {show: configs.toolboxFeatureDataView.value.toBoolean()},
+                dataZoom: {show: configs.toolboxFeatureDataZoom.value.toBoolean()},
                 magicType: {
                     show: configs.toolboxFeatureMagicType.value.toBoolean(),
                     type: ["stack", "tiled"]
@@ -4255,7 +4303,7 @@ function getPie(container, width, height, dataset, configs) {
                 },
                 restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
                 dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                dataZoom: {show: configs.toolboxFeatureDataView.value.toBoolean()},
+                dataZoom: {show: configs.toolboxFeatureDataZoom.value.toBoolean()},
                 magicType: {
                     show: configs.toolboxFeatureMagicType.value.toBoolean(),
                     type: ["pie", "funnel"]
@@ -4474,7 +4522,7 @@ function getRing(container, width, height, dataset, configs) {
                 },
                 restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
                 dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                dataZoom: {show: configs.toolboxFeatureDataView.value.toBoolean()},
+                dataZoom: {show: configs.toolboxFeatureDataZoom.value.toBoolean()},
                 magicType: {
                     show: configs.toolboxFeatureMagicType.value.toBoolean(),
                     type: ["pie", "funnel"]
@@ -4693,7 +4741,7 @@ function getRose(container, width, height, dataset, configs) {
                 },
                 restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
                 dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                dataZoom: {show: configs.toolboxFeatureDataView.value.toBoolean()},
+                dataZoom: {show: configs.toolboxFeatureDataZoom.value.toBoolean()},
                 magicType: {
                     show: configs.toolboxFeatureMagicType.value.toBoolean(),
                     type: ["pie", "funnel"]
@@ -5256,7 +5304,7 @@ function getRegression(container, width, height, dataset, configs) {
                 },
                 restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
                 dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                dataZoom: {show: configs.toolboxFeatureDataView.value.toBoolean()},
+                dataZoom: {show: configs.toolboxFeatureDataZoom.value.toBoolean()},
                 magicType: {
                     show: configs.toolboxFeatureMagicType.value.toBoolean(),
                     type: ["line", "bar",]
@@ -11808,7 +11856,7 @@ function getWindowShades(container, width, height, dataset, configs) {
     var groupHeight = lineHeight;
     var timeout = false;
     var colWidth = Number(configs.windowShadesWidth.value) / dataset["columns"].length;
-    var rotation = (0 + Math.PI / 300) % (Math.PI * 2);
+    //var rotation = (90 + Math.PI / 300) % (Math.PI * 2);
     for (var i = 0; i < dataset["columns"].length; i++) {
         columns.push(dataset["columns"][i].name);
         cols.push({
@@ -11847,7 +11895,7 @@ function getWindowShades(container, width, height, dataset, configs) {
         left: configs.windowShadesLeft.value,
         top: top,
         children: cols,
-        rotation: rotation,
+        //rotation: rotation,
         onmouseover: function () {
             timeout = true;
         },
@@ -11895,12 +11943,13 @@ function getWindowShades(container, width, height, dataset, configs) {
         if (index == selectGroup) {
             let r = dataset["data"][i];
             let row = {
+                name: 'scrollingData-' + (i % group),
                 type: 'group',
                 id: 'scrollingData-' + (i % group),
                 left: configs.windowShadesLeft.value,
                 top: top + lineHeight * (i + 1),
                 children: [],
-                rotation: rotation,
+                //rotation: rotation,
                 onmouseover: function () {
                     timeout = true;
                 },
@@ -12002,12 +12051,13 @@ function getWindowShades(container, width, height, dataset, configs) {
                 if (index == selectGroup) {
                     let r = dataset["data"][i];
                     let row = {
+                        name: 'scrollingData-' + (i % group),
                         type: 'group',
                         id: 'scrollingData-' + (i % group),
                         left: configs.windowShadesLeft.value,
                         top: top + lineHeight * (i % group + 1),
                         children: [],
-                        rotation: rotation,
+                        //rotation: rotation,
                         onmouseover: function () {
                             timeout = true;
                         },
@@ -12325,6 +12375,604 @@ function getSurface(container, width, height, dataset, configs) {
     }, Number(configs.loadingTimes.value) * 1000);
 
     __ECHARTS__.addHistory(container, configs, dataset, width, height);
+    return container;
+}
+
+function getBoxplot(container, width, height, dataset, configs) {
+    if (container == null) {
+        container = document.createElement("div");
+        container.className = "echarts-container";
+        container.id = "echarts-container";
+        container.style.width = width;
+        container.style.height = height;
+    }
+
+    var myChart = echarts.init(container, configs.echartsTheme.value);
+
+    myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
+
+    var containerWidth = Number(width.replace(/px/i, ""));
+    var containerHeight = Number(height.replace(/px/i, ""));
+    var columns = [];
+    var data = [];
+    var normal = [];
+    //正常数
+    var outlier = [];
+    //异常数据
+    var valueMin = null;
+    var valueMax = null;
+    for (var i = 0; i < dataset["columns"].length; i++) {
+        columns.push(dataset["columns"][i].name);
+    }
+    for (var c = 1; c < columns.length; c++) {
+        let d = [];
+        for (var i = 0; i < dataset["data"].length; i++) {
+            let row = dataset["data"][i];
+            d.push(row[columns[c]].value)
+            if (valueMin == null || valueMin > row[columns[c]].value)
+                valueMin = row[columns[c]].value;
+            if (valueMax == null || valueMax < row[columns[c]].value)
+                valueMax = row[columns[c]].value;
+        }
+        let q1= getQuartile(d,1);
+        let q3= getQuartile(d,3);
+        let iqr = q3-q1;
+        let lower = q1 - 1.5*iqr;
+        let upper = q3 + 1.5*iqr;
+
+        data.push([lower, q1, getMedian(d), q3, upper]);
+        //盒须图数据结构:
+        //[下边界，Q1,MEDIAN/Q2,Q3,上边界]
+        //下边界=Q1-1.5*iqr;上边界=Q3+1.5*IQR
+        for (var e=0;e<d.length;e++){
+            if (d[e]< lower || d[e]> upper)
+                outlier.push([c-1,d[e]]);
+            else
+                normal.push([c-1,d[e]]);
+        }
+    }
+
+    var option = {
+        aria: {
+            show: configs.ariaLabel.value.toBoolean(),
+        },
+        backgroundColor: configs.backgroundColor.value,
+        grid: {
+            x: configs.grid_left.value,
+            y: configs.grid_top.value,
+            x2: configs.grid_right.value,
+            y2: configs.grid_bottom.value,
+            containLabel: configs.grid_containLabel.value.toBoolean(),
+            backgroundColor: "transparent"
+        },
+        title: {
+            show: configs.titleDisplay.value.toBoolean(),
+            text: configs.titleText.value,
+            link: configs.titleTextLink.value,
+            target: "blank",
+            subtext: configs.titleSubText.value,
+            sublink: configs.titleSubTextLink.value,
+            subtarget: "blank",
+            top: "top",
+            left: configs.titlePosition.value,
+            textStyle: {
+                color: configs.titleTextColor.value,
+                fontSize: Number(configs.titleTextFontSize.value),
+            },
+            subtextStyle: {
+                color: configs.titleSubTextColor.value,
+                fontSize: Number(configs.titleSubTextFontSize.value),
+            }
+        },
+        legend: {
+            show: configs.legendDisplay.value.toBoolean(),
+            icon: configs.legendIcon.value,
+            type: configs.legendType.value,
+            selectedMode: configs.legendSelectedMode.value,
+            top: configs.legendPositionTop.value,
+            left: configs.legendPositionLeft.value,
+            orient: configs.legendOrient.value,
+            data: columns.slice(1, columns.length),
+            textStyle: {
+                color: configs.legendTextColor.value
+            },
+        },
+        tooltip: {
+            show: configs.tooltipDisplay.value.toBoolean(),
+            trigger: 'item',
+            axisPointer: {
+                type: configs.axisPointerType.value,
+            },
+        },
+        toolbox: {
+            show: configs.toolboxDisplay.value.toBoolean(),
+            feature: {
+                saveAsImage: {
+                    show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
+                    excludeComponents: ["toolbox", "dataZoom", "timeline", "visualMap", "brush"],
+                    backgroundColor: configs.toolboxFeatureSaveAsImageBackgroundColor.value,
+                },
+                restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
+                dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
+                myMultiScreen: {
+                    show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
+                    title: '视图组合',
+                    icon: __SYS_IMAGES_PATH__.viewCombination,
+                    onclick: function () {
+                        __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
+                        alert("视图已提交组合列表.");
+                    }
+                },
+            },
+            top: configs.toolbox_top.value,
+            left: configs.toolbox_left.value,
+            orient: configs.toolbox_orient.value,
+            emphasis: {
+                iconStyle: {
+                    textPosition: configs.toolbox_textPosition.value,
+                },
+            },
+        },
+        xAxis: {
+            type: 'category',
+            data: columns.slice(1,columns.length),
+            inverse: configs.xAxisInverse.value.toBoolean(),
+            axisLine: {
+                show: configs.axisLineDisplay.value.toBoolean(),
+                lineStyle: {
+                    color: configs.axisColor.value
+                },
+            },
+            axisTick: {
+                show: configs.axisLineDisplay.value.toBoolean(),
+            },
+            axisLabel: {
+                show: configs.axisLineDisplay.value.toBoolean(),
+                interval: "auto",
+                margin: 8,
+                rotate: Number(configs.xAxisLabelRotate.value),
+                textStyle: {
+                    color: configs.axisTextColor.value
+                }
+            },
+            splitLine: {
+                show: configs.splitXLineDisplay.value.toBoolean(),
+                lineStyle: {
+                    color: [
+                        configs.axisColor.value
+                    ]
+                },
+            },
+            splitArea: {
+                show: configs.splitXAreaDisplay.value.toBoolean(),
+            }
+        },
+        yAxis: {
+            inverse: configs.yAxisInverse.value.toBoolean(),
+            axisLine: {
+                show: configs.axisLineDisplay.value.toBoolean(),
+                lineStyle: {
+                    color: configs.axisColor.value
+                },
+            },
+            axisTick: {
+                show: configs.axisLineDisplay.value.toBoolean(),
+            },
+            axisLabel: {
+                show: configs.axisLineDisplay.value.toBoolean(),
+                rotate: Number(configs.yAxisLabelRotate.value),
+                textStyle: {
+                    color: configs.axisTextColor.value
+                }
+            },
+            splitLine: {
+                show: configs.splitYLineDisplay.value.toBoolean(),
+                lineStyle: {
+                    color: [
+                        configs.axisColor.value
+                    ]
+                },
+            },
+            splitArea: {
+                show: configs.splitYAreaDisplay.value.toBoolean(),
+            }
+        },
+        dataZoom: [{
+            type: "inside",
+            filterMode: configs.dataZoomFilterMode.value,
+            start: 0,
+            xAxisIndex: 0,
+            end: 100
+        }, {
+            type: "inside",
+            filterMode: configs.dataZoomFilterMode.value,
+            start: 0,
+            yAxisIndex: 0,
+            end: 100
+        }, {
+            show: configs.dataZoomBarDisplay.value.toBoolean(),
+            type: "slider",
+            filterMode: configs.dataZoomFilterMode.value,
+            yAxisIndex: 0,
+            start: 0,
+            end: 100,
+            width: configs.dataZoomBarWidth.value,
+            height: (100 - toPoint(configs.grid_top.value) - toPoint(configs.grid_bottom.value)) + "%",
+            top: configs.grid_top.value,
+            right: (100 - toPoint(configs.grid_right.value)) + "%",
+            handleIcon: __SYS_IMAGES_PATH__.dataZoomHandleIcon[configs.dataZoomHandleIcon.value],
+            handleSize: configs.dataZoomHandleSize.value,
+            borderColor: configs.dataZoomBarColor.value,
+            handleStyle: {
+                color: configs.dataZoomBarColor.value,
+            }
+        }, {
+            show: configs.dataZoomBarDisplay.value.toBoolean(),
+            type: "slider",
+            filterMode: configs.dataZoomFilterMode.value,
+            xAxisIndex: 0,
+            start: 0,
+            end: 100,
+            width: (100 - toPoint(configs.grid_left.value) - toPoint(configs.grid_right.value)) + "%",
+            height: configs.dataZoomBarWidth.value,
+            left: configs.grid_left.value,
+            top: (100 - toPoint(configs.grid_bottom.value)) + "%",
+            handleIcon: __SYS_IMAGES_PATH__.dataZoomHandleIcon[configs.dataZoomHandleIcon.value],
+            handleSize: configs.dataZoomHandleSize.value,
+            borderColor: configs.dataZoomBarColor.value,
+            handleStyle: {
+                color: configs.dataZoomBarColor.value,
+            }
+        }],
+        series: [
+            {
+                name: '盒须图',
+                type: 'boxplot',
+                data: data,
+                tooltip: {
+                    formatter: function (param) {
+                        return [
+                            param.name + ': ',
+                            '上边界: ' + param.data[5],
+                            '上四分位: ' + param.data[4],
+                            '中值: ' + param.data[3],
+                            '下四分位: ' + param.data[2],
+                            '下边界: ' + param.data[1]
+                        ].join('<br/>');
+                    }
+                }
+            },
+        ],
+        graphic: getWaterGraphic(__SYS_LOGO_LINK__),
+    };
+
+    if (configs.boxplotNormalDisplay.value.toBoolean()){
+        option.series.push(
+            {
+                name: '正常值',
+                type: configs.boxplotScatterType.value,
+                emphasis: {
+                    label: {
+                        show: true,
+                        formatter: function (param) {
+                            return param.data[1];
+                        },
+                        position: "top"
+                    }
+                },
+                symbol: configs.boxplotScatterSymbolShape.value,
+                symbolSize: function (data) {
+                    let size = eval(configs.boxplotScatterSymbolSize.value);
+                    if (size[0] > size[1]){
+                        let tmp = size[1];
+                        size[1] = size[0];
+                        size[0] = tmp;
+                    }
+                    return (size[0]==size[1] || valueMax == valueMin)?size[0]:(data[1]-valueMin)*(size[1] - size[0])/(valueMax-valueMin) + size[0];
+                },
+                itemStyle: {
+                    opacity: 0.8,
+                    shadowBlur: 5,
+                    shadowOffsetX: 0,
+                    shadowOffsetY: 0,
+                },
+                data: normal
+            }
+        )
+    }
+
+    if (configs.boxplotOutlierDisplay.value.toBoolean()) {
+        option.series.push(
+            {
+                name: '异常值',
+                type: configs.boxplotScatterType.value,
+                emphasis: {
+                    label: {
+                        show: true,
+                        formatter: function (param) {
+                            return param.data[1];
+                        },
+                        position: "top"
+                    }
+                },
+                symbol: configs.boxplotScatterSymbolShape.value,
+                symbolSize: function (data) {
+                    let size = eval(configs.boxplotScatterSymbolSize.value);
+                    if (size[0] > size[1]) {
+                        let tmp = size[1];
+                        size[1] = size[0];
+                        size[0] = tmp;
+                    }
+                    return (size[0] == size[1] || valueMax == valueMin) ? size[0] : (data[1] - valueMin) * (size[1] - size[0]) / (valueMax - valueMin) + size[0];
+                },
+                itemStyle: {
+                    opacity: 0.8,
+                    shadowBlur: 5,
+                    shadowOffsetX: 0,
+                    shadowOffsetY: 0,
+                },
+                data: outlier
+            }
+        )
+    }
+
+
+    setTimeout(() => {
+        myChart.hideLoading();
+        myChart.setOption(option);
+    }, Number(configs.loadingTimes.value) * 1000);
+
+    __ECHARTS__.addHistory(container, configs, dataset, width, height);
+    return container;
+}
+
+function getClock(container, width, height, dataset, configs) {
+    if (container == null) {
+        container = document.createElement("div");
+        container.className = "echarts-container";
+        container.id = "echarts-container";
+        container.style.width = width;
+        container.style.height = height;
+    }
+
+    var myChart = echarts.init(container, configs.echartsTheme.value);
+
+    myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
+
+    var columns = [];
+    for (var i = 0; i < dataset["columns"].length; i++) {
+        columns.push(dataset["columns"][i].name);
+    }
+    var title = dataset["data"][0][columns[0]].value;
+
+    var containerWidth = Number(width.replace(/px/i, ""));
+    var containerHeight = Number(height.replace(/px/i, ""));
+    var option = {
+        colors: [configs.clockLabelColor.value],
+        series: [{
+            name: 'hour',
+            type: 'gauge',
+            startAngle: 90,
+            endAngle: -269.99,
+            min: 0,
+            max: 12,
+            splitNumber: 12,
+            itemStyle: {
+                color: configs.clockLabelColor.value,
+                shadowColor: 'rgba(0, 0, 0, 0.3)',
+                shadowBlur: 8,
+                shadowOffsetX: 2,
+                shadowOffsetY: 4
+            },
+            axisLine: {
+                lineStyle: {
+                    width: 12,
+                    //表盘宽度
+                    color: [
+                        [1, 'transparent']
+                    ],
+                    shadowColor: 'rgba(0, 0, 0, 0.5)',
+                    shadowBlur: 15
+                }
+            },
+            splitLine: {
+                length: 15,
+                //主刻度长度
+                lineStyle: {
+                    width: 5,
+                    //主刻度宽度
+                    color: configs.clockLabelColor.value,
+                    shadowColor: 'rgba(0, 0, 0, 0.3)',
+                    shadowBlur: 3,
+                    shadowOffsetX: 1,
+                    shadowOffsetY: 2
+                }
+            },
+            axisTick: {
+                splitNumber: 5,
+                //主刻度之间的分隔数
+                lineStyle: {
+                    color: configs.clockLabelColor.value,
+                }
+            },
+            axisLabel: {
+                color: configs.clockLabelColor.value,
+                fontSize: Number(configs.clockFontSize.value),
+                distance: Number(configs.clockAxisLabelDistance.value),
+                //标签和刻度的距离
+                formatter: function (value) {
+                    if (value === 0) {
+                        return '';
+                    }
+                    return value;
+                }
+            },
+            pointer: {
+                icon: 'path://M2.9,0.7L2.9,0.7c1.4,0,2.6,1.2,2.6,2.6v115c0,1.4-1.2,2.6-2.6,2.6l0,0c-1.4,0-2.6-1.2-2.6-2.6V3.3C0.3,1.9,1.4,0.7,2.9,0.7z',
+                //5.0支持
+                width: 10,
+                length: '55%',
+                offsetCenter: [0, '8%'],
+            },
+            detail: {
+                show: true,
+                color: configs.clockLabelColor.value,
+                formatter: "0/0/0",
+                fontSize: Number(configs.clockFontSize.value)*0.6,
+                textShadowColor: "rgba(0, 0, 0, 0.5)",
+                textShadowBlur: 10,
+            },
+            title: {
+                show: true,
+                color: configs.clockLabelColor.value,
+                fontSize: Number(configs.clockFontSize.value)*0.6,
+                offsetCenter: [0, '-35%'],
+                //位置
+            },
+            data: [{
+                name: title,
+                value: 0,
+            }]
+        },
+            {
+                name: 'minute',
+                type: 'gauge',
+                startAngle: 90,
+                endAngle: -269.99,
+                min: 0,
+                max: 60,
+                itemStyle: {
+                    color: configs.clockLabelColor.value,
+                    shadowColor: 'rgba(0, 0, 0, 0.3)',
+                    shadowBlur: 8,
+                    shadowOffsetX: 2,
+                    shadowOffsetY: 4
+                },
+                axisLine: {
+                    show: false
+                },
+                splitLine: {
+                    show: false
+                },
+                axisTick: {
+                    show: false
+                },
+                axisLabel: {
+                    show: false
+                },
+                pointer: {
+                    icon: 'path://M2.9,0.7L2.9,0.7c1.4,0,2.6,1.2,2.6,2.6v115c0,1.4-1.2,2.6-2.6,2.6l0,0c-1.4,0-2.6-1.2-2.6-2.6V3.3C0.3,1.9,1.4,0.7,2.9,0.7z',
+                    width: 7,
+                    length: '70%',
+                    offsetCenter: [0, '8%'],
+                },
+                detail: {
+                    show: false
+                },
+                title: {
+                    show:false,
+                    offsetCenter: ['0%', '-40%']
+                },
+                data: [{
+                    value: 0
+                }]
+            },
+            {
+                name: 'second',
+                type: 'gauge',
+                startAngle: 90,
+                endAngle: -269.99,
+                min: 0,
+                max: 60,
+                animationEasingUpdate: 'bounceOut',
+                itemStyle: {
+                    color: configs.clockLabelColor.value,
+                    shadowColor: 'rgba(0, 0, 0, 0.3)',
+                    shadowBlur: 8,
+                    shadowOffsetX: 2,
+                    shadowOffsetY: 4
+                },
+                axisLine: {
+                    show: false
+                },
+                splitLine: {
+                    show: false
+                },
+                axisTick: {
+                    show: false
+                },
+                axisLabel: {
+                    show: false
+                },
+                pointer: {
+                    icon: 'path://M2.9,0.7L2.9,0.7c1.4,0,2.6,1.2,2.6,2.6v115c0,1.4-1.2,2.6-2.6,2.6l0,0c-1.4,0-2.6-1.2-2.6-2.6V3.3C0.3,1.9,1.4,0.7,2.9,0.7z',
+                    width: 4,
+                    length: '85%',
+                    offsetCenter: [0, '8%'],
+                },
+
+                detail: {
+                    show: false
+                },
+                title: {
+                    show:false,
+                    offsetCenter: ['0%', '-40%']
+                },
+                data: [{
+                    value: 0
+                }]
+            }]
+    };
+
+    setTimeout(() => {
+        myChart.hideLoading();
+        myChart.setOption(option);
+    }, Number(configs.loadingTimes.value) * 1000);
+
+
+    var timeUpdatedStatus = {
+        second: false,
+        minute: false,
+        hour: false
+    };
+
+    function updateSeries(time, series, type, fullday,title) {
+        var isCritical = (Math.floor(time) === 0) || (type === 'second' && time === 1);
+        if (isCritical && timeUpdatedStatus[type] === true) {
+            timeUpdatedStatus[type] = false;
+            series.detail.formatter = fullday;
+            series.data[0].name = title;
+            series.clockwise = true;
+            option.animationDurationUpdate = 0;
+            myChart.setOption(option, true);
+        }
+        series.detail.formatter = fullday;
+        series.data[0].name = title;
+        series.data[0].value = time;
+        series.clockwise = true;
+        if (time === 0) {
+            timeUpdatedStatus[type] = true;
+            series.clockwise = false;
+        }
+    }
+
+    setInterval(function () {
+        var date = new Date();
+        var fullday = date.toLocaleString("zh", { hour12: false }).split(" ")[0];
+        var second = date.getSeconds();
+        var minute = date.getMinutes() + second / 60;
+        var hour = date.getHours() % 12 + minute / 60;
+
+        updateSeries(second, option.series[2], 'second', fullday, title);
+        updateSeries(minute, option.series[1], 'minute', fullday, title);
+        updateSeries(hour, option.series[0], 'hour', fullday, title);
+
+        option.animationDurationUpdate = 300;
+        myChart.setOption(option, true);
+        date = null;
+    }, 1000);
+
+     __ECHARTS__.addHistory(container, configs, dataset, width, height);
     return container;
 }
 
