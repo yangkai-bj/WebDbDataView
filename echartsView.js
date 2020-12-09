@@ -1,6 +1,4 @@
 
-console.log("EchartsView.js,本模块仅支持Echarts4.9.0版本;Echarts5.0.0版本下,部分功能失效.");
-
 String.prototype.toBoolean = function(){
     let str = this.toString().toLowerCase().trim();
     if (str == "true" || str == "false")
@@ -1975,110 +1973,114 @@ function toPoint(percent) {
 
 function getEcharts(container, width, height, dataset, configs) {
     $("copyright").innerHTML = getUserConfig("CopyRight");
-    switch (configs.echartsType.value) {
-        case "Bar":
-            return getBar(container, width, height, dataset, configs);
-            break;
-        case "PolarBar":
-            return getPolarBar(container, width, height, dataset, configs);
-            break;
-        case "PolarArea":
-            return getPolarArea(container, width, height, dataset, configs);
-            break;
-        case "Line":
-            return getLine(container, width, height, dataset, configs);
-            break;
-        case "Line3D":
-            return getLine3D(container, width, height, dataset, configs);
-            break;
-        case "BarAndLine":
-            return getBarAndLine(container, width, height, dataset, configs);
-            break;
-        case "AreaStyle":
-            return getAreaStyle(container, width, height, dataset, configs);
-            break;
-        case "TransversBar":
-            return getTransversBar(container, width, height, dataset, configs);
-            break;
-        case "Pie":
-            return getPie(container, width, height, dataset, configs);
-            break;
-        case "Ring":
-            return getRing(container, width, height, dataset, configs);
-            break;
-        case "Rose":
-            return getRose(container, width, height, dataset, configs);
-            break;
-        case "Gauge":
-            //return getGaugeWithOne(container, width, height, dataset,configs);
-            return getCategoryLineForGauge(container, width, height, dataset, configs);
-            break;
-        case "Radar":
-            return getRadar(container, width, height, dataset, configs);
-            break;
-        case "Regression":
-            return getRegression(container, width, height, dataset, configs);
-            break;
-        case "Relation":
-            return getRelation(container, width, height, dataset, configs);
-            break;
-        case "Tree":
-            return getTree(container, width, height, dataset, configs);
-            break;
-        case "WebkitDep":
-            return getWebkitDep(container, width, height, dataset, configs);
-            break;
-        case "Scatter":
-            return getScatter(container, width, height, dataset, configs);
-            break;
-        case "Funnel":
-            return getFunnel(container, width, height, dataset, configs);
-            break;
-        case "WordCloud":
-            return getWordCloud(container, width, height, dataset, configs);
-            break;
-        case "Liqiud":
-            //return getLiqiud(container, width, height, dataset,configs);
-            return getCategoryLineForLiqiud(container, width, height, dataset, configs);
-            break;
-        case "Calendar":
-            return getCalendar(container, width, height, dataset, configs);
-            break;
-        case "GeoOfChina":
-            //return getGeoOfChina(container, width, height, dataset,configs);
-            return getCategoryLineForGeoOfChina(container, width, height, dataset, configs);
-            break;
-        case "GeoOfLocal":
-            //return getGeoOfLocal(container, width, height, dataset,configs);
-            return getCategoryLineForGeoOfLocal(container, width, height, dataset, configs);
-            break;
-        case "Bar3D":
-            return getBar3D(container, width, height, dataset, configs);
-            break;
-        case "Scatter3D":
-            return getScatter3D(container, width, height, dataset, configs);
-            break;
-        case "CategoryLine":
-            return getCategoryLine(container, width, height, dataset, configs);
-            break;
-        case "FunctionLine":
-            return getFunctionLine(container, width, height, dataset, configs);
-            break;
-        case "GeoMigrateLinesOfChinaCity":
-            return getGeoMigrateLinesOfChinaCity(container, width, height, dataset, configs);
-            break;
-        case "ScrollingScreen":
-            return getScrollingScreen(container, width, height, dataset, configs);
-        case "WalkingLantern":
-            return getWalkingLantern(container, width, height, dataset, configs);
-        case "WindowShades":
-            return getWindowShades(container, width, height, dataset, configs);
-        case "Surface":
-            return getSurface(container, width, height, dataset, configs);
-        case "Boxplot":
-            return getBoxplot(container, width, height, dataset, configs);
-        case "Clock":
-            return getClock(container, width, height, dataset, configs);
+    if (echarts.version === "4.9.0") {
+        switch (configs.echartsType.value) {
+            case "Bar":
+                return getBar(container, width, height, dataset, configs);
+                break;
+            case "PolarBar":
+                return getPolarBar(container, width, height, dataset, configs);
+                break;
+            case "PolarArea":
+                return getPolarArea(container, width, height, dataset, configs);
+                break;
+            case "Line":
+                return getLine(container, width, height, dataset, configs);
+                break;
+            case "Line3D":
+                return getLine3D(container, width, height, dataset, configs);
+                break;
+            case "BarAndLine":
+                return getBarAndLine(container, width, height, dataset, configs);
+                break;
+            case "AreaStyle":
+                return getAreaStyle(container, width, height, dataset, configs);
+                break;
+            case "TransversBar":
+                return getTransversBar(container, width, height, dataset, configs);
+                break;
+            case "Pie":
+                return getPie(container, width, height, dataset, configs);
+                break;
+            case "Ring":
+                return getRing(container, width, height, dataset, configs);
+                break;
+            case "Rose":
+                return getRose(container, width, height, dataset, configs);
+                break;
+            case "Gauge":
+                //return getGaugeWithOne(container, width, height, dataset,configs);
+                return getCategoryLineForGauge(container, width, height, dataset, configs);
+                break;
+            case "Radar":
+                return getRadar(container, width, height, dataset, configs);
+                break;
+            case "Regression":
+                return getRegression(container, width, height, dataset, configs);
+                break;
+            case "Relation":
+                return getRelation(container, width, height, dataset, configs);
+                break;
+            case "Tree":
+                return getTree(container, width, height, dataset, configs);
+                break;
+            case "WebkitDep":
+                return getWebkitDep(container, width, height, dataset, configs);
+                break;
+            case "Scatter":
+                return getScatter(container, width, height, dataset, configs);
+                break;
+            case "Funnel":
+                return getFunnel(container, width, height, dataset, configs);
+                break;
+            case "WordCloud":
+                return getWordCloud(container, width, height, dataset, configs);
+                break;
+            case "Liqiud":
+                //return getLiqiud(container, width, height, dataset,configs);
+                return getCategoryLineForLiqiud(container, width, height, dataset, configs);
+                break;
+            case "Calendar":
+                return getCalendar(container, width, height, dataset, configs);
+                break;
+            case "GeoOfChina":
+                //return getGeoOfChina(container, width, height, dataset,configs);
+                return getCategoryLineForGeoOfChina(container, width, height, dataset, configs);
+                break;
+            case "GeoOfLocal":
+                //return getGeoOfLocal(container, width, height, dataset,configs);
+                return getCategoryLineForGeoOfLocal(container, width, height, dataset, configs);
+                break;
+            case "Bar3D":
+                return getBar3D(container, width, height, dataset, configs);
+                break;
+            case "Scatter3D":
+                return getScatter3D(container, width, height, dataset, configs);
+                break;
+            case "CategoryLine":
+                return getCategoryLine(container, width, height, dataset, configs);
+                break;
+            case "FunctionLine":
+                return getFunctionLine(container, width, height, dataset, configs);
+                break;
+            case "GeoMigrateLinesOfChinaCity":
+                return getGeoMigrateLinesOfChinaCity(container, width, height, dataset, configs);
+                break;
+            case "ScrollingScreen":
+                return getScrollingScreen(container, width, height, dataset, configs);
+            case "WalkingLantern":
+                return getWalkingLantern(container, width, height, dataset, configs);
+            case "WindowShades":
+                return getWindowShades(container, width, height, dataset, configs);
+            case "Surface":
+                return getSurface(container, width, height, dataset, configs);
+            case "Boxplot":
+                return getBoxplot(container, width, height, dataset, configs);
+            case "Clock":
+                return getClock(container, width, height, dataset, configs);
+        }
+    } else{
+        alert("此应用仅支持Echarts 4.9.0,您目前使用的版本是" + echarts.version + ".")
     }
 }
 

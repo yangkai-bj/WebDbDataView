@@ -97,6 +97,48 @@ function getMedian(data){
     }
 }
 
+function getQuartile(data,quart) {
+    //数组四分位计算
+    let _data = sortAsc(data);
+    if (quart == 1) {
+        if (_data.length % 2 == 1) {
+            let p = (_data.length + 1) * 0.25 - Math.floor((_data.length + 1) * 0.25);
+            if (p > 0)
+                return _data[Math.floor((_data.length + 1) * 0.25) - 1] + (_data[Math.floor((_data.length + 1) * 0.25)] - _data[Math.floor((_data.length + 1) * 0.25) - 1]) * p;
+            else
+                return _data[Math.floor((_data.length + 1) * 0.25) - 1];
+        } else {
+            let p = (_data.length + 1) / 4.0 - Math.floor((_data.length + 1) / 4.0);
+            if (p > 0)
+                return _data[Math.floor((_data.length + 1) / 4.0) - 1] + (_data[Math.floor((_data.length + 1) / 4.0)] - _data[Math.floor((_data.length + 1) / 4.0) - 1]) * p;
+            else
+                return _data[Math.floor((_data.length + 1) / 4.0) - 1];
+        }
+    }
+    else if (quart == 3) {
+        if (_data.length % 2 == 1) {
+            let p = (_data.length + 1) * 0.75 - Math.floor((_data.length + 1) * 0.75);
+            if (p > 0)
+                return _data[Math.floor((_data.length + 1) * 0.75) - 1] + (_data[Math.floor((_data.length + 1) * 0.75)] - _data[Math.floor((_data.length + 1) * 0.75) - 1]) * p;
+            else
+                return _data[Math.floor((_data.length + 1) * 0.75) - 1];
+        } else {
+            let p = 3 * (_data.length + 1) / 4.0 - Math.floor(3 * (_data.length + 1) / 4.0);
+            if (p > 0)
+                return _data[Math.floor(3 * (_data.length + 1) / 4.0) - 1] + (_data[Math.floor(3 * (_data.length + 1) / 4.0)] - _data[Math.floor(3 * (_data.length + 1) / 4.0) - 1]) * p;
+            else
+                return _data[Math.floor(3 * (_data.length + 1) / 4.0) - 1];
+        }
+    } else if (quart == 2)
+        return getMedian(data);
+    else
+        return null
+}
+
+function getIQR(data){
+    return getQuartile(data,3) - getQuartile(data,1);
+}
+
 function getSum(data) {
     var sum = 0;
     for(var i=0;i<data.length;i++) {
