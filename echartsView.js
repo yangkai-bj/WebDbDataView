@@ -11525,35 +11525,35 @@ function getScrollingScreen(container, width, height, dataset, configs) {
     setTimeout(() => {
         myChart.hideLoading();
         myChart.setOption(option);
+        let top = containerHeight;
+        setInterval(function () {
+            if (!timeout) {
+                if (top > (groupHeight * (-1)))
+                    top = top - 2;
+                else
+                    top = containerHeight;
+
+                try {
+                    myChart.setOption(
+                        {
+                            graphic: [
+                                {
+                                    id: 'scrollingColumn',
+                                    top: (top - lineHeight) <= 0 ? 0 : (top - lineHeight),
+                                },
+                                {
+                                    id: 'scrollingData',
+                                    top: top,
+                                }]
+                        }
+                    );
+                } catch (e) {
+                    //console.log(e);
+                }
+            }
+        }, Number(configs.scrollingScreenSpeed.value) * 1000);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    let top = containerHeight;
-    setInterval(function () {
-        if (!timeout) {
-            if (top > (groupHeight * (-1)))
-                top = top - 2;
-            else
-                top = containerHeight;
-
-            try {
-                myChart.setOption(
-                    {
-                        graphic: [
-                            {
-                                id: 'scrollingColumn',
-                                top: (top - lineHeight) <= 0 ? 0 : (top - lineHeight),
-                            },
-                            {
-                                id: 'scrollingData',
-                                top: top,
-                            }]
-                    }
-                );
-            }catch (e) {
-                //console.log(e);
-            }
-        }
-    }, Number(configs.scrollingScreenSpeed.value) * 1000);
     __ECHARTS__.addHistory(container, configs, dataset, width, height);
 
     return container;
@@ -11574,7 +11574,7 @@ function getWalkingLantern(container, width, height, dataset, configs) {
 
     var containerWidth = Number(width.replace(/px/i, ""));
     var containerHeight = Number(height.replace(/px/i, ""));
-    var top = containerHeight*Number(configs.walkingLanternTop.value.replaceAll("%",""))/100;
+    var top = containerHeight * Number(configs.walkingLanternTop.value.replaceAll("%", "")) / 100;
     var columns = [];
     var cols = [];
     var group = configs.walkingLanternLines.value;
@@ -11623,7 +11623,7 @@ function getWalkingLantern(container, width, height, dataset, configs) {
     graphic.push({
         type: 'group',
         id: 'scrollingColumn',
-        left: dire=="LR"?0:containerWidth,
+        left: dire == "LR" ? 0 : containerWidth,
         top: top,
         children: cols,
         onmouseover: function () {
@@ -11669,13 +11669,13 @@ function getWalkingLantern(container, width, height, dataset, configs) {
 
     var children = [];
     for (var i = 0; i < dataset["data"].length; i++) {
-        let index = ((i+1) % group) > 0 ? Math.floor((i+1) / group) : Math.floor((i+1) / group)-1;
+        let index = ((i + 1) % group) > 0 ? Math.floor((i + 1) / group) : Math.floor((i + 1) / group) - 1;
         if (index == selectGroup) {
             let r = dataset["data"][i];
             let row = {
                 type: 'group',
                 id: 'scrollingData-' + (i % group),
-                left: dire=="LR"?0:containerWidth,
+                left: dire == "LR" ? 0 : containerWidth,
                 top: top + lineHeight * (i + 1),
                 children: [],
                 onmouseover: function () {
@@ -11726,105 +11726,105 @@ function getWalkingLantern(container, width, height, dataset, configs) {
     setTimeout(() => {
         myChart.hideLoading();
         myChart.setOption(option);
+        var left = dire == "LR" ? 0 : containerWidth;
+        setInterval(function () {
+            if (!timeout) {
+                if ((dire == "LR" && left <= containerWidth) || (dire == "RL" && left >= (Number(configs.walkingLanternWidth.value) * (-1)))) {
+                    left = left + (dire == "LR" ? 2 : -2);
+
+                    myChart.setOption(
+                        {
+                            graphic: [
+                                {
+                                    id: 'scrollingColumn',
+                                    left: left,
+                                }
+                            ]
+                        }
+                    );
+
+                    for (let i = 0; i < children.length; i++) {
+                        try {
+                            myChart.setOption(
+                                {
+                                    graphic: [
+                                        {
+                                            id: 'scrollingData-' + i,
+                                            left: left,
+                                        }
+                                    ]
+                                }
+                            );
+                        } catch (e) {
+                            //console.log(e);
+                        }
+                    }
+                } else {
+                    left = dire == "LR" ? Number(configs.walkingLanternWidth.value) * (-1) : containerWidth;
+                    children = [];
+                    groupHeight = lineHeight;
+                    if (selectGroup > groups)
+                        selectGroup = 0;
+                    for (let i = 0; i < dataset["data"].length; i++) {
+                        let index = ((i + 1) % group) > 0 ? Math.floor((i + 1) / group) : Math.floor((i + 1) / group) - 1;
+                        if (index == selectGroup) {
+                            let r = dataset["data"][i];
+                            let row = {
+                                type: 'group',
+                                id: 'scrollingData-' + (i % group),
+                                left: left,
+                                top: top + lineHeight * (i % group + 1),
+                                children: [],
+                                onmouseover: function () {
+                                    timeout = true;
+                                },
+                                onmouseout: function () {
+                                    timeout = false;
+                                }
+                            };
+                            for (var c = 0; c < columns.length; c++) {
+                                row.children.push({
+                                    type: 'rect',
+                                    left: colWidth * (c + 1),
+                                    z: 99,
+                                    shape: {
+                                        width: colWidth,
+                                        height: lineHeight,
+                                    },
+                                    style: {
+                                        lineWidth: 0.5,
+                                        fill: i % 2 > 0 ? configs.walkingLanternBackColor.value : "transparent",//'rgba(0,0,0,0.2)',
+                                        stroke: configs.walkingLanternBorderColor.value,
+                                        opacity: configs.walkingLanternOpacity.value,
+                                    },
+                                });
+                                row.children.push({
+                                    type: 'text',
+                                    left: colWidth * (c + 1) + txtOffset,
+                                    top: txtOffset,
+                                    z: 99,
+                                    bounding: 'raw',
+                                    style: {
+                                        text: r[columns[c]].value,
+                                        font: configs.walkingLanternFontSize.value + 'px "Microsoft YaHei", sans-serif',
+                                        fill: colorPalette[i % colorPalette.length],
+                                    },
+                                });
+                            }
+                            children.push(row);
+                            groupHeight += lineHeight;
+                        } else if (index > selectGroup) {
+                            break;
+                        }
+                    }
+                    selectGroup += 1;
+                    option.graphic = graphic.concat(children);
+                    myChart.setOption(option);
+                }
+            }
+        }, Number(configs.walkingLanternSpeed.value) * 1000);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    var left = dire=="LR"?0:containerWidth;
-    setInterval(function () {
-        if (!timeout) {
-            if ((dire=="LR" && left <= containerWidth) || (dire=="RL" && left >= (Number(configs.walkingLanternWidth.value)*(-1)))) {
-                left = left + (dire=="LR"?2:-2);
-
-                myChart.setOption(
-                    {
-                        graphic: [
-                            {
-                                id: 'scrollingColumn',
-                                left: left,
-                            }
-                        ]
-                    }
-                );
-
-                for (let i = 0; i < children.length; i++) {
-                    try {
-                        myChart.setOption(
-                            {
-                                graphic: [
-                                    {
-                                        id: 'scrollingData-' + i,
-                                        left: left,
-                                    }
-                                ]
-                            }
-                        );
-                    } catch (e) {
-                        //console.log(e);
-                    }
-                }
-            } else {
-                left = dire=="LR"?Number(configs.walkingLanternWidth.value) * (-1):containerWidth;
-                children = [];
-                groupHeight = lineHeight;
-                if (selectGroup > groups)
-                    selectGroup = 0;
-                for (let i = 0; i < dataset["data"].length; i++) {
-                    let index = ((i+1) % group) > 0 ? Math.floor((i+1) / group) : Math.floor((i+1) / group)-1;
-                    if (index == selectGroup) {
-                        let r = dataset["data"][i];
-                        let row = {
-                            type: 'group',
-                            id: 'scrollingData-' + (i % group),
-                            left: left,
-                            top: top + lineHeight * (i % group + 1),
-                            children: [],
-                            onmouseover: function () {
-                                timeout = true;
-                            },
-                            onmouseout: function () {
-                                timeout = false;
-                            }
-                        };
-                        for (var c = 0; c < columns.length; c++) {
-                            row.children.push({
-                                type: 'rect',
-                                left: colWidth * (c + 1),
-                                z: 99,
-                                shape: {
-                                    width: colWidth,
-                                    height: lineHeight,
-                                },
-                                style: {
-                                    lineWidth: 0.5,
-                                    fill: i % 2 > 0 ? configs.walkingLanternBackColor.value : "transparent",//'rgba(0,0,0,0.2)',
-                                    stroke: configs.walkingLanternBorderColor.value,
-                                    opacity: configs.walkingLanternOpacity.value,
-                                },
-                            });
-                            row.children.push({
-                                type: 'text',
-                                left: colWidth * (c + 1) + txtOffset,
-                                top: txtOffset,
-                                z: 99,
-                                bounding: 'raw',
-                                style: {
-                                    text: r[columns[c]].value,
-                                    font: configs.walkingLanternFontSize.value + 'px "Microsoft YaHei", sans-serif',
-                                    fill: colorPalette[i % colorPalette.length],
-                                },
-                            });
-                        }
-                        children.push(row);
-                        groupHeight += lineHeight;
-                    } else if (index > selectGroup) {
-                        break;
-                    }
-                }
-                selectGroup += 1;
-                option.graphic = graphic.concat(children);
-                myChart.setOption(option);
-            }
-        }
-    }, Number(configs.walkingLanternSpeed.value) * 1000);
     __ECHARTS__.addHistory(container, configs, dataset, width, height);
 
     return container;
@@ -11846,7 +11846,7 @@ function getWindowShades(container, width, height, dataset, configs) {
 
     var containerWidth = Number(width.replace(/px/i, ""));
     var containerHeight = Number(height.replace(/px/i, ""));
-    var top = containerHeight*Number(configs.windowShadesTop.value.replaceAll("%",""))/100;
+    var top = containerHeight * Number(configs.windowShadesTop.value.replaceAll("%", "")) / 100;
     var columns = [];
     var cols = [];
     var group = configs.windowShadesLines.value;
@@ -11941,7 +11941,7 @@ function getWindowShades(container, width, height, dataset, configs) {
 
     var children = [];
     for (var i = 0; i < dataset["data"].length; i++) {
-        let index = ((i+1) % group) > 0 ? Math.floor((i+1) / group) : Math.floor((i+1) / group)-1;
+        let index = ((i + 1) % group) > 0 ? Math.floor((i + 1) / group) : Math.floor((i + 1) / group) - 1;
         if (index == selectGroup) {
             let r = dataset["data"][i];
             let row = {
@@ -12000,22 +12000,91 @@ function getWindowShades(container, width, height, dataset, configs) {
     setTimeout(() => {
         myChart.hideLoading();
         myChart.setOption(option);
+        let rowid = children.length * (-1);
+        setInterval(function () {
+            if (!timeout) {
+                children = [];
+                groupHeight = lineHeight;
+                if (selectGroup > groups)
+                    selectGroup = 0;
+                for (let i = 0; i < dataset["data"].length; i++) {
+                    let index = ((i + 1) % group) > 0 ? Math.floor((i + 1) / group) : Math.floor((i + 1) / group) - 1;
+                    if (index == selectGroup) {
+                        let r = dataset["data"][i];
+                        let row = {
+                            name: 'scrollingData-' + (i % group),
+                            type: 'group',
+                            id: 'scrollingData-' + (i % group),
+                            left: configs.windowShadesLeft.value,
+                            top: top + lineHeight * (i % group + 1),
+                            children: [],
+                            //rotation: rotation,
+                            onmouseover: function () {
+                                timeout = true;
+                            },
+                            onmouseout: function () {
+                                timeout = false;
+                            }
+                        };
+                        for (var c = 0; c < columns.length; c++) {
+                            row.children.push({
+                                type: 'rect',
+                                left: colWidth * (c + 1),
+                                z: 100,
+                                shape: {
+                                    width: colWidth,
+                                    height: lineHeight,
+                                },
+                                style: {
+                                    lineWidth: 0.5,
+                                    fill: (i % group) % 2 > 0 ? configs.windowShadesBackColor.value : "transparent",//'rgba(0,0,0,0.2)',
+                                    stroke: configs.windowShadesBorderColor.value,
+                                    opacity: getOpacity(i % group, rowid, children.length),
+                                },
+                            });
+                            row.children.push({
+                                type: 'text',
+                                left: colWidth * (c + 1) + txtOffset,
+                                top: txtOffset,
+                                z: 100,
+                                bounding: 'raw',
+                                style: {
+                                    text: getText(r[columns[c]].value, i % group, rowid, children.length),
+                                    font: configs.windowShadesFontSize.value + 'px "Microsoft YaHei", sans-serif',
+                                    fill: colorPalette[i % colorPalette.length],
+                                },
+                            });
+                        }
+                        children.push(row);
+                        groupHeight += lineHeight;
+                    } else if (index > selectGroup) {
+                        break;
+                    }
+                }
+                if (rowid == children.length) {
+                    selectGroup += 1;
+                    rowid = children.length * (-1);
+                } else {
+                    rowid += 1;
+                }
+                option.graphic = graphic.concat(children);
+                myChart.setOption(option);
+            }
+        }, Number(configs.windowShadesSpeed.value) * 1000);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    let rowid = children.length * (-1);
-
-    function getText(text,id,rowid,groups){
-        if (rowid < 0){
+    function getText(text, id, rowid, groups) {
+        if (rowid < 0) {
             if (groups == rowid * (-1))
                 return "";
-            else if (id>Math.abs(rowid))
+            else if (id > Math.abs(rowid))
                 return "";
             else
-               return text;
+                return text;
         } else if (rowid > 0) {
             if (groups == rowid)
                 return "";
-            else if (id<Math.abs(rowid))
+            else if (id < Math.abs(rowid))
                 return text;
             else
                 return "";
@@ -12024,7 +12093,7 @@ function getWindowShades(container, width, height, dataset, configs) {
         }
     }
 
-    function getOpacity(id,rowid,groups) {
+    function getOpacity(id, rowid, groups) {
         if (rowid < 0) {
             if (groups == rowid * (-1))
                 return 0;
@@ -12042,76 +12111,6 @@ function getWindowShades(container, width, height, dataset, configs) {
         }
     }
 
-    setInterval(function () {
-        if (!timeout) {
-            children = [];
-            groupHeight = lineHeight;
-            if (selectGroup > groups)
-                selectGroup = 0;
-            for (let i = 0; i < dataset["data"].length; i++) {
-                let index = ((i + 1) % group) > 0 ? Math.floor((i + 1) / group) : Math.floor((i + 1) / group) - 1;
-                if (index == selectGroup) {
-                    let r = dataset["data"][i];
-                    let row = {
-                        name: 'scrollingData-' + (i % group),
-                        type: 'group',
-                        id: 'scrollingData-' + (i % group),
-                        left: configs.windowShadesLeft.value,
-                        top: top + lineHeight * (i % group + 1),
-                        children: [],
-                        //rotation: rotation,
-                        onmouseover: function () {
-                            timeout = true;
-                        },
-                        onmouseout: function () {
-                            timeout = false;
-                        }
-                    };
-                    for (var c = 0; c < columns.length; c++) {
-                        row.children.push({
-                            type: 'rect',
-                            left: colWidth * (c + 1),
-                            z: 100,
-                            shape: {
-                                width: colWidth,
-                                height: lineHeight,
-                            },
-                            style: {
-                                lineWidth: 0.5,
-                                fill: (i % group) % 2 > 0 ? configs.windowShadesBackColor.value : "transparent",//'rgba(0,0,0,0.2)',
-                                stroke: configs.windowShadesBorderColor.value,
-                                opacity: getOpacity(i % group,rowid, children.length),
-                            },
-                        });
-                        row.children.push({
-                            type: 'text',
-                            left: colWidth * (c + 1) + txtOffset,
-                            top: txtOffset,
-                            z: 100,
-                            bounding: 'raw',
-                            style: {
-                                text: getText(r[columns[c]].value,i % group,rowid,children.length),
-                                font: configs.windowShadesFontSize.value + 'px "Microsoft YaHei", sans-serif',
-                                fill: colorPalette[i % colorPalette.length],
-                            },
-                        });
-                    }
-                    children.push(row);
-                    groupHeight += lineHeight;
-                } else if (index > selectGroup) {
-                    break;
-                }
-            }
-            if (rowid == children.length) {
-                selectGroup += 1;
-                rowid = children.length * (-1);
-            } else {
-                rowid += 1;
-            }
-            option.graphic = graphic.concat(children);
-            myChart.setOption(option);
-        }
-    }, Number(configs.windowShadesSpeed.value) * 1000);
     __ECHARTS__.addHistory(container, configs, dataset, width, height);
 
     return container;
