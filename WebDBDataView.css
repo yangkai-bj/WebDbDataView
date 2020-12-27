@@ -1150,3 +1150,9 @@ hr.br{
 	to {width:100px;height:100px;}
 }
 
+#qrcode {
+    position: absolute;
+    border: 2px solid var(--main-border-color);
+}
+
+

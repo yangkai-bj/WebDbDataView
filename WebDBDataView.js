@@ -2033,11 +2033,44 @@ function sheet2blob(sheet, sheetName) {
 	return blob;
 }
 
+function getQRCode(parent,width,height,text){
+    try {
+        let qr = document.createElement("div");
+        qr.id = "qrcode";
+        parent.appendChild(qr);
+        qr.style.width = width + "px";
+        qr.style.height = height + "px";
+        qr.style.top = "3px";
+        qr.style.left = (getAbsolutePosition(parent).width - width) + "px";
+        let logo = __SYS_IMAGES__.getLogoImage(__SYS_IMAGES__.echo);
+        logo.style.position = 'absolute';
+        logo.style.width = width/4 + "px";
+        logo.style.height = height/4 + "px";
+        logo.style.margin = (height-height/4.0)/2 + "px";
+        logo.style.border = "1px solid var(--main-border-color)";
+        qr.appendChild(logo);
+
+        new QRCode("qrcode", {
+            text: text,
+            width: width,
+            height: height,
+            colorDark: "#000000",
+            colorLight: "#FFFFFF",
+            correctLevel: QRCode.CorrectLevel.H
+        });
+    }catch (e) {
+        console.log(e);
+    }
+}
+
 function init() {
     try {
         $("main-title").appendChild(__SYS_IMAGES__.getLogoImage(__SYS_IMAGES__.logo_echarts));
     }catch (e) {
     }
+
+    getQRCode($("page"),70 ,70 ,"https://gitee.com/yangkai-bj/WebDbDataView.git");
+
     if (checkStorage()) {
         setUserConfig("CopyRight","应用开发: 杨凯 ☎ (010)63603329 ✉ <a href='mailto:yangkai.bj@ccb.com'>yangkai.bj@ccb.com</a>");
         $("footer").style.display = getUserConfig("help");
