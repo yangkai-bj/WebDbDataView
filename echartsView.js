@@ -19,6 +19,134 @@ function stringToHex(str){
     return val;
 }
 
+function getEcharts(container, width, height, dataset, configs) {
+    $("copyright").innerHTML = getUserConfig("CopyRight");
+    switch (configs.echartsType.value) {
+        case "Bar":
+            return getBar(container, width, height, dataset, configs);
+            break;
+        case "PolarBar":
+            return getPolarBar(container, width, height, dataset, configs);
+            break;
+        case "PolarArea":
+            return getPolarArea(container, width, height, dataset, configs);
+            break;
+        case "Line":
+            return getLine(container, width, height, dataset, configs);
+            break;
+        case "Line3D":
+            return getLine3D(container, width, height, dataset, configs);
+            break;
+        case "BarAndLine":
+            return getBarAndLine(container, width, height, dataset, configs);
+            break;
+        case "AreaStyle":
+            return getAreaStyle(container, width, height, dataset, configs);
+            break;
+        case "TransversBar":
+            return getTransversBar(container, width, height, dataset, configs);
+            break;
+        case "Pie":
+            return getPie(container, width, height, dataset, configs);
+            break;
+        case "Ring":
+            return getRing(container, width, height, dataset, configs);
+            break;
+        case "Rose":
+            return getRose(container, width, height, dataset, configs);
+            break;
+        case "Gauge":
+            //return getGaugeWithOne(container, width, height, dataset,configs);
+            return getCategoryLineForGauge(container, width, height, dataset, configs);
+            break;
+        case "Radar":
+            return getRadar(container, width, height, dataset, configs);
+            break;
+        case "Regression":
+            return getRegression(container, width, height, dataset, configs);
+            break;
+        case "Relation":
+            return getRelation(container, width, height, dataset, configs);
+            break;
+        case "Tree":
+            return getTree(container, width, height, dataset, configs);
+            break;
+        case "WebkitDep":
+            return getWebkitDep(container, width, height, dataset, configs);
+            break;
+        case "Scatter":
+            return getScatter(container, width, height, dataset, configs);
+            break;
+        case "Funnel":
+            return getFunnel(container, width, height, dataset, configs);
+            break;
+        case "WordCloud":
+            if (echarts.version === "4.9.0")
+                return getWordCloud(container, width, height, dataset, configs);
+            else
+                alert("该功能仅支持Echarts 4.9.0,您目前使用的版本是" + echarts.version + ".");
+            break;
+        case "Liqiud":
+            if (echarts.version === "4.9.0")
+                return getCategoryLineForLiqiud(container, width, height, dataset, configs);
+            else
+                alert("该功能仅支持Echarts 4.9.0,您目前使用的版本是" + echarts.version + ".");
+            break;
+        case "Calendar":
+            return getCalendar(container, width, height, dataset, configs);
+            break;
+        case "GeoOfChina":
+            //return getGeoOfChina(container, width, height, dataset,configs);
+            return getCategoryLineForGeoOfChina(container, width, height, dataset, configs);
+            break;
+        case "GeoOfLocal":
+            //return getGeoOfLocal(container, width, height, dataset,configs);
+            return getCategoryLineForGeoOfLocal(container, width, height, dataset, configs);
+            break;
+        case "Bar3D":
+            return getBar3D(container, width, height, dataset, configs);
+            break;
+        case "Scatter3D":
+            return getScatter3D(container, width, height, dataset, configs);
+            break;
+        case "CategoryLine":
+            return getCategoryLine(container, width, height, dataset, configs);
+            break;
+        case "FunctionLine":
+            return getFunctionLine(container, width, height, dataset, configs);
+            break;
+        case "GeoMigrateLinesOfChinaCity":
+            return getGeoMigrateLinesOfChinaCity(container, width, height, dataset, configs);
+            break;
+        case "ScrollingScreen":
+            return getScrollingScreen(container, width, height, dataset, configs);
+        case "WalkingLantern":
+            return getWalkingLantern(container, width, height, dataset, configs);
+        case "WindowShades":
+            return getWindowShades(container, width, height, dataset, configs);
+        case "Surface":
+            return getSurface(container, width, height, dataset, configs);
+        case "Boxplot":
+            return getBoxplot(container, width, height, dataset, configs);
+        case "Clock":
+            return getClock(container, width, height, dataset, configs);
+        case "Candlestick":
+            return getCandlestick(container, width, height, dataset, configs);
+        case "Banners":
+            return getBanners(container, width, height, dataset, configs);
+        case "Sunburst":
+            return getSunburst(container, width, height, dataset, configs);
+        case "Treemap":
+            return getTreemap(container, width, height, dataset, configs);
+        case "ParallelAxis":
+            return getParallelAxis(container, width, height, dataset, configs);
+        case "Sankey":
+            return getSankey(container, width, height, dataset, configs);
+        case "ThemeRiver":
+            return getThemeRiver(container, width, height, dataset, configs);
+    }
+}
+
 var __ECHARTS__ = {
     history: {},
     addHistory: function(container, configs, dataset, width, height) {
@@ -106,6 +234,22 @@ var __ECHARTS__ = {
     },
     configs: {
         hr_echarts_basic: {name: "基本参数", value: "", type: "hr"},
+        version: {
+            name: "Echars版本",
+            value: echarts.version,
+            options: [
+                new Option(echarts.version, echarts.version)
+            ],
+            type: "select"
+        },
+        local: {
+            name: "语言类型",
+            value: "ZH",
+            options: [
+                new Option("英语", "EN"),
+                new Option("中文", "ZH")],
+            type: "select"
+        },
         loadingTimes: {name: "载入时间(秒)", value: 2, type: "input"},
         echartsType: {
             name: "视图类型",
@@ -124,27 +268,35 @@ var __ECHARTS__ = {
                 new Option("极坐标面积图", "PolarArea"),
                 new Option("回归序列", "Regression"),
                 new Option("盒须图", "Boxplot"),
+                new Option("K线图", "Candlestick"),
                 new Option("散点图", "Scatter"),
                 new Option("漏斗/金字塔", "Funnel"),
-                new Option("树形结构", "Tree"),
+                new Option("树形图", "Tree"),
                 new Option("关系图", "Relation"),
                 new Option("分类集中", "WebkitDep"),
                 new Option("词云图", "WordCloud"),
                 new Option("水球图", "Liqiud"),
                 new Option("仪表盘", "Gauge"),
                 new Option("时钟", "Clock"),
+                new Option("旭日图", "Sunburst"),
+                new Option("矩形树图", "Treemap"),
                 new Option("日历图", "Calendar"),
                 new Option("类目轴", "CategoryLine"),
+                new Option("平行坐标","ParallelAxis"),
+                new Option("桑基图","Sankey"),
+                new Option("主题河流图","ThemeRiver"),
                 new Option("全国地图", "GeoOfChina"),
                 new Option("本地地图", "GeoOfLocal"),
                 new Option("迁徙地图", "GeoMigrateLinesOfChinaCity"),
+                new Option("横幅标语", "Banners"),
                 new Option("数据滚屏", "ScrollingScreen"),
                 new Option("数据走马灯", "WalkingLantern"),
                 new Option("数据百叶窗", "WindowShades"),
                 new Option("柱状图(3D)", "Bar3D"),
                 new Option("线型图(3D)", "Line3D"),
                 new Option("散点图(3D)", "Scatter3D"),
-                new Option("曲面图(3D)", "Surface"),],
+                new Option("曲面图(3D)", "Surface"),
+            ],
             type: "select"
         },
         echartsTheme: {
@@ -167,8 +319,8 @@ var __ECHARTS__ = {
                 new Option("Wonderland", "Wonderland")],
             type: "select"
         },
-        backgroundColor: {name: "图像背景",value: "transparent",type: "input"},
-        ariaLabel:{
+        backgroundColor: {name: "图像背景", value: "transparent", type: "input"},
+        ariaLabel: {
             name: "开启无障碍访问",
             value: "false",
             options: [new Option("是", "true"), new Option("否", "false")],
@@ -473,7 +625,7 @@ var __ECHARTS__ = {
         },
         regressionExpressionColor: {name: "表达式颜色", value: "auto", type: "color"},
 
-        hr_Boxplot:{name: "盒须图", value: "", type: "hr"},
+        hr_Boxplot: {name: "盒须图", value: "", type: "hr"},
         boxplotScatterType: {
             name: "节点类型",
             value: "scatter",
@@ -499,6 +651,12 @@ var __ECHARTS__ = {
             options: [new Option("是", "true"), new Option("否", "false")],
             type: "select"
         },
+
+        hr_candlestick:{name: "K线图", value: "", type: "hr"},
+        candlestickUpColor:{name:"阳线颜色", value:'#ec0000',type:"color"},
+        candlestickUpBorderColor:{name:"阳线边线", value:'#8A0000',type:"color"},
+        candlestickDownColor:{name:"阴线颜色", value:'#00da3c',type:"color"},
+        candlestickDownBorderColor:{name:"阴线边线", value:'#008F28',type:"color"},
 
         hr_pie: {name: "饼图/圆环/玫瑰", value: "", type: "hr"},
         outRadius: {name: "外半径(%)", value: "70%", type: "input"},
@@ -607,20 +765,65 @@ var __ECHARTS__ = {
 
         hr_gauge: {name: "仪表盘", value: "", type: "hr"},
         gaugeAxisLabelFontSize: {name: "刻度字号", value: 10, type: "input"},
+        gaugeAxisLabelColor: {value: "#C0911F", name: "刻度颜色", type: "color"},
+        gaugeAxisLabelDistance: {name: "刻度位置", value: 15, type: "input"},
         gaugeTitleFontSize: {name: "标题字号", value: 14, type: "input"},
-        gaugeLabelFontSize: {name: "标签字号", value: 18, type: "input"},
+        gaugeLabelFontSize: {name: "数据字号", value: 18, type: "input"},
         gaugeAxisLineWidth: {name: "圆轴宽度", value: 10, type: "input"},
+        gaugeStartAngle: {name: "起始角度", value: 225, type: "input"},
+        gaugeEndAngle: {name: "结束角度", value: -45, type: "input"},
+        gaugeMin: {name: "最小值", value: 0, type: "input"},
+        gaugeMax: {name: "最大值", value: 100, type: "input"},
 
-        hr_clock:{name: "时钟", value: "", type: "hr"},
+        hr_clock: {name: "时钟", value: "", type: "hr"},
+        clockRadius: {name: "表盘半径", value: "75%", type: "input"},
+        clockCenter: {name: "表盘位置", value: "['50%','50%']", type: "input"},
         clockLabelColor: {value: "#C0911F", name: "颜色", type: "color"},
         clockFontSize: {
             name: "字号",
             value: "25",
             type: "input"
         },
-        clockAxisLabelDistance:{
+        clockAxisLabelDistance: {
             name: "标签位置",
             value: "15",
+            type: "input"
+        },
+
+        hr_sunburst: {name: "旭日图", value: "", type: "hr"},
+        sunburstRadius: {name : "内/外半径", value: "['15%', '90%']", type: "input"},
+        sunburstSort: {
+            name: "排序方式",
+            value: "null",
+            options: [new Option("不排序", "null"), new Option("顺序", "asc"), new Option("倒序", "desc")],
+            type: "select"
+        },
+        sunburstLabelRotate: {
+            name: "标签旋转",
+            value: "radial",
+            options: [new Option("径向", "radial"), new Option("切向", "tangential")],
+            type: "select"
+        },
+        sunburstLabelAlign: {
+            name: "标签位置",
+            value: "center",
+            options: [new Option("靠内", "left"), new Option("居中", "center"), new Option("靠外", "right")],
+            type: "select"
+        },
+        sunburstHighlightPolicy:  {
+            name: "高亮显示",
+            value: "self",
+            options: [new Option("向上显示", "ancestor"), new Option("本身", "self"), new Option("向下显示", "descendant"), new Option("不设置", "none")],
+            type: "select"
+        },
+
+        hr_treemap: {name: "层级数据", value: "", type: "hr"},
+        treemapWidth:{name:"组件宽度", value: "80%", type: "input"},
+        treemapHeight:{name:"组件高度", value: "80%", type: "input"},
+        treemapLabelFontSize:{name: "标签字号", value: "22", type: "input"},
+        treemapLabelPosition:{
+            name: "位置",
+            value: "['5%','5%']",
             type: "input"
         },
 
@@ -797,6 +1000,13 @@ var __ECHARTS__ = {
         webkitDepGravity: {name: "引力", value: 0.4, type: "input"},
         webkitDepEdgeLength: {name: "节点距离", value: 50, type: "input"},
 
+        hr_banner: {name: "横幅标语", value: "", type: "hr"},
+        bannerBackgroundColor:{value: "transparent", name: "背景颜色", type: "color"},
+        bannerTextColor:{value: "#FFFFFF", name: "文本颜色", type: "color"},
+        bannerFontFamily:{name: "字体", value: "sans-serif", type: "input"},
+        bannerFontSize:{name: "字号", value: 100, type: "input"},
+        bannerShadesSpeed: {name: "速度(秒)", value: 3, type: "input"},
+
         hr_scrollingScreen: {name: "数据滚屏", value: "", type: "hr"},
         scrollingScreenLeft: {name: "左边距(%)", value: "20%", type: "input"},
         scrollingScreenWidth: {name: "宽度", value: 800, type: "input"},
@@ -842,7 +1052,7 @@ var __ECHARTS__ = {
             options: [new Option("是", "true"), new Option("否", "false")],
             type: "select"
         },
-        timelineOrient:{
+        timelineOrient: {
             name: "布局",
             value: "horizontal",
             options: [new Option("横向", "horizontal"), new Option("纵向", "vertical")],
@@ -863,6 +1073,43 @@ var __ECHARTS__ = {
             type: "select"
         },
         seriesLoopPlayInterval: {name: "间隔(秒)", value: 3, type: "input"},
+
+        hr_parallelAxis:{name: "平行坐标", value: "", type: "hr"},
+        parallelAxisLineWidth:{name: "线宽", value: 2, type: "input"},
+        parallelSmooth:{
+            name: "平滑线",
+            value: "false",
+            options: [new Option("是", "true"), new Option("否", "false")],
+            type: "select"
+        },
+        parallelAxisLabelInside: {
+            name: "标签位置",
+            value: "false",
+            options: [new Option("朝内", "true"), new Option("朝外", "false")],
+            type: "select"
+        },
+
+        hr_sankey:{name: "桑基图", value: "", type: "hr"},
+        sankeyOrient: {
+            name: "布局方向",
+            value: "horizontal",
+            options: [new Option("横向", "horizontal"), new Option("纵向", "vertical")],
+            type: "select"
+        },
+        sankeyNodeAlign:{
+            name: "节点对齐",
+            value: "justify",
+            options: [new Option("两端对齐", "justify"), new Option("左对齐", "left"), new Option("右对齐", "right")],
+            type: "select"
+        },
+
+        hr_themeRiver:{name: "主题河流图", value: "", type: "hr"},
+        themeRiverEmphasisFocus: {
+            name: "聚焦方式",
+            value: "self",
+            options: [new Option("不设置", "none"), new Option("淡出其他", "self"), new Option("聚焦系列", "series")],
+            type: "select"
+        },
 
         hr_dataZoom: {name: "数据缩放", value: "", type: "hr"},
         dataZoomBarDisplay: {
@@ -1144,8 +1391,8 @@ var geoCoordMap = {
         太原市: [112.5693512, 37.87111282],
         大同市: [113.2963333, 40.0971489],
         阳泉市: [113.5742569, 37.86065674],
-        长治市: [113.1055679, 36.18191147],
         晋城市: [112.84272, 35.50651169],
+        长治市: [113.1055679, 36.18191147],
         朔州市: [112.4232712, 39.31313324],
         晋中市: [112.7453613, 37.67613983],
         运城市: [110.9911499, 35.01391602],
@@ -1971,119 +2218,6 @@ function toPoint(percent) {
     return Number(percent.replace("%",""));
 }
 
-function getEcharts(container, width, height, dataset, configs) {
-    $("copyright").innerHTML = getUserConfig("CopyRight");
-    if (echarts.version === "4.9.0") {
-        switch (configs.echartsType.value) {
-            case "Bar":
-                return getBar(container, width, height, dataset, configs);
-                break;
-            case "PolarBar":
-                return getPolarBar(container, width, height, dataset, configs);
-                break;
-            case "PolarArea":
-                return getPolarArea(container, width, height, dataset, configs);
-                break;
-            case "Line":
-                return getLine(container, width, height, dataset, configs);
-                break;
-            case "Line3D":
-                return getLine3D(container, width, height, dataset, configs);
-                break;
-            case "BarAndLine":
-                return getBarAndLine(container, width, height, dataset, configs);
-                break;
-            case "AreaStyle":
-                return getAreaStyle(container, width, height, dataset, configs);
-                break;
-            case "TransversBar":
-                return getTransversBar(container, width, height, dataset, configs);
-                break;
-            case "Pie":
-                return getPie(container, width, height, dataset, configs);
-                break;
-            case "Ring":
-                return getRing(container, width, height, dataset, configs);
-                break;
-            case "Rose":
-                return getRose(container, width, height, dataset, configs);
-                break;
-            case "Gauge":
-                //return getGaugeWithOne(container, width, height, dataset,configs);
-                return getCategoryLineForGauge(container, width, height, dataset, configs);
-                break;
-            case "Radar":
-                return getRadar(container, width, height, dataset, configs);
-                break;
-            case "Regression":
-                return getRegression(container, width, height, dataset, configs);
-                break;
-            case "Relation":
-                return getRelation(container, width, height, dataset, configs);
-                break;
-            case "Tree":
-                return getTree(container, width, height, dataset, configs);
-                break;
-            case "WebkitDep":
-                return getWebkitDep(container, width, height, dataset, configs);
-                break;
-            case "Scatter":
-                return getScatter(container, width, height, dataset, configs);
-                break;
-            case "Funnel":
-                return getFunnel(container, width, height, dataset, configs);
-                break;
-            case "WordCloud":
-                return getWordCloud(container, width, height, dataset, configs);
-                break;
-            case "Liqiud":
-                //return getLiqiud(container, width, height, dataset,configs);
-                return getCategoryLineForLiqiud(container, width, height, dataset, configs);
-                break;
-            case "Calendar":
-                return getCalendar(container, width, height, dataset, configs);
-                break;
-            case "GeoOfChina":
-                //return getGeoOfChina(container, width, height, dataset,configs);
-                return getCategoryLineForGeoOfChina(container, width, height, dataset, configs);
-                break;
-            case "GeoOfLocal":
-                //return getGeoOfLocal(container, width, height, dataset,configs);
-                return getCategoryLineForGeoOfLocal(container, width, height, dataset, configs);
-                break;
-            case "Bar3D":
-                return getBar3D(container, width, height, dataset, configs);
-                break;
-            case "Scatter3D":
-                return getScatter3D(container, width, height, dataset, configs);
-                break;
-            case "CategoryLine":
-                return getCategoryLine(container, width, height, dataset, configs);
-                break;
-            case "FunctionLine":
-                return getFunctionLine(container, width, height, dataset, configs);
-                break;
-            case "GeoMigrateLinesOfChinaCity":
-                return getGeoMigrateLinesOfChinaCity(container, width, height, dataset, configs);
-                break;
-            case "ScrollingScreen":
-                return getScrollingScreen(container, width, height, dataset, configs);
-            case "WalkingLantern":
-                return getWalkingLantern(container, width, height, dataset, configs);
-            case "WindowShades":
-                return getWindowShades(container, width, height, dataset, configs);
-            case "Surface":
-                return getSurface(container, width, height, dataset, configs);
-            case "Boxplot":
-                return getBoxplot(container, width, height, dataset, configs);
-            case "Clock":
-                return getClock(container, width, height, dataset, configs);
-        }
-    } else{
-        alert("此应用仅支持Echarts 4.9.0,您目前使用的版本是" + echarts.version + ".")
-    }
-}
-
 function getAnimationEasing(configs){
     return configs.animationEasing.value == "linear"?configs.animationEasing.value:configs.animationEasing.value + configs.animationFunctionType.value;
 }
@@ -2168,8 +2302,7 @@ function getBar(container, width, height, dataset, configs) {
         container.style.height = height;
     }
 
-    var myChart = echarts.init(container, configs.echartsTheme.value);
-
+    var myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value});
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
     var columns = [];
@@ -2281,7 +2414,7 @@ function getBar(container, width, height, dataset, configs) {
                     show: configs.toolboxFeatureMagicType.value.toBoolean(),
                     type: ["line", "bar", "stack", "tiled"]
                 },
-                myMultiScreen: {
+                myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
                     show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
                     title: '视图组合',
                     icon: __SYS_IMAGES_PATH__.viewCombination,
@@ -2289,7 +2422,7 @@ function getBar(container, width, height, dataset, configs) {
                         __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
                         alert("视图已提交组合列表.");
                     }
-                },
+                } : {},
             },
             top: configs.toolbox_top.value,
             left: configs.toolbox_left.value,
@@ -2480,7 +2613,7 @@ function getTransversBar(container, width, height, dataset, configs) {
         container.style.height = height;
     }
 
-    var myChart = echarts.init(container, configs.echartsTheme.value);
+    var myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value});
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
@@ -2588,7 +2721,7 @@ function getTransversBar(container, width, height, dataset, configs) {
                     show: configs.toolboxFeatureMagicType.value.toBoolean(),
                     type: ["stack", "tiled"]
                 },
-                myMultiScreen: {
+                myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
                     show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
                     title: '视图组合',
                     icon: __SYS_IMAGES_PATH__.viewCombination,
@@ -2596,7 +2729,7 @@ function getTransversBar(container, width, height, dataset, configs) {
                         __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
                         alert("视图已提交组合列表.");
                     }
-                },
+                } : {},
             },
             top: configs.toolbox_top.value,
             left:configs.toolbox_left.value,
@@ -2798,7 +2931,7 @@ function getLine(container, width, height, dataset, configs) {
         container.style.height = height;
     }
 
-    var myChart = echarts.init(container, configs.echartsTheme.value);
+    var myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value});
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
@@ -2908,7 +3041,7 @@ function getLine(container, width, height, dataset, configs) {
                     show: configs.toolboxFeatureMagicType.value.toBoolean(),
                     type: ["line", "bar", "stack", "tiled"]
                 },
-                myMultiScreen: {
+                myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
                     show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
                     title: '视图组合',
                     icon: __SYS_IMAGES_PATH__.viewCombination,
@@ -2916,7 +3049,7 @@ function getLine(container, width, height, dataset, configs) {
                         __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
                         alert("视图已提交组合列表.");
                     }
-                },
+                } : {},
             },
             top: configs.toolbox_top.value,
             left: configs.toolbox_left.value,
@@ -3099,10 +3232,10 @@ function getBarAndLine(container, width, height, dataset, configs) {
         container.style.height = height;
     }
 
-    var myChart = echarts.init(container, configs.echartsTheme.value);
-
+    var myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value});
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
-
+    var containerWidth = myChart.getWidth();
+    var containerHeight = myChart.getHeight();
     var columns = [];
     for (var i=0; i<dataset["columns"].length;i++){
         columns.push(dataset["columns"][i].name);
@@ -3122,6 +3255,7 @@ function getBarAndLine(container, width, height, dataset, configs) {
                     name: columns[c],
                     type: "line",
                     data: [],
+                    yAxisIndex: c % 2,
                     lineStyle: {
                         width: Number(configs.lineStyleWidth.value),
                     },
@@ -3178,6 +3312,7 @@ function getBarAndLine(container, width, height, dataset, configs) {
                 serie = {
                     name: columns[c],
                     type: "bar",
+                    yAxisIndex: c % 2,
                     data: [],
                     label: {
                         show: configs.barLabelDisplay.value.toBoolean(),
@@ -3251,17 +3386,17 @@ function getBarAndLine(container, width, height, dataset, configs) {
             containLabel: configs.grid_containLabel.value.toBoolean(),
             backgroundColor: "transparent"
         },
-        brush:  configs.toolboxFeatureBrush.value.toBoolean()?{
+        brush: configs.toolboxFeatureBrush.value.toBoolean() ? {
             toolbox: ["rect", "polygon", "lineX", "lineY", "keep", "clear"],
             xAxisIndex: 0
-        }:null,
+        } : null,
         toolbox: {
             show: configs.toolboxDisplay.value.toBoolean(),
             feature: {
                 saveAsImage: {
                     show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
-                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"],
-                    backgroundColor:configs.toolboxFeatureSaveAsImageBackgroundColor.value,
+                    excludeComponents: ["toolbox", "dataZoom", "timeline", "visualMap", "brush"],
+                    backgroundColor: configs.toolboxFeatureSaveAsImageBackgroundColor.value,
                 },
                 restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
                 dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
@@ -3270,7 +3405,7 @@ function getBarAndLine(container, width, height, dataset, configs) {
                     show: configs.toolboxFeatureMagicType.value.toBoolean(),
                     type: ["stack", "tiled"]
                 },
-                myMultiScreen: {
+                myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
                     show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
                     title: '视图组合',
                     icon: __SYS_IMAGES_PATH__.viewCombination,
@@ -3278,10 +3413,10 @@ function getBarAndLine(container, width, height, dataset, configs) {
                         __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
                         alert("视图已提交组合列表.");
                     }
-                },
+                } : {},
             },
             top: configs.toolbox_top.value,
-            left:configs.toolbox_left.value,
+            left: configs.toolbox_left.value,
             orient: configs.toolbox_orient.value,
             emphasis: {
                 iconStyle: {
@@ -3293,7 +3428,7 @@ function getBarAndLine(container, width, height, dataset, configs) {
             show: configs.titleDisplay.value.toBoolean(),
             text: configs.titleText.value,
             link: configs.titleTextLink.value,
-            target : "blank",
+            target: "blank",
             subtext: configs.titleSubText.value,
             sublink: configs.titleSubTextLink.value,
             subtarget: "blank",
@@ -3337,7 +3472,7 @@ function getBarAndLine(container, width, height, dataset, configs) {
                     color: configs.axisColor.value
                 },
             },
-            axisTick:{
+            axisTick: {
                 show: configs.axisLineDisplay.value.toBoolean(),
             },
             axisLabel: {
@@ -3361,7 +3496,8 @@ function getBarAndLine(container, width, height, dataset, configs) {
                 show: configs.splitXAreaDisplay.value.toBoolean(),
             }
         },
-        yAxis: {
+        yAxis: [{
+            position: "right",
             inverse: configs.yAxisInverse.value.toBoolean(),
             axisLine: {
                 show: configs.axisLineDisplay.value.toBoolean(),
@@ -3369,7 +3505,7 @@ function getBarAndLine(container, width, height, dataset, configs) {
                     color: configs.axisColor.value
                 },
             },
-            axisTick:{
+            axisTick: {
                 show: configs.axisLineDisplay.value.toBoolean(),
             },
             axisLabel: {
@@ -3391,6 +3527,37 @@ function getBarAndLine(container, width, height, dataset, configs) {
                 show: configs.splitYAreaDisplay.value.toBoolean(),
             }
         },
+            {
+                position: "left",
+                inverse: configs.yAxisInverse.value.toBoolean(),
+                axisLine: {
+                    show: configs.axisLineDisplay.value.toBoolean(),
+                    lineStyle: {
+                        color: configs.axisColor.value
+                    },
+                },
+                axisTick: {
+                    show: configs.axisLineDisplay.value.toBoolean(),
+                },
+                axisLabel: {
+                    show: configs.axisLineDisplay.value.toBoolean(),
+                    rotate: Number(configs.yAxisLabelRotate.value),
+                    textStyle: {
+                        color: configs.axisTextColor.value
+                    }
+                },
+                splitLine: {
+                    show: configs.splitYLineDisplay.value.toBoolean(),
+                    lineStyle: {
+                        color: [
+                            configs.axisColor.value
+                        ]
+                    },
+                },
+                splitArea: {
+                    show: configs.splitYAreaDisplay.value.toBoolean(),
+                }
+            }],
         dataZoom: [{
             type: "inside",
             filterMode: configs.dataZoomFilterMode.value,
@@ -3404,10 +3571,16 @@ function getBarAndLine(container, width, height, dataset, configs) {
             yAxisIndex: 0,
             end: 100
         }, {
+            type: "inside",
+            filterMode: configs.dataZoomFilterMode.value,
+            start: 0,
+            yAxisIndex: 1,
+            end: 100
+        }, {
             show: configs.dataZoomBarDisplay.value.toBoolean(),
             type: "slider",
             filterMode: configs.dataZoomFilterMode.value,
-            yAxisIndex: 0,
+            yAxisIndex: 1,
             start: 0,
             end: 100,
             width: configs.dataZoomBarWidth.value,
@@ -3419,28 +3592,50 @@ function getBarAndLine(container, width, height, dataset, configs) {
             borderColor: configs.dataZoomBarColor.value,
             handleStyle: {
                 color: configs.dataZoomBarColor.value,
-            }
+            },
+            moveHandleSize: 7
         }, {
             show: configs.dataZoomBarDisplay.value.toBoolean(),
             type: "slider",
             filterMode: configs.dataZoomFilterMode.value,
-            xAxisIndex: 0,
+            yAxisIndex: 0,
             start: 0,
             end: 100,
-            width: (100 - toPoint(configs.grid_left.value) - toPoint(configs.grid_right.value)) + "%",
-            height: configs.dataZoomBarWidth.value,
-            left: configs.grid_left.value,
-            top: (100 - toPoint(configs.grid_bottom.value)) + "%",
+            width: configs.dataZoomBarWidth.value,
+            height: (100 - toPoint(configs.grid_top.value) - toPoint(configs.grid_bottom.value)) + "%",
+            top: configs.grid_top.value,
+            right: (toPoint(configs.grid_right.value) - configs.dataZoomBarWidth.value * 100 / containerWidth) + "%",
             handleIcon: __SYS_IMAGES_PATH__.dataZoomHandleIcon[configs.dataZoomHandleIcon.value],
             handleSize: configs.dataZoomHandleSize.value,
             borderColor: configs.dataZoomBarColor.value,
             handleStyle: {
                 color: configs.dataZoomBarColor.value,
-            }
-        }],
+            },
+            moveHandleSize: 7
+        },
+            {
+                show: configs.dataZoomBarDisplay.value.toBoolean(),
+                type: "slider",
+                filterMode: configs.dataZoomFilterMode.value,
+                xAxisIndex: 0,
+                start: 0,
+                end: 100,
+                width: (100 - toPoint(configs.grid_left.value) - toPoint(configs.grid_right.value)) + "%",
+                height: configs.dataZoomBarWidth.value,
+                left: configs.grid_left.value,
+                top: (100 - toPoint(configs.grid_bottom.value)) + "%",
+                handleIcon: __SYS_IMAGES_PATH__.dataZoomHandleIcon[configs.dataZoomHandleIcon.value],
+                handleSize: configs.dataZoomHandleSize.value,
+                borderColor: configs.dataZoomBarColor.value,
+                handleStyle: {
+                    color: configs.dataZoomBarColor.value,
+                },
+                moveHandleSize: 7
+            }],
         graphic: getWaterGraphic(__SYS_LOGO_LINK__),
         series: yAxis_series,
     };
+
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
@@ -3459,7 +3654,7 @@ function getAreaStyle(container, width, height, dataset, configs) {
         container.style.height = height;
     }
 
-    var myChart = echarts.init(container, configs.echartsTheme.value);
+    var myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value});
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
@@ -3583,7 +3778,7 @@ function getAreaStyle(container, width, height, dataset, configs) {
                     show: configs.toolboxFeatureMagicType.value.toBoolean(),
                     type: ["stack", "tiled"]
                 },
-                myMultiScreen: {
+                myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
                     show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
                     title: '视图组合',
                     icon: __SYS_IMAGES_PATH__.viewCombination,
@@ -3591,7 +3786,7 @@ function getAreaStyle(container, width, height, dataset, configs) {
                         __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
                         alert("视图已提交组合列表.");
                     }
-                },
+                } : {},
             },
             top: configs.toolbox_top.value,
             left:configs.toolbox_left.value,
@@ -3625,9 +3820,13 @@ function getAreaStyle(container, width, height, dataset, configs) {
             show: configs.tooltipDisplay.value.toBoolean(),
             //显示活动标尺线.
             trigger: "axis",
-            position: function (pt) {
-                return [pt[0], "10%"];
-            }
+             axisPointer: {
+                type: configs.axisPointerType.value,
+            },
+            //position: function (pt) {
+            //锁定位置
+            //    return [pt[0], "10%"];
+            //}
         },
         legend: {
             show: configs.legendDisplay.value.toBoolean(),
@@ -3773,7 +3972,7 @@ function getPolarBar(container, width, height, dataset, configs) {
         container.style.height = height;
     }
 
-    var myChart = echarts.init(container, configs.echartsTheme.value);
+    var myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value});
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
@@ -3858,7 +4057,7 @@ function getPolarBar(container, width, height, dataset, configs) {
                     show: configs.toolboxFeatureMagicType.value.toBoolean(),
                     type: ["stack", "tiled"]
                 },
-                myMultiScreen: {
+                myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
                     show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
                     title: '视图组合',
                     icon: __SYS_IMAGES_PATH__.viewCombination,
@@ -3866,7 +4065,7 @@ function getPolarBar(container, width, height, dataset, configs) {
                         __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
                         alert("视图已提交组合列表.");
                     }
-                },
+                } : {},
             },
             top: configs.toolbox_top.value,
             left:configs.toolbox_left.value,
@@ -3951,7 +4150,9 @@ function getPolarBar(container, width, height, dataset, configs) {
         tooltip: {
             show: configs.tooltipDisplay.value.toBoolean(),
             trigger: "item",
-            formatter: "{a} <br/>{b}: {c}"
+            formatter: function(param) {
+                return [param.seriesName, param.marker + "&ensp;" + param.name + ":<span style='display:inline-block;min-width:30px;text-align:right;font-weight:bold'>&ensp;" + param.value + "</span>"].join("<br>");
+            }
         },
         dataZoom: [{
             type: "inside",
@@ -3987,7 +4188,7 @@ function getPolarArea(container, width, height, dataset, configs) {
         container.style.height = height;
     }
 
-    var myChart = echarts.init(container, configs.echartsTheme.value);
+    var myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value});
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
@@ -4071,7 +4272,7 @@ function getPolarArea(container, width, height, dataset, configs) {
                     show: configs.toolboxFeatureMagicType.value.toBoolean(),
                     type: ["stack", "tiled"]
                 },
-                myMultiScreen: {
+                myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
                     show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
                     title: '视图组合',
                     icon: __SYS_IMAGES_PATH__.viewCombination,
@@ -4079,7 +4280,7 @@ function getPolarArea(container, width, height, dataset, configs) {
                         __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
                         alert("视图已提交组合列表.");
                     }
-                },
+                } : {},
             },
             top: configs.toolbox_top.value,
             left:configs.toolbox_left.value,
@@ -4164,7 +4365,9 @@ function getPolarArea(container, width, height, dataset, configs) {
         tooltip: {
             show:configs.tooltipDisplay.value.toBoolean(),
             trigger: "item",
-            formatter: "{a} <br/>{b}: {c}"
+            formatter: function(param) {
+                return [param.seriesName, param.marker + "&ensp;" + param.name + ":<span style='display:inline-block;min-width:30px;text-align:right;font-weight:bold'>&ensp;" + param.value + "</span>"].join("<br>");
+            }
         },
         dataZoom: [{
             type: "inside",
@@ -4199,8 +4402,7 @@ function getPie(container, width, height, dataset, configs) {
         container.style.height = height;
     }
 
-    var myChart = echarts.init(container, configs.echartsTheme.value);
-
+    var myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value});
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
     var columns = [];
@@ -4310,7 +4512,7 @@ function getPie(container, width, height, dataset, configs) {
                     show: configs.toolboxFeatureMagicType.value.toBoolean(),
                     type: ["pie", "funnel"]
                 },
-                myMultiScreen: {
+                myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
                     show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
                     title: '视图组合',
                     icon: __SYS_IMAGES_PATH__.viewCombination,
@@ -4318,7 +4520,7 @@ function getPie(container, width, height, dataset, configs) {
                         __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
                         alert("视图已提交组合列表.");
                     }
-                },
+                } : {},
             },
             top: configs.toolbox_top.value,
             left: configs.toolbox_left.value,
@@ -4330,9 +4532,12 @@ function getPie(container, width, height, dataset, configs) {
             },
         },
         tooltip: {
-            show: configs.tooltipDisplay.value.toBoolean(),
+            show:configs.tooltipDisplay.value.toBoolean() && !configs.richTextLabel.value.toBoolean(),
             trigger: "item",
-            formatter: "{a} <br/>{b}: {c} ({d}%)"
+            //formatter: "{a} <br/>{b}: {c} ({d}%)"
+            formatter: function(param) {
+                return [param.seriesName, param.marker + "&ensp;" + param.name + ":<span style='display:inline-block;min-width:30px;text-align:right;font-weight:bold'>&ensp;" + param.value + "&ensp;(&ensp;"  + param.percent + "%&ensp;)</span>"].join("<br>");
+            }
         },
         legend: {
             show: configs.legendDisplay.value.toBoolean(),
@@ -4418,7 +4623,7 @@ function getRing(container, width, height, dataset, configs) {
         container.style.height = height;
     }
 
-    var myChart = echarts.init(container, configs.echartsTheme.value);
+    var myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value});
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
@@ -4529,7 +4734,7 @@ function getRing(container, width, height, dataset, configs) {
                     show: configs.toolboxFeatureMagicType.value.toBoolean(),
                     type: ["pie", "funnel"]
                 },
-                myMultiScreen: {
+                myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
                     show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
                     title: '视图组合',
                     icon: __SYS_IMAGES_PATH__.viewCombination,
@@ -4537,7 +4742,7 @@ function getRing(container, width, height, dataset, configs) {
                         __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
                         alert("视图已提交组合列表.");
                     }
-                },
+                } : {},
             },
             top: configs.toolbox_top.value,
             left:configs.toolbox_left.value,
@@ -4562,9 +4767,12 @@ function getRing(container, width, height, dataset, configs) {
             },
         },
         tooltip: {
-            show:configs.tooltipDisplay.value.toBoolean(),
+            show:configs.tooltipDisplay.value.toBoolean() && !configs.richTextLabel.value.toBoolean(),
             trigger: "item",
-            formatter: "{a} <br/>{b}: {c} ({d}%)"
+            //formatter: "{a} <br/>{b}: {c} ({d}%)"
+            formatter: function(param) {
+                return [param.seriesName, param.marker + "&ensp;" + param.name + ":<span style='display:inline-block;min-width:30px;text-align:right;font-weight:bold'>&ensp;" + param.value + "&ensp;(&ensp;"  + param.percent + "%&ensp;)</span>"].join("<br>");
+            }
         },
         series: series,
         graphic: getWaterGraphic(__SYS_LOGO_LINK__),
@@ -4636,7 +4844,7 @@ function getRose(container, width, height, dataset, configs) {
         container.style.height = height;
     }
 
-    var myChart = echarts.init(container, configs.echartsTheme.value);
+    var myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value});
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
@@ -4748,7 +4956,7 @@ function getRose(container, width, height, dataset, configs) {
                     show: configs.toolboxFeatureMagicType.value.toBoolean(),
                     type: ["pie", "funnel"]
                 },
-                myMultiScreen: {
+                myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
                     show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
                     title: '视图组合',
                     icon: __SYS_IMAGES_PATH__.viewCombination,
@@ -4756,7 +4964,7 @@ function getRose(container, width, height, dataset, configs) {
                         __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
                         alert("视图已提交组合列表.");
                     }
-                },
+                } : {},
             },
             top: configs.toolbox_top.value,
             left: configs.toolbox_left.value,
@@ -4781,9 +4989,12 @@ function getRose(container, width, height, dataset, configs) {
             },
         },
         tooltip: {
-            show: configs.tooltipDisplay.value.toBoolean(),
+            show:configs.tooltipDisplay.value.toBoolean() && !configs.richTextLabel.value.toBoolean(),
             trigger: "item",
-            formatter: "{a} <br/>{b}: {c} ({d}%)"
+            //formatter: "{a} <br/>{b}: {c} ({d}%)"
+            formatter: function(param) {
+                return [param.seriesName, param.marker + "&ensp;" + param.name + ":<span style='display:inline-block;min-width:30px;text-align:right;font-weight:bold'>&ensp;" + param.value + "&ensp;(&ensp;"  + param.percent + "%&ensp;)</span>"].join("<br>");
+            }
         },
         series: series,
         graphic: getWaterGraphic(__SYS_LOGO_LINK__),
@@ -4854,7 +5065,7 @@ function getRadar(container, width, height, dataset, configs) {
         container.style.height = height;
     }
 
-    var myChart = echarts.init(container, configs.echartsTheme.value);
+    var myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value});
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
@@ -4984,7 +5195,7 @@ function getRadar(container, width, height, dataset, configs) {
                 },
                 restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
                 dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                myMultiScreen: {
+                myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
                     show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
                     title: '视图组合',
                     icon: __SYS_IMAGES_PATH__.viewCombination,
@@ -4992,7 +5203,7 @@ function getRadar(container, width, height, dataset, configs) {
                         __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
                         alert("视图已提交组合列表.");
                     }
-                },
+                } : {},
             },
             top: configs.toolbox_top.value,
             left: configs.toolbox_left.value,
@@ -5065,7 +5276,7 @@ function getRegression(container, width, height, dataset, configs) {
         container.style.height = height;
     }
 
-    var myChart = echarts.init(container, configs.echartsTheme.value);
+    var myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value});
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
@@ -5311,7 +5522,7 @@ function getRegression(container, width, height, dataset, configs) {
                     show: configs.toolboxFeatureMagicType.value.toBoolean(),
                     type: ["line", "bar",]
                 },
-                myMultiScreen: {
+                myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
                     show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
                     title: '视图组合',
                     icon: __SYS_IMAGES_PATH__.viewCombination,
@@ -5319,7 +5530,7 @@ function getRegression(container, width, height, dataset, configs) {
                         __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
                         alert("视图已提交组合列表.");
                     }
-                },
+                } : {},
             },
             top: configs.toolbox_top.value,
             left:configs.toolbox_left.value,
@@ -5502,7 +5713,7 @@ function getRelation(container, width, height, dataset, configs) {
         container.style.height = height;
     }
 
-    var myChart = echarts.init(container, configs.echartsTheme.value);
+    var myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value});
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
     var columns = [];
@@ -5635,7 +5846,7 @@ function getRelation(container, width, height, dataset, configs) {
                 },
                 restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
                 dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                myMultiScreen: {
+                myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
                     show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
                     title: '视图组合',
                     icon: __SYS_IMAGES_PATH__.viewCombination,
@@ -5643,7 +5854,7 @@ function getRelation(container, width, height, dataset, configs) {
                         __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
                         alert("视图已提交组合列表.");
                     }
-                },
+                } : {},
             },
             top: configs.toolbox_top.value,
             left:configs.toolbox_left.value,
@@ -5675,6 +5886,9 @@ function getRelation(container, width, height, dataset, configs) {
         },
         tooltip: {
             show:configs.tooltipDisplay.value.toBoolean(),
+            formatter: function (params) {
+                return params.marker + params.name;
+            },
         },
         series: [serie],
 
@@ -5757,7 +5971,7 @@ function getTree(container, width, height, dataset, configs) {
         container.style.height = height;
     }
 
-    var myChart = echarts.init(container, configs.echartsTheme.value);
+    var myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value});
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
@@ -5922,7 +6136,7 @@ function getTree(container, width, height, dataset, configs) {
                 },
                 restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
                 dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                myMultiScreen: {
+                myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
                     show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
                     title: '视图组合',
                     icon: __SYS_IMAGES_PATH__.viewCombination,
@@ -5930,7 +6144,7 @@ function getTree(container, width, height, dataset, configs) {
                         __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
                         alert("视图已提交组合列表.");
                     }
-                },
+                } : {},
             },
             top: configs.toolbox_top.value,
             left:configs.toolbox_left.value,
@@ -5982,7 +6196,7 @@ function getWebkitDep(container, width, height, dataset, configs) {
         container.style.height = height;
     }
 
-    var myChart = echarts.init(container, configs.echartsTheme.value);
+    var myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value});
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
@@ -6101,7 +6315,7 @@ function getWebkitDep(container, width, height, dataset, configs) {
                 },
                 restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
                 dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                myMultiScreen: {
+                myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
                     show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
                     title: '视图组合',
                     icon: __SYS_IMAGES_PATH__.viewCombination,
@@ -6109,7 +6323,7 @@ function getWebkitDep(container, width, height, dataset, configs) {
                         __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
                         alert("视图已提交组合列表.");
                     }
-                },
+                } : {},
             },
             top: configs.toolbox_top.value,
             left:configs.toolbox_left.value,
@@ -6163,7 +6377,7 @@ function getScatter(container, width, height, dataset, configs) {
         container.style.height = height;
     }
 
-    var myChart = echarts.init(container, configs.echartsTheme.value);
+    var myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value});
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
@@ -6404,7 +6618,7 @@ function getScatter(container, width, height, dataset, configs) {
                 },
                 restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
                 dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                myMultiScreen: {
+                myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
                     show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
                     title: '视图组合',
                     icon: __SYS_IMAGES_PATH__.viewCombination,
@@ -6412,7 +6626,7 @@ function getScatter(container, width, height, dataset, configs) {
                         __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
                         alert("视图已提交组合列表.");
                     }
-                },
+                } : {},
             },
             top: configs.toolbox_top.value,
             left:configs.toolbox_left.value,
@@ -6562,7 +6776,7 @@ function getFunnel(container, width, height, dataset, configs) {
         container.style.height = height;
     }
 
-    var myChart = echarts.init(container, configs.echartsTheme.value);
+    var myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value});
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
@@ -6708,7 +6922,9 @@ function getFunnel(container, width, height, dataset, configs) {
         tooltip: {
             show:configs.tooltipDisplay.value.toBoolean(),
             trigger: "item",
-            formatter: "{a} <br/>{b} : {c}"
+            formatter: function (params) {
+                return [params.seriesName, params.marker + params.name + ":&emsp;<span style='display:inline-block;min-width:30px;text-align:right;font-weight:bold'>" + params.value + "</span>"].join("<br>");
+            },
         },
         toolbox: {
             show: configs.toolboxDisplay.value.toBoolean(),
@@ -6720,7 +6936,7 @@ function getFunnel(container, width, height, dataset, configs) {
                 },
                 restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
                 dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                myMultiScreen: {
+                myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
                     show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
                     title: '视图组合',
                     icon: __SYS_IMAGES_PATH__.viewCombination,
@@ -6728,7 +6944,7 @@ function getFunnel(container, width, height, dataset, configs) {
                         __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
                         alert("视图已提交组合列表.");
                     }
-                },
+                } : {},
             },
             top: configs.toolbox_top.value,
             left:configs.toolbox_left.value,
@@ -6765,210 +6981,6 @@ function getFunnel(container, width, height, dataset, configs) {
     return container;
 }
 
-function getWordCloud(container, width, height, dataset, configs) {
-    if (container == null) {
-        container = document.createElement("div");
-        container.className = "echarts-container";
-        container.id = "echarts-container";
-        container.style.width = width;
-        container.style.height = height;
-    }
-
-    var myChart = echarts.init(container, configs.echartsTheme.value);
-
-    myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
-
-    var series = [];
-    var columns = [];
-    var legends = [];
-    //var maskImage = new Image();
-    //maskImage.src = "logo.png";
-
-    function init() {
-        for (var i = 0; i < dataset["columns"].length; i++) {
-            columns.push(dataset["columns"][i].name);
-        }
-
-        for (var c = 0; c < columns.length; c++) {
-            if (c == 0) {
-                for (var i = 0; i < dataset["data"].length; i++) {
-                    var row = dataset["data"][i];
-                    legends.push(row[columns[c]].value);
-                }
-            } else {
-                var serie = {
-                    name: columns[c],
-                    type: "wordCloud",
-                    gridSize: 2,
-                    sizeRange: [configs.wordCloudMinFontSize.value, configs.wordCloudMaxFontSize.value],//[最小字号,最大字号],
-                    rotationRange: [-1 * configs.wordCloudRotationRange.value, configs.wordCloudRotationRange.value],//[旋转角度,旋转角度]
-                    shape: configs.wordCloudShape.value,
-                    //"circle", "cardioid", "diamond", "triangle-forward", "triangle", "pentagon", "star"
-                    //maskImage: maskImage,
-                    drawOutOfBound: false,
-                    textStyle: {
-                        normal: {
-                            color: function () {
-                                return "rgb(" + [
-                                    Math.round(Math.random() * 160),
-                                    Math.round(Math.random() * 160),
-                                    Math.round(Math.random() * 160)
-                                ].join(",") + ")";
-                            }
-                        },
-                        emphasis: {
-                            shadowBlur: 10,
-                            shadowColor: "#333"
-                        }
-                    },
-                    data: [
-                        {
-                            name: "wordCloud",
-                            value: 10000,
-                            textStyle: {
-                                normal: {
-                                    color: "black"
-                                },
-                                emphasis: {
-                                    color: "red"
-                                }
-                            }
-                        }
-                    ],
-                    animation: configs.animation.value.toBoolean(),
-                    animationThreshold: Number(configs.animationThreshold.value),
-                    animationEasing: getAnimationEasing(configs),
-                    animationDuration: function (idx) {
-                        return idx * Number(configs.animationDuration.value) + c * Number(configs.animationDuration.value);
-                    },
-                    animationDelay: function (idx) {
-                        return idx * Number(configs.animationDelay.value) + c * Number(configs.animationDelay.value);
-                    },
-                    animationEasingUpdate: getAnimationEasingUpdate(configs),
-                    animationDurationUpdate: function (idx) {
-                        return idx * Number(configs.animationDurationUpdate.value) + c * Number(configs.animationDurationUpdate.value);
-                    },
-                    animationDelayUpdate: function (idx) {
-                        return idx * Number(configs.animationDelayUpdate.value) + c * Number(configs.animationDelayUpdate.value);
-                    },
-                };
-                serie.data = [];
-                for (var i = 0; i < dataset["data"].length; i++) {
-                    var row = dataset["data"][i];
-                    serie.data.push({name: row[columns[0]].value, value: row[columns[c]].value});
-                }
-                series.push(serie);
-            }
-        }
-
-        let top = toPoint(configs.grid_top.value);
-        let left = toPoint(configs.grid_left.value);
-        let groupWith = configs.groupWith.value;
-        let lines = parseInt(series.length / groupWith + 0.5);
-        let height = parseInt((100 - toPoint(configs.grid_top.value) - toPoint(configs.grid_bottom.value)) / lines);
-        let width = (100 - toPoint(configs.grid_left.value) - toPoint(configs.grid_right.value)) / groupWith;
-
-        for (var i = 0; i < series.length; i++) {
-            series[i].top = ((top + parseInt(i / groupWith) * height) + parseInt(i / groupWith) * top) + "%";
-            series[i].left = (left + (i % groupWith) * width) + "%";
-            series[i].width = width + "%";
-            series[i].height = height + "%";
-        }
-    }
-
-    init();
-
-    var option = {
-        backgroundColor: configs.backgroundColor.value,
-        grid: {
-            x: configs.grid_left.value,
-            y: configs.grid_top.value,
-            x2: configs.grid_right.value,
-            y2: configs.grid_bottom.value,
-            containLabel: configs.grid_containLabel.value.toBoolean(),
-            backgroundColor: "transparent"
-        },
-        title: {
-            show: configs.titleDisplay.value.toBoolean(),
-            text: configs.titleText.value,
-            link: configs.titleTextLink.value,
-            target : "blank",
-            subtext: configs.titleSubText.value,
-            sublink: configs.titleSubTextLink.value,
-            subtarget: "blank",
-            top:"top",
-            left:configs.titlePosition.value,
-            textStyle: {
-                color: configs.titleTextColor.value,
-                fontSize: Number(configs.titleTextFontSize.value),
-            },
-            subtextStyle: {
-                color: configs.titleSubTextColor.value,
-                fontSize: Number(configs.titleSubTextFontSize.value),
-            }
-        },
-        tooltip: {
-            show:configs.tooltipDisplay.value.toBoolean(),
-            formatter: function (param) {
-                return param.name + "<br>" + param.seriesName + ":"
-                    + param.value;
-            }
-        },
-        legend: {
-            show:configs.legendDisplay.value.toBoolean(),
-            icon: configs.legendIcon.value,
-            type: configs.legendType.value,
-            selectedMode: configs.legendSelectedMode.value,
-            top: configs.legendPositionTop.value,
-            left: configs.legendPositionLeft.value,
-            orient:configs.legendOrient.value,
-            data: columns.slice(1),
-            textStyle: {
-                color: configs.legendTextColor.value
-            },
-        },
-        toolbox: {
-            show: configs.toolboxDisplay.value.toBoolean(),
-            feature: {
-                saveAsImage: {
-                    show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
-                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"],
-                    backgroundColor:configs.toolboxFeatureSaveAsImageBackgroundColor.value,
-                },
-                restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
-                dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                myMultiScreen: {
-                    show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
-                    title: '视图组合',
-                    icon: __SYS_IMAGES_PATH__.viewCombination,
-                    onclick: function () {
-                        __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
-                        alert("视图已提交组合列表.");
-                    }
-                },
-            },
-            top: configs.toolbox_top.value,
-            left:configs.toolbox_left.value,
-            orient: configs.toolbox_orient.value,
-            emphasis: {
-                iconStyle: {
-                    textPosition: configs.toolbox_textPosition.value,
-                }
-            },
-        },
-        series: series,
-        graphic: getWaterGraphic(__SYS_LOGO_LINK__),
-    };
-
-    setTimeout(() => {
-      myChart.hideLoading();
-      myChart.setOption(option);
-    }, Number(configs.loadingTimes.value) * 1000);
-
-    __ECHARTS__.addHistory(container, configs, dataset, width, height);
-    return container;
-}
-
 function getLiqiud(container, width, height, dataset, configs) {
     if (container == null) {
         container = document.createElement("div");
@@ -6978,7 +6990,7 @@ function getLiqiud(container, width, height, dataset, configs) {
         container.style.height = height;
     }
 
-    var myChart = echarts.init(container, configs.echartsTheme.value);
+    var myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value});
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
@@ -7094,6 +7106,9 @@ function getLiqiud(container, width, height, dataset, configs) {
         backgroundColor: configs.backgroundColor.value,
         tooltip: {
             show:configs.tooltipDisplay.value.toBoolean(),
+            formatter: function(param) {
+                return [param.seriesName, param.marker + "&ensp;" + param.name + ":<span style='display:inline-block;min-width:30px;text-align:right;font-weight:bold'>&ensp;" + param.value + "</span>"].join("<br>");
+            }
         },
         title: {
             show: configs.titleDisplay.value.toBoolean(),
@@ -7137,7 +7152,7 @@ function getLiqiud(container, width, height, dataset, configs) {
                 },
                 restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
                 dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                myMultiScreen: {
+                myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
                     show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
                     title: '视图组合',
                     icon: __SYS_IMAGES_PATH__.viewCombination,
@@ -7145,8 +7160,7 @@ function getLiqiud(container, width, height, dataset, configs) {
                         __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
                         alert("视图已提交组合列表.");
                     }
-                },
-
+                } : {},
             },
             top: configs.toolbox_top.value,
             left:configs.toolbox_left.value,
@@ -7218,7 +7232,7 @@ function getGaugeWithAll(container, width, height, dataset, configs) {
         container.style.height = height;
     }
 
-    var myChart = echarts.init(container, configs.echartsTheme.value);
+    var myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value});
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
@@ -7370,7 +7384,7 @@ function getGaugeWithAll(container, width, height, dataset, configs) {
                 },
                 restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
                 dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                myMultiScreen: {
+                myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
                     show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
                     title: '视图组合',
                     icon: __SYS_IMAGES_PATH__.viewCombination,
@@ -7378,7 +7392,7 @@ function getGaugeWithAll(container, width, height, dataset, configs) {
                         __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
                         alert("视图已提交组合列表.");
                     }
-                },
+                } : {},
             },
             right: "10",
             orient: "vertical",
@@ -7439,7 +7453,7 @@ function getGaugeWithOne(container, width, height, dataset, configs) {
         container.style.height = height;
     }
 
-    var myChart = echarts.init(container, configs.echartsTheme.value);
+    var myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value});
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
@@ -7587,7 +7601,7 @@ function getGaugeWithOne(container, width, height, dataset, configs) {
                 },
                 restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
                 dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                myMultiScreen: {
+                myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
                     show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
                     title: '视图组合',
                     icon: __SYS_IMAGES_PATH__.viewCombination,
@@ -7595,7 +7609,7 @@ function getGaugeWithOne(container, width, height, dataset, configs) {
                         __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
                         alert("视图已提交组合列表.");
                     }
-                },
+                } : {},
             },
             top: configs.toolbox_top.value,
             left:configs.toolbox_left.value,
@@ -7656,7 +7670,7 @@ function getCalendar(container, width, height, dataset, configs) {
         container.style.height = height;
     }
 
-    var myChart = echarts.init(container, configs.echartsTheme.value);
+    var myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value});
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
@@ -7665,8 +7679,8 @@ function getCalendar(container, width, height, dataset, configs) {
         columns.push(dataset["columns"][i].name);
     }
 
-    var containerWidth = Number(width.replace(/px/i, ""));
-    var containerHeight = Number(height.replace(/px/i, ""));
+    var containerWidth = myChart.getWidth();//Number(width.replace(/px/i, ""));
+    var containerHeight = myChart.getHeight();//Number(height.replace(/px/i, ""));
     var series = [];
     var visualMaps = [];
     var calendars = [];
@@ -7830,9 +7844,9 @@ function getCalendar(container, width, height, dataset, configs) {
         tooltip: {
             show:configs.tooltipDisplay.value.toBoolean(),
             position: "top",
-            formatter: function (p) {
-                var format = echarts.format.formatTime("yyyy-MM-dd", p.data[0]);
-                return format + "<br> " + p.seriesName + ": " + p.data[1];
+            formatter: function(param) {
+                let date = echarts.format.formatTime("yyyy-MM-dd", param.value[0]);
+                return [param.seriesName, param.marker + "&ensp;" + date + ":<span style='display:inline-block;min-width:30px;text-align:right;font-weight:bold'>&ensp;" + param.value[1] + "</span>"].join("<br>");
             }
         },
         toolbox: {
@@ -7845,7 +7859,7 @@ function getCalendar(container, width, height, dataset, configs) {
                 },
                 restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
                 dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                myMultiScreen: {
+                myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
                     show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
                     title: '视图组合',
                     icon: __SYS_IMAGES_PATH__.viewCombination,
@@ -7853,7 +7867,7 @@ function getCalendar(container, width, height, dataset, configs) {
                         __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
                         alert("视图已提交组合列表.");
                     }
-                },
+                } : {},
             },
             top: configs.toolbox_top.value,
             left:configs.toolbox_left.value,
@@ -7888,7 +7902,7 @@ function getGeoOfChina(container, width, height, dataset, configs) {
         container.style.height = height;
     }
 
-    var myChart = echarts.init(container, configs.echartsTheme.value);
+    var myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value});
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
@@ -7897,8 +7911,8 @@ function getGeoOfChina(container, width, height, dataset, configs) {
         columns.push(dataset["columns"][i].name);
     }
 
-    var containerWidth = Number(width.replace(/px/i, ""));
-    var containerHeight = Number(height.replace(/px/i, ""));
+    var containerWidth = myChart.getWidth();//Number(width.replace(/px/i, ""));
+    var containerHeight = myChart.getHeight();//Number(height.replace(/px/i, ""));
     var series = [];
     var index = 0;
 
@@ -8010,7 +8024,7 @@ function getGeoOfChina(container, width, height, dataset, configs) {
                 },
                 restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
                 dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                myMultiScreen: {
+                myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
                     show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
                     title: '视图组合',
                     icon: __SYS_IMAGES_PATH__.viewCombination,
@@ -8018,7 +8032,7 @@ function getGeoOfChina(container, width, height, dataset, configs) {
                         __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
                         alert("视图已提交组合列表.");
                     }
-                },
+                } : {},
             },
             top: configs.toolbox_top.value,
             left: configs.toolbox_left.value,
@@ -8032,12 +8046,7 @@ function getGeoOfChina(container, width, height, dataset, configs) {
         tooltip: {
             show: configs.tooltipDisplay.value.toBoolean(),
             formatter: function (params) {
-                var value = "";
-                try {
-                    value = params.name + "<br>" + params.seriesName + ": " + ((params["value"].length == 3) ? params.data["value"][2] : params.data["value"])
-                } catch (e) {
-                }
-                return value
+                return params.name + "<br>" + params.marker + params.seriesName + ":&emsp;<span style='display:inline-block;min-width:30px;text-align:right;font-weight:bold'>" + ((params["value"].length == 3) ? params.data["value"][2] : params.data["value"] + "</span>")
             },
         },
         visualMap: {
@@ -8222,7 +8231,7 @@ function getGeoOfLocal(container, width, height, dataset, configs) {
         container.style.height = height;
     }
 
-    var myChart = echarts.init(container, configs.echartsTheme.value);
+    var myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value});
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
@@ -8231,8 +8240,8 @@ function getGeoOfLocal(container, width, height, dataset, configs) {
         columns.push(dataset["columns"][i].name);
     }
 
-    var containerWidth = Number(width.replace(/px/i, ""));
-    var containerHeight = Number(height.replace(/px/i, ""));
+    var containerWidth = myChart.getWidth();//Number(width.replace(/px/i, ""));
+    var containerHeight = myChart.getHeight();//Number(height.replace(/px/i, ""));
     var series = [];
     var index = 0;
 
@@ -8337,7 +8346,7 @@ function getGeoOfLocal(container, width, height, dataset, configs) {
                 },
                 restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
                 dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                myMultiScreen: {
+                myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
                     show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
                     title: '视图组合',
                     icon: __SYS_IMAGES_PATH__.viewCombination,
@@ -8345,7 +8354,7 @@ function getGeoOfLocal(container, width, height, dataset, configs) {
                         __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
                         alert("视图已提交组合列表.");
                     }
-                },
+                } : {},
             },
             top: configs.toolbox_top.value,
             left:configs.toolbox_left.value,
@@ -8360,12 +8369,7 @@ function getGeoOfLocal(container, width, height, dataset, configs) {
         tooltip: {
             show:configs.tooltipDisplay.value.toBoolean(),
             formatter: function (params) {
-                var value = "";
-                try {
-                    value = params.name + "<br>" +  params.seriesName + ": " + ((params["value"].length == 3) ? params.data["value"][2] : params.data["value"])
-                }catch (e) {
-                }
-                return value
+                return params.name + "<br>" +  params.marker + params.seriesName + ":&emsp;<span style='display:inline-block;min-width:30px;text-align:right;font-weight:bold'>" + ((params["value"].length == 3) ? params.data["value"][2] : params.data["value"] + "</span>")
             },
         },
         visualMap: {
@@ -8550,12 +8554,12 @@ function getBar3D(container, width, height, dataset, configs) {
         container.style.height = height;
     }
 
-    var myChart = echarts.init(container, configs.echartsTheme.value);
+    var myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value});
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
-    var containerWidth = Number(width.replace(/px/i, ""));
-    var containerHeight = Number(height.replace(/px/i, ""));
+    var containerWidth = myChart.getWidth();//Number(width.replace(/px/i, ""));
+    var containerHeight = myChart.getHeight();//Number(height.replace(/px/i, ""));
     var columns = [];
     var rows = [];
     var valueMin = null;
@@ -8613,7 +8617,7 @@ function getBar3D(container, width, height, dataset, configs) {
                         borderWidth: 1
                     },
                     formatter: function (params) {
-                        return rows[params.value[0]] + "\t" + columns[params.value[1] + 1] + "\n● " + params.value[2];
+                        return  rows[params.value[0]] + "\n" + columns[params.value[1] + 1] + ": " + params.value[2];
                     },
                 },
                 emphasis: {
@@ -8707,7 +8711,7 @@ function getBar3D(container, width, height, dataset, configs) {
         tooltip: {
             show: configs.tooltipDisplay.value.toBoolean(),
             formatter: function (params) {
-                return rows[params.value[0]] + "&emsp;" + columns[params.value[1] + 1] + "<br>●&ensp;" + params.value[2];
+                return rows[params.value[0]]+ "<br>" + params.marker + columns[params.value[1] + 1] +  ":&emsp;<span style='display:inline-block;min-width:30px;text-align:right;font-weight:bold'>" + params.value[2] + "</span>";
             },
         },
         toolbox: {
@@ -8720,7 +8724,7 @@ function getBar3D(container, width, height, dataset, configs) {
                 },
                 restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
                 dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                myMultiScreen: {
+                myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
                     show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
                     title: '视图组合',
                     icon: __SYS_IMAGES_PATH__.viewCombination,
@@ -8728,7 +8732,7 @@ function getBar3D(container, width, height, dataset, configs) {
                         __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
                         alert("视图已提交组合列表.");
                     }
-                },
+                } : {},
             },
             top: configs.toolbox_top.value,
             left: configs.toolbox_left.value,
@@ -8846,12 +8850,12 @@ function getLine3D(container, width, height, dataset, configs) {
         container.style.height = height;
     }
 
-    var myChart = echarts.init(container, configs.echartsTheme.value);
+    var myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value});
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
-    var containerWidth = Number(width.replace(/px/i, ""));
-    var containerHeight = Number(height.replace(/px/i, ""));
+    var containerWidth = myChart.getWidth();//Number(width.replace(/px/i, ""));
+    var containerHeight = myChart.getHeight();//Number(height.replace(/px/i, ""));
     var columns = [];
     var rows = [];
     var series = [];
@@ -8886,7 +8890,7 @@ function getLine3D(container, width, height, dataset, configs) {
                         borderWidth: 1
                     },
                     formatter: function (params) {
-                        return rows[params.value[0]] + "\n" + columns[params.value[1] + 1] + ": " + params.value[2];
+                        return  rows[params.value[0]] + "\n" + columns[params.value[1] + 1] + ": " + params.value[2];
                     },
                 },
                 emphasis: {
@@ -8978,7 +8982,7 @@ function getLine3D(container, width, height, dataset, configs) {
         tooltip: {
             show:configs.tooltipDisplay.value.toBoolean(),
             formatter: function (params) {
-                return rows[params.value[0]] + "&emsp;" + columns[params.value[1] + 1] + "<br>●&ensp;" + params.value[2];
+                return rows[params.value[0]]+ "<br>" + params.marker + columns[params.value[1] + 1] +  ":&emsp;<span style='display:inline-block;min-width:30px;text-align:right;font-weight:bold'>" + params.value[2] + "</span>";
             },
         },
         toolbox: {
@@ -8986,12 +8990,12 @@ function getLine3D(container, width, height, dataset, configs) {
             feature: {
                 saveAsImage: {
                     show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
-                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"],
-                    backgroundColor:configs.toolboxFeatureSaveAsImageBackgroundColor.value,
+                    excludeComponents: ["toolbox", "dataZoom", "timeline", "visualMap", "brush"],
+                    backgroundColor: configs.toolboxFeatureSaveAsImageBackgroundColor.value,
                 },
                 restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
                 dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                myMultiScreen: {
+                myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
                     show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
                     title: '视图组合',
                     icon: __SYS_IMAGES_PATH__.viewCombination,
@@ -8999,7 +9003,7 @@ function getLine3D(container, width, height, dataset, configs) {
                         __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
                         alert("视图已提交组合列表.");
                     }
-                },
+                } : {},
             },
             top: configs.toolbox_top.value,
             left:configs.toolbox_left.value,
@@ -9130,12 +9134,12 @@ function getScatter3D(container, width, height, dataset, configs) {
         container.style.height = height;
     }
 
-    var myChart = echarts.init(container, configs.echartsTheme.value);
+    var myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value});
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
-    var containerWidth = Number(width.replace(/px/i, ""));
-    var containerHeight = Number(height.replace(/px/i, ""));
+    var containerWidth = myChart.getWidth();//Number(width.replace(/px/i, ""));
+    var containerHeight = myChart.getHeight();//Number(height.replace(/px/i, ""));
     var columns = [];
     var rows = [];
     var series = [];
@@ -9182,7 +9186,7 @@ function getScatter3D(container, width, height, dataset, configs) {
                         borderWidth: 1
                     },
                     formatter: function (params) {
-                        return rows[params.value[0]] + "\n" + columns[params.value[1] + 1] + ": " + params.value[2];
+                        return  rows[params.value[0]] + "\n" + columns[params.value[1] + 1] + ": " + params.value[2];
                     },
                 },
                 emphasis: {
@@ -9274,7 +9278,7 @@ function getScatter3D(container, width, height, dataset, configs) {
         tooltip: {
             show: configs.tooltipDisplay.value.toBoolean(),
             formatter: function (params) {
-                return rows[params.value[0]] + "&emsp;" + columns[params.value[1] + 1] + "<br>●&ensp;" + params.value[2];
+                return rows[params.value[0]]+ "<br>" + params.marker + columns[params.value[1] + 1] +  ":&emsp;<span style='display:inline-block;min-width:30px;text-align:right;font-weight:bold'>" + params.value[2] + "</span>";
             },
         },
         toolbox: {
@@ -9282,12 +9286,12 @@ function getScatter3D(container, width, height, dataset, configs) {
             feature: {
                 saveAsImage: {
                     show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
-                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"],
-                    backgroundColor:configs.toolboxFeatureSaveAsImageBackgroundColor.value,
+                    excludeComponents: ["toolbox", "dataZoom", "timeline", "visualMap", "brush"],
+                    backgroundColor: configs.toolboxFeatureSaveAsImageBackgroundColor.value,
                 },
                 restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
                 dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                myMultiScreen: {
+                myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
                     show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
                     title: '视图组合',
                     icon: __SYS_IMAGES_PATH__.viewCombination,
@@ -9295,7 +9299,7 @@ function getScatter3D(container, width, height, dataset, configs) {
                         __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
                         alert("视图已提交组合列表.");
                     }
-                },
+                } : {},
             },
             top: configs.toolbox_top.value,
             left:configs.toolbox_left.value,
@@ -9426,12 +9430,12 @@ function getCategoryLine(container, width, height, dataset, configs) {
         container.style.height = height;
     }
 
-    var myChart = echarts.init(container, configs.echartsTheme.value);
+    var myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value});
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
-    var containerWidth = Number(width.replace(/px/i, ""));
-    var containerHeight = Number(height.replace(/px/i, ""));
+    var containerWidth = myChart.getWidth();//Number(width.replace(/px/i, ""));
+    var containerHeight = myChart.getHeight();//Number(height.replace(/px/i, ""));
 
     var columns = [];
     var times = [];
@@ -9707,15 +9711,15 @@ function getCategoryLine(container, width, height, dataset, configs) {
                     },
                     restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
                     dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                    myMultiScreen: {
+                    myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
                         show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
                         title: '视图组合',
                         icon: __SYS_IMAGES_PATH__.viewCombination,
                         onclick: function () {
                             __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
-                        alert("视图已提交组合列表.");
+                            alert("视图已提交组合列表.");
                         }
-                    },
+                    } : {},
                 },
                 top: configs.toolbox_top.value,
                 left: configs.toolbox_left.value,
@@ -9815,12 +9819,12 @@ function getGeoMigrateLinesOfChinaCity(container, width, height, dataset, config
         container.style.height = height;
     }
 
-    var myChart = echarts.init(container, configs.echartsTheme.value);
+    var myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value});
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
-    var containerWidth = Number(width.replace(/px/i, ""));
-    var containerHeight = Number(height.replace(/px/i, ""));
+    var containerWidth = myChart.getWidth();//Number(width.replace(/px/i, ""));
+    var containerHeight = myChart.getHeight();//Number(height.replace(/px/i, ""));
 
     var columns = [];
     for (var i = 0; i < dataset["columns"].length; i++) {
@@ -10071,15 +10075,15 @@ function getGeoMigrateLinesOfChinaCity(container, width, height, dataset, config
                     },
                     restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
                     dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                    myMultiScreen: {
+                    myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
                         show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
                         title: '视图组合',
                         icon: __SYS_IMAGES_PATH__.viewCombination,
                         onclick: function () {
                             __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
                             alert("视图已提交组合列表.");
-                        },
-                    }
+                        }
+                    } : {},
                 },
                 top: configs.toolbox_top.value,
                 left: configs.toolbox_left.value,
@@ -10094,13 +10098,11 @@ function getGeoMigrateLinesOfChinaCity(container, width, height, dataset, config
                 //trigger: "item"
                 show: configs.tooltipDisplay.value.toBoolean(),
                 formatter: function (params) {
-                    var value = "";
                     if (params.seriesType == "lines")
-                        value = params.data.fromName + " ↣ " + params.data.toName + ":<br>" + params.data.details;
+                        return params.data.fromName + "<span style='color:" + params.color + "'> ↣ </span>" + params.data.toName + "<br>" + params.marker + "&emsp;<span style='display:inline-block;min-width:30px;text-align:right;font-weight:bold'>" + params.data.details + "</span>";
                     //仅标注线提示;因点会重复,不标注点提示
                     //else
-                    //    value = params.seriesName + " ↣ " + params.name + ":<br>" + params.data.details;
-                    return value
+                    //    return params.seriesName + " ↣ " + params.name + ":<br>" + params.data.details;
                 },
             },
             legend: {
@@ -10165,12 +10167,12 @@ function getCategoryLineForGauge(container, width, height, dataset, configs) {
         container.style.height = height;
     }
 
-    var myChart = echarts.init(container, configs.echartsTheme.value);
+    var myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value});
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
-    var containerWidth = Number(width.replace(/px/i, ""));
-    var containerHeight = Number(height.replace(/px/i, ""));
+    var containerWidth = myChart.getWidth();//Number(width.replace(/px/i, ""));
+    var containerHeight = myChart.getHeight();//Number(height.replace(/px/i, ""));
 
     var columns = [];
     var times = [];
@@ -10189,14 +10191,31 @@ function getCategoryLineForGauge(container, width, height, dataset, configs) {
             var serie = {
                 name: row[columns[0]].value,
                 type: "gauge",
+                dimensions:[columns[c]],
                 title: {
                     fontWeight: "bolder",
                     fontSize: configs.gaugeTitleFontSize.value,
-                    color: "gray",
+                    color: configs.gaugeAxisLabelColor.value,
                     textShadowColor: "rgba(0, 0, 0, 0.5)",
                     textShadowBlur: 10,
+                    offsetCenter: [0, '-35%'],
+                },
+                startAngle: Number(configs.gaugeStartAngle.value),
+                endAngle: Number(configs.gaugeEndAngle.value),
+                min: Number(configs.gaugeMin.value),
+                max: Number(configs.gaugeMax.value),
+                splitNumber: 10,
+                clockwise: true,
+                progress: {
+                    show: true,
+                    roundCap: true,
+                    width:configs.gaugeAxisLineWidth.value/10,
+                    itemStyle:{
+                        opacity: 0.8
+                    }
                 },
                 axisLine: {
+                    roundCap:true,
                     lineStyle: {
                         width: configs.gaugeAxisLineWidth.value,//10, //圆X轴宽度
                         shadowColor: "rgba(0, 0, 0, 0.5)",
@@ -10207,18 +10226,36 @@ function getCategoryLineForGauge(container, width, height, dataset, configs) {
                 },
                 axisLabel: {
                     fontSize: configs.gaugeAxisLabelFontSize.value,
+                    color: configs.gaugeAxisLabelColor.value,
                     textShadowColor: "rgba(0, 0, 0, 0.5)",
                     textShadowBlur: 10,
+                    distance: Number(configs.gaugeAxisLabelDistance.value),
+                    //标签和刻度的距离
                 },
                 splitLine: {
-                    length: 15,
+                    show:true,
+                    length: configs.gaugeAxisLineWidth.value*1.3,
+                    distance:0.8,
+                },
+                axisTick: {
+                    show: true,
+                    splitNumber: 10,
+                    //主刻度之间的分隔数
+                    length: configs.gaugeAxisLineWidth.value,
+                    distance:0.8,
+                    lineStyle: {
+                        color: configs.gaugeAxisLabelColor.value,
+                    }
                 },
                 pointer: {
-                    width: 5, //指针宽度
-                    length: "60%"  //指针长度
+                    icon: 'path://M2.9,0.7L2.9,0.7c1.4,0,2.6,1.2,2.6,2.6v115c0,1.4-1.2,2.6-2.6,2.6l0,0c-1.4,0-2.6-1.2-2.6-2.6V3.3C0.3,1.9,1.4,0.7,2.9,0.7z',
+                    width: 5,
+                    length: '90%',
+                    offsetCenter: [0, '8%'],
                 },
                 detail: {
-                    formatter: ["{value}%", ""].join("\n"),
+                    color: configs.gaugeAxisLabelColor.value,
+                    formatter: ["{value}", ""].join("\n"),
                     fontSize: configs.gaugeLabelFontSize.value,
                     textShadowColor: "rgba(0, 0, 0, 0.5)",
                     textShadowBlur: 10,
@@ -10229,7 +10266,7 @@ function getCategoryLineForGauge(container, width, height, dataset, configs) {
                 animationEasingUpdate: getAnimationEasingUpdate(configs),
             };
             serie.data.push({
-                "name": row[columns[0]].value + "\r\n" + columns[c],
+                "name": row[columns[0]].value + "\n\n" + columns[c],
                 "value": row[columns[c]].value,
                 itemStyle: {
                     shadowColor: "rgba(0, 0, 0, 0.5)",
@@ -10237,9 +10274,9 @@ function getCategoryLineForGauge(container, width, height, dataset, configs) {
                 }
             });
 
-            let left = (toPoint(configs.grid_left.value) + (100-toPoint(configs.grid_left.value) - toPoint(configs.grid_right.value))/2);
-            let top = (toPoint(configs.grid_top.value) + (100-toPoint(configs.grid_top.value) - toPoint(configs.grid_bottom.value))/2);
-            serie.center = [(c*left/(columns.length-1)) + left/(columns.length-1)*(c-1) + "%",top + "%"];
+            let left = (toPoint(configs.grid_left.value) + (100 - toPoint(configs.grid_left.value) - toPoint(configs.grid_right.value)) / 2);
+            let top = (toPoint(configs.grid_top.value) + (100 - toPoint(configs.grid_top.value) - toPoint(configs.grid_bottom.value)) / 2);
+            serie.center = [(c * left / (columns.length - 1)) + left / (columns.length - 1) * (c - 1) + "%", top + "%"];
             opt.series.push(serie);
         }
 
@@ -10326,8 +10363,7 @@ function getCategoryLineForGauge(container, width, height, dataset, configs) {
             tooltip: {
                 show: configs.tooltipDisplay.value.toBoolean(),
                 formatter: function (params) {
-                    var value = params.data.name.replace("\r\n", "<br>") + ":" + params.data.value;
-                    return value
+                    return [params.seriesName,params.marker + params.dimensionNames[0] + ":&emsp;<span style='display:inline-block;min-width:30px;text-align:right;font-weight:bold'>" + params.data.value + "</span>"].join("<br>");
                 },
             },
             toolbox: {
@@ -10340,15 +10376,15 @@ function getCategoryLineForGauge(container, width, height, dataset, configs) {
                     },
                     restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
                     dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                    myMultiScreen: {
+                    myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
                         show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
                         title: '视图组合',
                         icon: __SYS_IMAGES_PATH__.viewCombination,
                         onclick: function () {
                             __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
-                        alert("视图已提交组合列表.");
+                            alert("视图已提交组合列表.");
                         }
-                    },
+                    } : {},
                 },
                 top: configs.toolbox_top.value,
                 left: configs.toolbox_left.value,
@@ -10384,12 +10420,11 @@ function getCategoryLineForLiqiud(container, width, height, dataset, configs) {
         container.style.height = height;
     }
 
-    var myChart = echarts.init(container, configs.echartsTheme.value);
-
+    var myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value});
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
-    var containerWidth = Number(width.replace(/px/i, ""));
-    var containerHeight = Number(height.replace(/px/i, ""));
+    var containerWidth = myChart.getWidth();//Number(width.replace(/px/i, ""));
+    var containerHeight = myChart.getHeight();//Number(height.replace(/px/i, ""));
 
     var columns = [];
     var times = [];
@@ -10408,6 +10443,7 @@ function getCategoryLineForLiqiud(container, width, height, dataset, configs) {
             var serie = {
                 name: row[columns[0]].value,
                 type: "liquidFill",
+                dimensions:[columns[c]],
                 data: [],
                 color: ["#294D99", "#156ACF", "#1598ED", "#45BDFF"],
                 //center: ["50%", "50%"],
@@ -10559,8 +10595,7 @@ function getCategoryLineForLiqiud(container, width, height, dataset, configs) {
             tooltip: {
                 show: configs.tooltipDisplay.value.toBoolean(),
                 formatter: function (params) {
-                    var value = params.seriesName + "<br>" + params.data.name + ":" + params.data.value * 100 + "%";
-                    return value
+                    return [params.seriesName,params.marker + params.dimensionNames[0] + ":&emsp;<span style='display:inline-block;min-width:30px;text-align:right;font-weight:bold'>" + params.data.value + "</span>"].join("<br>");
                 },
             },
             toolbox: {
@@ -10573,7 +10608,7 @@ function getCategoryLineForLiqiud(container, width, height, dataset, configs) {
                     },
                     restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
                     dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                    myMultiScreen: {
+                    myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
                         show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
                         title: '视图组合',
                         icon: __SYS_IMAGES_PATH__.viewCombination,
@@ -10581,7 +10616,7 @@ function getCategoryLineForLiqiud(container, width, height, dataset, configs) {
                             __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
                             alert("视图已提交组合列表.");
                         }
-                    },
+                    } : {},
                 },
                 top: configs.toolbox_top.value,
                 left: configs.toolbox_left.value,
@@ -10614,7 +10649,7 @@ function getCategoryLineForGeoOfChina(container, width, height, dataset, configs
         container.style.height = height;
     }
 
-    var myChart = echarts.init(container, configs.echartsTheme.value);
+    var myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value});
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
@@ -10623,8 +10658,8 @@ function getCategoryLineForGeoOfChina(container, width, height, dataset, configs
         columns.push(dataset["columns"][i].name);
     }
 
-    var containerWidth = Number(width.replace(/px/i, ""));
-    var containerHeight = Number(height.replace(/px/i, ""));
+    var containerWidth = myChart.getWidth();//Number(width.replace(/px/i, ""));
+    var containerHeight = myChart.getHeight();//Number(height.replace(/px/i, ""));
     var times = [];
 
     var options = [];
@@ -10711,7 +10746,7 @@ function getCategoryLineForGeoOfChina(container, width, height, dataset, configs
                             },
                             restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
                             dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                            myMultiScreen: {
+                            myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
                                 show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
                                 title: '视图组合',
                                 icon: __SYS_IMAGES_PATH__.viewCombination,
@@ -10719,8 +10754,7 @@ function getCategoryLineForGeoOfChina(container, width, height, dataset, configs
                                     __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
                                     alert("视图已提交组合列表.");
                                 }
-                            },
-
+                            } : {},
                         },
                         top: configs.toolbox_top.value,
                         left: configs.toolbox_left.value,
@@ -10734,12 +10768,7 @@ function getCategoryLineForGeoOfChina(container, width, height, dataset, configs
                     tooltip: {
                         show: configs.tooltipDisplay.value.toBoolean(),
                         formatter: function (params) {
-                            var value = "";
-                            try {
-                                value = params.name + "<br>" + params.seriesName + ": " + ((params["value"].length == 3) ? params.data["value"][2] : params.data["value"])
-                            } catch (e) {
-                            }
-                            return value
+                            return params.name + "<br>" + params.marker + params.seriesName + ":&emsp;<span style='display:inline-block;min-width:30px;text-align:right;font-weight:bold'>" + ((params["value"].length == 3) ? params.data["value"][2] : params.data["value"] + "</span>")
                         },
                     },
                     visualMap: {
@@ -10963,7 +10992,7 @@ function getCategoryLineForGeoOfChina(container, width, height, dataset, configs
                     },
                     restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
                     dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                    myMultiScreen: {
+                    myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
                         show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
                         title: '视图组合',
                         icon: __SYS_IMAGES_PATH__.viewCombination,
@@ -10971,7 +11000,7 @@ function getCategoryLineForGeoOfChina(container, width, height, dataset, configs
                             __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
                             alert("视图已提交组合列表.");
                         }
-                    },
+                    } : {},
                 },
                 top: configs.toolbox_top.value,
                 left: configs.toolbox_left.value,
@@ -11004,7 +11033,7 @@ function getCategoryLineForGeoOfLocal(container, width, height, dataset, configs
         container.style.height = height;
     }
 
-    var myChart = echarts.init(container, configs.echartsTheme.value);
+    var myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value});
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
@@ -11013,8 +11042,8 @@ function getCategoryLineForGeoOfLocal(container, width, height, dataset, configs
         columns.push(dataset["columns"][i].name);
     }
 
-    var containerWidth = Number(width.replace(/px/i, ""));
-    var containerHeight = Number(height.replace(/px/i, ""));
+    var containerWidth = myChart.getWidth();//Number(width.replace(/px/i, ""));
+    var containerHeight = myChart.getHeight();//Number(height.replace(/px/i, ""));
     let times = [];
     let options = []
 
@@ -11094,7 +11123,7 @@ function getCategoryLineForGeoOfLocal(container, width, height, dataset, configs
                             },
                             restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
                             dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                            myMultiScreen: {
+                            myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
                                 show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
                                 title: '视图组合',
                                 icon: __SYS_IMAGES_PATH__.viewCombination,
@@ -11102,7 +11131,7 @@ function getCategoryLineForGeoOfLocal(container, width, height, dataset, configs
                                     __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
                                     alert("视图已提交组合列表.");
                                 }
-                            },
+                            } : {},
                         },
                         top: configs.toolbox_top.value,
                         left: configs.toolbox_left.value,
@@ -11117,12 +11146,7 @@ function getCategoryLineForGeoOfLocal(container, width, height, dataset, configs
                     tooltip: {
                         show: configs.tooltipDisplay.value.toBoolean(),
                         formatter: function (params) {
-                            var value = "";
-                            try {
-                                value = params.name + "<br>" + params.seriesName + ": " + ((params["value"].length == 3) ? params.data["value"][2] : params.data["value"])
-                            } catch (e) {
-                            }
-                            return value
+                            return params.name + "<br>" + params.marker + params.seriesName + ":&emsp;<span style='display:inline-block;min-width:30px;text-align:right;font-weight:bold'>" + ((params["value"].length == 3) ? params.data["value"][2] : params.data["value"] + "</span>")
                         },
                     },
                     visualMap: {
@@ -11341,7 +11365,7 @@ function getCategoryLineForGeoOfLocal(container, width, height, dataset, configs
                     },
                     restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
                     dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                    myMultiScreen: {
+                    myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
                         show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
                         title: '视图组合',
                         icon: __SYS_IMAGES_PATH__.viewCombination,
@@ -11349,7 +11373,7 @@ function getCategoryLineForGeoOfLocal(container, width, height, dataset, configs
                             __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
                             alert("视图已提交组合列表.");
                         }
-                    },
+                    } : {},
                 },
                 top: configs.toolbox_top.value,
                 left: configs.toolbox_left.value,
@@ -11382,16 +11406,17 @@ function getScrollingScreen(container, width, height, dataset, configs) {
         container.style.height = height;
     }
 
-    var myChart = echarts.init(container, configs.echartsTheme.value);
+    var myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value});
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
-    var containerWidth = Number(width.replace(/px/i, ""));
-    var containerHeight = Number(height.replace(/px/i, ""));
+    var containerWidth = myChart.getWidth();//Number(width.replace(/px/i, ""));
+    var containerHeight = myChart.getHeight();//Number(height.replace(/px/i, ""));
     var columns = [];
     var cols = [];
     var data = [];
     var txtOffset = 8;
+    var scrollingScreenGraphic = getWaterGraphic(__SYS_LOGO_LINK__);
     var lineHeight = Number(configs.scrollingScreenFontSize.value) + txtOffset;
     var groupHeight = lineHeight;
     var timeout = false;
@@ -11403,7 +11428,7 @@ function getScrollingScreen(container, width, height, dataset, configs) {
             type: 'rect',
             left: colWidth * (i + 1),
             top: 0,
-            z: 100,
+            z: 2,
             shape: {
                 width: colWidth,
                 height: lineHeight,
@@ -11419,7 +11444,7 @@ function getScrollingScreen(container, width, height, dataset, configs) {
             id: 'columns' + i,
             left: colWidth * (i + 1) + txtOffset,
             top: txtOffset,
-            z: 100,
+            z: 2,
             bounding: 'raw',
             style: {
                 text: dataset["columns"][i].name,
@@ -11443,7 +11468,7 @@ function getScrollingScreen(container, width, height, dataset, configs) {
                 type: 'rect',
                 left: colWidth * (c + 1),
                 top: lineHeight * (i + 1),
-                z: 99,
+                z: 1,
                 shape: {
                     width: colWidth,
                     height: lineHeight,
@@ -11459,7 +11484,7 @@ function getScrollingScreen(container, width, height, dataset, configs) {
                 id: i + "-" + c,
                 left: colWidth * (c + 1) + txtOffset,
                 top: lineHeight * (i + 1) + txtOffset,
-                z: 99,
+                z: 1,
                 bounding: 'raw',
                 style: {
                     text: r[columns[c]].value,
@@ -11470,6 +11495,31 @@ function getScrollingScreen(container, width, height, dataset, configs) {
         }
         groupHeight += lineHeight;
     }
+
+    scrollingScreenGraphic.push({
+            type: 'group',
+            id: 'scrollingColumn',
+            left: configs.scrollingScreenLeft.value,
+            children: cols,
+            onmouseover: function () {
+                timeout = true;
+            },
+            onmouseout: function () {
+                timeout = false;
+            }
+        },
+        {
+            type: 'group',
+            id: 'scrollingData',
+            left: configs.scrollingScreenLeft.value,
+            children: data,
+            onmouseover: function () {
+                timeout = true;
+            },
+            onmouseout: function () {
+                timeout = false;
+            }
+        });
 
     var option = {
         aria: {
@@ -11495,36 +11545,42 @@ function getScrollingScreen(container, width, height, dataset, configs) {
                 fontSize: Number(configs.titleSubTextFontSize.value),
             }
         },
-
-        graphic: getWaterGraphic(__SYS_LOGO_LINK__)
-    };
-    option.graphic.push({
-            type: 'group',
-            id: 'scrollingColumn',
-            left: configs.scrollingScreenLeft.value,
-            children: cols,
-            onmouseover: function () {
-                timeout = true;
+        toolbox: {
+            show: configs.toolboxDisplay.value.toBoolean(),
+            feature: {
+                saveAsImage: {
+                    show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
+                    excludeComponents: ["toolbox", "dataZoom", "timeline", "visualMap", "brush"],
+                    backgroundColor: configs.toolboxFeatureSaveAsImageBackgroundColor.value,
+                },
+                restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
+                dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
+                myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
+                    show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
+                    title: '视图组合',
+                    icon: __SYS_IMAGES_PATH__.viewCombination,
+                    onclick: function () {
+                        __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
+                        alert("视图已提交组合列表.");
+                    }
+                } : {},
             },
-            onmouseout: function () {
-                timeout = false;
-            }
+            top: configs.toolbox_top.value,
+            left: configs.toolbox_left.value,
+            orient: configs.toolbox_orient.value,
+            emphasis: {
+                iconStyle: {
+                    textPosition: configs.toolbox_textPosition.value,
+                },
+            },
         },
-        {
-            type: 'group',
-            id: 'scrollingData',
-            left: configs.scrollingScreenLeft.value,
-            children: data,
-            onmouseover: function () {
-                timeout = true;
-            },
-            onmouseout: function () {
-                timeout = false;
-            }
-        });
+        graphic: scrollingScreenGraphic
+    };
+
     setTimeout(() => {
         myChart.hideLoading();
         myChart.setOption(option);
+
         let top = containerHeight;
         setInterval(function () {
             if (!timeout) {
@@ -11568,33 +11624,45 @@ function getWalkingLantern(container, width, height, dataset, configs) {
         container.style.height = height;
     }
 
-    var myChart = echarts.init(container, configs.echartsTheme.value);
+    var myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value});
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
-    var containerWidth = Number(width.replace(/px/i, ""));
-    var containerHeight = Number(height.replace(/px/i, ""));
+    var containerWidth = myChart.getWidth();//Number(width.replace(/px/i, ""));
+    var containerHeight = myChart.getHeight();//Number(height.replace(/px/i, ""));
     var top = containerHeight * Number(configs.walkingLanternTop.value.replaceAll("%", "")) / 100;
     var columns = [];
-    var cols = [];
-    var group = configs.walkingLanternLines.value;
-    var groups = (dataset["data"].length % group) > 0 ? Math.floor(dataset["data"].length / group) : Math.floor(dataset["data"].length / group) - 1;
-    var selectGroup = 0;
-    var graphic = getWaterGraphic(__SYS_LOGO_LINK__);
+    var lines = configs.walkingLanternLines.value;
+    var groups = 0;
+    var index = 0;
+    var walkingLanterGraphic = getWaterGraphic(__SYS_LOGO_LINK__);
     var txtOffset = 8;
     var lineHeight = Number(configs.walkingLanternFontSize.value) + txtOffset;
-    var groupHeight = lineHeight;
     var timeout = false;
     var colWidth = Number(configs.walkingLanternWidth.value) / dataset["columns"].length;
     var dire = configs.walkingLanternDirection.value;
 
+    var title = {
+        type: 'group',
+        id: 'scrollingColumn',
+        left: dire == "LR" ? 0 : containerWidth,
+        top: top,
+        children: [],
+        onmouseover: function () {
+            timeout = true;
+        },
+        onmouseout: function () {
+            timeout = false;
+        }
+    };
+
     for (var i = 0; i < dataset["columns"].length; i++) {
         columns.push(dataset["columns"][i].name);
-        cols.push({
+        title.children.push({
             type: 'rect',
             left: colWidth * (i + 1),
             top: 0,
-            z: 100,
+            //z: 100,
             shape: {
                 width: colWidth,
                 height: lineHeight,
@@ -11605,12 +11673,13 @@ function getWalkingLantern(container, width, height, dataset, configs) {
                 stroke: configs.walkingLanternBorderColor.value,
                 opacity: Number(configs.walkingLanternOpacity.value) + 0.5,
             },
-        }, {
+        });
+        title.children.push({
             type: 'text',
             id: 'columns' + i,
             left: colWidth * (i + 1) + txtOffset,
             top: txtOffset,
-            z: 100,
+            //z: 100,
             bounding: 'raw',
             style: {
                 text: dataset["columns"][i].name,
@@ -11619,20 +11688,7 @@ function getWalkingLantern(container, width, height, dataset, configs) {
             }
         });
     }
-
-    graphic.push({
-        type: 'group',
-        id: 'scrollingColumn',
-        left: dire == "LR" ? 0 : containerWidth,
-        top: top,
-        children: cols,
-        onmouseover: function () {
-            timeout = true;
-        },
-        onmouseout: function () {
-            timeout = false;
-        }
-    });
+    title = [title];
 
     var colorPalette = [
         '#2ec7c9', '#b6a2de', '#5ab1ef', '#ffb980', '#d87a80',
@@ -11665,162 +11721,120 @@ function getWalkingLantern(container, width, height, dataset, configs) {
                 fontSize: Number(configs.titleSubTextFontSize.value),
             }
         },
+        toolbox: {
+            show: configs.toolboxDisplay.value.toBoolean(),
+            feature: {
+                saveAsImage: {
+                    show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
+                    excludeComponents: ["toolbox", "dataZoom", "timeline", "visualMap", "brush"],
+                    backgroundColor: configs.toolboxFeatureSaveAsImageBackgroundColor.value,
+                },
+                restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
+                dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
+                myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
+                    show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
+                    title: '视图组合',
+                    icon: __SYS_IMAGES_PATH__.viewCombination,
+                    onclick: function () {
+                        __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
+                        alert("视图已提交组合列表.");
+                    }
+                } : {},
+            },
+            top: configs.toolbox_top.value,
+            left: configs.toolbox_left.value,
+            orient: configs.toolbox_orient.value,
+            emphasis: {
+                iconStyle: {
+                    textPosition: configs.toolbox_textPosition.value,
+                },
+            },
+        },
     };
 
+    var pool = [];
     var children = [];
+    var count = 0;
     for (var i = 0; i < dataset["data"].length; i++) {
-        let index = ((i + 1) % group) > 0 ? Math.floor((i + 1) / group) : Math.floor((i + 1) / group) - 1;
-        if (index == selectGroup) {
-            let r = dataset["data"][i];
-            let row = {
-                type: 'group',
-                id: 'scrollingData-' + (i % group),
-                left: dire == "LR" ? 0 : containerWidth,
-                top: top + lineHeight * (i + 1),
-                children: [],
-                onmouseover: function () {
-                    timeout = true;
-                },
-                onmouseout: function () {
-                    timeout = false;
-                }
-            };
-            for (var c = 0; c < columns.length; c++) {
-                row.children.push({
-                    type: 'rect',
-                    left: colWidth * (c + 1),
-                    z: 99,
-                    shape: {
-                        width: colWidth,
-                        height: lineHeight,
-                    },
-                    style: {
-                        lineWidth: 0.5,
-                        fill: i % 2 > 0 ? configs.walkingLanternBackColor.value : "transparent",//'rgba(0,0,0,0.2)',
-                        stroke: configs.walkingLanternBorderColor.value,
-                        opacity: configs.walkingLanternOpacity.value,
-                    },
-                });
-                row.children.push({
-                    type: 'text',
-                    left: colWidth * (c + 1) + txtOffset,
-                    top: txtOffset,
-                    z: 99,
-                    bounding: 'raw',
-                    style: {
-                        text: r[columns[c]].value,
-                        font: configs.walkingLanternFontSize.value + 'px "Microsoft YaHei", sans-serif',
-                        fill: colorPalette[i % colorPalette.length],
-                    },
-                });
+        let r = dataset["data"][i];
+        let row = {
+            type: 'group',
+            id: 'scrollingData-' + count,
+            left: dire == "LR" ? 0 : containerWidth,
+            top: top + lineHeight * (count + 1),
+            children: [],
+            onmouseover: function () {
+                timeout = true;
+            },
+            onmouseout: function () {
+                timeout = false;
             }
-            children.push(row);
-            groupHeight += lineHeight;
-        } else if (index > selectGroup) {
-            break;
+        };
+        for (var c = 0; c < columns.length; c++) {
+            row.children.push({
+                type: 'rect',
+                left: colWidth * (c + 1),
+                //z: 99,
+                shape: {
+                    width: colWidth,
+                    height: lineHeight,
+                },
+                style: {
+                    lineWidth: 0.5,
+                    fill: i % 2 > 0 ? configs.walkingLanternBackColor.value : "transparent",//'rgba(0,0,0,0.2)',
+                    stroke: configs.walkingLanternBorderColor.value,
+                    opacity: configs.walkingLanternOpacity.value,
+                },
+            });
+            row.children.push({
+                type: 'text',
+                left: colWidth * (c + 1) + txtOffset,
+                top: txtOffset,
+                //z: 99,
+                bounding: 'raw',
+                style: {
+                    text: r[columns[c]].value,
+                    font: configs.walkingLanternFontSize.value + 'px "Microsoft YaHei", sans-serif',
+                    fill: colorPalette[i % colorPalette.length],
+                },
+            });
+        }
+        children.push(row);
+        count++;
+        if (count == lines) {
+            pool.push(children);
+            children = [];
+            count = 0;
         }
     }
-    selectGroup += 1;
-    option.graphic = graphic.concat(children);
+    if (children.length>0)
+        pool.push(children);
+    groups = pool.length;
+    option.graphic = walkingLanterGraphic.concat(title).concat(pool[index]);
 
     setTimeout(() => {
         myChart.hideLoading();
         myChart.setOption(option);
+
         var left = dire == "LR" ? 0 : containerWidth;
         setInterval(function () {
             if (!timeout) {
                 if ((dire == "LR" && left <= containerWidth) || (dire == "RL" && left >= (Number(configs.walkingLanternWidth.value) * (-1)))) {
                     left = left + (dire == "LR" ? 2 : -2);
-
-                    myChart.setOption(
-                        {
-                            graphic: [
-                                {
-                                    id: 'scrollingColumn',
-                                    left: left,
-                                }
-                            ]
-                        }
-                    );
-
-                    for (let i = 0; i < children.length; i++) {
-                        try {
-                            myChart.setOption(
-                                {
-                                    graphic: [
-                                        {
-                                            id: 'scrollingData-' + i,
-                                            left: left,
-                                        }
-                                    ]
-                                }
-                            );
-                        } catch (e) {
-                            //console.log(e);
-                        }
-                    }
                 } else {
+                    index += 1;
                     left = dire == "LR" ? Number(configs.walkingLanternWidth.value) * (-1) : containerWidth;
-                    children = [];
-                    groupHeight = lineHeight;
-                    if (selectGroup > groups)
-                        selectGroup = 0;
-                    for (let i = 0; i < dataset["data"].length; i++) {
-                        let index = ((i + 1) % group) > 0 ? Math.floor((i + 1) / group) : Math.floor((i + 1) / group) - 1;
-                        if (index == selectGroup) {
-                            let r = dataset["data"][i];
-                            let row = {
-                                type: 'group',
-                                id: 'scrollingData-' + (i % group),
-                                left: left,
-                                top: top + lineHeight * (i % group + 1),
-                                children: [],
-                                onmouseover: function () {
-                                    timeout = true;
-                                },
-                                onmouseout: function () {
-                                    timeout = false;
-                                }
-                            };
-                            for (var c = 0; c < columns.length; c++) {
-                                row.children.push({
-                                    type: 'rect',
-                                    left: colWidth * (c + 1),
-                                    z: 99,
-                                    shape: {
-                                        width: colWidth,
-                                        height: lineHeight,
-                                    },
-                                    style: {
-                                        lineWidth: 0.5,
-                                        fill: i % 2 > 0 ? configs.walkingLanternBackColor.value : "transparent",//'rgba(0,0,0,0.2)',
-                                        stroke: configs.walkingLanternBorderColor.value,
-                                        opacity: configs.walkingLanternOpacity.value,
-                                    },
-                                });
-                                row.children.push({
-                                    type: 'text',
-                                    left: colWidth * (c + 1) + txtOffset,
-                                    top: txtOffset,
-                                    z: 99,
-                                    bounding: 'raw',
-                                    style: {
-                                        text: r[columns[c]].value,
-                                        font: configs.walkingLanternFontSize.value + 'px "Microsoft YaHei", sans-serif',
-                                        fill: colorPalette[i % colorPalette.length],
-                                    },
-                                });
-                            }
-                            children.push(row);
-                            groupHeight += lineHeight;
-                        } else if (index > selectGroup) {
-                            break;
-                        }
+                    if (index == groups) {
+                        index = 0;
                     }
-                    selectGroup += 1;
-                    option.graphic = graphic.concat(children);
-                    myChart.setOption(option);
                 }
+                title[0].left = left;
+                for (let i = 0; i < pool[index].length; i++) {
+                    pool[index][i].left = left;
+                }
+                myChart.setOption({
+                    graphic:walkingLanterGraphic.concat(title).concat(pool[index])
+                },{ replaceMerge: "graphic"});
             }
         }, Number(configs.walkingLanternSpeed.value) * 1000);
     }, Number(configs.loadingTimes.value) * 1000);
@@ -11830,7 +11844,6 @@ function getWalkingLantern(container, width, height, dataset, configs) {
     return container;
 }
 
-//window shade
 function getWindowShades(container, width, height, dataset, configs) {
     if (container == null) {
         container = document.createElement("div");
@@ -11844,28 +11857,42 @@ function getWindowShades(container, width, height, dataset, configs) {
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
-    var containerWidth = Number(width.replace(/px/i, ""));
-    var containerHeight = Number(height.replace(/px/i, ""));
+    var containerWidth = myChart.getWidth();//Number(width.replace(/px/i, ""));
+    var containerHeight = myChart.getHeight();//Number(height.replace(/px/i, ""));
     var top = containerHeight * Number(configs.windowShadesTop.value.replaceAll("%", "")) / 100;
+    var left = containerWidth * Number(configs.windowShadesLeft.value.replaceAll("%", "")) / 100;
     var columns = [];
-    var cols = [];
-    var group = configs.windowShadesLines.value;
-    var groups = (dataset["data"].length % group) > 0 ? Math.floor(dataset["data"].length / group) : Math.floor(dataset["data"].length / group) - 1;
-    var selectGroup = 0;
-    var graphic = getWaterGraphic(__SYS_LOGO_LINK__);
+    var lines = configs.windowShadesLines.value;
+    var pageIndex = 0;
+    var lineIndex = 0;
+    var dire = 0;
+    var windowShadesGraphic = getWaterGraphic(__SYS_LOGO_LINK__);
     var txtOffset = 8;
     var lineHeight = Number(configs.windowShadesFontSize.value) + txtOffset;
-    var groupHeight = lineHeight;
     var timeout = false;
     var colWidth = Number(configs.windowShadesWidth.value) / dataset["columns"].length;
-    //var rotation = (90 + Math.PI / 300) % (Math.PI * 2);
+
+    var title = {
+        type: 'group',
+        id: 'scrollingColumn',
+        left: left,
+        top: top,
+        children: [],
+        onmouseover: function () {
+            timeout = true;
+        },
+        onmouseout: function () {
+            timeout = false;
+        }
+    };
+
     for (var i = 0; i < dataset["columns"].length; i++) {
         columns.push(dataset["columns"][i].name);
-        cols.push({
+        title.children.push({
             type: 'rect',
             left: colWidth * (i + 1),
             top: 0,
-            z: 100,
+            //z: 100,
             shape: {
                 width: colWidth,
                 height: lineHeight,
@@ -11876,12 +11903,13 @@ function getWindowShades(container, width, height, dataset, configs) {
                 stroke: configs.windowShadesBorderColor.value,
                 opacity: Number(configs.windowShadesOpacity.value) + 0.5,
             },
-        }, {
+        });
+        title.children.push({
             type: 'text',
             id: 'columns' + i,
             left: colWidth * (i + 1) + txtOffset,
             top: txtOffset,
-            z: 100,
+            //z: 100,
             bounding: 'raw',
             style: {
                 text: dataset["columns"][i].name,
@@ -11890,21 +11918,7 @@ function getWindowShades(container, width, height, dataset, configs) {
             }
         });
     }
-
-    graphic.push({
-        type: 'group',
-        id: 'scrollingColumn',
-        left: configs.windowShadesLeft.value,
-        top: top,
-        children: cols,
-        //rotation: rotation,
-        onmouseover: function () {
-            timeout = true;
-        },
-        onmouseout: function () {
-            timeout = false;
-        }
-    });
+    title = [title];
 
     var colorPalette = [
         '#2ec7c9', '#b6a2de', '#5ab1ef', '#ffb980', '#d87a80',
@@ -11937,182 +11951,139 @@ function getWindowShades(container, width, height, dataset, configs) {
                 fontSize: Number(configs.titleSubTextFontSize.value),
             }
         },
+        toolbox: {
+            show: configs.toolboxDisplay.value.toBoolean(),
+            feature: {
+                saveAsImage: {
+                    show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
+                    excludeComponents: ["toolbox", "dataZoom", "timeline", "visualMap", "brush"],
+                    backgroundColor: configs.toolboxFeatureSaveAsImageBackgroundColor.value,
+                },
+                restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
+                dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
+                myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
+                    show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
+                    title: '视图组合',
+                    icon: __SYS_IMAGES_PATH__.viewCombination,
+                    onclick: function () {
+                        __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
+                        alert("视图已提交组合列表.");
+                    }
+                } : {},
+            },
+            top: configs.toolbox_top.value,
+            left: configs.toolbox_left.value,
+            orient: configs.toolbox_orient.value,
+            emphasis: {
+                iconStyle: {
+                    textPosition: configs.toolbox_textPosition.value,
+                },
+            },
+        },
     };
 
+    var pool = [];
     var children = [];
+    var count = 0;
     for (var i = 0; i < dataset["data"].length; i++) {
-        let index = ((i + 1) % group) > 0 ? Math.floor((i + 1) / group) : Math.floor((i + 1) / group) - 1;
-        if (index == selectGroup) {
-            let r = dataset["data"][i];
-            let row = {
-                name: 'scrollingData-' + (i % group),
-                type: 'group',
-                id: 'scrollingData-' + (i % group),
-                left: configs.windowShadesLeft.value,
-                top: top + lineHeight * (i + 1),
-                children: [],
-                //rotation: rotation,
-                onmouseover: function () {
-                    timeout = true;
-                },
-                onmouseout: function () {
-                    timeout = false;
-                }
-            };
-            for (var c = 0; c < columns.length; c++) {
-                row.children.push({
-                    type: 'rect',
-                    left: colWidth * (c + 1),
-                    z: 100,
-                    shape: {
-                        width: colWidth,
-                        height: lineHeight,
-                    },
-                    style: {
-                        lineWidth: 0.5,
-                        fill: (i % group) % 2 > 0 ? configs.windowShadesBackColor.value : "transparent",//'rgba(0,0,0,0.2)',
-                        stroke: configs.windowShadesBorderColor.value,
-                        opacity: configs.windowShadesOpacity.value,
-                    },
-                });
-                row.children.push({
-                    type: 'text',
-                    left: colWidth * (c + 1) + txtOffset,
-                    top: txtOffset,
-                    z: 99,
-                    bounding: 'raw',
-                    style: {
-                        text: r[columns[c]].value,
-                        font: configs.windowShadesFontSize.value + 'px "Microsoft YaHei", sans-serif',
-                        fill: colorPalette[i % colorPalette.length],
-                    },
-                });
+        let r = dataset["data"][i];
+        let row = {
+            invisible: false,
+            ignore: true,
+            type: 'group',
+            id: 'scrollingData-' + count,
+            left: left,
+            top: top + lineHeight * (count + 1),
+            children: [],
+            onmouseover: function () {
+                timeout = true;
+            },
+            onmouseout: function () {
+                timeout = false;
             }
-            children.push(row);
-            groupHeight += lineHeight;
-        } else if (index > selectGroup) {
-            break;
+        };
+        for (var c = 0; c < columns.length; c++) {
+            row.children.push({
+                type: 'rect',
+                left: colWidth * (c + 1),
+                //z: 99,
+                shape: {
+                    width: colWidth,
+                    height: lineHeight,
+                },
+                style: {
+                    lineWidth: 0.5,
+                    fill: i % 2 > 0 ? configs.windowShadesBackColor.value : "transparent",//'rgba(0,0,0,0.2)',
+                    stroke: configs.windowShadesBorderColor.value,
+                    opacity: configs.windowShadesOpacity.value,
+                },
+            });
+            row.children.push({
+                type: 'text',
+                left: colWidth * (c + 1) + txtOffset,
+                top: txtOffset,
+                //z: 99,
+                bounding: 'raw',
+                style: {
+                    text: r[columns[c]].value,
+                    font: configs.windowShadesFontSize.value + 'px "Microsoft YaHei", sans-serif',
+                    fill: colorPalette[i % colorPalette.length],
+                },
+            });
+        }
+        children.push(row);
+        count++;
+        if (count == lines) {
+            pool.push(children);
+            children = [];
+            count = 0;
         }
     }
-    selectGroup += 1;
-    option.graphic = graphic.concat(children);
+    if (children.length > 0)
+        pool.push(children);
+    option.graphic = windowShadesGraphic.concat(title).concat(pool[pageIndex]);
 
     setTimeout(() => {
         myChart.hideLoading();
         myChart.setOption(option);
-        let rowid = children.length * (-1);
+
         setInterval(function () {
             if (!timeout) {
-                children = [];
-                groupHeight = lineHeight;
-                if (selectGroup > groups)
-                    selectGroup = 0;
-                for (let i = 0; i < dataset["data"].length; i++) {
-                    let index = ((i + 1) % group) > 0 ? Math.floor((i + 1) / group) : Math.floor((i + 1) / group) - 1;
-                    if (index == selectGroup) {
-                        let r = dataset["data"][i];
-                        let row = {
-                            name: 'scrollingData-' + (i % group),
-                            type: 'group',
-                            id: 'scrollingData-' + (i % group),
-                            left: configs.windowShadesLeft.value,
-                            top: top + lineHeight * (i % group + 1),
-                            children: [],
-                            //rotation: rotation,
-                            onmouseover: function () {
-                                timeout = true;
-                            },
-                            onmouseout: function () {
-                                timeout = false;
-                            }
-                        };
-                        for (var c = 0; c < columns.length; c++) {
-                            row.children.push({
-                                type: 'rect',
-                                left: colWidth * (c + 1),
-                                z: 100,
-                                shape: {
-                                    width: colWidth,
-                                    height: lineHeight,
-                                },
-                                style: {
-                                    lineWidth: 0.5,
-                                    fill: (i % group) % 2 > 0 ? configs.windowShadesBackColor.value : "transparent",//'rgba(0,0,0,0.2)',
-                                    stroke: configs.windowShadesBorderColor.value,
-                                    opacity: getOpacity(i % group, rowid, children.length),
-                                },
-                            });
-                            row.children.push({
-                                type: 'text',
-                                left: colWidth * (c + 1) + txtOffset,
-                                top: txtOffset,
-                                z: 100,
-                                bounding: 'raw',
-                                style: {
-                                    text: getText(r[columns[c]].value, i % group, rowid, children.length),
-                                    font: configs.windowShadesFontSize.value + 'px "Microsoft YaHei", sans-serif',
-                                    fill: colorPalette[i % colorPalette.length],
-                                },
-                            });
-                        }
-                        children.push(row);
-                        groupHeight += lineHeight;
-                    } else if (index > selectGroup) {
-                        break;
+                if (dire == 0 && lineIndex < pool[pageIndex].length) {
+                    lineIndex += 1;
+                } else if (dire == 1 && lineIndex > 0) {
+                    lineIndex -= 1;
+                } else {
+                    dire +=1;
+                    if (dire == 2) {
+                        dire = 0;
+                        lineIndex = 0;
+                        pageIndex += 1;
+                        if (pageIndex == pool.length)
+                            pageIndex = 0;
                     }
                 }
-                if (rowid == children.length) {
-                    selectGroup += 1;
-                    rowid = children.length * (-1);
-                } else {
-                    rowid += 1;
+
+                try {
+                    for (let i = 0; i < pool[pageIndex].length; i++) {
+                        if (i <= lineIndex){
+                            pool[pageIndex][i].ignore = false;
+                        }
+                        else {
+                            pool[pageIndex][i].ignore = true;
+                        }
+                    }
+                    myChart.setOption({
+                        graphic: windowShadesGraphic.concat(title).concat(pool[pageIndex])
+                    },{ replaceMerge: "graphic"});
+                } catch (e) {
+                    console.log(e);
                 }
-                option.graphic = graphic.concat(children);
-                myChart.setOption(option);
             }
         }, Number(configs.windowShadesSpeed.value) * 1000);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    function getText(text, id, rowid, groups) {
-        if (rowid < 0) {
-            if (groups == rowid * (-1))
-                return "";
-            else if (id > Math.abs(rowid))
-                return "";
-            else
-                return text;
-        } else if (rowid > 0) {
-            if (groups == rowid)
-                return "";
-            else if (id < Math.abs(rowid))
-                return text;
-            else
-                return "";
-        } else {
-            return text
-        }
-    }
-
-    function getOpacity(id, rowid, groups) {
-        if (rowid < 0) {
-            if (groups == rowid * (-1))
-                return 0;
-            else if (id > Math.abs(rowid))
-                return 0;
-            else
-                return configs.windowShadesOpacity.value;
-        } else if (rowid > 0) {
-            if (id < Math.abs(rowid))
-                return configs.windowShadesOpacity.value;
-            else
-                return 0;
-        } else {
-            return configs.windowShadesOpacity.value;
-        }
-    }
-
     __ECHARTS__.addHistory(container, configs, dataset, width, height);
-
     return container;
 }
 
@@ -12125,12 +12096,12 @@ function getSurface(container, width, height, dataset, configs) {
         container.style.height = height;
     }
 
-    var myChart = echarts.init(container, configs.echartsTheme.value);
+    var myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value});
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
-    var containerWidth = Number(width.replace(/px/i, ""));
-    var containerHeight = Number(height.replace(/px/i, ""));
+    var containerWidth = myChart.getWidth();//Number(width.replace(/px/i, ""));
+    var containerHeight = myChart.getHeight();//Number(height.replace(/px/i, ""));
     var columns = [];
     var rows = [];
     var series = [];
@@ -12236,7 +12207,7 @@ function getSurface(container, width, height, dataset, configs) {
         tooltip: {
             show: configs.tooltipDisplay.value.toBoolean(),
             formatter: function (params) {
-                return rows[params.value[0]] + "&emsp;" + columns[params.value[1] + 1] + "<br>●&ensp;" + params.value[2];
+                return rows[params.value[0]]+ "<br>" + params.marker + columns[params.value[1] + 1] +  ":&emsp;<span style='display:inline-block;min-width:30px;text-align:right;font-weight:bold'>" + params.value[2] + "</span>";
             },
         },
         toolbox: {
@@ -12249,7 +12220,7 @@ function getSurface(container, width, height, dataset, configs) {
                 },
                 restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
                 dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                myMultiScreen: {
+                myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
                     show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
                     title: '视图组合',
                     icon: __SYS_IMAGES_PATH__.viewCombination,
@@ -12257,7 +12228,7 @@ function getSurface(container, width, height, dataset, configs) {
                         __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
                         alert("视图已提交组合列表.");
                     }
-                },
+                } : {},
             },
             top: configs.toolbox_top.value,
             left: configs.toolbox_left.value,
@@ -12388,12 +12359,12 @@ function getBoxplot(container, width, height, dataset, configs) {
         container.style.height = height;
     }
 
-    var myChart = echarts.init(container, configs.echartsTheme.value);
+    var myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value});
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
-    var containerWidth = Number(width.replace(/px/i, ""));
-    var containerHeight = Number(height.replace(/px/i, ""));
+    var containerWidth = myChart.getWidth();//Number(width.replace(/px/i, ""));
+    var containerHeight = myChart.getHeight();//Number(height.replace(/px/i, ""));
     var columns = [];
     var data = [];
     var normal = [];
@@ -12495,7 +12466,7 @@ function getBoxplot(container, width, height, dataset, configs) {
                 },
                 restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
                 dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                myMultiScreen: {
+                myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
                     show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
                     title: '视图组合',
                     icon: __SYS_IMAGES_PATH__.viewCombination,
@@ -12503,7 +12474,7 @@ function getBoxplot(container, width, height, dataset, configs) {
                         __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
                         alert("视图已提交组合列表.");
                     }
-                },
+                } : {},
             },
             top: configs.toolbox_top.value,
             left: configs.toolbox_left.value,
@@ -12633,13 +12604,13 @@ function getBoxplot(container, width, height, dataset, configs) {
                 tooltip: {
                     formatter: function (param) {
                         return [
-                            param.name + ': ',
-                            '上边界: ' + param.data[5],
-                            '上四分位: ' + param.data[4],
-                            '中值: ' + param.data[3],
-                            '下四分位: ' + param.data[2],
-                            '下边界: ' + param.data[1]
-                        ].join('<br/>');
+                            param.marker + param.name,
+                            "<span style='color:" + param.color + " '>•</span>" + "&ensp;上&ensp;边&ensp;界:&emsp;<span style='display:inline-block;min-width:80px;text-align:right;font-weight:bold'>" + param.data[5] + "</span>",
+                            "<span style='color:" + param.color + " '>•</span>" + "&ensp;上四分位:&emsp;<span style='display:inline-block;min-width:80px;text-align:right;font-weight:bold'>" + param.data[4] + "</span>",
+                            "<span style='color:" + param.color + " '>•</span>" + "&ensp;中&ensp;&ensp;&ensp;&ensp;值:&emsp;<span style='display:inline-block;min-width:80px;text-align:right;font-weight:bold'>" + param.data[3] + "</span>",
+                            "<span style='color:" + param.color + " '>•</span>" + "&ensp;下四分位:&emsp;<span style='display:inline-block;min-width:80px;text-align:right;font-weight:bold'>" + param.data[2] + "</span>",
+                            "<span style='color:" + param.color + " '>•</span>" + "&ensp;下&ensp;边&ensp;界:&emsp;<span style='display:inline-block;min-width:80px;text-align:right;font-weight:bold'>" + param.data[1] + "</span>"
+                        ].join("<br/>");
                     }
                 }
             },
@@ -12736,7 +12707,7 @@ function getClock(container, width, height, dataset, configs) {
         container.style.height = height;
     }
 
-    var myChart = echarts.init(container, configs.echartsTheme.value);
+    var myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value});
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
@@ -12746,102 +12717,83 @@ function getClock(container, width, height, dataset, configs) {
     }
     var title = dataset["data"][0][columns[0]].value;
 
-    var containerWidth = Number(width.replace(/px/i, ""));
-    var containerHeight = Number(height.replace(/px/i, ""));
+    var containerWidth = myChart.getWidth();//Number(width.replace(/px/i, ""));
+    var containerHeight = myChart.getHeight();//Number(height.replace(/px/i, ""));
     var option = {
         colors: [configs.clockLabelColor.value],
-        series: [{
-            name: 'hour',
-            type: 'gauge',
-            startAngle: 90,
-            endAngle: -269.99,
-            min: 0,
-            max: 12,
-            splitNumber: 12,
-            itemStyle: {
-                color: configs.clockLabelColor.value,
-                shadowColor: 'rgba(0, 0, 0, 0.3)',
-                shadowBlur: 8,
-                shadowOffsetX: 2,
-                shadowOffsetY: 4
-            },
-            axisLine: {
-                lineStyle: {
-                    width: 12,
-                    //表盘宽度
-                    color: [
-                        [1, 'transparent']
-                    ],
-                    shadowColor: 'rgba(0, 0, 0, 0.5)',
-                    shadowBlur: 15
-                }
-            },
-            splitLine: {
-                length: 15,
-                //主刻度长度
-                lineStyle: {
-                    width: 5,
-                    //主刻度宽度
-                    color: configs.clockLabelColor.value,
-                    shadowColor: 'rgba(0, 0, 0, 0.3)',
-                    shadowBlur: 3,
-                    shadowOffsetX: 1,
-                    shadowOffsetY: 2
-                }
-            },
-            axisTick: {
-                splitNumber: 5,
-                //主刻度之间的分隔数
-                lineStyle: {
-                    color: configs.clockLabelColor.value,
-                }
-            },
-            axisLabel: {
-                color: configs.clockLabelColor.value,
-                fontSize: Number(configs.clockFontSize.value),
-                distance: Number(configs.clockAxisLabelDistance.value),
-                //标签和刻度的距离
-                formatter: function (value) {
-                    if (value === 0) {
-                        return '';
-                    }
-                    return value;
-                }
-            },
-            pointer: {
-                icon: 'path://M2.9,0.7L2.9,0.7c1.4,0,2.6,1.2,2.6,2.6v115c0,1.4-1.2,2.6-2.6,2.6l0,0c-1.4,0-2.6-1.2-2.6-2.6V3.3C0.3,1.9,1.4,0.7,2.9,0.7z',
-                //5.0支持
-                width: 10,
-                length: '55%',
-                offsetCenter: [0, '8%'],
-            },
-            detail: {
-                show: true,
-                color: configs.clockLabelColor.value,
-                formatter: "0/0/0",
-                fontSize: Number(configs.clockFontSize.value)*0.6,
-                textShadowColor: "rgba(0, 0, 0, 0.5)",
-                textShadowBlur: 10,
-            },
-            title: {
-                show: true,
-                color: configs.clockLabelColor.value,
-                fontSize: Number(configs.clockFontSize.value)*0.6,
-                offsetCenter: [0, '-35%'],
-                //位置
-            },
-            data: [{
-                name: title,
-                value: 0,
-            }]
+        aria: {
+            show: configs.ariaLabel.value.toBoolean(),
         },
+        backgroundColor: configs.backgroundColor.value,
+        grid: {
+            x: configs.grid_left.value,
+            y: configs.grid_top.value,
+            x2: configs.grid_right.value,
+            y2: configs.grid_bottom.value,
+            containLabel: configs.grid_containLabel.value.toBoolean(),
+            backgroundColor: "transparent"
+        },
+        title: {
+            show: configs.titleDisplay.value.toBoolean(),
+            text: configs.titleText.value,
+            link: configs.titleTextLink.value,
+            target: "blank",
+            subtext: configs.titleSubText.value,
+            sublink: configs.titleSubTextLink.value,
+            subtarget: "blank",
+            top: "top",
+            left: configs.titlePosition.value,
+            textStyle: {
+                color: configs.titleTextColor.value,
+                fontSize: Number(configs.titleTextFontSize.value),
+            },
+            subtextStyle: {
+                color: configs.titleSubTextColor.value,
+                fontSize: Number(configs.titleSubTextFontSize.value),
+            }
+        },
+        toolbox: {
+            show: configs.toolboxDisplay.value.toBoolean(),
+            feature: {
+                saveAsImage: {
+                    show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
+                    excludeComponents: ["toolbox", "dataZoom", "timeline", "visualMap", "brush"],
+                    backgroundColor: configs.toolboxFeatureSaveAsImageBackgroundColor.value,
+                },
+                restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
+                dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
+                myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
+                    show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
+                    title: '视图组合',
+                    icon: __SYS_IMAGES_PATH__.viewCombination,
+                    onclick: function () {
+                        __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
+                        alert("视图已提交组合列表.");
+                    }
+                } : {},
+            },
+            top: configs.toolbox_top.value,
+            left: configs.toolbox_left.value,
+            orient: configs.toolbox_orient.value,
+            emphasis: {
+                iconStyle: {
+                    textPosition: configs.toolbox_textPosition.value,
+                },
+            },
+        },
+        graphic: getWaterGraphic(__SYS_LOGO_LINK__),
+        series: [
             {
-                name: 'minute',
+                //表盘
+                name: 'clock',
                 type: 'gauge',
+                radius: configs.clockRadius.value,
+                center: eval(configs.clockCenter.value),
                 startAngle: 90,
-                endAngle: -269.99,
+                endAngle: echarts.version == "4.9.0"?-269.99:-270,
                 min: 0,
-                max: 60,
+                max: 12,
+                splitNumber: 12,
                 itemStyle: {
                     color: configs.clockLabelColor.value,
                     shadowColor: 'rgba(0, 0, 0, 0.3)',
@@ -12849,6 +12801,147 @@ function getClock(container, width, height, dataset, configs) {
                     shadowOffsetX: 2,
                     shadowOffsetY: 4
                 },
+                axisLine: {
+                    lineStyle: {
+                        width: 12,
+                        //表盘宽度
+                        color: [
+                            [1, 'transparent']
+                        ],
+                        shadowColor: 'rgba(0, 0, 0, 0.5)',
+                        shadowBlur: 15
+                    }
+                },
+                splitLine: {
+                    length: 15,
+                    //主刻度长度
+                    lineStyle: {
+                        width: 5,
+                        //主刻度宽度
+                        color: configs.clockLabelColor.value,
+                        shadowColor: 'rgba(0, 0, 0, 0.3)',
+                        shadowBlur: 3,
+                        shadowOffsetX: 1,
+                        shadowOffsetY: 2
+                    }
+                },
+                axisTick: {
+                    splitNumber: 5,
+                    //主刻度之间的分隔数
+                    lineStyle: {
+                        color: configs.clockLabelColor.value,
+                    }
+                },
+                axisLabel: {
+                    color: configs.clockLabelColor.value,
+                    fontSize: Number(configs.clockFontSize.value),
+                    distance: Number(configs.clockAxisLabelDistance.value),
+                    //标签和刻度的距离
+                    formatter: function (value) {
+                        if (value === 0) {
+                            return '';
+                        }
+                        return value;
+                    }
+                },
+                anchor: {
+                    show: true,
+                    icon: __SYS_IMAGES_PATH__.whale,
+                    //icon: 'path://M532.8,70.8C532.8,70.8,532.8,70.8,532.8,70.8L532.8,70.8C532.7,70.8,532.8,70.8,532.8,70.8z M456.1,49.6c-2.2-6.2-8.1-10.6-15-10.6h-37.5v10.6h37.5l0,0c2.9,0,5.3,2.4,5.3,5.3c0,2.9-2.4,5.3-5.3,5.3v0h-22.5c-1.5,0.1-3,0.4-4.3,0.9c-4.5,1.6-8.1,5.2-9.7,9.8c-0.6,1.7-0.9,3.4-0.9,5.3v16h10.6v-16l0,0l0,0c0-2.7,2.1-5,4.7-5.3h10.3l10.4,21.2h11.8l-10.4-21.2h0c6.9,0,12.8-4.4,15-10.6c0.6-1.7,0.9-3.5,0.9-5.3C457,53,456.7,51.2,456.1,49.6z M388.9,92.1h11.3L381,39h-3.6h-11.3L346.8,92v0h11.3l3.9-10.7h7.3h7.7l3.9-10.6h-7.7h-7.3l7.7-21.2v0L388.9,92.1z M301,38.9h-10.6v53.1H301V70.8h28.4l3.7-10.6H301V38.9zM333.2,38.9v10.6v10.7v31.9h10.6V38.9H333.2z M249.5,81.4L249.5,81.4L249.5,81.4c-2.9,0-5.3-2.4-5.3-5.3h0V54.9h0l0,0c0-2.9,2.4-5.3,5.3-5.3l0,0l0,0h33.6l3.9-10.6h-37.5c-1.9,0-3.6,0.3-5.3,0.9c-4.5,1.6-8.1,5.2-9.7,9.7c-0.6,1.7-0.9,3.5-0.9,5.3l0,0v21.3c0,1.9,0.3,3.6,0.9,5.3c1.6,4.5,5.2,8.1,9.7,9.7c1.7,0.6,3.5,0.9,5.3,0.9h33.6l3.9-10.6H249.5z M176.8,38.9v10.6h49.6l3.9-10.6H176.8z M192.7,81.4L192.7,81.4L192.7,81.4c-2.9,0-5.3-2.4-5.3-5.3l0,0v-5.3h38.9l3.9-10.6h-53.4v10.6v5.3l0,0c0,1.9,0.3,3.6,0.9,5.3c1.6,4.5,5.2,8.1,9.7,9.7c1.7,0.6,3.4,0.9,5.3,0.9h23.4h10.2l3.9-10.6l0,0H192.7z M460.1,38.9v10.6h21.4v42.5h10.6V49.6h17.5l3.8-10.6H460.1z M541.6,68.2c-0.2,0.1-0.4,0.3-0.7,0.4C541.1,68.4,541.4,68.3,541.6,68.2L541.6,68.2z M554.3,60.2h-21.6v0l0,0c-2.9,0-5.3-2.4-5.3-5.3c0-2.9,2.4-5.3,5.3-5.3l0,0l0,0h33.6l3.8-10.6h-37.5l0,0c-6.9,0-12.8,4.4-15,10.6c-0.6,1.7-0.9,3.5-0.9,5.3c0,1.9,0.3,3.7,0.9,5.3c2.2,6.2,8.1,10.6,15,10.6h21.6l0,0c2.9,0,5.3,2.4,5.3,5.3c0,2.9-2.4,5.3-5.3,5.3l0,0h-37.5v10.6h37.5c6.9,0,12.8-4.4,15-10.6c0.6-1.7,0.9-3.5,0.9-5.3c0-1.9-0.3-3.7-0.9-5.3C567.2,64.6,561.3,60.2,554.3,60.2z',
+                    showAbove: false,
+                    offsetCenter: [0, '-45%'],
+                    size: 30,
+                    keepAspect: true,
+                    itemStyle: {
+                        color: configs.clockLabelColor.value,
+                    }
+                },
+                pointer: {
+                    show: false
+                },
+                detail: {
+                    show: echarts.version == "5.0.0",
+                    color: configs.clockLabelColor.value,
+                    fontSize: Number(configs.clockFontSize.value) * 0.6,
+                    borderColor: configs.clockLabelColor.value,
+                    fontWeight: "bolder",
+                    textShadowColor: "rgba(0, 0, 0, 0.5)",
+                    textShadowBlur: 10,
+                    formatter: function (param) {
+                        return param;
+                    },
+                    valueAnimation: true,
+                },
+                title: {
+                    show: true,
+                    color: configs.clockLabelColor.value,
+                    fontSize: Number(configs.clockFontSize.value) * 0.8,
+                    textShadowColor: "rgba(0, 0, 0, 0.5)",
+                    textShadowBlur: 10,
+                    offsetCenter: [0, '-25%'],
+                    //位置
+                },
+                data: [{
+                    name: title,
+                    value: "0/0/0"
+                }]
+            },
+            {
+                //时针
+                name: 'hour',
+                type: 'gauge',
+                radius: configs.clockRadius.value,
+                center: eval(configs.clockCenter.value),
+                startAngle: 90,
+                endAngle: echarts.version == "4.9.0"?-269.99:-270,
+                min: 0,
+                max: 12,
+                axisLine: {
+                    show: false
+                },
+                splitLine: {
+                    show: false
+                },
+                axisTick: {
+                    show: false
+                },
+                axisLabel: {
+                    show: false
+                },
+                pointer: {
+                    icon: 'path://M2.9,0.7L2.9,0.7c1.4,0,2.6,1.2,2.6,2.6v115c0,1.4-1.2,2.6-2.6,2.6l0,0c-1.4,0-2.6-1.2-2.6-2.6V3.3C0.3,1.9,1.4,0.7,2.9,0.7z',
+                    //5.0支持
+                    width: 10,
+                    length: '55%',
+                    offsetCenter: [0, '8%'],
+                    itemStyle: {
+                        color: configs.clockLabelColor.value,
+                        shadowColor: 'rgba(0, 0, 0, 0.3)',
+                        shadowBlur: 8,
+                        shadowOffsetX: 2,
+                        shadowOffsetY: 4
+                    }
+                },
+                detail: {
+                    show: false,
+                },
+                title: {
+                    show: false,
+                },
+                data: [{
+                    value: 0,
+                }]
+            },
+            {
+                //分针
+                name: 'minute',
+                type: 'gauge',
+                radius: configs.clockRadius.value,
+                center: eval(configs.clockCenter.value),
+                startAngle: 90,
+                endAngle: echarts.version == "4.9.0"?-269.99:-270,
+                min: 0,
+                max: 60,
                 axisLine: {
                     show: false
                 },
@@ -12866,33 +12959,35 @@ function getClock(container, width, height, dataset, configs) {
                     width: 7,
                     length: '70%',
                     offsetCenter: [0, '8%'],
+                    itemStyle: {
+                        color: configs.clockLabelColor.value,
+                        shadowColor: 'rgba(0, 0, 0, 0.3)',
+                        shadowBlur: 8,
+                        shadowOffsetX: 2,
+                        shadowOffsetY: 4
+                    }
                 },
                 detail: {
                     show: false
                 },
                 title: {
-                    show:false,
-                    offsetCenter: ['0%', '-40%']
+                    show: false,
                 },
                 data: [{
                     value: 0
                 }]
             },
             {
+                //秒针
                 name: 'second',
                 type: 'gauge',
+                radius: configs.clockRadius.value,
+                center: eval(configs.clockCenter.value),
                 startAngle: 90,
-                endAngle: -269.99,
+                endAngle: echarts.version == "4.9.0"?-269.99:-270,
                 min: 0,
                 max: 60,
                 animationEasingUpdate: 'bounceOut',
-                itemStyle: {
-                    color: configs.clockLabelColor.value,
-                    shadowColor: 'rgba(0, 0, 0, 0.3)',
-                    shadowBlur: 8,
-                    shadowOffsetX: 2,
-                    shadowOffsetY: 4
-                },
                 axisLine: {
                     show: false
                 },
@@ -12910,14 +13005,20 @@ function getClock(container, width, height, dataset, configs) {
                     width: 4,
                     length: '85%',
                     offsetCenter: [0, '8%'],
+                    itemStyle: {
+                        color: configs.clockLabelColor.value,
+                        shadowColor: 'rgba(0, 0, 0, 0.3)',
+                        shadowBlur: 8,
+                        shadowOffsetX: 2,
+                        shadowOffsetY: 4
+                    }
                 },
 
                 detail: {
                     show: false
                 },
                 title: {
-                    show:false,
-                    offsetCenter: ['0%', '-40%']
+                    show: false,
                 },
                 data: [{
                     value: 0
@@ -12937,18 +13038,14 @@ function getClock(container, width, height, dataset, configs) {
         hour: false
     };
 
-    function updateSeries(time, series, type, fullday,title) {
+    function updateSeries(time, series, type) {
         var isCritical = (Math.floor(time) === 0) || (type === 'second' && time === 1);
         if (isCritical && timeUpdatedStatus[type] === true) {
             timeUpdatedStatus[type] = false;
-            series.detail.formatter = fullday;
-            series.data[0].name = title;
             series.clockwise = true;
             option.animationDurationUpdate = 0;
             myChart.setOption(option, true);
         }
-        series.detail.formatter = fullday;
-        series.data[0].name = title;
         series.data[0].value = time;
         series.clockwise = true;
         if (time === 0) {
@@ -12957,16 +13054,22 @@ function getClock(container, width, height, dataset, configs) {
         }
     }
 
-    setInterval(function () {
-        var date = new Date();
-        var fullday = date.toLocaleString("zh", { hour12: false }).split(" ")[0];
-        var second = date.getSeconds();
-        var minute = date.getMinutes() + second / 60;
-        var hour = date.getHours() % 12 + minute / 60;
+    function updateClockSeries(date, series,type,title){
+        series.data[0].name = title;
+        series.data[0].value = date;
+    }
 
-        updateSeries(second, option.series[2], 'second', fullday, title);
-        updateSeries(minute, option.series[1], 'minute', fullday, title);
-        updateSeries(hour, option.series[0], 'hour', fullday, title);
+    setInterval(function () {
+        let date = new Date();
+        let fullday = date.toLocaleString("zh", { hour12: false }).split(" ")[0];
+        let second = date.getSeconds();
+        let minute = date.getMinutes() + second / 60;
+        let hour = date.getHours() % 12 + minute / 60;
+
+        updateSeries(second, option.series[3], 'second');
+        updateSeries(minute, option.series[2], 'minute');
+        updateSeries(hour, option.series[1], 'hour');
+        updateClockSeries(fullday,option.series[0],"date",title);
 
         option.animationDurationUpdate = 300;
         myChart.setOption(option, true);
@@ -12977,8 +13080,1524 @@ function getClock(container, width, height, dataset, configs) {
     return container;
 }
 
+function getCandlestick(container, width, height, dataset, configs) {
+    if (container == null) {
+        container = document.createElement("div");
+        container.className = "echarts-container";
+        container.id = "echarts-container";
+        container.style.width = width;
+        container.style.height = height;
+    }
+
+    var myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value});
+
+    myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
+
+    var columns = [];
+    for (var i = 0; i < dataset["columns"].length; i++) {
+        columns.push(dataset["columns"][i].name);
+    }
+    var xAxis = [];
+    var data = [];
+    var upColor = configs.candlestickUpColor.value;
+    var upBorderColor = configs.candlestickUpBorderColor.value;
+    var downColor = configs.candlestickDownColor.value;
+    var downBorderColor = configs.candlestickDownBorderColor.value;
+
+    if (columns.length>=5) {
+        for (var i = 0; i < dataset["data"].length; i++) {
+            let r = dataset["data"][i];
+            let d = [];
+            for (var c = 0; c < columns.length; c++) {
+                if (c == 0) {
+                    xAxis.push(r[columns[c]].value);
+                } else {
+                    d.push(r[columns[c]].value)
+                }
+            }
+            data.push(d);
+        }
+    } else {
+        alert("K线图数据结构:[ 期间标识,开盘价,收盘价,最低价,最高价 ].")
+    }
+
+    var option = {
+        aria: {
+            show: configs.ariaLabel.value.toBoolean(),
+        },
+        backgroundColor: configs.backgroundColor.value,
+        grid: {
+            x: configs.grid_left.value,
+            y: configs.grid_top.value,
+            x2: configs.grid_right.value,
+            y2: configs.grid_bottom.value,
+            containLabel: configs.grid_containLabel.value.toBoolean(),
+            backgroundColor: "transparent"
+        },
+        brush: configs.toolboxFeatureBrush.value.toBoolean() ? {
+            toolbox: ["rect", "polygon", "lineX", "lineY", "keep", "clear"],
+            xAxisIndex: 0
+        } : null,
+        toolbox: {
+            show: configs.toolboxDisplay.value.toBoolean(),
+            feature: {
+                saveAsImage: {
+                    show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
+                    excludeComponents: ["toolbox", "dataZoom", "timeline", "visualMap", "brush"],
+                    backgroundColor: configs.toolboxFeatureSaveAsImageBackgroundColor.value,
+                },
+                restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
+                dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
+                dataZoom: {show: configs.toolboxFeatureDataZoom.value.toBoolean(),},
+                myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
+                    show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
+                    title: '视图组合',
+                    icon: __SYS_IMAGES_PATH__.viewCombination,
+                    onclick: function () {
+                        __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
+                        alert("视图已提交组合列表.");
+                    }
+                } : {},
+            },
+            top: configs.toolbox_top.value,
+            left: configs.toolbox_left.value,
+            orient: configs.toolbox_orient.value,
+            emphasis: {
+                iconStyle: {
+                    textPosition: configs.toolbox_textPosition.value,
+                }
+            },
+        },
+        title: {
+            show: configs.titleDisplay.value.toBoolean(),
+            text: configs.titleText.value,
+            link: configs.titleTextLink.value,
+            target: "blank",
+            subtext: configs.titleSubText.value,
+            sublink: configs.titleSubTextLink.value,
+            subtarget: "blank",
+            top: "top",
+            left: configs.titlePosition.value,
+            textStyle: {
+                color: configs.titleTextColor.value,
+                fontSize: Number(configs.titleTextFontSize.value),
+            },
+            subtextStyle: {
+                color: configs.titleSubTextColor.value,
+                fontSize: Number(configs.titleSubTextFontSize.value),
+            }
+        },
+        legend: {
+            show: configs.legendDisplay.value.toBoolean(),
+            icon: configs.legendIcon.value,
+            type: configs.legendType.value,
+            selectedMode: configs.legendSelectedMode.value,
+            top: configs.legendPositionTop.value,
+            left: configs.legendPositionLeft.value,
+            orient: configs.legendOrient.value,
+            data: columns.slice(1, columns.length),
+            textStyle: {
+                color: configs.legendTextColor.value
+            },
+        },
+
+        tooltip: {
+            show: configs.tooltipDisplay.value.toBoolean(),
+            trigger: "axis",
+            axisPointer: {
+                type: configs.axisPointerType.value,
+            },
+            formatter: function (params) {
+                let param = params[0];
+                return [param.name,
+                    param.marker + "&ensp;" + param.seriesName,
+                    "<span style='color:" + param.color + " '>•</span>" + "&ensp;开盘价:&emsp;<span style='display:inline-block;min-width:30px;text-align:right;font-weight:bold'>" + param.data[1] + "</span>",
+                    "<span style='color:" + param.color + " '>•</span>" + "&ensp;最低价:&emsp;<span style='display:inline-block;min-width:30px;text-align:right;font-weight:bold'>" + param.data[3] + "</span>",
+                    "<span style='color:" + param.color + " '>•</span>" + "&ensp;最高价:&emsp;<span style='display:inline-block;min-width:30px;text-align:right;font-weight:bold'>" + param.data[4] + "</span>",
+                    "<span style='color:" + param.color + " '>•</span>" + "&ensp;收盘价:&emsp;<span style='display:inline-block;min-width:30px;text-align:right;font-weight:bold'>" + param.data[2] + "</span>"
+                ].join("<br>");
+            },
+        },
+
+        xAxis: {
+            data: xAxis,
+            inverse: configs.xAxisInverse.value.toBoolean(),
+            axisLine: {
+                show: configs.axisLineDisplay.value.toBoolean(),
+                lineStyle: {
+                    color: configs.axisColor.value
+                },
+            },
+            axisTick: {
+                show: configs.axisLineDisplay.value.toBoolean(),
+            },
+            axisLabel: {
+                show: configs.axisLineDisplay.value.toBoolean(),
+                interval: "auto",
+                margin: 8,
+                rotate: Number(configs.xAxisLabelRotate.value),
+                textStyle: {
+                    color: configs.axisTextColor.value
+                }
+            },
+            splitLine: {
+                show: configs.splitXLineDisplay.value.toBoolean(),
+                lineStyle: {
+                    color: [
+                        configs.axisColor.value
+                    ]
+                },
+            },
+            splitArea: {
+                show: configs.splitXAreaDisplay.value.toBoolean(),
+            }
+        },
+        yAxis: {
+            inverse: configs.yAxisInverse.value.toBoolean(),
+            axisLine: {
+                show: configs.axisLineDisplay.value.toBoolean(),
+                lineStyle: {
+                    color: configs.axisColor.value
+                },
+            },
+            axisTick: {
+                show: configs.axisLineDisplay.value.toBoolean(),
+            },
+            axisLabel: {
+                show: configs.axisLineDisplay.value.toBoolean(),
+                rotate: Number(configs.yAxisLabelRotate.value),
+                textStyle: {
+                    color: configs.axisTextColor.value
+                }
+            },
+            splitLine: {
+                show: configs.splitYLineDisplay.value.toBoolean(),
+                lineStyle: {
+                    color: [
+                        configs.axisColor.value
+                    ]
+                },
+            },
+            splitArea: {
+                show: configs.splitYAreaDisplay.value.toBoolean(),
+            }
+        },
+        dataZoom: [{
+            type: "inside",
+            filterMode: configs.dataZoomFilterMode.value,
+            start: 0,
+            xAxisIndex: 0,
+            end: 100
+        }, {
+            type: "inside",
+            filterMode: configs.dataZoomFilterMode.value,
+            start: 0,
+            yAxisIndex: 0,
+            end: 100
+        }, {
+            show: configs.dataZoomBarDisplay.value.toBoolean(),
+            type: "slider",
+            filterMode: configs.dataZoomFilterMode.value,
+            yAxisIndex: 0,
+            start: 0,
+            end: 100,
+            width: configs.dataZoomBarWidth.value,
+            height: (100 - toPoint(configs.grid_top.value) - toPoint(configs.grid_bottom.value)) + "%",
+            top: configs.grid_top.value,
+            right: (100 - toPoint(configs.grid_right.value)) + "%",
+            handleIcon: __SYS_IMAGES_PATH__.dataZoomHandleIcon[configs.dataZoomHandleIcon.value],
+            handleSize: configs.dataZoomHandleSize.value,
+            borderColor: configs.dataZoomBarColor.value,
+            handleStyle: {
+                color: configs.dataZoomBarColor.value,
+            },
+            textStyle: {
+                color: configs.dataZoomBarColor.value,
+            },
+        }, {
+            show: configs.dataZoomBarDisplay.value.toBoolean(),
+            type: "slider",
+            filterMode: configs.dataZoomFilterMode.value,
+            xAxisIndex: 0,
+            start: 0,
+            end: 100,
+            width: (100 - toPoint(configs.grid_left.value) - toPoint(configs.grid_right.value)) + "%",
+            height: configs.dataZoomBarWidth.value,
+            left: configs.grid_left.value,
+            top: (100 - toPoint(configs.grid_bottom.value)) + "%",
+            handleIcon: __SYS_IMAGES_PATH__.dataZoomHandleIcon[configs.dataZoomHandleIcon.value],
+            handleSize: configs.dataZoomHandleSize.value,
+            borderColor: configs.dataZoomBarColor.value,
+            handleStyle: {
+                color: configs.dataZoomBarColor.value,
+            },
+            textStyle: {
+                color: configs.dataZoomBarColor.value,
+            },
+        }],
+        graphic: getWaterGraphic(__SYS_LOGO_LINK__),
+        series: [
+            {
+                name: 'K线图',
+                type: 'candlestick',
+                data: data,
+                //dimensions: ['日期', '开盘价', '收盘价', '最低价', '最高价'],
+                itemStyle: {
+                    color: upColor,
+                    color0: downColor,
+                    borderColor: upBorderColor,
+                    borderColor0: downBorderColor
+                },
+            }
+        ]
+    };
 
 
+    setTimeout(() => {
+        myChart.hideLoading();
+        myChart.setOption(option);
+    }, Number(configs.loadingTimes.value) * 1000);
+
+    __ECHARTS__.addHistory(container, configs, dataset, width, height);
+    return container;
+}
+
+function getBanners(container, width, height, dataset, configs) {
+    if (container == null) {
+        container = document.createElement("div");
+        container.className = "echarts-container";
+        container.id = "echarts-container";
+        container.style.width = width;
+        container.style.height = height;
+    }
+
+    var myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value});
+
+    myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
+
+    var containerWidth = myChart.getWidth();//Number(width.replace(/px/i, ""));
+    var containerHeight = myChart.getHeight();//Number(height.replace(/px/i, ""));
+    var columns = [];
+    var banners = [];
+    var index = 0;
+
+    for (var i = 0; i < dataset["columns"].length; i++) {
+        columns.push(dataset["columns"][i].name);
+    }
+
+    var lineHeight = containerHeight/columns.length;
+
+    for (var i = 0; i < dataset["data"].length; i++) {
+        let r = dataset["data"][i];
+        let group = {
+            type: 'group',
+            id: 'banner',
+            top: "center",
+            left: "center",
+            children: [],
+        };
+
+        for (var c = 0; c < columns.length; c++) {
+            group.children.push(
+                {
+                    id: "data " + c,
+                    type: 'text',
+                    top: c * lineHeight,
+                    left: "center",
+                    //z: 100,
+                    style: {
+                        fill: configs.bannerTextColor.value,
+                        text: r[columns[c]].value ,
+                        font: "bolder " + configs.bannerFontSize.value + "px '" + configs.bannerFontFamily.value + "'",
+                        textVerticalAlign: "bottom",//"middle",
+                        opacity: 1,
+                    }
+                });
+        }
+        banners.push(group);
+    }
+
+    var option = {
+        aria: {
+            show: configs.ariaLabel.value.toBoolean(),
+        },
+        backgroundColor: configs.bannerBackgroundColor.value,
+        title: {
+            show: configs.titleDisplay.value.toBoolean(),
+            text: configs.titleText.value,
+            link: configs.titleTextLink.value,
+            target: "blank",
+            subtext: configs.titleSubText.value,
+            sublink: configs.titleSubTextLink.value,
+            subtarget: "blank",
+            top: "top",
+            left: configs.titlePosition.value,
+            textStyle: {
+                color: configs.titleTextColor.value,
+                fontSize: Number(configs.titleTextFontSize.value),
+            },
+            subtextStyle: {
+                color: configs.titleSubTextColor.value,
+                fontSize: Number(configs.titleSubTextFontSize.value),
+            }
+        },
+        toolbox: {
+            show: configs.toolboxDisplay.value.toBoolean(),
+            feature: {
+                saveAsImage: {
+                    show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
+                    excludeComponents: ["toolbox", "dataZoom", "timeline", "visualMap", "brush"],
+                    backgroundColor: configs.toolboxFeatureSaveAsImageBackgroundColor.value,
+                },
+                restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
+                dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
+                myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
+                    show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
+                    title: '视图组合',
+                    icon: __SYS_IMAGES_PATH__.viewCombination,
+                    onclick: function () {
+                        __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
+                        alert("视图已提交组合列表.");
+                    }
+                } : {},
+            },
+            top: configs.toolbox_top.value,
+            left: configs.toolbox_left.value,
+            orient: configs.toolbox_orient.value,
+            emphasis: {
+                iconStyle: {
+                    textPosition: configs.toolbox_textPosition.value,
+                },
+            },
+        },
+
+        graphic: [banners[index]].concat(getWaterGraphic(__SYS_LOGO_LINK__))
+    };
+
+    setTimeout(() => {
+        myChart.hideLoading();
+        myChart.setOption(option);
+        setInterval(function () {
+            try {
+                myChart.setOption(
+                    {
+                        graphic: [banners[index]].concat(getWaterGraphic(__SYS_LOGO_LINK__)),
+                    },{ replaceMerge: "graphic"}
+                );
+            } catch (e) {
+                console.log(e);
+            }
+            index += 1;
+            if (index == banners.length)
+                index = 0;
+
+        }, Number(configs.bannerShadesSpeed.value) * 1000);
+
+    }, Number(configs.loadingTimes.value) * 1000);
+
+    __ECHARTS__.addHistory(container, configs, dataset, width, height);
+
+    return container;
+}
+
+function getWordCloud(container, width, height, dataset, configs) {
+    if (container == null) {
+        container = document.createElement("div");
+        container.className = "echarts-container";
+        container.id = "echarts-container";
+        container.style.width = width;
+        container.style.height = height;
+    }
+
+    var myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value});
+
+    myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
+
+    var series = [];
+    var columns = [];
+    var legends = [];
+    //var maskImage = new Image();
+    //maskImage.src = "logo.png";
+
+    function init() {
+        for (var i = 0; i < dataset["columns"].length; i++) {
+            columns.push(dataset["columns"][i].name);
+        }
+
+        for (var c = 0; c < columns.length; c++) {
+            if (c == 0) {
+                for (var i = 0; i < dataset["data"].length; i++) {
+                    var row = dataset["data"][i];
+                    legends.push(row[columns[c]].value);
+                }
+            } else {
+                var serie = {
+                    name: columns[c],
+                    type: "wordCloud",
+                    gridSize: 2,
+                    sizeRange: [configs.wordCloudMinFontSize.value, configs.wordCloudMaxFontSize.value],//[最小字号,最大字号],
+                    rotationRange: [-1 * configs.wordCloudRotationRange.value, configs.wordCloudRotationRange.value],//[旋转角度,旋转角度]
+                    shape: configs.wordCloudShape.value,
+                    //"circle", "cardioid", "diamond", "triangle-forward", "triangle", "pentagon", "star"
+                    //maskImage: maskImage,
+                    drawOutOfBound: false,
+                    textStyle: {
+                        normal: {
+                            color: function () {
+                                return "rgb(" + [
+                                    Math.round(Math.random() * 160),
+                                    Math.round(Math.random() * 160),
+                                    Math.round(Math.random() * 160)
+                                ].join(",") + ")";
+                            }
+                        },
+                        emphasis: {
+                            shadowBlur: 10,
+                            shadowColor: "#333"
+                        }
+                    },
+                    data: [
+                        {
+                            name: "wordCloud",
+                            value: 10000,
+                            textStyle: {
+                                normal: {
+                                    color: "black"
+                                },
+                                emphasis: {
+                                    color: "red"
+                                }
+                            }
+                        }
+                    ],
+                    animation: configs.animation.value.toBoolean(),
+                    animationThreshold: Number(configs.animationThreshold.value),
+                    animationEasing: getAnimationEasing(configs),
+                    animationDuration: function (idx) {
+                        return idx * Number(configs.animationDuration.value) + c * Number(configs.animationDuration.value);
+                    },
+                    animationDelay: function (idx) {
+                        return idx * Number(configs.animationDelay.value) + c * Number(configs.animationDelay.value);
+                    },
+                    animationEasingUpdate: getAnimationEasingUpdate(configs),
+                    animationDurationUpdate: function (idx) {
+                        return idx * Number(configs.animationDurationUpdate.value) + c * Number(configs.animationDurationUpdate.value);
+                    },
+                    animationDelayUpdate: function (idx) {
+                        return idx * Number(configs.animationDelayUpdate.value) + c * Number(configs.animationDelayUpdate.value);
+                    },
+                };
+                serie.data = [];
+                for (var i = 0; i < dataset["data"].length; i++) {
+                    var row = dataset["data"][i];
+                    serie.data.push({name: row[columns[0]].value, value: row[columns[c]].value});
+                }
+                series.push(serie);
+            }
+        }
+
+        let top = toPoint(configs.grid_top.value);
+        let left = toPoint(configs.grid_left.value);
+        let groupWith = configs.groupWith.value;
+        let lines = parseInt(series.length / groupWith + 0.5);
+        let height = parseInt((100 - toPoint(configs.grid_top.value) - toPoint(configs.grid_bottom.value)) / lines);
+        let width = (100 - toPoint(configs.grid_left.value) - toPoint(configs.grid_right.value)) / groupWith;
+
+        for (var i = 0; i < series.length; i++) {
+            series[i].top = ((top + parseInt(i / groupWith) * height) + parseInt(i / groupWith) * top) + "%";
+            series[i].left = (left + (i % groupWith) * width) + "%";
+            series[i].width = width + "%";
+            series[i].height = height + "%";
+        }
+    }
+
+    init();
+
+    var option = {
+        backgroundColor: configs.backgroundColor.value,
+        grid: {
+            x: configs.grid_left.value,
+            y: configs.grid_top.value,
+            x2: configs.grid_right.value,
+            y2: configs.grid_bottom.value,
+            containLabel: configs.grid_containLabel.value.toBoolean(),
+            backgroundColor: "transparent"
+        },
+        title: {
+            show: configs.titleDisplay.value.toBoolean(),
+            text: configs.titleText.value,
+            link: configs.titleTextLink.value,
+            target : "blank",
+            subtext: configs.titleSubText.value,
+            sublink: configs.titleSubTextLink.value,
+            subtarget: "blank",
+            top:"top",
+            left:configs.titlePosition.value,
+            textStyle: {
+                color: configs.titleTextColor.value,
+                fontSize: Number(configs.titleTextFontSize.value),
+            },
+            subtextStyle: {
+                color: configs.titleSubTextColor.value,
+                fontSize: Number(configs.titleSubTextFontSize.value),
+            }
+        },
+        tooltip: {
+            show:configs.tooltipDisplay.value.toBoolean(),
+            formatter: function(param) {
+                return [param.seriesName, param.marker + "&ensp;" + param.name + ":<span style='display:inline-block;min-width:30px;text-align:right;font-weight:bold'>&ensp;" + param.value + "</span>"].join("<br>");
+            }
+        },
+        legend: {
+            show:configs.legendDisplay.value.toBoolean(),
+            icon: configs.legendIcon.value,
+            type: configs.legendType.value,
+            selectedMode: configs.legendSelectedMode.value,
+            top: configs.legendPositionTop.value,
+            left: configs.legendPositionLeft.value,
+            orient:configs.legendOrient.value,
+            data: columns.slice(1),
+            textStyle: {
+                color: configs.legendTextColor.value
+            },
+        },
+        toolbox: {
+            show: configs.toolboxDisplay.value.toBoolean(),
+            feature: {
+                saveAsImage: {
+                    show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
+                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"],
+                    backgroundColor:configs.toolboxFeatureSaveAsImageBackgroundColor.value,
+                },
+                restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
+                dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
+                myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
+                    show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
+                    title: '视图组合',
+                    icon: __SYS_IMAGES_PATH__.viewCombination,
+                    onclick: function () {
+                        __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
+                        alert("视图已提交组合列表.");
+                    }
+                } : {},
+            },
+            top: configs.toolbox_top.value,
+            left:configs.toolbox_left.value,
+            orient: configs.toolbox_orient.value,
+            emphasis: {
+                iconStyle: {
+                    textPosition: configs.toolbox_textPosition.value,
+                }
+            },
+        },
+        series: series,
+        graphic: getWaterGraphic(__SYS_LOGO_LINK__),
+    };
+
+    setTimeout(() => {
+      myChart.hideLoading();
+      myChart.setOption(option);
+    }, Number(configs.loadingTimes.value) * 1000);
+
+    __ECHARTS__.addHistory(container, configs, dataset, width, height);
+    return container;
+}
+
+function getSunburst(container, width, height, dataset, configs) {
+    if (container == null) {
+        container = document.createElement("div");
+        container.className = "echarts-container";
+        container.id = "echarts-container";
+        container.style.width = width;
+        container.style.height = height;
+    }
+
+    var myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value});
+    myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
+    var colors = ["#a6c84c", "#ffa022", "#46bee9", "#9370DB", "#F08080", "#FF4500"];
+    var columns = [];
+    var series = [];
+    var parent = "";
+    var child = "";
+    if (dataset["columns"].length >= 3) {
+        parent = dataset["columns"][0].name;
+        child = dataset["columns"][1].name;
+
+        for (let i = 2; i < dataset["columns"].length; i++) {
+            columns.push(dataset["columns"][i].name);
+        }
+
+        for (let c = 0; c < columns.length; c++) {
+            var data = [];
+            var children = {};
+            for (let i = 0; i < dataset["data"].length; i++) {
+                let row = dataset["data"][i];
+                children[row[child].value] = {
+                    parent: row[parent].value,
+                    value: row[columns[c]].value,
+                    children: [],
+                    itemStyle: {
+                        color: colors[i % colors.length]
+                    }
+                };
+            }
+
+            for (let name in children) {
+                try {
+                    children[children[name].parent].children.push({
+                        name: name,
+                        value: children[name].value,
+                        children: children[name].children,
+                        itemStyle: children[name].itemStyle
+                    });
+                } catch (e) {
+                    data.push({
+                        name: name,
+                        value: children[name].value,
+                        children: children[name].children,
+                        itemStyle: children[name].itemStyle
+                    });
+                }
+            }
+            series.push({
+                name: columns[c],
+                center: [100/(columns.length + 1)  * (c + 1) + "%", "50%"],
+                radius: eval(configs.sunburstRadius.value),//['15%', '90%'],
+                type: 'sunburst',
+                sort: configs.sunburstSort.value == "null"?null:configs.sunburstSort.value,
+                //扇形块根据数据 value 的排序方式，如果未指定 value，则其值为子元素 value 之和。默认值 'desc' 表示降序排序；还可以设置为 'asc' 表示升序排序；null 表示不排序，使用原始数据的顺序；或者用回调函数进行排列：
+                highlightPolicy: configs.sunburstHighlightPolicy.value,
+                //如果其值为 'descendant'，则会高亮该扇形块和后代元素，其他元素将被淡化；如果其值为 'ancestor'，则会高亮该扇形块和祖先元素；如果其值为 'self' 则只高亮自身；'none' 则不会淡化其他元素。
+                data: data,
+                label: {
+                    rotate: configs.sunburstLabelRotate.value,
+                    //'radial' 表示径向旋转、'tangential' 表示切向旋转
+                    align: configs.sunburstLabelAlign.value,
+                    //可取值为：'left'、 'center'、 'right'。注意，'left' 是指靠近内圈，而 'right' 是指靠近外圈。
+                    //formatter
+                },
+                levels: [],
+                itemStyle: {
+                    color: '#ddd',
+                    borderWidth: 2
+                },
+                animation: configs.animation.value.toBoolean(),
+                animationThreshold: Number(configs.animationThreshold.value),
+                animationEasing: getAnimationEasing(configs),
+                animationDuration: function (idx) {
+                    return idx * Number(configs.animationDuration.value) + Number(configs.animationDuration.value);
+                },
+                animationDelay: function (idx) {
+                    return idx * Number(configs.animationDelay.value) + Number(configs.animationDelay.value);
+                },
+                animationEasingUpdate: getAnimationEasingUpdate(configs),
+                animationDurationUpdate: function (idx) {
+                    return idx * Number(configs.animationDurationUpdate.value) + Number(configs.animationDurationUpdate.value);
+                },
+                animationDelayUpdate: function (idx) {
+                    return idx * Number(configs.animationDelayUpdate.value) + Number(configs.animationDelayUpdate.value);
+                },
+            });
+        }
+    } else
+        alert("旭日图数据结构[父级名称(根级等于空),子级名称,子级数值a,子级数值b,...].");
+
+    var option = {
+        backgroundColor: configs.backgroundColor.value,
+        grid: {
+            x: configs.grid_left.value,
+            y: configs.grid_top.value,
+            x2: configs.grid_right.value,
+            y2: configs.grid_bottom.value,
+            containLabel: configs.grid_containLabel.value.toBoolean(),
+            backgroundColor: "transparent"
+        },
+        title: {
+            show: configs.titleDisplay.value.toBoolean(),
+            text: configs.titleText.value,
+            link: configs.titleTextLink.value,
+            target: "blank",
+            subtext: configs.titleSubText.value,
+            sublink: configs.titleSubTextLink.value,
+            subtarget: "blank",
+            top: "top",
+            left: configs.titlePosition.value,
+            textStyle: {
+                color: configs.titleTextColor.value,
+                fontSize: Number(configs.titleTextFontSize.value),
+            },
+            subtextStyle: {
+                color: configs.titleSubTextColor.value,
+                fontSize: Number(configs.titleSubTextFontSize.value),
+            }
+        },
+
+        tooltip: {
+            show: configs.tooltipDisplay.value.toBoolean(),
+            formatter: function (param) {
+                return [param.seriesName, param.marker + "&ensp;" + param.name + ":<span style='display:inline-block;min-width:30px;text-align:right;font-weight:bold'>&ensp;" + param.value + "</span>"].join("<br>");
+            }
+        },
+        toolbox: {
+            show: configs.toolboxDisplay.value.toBoolean(),
+            feature: {
+                saveAsImage: {
+                    show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
+                    excludeComponents: ["toolbox", "dataZoom", "timeline", "visualMap", "brush"],
+                    backgroundColor: configs.toolboxFeatureSaveAsImageBackgroundColor.value,
+                },
+                restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
+                dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
+                myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
+                    show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
+                    title: '视图组合',
+                    icon: __SYS_IMAGES_PATH__.viewCombination,
+                    onclick: function () {
+                        __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
+                        alert("视图已提交组合列表.");
+                    }
+                } : {},
+            },
+            top: configs.toolbox_top.value,
+            left: configs.toolbox_left.value,
+            orient: configs.toolbox_orient.value,
+            emphasis: {
+                iconStyle: {
+                    textPosition: configs.toolbox_textPosition.value,
+                }
+            },
+        },
+        series: series,
+        graphic: getWaterGraphic(__SYS_LOGO_LINK__)
+    };
 
 
+    setTimeout(() => {
+        myChart.hideLoading();
+        myChart.setOption(option);
+    }, Number(configs.loadingTimes.value) * 1000);
 
+    __ECHARTS__.addHistory(container, configs, dataset, width, height);
+    return container;
+}
+
+
+function getTreemap(container, width, height, dataset, configs) {
+    if (container == null) {
+        container = document.createElement("div");
+        container.className = "echarts-container";
+        container.id = "echarts-container";
+        container.style.width = width;
+        container.style.height = height;
+    }
+
+    var myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value});
+    myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
+    var colors = ["#a6c84c", "#ffa022", "#46bee9", "#9370DB", "#F08080", "#FF4500"];
+    var columns = [];
+    var datas = [];
+    var parent = "";
+    var child = "";
+    if (dataset["columns"].length >= 3) {
+        parent = dataset["columns"][0].name;
+        child = dataset["columns"][1].name;
+
+        for (let i = 2; i < dataset["columns"].length; i++) {
+            columns.push(dataset["columns"][i].name);
+        }
+
+        for (let c = 0; c < columns.length; c++) {
+            var data = [];
+            var children = {};
+            for (let i = 0; i < dataset["data"].length; i++) {
+                let row = dataset["data"][i];
+                children[row[child].value] = {
+                    parent: row[parent].value,
+                    title: columns[c],
+                    value: row[columns[c]].value,
+                    children: [],
+                    itemStyle: {
+                        color: colors[i % colors.length]
+                    }
+                };
+            }
+
+            for (let name in children) {
+                try {
+                    children[children[name].parent].children.push({
+                        name: name,
+                        title: children[name].title,
+                        value: children[name].value,
+                        children: children[name].children,
+                        //itemStyle: children[name].itemStyle,
+                    });
+                } catch (e) {
+                    data.push({
+                        name: name,
+                        title: children[name].title,
+                        value: children[name].value,
+                        children: children[name].children,
+                        //itemStyle: children[name].itemStyle,
+                        //采用父级颜色系列
+                    });
+                }
+            }
+            datas.push({
+                name: columns[c],
+                title: "总计",
+                children: data,
+                itemStyle: {
+                    //color: colors[c % colors.length]
+                    //采用序列默认颜色
+                }
+            });
+        }
+    } else
+        alert("层级数据结构[父级名称(根级等于空),子级名称,子级数值a,子级数值b,...].");
+
+    var series = {
+        type: 'treemap',
+        width: configs.treemapWidth.value,
+        height: configs.treemapHeight.value,
+        visibleMin: 100,
+        leafDepth: 1,
+        levels: [
+            {
+                itemStyle: {
+                    borderColor: 'transparent',
+                    gapWidth: 2,
+                    borderWidth: 2,
+                }
+            },
+            {
+                colorSaturation: [0.3, 0.6],
+                itemStyle: {
+                    borderColor: 'transparent',
+                    gapWidth: 2,
+                    borderWidth: 2
+                }
+            },
+            {
+                colorSaturation: [0.3, 0.6],
+                itemStyle: {
+                    borderColor: 'transparent',
+                    gapWidth: 2,
+                    borderWidth: 2
+                }
+            },
+            {
+                colorSaturation: [0.3, 0.6],
+                itemStyle: {
+                    borderColor: 'transparent',
+                    gapWidth: 2,
+                    borderWidth: 2
+                }
+            }
+        ],
+
+        name: configs.titleText.value,
+        data: datas,
+        label: {
+            normal: {
+                position: eval(configs.treemapLabelPosition.value),
+                formatter: function (params) {
+                    var arr = [
+                        '{name|' + params.data.name + '}',
+                        '{hr|}',
+                        '{label|' + params.data.title + '}  {value| ' + params.data.value + '}'
+                    ];
+                    return arr.join("\n");
+                },
+                rich: {
+                    name: {
+                        fontSize: configs.treemapLabelFontSize.value * 0.6,
+                        color: '#fff'
+                    },
+                    hr: {
+                        width: '50%',
+                        borderColor: 'rgba(255,255,255,0.2)',
+                        borderWidth: 1,
+                        height: 0,
+                        lineHeight: 10
+                    },
+                    label: {
+                        fontSize: configs.treemapLabelFontSize.value * 0.5,
+                        backgroundColor: 'rgba(0,0,0,0.3)',
+                        color: '#fff',
+                        borderRadius: 2,
+                        padding: [4, 4],
+                        //内边距[上右下左]=[2,4,2,4]
+                        lineHeight: 20,
+                        align: 'left',
+                        verticalAlign: "middle",
+                    },
+                    value: {
+                        fontSize: configs.treemapLabelFontSize.value,
+                        lineHeight: 30,
+                        color: 'yellow',
+                        align: "left",
+                        verticalAlign: "middle",
+                        fontWeight: "bolder"
+                    },
+                }
+            }
+        },
+    };
+
+    var option = {
+        backgroundColor: configs.backgroundColor.value,
+        grid: {
+            x: configs.grid_left.value,
+            y: configs.grid_top.value,
+            x2: configs.grid_right.value,
+            y2: configs.grid_bottom.value,
+            containLabel: configs.grid_containLabel.value.toBoolean(),
+            backgroundColor: "transparent"
+        },
+        title: {
+            show: configs.titleDisplay.value.toBoolean(),
+            text: configs.titleText.value,
+            link: configs.titleTextLink.value,
+            target: "blank",
+            subtext: configs.titleSubText.value,
+            sublink: configs.titleSubTextLink.value,
+            subtarget: "blank",
+            top: "top",
+            left: configs.titlePosition.value,
+            textStyle: {
+                color: configs.titleTextColor.value,
+                fontSize: Number(configs.titleTextFontSize.value),
+            },
+            subtextStyle: {
+                color: configs.titleSubTextColor.value,
+                fontSize: Number(configs.titleSubTextFontSize.value),
+            }
+        },
+
+        tooltip: {
+            show: configs.tooltipDisplay.value.toBoolean(),
+            formatter: function (param) {
+                //暂不设置.需要思考
+                //console.log(param);
+                //return [param.data.name, param.marker + "&ensp;" + param.data.title + ":<span style='display:inline-block;min-width:30px;text-align:right;font-weight:bold'>&ensp;" + param.data.value + "</span>"].join("<br>");
+            }
+        },
+        toolbox: {
+            show: configs.toolboxDisplay.value.toBoolean(),
+            feature: {
+                saveAsImage: {
+                    show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
+                    excludeComponents: ["toolbox", "dataZoom", "timeline", "visualMap", "brush"],
+                    backgroundColor: configs.toolboxFeatureSaveAsImageBackgroundColor.value,
+                },
+                restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
+                dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
+                myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
+                    show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
+                    title: '视图组合',
+                    icon: __SYS_IMAGES_PATH__.viewCombination,
+                    onclick: function () {
+                        __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
+                        alert("视图已提交组合列表.");
+                    }
+                } : {},
+            },
+            top: configs.toolbox_top.value,
+            left: configs.toolbox_left.value,
+            orient: configs.toolbox_orient.value,
+            emphasis: {
+                iconStyle: {
+                    textPosition: configs.toolbox_textPosition.value,
+                }
+            },
+        },
+        series: series,
+        graphic: getWaterGraphic(__SYS_LOGO_LINK__)
+    };
+
+
+    setTimeout(() => {
+        myChart.hideLoading();
+        myChart.setOption(option);
+    }, Number(configs.loadingTimes.value) * 1000);
+
+    __ECHARTS__.addHistory(container, configs, dataset, width, height);
+    return container;
+}
+
+function getParallelAxis(container, width, height, dataset, configs) {
+    if (container == null) {
+        container = document.createElement("div");
+        container.className = "echarts-container";
+        container.id = "echarts-container";
+        container.style.width = width;
+        container.style.height = height;
+    }
+
+    var myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value});
+    myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
+
+    var colors = ["#a6c84c", "#ffa022", "#46bee9", "#9370DB", "#F08080", "#FF4500"];
+
+    var columns = [];
+    for (var i = 0; i < dataset["columns"].length; i++) {
+        columns.push(dataset["columns"][i].name);
+    }
+
+    function getJSONNames(json) {
+        let tmp = [];
+        for (let name in json) {
+            tmp.push(name);
+        }
+        return tmp;
+    }
+
+    var parallelAxis = [];
+    var data = [];
+
+    for (let c = 0; c < columns.length; c++) {
+        let axis = {};
+        axis = {
+            dim: c,
+            name: columns[c],
+            axisLine: {
+                show:true,
+                lineStyle: {
+                    color: configs.axisColor.value,
+                }
+            },
+            axisTick: {
+                show:true,
+                lineStyle: {
+                    color: configs.axisColor.value,
+                }
+            },
+            axisLabel:{
+                show:true,
+                color: configs.axisTextColor.value,
+                inside: configs.parallelAxisLabelInside.value.toBoolean()
+            }
+        };
+        if (c == 0) {
+            let category = {};
+            for (let i = 0; i < dataset["data"].length; i++) {
+                let row = dataset["data"][i];
+                category[row[columns[c]].value] = i;
+            }
+            axis["type"] = "category";
+            axis["data"] = getJSONNames(category);
+        }
+        parallelAxis.push(axis);
+    }
+
+    for (let i = 0; i < dataset["data"].length; i++) {
+        let row = dataset["data"][i];
+        let d = {
+            value: [],
+            lineStyle: {
+                width: configs.parallelAxisLineWidth.value,
+                color: colors[i % colors.length]
+            }
+        };
+        for (let c = 0; c < columns.length; c++) {
+            d.value.push(row[columns[c]].value);
+        }
+        data.push(d);
+    }
+
+    var series = {
+        name: configs.titleText.value,
+        type: 'parallel',
+        smooth: configs.parallelSmooth.value.toBoolean(),
+        data: data,
+    };
+
+    var option = {
+        backgroundColor: configs.backgroundColor.value,
+        grid: {
+            x: configs.grid_left.value,
+            y: configs.grid_top.value,
+            x2: configs.grid_right.value,
+            y2: configs.grid_bottom.value,
+            containLabel: configs.grid_containLabel.value.toBoolean(),
+            backgroundColor: "transparent"
+        },
+        title: {
+            show: configs.titleDisplay.value.toBoolean(),
+            text: configs.titleText.value,
+            link: configs.titleTextLink.value,
+            target: "blank",
+            subtext: configs.titleSubText.value,
+            sublink: configs.titleSubTextLink.value,
+            subtarget: "blank",
+            top: "top",
+            left: configs.titlePosition.value,
+            textStyle: {
+                color: configs.titleTextColor.value,
+                fontSize: Number(configs.titleTextFontSize.value),
+            },
+            subtextStyle: {
+                color: configs.titleSubTextColor.value,
+                fontSize: Number(configs.titleSubTextFontSize.value),
+            }
+        },
+
+        tooltip: {
+            show: configs.tooltipDisplay.value.toBoolean(),
+            formatter: function (param) {
+                let value = [param.marker + param.seriesName];
+                for(let i=0;i<param.value.length;i++) {
+                    value.push("<span style='color:" + param.color + "'>•&ensp;</span>" + columns[i] + ":&emsp;" + param.value[i]);
+                }
+                return value.join("<br>");
+            }
+        },
+        toolbox: {
+            show: configs.toolboxDisplay.value.toBoolean(),
+            feature: {
+                saveAsImage: {
+                    show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
+                    excludeComponents: ["toolbox", "dataZoom", "timeline", "visualMap", "brush"],
+                    backgroundColor: configs.toolboxFeatureSaveAsImageBackgroundColor.value,
+                },
+                restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
+                dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
+                myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
+                    show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
+                    title: '视图组合',
+                    icon: __SYS_IMAGES_PATH__.viewCombination,
+                    onclick: function () {
+                        __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
+                        alert("视图已提交组合列表.");
+                    }
+                } : {},
+            },
+            top: configs.toolbox_top.value,
+            left: configs.toolbox_left.value,
+            orient: configs.toolbox_orient.value,
+            emphasis: {
+                iconStyle: {
+                    textPosition: configs.toolbox_textPosition.value,
+                }
+            },
+        },
+        parallelAxis: parallelAxis,
+        series: series,
+        graphic: getWaterGraphic(__SYS_LOGO_LINK__)
+    };
+
+    setTimeout(() => {
+        myChart.hideLoading();
+        myChart.setOption(option);
+    }, Number(configs.loadingTimes.value) * 1000);
+
+    __ECHARTS__.addHistory(container, configs, dataset, width, height);
+    return container;
+}
+
+function getSankey(container, width, height, dataset, configs) {
+    if (container == null) {
+        container = document.createElement("div");
+        container.className = "echarts-container";
+        container.id = "echarts-container";
+        container.style.width = width;
+        container.style.height = height;
+    }
+
+    var myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value});
+    myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
+
+    var columns = [];
+    for (var i = 0; i < dataset["columns"].length; i++) {
+        columns.push(dataset["columns"][i].name);
+    }
+    var nodes = {};
+    var links = {};
+
+    var series = [];
+    var legends = [];
+
+    function getSankeyData(json) {
+        let tmp = [];
+        for (let name in json) {
+            tmp.push({name: name});
+        }
+        return tmp;
+    }
+
+    if (columns.length >= 3) {
+        for (let c = 2; c < columns.length; c++) {
+            links[columns[c]] = [];
+        }
+
+        for (let i = 0; i < dataset["data"].length; i++) {
+            let row = dataset["data"][i];
+            for (let c = 0; c < columns.length; c++) {
+                if (c <= 1) {
+                    nodes[row[columns[c]].value] = row[columns[c]].value;
+                } else
+                    break;
+            }
+            for (let c = 2; c < columns.length; c++) {
+                links[columns[c]].push({
+                    source: row[columns[0]].value,
+                    target: row[columns[1]].value,
+                    value: row[columns[c]].value,
+                })
+            }
+        }
+        for (let name in links) {
+            legends.push(name);
+            series.push({
+                type: 'sankey',
+                layout: 'none',
+                name: name,
+                orient: configs.sankeyOrient.value,
+                //horizontal, vertical。
+                draggable: true,
+                nodeAlign: configs.sankeyNodeAlign.value,
+                //justify节点双端对齐。left: 节点左对齐。right: 节点右对齐。
+                emphasis: {
+                    focus: 'adjacency'
+                    //'none' 不淡出其它图形，默认使用该配置。'self' 只聚焦（不淡出）当前高亮的数据的图形。'series' 聚焦当前高亮的数据所在的系列的所有图形。'ancestor' 聚焦所有祖先节点'descendant' 聚焦所有子孙节点
+                },
+                nodes: getSankeyData(nodes),
+                links: links[name],
+                lineStyle: {
+                    color: 'gradient',
+                    curveness: 0.5
+                }
+            });
+        }
+    } else
+        alert("桑基图数据结构:[source,target,value0,value1,...].");
+
+    var option = {
+        backgroundColor: configs.backgroundColor.value,
+        grid: {
+            x: configs.grid_left.value,
+            y: configs.grid_top.value,
+            x2: configs.grid_right.value,
+            y2: configs.grid_bottom.value,
+            containLabel: configs.grid_containLabel.value.toBoolean(),
+            backgroundColor: "transparent"
+        },
+        title: {
+            show: configs.titleDisplay.value.toBoolean(),
+            text: configs.titleText.value,
+            link: configs.titleTextLink.value,
+            target: "blank",
+            subtext: configs.titleSubText.value,
+            sublink: configs.titleSubTextLink.value,
+            subtarget: "blank",
+            top: "top",
+            left: configs.titlePosition.value,
+            textStyle: {
+                color: configs.titleTextColor.value,
+                fontSize: Number(configs.titleTextFontSize.value),
+            },
+            subtextStyle: {
+                color: configs.titleSubTextColor.value,
+                fontSize: Number(configs.titleSubTextFontSize.value),
+            }
+        },
+
+        tooltip: {
+            show: configs.tooltipDisplay.value.toBoolean(),
+            formatter: function (param) {
+                let value = [param.seriesName, param.marker + "&ensp;" + param.name + ":&ensp;" + param.value];
+                return value.join("<br>");
+            }
+        },
+        toolbox: {
+            show: configs.toolboxDisplay.value.toBoolean(),
+            feature: {
+                saveAsImage: {
+                    show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
+                    excludeComponents: ["toolbox", "dataZoom", "timeline", "visualMap", "brush"],
+                    backgroundColor: configs.toolboxFeatureSaveAsImageBackgroundColor.value,
+                },
+                restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
+                dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
+                myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
+                    show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
+                    title: '视图组合',
+                    icon: __SYS_IMAGES_PATH__.viewCombination,
+                    onclick: function () {
+                        __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
+                        alert("视图已提交组合列表.");
+                    }
+                } : {},
+            },
+            top: configs.toolbox_top.value,
+            left: configs.toolbox_left.value,
+            orient: configs.toolbox_orient.value,
+            emphasis: {
+                iconStyle: {
+                    textPosition: configs.toolbox_textPosition.value,
+                }
+            },
+        },
+        legend: {
+            show: configs.legendDisplay.value.toBoolean(),
+            icon: configs.legendIcon.value,
+            type: configs.legendType.value,
+            selectedMode: configs.legendSelectedMode.value,
+            top: configs.legendPositionTop.value,
+            left: configs.legendPositionLeft.value,
+            orient: configs.legendOrient.value,
+            data: legends,
+            textStyle: {
+                color: configs.legendTextColor.value
+            },
+        },
+        series: series,
+        graphic: getWaterGraphic(__SYS_LOGO_LINK__),
+
+    };
+
+    setTimeout(() => {
+        myChart.hideLoading();
+        myChart.setOption(option);
+    }, Number(configs.loadingTimes.value) * 1000);
+
+    __ECHARTS__.addHistory(container, configs, dataset, width, height);
+    return container;
+}
+
+function getThemeRiver(container, width, height, dataset, configs) {
+    if (container == null) {
+        container = document.createElement("div");
+        container.className = "echarts-container";
+        container.id = "echarts-container";
+        container.style.width = width;
+        container.style.height = height;
+    }
+
+    var myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value});
+    myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
+
+    var columns = [];
+    for (var i = 0; i < dataset["columns"].length; i++) {
+        columns.push(dataset["columns"][i].name);
+    }
+    var data = [];
+    for (var i = 0; i < dataset["data"].length; i++) {
+        let row = dataset["data"][i];
+        for (var j = 0; j < columns.length; j++) {
+            data.push([
+                i, row[columns[j]].value, columns[j]
+            ]);
+        }
+    }
+
+    var option = {
+        backgroundColor: configs.backgroundColor.value,
+        grid: {
+            x: configs.grid_left.value,
+            y: configs.grid_top.value,
+            x2: configs.grid_right.value,
+            y2: configs.grid_bottom.value,
+            containLabel: configs.grid_containLabel.value.toBoolean(),
+            backgroundColor: "transparent"
+        },
+        title: {
+            show: configs.titleDisplay.value.toBoolean(),
+            text: configs.titleText.value,
+            link: configs.titleTextLink.value,
+            target: "blank",
+            subtext: configs.titleSubText.value,
+            sublink: configs.titleSubTextLink.value,
+            subtarget: "blank",
+            top: "top",
+            left: configs.titlePosition.value,
+            textStyle: {
+                color: configs.titleTextColor.value,
+                fontSize: Number(configs.titleTextFontSize.value),
+            },
+            subtextStyle: {
+                color: configs.titleSubTextColor.value,
+                fontSize: Number(configs.titleSubTextFontSize.value),
+            }
+        },
+
+        tooltip: {
+            show: configs.tooltipDisplay.value.toBoolean(),
+            formatter: function (param) {
+                let value = [param.seriesName, param.marker + "&ensp;" + param.value[2]];
+                return value.join("<br>");
+            }
+        },
+        toolbox: {
+            show: configs.toolboxDisplay.value.toBoolean(),
+            feature: {
+                saveAsImage: {
+                    show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
+                    excludeComponents: ["toolbox", "dataZoom", "timeline", "visualMap", "brush"],
+                    backgroundColor: configs.toolboxFeatureSaveAsImageBackgroundColor.value,
+                },
+                restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
+                dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
+                myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
+                    show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
+                    title: '视图组合',
+                    icon: __SYS_IMAGES_PATH__.viewCombination,
+                    onclick: function () {
+                        __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
+                        alert("视图已提交组合列表.");
+                    }
+                } : {},
+            },
+            top: configs.toolbox_top.value,
+            left: configs.toolbox_left.value,
+            orient: configs.toolbox_orient.value,
+            emphasis: {
+                iconStyle: {
+                    textPosition: configs.toolbox_textPosition.value,
+                }
+            },
+        },
+        emphasis: {
+            focus: configs.themeRiverEmphasisFocus.value,
+        },
+        singleAxis: {
+            max: 'dataMax',
+            min: "dataMin",
+            axisLine: {
+                show:true,
+                lineStyle: {
+                    color: configs.axisColor.value,
+                }
+            },
+            axisTick: {
+                show:true,
+                lineStyle: {
+                    color: configs.axisColor.value,
+                }
+            },
+            axisLabel:{
+                show:true,
+                color: configs.axisTextColor.value,
+            }
+        },
+        series: [{
+            name: configs.titleText.value,
+            coordinateSystem: 'singleAxis',
+            type: 'themeRiver',
+            data: data,
+            label: {
+                show: false
+            }
+        }],
+        graphic: getWaterGraphic(__SYS_LOGO_LINK__),
+
+    };
+
+    setTimeout(() => {
+        myChart.hideLoading();
+        myChart.setOption(option);
+    }, Number(configs.loadingTimes.value) * 1000);
+
+    __ECHARTS__.addHistory(container, configs, dataset, width, height);
+    return container;
+}
