@@ -200,12 +200,14 @@ var __CONFIGS__ = {
          hintOptions: {tables: {}}
      },
      init: function (textarea) {
-         textarea.placeholder= "\n" +
-        "F10 自动完成\n" +
-        "F11 全屏编辑切换;Esc 取消全屏\n"  +
-        "Shift-F 查找\n" +
-        "Shift-Ctrl-F 查找替换\n" +
-        "Shift-Ctrl-R 查找全部并替换\n";
+         textarea.placeholder = "\n" +
+             "F10 自动完成\n" +
+             "F11 全屏编辑切换;Esc 取消全屏\n" +
+             "Ctrl-Z 撤销键入\n" +
+             "Ctrl-Y 恢复键入\n" +
+             "Shift-F 查找\n" +
+             "Shift-Ctrl-F 查找替换\n" +
+             "Shift-Ctrl-R 查找全部并替换\n";
          this.codeMirror = CodeMirror.fromTextArea(textarea, this.options);
          var colors = ["#fcc", "#ccf", "#fcf", "#aff", "#cfc", "#f5f577"];
          var rulers = [];
@@ -218,6 +220,7 @@ var __CONFIGS__ = {
              var info = cm.lineInfo(n);
              cm.setGutterMarker(n, "breakpoints", info.gutterMarkers ? null : marker());
          });
+
          function marker() {
              var marker = document.createElement("div");
              marker.style.color = "#822";
@@ -2033,43 +2036,13 @@ function sheet2blob(sheet, sheetName) {
 	return blob;
 }
 
-function getQRCode(parent,width,height,text){
-    try {
-        let qr = document.createElement("div");
-        qr.id = "qrcode";
-        parent.appendChild(qr);
-        qr.style.width = width + "px";
-        qr.style.height = height + "px";
-        qr.style.top = "3px";
-        qr.style.left = (getAbsolutePosition(parent).width - width) + "px";
-        let logo = __SYS_IMAGES__.getLogoImage(__SYS_IMAGES__.echo);
-        logo.style.position = 'absolute';
-        logo.style.width = width/4 + "px";
-        logo.style.height = height/4 + "px";
-        logo.style.margin = (height-height/4.0)/2 + "px";
-        logo.style.border = "1px solid var(--main-border-color)";
-        qr.appendChild(logo);
-
-        new QRCode("qrcode", {
-            text: text,
-            width: width,
-            height: height,
-            colorDark: "#000000",
-            colorLight: "#FFFFFF",
-            correctLevel: QRCode.CorrectLevel.H
-        });
-    }catch (e) {
-        console.log(e);
-    }
-}
-
 function init() {
     try {
         $("main-title").appendChild(__SYS_IMAGES__.getLogoImage(__SYS_IMAGES__.logo_echarts));
     }catch (e) {
     }
 
-    getQRCode($("page"),70 ,70 ,"https://gitee.com/yangkai-bj/WebDbDataView.git");
+     getQRCode($("page"),90 ,90 ,"https://gitee.com/yangkai-bj/WebDbDataView.git",__SYS_IMAGES__.logo_sqlite);
 
     if (checkStorage()) {
         setUserConfig("CopyRight","应用开发: 杨凯 ☎ (010)63603329 ✉ <a href='mailto:yangkai.bj@ccb.com'>yangkai.bj@ccb.com</a>");
@@ -3072,11 +3045,39 @@ function init() {
 
     setPageThemes();
 
-
     window.onresize = function () {
         resize();
     };
     //#########################body init end#######################################
+}
+
+function getQRCode(parent,width,height,text,logoImage){
+    try {
+        let qr = document.createElement("div");
+        qr.id = qr.className = "qrcode";
+        parent.appendChild(qr);
+        qr.style.width = width + "px";
+        qr.style.height = height + "px";
+        qr.style.top = (getAbsolutePosition(parent).height - height + 5) + "px";
+        qr.style.left = (getAbsolutePosition(parent).width - width - 10) + "px";
+        let logo = __SYS_IMAGES__.getLogoImage(logoImage);
+        logo.id = "qrcode_logo";
+        logo.style.width = width/4 + "px";
+        logo.style.height = height/4 + "px";
+        logo.style.margin = (height-height/4.0)/2 + "px";
+        qr.appendChild(logo);
+
+        new QRCode("qrcode", {
+            text: text,
+            width: width,
+            height: height,
+            colorDark: "#000000",
+            colorLight: "#FFFFFF",
+            correctLevel: QRCode.CorrectLevel.H
+        });
+    }catch (e) {
+        console.log(e);
+    }
 }
 
 function getBrowserSize(){
@@ -3103,20 +3104,23 @@ function resize() {
     //由于使用百分比设置节点大小容易造成屏幕跳动，将节点大小调整为绝对值.
     //#######################################
     $("page").style.width = (getBrowserSize().width - 10) + "px";
-    $("page").style.height= (getBrowserSize().height - 30) + "px";
-    $("header").style.width = $("footer").style.width =(getBrowserSize().width - 15) + "px";
+    $("page").style.height = (getBrowserSize().height - 30) + "px";
+    $("header").style.width = $("footer").style.width = (getBrowserSize().width - 15) + "px";
     $("MainContainer").style.height = (getBrowserSize().height - getAbsolutePosition($("header")).height - getAbsolutePosition($("footer")).height - 32) + "px";
     $("main").style.width = (getBrowserSize().width - getAbsolutePosition($("sidebar")).width - getAbsolutePosition($("detail")).width - 15) + "px";
     $("tableContainer").style.height = (getAbsolutePosition($("main")).height -
-            getAbsolutePosition($("sql-tools")).height -
-            getAbsolutePosition($("sqlContainer")).height-
-            getAbsolutePosition($("data-tools")).height) + "px";
+        getAbsolutePosition($("sql-tools")).height -
+        getAbsolutePosition($("sqlContainer")).height -
+        getAbsolutePosition($("data-tools")).height) + "px";
     $("sidebar-tbs").style.height = (getAbsolutePosition($("sidebar")).height -
-            getAbsolutePosition($("sidebar-dbs-tools")).height -
-            getAbsolutePosition($("sidebar-dbs")).height-
-            getAbsolutePosition($("sidebar-tbs-tools")).height) + "px";
+        getAbsolutePosition($("sidebar-dbs-tools")).height -
+        getAbsolutePosition($("sidebar-dbs")).height -
+        getAbsolutePosition($("sidebar-tbs-tools")).height) + "px";
     $("messageContainer").style.height = (getAbsolutePosition($("detail")).height -
-            getAbsolutePosition($("detail-tools")).height) + "px";
+        getAbsolutePosition($("detail-tools")).height) + "px";
+
+    $("qrcode").style.top = (getAbsolutePosition($("page")).height - getAbsolutePosition($("qrcode")).height + 5) + "px";
+    $("qrcode").style.left = (getAbsolutePosition($("page")).width - getAbsolutePosition($("qrcode")).width - 10) + "px";
 }
 
 function isScroll(el) {
@@ -3191,7 +3195,6 @@ function readWorkbookFromLocalFile(file) {
         rABS = false;
     }
 }
-
 
 function getSubtotal(columns) {
     var container = document.createElement("div");

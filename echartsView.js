@@ -271,7 +271,7 @@ var __ECHARTS__ = {
                 new Option("K线图", "Candlestick"),
                 new Option("散点图", "Scatter"),
                 new Option("漏斗/金字塔", "Funnel"),
-                new Option("树形图", "Tree"),
+                new Option("树形结构", "Tree"),
                 new Option("关系图", "Relation"),
                 new Option("分类集中", "WebkitDep"),
                 new Option("词云图", "WordCloud"),
@@ -320,10 +320,10 @@ var __ECHARTS__ = {
             type: "select"
         },
         backgroundColor: {name: "图像背景", value: "transparent", type: "input"},
-        ariaLabel: {
-            name: "开启无障碍访问",
+        ariaEnable: {
+            name: "无障碍访问",
             value: "false",
-            options: [new Option("是", "true"), new Option("否", "false")],
+            options: [new Option("开启", "true"), new Option("关闭", "false")],
             type: "select"
         },
 
@@ -2384,7 +2384,10 @@ function getBar(container, width, height, dataset, configs) {
 
     var option = {
         aria: {
-            show: configs.ariaLabel.value.toBoolean(),
+            enabled: configs.ariaEnable.value.toBoolean(),
+            decal:{
+                show: configs.ariaEnable.value.toBoolean(),
+            }
         },
         backgroundColor: configs.backgroundColor.value,
         grid: {
@@ -2693,6 +2696,12 @@ function getTransversBar(container, width, height, dataset, configs) {
     }
 
     var option = {
+        aria: {
+            enabled: configs.ariaEnable.value.toBoolean(),
+            decal:{
+                show: configs.ariaEnable.value.toBoolean(),
+            }
+        },
         backgroundColor: configs.backgroundColor.value,
         grid: {
             x: configs.grid_left.value,
@@ -3375,7 +3384,10 @@ function getBarAndLine(container, width, height, dataset, configs) {
 
     var option = {
         aria: {
-            show: configs.ariaLabel.value.toBoolean(),
+            enabled: configs.ariaEnable.value.toBoolean(),
+            decal:{
+                show: configs.ariaEnable.value.toBoolean(),
+            }
         },
         backgroundColor: configs.backgroundColor.value,
         grid: {
@@ -3751,6 +3763,12 @@ function getAreaStyle(container, width, height, dataset, configs) {
     }
 
     var option = {
+        aria: {
+            enabled: configs.ariaEnable.value.toBoolean(),
+            decal:{
+                show: configs.ariaEnable.value.toBoolean(),
+            }
+        },
         grid: {
             x: configs.grid_left.value,
             y: configs.grid_top.value,
@@ -4022,6 +4040,12 @@ function getPolarBar(container, width, height, dataset, configs) {
     }
 
     var option = {
+        aria: {
+            enabled: configs.ariaEnable.value.toBoolean(),
+            decal:{
+                show: configs.ariaEnable.value.toBoolean(),
+            }
+        },
         backgroundColor: configs.backgroundColor.value,
         title: {
             show: configs.titleDisplay.value.toBoolean(),
@@ -4237,6 +4261,12 @@ function getPolarArea(container, width, height, dataset, configs) {
     }
 
     var option = {
+        aria: {
+            enabled: configs.ariaEnable.value.toBoolean(),
+            decal:{
+                show: configs.ariaEnable.value.toBoolean(),
+            }
+        },
         backgroundColor: configs.backgroundColor.value,
         title: {
             show: configs.titleDisplay.value.toBoolean(),
@@ -4444,7 +4474,7 @@ function getPie(container, width, height, dataset, configs) {
                 itemStyle: {
                     label: {
                         show: true,
-                    }
+                    },
                 },
                 hoverOffset: 10,
                 selectedOffset: 10,
@@ -4477,6 +4507,12 @@ function getPie(container, width, height, dataset, configs) {
     }
 
     var option = {
+        aria: {
+            enabled: configs.ariaEnable.value.toBoolean(),
+            decal:{
+                show: configs.ariaEnable.value.toBoolean(),
+            }
+        },
         backgroundColor: configs.backgroundColor.value,
         title: {
             show: configs.titleDisplay.value.toBoolean(),
@@ -4666,7 +4702,7 @@ function getRing(container, width, height, dataset, configs) {
                 itemStyle: {
                     label: {
                         show: true,
-                    }
+                    },
                 },
                 hoverOffset: 10,
                 selectedOffset: 10,
@@ -4699,6 +4735,12 @@ function getRing(container, width, height, dataset, configs) {
     }
 
     var option = {
+        aria: {
+            enabled: configs.ariaEnable.value.toBoolean(),
+            decal:{
+                show: configs.ariaEnable.value.toBoolean(),
+            }
+        },
         backgroundColor: configs.backgroundColor.value,
         title: {
             show: configs.titleDisplay.value.toBoolean(),
@@ -4888,7 +4930,7 @@ function getRose(container, width, height, dataset, configs) {
                 itemStyle: {
                     label: {
                         show: true,
-                    }
+                    },
                 },
                 hoverOffset: 10,
                 selectedOffset: 10,
@@ -4921,6 +4963,12 @@ function getRose(container, width, height, dataset, configs) {
     }
 
     var option = {
+        aria: {
+            enabled: configs.ariaEnable.value.toBoolean(),
+            decal:{
+                show: configs.ariaEnable.value.toBoolean(),
+            }
+        },
         backgroundColor: configs.backgroundColor.value,
         title: {
             show: configs.titleDisplay.value.toBoolean(),
@@ -5141,6 +5189,12 @@ function getRadar(container, width, height, dataset, configs) {
     }
 
     var option = {
+        aria: {
+            enabled: configs.ariaEnable.value.toBoolean(),
+            decal:{
+                show: configs.ariaEnable.value.toBoolean(),
+            }
+        },
         backgroundColor: configs.backgroundColor.value,
         grid: {
             x: configs.grid_left.value,
@@ -6098,6 +6152,12 @@ function getTree(container, width, height, dataset, configs) {
     }
 
     var option = {
+        aria: {
+            enabled: configs.ariaEnable.value.toBoolean(),
+            decal:{
+                show: configs.ariaEnable.value.toBoolean(),
+            }
+        },
         backgroundColor: configs.backgroundColor.value,
         grid: {
             x: configs.grid_left.value,
@@ -6822,7 +6882,7 @@ function getFunnel(container, width, height, dataset, configs) {
                     },
                     itemStyle: {
                         borderColor: "#fff",
-                        borderWidth: 1
+                        borderWidth: 1,
                     },
                     emphasis: {
                         label: {
@@ -6899,6 +6959,12 @@ function getFunnel(container, width, height, dataset, configs) {
     init();
 
     var option = {
+        aria: {
+            enabled: configs.ariaEnable.value.toBoolean(),
+            decal:{
+                show: configs.ariaEnable.value.toBoolean(),
+            }
+        },
         backgroundColor: configs.backgroundColor.value,
         title: {
             show: configs.titleDisplay.value.toBoolean(),
@@ -7329,6 +7395,12 @@ function getGaugeWithAll(container, width, height, dataset, configs) {
     }
 
     var option = {
+        aria: {
+            enabled: configs.ariaEnable.value.toBoolean(),
+            decal:{
+                show: configs.ariaEnable.value.toBoolean(),
+            }
+        },
         backgroundColor: configs.backgroundColor.value,
         grid: {
             x: configs.grid_left.value,
@@ -7554,6 +7626,12 @@ function getGaugeWithOne(container, width, height, dataset, configs) {
     }
 
     var option = {
+        aria: {
+            enabled: configs.ariaEnable.value.toBoolean(),
+            decal:{
+                show: configs.ariaEnable.value.toBoolean(),
+            }
+        },
         backgroundColor: configs.backgroundColor.value,
         title: {
             show: configs.titleDisplay.value.toBoolean(),
@@ -7811,7 +7889,10 @@ function getCalendar(container, width, height, dataset, configs) {
     init();
     var option = {
         aria: {
-            show: configs.ariaLabel.value.toBoolean(),
+            enabled: configs.ariaEnable.value.toBoolean(),
+            decal:{
+                show: configs.ariaEnable.value.toBoolean(),
+            }
         },
         backgroundColor: configs.backgroundColor.value,
         grid: {
@@ -8665,7 +8746,10 @@ function getBar3D(container, width, height, dataset, configs) {
 
     var option = {
         aria: {
-            show: configs.ariaLabel.value.toBoolean(),
+            enabled: configs.ariaEnable.value.toBoolean(),
+            decal:{
+                show: configs.ariaEnable.value.toBoolean(),
+            }
         },
         backgroundColor: configs.backgroundColor.value,
         grid: {
@@ -9461,7 +9545,7 @@ function getCategoryLine(container, width, height, dataset, configs) {
             animationThreshold: Number(configs.animationThreshold.value),
             animationEasing: getAnimationEasing(configs),
             animationDuration: function (idx) {
-                return idx * Number(configs.animationDuration.value) ;
+                return idx * Number(configs.animationDuration.value);
             },
             animationDelay: function (idx) {
                 return idx * Number(configs.animationDelay.value);
@@ -9592,7 +9676,7 @@ function getCategoryLine(container, width, height, dataset, configs) {
                 label: {
                     show: configs.lineEmphasisLabelDisplay.value.toBoolean(),
                     position: "bottom",
-                    rotate:0,
+                    rotate: 0,
                     fontSize: configs.lineLabelFontSize.value,
                 }
             };
@@ -9612,8 +9696,11 @@ function getCategoryLine(container, width, height, dataset, configs) {
     var option = {
         baseOption: {
             aria: {
-            show: configs.ariaLabel.value.toBoolean(),
-        },
+                enabled: configs.ariaEnable.value.toBoolean(),
+                decal: {
+                    show: configs.ariaEnable.value.toBoolean(),
+                }
+            },
             backgroundColor: configs.backgroundColor.value,
             grid: {
                 x: configs.grid_left.value,
@@ -9666,19 +9753,19 @@ function getCategoryLine(container, width, height, dataset, configs) {
                 data: times,
                 label: {
                     color: configs.timelineLabelColor.value,
-                    fontSize : Number(configs.timelineLabelFontSize.value),
+                    fontSize: Number(configs.timelineLabelFontSize.value),
                     formatter: function (s) {
                         return s;
                     }
                 },
-                lineStyle:{
+                lineStyle: {
                     color: configs.timelineStyleColor.value,
                 },
-                controlStyle:{
-                    color:configs.timelineStyleColor.value,
+                controlStyle: {
+                    color: configs.timelineStyleColor.value,
                 },
                 emphasis: {
-                    label:{
+                    label: {
                         color: configs.timelineEmphasisColor.value,
                     },
                     checkpointStyle: {
@@ -9801,8 +9888,8 @@ function getCategoryLine(container, width, height, dataset, configs) {
         options: options
     };
     setTimeout(() => {
-      myChart.hideLoading();
-      myChart.setOption(option);
+        myChart.hideLoading();
+        myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
     __ECHARTS__.addHistory(container, configs, dataset, width, height);
@@ -10037,6 +10124,12 @@ function getGeoMigrateLinesOfChinaCity(container, width, height, dataset, config
         });
 
         var option = {
+            aria: {
+                enabled: configs.ariaEnable.value.toBoolean(),
+                decal: {
+                    show: configs.ariaEnable.value.toBoolean(),
+                }
+            },
             backgroundColor: configs.backgroundColor.value,
             grid: {
                 x: configs.grid_left.value,
@@ -10191,7 +10284,7 @@ function getCategoryLineForGauge(container, width, height, dataset, configs) {
             var serie = {
                 name: row[columns[0]].value,
                 type: "gauge",
-                dimensions:[columns[c]],
+                dimensions: [columns[c]],
                 title: {
                     fontWeight: "bolder",
                     fontSize: configs.gaugeTitleFontSize.value,
@@ -10209,13 +10302,13 @@ function getCategoryLineForGauge(container, width, height, dataset, configs) {
                 progress: {
                     show: true,
                     roundCap: true,
-                    width:configs.gaugeAxisLineWidth.value/10,
-                    itemStyle:{
+                    width: configs.gaugeAxisLineWidth.value / 10,
+                    itemStyle: {
                         opacity: 0.8
                     }
                 },
                 axisLine: {
-                    roundCap:true,
+                    roundCap: true,
                     lineStyle: {
                         width: configs.gaugeAxisLineWidth.value,//10, //圆X轴宽度
                         shadowColor: "rgba(0, 0, 0, 0.5)",
@@ -10233,16 +10326,16 @@ function getCategoryLineForGauge(container, width, height, dataset, configs) {
                     //标签和刻度的距离
                 },
                 splitLine: {
-                    show:true,
-                    length: configs.gaugeAxisLineWidth.value*1.3,
-                    distance:0.8,
+                    show: true,
+                    length: configs.gaugeAxisLineWidth.value * 1.3,
+                    distance: 0.8,
                 },
                 axisTick: {
                     show: true,
                     splitNumber: 10,
                     //主刻度之间的分隔数
                     length: configs.gaugeAxisLineWidth.value,
-                    distance:0.8,
+                    distance: 0.8,
                     lineStyle: {
                         color: configs.gaugeAxisLabelColor.value,
                     }
@@ -10286,239 +10379,10 @@ function getCategoryLineForGauge(container, width, height, dataset, configs) {
     var option = {
         baseOption: {
             aria: {
-            show: configs.ariaLabel.value.toBoolean(),
-        },
-            backgroundColor: configs.backgroundColor.value,
-            title: {
-                show: configs.titleDisplay.value.toBoolean(),
-                text: configs.titleText.value,
-                link: configs.titleTextLink.value,
-                target: "blank",
-                subtext: configs.titleSubText.value,
-                sublink: configs.titleSubTextLink.value,
-                subtarget: "blank",
-                top: "top",
-                left: configs.titlePosition.value,
-                textStyle: {
-                    color: configs.titleTextColor.value,
-                    fontSize: Number(configs.titleTextFontSize.value),
-                },
-                subtextStyle: {
-                    color: configs.titleSubTextColor.value,
-                    fontSize: Number(configs.titleSubTextFontSize.value),
+                enabled: configs.ariaEnable.value.toBoolean(),
+                decal: {
+                    show: configs.ariaEnable.value.toBoolean(),
                 }
-            },
-            timeline: {
-                show: configs.timelineDisplay.value.toBoolean(),
-                axisType: "category",
-                //考虑数据通用性，使用类目轴
-                //"value" 数值轴，适用于连续数据。
-                // "category" 类目轴，适用于离散的类目数据。
-                // "time" 时间轴，适用于连续的时序数据，与数值轴相比时间轴带有时间的格式化，在刻度计算上也有所不同，例如会根据跨度的范围来决定使用月，星期，日还是小时范围的刻度。
-                realtime: true,
-                //事实时更新数据
-                loop: true,
-                //循环播放
-                autoPlay: true,
-                //自动播放
-                // currentIndex: 2,
-                playInterval: configs.seriesLoopPlayInterval.value * 1000,
-                // controlStyle: {
-                //     position: "left"
-                // },
-                symbol: "emptyCircle",
-                //"circle", "rect", "roundRect", "triangle", "diamond", "pin", "arrow", "none"
-                symbolSize: 2,
-                data: times,
-                label: {
-                    color: configs.timelineLabelColor.value,
-                    fontSize : Number(configs.timelineLabelFontSize.value),
-                    formatter: function (s) {
-                        return s;
-                    }
-                },
-                lineStyle:{
-                    color: configs.timelineStyleColor.value,
-                },
-                controlStyle:{
-                    color:configs.timelineStyleColor.value,
-                },
-                emphasis: {
-                    label:{
-                        color: configs.timelineEmphasisColor.value,
-                    },
-                    checkpointStyle: {
-                        color: configs.timelineEmphasisColor.value,
-                    },
-                    controlStyle: {
-                        color: configs.timelineEmphasisColor.value,
-                    },
-                },
-                orient: configs.timelineOrient.value,
-                left: configs.timelineLeft.value,
-                right: configs.timelineRight.value,
-                top: configs.timelineTop.value,
-                bottom: configs.timelineBottom.value,
-            },
-            tooltip: {
-                show: configs.tooltipDisplay.value.toBoolean(),
-                formatter: function (params) {
-                    return [params.seriesName,params.marker + params.dimensionNames[0] + ":&emsp;<span style='display:inline-block;min-width:30px;text-align:right;font-weight:bold'>" + params.data.value + "</span>"].join("<br>");
-                },
-            },
-            toolbox: {
-                show: configs.toolboxDisplay.value.toBoolean(),
-                feature: {
-                    saveAsImage: {
-                        show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
-                        excludeComponents: ["toolbox", "dataZoom", "timeline", "visualMap", "brush"],
-                        backgroundColor: configs.toolboxFeatureSaveAsImageBackgroundColor.value,
-                    },
-                    restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
-                    dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                    myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
-                        show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
-                        title: '视图组合',
-                        icon: __SYS_IMAGES_PATH__.viewCombination,
-                        onclick: function () {
-                            __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
-                            alert("视图已提交组合列表.");
-                        }
-                    } : {},
-                },
-                top: configs.toolbox_top.value,
-                left: configs.toolbox_left.value,
-                orient: configs.toolbox_orient.value,
-                emphasis: {
-                    iconStyle: {
-                        textPosition: configs.toolbox_textPosition.value,
-                    }
-                },
-            },
-            series: {
-                type: "gauge",
-            },
-            graphic: getWaterGraphic(__SYS_LOGO_LINK__),
-        },
-        options: options
-    };
-    setTimeout(() => {
-      myChart.hideLoading();
-      myChart.setOption(option);
-    }, Number(configs.loadingTimes.value) * 1000);
-
-    __ECHARTS__.addHistory(container, configs, dataset, width, height);
-    return container;
-}
-
-function getCategoryLineForLiqiud(container, width, height, dataset, configs) {
-    if (container == null) {
-        container = document.createElement("div");
-        container.className = "echarts-container";
-        container.id = "echarts-container";
-        container.style.width = width;
-        container.style.height = height;
-    }
-
-    var myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value});
-    myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
-
-    var containerWidth = myChart.getWidth();//Number(width.replace(/px/i, ""));
-    var containerHeight = myChart.getHeight();//Number(height.replace(/px/i, ""));
-
-    var columns = [];
-    var times = [];
-    var options = [];
-    for (var i = 0; i < dataset["columns"].length; i++) {
-        columns.push(dataset["columns"][i].name);
-    }
-
-    for (var i = 0; i < dataset["data"].length; i++) {
-        var opt = {
-            series: []
-        };
-        var row = dataset["data"][i];
-        times.push(row[columns[0]].value);
-        for (var c = 1; c < columns.length; c++) {
-            var serie = {
-                name: row[columns[0]].value,
-                type: "liquidFill",
-                dimensions:[columns[c]],
-                data: [],
-                color: ["#294D99", "#156ACF", "#1598ED", "#45BDFF"],
-                //center: ["50%", "50%"],
-                //radius: "50%",
-                amplitude: "8%",
-                waveLength: "80%",
-                phase: "auto",
-                period: "auto",
-                direction: "right",
-                smooth: configs.lineSmooth.value.toBoolean(),
-
-                shape: configs.liqiudShape.value=="whale"?__SYS_IMAGES_PATH__.whale:configs.liqiudShape.value,
-
-                waveAnimation: true,
-
-                outline: {
-                    show: true,
-                    borderDistance: 3,
-                    itemStyle: {
-                        color: "#1598ED",//"none",
-                        borderColor: "#294D99",
-                        borderWidth: 2,
-                        shadowBlur: 10,
-                        shadowColor: "rgba(0, 0, 0, 0.25)"
-                    }
-                },
-
-                backgroundStyle: {
-                    color: "#E3F7FF"
-                },
-
-                itemStyle: {
-                    opacity: 0.6,
-                    shadowBlur: 50,
-                    shadowColor: "rgba(0, 0, 0, 0.4)"
-                },
-
-                label: {
-                    show: true,
-                    insideColor: "#fff",
-                    fontSize: configs.liqiudFontSize.value,
-                    fontWeight: "bold",
-                    align: "center",
-                    baseline: "middle",
-                    position: "inside"
-                },
-
-                emphasis: {
-                    itemStyle: {
-                        opacity: 0.8
-                    }
-                },
-                animation: configs.animation.value.toBoolean(),
-                animationThreshold: Number(configs.animationThreshold.value),
-                animationEasing: getAnimationEasing(configs),
-                animationEasingUpdate: getAnimationEasingUpdate(configs),
-            };
-            serie.data.push({
-                name: columns[c],
-                value: row[columns[c]].value
-            });
-
-            let left = (toPoint(configs.grid_left.value) + (100-toPoint(configs.grid_left.value) - toPoint(configs.grid_right.value))/2);
-            let top = (toPoint(configs.grid_top.value) + (100-toPoint(configs.grid_top.value) - toPoint(configs.grid_bottom.value))/2);
-            serie.center = [(c*left/(columns.length-1)) + 50/(columns.length-1)*(c-1) + "%", top + "%"];
-            opt.series.push(serie);
-        }
-
-        options.push(opt);
-    }
-
-    var option = {
-        baseOption: {
-            aria: {
-                show: configs.ariaLabel.value.toBoolean(),
             },
             backgroundColor: configs.backgroundColor.value,
             title: {
@@ -10569,14 +10433,14 @@ function getCategoryLineForLiqiud(container, width, height, dataset, configs) {
                         return s;
                     }
                 },
-                lineStyle:{
+                lineStyle: {
                     color: configs.timelineStyleColor.value,
                 },
-                controlStyle:{
-                    color:configs.timelineStyleColor.value,
+                controlStyle: {
+                    color: configs.timelineStyleColor.value,
                 },
                 emphasis: {
-                    label:{
+                    label: {
                         color: configs.timelineEmphasisColor.value,
                     },
                     checkpointStyle: {
@@ -10595,7 +10459,242 @@ function getCategoryLineForLiqiud(container, width, height, dataset, configs) {
             tooltip: {
                 show: configs.tooltipDisplay.value.toBoolean(),
                 formatter: function (params) {
-                    return [params.seriesName,params.marker + params.dimensionNames[0] + ":&emsp;<span style='display:inline-block;min-width:30px;text-align:right;font-weight:bold'>" + params.data.value + "</span>"].join("<br>");
+                    return [params.seriesName, params.marker + params.dimensionNames[0] + ":&emsp;<span style='display:inline-block;min-width:30px;text-align:right;font-weight:bold'>" + params.data.value + "</span>"].join("<br>");
+                },
+            },
+            toolbox: {
+                show: configs.toolboxDisplay.value.toBoolean(),
+                feature: {
+                    saveAsImage: {
+                        show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
+                        excludeComponents: ["toolbox", "dataZoom", "timeline", "visualMap", "brush"],
+                        backgroundColor: configs.toolboxFeatureSaveAsImageBackgroundColor.value,
+                    },
+                    restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
+                    dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
+                    myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
+                        show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
+                        title: '视图组合',
+                        icon: __SYS_IMAGES_PATH__.viewCombination,
+                        onclick: function () {
+                            __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
+                            alert("视图已提交组合列表.");
+                        }
+                    } : {},
+                },
+                top: configs.toolbox_top.value,
+                left: configs.toolbox_left.value,
+                orient: configs.toolbox_orient.value,
+                emphasis: {
+                    iconStyle: {
+                        textPosition: configs.toolbox_textPosition.value,
+                    }
+                },
+            },
+            series: {
+                type: "gauge",
+            },
+            graphic: getWaterGraphic(__SYS_LOGO_LINK__),
+        },
+        options: options
+    };
+    setTimeout(() => {
+        myChart.hideLoading();
+        myChart.setOption(option);
+    }, Number(configs.loadingTimes.value) * 1000);
+
+    __ECHARTS__.addHistory(container, configs, dataset, width, height);
+    return container;
+}
+
+function getCategoryLineForLiqiud(container, width, height, dataset, configs) {
+    if (container == null) {
+        container = document.createElement("div");
+        container.className = "echarts-container";
+        container.id = "echarts-container";
+        container.style.width = width;
+        container.style.height = height;
+    }
+
+    var myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value});
+    myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
+
+    var containerWidth = myChart.getWidth();//Number(width.replace(/px/i, ""));
+    var containerHeight = myChart.getHeight();//Number(height.replace(/px/i, ""));
+
+    var columns = [];
+    var times = [];
+    var options = [];
+    for (var i = 0; i < dataset["columns"].length; i++) {
+        columns.push(dataset["columns"][i].name);
+    }
+
+    for (var i = 0; i < dataset["data"].length; i++) {
+        var opt = {
+            series: []
+        };
+        var row = dataset["data"][i];
+        times.push(row[columns[0]].value);
+        for (var c = 1; c < columns.length; c++) {
+            var serie = {
+                name: row[columns[0]].value,
+                type: "liquidFill",
+                dimensions: [columns[c]],
+                data: [],
+                color: ["#294D99", "#156ACF", "#1598ED", "#45BDFF"],
+                //center: ["50%", "50%"],
+                //radius: "50%",
+                amplitude: "8%",
+                waveLength: "80%",
+                phase: "auto",
+                period: "auto",
+                direction: "right",
+                smooth: configs.lineSmooth.value.toBoolean(),
+
+                shape: configs.liqiudShape.value == "whale" ? __SYS_IMAGES_PATH__.whale : configs.liqiudShape.value,
+
+                waveAnimation: true,
+
+                outline: {
+                    show: true,
+                    borderDistance: 3,
+                    itemStyle: {
+                        color: "#1598ED",//"none",
+                        borderColor: "#294D99",
+                        borderWidth: 2,
+                        shadowBlur: 10,
+                        shadowColor: "rgba(0, 0, 0, 0.25)"
+                    }
+                },
+
+                backgroundStyle: {
+                    color: "#E3F7FF"
+                },
+
+                itemStyle: {
+                    opacity: 0.6,
+                    shadowBlur: 50,
+                    shadowColor: "rgba(0, 0, 0, 0.4)"
+                },
+
+                label: {
+                    show: true,
+                    insideColor: "#fff",
+                    fontSize: configs.liqiudFontSize.value,
+                    fontWeight: "bold",
+                    align: "center",
+                    baseline: "middle",
+                    position: "inside"
+                },
+
+                emphasis: {
+                    itemStyle: {
+                        opacity: 0.8
+                    }
+                },
+                animation: configs.animation.value.toBoolean(),
+                animationThreshold: Number(configs.animationThreshold.value),
+                animationEasing: getAnimationEasing(configs),
+                animationEasingUpdate: getAnimationEasingUpdate(configs),
+            };
+            serie.data.push({
+                name: columns[c],
+                value: row[columns[c]].value
+            });
+
+            let left = (toPoint(configs.grid_left.value) + (100 - toPoint(configs.grid_left.value) - toPoint(configs.grid_right.value)) / 2);
+            let top = (toPoint(configs.grid_top.value) + (100 - toPoint(configs.grid_top.value) - toPoint(configs.grid_bottom.value)) / 2);
+            serie.center = [(c * left / (columns.length - 1)) + 50 / (columns.length - 1) * (c - 1) + "%", top + "%"];
+            opt.series.push(serie);
+        }
+
+        options.push(opt);
+    }
+
+    var option = {
+        baseOption: {
+            aria: {
+                enabled: configs.ariaEnable.value.toBoolean(),
+                decal: {
+                    show: configs.ariaEnable.value.toBoolean(),
+                }
+            },
+            backgroundColor: configs.backgroundColor.value,
+            title: {
+                show: configs.titleDisplay.value.toBoolean(),
+                text: configs.titleText.value,
+                link: configs.titleTextLink.value,
+                target: "blank",
+                subtext: configs.titleSubText.value,
+                sublink: configs.titleSubTextLink.value,
+                subtarget: "blank",
+                top: "top",
+                left: configs.titlePosition.value,
+                textStyle: {
+                    color: configs.titleTextColor.value,
+                    fontSize: Number(configs.titleTextFontSize.value),
+                },
+                subtextStyle: {
+                    color: configs.titleSubTextColor.value,
+                    fontSize: Number(configs.titleSubTextFontSize.value),
+                }
+            },
+            timeline: {
+                show: configs.timelineDisplay.value.toBoolean(),
+                axisType: "category",
+                //考虑数据通用性，使用类目轴
+                //"value" 数值轴，适用于连续数据。
+                // "category" 类目轴，适用于离散的类目数据。
+                // "time" 时间轴，适用于连续的时序数据，与数值轴相比时间轴带有时间的格式化，在刻度计算上也有所不同，例如会根据跨度的范围来决定使用月，星期，日还是小时范围的刻度。
+                realtime: true,
+                //事实时更新数据
+                loop: true,
+                //循环播放
+                autoPlay: true,
+                //自动播放
+                // currentIndex: 2,
+                playInterval: configs.seriesLoopPlayInterval.value * 1000,
+                // controlStyle: {
+                //     position: "left"
+                // },
+                symbol: "emptyCircle",
+                //"circle", "rect", "roundRect", "triangle", "diamond", "pin", "arrow", "none"
+                symbolSize: 2,
+                data: times,
+                label: {
+                    color: configs.timelineLabelColor.value,
+                    fontSize: Number(configs.timelineLabelFontSize.value),
+                    formatter: function (s) {
+                        return s;
+                    }
+                },
+                lineStyle: {
+                    color: configs.timelineStyleColor.value,
+                },
+                controlStyle: {
+                    color: configs.timelineStyleColor.value,
+                },
+                emphasis: {
+                    label: {
+                        color: configs.timelineEmphasisColor.value,
+                    },
+                    checkpointStyle: {
+                        color: configs.timelineEmphasisColor.value,
+                    },
+                    controlStyle: {
+                        color: configs.timelineEmphasisColor.value,
+                    },
+                },
+                orient: configs.timelineOrient.value,
+                left: configs.timelineLeft.value,
+                right: configs.timelineRight.value,
+                top: configs.timelineTop.value,
+                bottom: configs.timelineBottom.value,
+            },
+            tooltip: {
+                show: configs.tooltipDisplay.value.toBoolean(),
+                formatter: function (params) {
+                    return [params.seriesName, params.marker + params.dimensionNames[0] + ":&emsp;<span style='display:inline-block;min-width:30px;text-align:right;font-weight:bold'>" + params.data.value + "</span>"].join("<br>");
                 },
             },
             toolbox: {
@@ -10632,8 +10731,8 @@ function getCategoryLineForLiqiud(container, width, height, dataset, configs) {
         options: options
     };
     setTimeout(() => {
-      myChart.hideLoading();
-      myChart.setOption(option);
+        myChart.hideLoading();
+        myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
     __ECHARTS__.addHistory(container, configs, dataset, width, height);
@@ -10893,10 +10992,10 @@ function getCategoryLineForGeoOfChina(container, width, height, dataset, configs
     var option = {
         baseOption: {
             aria: {
-                show: configs.ariaLabel.value.toBoolean(),
-            },
-            aria: {
-                show: configs.ariaLabel.value.toBoolean(),
+                enabled: configs.ariaEnable.value.toBoolean(),
+                decal: {
+                    show: configs.ariaEnable.value.toBoolean(),
+                }
             },
             backgroundColor: configs.backgroundColor.value,
             grid: {
@@ -10962,7 +11061,7 @@ function getCategoryLineForGeoOfChina(container, width, height, dataset, configs
                     color: configs.timelineStyleColor.value,
                 },
                 emphasis: {
-                    label:{
+                    label: {
                         color: configs.timelineEmphasisColor.value,
                     },
                     checkpointStyle: {
@@ -11016,8 +11115,8 @@ function getCategoryLineForGeoOfChina(container, width, height, dataset, configs
         options: options
     };
     setTimeout(() => {
-      myChart.hideLoading();
-      myChart.setOption(option);
+        myChart.hideLoading();
+        myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
     __ECHARTS__.addHistory(container, configs, dataset, width, height);
@@ -11270,7 +11369,10 @@ function getCategoryLineForGeoOfLocal(container, width, height, dataset, configs
     var option = {
         baseOption: {
             aria: {
-                show: configs.ariaLabel.value.toBoolean(),
+                enabled: configs.ariaEnable.value.toBoolean(),
+                decal: {
+                    show: configs.ariaEnable.value.toBoolean(),
+                }
             },
             backgroundColor: configs.backgroundColor.value,
             grid: {
@@ -11329,14 +11431,14 @@ function getCategoryLineForGeoOfLocal(container, width, height, dataset, configs
                         return s;
                     }
                 },
-                lineStyle:{
+                lineStyle: {
                     color: configs.timelineStyleColor.value,
                 },
-                controlStyle:{
-                    color:configs.timelineStyleColor.value,
+                controlStyle: {
+                    color: configs.timelineStyleColor.value,
                 },
                 emphasis: {
-                    label:{
+                    label: {
                         color: configs.timelineEmphasisColor.value,
                     },
                     checkpointStyle: {
@@ -11523,7 +11625,10 @@ function getScrollingScreen(container, width, height, dataset, configs) {
 
     var option = {
         aria: {
-            show: configs.ariaLabel.value.toBoolean(),
+            enabled: configs.ariaEnable.value.toBoolean(),
+            decal:{
+                show: configs.ariaEnable.value.toBoolean(),
+            }
         },
         backgroundColor: configs.backgroundColor.value,
         title: {
@@ -11699,7 +11804,10 @@ function getWalkingLantern(container, width, height, dataset, configs) {
 
     var option = {
         aria: {
-            show: configs.ariaLabel.value.toBoolean(),
+            enabled: configs.ariaEnable.value.toBoolean(),
+            decal:{
+                show: configs.ariaEnable.value.toBoolean(),
+            }
         },
         backgroundColor: configs.backgroundColor.value,
         title: {
@@ -11929,7 +12037,10 @@ function getWindowShades(container, width, height, dataset, configs) {
 
     var option = {
         aria: {
-            show: configs.ariaLabel.value.toBoolean(),
+            enabled: configs.ariaEnable.value.toBoolean(),
+            decal:{
+                show: configs.ariaEnable.value.toBoolean(),
+            }
         },
         backgroundColor: configs.backgroundColor.value,
         title: {
@@ -12161,7 +12272,10 @@ function getSurface(container, width, height, dataset, configs) {
 
     var option = {
         aria: {
-            show: configs.ariaLabel.value.toBoolean(),
+            enabled: configs.ariaEnable.value.toBoolean(),
+            decal:{
+                show: configs.ariaEnable.value.toBoolean(),
+            }
         },
         backgroundColor: configs.backgroundColor.value,
         grid: {
@@ -12406,7 +12520,10 @@ function getBoxplot(container, width, height, dataset, configs) {
 
     var option = {
         aria: {
-            show: configs.ariaLabel.value.toBoolean(),
+            enabled: configs.ariaEnable.value.toBoolean(),
+            decal:{
+                show: configs.ariaEnable.value.toBoolean(),
+            }
         },
         backgroundColor: configs.backgroundColor.value,
         grid: {
@@ -12722,7 +12839,10 @@ function getClock(container, width, height, dataset, configs) {
     var option = {
         colors: [configs.clockLabelColor.value],
         aria: {
-            show: configs.ariaLabel.value.toBoolean(),
+            enabled: configs.ariaEnable.value.toBoolean(),
+            decal:{
+                show: configs.ariaEnable.value.toBoolean(),
+            }
         },
         backgroundColor: configs.backgroundColor.value,
         grid: {
@@ -12908,6 +13028,21 @@ function getClock(container, width, height, dataset, configs) {
                 axisLabel: {
                     show: false
                 },
+                itemStyle: {
+                    color: echarts.version == "4.9.0" ? configs.clockLabelColor.value : null,
+                    shadowColor: 'rgba(0, 0, 0, 0.3)',
+                    shadowBlur: 8,
+                    shadowOffsetX: 2,
+                    shadowOffsetY: 4
+                },
+                emphasis: {
+                    color: echarts.version == "4.9.0" ? configs.clockLabelColor.value : null,
+                    shadowColor: 'rgba(0, 0, 0, 0.3)',
+                    shadowBlur: 8,
+                    shadowOffsetX: 2,
+                    shadowOffsetY: 4
+                },
+
                 pointer: {
                     icon: 'path://M2.9,0.7L2.9,0.7c1.4,0,2.6,1.2,2.6,2.6v115c0,1.4-1.2,2.6-2.6,2.6l0,0c-1.4,0-2.6-1.2-2.6-2.6V3.3C0.3,1.9,1.4,0.7,2.9,0.7z',
                     //5.0支持
@@ -12953,6 +13088,20 @@ function getClock(container, width, height, dataset, configs) {
                 },
                 axisLabel: {
                     show: false
+                },
+                itemStyle: {
+                    color: echarts.version == "4.9.0" ? configs.clockLabelColor.value : null,
+                    shadowColor: 'rgba(0, 0, 0, 0.3)',
+                    shadowBlur: 8,
+                    shadowOffsetX: 2,
+                    shadowOffsetY: 4
+                },
+                emphasis: {
+                    color: echarts.version == "4.9.0" ? configs.clockLabelColor.value : null,
+                    shadowColor: 'rgba(0, 0, 0, 0.3)',
+                    shadowBlur: 8,
+                    shadowOffsetX: 2,
+                    shadowOffsetY: 4
                 },
                 pointer: {
                     icon: 'path://M2.9,0.7L2.9,0.7c1.4,0,2.6,1.2,2.6,2.6v115c0,1.4-1.2,2.6-2.6,2.6l0,0c-1.4,0-2.6-1.2-2.6-2.6V3.3C0.3,1.9,1.4,0.7,2.9,0.7z',
@@ -13000,6 +13149,20 @@ function getClock(container, width, height, dataset, configs) {
                 axisLabel: {
                     show: false
                 },
+                itemStyle: {
+                    color: echarts.version == "4.9.0" ? configs.clockLabelColor.value : null,
+                    shadowColor: 'rgba(0, 0, 0, 0.3)',
+                    shadowBlur: 8,
+                    shadowOffsetX: 2,
+                    shadowOffsetY: 4
+                },
+                emphasis: {
+                    color: echarts.version == "4.9.0" ? configs.clockLabelColor.value : null,
+                    shadowColor: 'rgba(0, 0, 0, 0.3)',
+                    shadowBlur: 8,
+                    shadowOffsetX: 2,
+                    shadowOffsetY: 4
+                },
                 pointer: {
                     icon: 'path://M2.9,0.7L2.9,0.7c1.4,0,2.6,1.2,2.6,2.6v115c0,1.4-1.2,2.6-2.6,2.6l0,0c-1.4,0-2.6-1.2-2.6-2.6V3.3C0.3,1.9,1.4,0.7,2.9,0.7z',
                     width: 4,
@@ -13013,7 +13176,20 @@ function getClock(container, width, height, dataset, configs) {
                         shadowOffsetY: 4
                     }
                 },
-
+                anchor: {
+                    //指针固定点
+                    show: true,
+                    icon: 'circle',
+                    showAbove: true,
+                    size: 20,
+                    itemStyle: {
+                        color: configs.clockLabelColor.value,
+                        shadowColor: 'rgba(0, 0, 0, 0.3)',
+                        shadowBlur: 8,
+                        shadowOffsetX: 2,
+                        shadowOffsetY: 4
+                    }
+                },
                 detail: {
                     show: false
                 },
@@ -13123,7 +13299,10 @@ function getCandlestick(container, width, height, dataset, configs) {
 
     var option = {
         aria: {
-            show: configs.ariaLabel.value.toBoolean(),
+            enabled: configs.ariaEnable.value.toBoolean(),
+            decal:{
+                show: configs.ariaEnable.value.toBoolean(),
+            }
         },
         backgroundColor: configs.backgroundColor.value,
         grid: {
@@ -13419,7 +13598,10 @@ function getBanners(container, width, height, dataset, configs) {
 
     var option = {
         aria: {
-            show: configs.ariaLabel.value.toBoolean(),
+            enabled: configs.ariaEnable.value.toBoolean(),
+            decal:{
+                show: configs.ariaEnable.value.toBoolean(),
+            }
         },
         backgroundColor: configs.bannerBackgroundColor.value,
         title: {
@@ -13779,7 +13961,7 @@ function getSunburst(container, width, height, dataset, configs) {
                 levels: [],
                 itemStyle: {
                     color: '#ddd',
-                    borderWidth: 2
+                    borderWidth: 2,
                 },
                 animation: configs.animation.value.toBoolean(),
                 animationThreshold: Number(configs.animationThreshold.value),
@@ -13803,6 +13985,12 @@ function getSunburst(container, width, height, dataset, configs) {
         alert("旭日图数据结构[父级名称(根级等于空),子级名称,子级数值a,子级数值b,...].");
 
     var option = {
+        aria: {
+            enabled: configs.ariaEnable.value.toBoolean(),
+            decal:{
+                show: configs.ariaEnable.value.toBoolean(),
+            }
+        },
         backgroundColor: configs.backgroundColor.value,
         grid: {
             x: configs.grid_left.value,
@@ -14045,6 +14233,12 @@ function getTreemap(container, width, height, dataset, configs) {
     };
 
     var option = {
+        aria: {
+            enabled: configs.ariaEnable.value.toBoolean(),
+            decal:{
+                show: configs.ariaEnable.value.toBoolean(),
+            }
+        },
         backgroundColor: configs.backgroundColor.value,
         grid: {
             x: configs.grid_left.value,
@@ -14366,13 +14560,19 @@ function getSankey(container, width, height, dataset, configs) {
                 lineStyle: {
                     color: 'gradient',
                     curveness: 0.5
-                }
+                },
             });
         }
     } else
         alert("桑基图数据结构:[source,target,value0,value1,...].");
 
     var option = {
+        aria: {
+            enabled: configs.ariaEnable.value.toBoolean(),
+            decal:{
+                show: configs.ariaEnable.value.toBoolean(),
+            }
+        },
         backgroundColor: configs.backgroundColor.value,
         grid: {
             x: configs.grid_left.value,
@@ -14492,6 +14692,12 @@ function getThemeRiver(container, width, height, dataset, configs) {
     }
 
     var option = {
+        aria: {
+            enabled: configs.ariaEnable.value.toBoolean(),
+            decal:{
+                show: configs.ariaEnable.value.toBoolean(),
+            }
+        },
         backgroundColor: configs.backgroundColor.value,
         grid: {
             x: configs.grid_left.value,
