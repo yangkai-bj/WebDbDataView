@@ -2042,7 +2042,7 @@ function init() {
     }catch (e) {
     }
 
-     getQRCode($("page"),90 ,90 ,"https://gitee.com/yangkai-bj/WebDbDataView.git",__SYS_IMAGES__.logo_sqlite);
+     getQRCode($("page"),90 ,90 ,"https://gitee.com/yangkai-bj/",__SYS_IMAGES__.echo);
 
     if (checkStorage()) {
         setUserConfig("CopyRight","应用开发: 杨凯 ☎ (010)63603329 ✉ <a href='mailto:yangkai.bj@ccb.com'>yangkai.bj@ccb.com</a>");
@@ -2145,8 +2145,14 @@ function init() {
     dbinfo.innerText = "测试";
     dbinfo.style.display = "none";
     dbinfo.onclick = function () {
-        let a = "";
-        console.log(messageEncode(a));
+        //##########################################
+        //字符串可传输编码转化
+        //let a = "";
+        //console.log(messageEncode(a));
+        //##########################################
+        //图片转base64代码
+        //getBase64Image(null);
+        //##########################################
     };
     dbstools.appendChild(dbinfo);
     setTooltip(dbinfo, "功能测试");

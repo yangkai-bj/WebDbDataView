@@ -1155,4 +1155,9 @@ hr.br{
     border: 2px solid var(--main-border-color);
 }
 
+#qrcode #qrcode_logo {
+    position: absolute;
+    border: 1px solid var(--main-border-color);
+}
+
 
