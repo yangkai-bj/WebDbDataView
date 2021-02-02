@@ -3068,9 +3068,10 @@ function getQRCode(parent,width,height,text,logoImage){
         qr.style.left = (getAbsolutePosition(parent).width - width - 10) + "px";
         let logo = __SYS_IMAGES__.getLogoImage(logoImage);
         logo.id = "qrcode_logo";
-        logo.style.width = width/4 + "px";
-        logo.style.height = height/4 + "px";
-        logo.style.margin = (height-height/4.0)/2 + "px";
+        logo.style.width = width/4.0 + "px";
+        logo.style.height = width/4.0 * (logoImage.width/logoImage.height) + "px";
+        logo.style.marginLeft = (width-width/4.0)/2 + "px";
+        logo.style.marginTop = (height-width/4.0 * (logoImage.width/logoImage.height))/2 + "px";
         qr.appendChild(logo);
 
         new QRCode("qrcode", {
@@ -4385,7 +4386,6 @@ function getMultiEcharts() {
                 __ECHARTS__.sets.data = data;
                 row.parentElement.removeChild(row);
             };
-            ;
             title.appendChild(del);
 
             let detail = document.createElement("div");
@@ -4415,13 +4415,14 @@ function getMultiEcharts() {
         multiEchartsViews.style.lineHeight = getAbsolutePosition($("page")).height + "px";
         multiEchartsViews.innerHTML = "请从右侧拖入您需要的布局框架。";
         multiEchartsViews.onmousemove = function () {
-            if (event.x < 300 && (event.y*100/getAbsolutePosition($("multi-echarts-view")).height >= 25 && event.y*100/getAbsolutePosition($("multi-echarts-view")).height <= 75)) {
+            let active = 3;
+            if (event.x < active && (event.y*100/getAbsolutePosition($("multi-echarts-view")).height >= 25 && event.y*100/getAbsolutePosition($("multi-echarts-view")).height <= 75)) {
                 $("multi-echarts-list").style.display = "block";
             } else {
                 $("multi-echarts-list").style.display = "none";
             }
 
-            if (event.x> getAbsolutePosition($("multi-echarts-view")).width - 300
+            if (event.x> getAbsolutePosition($("multi-echarts-view")).width - active
                 && (event.y*100/getAbsolutePosition($("multi-echarts-view")).height >= 25 && event.y*100/getAbsolutePosition($("multi-echarts-view")).height <= 75)){
                 $("multi-layouts-list").style.display = "block";
                 $("multi-layouts-list").style.left = (getAbsolutePosition($("multi-echarts-view")).width - 305) + "px"
