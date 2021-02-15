@@ -21,129 +21,140 @@ function stringToHex(str){
 
 function getEcharts(container, width, height, dataset, configs) {
     $("copyright").innerHTML = getUserConfig("CopyRight");
-    switch (configs.echartsType.value) {
-        case "Bar":
-            return getBar(container, width, height, dataset, configs);
-            break;
-        case "PolarBar":
-            return getPolarBar(container, width, height, dataset, configs);
-            break;
-        case "PolarArea":
-            return getPolarArea(container, width, height, dataset, configs);
-            break;
-        case "Line":
-            return getLine(container, width, height, dataset, configs);
-            break;
-        case "Line3D":
-            return getLine3D(container, width, height, dataset, configs);
-            break;
-        case "BarAndLine":
-            return getBarAndLine(container, width, height, dataset, configs);
-            break;
-        case "AreaStyle":
-            return getAreaStyle(container, width, height, dataset, configs);
-            break;
-        case "TransversBar":
-            return getTransversBar(container, width, height, dataset, configs);
-            break;
-        case "Pie":
-            return getPie(container, width, height, dataset, configs);
-            break;
-        case "Ring":
-            return getRing(container, width, height, dataset, configs);
-            break;
-        case "Rose":
-            return getRose(container, width, height, dataset, configs);
-            break;
-        case "Gauge":
-            //return getGaugeWithOne(container, width, height, dataset,configs);
-            return getCategoryLineForGauge(container, width, height, dataset, configs);
-            break;
-        case "Radar":
-            return getRadar(container, width, height, dataset, configs);
-            break;
-        case "Regression":
-            return getRegression(container, width, height, dataset, configs);
-            break;
-        case "Relation":
-            return getRelation(container, width, height, dataset, configs);
-            break;
-        case "Tree":
-            return getTree(container, width, height, dataset, configs);
-            break;
-        case "WebkitDep":
-            return getWebkitDep(container, width, height, dataset, configs);
-            break;
-        case "Scatter":
-            return getScatter(container, width, height, dataset, configs);
-            break;
-        case "Funnel":
-            return getFunnel(container, width, height, dataset, configs);
-            break;
-        case "WordCloud":
-            if (echarts.version === "4.9.0")
+    if (echarts.version >= "5.0.2") {
+        switch (configs.echartsType.value) {
+            case "Bar":
+                return getBar(container, width, height, dataset, configs);
+                break;
+            case "Polar":
+                return getPolar(container, width, height, dataset, configs);
+                break;
+            case "Line":
+                return getLine(container, width, height, dataset, configs);
+                break;
+            case "Line3D":
+                return getLine3D(container, width, height, dataset, configs);
+                break;
+            case "BarAndLine":
+                return getBarAndLine(container, width, height, dataset, configs);
+                break;
+            case "AreaStyle":
+                return getAreaStyle(container, width, height, dataset, configs);
+                break;
+            case "TransversBar":
+                return getTransversBar(container, width, height, dataset, configs);
+                break;
+            case "Pie":
+                return getPie(container, width, height, dataset, configs);
+                break;
+            case "Ring":
+                return getRing(container, width, height, dataset, configs);
+                break;
+            case "Rose":
+                return getRose(container, width, height, dataset, configs);
+                break;
+            case "Gauge":
+                //return getGaugeWithOne(container, width, height, dataset,configs);
+                return getCategoryLineForGauge(container, width, height, dataset, configs);
+                break;
+            case "Radar":
+                return getRadar(container, width, height, dataset, configs);
+                break;
+            case "Regression":
+                return getRegression(container, width, height, dataset, configs);
+                break;
+            case "Relation":
+                return getRelation(container, width, height, dataset, configs);
+                break;
+            case "Tree":
+                return getTree(container, width, height, dataset, configs);
+                break;
+            case "WebkitDep":
+                return getWebkitDep(container, width, height, dataset, configs);
+                break;
+            case "Scatter":
+                return getScatter(container, width, height, dataset, configs);
+                break;
+            case "Funnel":
+                return getFunnel(container, width, height, dataset, configs);
+                break;
+            case "WordCloud":
                 return getWordCloud(container, width, height, dataset, configs);
-            else
-                alert("该功能仅支持Echarts 4.9.0,您目前使用的版本是" + echarts.version + ".");
-            break;
-        case "Liqiud":
-            if (echarts.version === "4.9.0")
+                break;
+            case "Liqiud":
                 return getCategoryLineForLiqiud(container, width, height, dataset, configs);
-            else
-                alert("该功能仅支持Echarts 4.9.0,您目前使用的版本是" + echarts.version + ".");
-            break;
-        case "Calendar":
-            return getCalendar(container, width, height, dataset, configs);
-            break;
-        case "GeoOfChina":
-            //return getGeoOfChina(container, width, height, dataset,configs);
-            return getCategoryLineForGeoOfChina(container, width, height, dataset, configs);
-            break;
-        case "GeoOfLocal":
-            //return getGeoOfLocal(container, width, height, dataset,configs);
-            return getCategoryLineForGeoOfLocal(container, width, height, dataset, configs);
-            break;
-        case "Bar3D":
-            return getBar3D(container, width, height, dataset, configs);
-            break;
-        case "Scatter3D":
-            return getScatter3D(container, width, height, dataset, configs);
-            break;
-        case "CategoryLine":
-            return getCategoryLine(container, width, height, dataset, configs);
-            break;
-        case "FunctionLine":
-            return getFunctionLine(container, width, height, dataset, configs);
-            break;
-        case "GeoMigrateLinesOfChinaCity":
-            return getGeoMigrateLinesOfChinaCity(container, width, height, dataset, configs);
-            break;
-        case "ScrollingScreen":
-            return getScrollingScreen(container, width, height, dataset, configs);
-        case "WalkingLantern":
-            return getWalkingLantern(container, width, height, dataset, configs);
-        case "WindowShades":
-            return getWindowShades(container, width, height, dataset, configs);
-        case "Surface":
-            return getSurface(container, width, height, dataset, configs);
-        case "Boxplot":
-            return getBoxplot(container, width, height, dataset, configs);
-        case "Clock":
-            return getClock(container, width, height, dataset, configs);
-        case "Candlestick":
-            return getCandlestick(container, width, height, dataset, configs);
-        case "Banners":
-            return getBanners(container, width, height, dataset, configs);
-        case "Sunburst":
-            return getSunburst(container, width, height, dataset, configs);
-        case "Treemap":
-            return getTreemap(container, width, height, dataset, configs);
-        case "ParallelAxis":
-            return getParallelAxis(container, width, height, dataset, configs);
-        case "Sankey":
-            return getSankey(container, width, height, dataset, configs);
-        case "ThemeRiver":
-            return getThemeRiver(container, width, height, dataset, configs);
+                break;
+            case "Calendar":
+                return getCalendar(container, width, height, dataset, configs);
+                break;
+            case "GeoOfChina":
+                //return getGeoOfChina(container, width, height, dataset,configs);
+                return getCategoryLineForGeoOfChina(container, width, height, dataset, configs);
+                break;
+            case "GeoOfLocal":
+                //return getGeoOfLocal(container, width, height, dataset,configs);
+                return getCategoryLineForGeoOfLocal(container, width, height, dataset, configs);
+                break;
+            case "Bar3D":
+                return getBar3D(container, width, height, dataset, configs);
+                break;
+            case "Scatter3D":
+                return getScatter3D(container, width, height, dataset, configs);
+                break;
+            case "Pie3D":
+                return getPie3D(container, width, height, dataset, configs);
+                break;
+            case "CategoryLine":
+                return getCategoryLine(container, width, height, dataset, configs);
+                break;
+            case "FunctionLine":
+                return getFunctionLine(container, width, height, dataset, configs);
+                break;
+            case "GeoMigrateLinesOfChinaCity":
+                return getGeoMigrateLinesOfChinaCity(container, width, height, dataset, configs);
+                break;
+            case "ScrollingScreen":
+                return getScrollingScreen(container, width, height, dataset, configs);
+                break;
+            case "WalkingLantern":
+                return getWalkingLantern(container, width, height, dataset, configs);
+                break;
+            case "WindowShades":
+                return getWindowShades(container, width, height, dataset, configs);
+                break;
+            case "Surface":
+                return getSurface(container, width, height, dataset, configs);
+                break;
+            case "Boxplot":
+                return getBoxplot(container, width, height, dataset, configs);
+                break;
+            case "Clock":
+                return getClock(container, width, height, dataset, configs);
+                break;
+            case "Candlestick":
+                return getCandlestick(container, width, height, dataset, configs);
+                break;
+            case "Banners":
+                return getBanners(container, width, height, dataset, configs);
+                break;
+            case "Sunburst":
+                return getSunburst(container, width, height, dataset, configs);
+                break;
+            case "Treemap":
+                return getTreemap(container, width, height, dataset, configs);
+                break;
+            case "ParallelAxis":
+                return getParallelAxis(container, width, height, dataset, configs);
+                break;
+            case "Sankey":
+                return getSankey(container, width, height, dataset, configs);
+                break;
+            case "ThemeRiver":
+                return getThemeRiver(container, width, height, dataset, configs);
+                break;
+        }
+    } else {
+         alert("本模块支持Echarts5.0.2及以上版本,您目前使用的版本是" + echarts.version + ".");
     }
 }
 
@@ -264,8 +275,7 @@ var __ECHARTS__ = {
                 new Option("圆环图", "Ring"),
                 new Option("玫瑰图", "Rose"),
                 new Option("雷达图", "Radar"),
-                new Option("极坐标柱状图", "PolarBar"),
-                new Option("极坐标面积图", "PolarArea"),
+                new Option("极坐标", "Polar"),
                 new Option("回归序列", "Regression"),
                 new Option("盒须图", "Boxplot"),
                 new Option("K线图", "Candlestick"),
@@ -282,9 +292,9 @@ var __ECHARTS__ = {
                 new Option("矩形树图", "Treemap"),
                 new Option("日历图", "Calendar"),
                 new Option("类目轴", "CategoryLine"),
-                new Option("平行坐标","ParallelAxis"),
-                new Option("桑基图","Sankey"),
-                new Option("主题河流图","ThemeRiver"),
+                new Option("平行坐标", "ParallelAxis"),
+                new Option("桑基图", "Sankey"),
+                new Option("主题河流图", "ThemeRiver"),
                 new Option("全国地图", "GeoOfChina"),
                 new Option("本地地图", "GeoOfLocal"),
                 new Option("迁徙地图", "GeoMigrateLinesOfChinaCity"),
@@ -294,6 +304,7 @@ var __ECHARTS__ = {
                 new Option("数据百叶窗", "WindowShades"),
                 new Option("柱状图(3D)", "Bar3D"),
                 new Option("线型图(3D)", "Line3D"),
+                new Option("圆环图(3D)", "Pie3D"),
                 new Option("散点图(3D)", "Scatter3D"),
                 new Option("曲面图(3D)", "Surface"),
             ],
@@ -303,20 +314,22 @@ var __ECHARTS__ = {
             name: "视图主题",
             value: "",
             options: [
-                new Option("Default", ""),
-                new Option("Chalk", "Chalk"),
-                new Option("Dark", "Dark"),
-                new Option("Essos", "Essos"),
-                new Option("Infographic", "Infographic"),
-                new Option("Light", "light"),
-                new Option("Macarons", "Macarons"),
-                new Option("Purple", "Purple"),
-                new Option("Roma", "Roma"),
-                new Option("Shine", "Shine"),
-                new Option("Vintage", "Vintage"),
-                new Option("Walden", "Walden"),
-                new Option("Westeros", "Westeros"),
-                new Option("Wonderland", "Wonderland")],
+                new Option("默认", ""),
+                new Option("单色", "monochrome"),
+                new Option("粉笔", "Chalk"),
+                new Option("黑暗", "Dark"),
+                new Option("橙色", "Essos"),
+                new Option("信息", "Infographic"),
+                new Option("浅色", "light"),
+                new Option("甜饼", "Macarons"),
+                new Option("紫色", "Purple"),
+                new Option("热情", "Roma"),
+                new Option("阳光", "Shine"),
+                new Option("怀旧", "Vintage"),
+                new Option("湖蓝", "Walden"),
+                new Option("大陆", "Westeros"),
+                new Option("仙境", "Wonderland"),
+                new Option("极简", "simple")],
             type: "select"
         },
         backgroundColor: {name: "图像背景", value: "transparent", type: "input"},
@@ -535,6 +548,7 @@ var __ECHARTS__ = {
             options: [new Option("是", "true"), new Option("否", "false")],
             type: "select"
         },
+        barItemStyleBorderRadius: {name: "圆角半径", value: 0, type: "input"},
         barEmphasisLabelDisplay: {
             name: "显示热点标签",
             value: "false",
@@ -613,6 +627,20 @@ var __ECHARTS__ = {
             type: "select"
         },
 
+        hr_polar:{name: "极坐标", value: "", type: "hr"},
+        polarType: {
+            name: "图形类别",
+            value: "line",
+            options: [new Option("线型图", "line"), new Option("柱状图", "bar"), new Option("面积图", "area")],
+            type: "select"
+        },
+        polarRoundCap:{
+            name: "圆角",
+            value: "false",
+            options: [new Option("否", "false"), new Option("是", "true")],
+            type: "select"
+        },
+
         hr_regression: {name: "趋势/回归", value: "", type: "hr"},
         regressionType: {name: "趋势/回归类型", value: "直线", options: ["直线", "指数", "对数", "多项式"], type: "select"},
         regressionPolynomialOrder: {name: "多项式阶数", value: 2, type: "input"},
@@ -652,11 +680,11 @@ var __ECHARTS__ = {
             type: "select"
         },
 
-        hr_candlestick:{name: "K线图", value: "", type: "hr"},
-        candlestickUpColor:{name:"阳线颜色", value:'#ec0000',type:"color"},
-        candlestickUpBorderColor:{name:"阳线边线", value:'#8A0000',type:"color"},
-        candlestickDownColor:{name:"阴线颜色", value:'#00da3c',type:"color"},
-        candlestickDownBorderColor:{name:"阴线边线", value:'#008F28',type:"color"},
+        hr_candlestick: {name: "K线图", value: "", type: "hr"},
+        candlestickUpColor: {name: "阳线颜色", value: '#ec0000', type: "color"},
+        candlestickUpBorderColor: {name: "阳线边线", value: '#8A0000', type: "color"},
+        candlestickDownColor: {name: "阴线颜色", value: '#00da3c', type: "color"},
+        candlestickDownBorderColor: {name: "阴线边线", value: '#008F28', type: "color"},
 
         hr_pie: {name: "饼图/圆环/玫瑰", value: "", type: "hr"},
         outRadius: {name: "外半径(%)", value: "70%", type: "input"},
@@ -672,6 +700,15 @@ var __ECHARTS__ = {
             value: "true",
             options: [new Option("是", "true"), new Option("否", "false")],
             type: "select"
+        },
+        pieLabelPosition: {
+            name: "标签位置",
+            value: "auto",
+            options: [new Option("auto", "auto"), new Option("center", "center")],
+            type: "select"
+        },
+        pieItemStyleBorderRadius: {
+            name: "圆角半径", value: 0, type: "input"
         },
         pieLabelFontSize: {name: "标签字号", value: 12, type: "input"},
         pieLabelAlignTo: {
@@ -762,6 +799,27 @@ var __ECHARTS__ = {
             type: "select"
         },
         liqiudFontSize: {name: "标题字号", value: 16, type: "input"},
+        liqiudIsStack: {
+            name: "是否堆积",
+            value: "false",
+            options: [new Option("是", "true"), new Option("否", "false")],
+            type: "select"
+        },
+        liqiudColor: {
+            name: "波浪颜色",
+            value: '["#294D99", "#156ACF", "#1598ED", "#45BDFF"]',
+            options: [
+                new Option("蓝色系", '["#294D99", "#156ACF", "#1598ED", "#45BDFF"]'),
+                new Option("绿色系", '["#49d088", "#38b470", "#2aaf66"]'),
+                new Option("黄色系", '["#FF6600", "#FF9900", "#FFCC00"]'),
+                new Option("红色系", '["#600000", "#800000", "#A00000"]')],
+            type: "select"
+        },
+        liqiudBackgroundStyle:{
+            name: "背景颜色",
+            value: "#E3F7FF",
+            type: "color"
+        },
 
         hr_gauge: {name: "仪表盘", value: "", type: "hr"},
         gaugeAxisLabelFontSize: {name: "刻度字号", value: 10, type: "input"},
@@ -791,7 +849,7 @@ var __ECHARTS__ = {
         },
 
         hr_sunburst: {name: "旭日图", value: "", type: "hr"},
-        sunburstRadius: {name : "内/外半径", value: "['15%', '90%']", type: "input"},
+        sunburstRadius: {name: "内/外半径", value: "['15%', '90%']", type: "input"},
         sunburstSort: {
             name: "排序方式",
             value: "null",
@@ -810,7 +868,8 @@ var __ECHARTS__ = {
             options: [new Option("靠内", "left"), new Option("居中", "center"), new Option("靠外", "right")],
             type: "select"
         },
-        sunburstHighlightPolicy:  {
+        sunburstItemStyleBorderRadius : {name: "圆角半径", value:0, type:"input"},
+        sunburstHighlightPolicy: {
             name: "高亮显示",
             value: "self",
             options: [new Option("向上显示", "ancestor"), new Option("本身", "self"), new Option("向下显示", "descendant"), new Option("不设置", "none")],
@@ -818,13 +877,16 @@ var __ECHARTS__ = {
         },
 
         hr_treemap: {name: "层级数据", value: "", type: "hr"},
-        treemapWidth:{name:"组件宽度", value: "80%", type: "input"},
-        treemapHeight:{name:"组件高度", value: "80%", type: "input"},
-        treemapLabelFontSize:{name: "标签字号", value: "22", type: "input"},
-        treemapLabelPosition:{
+        treemapWidth: {name: "组件宽度", value: "80%", type: "input"},
+        treemapHeight: {name: "组件高度", value: "80%", type: "input"},
+        treemapLabelFontSize: {name: "标签字号", value: "22", type: "input"},
+        treemapLabelPosition: {
             name: "位置",
             value: "['5%','5%']",
             type: "input"
+        },
+        treemapItemStyleBorderRadius:{
+            name: "圆角半径", value: 0, type: "input"
         },
 
         hr_calendar: {name: "日历图", value: "", type: "hr"},
@@ -842,6 +904,7 @@ var __ECHARTS__ = {
         },
 
         hr_3D: {name: "3D图形", value: "", type: "hr"},
+        BoxHeightFor3D:{name: "高度(X轴)", value: 20, type: "input"},
         BoxWidthFor3D: {name: "宽度(X轴)", value: 200, type: "input"},
         BoxDepthFor3D: {name: "深度(Y轴)", value: 80, type: "input"},
         AutoRotateFor3D: {
@@ -879,6 +942,7 @@ var __ECHARTS__ = {
             options: [new Option("是", "true"), new Option("否", "false")],
             type: "select"
         },
+        ringInRadiusFor3D:{name: "内半径(%)", value: "30%", type: "input"},
 
         hr_geo: {name: "地图", value: "", type: "hr"},
         geoAreaColor: {value: "#323c48", name: "区域颜色", type: "color"},
@@ -1001,10 +1065,10 @@ var __ECHARTS__ = {
         webkitDepEdgeLength: {name: "节点距离", value: 50, type: "input"},
 
         hr_banner: {name: "横幅标语", value: "", type: "hr"},
-        bannerBackgroundColor:{value: "transparent", name: "背景颜色", type: "color"},
-        bannerTextColor:{value: "#FFFFFF", name: "文本颜色", type: "color"},
-        bannerFontFamily:{name: "字体", value: "sans-serif", type: "input"},
-        bannerFontSize:{name: "字号", value: 100, type: "input"},
+        bannerBackgroundColor: {value: "transparent", name: "背景颜色", type: "color"},
+        bannerTextColor: {value: "#FFFFFF", name: "文本颜色", type: "color"},
+        bannerFontFamily: {name: "字体", value: "sans-serif", type: "input"},
+        bannerFontSize: {name: "字号", value: 100, type: "input"},
         bannerShadesSpeed: {name: "速度(秒)", value: 3, type: "input"},
 
         hr_scrollingScreen: {name: "数据滚屏", value: "", type: "hr"},
@@ -1058,10 +1122,10 @@ var __ECHARTS__ = {
             options: [new Option("横向", "horizontal"), new Option("纵向", "vertical")],
             type: "select"
         },
-        timelineLeft: {name: "左边距(%)", value: "10%", type: "input"},
-        timelineRight: {name: "右边距(%)", value: "10%", type: "input"},
-        timelineTop: {name: "上边距(%)", value: "10%", type: "input"},
-        timelineBottom: {name: "下边距(%)", value: "10%", type: "input"},
+        timelineLeft: {name: "左边距(%)", value: "auto", type: "input"},
+        timelineRight: {name: "右边距(%)", value: "auto", type: "input"},
+        timelineTop: {name: "上边距(%)", value: "auto", type: "input"},
+        timelineBottom: {name: "下边距(%)", value: "auto", type: "input"},
         timelineLabelColor: {value: "#304654", name: "标签颜色", type: "color"},
         timelineLabelFontSize: {name: "字号", value: 12, type: "input"},
         timelineStyleColor: {value: "#304654", name: "轴线颜色", type: "color"},
@@ -1074,9 +1138,9 @@ var __ECHARTS__ = {
         },
         seriesLoopPlayInterval: {name: "间隔(秒)", value: 3, type: "input"},
 
-        hr_parallelAxis:{name: "平行坐标", value: "", type: "hr"},
-        parallelAxisLineWidth:{name: "线宽", value: 2, type: "input"},
-        parallelSmooth:{
+        hr_parallelAxis: {name: "平行坐标", value: "", type: "hr"},
+        parallelAxisLineWidth: {name: "线宽", value: 2, type: "input"},
+        parallelSmooth: {
             name: "平滑线",
             value: "false",
             options: [new Option("是", "true"), new Option("否", "false")],
@@ -1089,21 +1153,21 @@ var __ECHARTS__ = {
             type: "select"
         },
 
-        hr_sankey:{name: "桑基图", value: "", type: "hr"},
+        hr_sankey: {name: "桑基图", value: "", type: "hr"},
         sankeyOrient: {
             name: "布局方向",
             value: "horizontal",
             options: [new Option("横向", "horizontal"), new Option("纵向", "vertical")],
             type: "select"
         },
-        sankeyNodeAlign:{
+        sankeyNodeAlign: {
             name: "节点对齐",
             value: "justify",
             options: [new Option("两端对齐", "justify"), new Option("左对齐", "left"), new Option("右对齐", "right")],
             type: "select"
         },
 
-        hr_themeRiver:{name: "主题河流图", value: "", type: "hr"},
+        hr_themeRiver: {name: "主题河流图", value: "", type: "hr"},
         themeRiverEmphasisFocus: {
             name: "聚焦方式",
             value: "self",
@@ -1196,6 +1260,7 @@ var __ECHARTS__ = {
             type: "select"
         },
     },
+
     getEchartsConfigs: function (parent) {
         let config = getUserConfig("echartsconfig");
         if (config != null) {
@@ -2337,6 +2402,9 @@ function getBar(container, width, height, dataset, configs) {
                         }
                     }
                 },
+                itemStyle: {
+                    borderRadius: Number(configs.barItemStyleBorderRadius.value),
+                },
                 emphasis: {
                     label: {
                         show: configs.barEmphasisLabelDisplay.value.toBoolean(),
@@ -2488,6 +2556,9 @@ function getBar(container, width, height, dataset, configs) {
             },
             axisTick: {
                 show: configs.axisLineDisplay.value.toBoolean(),
+                lineStyle: {
+                    color: configs.axisColor.value
+                },
             },
             axisLabel: {
                 show: configs.axisLineDisplay.value.toBoolean(),
@@ -2520,6 +2591,9 @@ function getBar(container, width, height, dataset, configs) {
             },
             axisTick: {
                 show: configs.axisLineDisplay.value.toBoolean(),
+                lineStyle: {
+                    color: configs.axisColor.value
+                },
             },
             axisLabel: {
                 show: configs.axisLineDisplay.value.toBoolean(),
@@ -2597,7 +2671,6 @@ function getBar(container, width, height, dataset, configs) {
         series: yAxis_series,
     };
 
-
     setTimeout(() => {
         myChart.hideLoading();
         myChart.setOption(option);
@@ -2636,6 +2709,9 @@ function getTransversBar(container, width, height, dataset, configs) {
             var series = {name: columns[c],
                 type: "bar",
                 data: [],
+                itemStyle: {
+                    borderRadius: Number(configs.barItemStyleBorderRadius.value),
+                },
                 animation: configs.animation.value.toBoolean(),
                 animationThreshold: Number(configs.animationThreshold.value),
                 animationEasing: getAnimationEasing(configs),
@@ -2799,6 +2875,9 @@ function getTransversBar(container, width, height, dataset, configs) {
             },
             axisTick:{
                 show: configs.axisLineDisplay.value.toBoolean(),
+                lineStyle: {
+                    color: configs.axisColor.value
+                },
             },
             axisLabel: {
                 interval: "auto",
@@ -2832,6 +2911,9 @@ function getTransversBar(container, width, height, dataset, configs) {
             },
             axisTick:{
                 show: configs.axisLineDisplay.value.toBoolean(),
+                lineStyle: {
+                    color: configs.axisColor.value
+                },
             },
             axisLabel: {
                 show: configs.axisLineDisplay.value.toBoolean(),
@@ -3120,6 +3202,9 @@ function getLine(container, width, height, dataset, configs) {
             },
             axisTick: {
                 show: configs.axisLineDisplay.value.toBoolean(),
+                lineStyle: {
+                    color: configs.axisColor.value
+                },
             },
             axisLabel: {
                 show: configs.axisLineDisplay.value.toBoolean(),
@@ -3152,6 +3237,9 @@ function getLine(container, width, height, dataset, configs) {
             },
             axisTick: {
                 show: configs.axisLineDisplay.value.toBoolean(),
+                lineStyle: {
+                    color: configs.axisColor.value
+                },
             },
             axisLabel: {
                 show: configs.axisLineDisplay.value.toBoolean(),
@@ -3338,6 +3426,9 @@ function getBarAndLine(container, width, height, dataset, configs) {
                             }
                         }
                     },
+                    itemStyle: {
+                        borderRadius: Number(configs.barItemStyleBorderRadius.value),
+                    },
                     emphasis: {
                         label: {
                             show: configs.barEmphasisLabelDisplay.value.toBoolean(),
@@ -3486,6 +3577,9 @@ function getBarAndLine(container, width, height, dataset, configs) {
             },
             axisTick: {
                 show: configs.axisLineDisplay.value.toBoolean(),
+                lineStyle: {
+                    color: configs.axisColor.value
+                },
             },
             axisLabel: {
                 show: configs.axisLineDisplay.value.toBoolean(),
@@ -3519,6 +3613,9 @@ function getBarAndLine(container, width, height, dataset, configs) {
             },
             axisTick: {
                 show: configs.axisLineDisplay.value.toBoolean(),
+                lineStyle: {
+                    color: configs.axisColor.value
+                },
             },
             axisLabel: {
                 show: configs.axisLineDisplay.value.toBoolean(),
@@ -3550,6 +3647,9 @@ function getBarAndLine(container, width, height, dataset, configs) {
                 },
                 axisTick: {
                     show: configs.axisLineDisplay.value.toBoolean(),
+                    lineStyle: {
+                        color: configs.axisColor.value
+                    },
                 },
                 axisLabel: {
                     show: configs.axisLineDisplay.value.toBoolean(),
@@ -3870,6 +3970,9 @@ function getAreaStyle(container, width, height, dataset, configs) {
             },
             axisTick:{
                 show: configs.axisLineDisplay.value.toBoolean(),
+                lineStyle: {
+                    color: configs.axisColor.value
+                },
             },
             axisLabel: {
                 show: configs.axisLineDisplay.value.toBoolean(),
@@ -3902,6 +4005,9 @@ function getAreaStyle(container, width, height, dataset, configs) {
             },
             axisTick:{
                 show: configs.axisLineDisplay.value.toBoolean(),
+                lineStyle: {
+                    color: configs.axisColor.value
+                },
             },
             axisLabel: {
                 show: configs.axisLineDisplay.value.toBoolean(),
@@ -3981,7 +4087,7 @@ function getAreaStyle(container, width, height, dataset, configs) {
     return container;
 }
 
-function getPolarBar(container, width, height, dataset, configs) {
+function getPolar(container, width, height, dataset, configs) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
@@ -4009,9 +4115,10 @@ function getPolarBar(container, width, height, dataset, configs) {
         } else {
             var series = {
                 name: columns[c],
-                type: "bar",
+                type: configs.polarType.value=="area"?"bar":configs.polarType.value,
                 coordinateSystem: "polar",
                 data: [],
+                roundCap: configs.polarRoundCap.value.toBoolean(),
                 animation: configs.animation.value.toBoolean(),
                 animationThreshold: Number(configs.animationThreshold.value),
                 animationEasing: getAnimationEasing(configs),
@@ -4029,7 +4136,6 @@ function getPolarBar(container, width, height, dataset, configs) {
                     return idx * Number(configs.animationDelayUpdate.value) + c * Number(configs.animationDelayUpdate.value);
                 },
             };
-
 
             for (var i = 0; i < dataset["data"].length; i++) {
                 var r = dataset["data"][i];
@@ -4125,6 +4231,11 @@ function getPolarBar(container, width, height, dataset, configs) {
                     color: configs.axisColor.value,
                 },
             },
+            splitArea: {
+                show: configs.splitYAreaDisplay.value.toBoolean(),
+            },
+            type: configs.polarType.value == "area" || configs.polarType.value == "line"?"category":null,
+            data: configs.polarType.value == "area" || configs.polarType.value == "line"?xAxis:null,
             z: 10
         },
         radiusAxis: {
@@ -4149,8 +4260,8 @@ function getPolarBar(container, width, height, dataset, configs) {
                     color: configs.axisColor.value,
                 },
             },
-            type: "category",
-            data: xAxis,
+            type: configs.polarType.value == "bar"?"category":null,
+            data: configs.polarType.value == "bar"?xAxis:null,
             z: 10,
         },
         polar: {
@@ -4173,10 +4284,13 @@ function getPolarBar(container, width, height, dataset, configs) {
         },
         tooltip: {
             show: configs.tooltipDisplay.value.toBoolean(),
-            trigger: "item",
-            formatter: function(param) {
-                return [param.seriesName, param.marker + "&ensp;" + param.name + ":<span style='display:inline-block;min-width:30px;text-align:right;font-weight:bold'>&ensp;" + param.value + "</span>"].join("<br>");
-            }
+            trigger: 'axis',//"item",
+            axisPointer: {
+                type: 'cross'
+            },
+            //formatter: function(param) {
+            //    return [param.seriesName, param.marker + "&ensp;" + param.name + ":<span style='display:inline-block;min-width:30px;text-align:right;font-weight:bold'>&ensp;" + param.value + "</span>"].join("<br>");
+            //}
         },
         dataZoom: [{
             type: "inside",
@@ -4194,226 +4308,7 @@ function getPolarBar(container, width, height, dataset, configs) {
         graphic: getWaterGraphic(__SYS_LOGO_LINK__),
 
     };
-    setTimeout(() => {
-      myChart.hideLoading();
-      myChart.setOption(option);
-    }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.addHistory(container, configs, dataset, width, height);
-    return container;
-}
-
-function getPolarArea(container, width, height, dataset, configs) {
-    if (container == null) {
-        container = document.createElement("div");
-        container.className = "echarts-container";
-        container.id = "echarts-container";
-        container.style.width = width;
-        container.style.height = height;
-    }
-
-    var myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value});
-
-    myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
-
-    var columns = [];
-    for (var i = 0; i < dataset["columns"].length; i++) {
-        columns.push(dataset["columns"][i].name);
-    }
-    var xAxis = [];
-    var yAxis_series = [];
-    for (var c = 0; c < columns.length; c++) {
-        if (c == 0) {
-            for (var i = 0; i < dataset["data"].length; i++) {
-                var r = dataset["data"][i];
-                xAxis.push(r[columns[c]].value);
-            }
-        } else {
-            var series = {
-                name: columns[c],
-                type: "bar",
-                coordinateSystem: "polar",
-                data: [],
-                animation: configs.animation.value.toBoolean(),
-                animationThreshold: Number(configs.animationThreshold.value),
-                animationEasing: getAnimationEasing(configs),
-                animationDuration: function (idx) {
-                    return idx * Number(configs.animationDuration.value) + c * Number(configs.animationDuration.value);
-                },
-                animationDelay: function (idx) {
-                    return idx * Number(configs.animationDelay.value) + c * Number(configs.animationDelay.value);
-                },
-                animationEasingUpdate: getAnimationEasingUpdate(configs),
-                animationDurationUpdate: function (idx) {
-                    return idx * Number(configs.animationDurationUpdate.value) + c * Number(configs.animationDurationUpdate.value);
-                },
-                animationDelayUpdate: function (idx) {
-                    return idx * Number(configs.animationDelayUpdate.value) + c * Number(configs.animationDelayUpdate.value);
-                },
-            };
-
-            for (var i = 0; i < dataset["data"].length; i++) {
-                var r = dataset["data"][i];
-                series.data.push(r[columns[c]].value);
-            }
-            yAxis_series.push(series);
-        }
-    }
-
-    var option = {
-        aria: {
-            enabled: configs.ariaEnable.value.toBoolean(),
-            decal:{
-                show: configs.ariaEnable.value.toBoolean(),
-            }
-        },
-        backgroundColor: configs.backgroundColor.value,
-        title: {
-            show: configs.titleDisplay.value.toBoolean(),
-            text: configs.titleText.value,
-            link: configs.titleTextLink.value,
-            target : "blank",
-            subtext: configs.titleSubText.value,
-            sublink: configs.titleSubTextLink.value,
-            subtarget: "blank",
-            top:"top",
-            left:configs.titlePosition.value,
-            textStyle: {
-                color: configs.titleTextColor.value,
-                fontSize: Number(configs.titleTextFontSize.value),
-            },
-            subtextStyle: {
-                color: configs.titleSubTextColor.value,
-                fontSize: Number(configs.titleSubTextFontSize.value),
-            }
-        },
-        toolbox: {
-            show: configs.toolboxDisplay.value.toBoolean(),
-            feature: {
-                saveAsImage: {
-                    show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
-                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"],
-                    backgroundColor:configs.toolboxFeatureSaveAsImageBackgroundColor.value,
-                },
-                restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
-                dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                dataZoom: {show: configs.toolboxFeatureDataZoom.value.toBoolean()},
-                magicType: {
-                    show: configs.toolboxFeatureMagicType.value.toBoolean(),
-                    type: ["stack", "tiled"]
-                },
-                myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
-                    show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
-                    title: '视图组合',
-                    icon: __SYS_IMAGES_PATH__.viewCombination,
-                    onclick: function () {
-                        __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
-                        alert("视图已提交组合列表.");
-                    }
-                } : {},
-            },
-            top: configs.toolbox_top.value,
-            left:configs.toolbox_left.value,
-            orient: configs.toolbox_orient.value,
-            emphasis: {
-                iconStyle: {
-                    textPosition: configs.toolbox_textPosition.value,
-                }
-            },
-        },
-        angleAxis: {
-            axisLabel:{
-                show: configs.axisLineDisplay.value.toBoolean(),
-                textStyle:{
-                    color: configs.axisTextColor.value,
-                }
-            },
-            axisLine: {
-                show: configs.axisLineDisplay.value.toBoolean(),
-                lineStyle: {
-                    color: configs.axisColor.value
-                },
-            },
-            axisTick:{
-                show: configs.axisLineDisplay.value.toBoolean(),
-                lineStyle: {
-                    color: configs.axisColor.value,
-                },
-            },
-            splitArea: {
-                show: configs.splitXAreaDisplay.value.toBoolean(),
-            },
-            type: "category",
-            data: xAxis,
-            z:10
-        },
-        radiusAxis: {
-            axisLabel:{
-                show: configs.axisLineDisplay.value.toBoolean(),
-                textStyle:{
-                    color: configs.axisTextColor.value,
-                }
-            },
-            axisLine: {
-                show: configs.axisLineDisplay.value.toBoolean(),
-                lineStyle: {
-                    color: configs.axisColor.value
-                },
-            },
-            axisTick:{
-                show: configs.axisLineDisplay.value.toBoolean(),
-                lineStyle: {
-                    color: configs.axisColor.value,
-                },
-            },
-            splitLine: {
-                show: configs.splitYLineDisplay.value.toBoolean(),
-                lineStyle: {
-                    color: configs.axisColor.value
-                },
-            },
-            z:10
-        },
-        polar: {
-            center:[(toPoint(configs.grid_left.value) + (100-toPoint(configs.grid_left.value)-toPoint(configs.grid_right.value))/2) + "%",
-            (toPoint(configs.grid_top.value) + (100-toPoint(configs.grid_top.value)-toPoint(configs.grid_bottom.value))/2) + "%"],
-        },
-        series: yAxis_series,
-        legend: {
-            show:configs.legendDisplay.value.toBoolean(),
-            icon: configs.legendIcon.value,
-            type: configs.legendType.value,
-            selectedMode: configs.legendSelectedMode.value,
-            top: configs.legendPositionTop.value,
-            left: configs.legendPositionLeft.value,
-            orient:configs.legendOrient.value,
-            data: columns.slice(1, columns.length),
-            textStyle: {
-                color: configs.legendTextColor.value
-            },
-        },
-        tooltip: {
-            show:configs.tooltipDisplay.value.toBoolean(),
-            trigger: "item",
-            formatter: function(param) {
-                return [param.seriesName, param.marker + "&ensp;" + param.name + ":<span style='display:inline-block;min-width:30px;text-align:right;font-weight:bold'>&ensp;" + param.value + "</span>"].join("<br>");
-            }
-        },
-        dataZoom: [{
-            type: "inside",
-            filterMode: configs.dataZoomFilterMode.value,
-            start: 0,
-            end: 100,
-            angleAxis: 0,
-        },{
-            type: "inside",
-            filterMode: configs.dataZoomFilterMode.value,
-            start: 0,
-            end: 100,
-            radiusAxis:0
-        }],
-        graphic: getWaterGraphic(__SYS_LOGO_LINK__),
-    };
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
@@ -4456,7 +4351,7 @@ function getPie(container, width, height, dataset, configs) {
                 label: {
                     show: configs.pieLabelDisplay.value.toBoolean(),
                     //控制label是否显示
-                    // position: "center"
+                    position: configs.pieLabelPosition.value,
                     alignTo: configs.pieLabelAlignTo.value,
                     bleedMargin: 5,
                     margin: 20,
@@ -4475,6 +4370,9 @@ function getPie(container, width, height, dataset, configs) {
                     label: {
                         show: true,
                     },
+                    borderRadius: configs.pieItemStyleBorderRadius.value,
+                    //borderColor: 'transparent',//'#fff',
+                    //borderWidth: 2
                 },
                 hoverOffset: 10,
                 selectedOffset: 10,
@@ -4639,8 +4537,8 @@ function getPie(container, width, height, dataset, configs) {
                 }
             }
         };
-
     }
+
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
@@ -4684,7 +4582,7 @@ function getRing(container, width, height, dataset, configs) {
                 avoidLabelOverlap: false,
                 label: {
                     show: configs.pieLabelDisplay.value.toBoolean(),
-                    //position: "center"
+                    position: configs.pieLabelPosition.value,
                     alignTo: configs.pieLabelAlignTo.value,
                     bleedMargin: 5,
                     margin: 20,
@@ -4703,6 +4601,9 @@ function getRing(container, width, height, dataset, configs) {
                     label: {
                         show: true,
                     },
+                    borderRadius: configs.pieItemStyleBorderRadius.value,
+                    //borderColor: 'transparent',//'#fff',
+                    //borderWidth: 2
                 },
                 hoverOffset: 10,
                 selectedOffset: 10,
@@ -4912,7 +4813,7 @@ function getRose(container, width, height, dataset, configs) {
                 roseType: "area",
                 label: {
                     show: configs.pieLabelDisplay.value.toBoolean(),
-                    //position: "center"
+                    position: configs.pieLabelPosition.value,
                     alignTo: configs.pieLabelAlignTo.value,
                     bleedMargin: 5,
                     margin: 20,
@@ -4931,6 +4832,9 @@ function getRose(container, width, height, dataset, configs) {
                     label: {
                         show: true,
                     },
+                    borderRadius: configs.pieItemStyleBorderRadius.value,
+                    //borderColor: 'transparent',//'#fff',
+                    //borderWidth: 2
                 },
                 hoverOffset: 10,
                 selectedOffset: 10,
@@ -5646,6 +5550,9 @@ function getRegression(container, width, height, dataset, configs) {
             splitNumber: 20,
             axisTick:{
                 show: configs.axisLineDisplay.value.toBoolean(),
+                lineStyle: {
+                    color: configs.axisColor.value
+                },
             },
             axisLabel: {
                 show: configs.axisLineDisplay.value.toBoolean(),
@@ -5679,6 +5586,9 @@ function getRegression(container, width, height, dataset, configs) {
             },
             axisTick:{
                 show: configs.axisLineDisplay.value.toBoolean(),
+                lineStyle: {
+                    color: configs.axisColor.value
+                },
             },
             axisLabel: {
                 show: configs.axisLineDisplay.value.toBoolean(),
@@ -6714,6 +6624,9 @@ function getScatter(container, width, height, dataset, configs) {
             },
             axisTick:{
                 show: configs.axisLineDisplay.value.toBoolean(),
+                lineStyle: {
+                    color: configs.axisColor.value
+                },
             },
             axisLabel: {
                 show: configs.axisLineDisplay.value.toBoolean(),
@@ -6745,6 +6658,9 @@ function getScatter(container, width, height, dataset, configs) {
             },
             axisTick:{
                 show: configs.axisLineDisplay.value.toBoolean(),
+                lineStyle: {
+                    color: configs.axisColor.value
+                },
             },
             axisLabel: {
                 show: configs.axisLineDisplay.value.toBoolean(),
@@ -8859,6 +8775,7 @@ function getBar3D(container, width, height, dataset, configs) {
             },
         },
         grid3D: {
+            boxHeight: Number(configs.BoxHeightFor3D.value),
             boxWidth: configs.BoxWidthFor3D.value,
             boxDepth: configs.BoxDepthFor3D.value,
             viewControl: {
@@ -9143,6 +9060,7 @@ function getLine3D(container, width, height, dataset, configs) {
             },
         },
         grid3D: {
+            boxHeight: Number(configs.BoxHeightFor3D.value),
             boxWidth: configs.BoxWidthFor3D.value,
             boxDepth: configs.BoxDepthFor3D.value,
             viewControl: {
@@ -9439,6 +9357,7 @@ function getScatter3D(container, width, height, dataset, configs) {
             },
         },
         grid3D: {
+            boxHeight: Number(configs.BoxHeightFor3D.value),
             boxWidth: configs.BoxWidthFor3D.value,
             boxDepth: configs.BoxDepthFor3D.value,
             viewControl: {
@@ -9533,7 +9452,14 @@ function getCategoryLine(container, width, height, dataset, configs) {
             series: []
         };
         var row = dataset["data"][i];
-        times.push(row[columns[0]].value);
+        times.push({
+            value: row[columns[0]].value,
+            tooltip: {
+                formatter: function (params) {
+                    return params.name;
+                }
+            }
+        });
         var data = [];
         for (var c = 1; c < columns.length; c++) {
             data.push({name: columns[c], value: row[columns[c]].value});
@@ -9574,6 +9500,9 @@ function getCategoryLine(container, width, height, dataset, configs) {
                     }
                 }
             };
+            serie.itemStyle = {
+                borderRadius: Number(configs.barItemStyleBorderRadius.value),
+            };
             serie.emphasis = {
                 label: {
                     show: configs.barEmphasisLabelDisplay.value.toBoolean(),
@@ -9600,6 +9529,9 @@ function getCategoryLine(container, width, height, dataset, configs) {
                 alignTo: configs.pieLabelAlignTo.value,
                 bleedMargin: 5,
                 margin: 20
+            };
+            serie.itemStyle = {
+                borderRadius: Number(configs.pieItemStyleBorderRadius.value),
             };
             serie.animationType = configs.animationType.value;
             serie.animationTypeUpdate = configs.animationTypeUpdate.value;
@@ -9829,6 +9761,9 @@ function getCategoryLine(container, width, height, dataset, configs) {
                 },
                 axisTick: {
                     show: configs.axisLineDisplay.value.toBoolean() && configs.categoryLineType.value != "pie",
+                    lineStyle: {
+                        color: configs.axisColor.value
+                    },
                 },
                 axisLabel: {
                     show: configs.axisLineDisplay.value.toBoolean() && configs.categoryLineType.value != "pie",
@@ -9860,6 +9795,9 @@ function getCategoryLine(container, width, height, dataset, configs) {
                 },
                 axisTick: {
                     show: configs.axisLineDisplay.value.toBoolean() && configs.categoryLineType.value != "pie",
+                    lineStyle: {
+                        color: configs.axisColor.value
+                    },
                 },
                 axisLabel: {
                     show: configs.axisLineDisplay.value.toBoolean() && configs.categoryLineType.value != "pie",
@@ -10279,7 +10217,14 @@ function getCategoryLineForGauge(container, width, height, dataset, configs) {
             series: []
         };
         var row = dataset["data"][i];
-        times.push(row[columns[0]].value);
+        times.push({
+            value: row[columns[0]].value,
+            tooltip: {
+                formatter: function (params) {
+                    return params.name;
+                }
+            }
+        });
         for (var c = 1; c < columns.length; c++) {
             var serie = {
                 name: row[columns[0]].value,
@@ -10534,14 +10479,21 @@ function getCategoryLineForLiqiud(container, width, height, dataset, configs) {
             series: []
         };
         var row = dataset["data"][i];
-        times.push(row[columns[0]].value);
-        for (var c = 1; c < columns.length; c++) {
+        times.push({
+            value: row[columns[0]].value,
+            tooltip: {
+                formatter: function (params) {
+                    return params.name;
+                }
+            }
+        });
+        if (configs.liqiudIsStack.value.toBoolean()) {
             var serie = {
                 name: row[columns[0]].value,
                 type: "liquidFill",
                 dimensions: [columns[c]],
                 data: [],
-                color: ["#294D99", "#156ACF", "#1598ED", "#45BDFF"],
+                color: eval(configs.liqiudColor.value),
                 //center: ["50%", "50%"],
                 //radius: "50%",
                 amplitude: "8%",
@@ -10568,7 +10520,7 @@ function getCategoryLineForLiqiud(container, width, height, dataset, configs) {
                 },
 
                 backgroundStyle: {
-                    color: "#E3F7FF"
+                    color: configs.liqiudBackgroundStyle.value
                 },
 
                 itemStyle: {
@@ -10597,15 +10549,87 @@ function getCategoryLineForLiqiud(container, width, height, dataset, configs) {
                 animationEasing: getAnimationEasing(configs),
                 animationEasingUpdate: getAnimationEasingUpdate(configs),
             };
-            serie.data.push({
-                name: columns[c],
-                value: row[columns[c]].value
-            });
+            for (let c = 1; c < columns.length; c++) {
+                serie.data.push({
+                    name: columns[c],
+                    value: row[columns[c]].value
+                });
+            }
+            opt.series = serie;
+            options.push(opt);
+        } else {
+            for (var c = 1; c < columns.length; c++) {
+                var serie = {
+                    name: row[columns[0]].value,
+                    type: "liquidFill",
+                    dimensions: [columns[c]],
+                    data: [],
+                    color: eval(configs.liqiudColor.value),
+                    //center: ["50%", "50%"],
+                    //radius: "50%",
+                    amplitude: "8%",
+                    waveLength: "80%",
+                    phase: "auto",
+                    period: "auto",
+                    direction: "right",
+                    smooth: configs.lineSmooth.value.toBoolean(),
 
-            let left = (toPoint(configs.grid_left.value) + (100 - toPoint(configs.grid_left.value) - toPoint(configs.grid_right.value)) / 2);
-            let top = (toPoint(configs.grid_top.value) + (100 - toPoint(configs.grid_top.value) - toPoint(configs.grid_bottom.value)) / 2);
-            serie.center = [(c * left / (columns.length - 1)) + 50 / (columns.length - 1) * (c - 1) + "%", top + "%"];
-            opt.series.push(serie);
+                    shape: configs.liqiudShape.value == "whale" ? __SYS_IMAGES_PATH__.whale : configs.liqiudShape.value,
+
+                    waveAnimation: true,
+
+                    outline: {
+                        show: true,
+                        borderDistance: 3,
+                        itemStyle: {
+                            color: "#1598ED",//"none",
+                            borderColor: "#294D99",
+                            borderWidth: 2,
+                            shadowBlur: 10,
+                            shadowColor: "rgba(0, 0, 0, 0.25)"
+                        }
+                    },
+
+                    backgroundStyle: {
+                        color: configs.liqiudBackgroundStyle.value
+                    },
+
+                    itemStyle: {
+                        opacity: 0.6,
+                        shadowBlur: 50,
+                        shadowColor: "rgba(0, 0, 0, 0.4)"
+                    },
+
+                    label: {
+                        show: true,
+                        insideColor: "#fff",
+                        fontSize: configs.liqiudFontSize.value,
+                        fontWeight: "bold",
+                        align: "center",
+                        baseline: "middle",
+                        position: "inside"
+                    },
+
+                    emphasis: {
+                        itemStyle: {
+                            opacity: 0.8
+                        }
+                    },
+                    animation: configs.animation.value.toBoolean(),
+                    animationThreshold: Number(configs.animationThreshold.value),
+                    animationEasing: getAnimationEasing(configs),
+                    animationEasingUpdate: getAnimationEasingUpdate(configs),
+                };
+                serie.data.push({
+                    name: columns[c],
+                    value: row[columns[c]].value
+                });
+
+                let left = (toPoint(configs.grid_left.value) + (100 - toPoint(configs.grid_left.value) - toPoint(configs.grid_right.value)) / 2);
+                let top = (toPoint(configs.grid_top.value) + (100 - toPoint(configs.grid_top.value) - toPoint(configs.grid_bottom.value)) / 2);
+                serie.center = [(c * left / (columns.length - 1)) + 50 / (columns.length - 1) * (c - 1) + "%", top + "%"];
+                opt.series.push(serie);
+            }
         }
 
         options.push(opt);
@@ -10676,6 +10700,10 @@ function getCategoryLineForLiqiud(container, width, height, dataset, configs) {
                 },
                 emphasis: {
                     label: {
+                        show: true,
+                        formatter: function (s) {
+                            return s;
+                        },
                         color: configs.timelineEmphasisColor.value,
                     },
                     checkpointStyle: {
@@ -10694,7 +10722,7 @@ function getCategoryLineForLiqiud(container, width, height, dataset, configs) {
             tooltip: {
                 show: configs.tooltipDisplay.value.toBoolean(),
                 formatter: function (params) {
-                    return [params.seriesName, params.marker + params.dimensionNames[0] + ":&emsp;<span style='display:inline-block;min-width:30px;text-align:right;font-weight:bold'>" + params.data.value + "</span>"].join("<br>");
+                    return [params.name, params.marker + params.seriesName + ":&emsp;<span style='display:inline-block;min-width:30px;text-align:right;font-weight:bold'>" + Math.round(params.data.value*100,2) + "%</span>"].join("<br>");
                 },
             },
             toolbox: {
@@ -10806,7 +10834,14 @@ function getCategoryLineForGeoOfChina(container, width, height, dataset, configs
     function init() {
         for (var c = 0; c < columns.length; c++) {
             if (c > 0) {
-                times.push(columns[c]);
+                times.push({
+                    value: columns[c],
+                    tooltip: {
+                        formatter: function (params) {
+                            return params.name;
+                        }
+                    }
+                });
                 let data = [];
                 let min = null;
                 let max = null;
@@ -11182,7 +11217,14 @@ function getCategoryLineForGeoOfLocal(container, width, height, dataset, configs
     function init() {
         for (var c = 0; c < columns.length; c++) {
             if (c > 0) {
-                times.push(columns[c]);
+                times.push({
+                    value: columns[c],
+                    tooltip: {
+                        formatter: function (params) {
+                            return params.name;
+                        }
+                    }
+                });
                 var data = [];
                 var min = null;
                 var max = null;
@@ -12398,6 +12440,7 @@ function getSurface(container, width, height, dataset, configs) {
             },
         },
         grid3D: {
+            boxHeight: Number(configs.BoxHeightFor3D.value),
             boxWidth: configs.BoxWidthFor3D.value,
             boxDepth: configs.BoxDepthFor3D.value,
             viewControl: {
@@ -12614,6 +12657,9 @@ function getBoxplot(container, width, height, dataset, configs) {
             },
             axisTick: {
                 show: configs.axisLineDisplay.value.toBoolean(),
+                lineStyle: {
+                    color: configs.axisColor.value
+                },
             },
             axisLabel: {
                 show: configs.axisLineDisplay.value.toBoolean(),
@@ -12646,6 +12692,9 @@ function getBoxplot(container, width, height, dataset, configs) {
             },
             axisTick: {
                 show: configs.axisLineDisplay.value.toBoolean(),
+                lineStyle: {
+                    color: configs.axisColor.value
+                },
             },
             axisLabel: {
                 show: configs.axisLineDisplay.value.toBoolean(),
@@ -13409,6 +13458,9 @@ function getCandlestick(container, width, height, dataset, configs) {
             },
             axisTick: {
                 show: configs.axisLineDisplay.value.toBoolean(),
+                lineStyle: {
+                    color: configs.axisColor.value
+                },
             },
             axisLabel: {
                 show: configs.axisLineDisplay.value.toBoolean(),
@@ -13441,6 +13493,9 @@ function getCandlestick(container, width, height, dataset, configs) {
             },
             axisTick: {
                 show: configs.axisLineDisplay.value.toBoolean(),
+                lineStyle: {
+                    color: configs.axisColor.value
+                },
             },
             axisLabel: {
                 show: configs.axisLineDisplay.value.toBoolean(),
@@ -13896,7 +13951,8 @@ function getSunburst(container, width, height, dataset, configs) {
 
     var myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value});
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
-    var colors = ["#a6c84c", "#ffa022", "#46bee9", "#9370DB", "#F08080", "#FF4500"];
+
+    //var colors = ["#a6c84c", "#ffa022", "#46bee9", "#9370DB", "#F08080", "#FF4500"];
     var columns = [];
     var series = [];
     var parent = "";
@@ -13919,7 +13975,7 @@ function getSunburst(container, width, height, dataset, configs) {
                     value: row[columns[c]].value,
                     children: [],
                     itemStyle: {
-                        color: colors[i % colors.length]
+                        //color: colors[i % colors.length]
                     }
                 };
             }
@@ -13960,8 +14016,9 @@ function getSunburst(container, width, height, dataset, configs) {
                 },
                 levels: [],
                 itemStyle: {
-                    color: '#ddd',
-                    borderWidth: 2,
+                    //color: '#ddd',
+                    //borderWidth: 2,
+                    borderRadius: Number(configs.sunburstItemStyleBorderRadius.value),
                 },
                 animation: configs.animation.value.toBoolean(),
                 animationThreshold: Number(configs.animationThreshold.value),
@@ -14105,7 +14162,7 @@ function getTreemap(container, width, height, dataset, configs) {
                     value: row[columns[c]].value,
                     children: [],
                     itemStyle: {
-                        color: colors[i % colors.length]
+                        //color: colors[i % colors.length]
                     }
                 };
             }
@@ -14152,39 +14209,42 @@ function getTreemap(container, width, height, dataset, configs) {
         levels: [
             {
                 itemStyle: {
-                    borderColor: 'transparent',
+                    //borderColor: 'transparent',
                     gapWidth: 2,
-                    borderWidth: 2,
+                    borderWidth: 1,
                 }
             },
             {
                 colorSaturation: [0.3, 0.6],
                 itemStyle: {
-                    borderColor: 'transparent',
+                    //borderColor: 'transparent',
                     gapWidth: 2,
-                    borderWidth: 2
+                    borderWidth: 1
                 }
             },
             {
                 colorSaturation: [0.3, 0.6],
                 itemStyle: {
-                    borderColor: 'transparent',
+                    //borderColor: 'transparent',
                     gapWidth: 2,
-                    borderWidth: 2
+                    borderWidth: 1
                 }
             },
             {
                 colorSaturation: [0.3, 0.6],
                 itemStyle: {
-                    borderColor: 'transparent',
+                    //borderColor: 'transparent',
                     gapWidth: 2,
-                    borderWidth: 2
+                    borderWidth: 1
                 }
             }
         ],
 
         name: configs.titleText.value,
         data: datas,
+        itemStyle: {
+            borderRadius: Number(configs.treemapItemStyleBorderRadius.value),
+        },
         label: {
             normal: {
                 position: eval(configs.treemapLabelPosition.value),
@@ -14797,6 +14857,468 @@ function getThemeRiver(container, width, height, dataset, configs) {
         }],
         graphic: getWaterGraphic(__SYS_LOGO_LINK__),
 
+    };
+
+    setTimeout(() => {
+        myChart.hideLoading();
+        myChart.setOption(option);
+    }, Number(configs.loadingTimes.value) * 1000);
+
+    __ECHARTS__.addHistory(container, configs, dataset, width, height);
+    return container;
+}
+
+function getPie3D(container, width, height, dataset, configs) {
+    if (container == null) {
+        container = document.createElement("div");
+        container.className = "echarts-container";
+        container.id = "echarts-container";
+        container.style.width = width;
+        container.style.height = height;
+    }
+
+    let myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value});
+    myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
+
+    var containerWidth = myChart.getWidth();//Number(width.replace(/px/i, ""));
+    var containerHeight = myChart.getHeight();//Number(height.replace(/px/i, ""));
+
+    let columns = [];
+    let legends = [];
+    let grid3Ds = [];
+    let xAxis3Ds = [];
+    let yAxis3Ds = [];
+    let zAxis3Ds = [];
+    for (var i = 0; i < dataset["columns"].length; i++) {
+        columns.push(dataset["columns"][i].name);
+        if (i>0) {
+            grid3Ds.push({
+                show: false,
+                //top: '30%',
+                left: (100 / (dataset["columns"].length - 1) * (i - 1)) + "%",
+                width: containerWidth / (dataset["columns"].length - 1),
+                bottom: '50%',
+                boxHeight: Number(configs.BoxHeightFor3D.value),
+                boxWidth: Math.min(configs.BoxWidthFor3D.value, configs.BoxDepthFor3D.value),
+                boxDepth: Math.min(configs.BoxWidthFor3D.value, configs.BoxDepthFor3D.value),
+                viewControl: {
+                    autoRotate: configs.AutoRotateFor3D.value.toBoolean(),
+                    autoRotateSpeed: configs.AutoRotateSpeedFor3D.value,
+                    projection: "orthographic",
+                    animation: configs.animation.value.toBoolean(),
+                    animationThreshold: Number(configs.animationThreshold.value),
+                    animationEasing: getAnimationEasing(configs),
+                    animationDuration: function (idx) {
+                        return idx * Number(configs.animationDuration.value);
+                    },
+                    animationDelay: function (idx) {
+                        return idx * Number(configs.animationDelay.value);
+                    },
+                    animationEasingUpdate: getAnimationEasingUpdate(configs),
+                    animationDurationUpdate: function (idx) {
+                        return idx * Number(configs.animationDurationUpdate.value);
+                    },
+                    animationDelayUpdate: function (idx) {
+                        return idx * Number(configs.animationDelayUpdate.value);
+                    },
+                },
+            });
+            xAxis3Ds.push({
+                min: -1,
+                max: 1,
+                grid3DIndex: i - 1
+            });
+            yAxis3Ds.push({
+                min: -1,
+                max: 1,
+                grid3DIndex: i - 1
+            });
+            zAxis3Ds.push({
+                min: -1,
+                max: 1,
+                grid3DIndex: i - 1
+            });
+        }
+    }
+
+      // 传入数据生成 option
+    let series = [];
+    for (let c =0;c<columns.length;c++) {
+        let da = [];
+        for (let i = 0; i < dataset["data"].length; i++) {
+            let row = dataset["data"][i];
+            if (c==0){
+                legends.push(row[columns[0]].value);
+            } else {
+                let d = {
+                    series: columns[c],
+                    name: row[columns[0]].value,
+                    value: row[columns[c]].value,
+                    itemStyle: {
+                        opacity: Number(configs.ItemStyleOpacityFor3D.value),
+                    }
+                };
+                da.push(d);
+            }
+        }
+        if (c>0) {
+            series = series.concat(getSeries(da, toPoint(configs.ringInRadiusFor3D.value) / 100, c - 1));
+        }
+    }
+
+    function getParametricEquation(startRatio, endRatio, isSelected, isHovered, k) {
+        // 计算
+        let midRatio = (startRatio + endRatio) / 2;
+
+        let startRadian = startRatio * Math.PI * 2;
+        let endRadian = endRatio * Math.PI * 2;
+        let midRadian = midRatio * Math.PI * 2;
+
+        // 如果只有一个扇形，则不实现选中效果。
+        if (startRatio === 0 && endRatio === 1) {
+            isSelected = false;
+        }
+
+        // 通过扇形内径/外径的值，换算出辅助参数 k（默认值 1/3）
+        k = typeof k !== 'undefined' ? k : 1 / 3;
+
+        // 计算选中效果分别在 x 轴、y 轴方向上的位移（未选中，则位移均为 0）
+        let offsetX = isSelected ? Math.cos(midRadian) * 0.1 : 0;
+        let offsetY = isSelected ? Math.sin(midRadian) * 0.1 : 0;
+
+        // 计算高亮效果的放大比例（未高亮，则比例为 1）
+        let hoverRate = isHovered ? 1.05 : 1;
+
+        // 返回曲面参数方程
+        return {
+            u: {
+                min: -Math.PI,
+                max: Math.PI * 3,
+                step: Math.PI / 32
+            },
+
+            v: {
+                min: 0,
+                max: Math.PI * 2,
+                step: Math.PI / 20
+            },
+
+            x: function (u, v) {
+                if (u < startRadian) {
+                    return offsetX + Math.cos(startRadian) * (1 + Math.cos(v) * k) * hoverRate;
+                }
+                if (u > endRadian) {
+                    return offsetX + Math.cos(endRadian) * (1 + Math.cos(v) * k) * hoverRate;
+                }
+                return offsetX + Math.cos(u) * (1 + Math.cos(v) * k) * hoverRate;
+            },
+
+            y: function (u, v) {
+                if (u < startRadian) {
+                    return offsetY + Math.sin(startRadian) * (1 + Math.cos(v) * k) * hoverRate;
+                }
+                if (u > endRadian) {
+                    return offsetY + Math.sin(endRadian) * (1 + Math.cos(v) * k) * hoverRate;
+                }
+                return offsetY + Math.sin(u) * (1 + Math.cos(v) * k) * hoverRate;
+            },
+
+            z: function (u, v) {
+                if (u < -Math.PI * 0.5) {
+                    return Math.sin(u);
+                }
+                if (u > Math.PI * 2.5) {
+                    return Math.sin(u);
+                }
+                return Math.sin(v) > 0 ? 1 : -1;
+            }
+        };
+    }
+
+// 生成模拟 3D 饼图的配置项
+    function getSeries(pieData, internalDiameterRatio,index) {
+        let series = [];
+        let sumValue = 0;
+        let startValue = 0;
+        let endValue = 0;
+        let k = typeof internalDiameterRatio !== 'undefined' ? (1 - internalDiameterRatio) / (1 + internalDiameterRatio) : 1 / 3;
+
+        // 为每一个饼图数据，生成一个 series-surface 配置
+        for (let i = 0; i < pieData.length; i++) {
+            sumValue += pieData[i].value;
+            let seriesItem = {
+                name: typeof pieData[i].name === 'undefined' ? `series${i}` : pieData[i].name,
+                type: 'surface',
+                grid3DIndex: index,
+                parametric: true,
+                wireframe: {
+                    show: false
+                },
+                pieData: pieData[i],
+                pieStatus: {
+                    selected: false,
+                    hovered: false,
+                    k: k
+                },
+            };
+
+            if (typeof pieData[i].itemStyle != 'undefined') {
+                let itemStyle = {};
+                typeof pieData[i].itemStyle.color != 'undefined' ? itemStyle.color = pieData[i].itemStyle.color : null;
+                typeof pieData[i].itemStyle.opacity != 'undefined' ? itemStyle.opacity = pieData[i].itemStyle.opacity : null;
+                seriesItem.itemStyle = itemStyle;
+            }
+            series.push(seriesItem);
+        }
+
+        // 使用上一次遍历时，计算出的数据和 sumValue，调用 getParametricEquation 函数，
+        // 向每个 series-surface 传入不同的参数方程 series-surface.parametricEquation，也就是实现每一个扇形。
+        for (let i = 0; i < series.length; i++) {
+            endValue = startValue + series[i].pieData.value;
+            series[i].pieData.startRatio = startValue / sumValue;
+            series[i].pieData.endRatio = endValue / sumValue;
+            series[i].parametricEquation = getParametricEquation(series[i].pieData.startRatio, series[i].pieData.endRatio, false, false, k);
+            startValue = endValue;
+        }
+
+        // 补充一个透明的圆环，用于支撑高亮功能的近似实现。
+        series.push({
+            name: 'mouseoutSeries',
+            type: 'surface',
+            grid3DIndex: index,
+            parametric: true,
+            wireframe: {
+                show: false
+            },
+            itemStyle: {
+                opacity: 0
+            },
+            parametricEquation: {
+                u: {
+                    min: 0,
+                    max: Math.PI * 2,
+                    step: Math.PI / 20
+                },
+                v: {
+                    min: 0,
+                    max: Math.PI,
+                    step: Math.PI / 20
+                },
+                x: function (u, v) {
+                    return Math.sin(v) * Math.sin(u) + Math.sin(u);
+                },
+                y: function (u, v) {
+                    return Math.sin(v) * Math.cos(u) + Math.cos(u);
+                },
+                z: function (u, v) {
+                    return Math.cos(v) > 0 ? 0.1 : -0.1;
+                }
+            }
+        });
+        // 准备待返回的配置项，把准备好的 legendData、series 传入。
+        return series;
+    }
+
+// 监听鼠标事件，实现饼图选中效果（单选），近似实现高亮（放大）效果。
+    let selectedIndex = '';
+    let hoveredIndex = '';
+
+// 监听点击事件，实现选中效果（单选）
+    myChart.on('click', function (params) {
+        // 从 option.series 中读取重新渲染扇形所需的参数，将是否选中取反。
+        let isSelected = !option.series[params.seriesIndex].pieStatus.selected;
+        let isHovered = option.series[params.seriesIndex].pieStatus.hovered;
+        let k = option.series[params.seriesIndex].pieStatus.k;
+        let startRatio = option.series[params.seriesIndex].pieData.startRatio;
+        let endRatio = option.series[params.seriesIndex].pieData.endRatio;
+
+
+        // 如果之前选中过其他扇形，将其取消选中（对 option 更新）
+        if (selectedIndex !== '' && selectedIndex !== params.seriesIndex) {
+            option.series[selectedIndex].parametricEquation = getParametricEquation(option.series[selectedIndex].pieData.startRatio, option.series[selectedIndex].pieData.endRatio, false, false, k);
+            option.series[selectedIndex].pieStatus.selected = false;
+        }
+
+        // 对当前点击的扇形，执行选中/取消选中操作（对 option 更新）
+        option.series[params.seriesIndex].parametricEquation = getParametricEquation(startRatio, endRatio, isSelected, isHovered, k);
+        option.series[params.seriesIndex].pieStatus.selected = isSelected;
+
+        // 如果本次是选中操作，记录上次选中的扇形对应的系列号 seriesIndex
+        isSelected ? selectedIndex = params.seriesIndex : null;
+
+        // 使用更新后的 option，渲染图表
+        myChart.setOption(option);
+    });
+
+// 监听 mouseover，近似实现高亮（放大）效果
+    myChart.on('mouseover', function (params) {
+
+        // 准备重新渲染扇形所需的参数
+        let isSelected;
+        let isHovered;
+        let startRatio;
+        let endRatio;
+        let k;
+
+        // 如果触发 mouseover 的扇形当前已高亮，则不做操作
+        if (hoveredIndex === params.seriesIndex) {
+            return;
+            // 否则进行高亮及必要的取消高亮操作
+        } else {
+            // 如果当前有高亮的扇形，取消其高亮状态（对 option 更新）
+            if (hoveredIndex !== '') {
+                // 从 option.series 中读取重新渲染扇形所需的参数，将是否高亮设置为 false。
+                isSelected = option.series[hoveredIndex].pieStatus.selected;
+                isHovered = false;
+                startRatio = option.series[hoveredIndex].pieData.startRatio;
+                endRatio = option.series[hoveredIndex].pieData.endRatio;
+                k = option.series[hoveredIndex].pieStatus.k;
+
+                // 对当前点击的扇形，执行取消高亮操作（对 option 更新）
+                option.series[hoveredIndex].parametricEquation = getParametricEquation(startRatio, endRatio, isSelected, isHovered, k);
+                option.series[hoveredIndex].pieStatus.hovered = isHovered;
+
+                // 将此前记录的上次选中的扇形对应的系列号 seriesIndex 清空
+                hoveredIndex = '';
+            }
+
+            // 如果触发 mouseover 的扇形不是透明圆环，将其高亮（对 option 更新）
+            if (params.seriesName !== 'mouseoutSeries') {
+                // 从 option.series 中读取重新渲染扇形所需的参数，将是否高亮设置为 true。
+                isSelected = option.series[params.seriesIndex].pieStatus.selected;
+                isHovered = true;
+                startRatio = option.series[params.seriesIndex].pieData.startRatio;
+                endRatio = option.series[params.seriesIndex].pieData.endRatio;
+                k = option.series[params.seriesIndex].pieStatus.k;
+
+                // 对当前点击的扇形，执行高亮操作（对 option 更新）
+                option.series[params.seriesIndex].parametricEquation = getParametricEquation(startRatio, endRatio, isSelected, isHovered, k);
+                option.series[params.seriesIndex].pieStatus.hovered = isHovered;
+
+                // 记录上次高亮的扇形对应的系列号 seriesIndex
+                hoveredIndex = params.seriesIndex;
+            }
+
+            // 使用更新后的 option，渲染图表
+            myChart.setOption(option);
+        }
+    });
+
+// 修正取消高亮失败的 bug
+    myChart.on('globalout', function () {
+        if (hoveredIndex !== '') {
+            // 从 option.series 中读取重新渲染扇形所需的参数，将是否高亮设置为 true。
+            isSelected = option.series[hoveredIndex].pieStatus.selected;
+            isHovered = false;
+            k = option.series[hoveredIndex].pieStatus.k;
+            startRatio = option.series[hoveredIndex].pieData.startRatio;
+            endRatio = option.series[hoveredIndex].pieData.endRatio;
+
+            // 对当前点击的扇形，执行取消高亮操作（对 option 更新）
+            option.series[hoveredIndex].parametricEquation = getParametricEquation(startRatio, endRatio, isSelected, isHovered, k);
+            option.series[hoveredIndex].pieStatus.hovered = isHovered;
+
+            // 将此前记录的上次选中的扇形对应的系列号 seriesIndex 清空
+            hoveredIndex = '';
+        }
+
+        // 使用更新后的 option，渲染图表
+        myChart.setOption(option);
+    });
+
+    let option = {
+        aria: {
+            enabled: configs.ariaEnable.value.toBoolean(),
+            decal: {
+                show: configs.ariaEnable.value.toBoolean(),
+            }
+        },
+        backgroundColor: configs.backgroundColor.value,
+        title: {
+            show: configs.titleDisplay.value.toBoolean(),
+            text: configs.titleText.value,
+            link: configs.titleTextLink.value,
+            target: "blank",
+            subtext: configs.titleSubText.value,
+            sublink: configs.titleSubTextLink.value,
+            subtarget: "blank",
+            top: "top",
+            left: configs.titlePosition.value,
+            textStyle: {
+                color: configs.titleTextColor.value,
+                fontSize: Number(configs.titleTextFontSize.value),
+            },
+            subtextStyle: {
+                color: configs.titleSubTextColor.value,
+                fontSize: Number(configs.titleSubTextFontSize.value),
+            }
+        },
+        legend: {
+            show: configs.legendDisplay.value.toBoolean(),
+            icon: configs.legendIcon.value,
+            type: configs.legendType.value,
+            selectedMode: configs.legendSelectedMode.value,
+            top: configs.legendPositionTop.value,
+            left: configs.legendPositionLeft.value,
+            orient: configs.legendOrient.value,
+            data: legends,
+            textStyle: {
+                color: configs.legendTextColor.value
+            },
+        },
+
+        toolbox: {
+            show: configs.toolboxDisplay.value.toBoolean(),
+            feature: {
+                saveAsImage: {
+                    show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
+                    excludeComponents: ["toolbox", "dataZoom", "timeline", "visualMap", "brush"],
+                    backgroundColor: configs.toolboxFeatureSaveAsImageBackgroundColor.value,
+                },
+                restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
+                dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
+                myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
+                    show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
+                    title: '视图组合',
+                    icon: __SYS_IMAGES_PATH__.viewCombination,
+                    onclick: function () {
+                        __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
+                        alert("视图已提交组合列表.");
+                    }
+                } : {},
+            },
+            top: configs.toolbox_top.value,
+            left: configs.toolbox_left.value,
+            orient: configs.toolbox_orient.value,
+            emphasis: {
+                iconStyle: {
+                    textPosition: configs.toolbox_textPosition.value,
+                }
+            },
+        },
+
+        tooltip: {
+            formatter: params => {
+                if (params.seriesName !== 'mouseoutSeries') {
+                    return `${params.seriesName}<br/><span style="display:inline-block;margin-right:5px;border-radius:10px;width:10px;height:10px;background-color:${params.color};"></span>${option.series[params.seriesIndex].pieData.value}`;
+                }
+            }
+        },
+        xAxis3D: xAxis3Ds,
+        yAxis3D: yAxis3Ds,
+        zAxis3D: zAxis3Ds,
+        grid3D: grid3Ds,
+        light: {
+            main: {
+                intensity: 1.2,
+                shadow: configs.LightShadowFor3D.value.toBoolean(),
+            },
+            ambient: {
+                intensity: 0.3
+            }
+        },
+        series: series,
+        graphic: getWaterGraphic(__SYS_LOGO_LINK__),
     };
 
     setTimeout(() => {
