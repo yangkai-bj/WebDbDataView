@@ -152,6 +152,9 @@ function getEcharts(container, width, height, dataset, configs) {
             case "ThemeRiver":
                 return getThemeRiver(container, width, height, dataset, configs);
                 break;
+            case "SingeAxis":
+                return getSingeAxis(container, width, height, dataset, configs);
+                break;
         }
     } else {
          alert("本模块支持Echarts5.0.2及以上版本,您目前使用的版本是" + echarts.version + ".");
@@ -295,6 +298,7 @@ var __ECHARTS__ = {
                 new Option("平行坐标", "ParallelAxis"),
                 new Option("桑基图", "Sankey"),
                 new Option("主题河流图", "ThemeRiver"),
+                new Option("单轴散点图","SingeAxis"),
                 new Option("全国地图", "GeoOfChina"),
                 new Option("本地地图", "GeoOfLocal"),
                 new Option("迁徙地图", "GeoMigrateLinesOfChinaCity"),
@@ -1171,6 +1175,15 @@ var __ECHARTS__ = {
             options: [new Option("不设置", "none"), new Option("淡出其他", "self"), new Option("聚焦系列", "series")],
             type: "select"
         },
+
+        hr_singeAxis:{name: "单轴散点图", value: "", type: "hr"},
+        singeAxisType:{
+            name: "类别",
+            value: "scatter",
+            options: [new Option("一般散点", "scatter"), new Option("效应散点", "effectScatter")],
+            type: "select"
+        },
+        singeAxisSymbolSize:{name: "散点最大值", value: 45, type: "input"},
 
         hr_dataZoom: {name: "数据缩放", value: "", type: "hr"},
         dataZoomBarDisplay: {
@@ -15344,6 +15357,238 @@ function getPie3D(container, width, height, dataset, configs) {
         series: series,
         graphic: getWaterGraphic(__SYS_LOGO_LINK__),
     };
+
+    setTimeout(() => {
+        myChart.hideLoading();
+        myChart.setOption(option);
+    }, Number(configs.loadingTimes.value) * 1000);
+
+    __ECHARTS__.addHistory(container, configs, dataset, width, height);
+    return container;
+}
+
+function getSingeAxis(container, width, height, dataset, configs) {
+    if (container == null) {
+        container = document.createElement("div");
+        container.className = "echarts-container";
+        container.id = "echarts-container";
+        container.style.width = width;
+        container.style.height = height;
+    }
+
+    var myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value});
+    myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
+
+    let columns = [];
+    let headers = [];
+    let data = [];
+    let section = [];
+
+    for (var i = 0; i < dataset["columns"].length; i++) {
+        columns.push(dataset["columns"][i].name);
+        if (i>0){
+            section.push({min:null,max:null});
+        }
+    }
+
+    for (let i = 0; i < dataset["data"].length; i++) {
+        let row = dataset["data"][i];
+        headers.push(row[columns[0]].value);
+        for (let c = 1; c < columns.length; c++) {
+            data.push([c - 1, i, row[columns[c]].value]);
+            if (section[c-1].min == null || section[c-1].min > row[columns[c]].value){
+                section[c-1].min = row[columns[c]].value;
+            }
+            if (section[c-1].max == null || section[c-1].max < row[columns[c]].value){
+                section[c-1].max = row[columns[c]].value;
+            }
+        }
+    }
+
+    columns = columns.splice(1);
+
+    let option = {
+        aria: {
+            enabled: configs.ariaEnable.value.toBoolean(),
+            decal:{
+                show: configs.ariaEnable.value.toBoolean(),
+            }
+        },
+        backgroundColor: configs.backgroundColor.value,
+        grid: {
+            x: configs.grid_left.value,
+            y: configs.grid_top.value,
+            x2: configs.grid_right.value,
+            y2: configs.grid_bottom.value,
+            containLabel: configs.grid_containLabel.value.toBoolean(),
+            backgroundColor: "transparent"
+        },
+        brush: configs.toolboxFeatureBrush.value.toBoolean() ? {
+            toolbox: ["rect", "polygon", "lineX", "lineY", "keep", "clear"],
+            xAxisIndex: 0
+        } : null,
+        toolbox: {
+            show: configs.toolboxDisplay.value.toBoolean(),
+            feature: {
+                saveAsImage: {
+                    show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
+                    excludeComponents: ["toolbox", "dataZoom", "timeline", "visualMap", "brush"],
+                    backgroundColor: configs.toolboxFeatureSaveAsImageBackgroundColor.value,
+                },
+                restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
+                dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
+                dataZoom: {show: configs.toolboxFeatureDataZoom.value.toBoolean(),},
+                magicType: {
+                    show: configs.toolboxFeatureMagicType.value.toBoolean(),
+                    type: ["line", "bar", "stack", "tiled"]
+                },
+                myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
+                    show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
+                    title: '视图组合',
+                    icon: __SYS_IMAGES_PATH__.viewCombination,
+                    onclick: function () {
+                        __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
+                        alert("视图已提交组合列表.");
+                    }
+                } : {},
+            },
+            top: configs.toolbox_top.value,
+            left: configs.toolbox_left.value,
+            orient: configs.toolbox_orient.value,
+            emphasis: {
+                iconStyle: {
+                    textPosition: configs.toolbox_textPosition.value,
+                }
+            },
+        },
+        legend: {
+            show: configs.legendDisplay.value.toBoolean(),
+            icon: configs.legendIcon.value,
+            type: configs.legendType.value,
+            selectedMode: configs.legendSelectedMode.value,
+            top: configs.legendPositionTop.value,
+            left: configs.legendPositionLeft.value,
+            orient: configs.legendOrient.value,
+            data: columns,
+            textStyle: {
+                color: configs.legendTextColor.value
+            },
+        },
+
+        tooltip: {
+            show: configs.tooltipDisplay.value.toBoolean(),
+            position: 'top',
+            axisPointer: {
+                type: configs.axisPointerType.value,
+            },
+            formatter: function(param) {
+                return [param.marker + "&ensp;" + param.name + ":<span style='display:inline-block;min-width:30px;text-align:right;font-weight:bold'>&ensp;" + param.value[1] + "</span>"].join("<br>");
+            }
+        },
+        title: [
+            {
+                show: configs.titleDisplay.value.toBoolean(),
+                text: configs.titleText.value,
+                link: configs.titleTextLink.value,
+                target: "blank",
+                subtext: configs.titleSubText.value,
+                sublink: configs.titleSubTextLink.value,
+                subtarget: "blank",
+                top: "top",
+                left: configs.titlePosition.value,
+                textStyle: {
+                    color: configs.titleTextColor.value,
+                    fontSize: Number(configs.titleTextFontSize.value),
+                },
+                subtextStyle: {
+                    color: configs.titleSubTextColor.value,
+                    fontSize: Number(configs.titleSubTextFontSize.value),
+                }
+            }
+        ],
+        singleAxis: [],
+        series: [],
+        graphic: getWaterGraphic(__SYS_LOGO_LINK__)
+    };
+
+    columns.forEach(function (column, idx) {
+        option.title.push({
+            textBaseline: 'middle',
+            top: (idx + 0.5) * 100 / columns.length + '%',
+            text: column
+        });
+        option.singleAxis.push({
+            left: 150,
+            type: 'category',
+            boundaryGap: false,
+            data: headers,
+            top: (idx * 100 / columns.length + 5) + '%',
+            height: (100 / columns.length - 10) + '%',
+
+            inverse: configs.xAxisInverse.value.toBoolean(),
+            axisLine: {
+                show: configs.axisLineDisplay.value.toBoolean(),
+                lineStyle: {
+                    color: configs.axisColor.value
+                },
+            },
+            axisTick: {
+                show: configs.axisLineDisplay.value.toBoolean(),
+                lineStyle: {
+                    color: configs.axisColor.value
+                },
+            },
+            axisLabel: {
+                show: configs.axisLineDisplay.value.toBoolean(),
+                interval: "auto",
+                margin: 8,
+                rotate: Number(configs.xAxisLabelRotate.value),
+                textStyle: {
+                    color: configs.axisTextColor.value
+                }
+            },
+            splitLine: {
+                show: configs.splitXLineDisplay.value.toBoolean(),
+                lineStyle: {
+                    color: [
+                        configs.axisColor.value
+                    ]
+                },
+            },
+            splitArea: {
+                show: configs.splitXAreaDisplay.value.toBoolean(),
+            }
+        });
+        option.series.push({
+            singleAxisIndex: idx,
+            coordinateSystem: 'singleAxis',
+            type: configs.singeAxisType.value,
+            data: [],
+            symbolSize: function (dataItem) {
+                return (dataItem[1] - section[dataItem[2]].min) * (Number(configs.singeAxisSymbolSize.value) + 3) / (section[dataItem[2]].max - section[dataItem[2]].min) + 3;
+            },
+            animation: configs.animation.value.toBoolean(),
+            animationThreshold: Number(configs.animationThreshold.value),
+            animationEasing: getAnimationEasing(configs),
+            animationDuration: function (idx) {
+                return idx * Number(configs.animationDuration.value) + Number(configs.animationDuration.value);
+            },
+            animationDelay: function (idx) {
+                return idx * Number(configs.animationDelay.value) + Number(configs.animationDelay.value);
+            },
+            animationEasingUpdate: getAnimationEasingUpdate(configs),
+            animationDurationUpdate: function (idx) {
+                return idx * Number(configs.animationDurationUpdate.value) + Number(configs.animationDurationUpdate.value);
+            },
+            animationDelayUpdate: function (idx) {
+                return idx * Number(configs.animationDelayUpdate.value) + Number(configs.animationDelayUpdate.value);
+            },
+        });
+    });
+
+    data.forEach(function (dataItem) {
+        option.series[dataItem[0]].data.push([dataItem[1], dataItem[2], dataItem[0]]);
+    });
 
     setTimeout(() => {
         myChart.hideLoading();
