@@ -820,9 +820,9 @@ var __ECHARTS__ = {
 
         hr_gauge: {name: "仪表盘", value: "", type: "hr"},
         gaugeAxisLabelFontSize: {name: "刻度字号", value: 10, type: "input"},
-        gaugeAxisLabelColor: {value: "#C0911F", name: "刻度颜色", type: "color"},
         gaugeAxisLabelDistance: {name: "刻度位置", value: 15, type: "input"},
         gaugeTitleFontSize: {name: "标题字号", value: 14, type: "input"},
+        gaugeTitleColor: {value: "#C0911F", name: "标题颜色", type: "color"},
         gaugeLabelFontSize: {name: "数据字号", value: 18, type: "input"},
         gaugeAxisLineWidth: {name: "圆轴宽度", value: 10, type: "input"},
         gaugeStartAngle: {name: "起始角度", value: 225, type: "input"},
@@ -5681,6 +5681,9 @@ function getRelation(container, width, height, dataset, configs) {
     for (var i=0; i<dataset["columns"].length;i++){
         columns.push(dataset["columns"][i].name);
     }
+    if (columns.length !=2)
+        alert("关系数据结构:[父级名称,子级名称].");
+
     var nodes = [];
     var links = [];
     //############################################
@@ -5933,13 +5936,15 @@ function getTree(container, width, height, dataset, configs) {
     }
 
     var myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value});
-
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
     var columns = [];
     for (var i=0; i<dataset["columns"].length;i++){
         columns.push(dataset["columns"][i].name);
     }
+    if (columns.length !=2)
+        alert("树形数据结构:[父级名称,子级名称].");
+
     var nodes = [];
 
     function createNode(name) {
@@ -6164,7 +6169,6 @@ function getWebkitDep(container, width, height, dataset, configs) {
     }
 
     var myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value});
-
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
     var columns = [];
@@ -6173,6 +6177,10 @@ function getWebkitDep(container, width, height, dataset, configs) {
         columns.push(dataset["columns"][i].name);
         categories.push({name: dataset["columns"][i].name,keyword:{},base:dataset["columns"][i].name});
     }
+
+    if (columns.length !=2)
+        alert("关系数据结构:[父级名称,子级名称].");
+
     var nodes = [];
     var links = [];
     //############################################
@@ -6211,7 +6219,7 @@ function getWebkitDep(container, width, height, dataset, configs) {
             if (c == 0) {
                 source = createNode(r[columns[c]].value, c);
             } else {
-                var target;
+                let target;
                 target = createNode(r[columns[c]].value, c);
                 if (source != target) {
                     links.push({
@@ -9852,6 +9860,9 @@ function getGeoMigrateLinesOfChinaCity(container, width, height, dataset, config
         columns.push(dataset["columns"][i].name);
     }
 
+    if (columns.length !=3)
+        alert("迁徙数据结构:[源城市,目标城市,相关信息].");
+
     var seriedata = [];
 
     function getSerie(fromCity) {
@@ -10200,7 +10211,7 @@ function getCategoryLineForGauge(container, width, height, dataset, configs) {
     var containerWidth = myChart.getWidth();//Number(width.replace(/px/i, ""));
     var containerHeight = myChart.getHeight();//Number(height.replace(/px/i, ""));
 
-    var colors = (typeof myChart._theme !== "undefined"?myChart._theme.color:['#c23531','#2f4554', '#61a0a8', '#d48265', '#91c7ae','#749f83',  '#ca8622', '#bda29a','#6e7074', '#546570', '#c4ccd3']);//["#294D99", "#156ACF", "#1598ED", "#45BDFF"]
+    var colors = (typeof myChart._theme !== "undefined"?myChart._theme.color:['#c23531','#2f4554', '#61a0a8', '#d48265', '#91c7ae','#749f83',  '#ca8622', '#bda29a','#6e7074', '#546570', '#c4ccd3']);
     var columns = [];
     var times = [];
     var options = [];
@@ -10229,7 +10240,7 @@ function getCategoryLineForGauge(container, width, height, dataset, configs) {
                 title: {
                     fontWeight: "bolder",
                     fontSize: configs.gaugeTitleFontSize.value,
-                    color: configs.gaugeAxisLabelColor.value,
+                    color: configs.gaugeTitleColor.value,
                     textShadowColor: "rgba(0, 0, 0, 0.5)",
                     textShadowBlur: 10,
                     offsetCenter: [0, '-35%'],
@@ -10261,7 +10272,7 @@ function getCategoryLineForGauge(container, width, height, dataset, configs) {
                 },
                 axisLabel: {
                     fontSize: configs.gaugeAxisLabelFontSize.value,
-                    color: configs.gaugeAxisLabelColor.value,
+                    color: colors[3],
                     textShadowColor: "rgba(0, 0, 0, 0.5)",
                     textShadowBlur: 10,
                     distance: Number(configs.gaugeAxisLabelDistance.value),
@@ -10289,7 +10300,7 @@ function getCategoryLineForGauge(container, width, height, dataset, configs) {
                     offsetCenter: [0, '8%'],
                 },
                 detail: {
-                    color: configs.gaugeAxisLabelColor.value,
+                    color: configs.gaugeTitleColor.value,
                     formatter: ["{value}", ""].join("\n"),
                     fontSize: configs.gaugeLabelFontSize.value,
                     textShadowColor: "rgba(0, 0, 0, 0.5)",
@@ -11586,8 +11597,8 @@ function getScrollingScreen(container, width, height, dataset, configs) {
     }
 
     var myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value});
-
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
+    var colorPalette = (typeof myChart._theme !== "undefined"?myChart._theme.color:['#c23531','#2f4554', '#61a0a8', '#d48265', '#91c7ae','#749f83',  '#ca8622', '#bda29a','#6e7074', '#546570', '#c4ccd3']);
 
     var containerWidth = myChart.getWidth();//Number(width.replace(/px/i, ""));
     var containerHeight = myChart.getHeight();//Number(height.replace(/px/i, ""));
@@ -11632,13 +11643,6 @@ function getScrollingScreen(container, width, height, dataset, configs) {
             }
         });
     }
-
-    var colorPalette = [
-        '#2ec7c9', '#b6a2de', '#5ab1ef', '#ffb980', '#d87a80',
-        '#8d98b3', '#e5cf0d', '#97b552', '#95706d', '#dc69aa',
-        '#07a2a4', '#9a7fd1', '#588dd5', '#f5994e', '#c05050',
-        '#59678c', '#c9ab00', '#7eb00a', '#6f5553', '#c14089'
-    ];
 
     for (var i = 0; i < dataset["data"].length; i++) {
         let r = dataset["data"][i];
@@ -11807,8 +11811,8 @@ function getWalkingLantern(container, width, height, dataset, configs) {
     }
 
     var myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value});
-
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
+    var colorPalette = (typeof myChart._theme !== "undefined"?myChart._theme.color:['#c23531','#2f4554', '#61a0a8', '#d48265', '#91c7ae','#749f83',  '#ca8622', '#bda29a','#6e7074', '#546570', '#c4ccd3']);
 
     var containerWidth = myChart.getWidth();//Number(width.replace(/px/i, ""));
     var containerHeight = myChart.getHeight();//Number(height.replace(/px/i, ""));
@@ -11871,13 +11875,6 @@ function getWalkingLantern(container, width, height, dataset, configs) {
         });
     }
     title = [title];
-
-    var colorPalette = [
-        '#2ec7c9', '#b6a2de', '#5ab1ef', '#ffb980', '#d87a80',
-        '#8d98b3', '#e5cf0d', '#97b552', '#95706d', '#dc69aa',
-        '#07a2a4', '#9a7fd1', '#588dd5', '#f5994e', '#c05050',
-        '#59678c', '#c9ab00', '#7eb00a', '#6f5553', '#c14089'
-    ];
 
     var option = {
         aria: {
@@ -12039,8 +12036,8 @@ function getWindowShades(container, width, height, dataset, configs) {
     }
 
     var myChart = echarts.init(container, configs.echartsTheme.value);
-
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
+    var colorPalette = (typeof myChart._theme !== "undefined"?myChart._theme.color:['#c23531','#2f4554', '#61a0a8', '#d48265', '#91c7ae','#749f83',  '#ca8622', '#bda29a','#6e7074', '#546570', '#c4ccd3']);
 
     var containerWidth = myChart.getWidth();//Number(width.replace(/px/i, ""));
     var containerHeight = myChart.getHeight();//Number(height.replace(/px/i, ""));
@@ -12104,13 +12101,6 @@ function getWindowShades(container, width, height, dataset, configs) {
         });
     }
     title = [title];
-
-    var colorPalette = [
-        '#2ec7c9', '#b6a2de', '#5ab1ef', '#ffb980', '#d87a80',
-        '#8d98b3', '#e5cf0d', '#97b552', '#95706d', '#dc69aa',
-        '#07a2a4', '#9a7fd1', '#588dd5', '#f5994e', '#c05050',
-        '#59678c', '#c9ab00', '#7eb00a', '#6f5553', '#c14089'
-    ];
 
     var option = {
         aria: {
@@ -12909,8 +12899,8 @@ function getClock(container, width, height, dataset, configs) {
     }
 
     var myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value});
-
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
+    var colors = (typeof myChart._theme !== "undefined"?myChart._theme.color:['#c23531','#2f4554', '#61a0a8', '#d48265', '#91c7ae','#749f83',  '#ca8622', '#bda29a','#6e7074', '#546570', '#c4ccd3']);
 
     var columns = [];
     for (var i = 0; i < dataset["columns"].length; i++) {
@@ -12999,7 +12989,7 @@ function getClock(container, width, height, dataset, configs) {
                 max: 12,
                 splitNumber: 12,
                 itemStyle: {
-                    color: configs.clockLabelColor.value,
+                    color: colors[0],//configs.clockLabelColor.value,
                     shadowColor: 'rgba(0, 0, 0, 0.3)',
                     shadowBlur: 8,
                     shadowOffsetX: 2,
@@ -13022,7 +13012,7 @@ function getClock(container, width, height, dataset, configs) {
                     lineStyle: {
                         width: 5,
                         //主刻度宽度
-                        color: configs.clockLabelColor.value,
+                        color: colors[1],//configs.clockLabelColor.value,
                         shadowColor: 'rgba(0, 0, 0, 0.3)',
                         shadowBlur: 3,
                         shadowOffsetX: 1,
@@ -13033,11 +13023,11 @@ function getClock(container, width, height, dataset, configs) {
                     splitNumber: 5,
                     //主刻度之间的分隔数
                     lineStyle: {
-                        color: configs.clockLabelColor.value,
+                        color: colors[1],//configs.clockLabelColor.value,
                     }
                 },
                 axisLabel: {
-                    color: configs.clockLabelColor.value,
+                    color: colors[1],//configs.clockLabelColor.value,
                     fontSize: Number(configs.clockFontSize.value),
                     distance: Number(configs.clockAxisLabelDistance.value),
                     //标签和刻度的距离
@@ -13134,7 +13124,7 @@ function getClock(container, width, height, dataset, configs) {
                     length: '55%',
                     offsetCenter: [0, '8%'],
                     itemStyle: {
-                        color: configs.clockLabelColor.value,
+                        color: colors[2],//configs.clockLabelColor.value,
                         shadowColor: 'rgba(0, 0, 0, 0.3)',
                         shadowBlur: 8,
                         shadowOffsetX: 2,
@@ -13193,7 +13183,7 @@ function getClock(container, width, height, dataset, configs) {
                     length: '70%',
                     offsetCenter: [0, '8%'],
                     itemStyle: {
-                        color: configs.clockLabelColor.value,
+                        color: colors[2],//configs.clockLabelColor.value,
                         shadowColor: 'rgba(0, 0, 0, 0.3)',
                         shadowBlur: 8,
                         shadowOffsetX: 2,
@@ -13253,7 +13243,7 @@ function getClock(container, width, height, dataset, configs) {
                     length: '85%',
                     offsetCenter: [0, '8%'],
                     itemStyle: {
-                        color: configs.clockLabelColor.value,
+                        color: colors[3],//configs.clockLabelColor.value,
                         shadowColor: 'rgba(0, 0, 0, 0.3)',
                         shadowBlur: 8,
                         shadowOffsetX: 2,
@@ -13267,7 +13257,7 @@ function getClock(container, width, height, dataset, configs) {
                     showAbove: true,
                     size: 20,
                     itemStyle: {
-                        color: configs.clockLabelColor.value,
+                        color: colors[2],//configs.clockLabelColor.value,
                         shadowColor: 'rgba(0, 0, 0, 0.3)',
                         shadowBlur: 8,
                         shadowOffsetX: 2,
@@ -13986,8 +13976,8 @@ function getSunburst(container, width, height, dataset, configs) {
 
     var myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value});
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
+    var colors = (typeof myChart._theme !== "undefined"?myChart._theme.color:['#c23531','#2f4554', '#61a0a8', '#d48265', '#91c7ae','#749f83',  '#ca8622', '#bda29a','#6e7074', '#546570', '#c4ccd3']);
 
-    //var colors = ["#a6c84c", "#ffa022", "#46bee9", "#9370DB", "#F08080", "#FF4500"];
     var columns = [];
     var series = [];
     var parent = "";
@@ -14010,7 +14000,7 @@ function getSunburst(container, width, height, dataset, configs) {
                     value: row[columns[c]].value,
                     children: [],
                     itemStyle: {
-                        //color: colors[i % colors.length]
+                        color: colors[i % colors.length]
                     }
                 };
             }
@@ -14173,7 +14163,7 @@ function getTreemap(container, width, height, dataset, configs) {
 
     var myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value});
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
-    var colors = ["#a6c84c", "#ffa022", "#46bee9", "#9370DB", "#F08080", "#FF4500"];
+    var colors = (typeof myChart._theme !== "undefined"?myChart._theme.color:['#c23531','#2f4554', '#61a0a8', '#d48265', '#91c7ae','#749f83',  '#ca8622', '#bda29a','#6e7074', '#546570', '#c4ccd3']);
     var columns = [];
     var datas = [];
     var parent = "";
@@ -14197,7 +14187,7 @@ function getTreemap(container, width, height, dataset, configs) {
                     value: row[columns[c]].value,
                     children: [],
                     itemStyle: {
-                        //color: colors[i % colors.length]
+                        color: colors[i % colors.length]
                     }
                 };
             }
@@ -14425,8 +14415,7 @@ function getParallelAxis(container, width, height, dataset, configs) {
 
     var myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value});
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
-
-    var colors = ["#a6c84c", "#ffa022", "#46bee9", "#9370DB", "#F08080", "#FF4500"];
+    var colors = (typeof myChart._theme !== "undefined"?myChart._theme.color:['#c23531','#2f4554', '#61a0a8', '#d48265', '#91c7ae','#749f83',  '#ca8622', '#bda29a','#6e7074', '#546570', '#c4ccd3']);
 
     var columns = [];
     for (var i = 0; i < dataset["columns"].length; i++) {
