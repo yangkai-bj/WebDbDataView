@@ -325,6 +325,23 @@ String.prototype.isIDnumber = function(){
     return re;
 };
 
+String.prototype.isPhoneNumber = function(){
+    //用于简单判断是否是手机号码
+    var str = this.toString();
+    var reg = RegExp(/^1[3|4|5|7|8]\d{9}/,"g");
+    var result = str.match(reg,"g");
+    var re = false;
+    if (result != null) {
+        for (var i = 0; i < result.length; i++) {
+            if (result[i] == str) {
+                re = true;
+                break;
+            }
+        }
+    }
+    return re;
+};
+
 String.prototype.isDatetime = function () {
     var str = this.toString();
     try {
@@ -472,19 +489,19 @@ function getAbsolutePosition(obj)
     return position;
 }
 
-function getDataType(str){
-     //判断字符是否符合数字规则
+function getStringDataType(str){
+      //判断字符是否符合数字规则
      try {
          str = str.trim();
          if (str.isDatetime() && str.length == 10)
              return "date";
          else if (str.isDatetime() && str.indexOf(":") != -1)
              return "datetime";
-         else if (str.isIDnumber())
+         else if (str.isIDnumber() || str.isPhoneNumber())
              return "nvarchar";
-         else if (str.isNumber() && isNaN(Number.parseInt(str)) == false && str.indexOf(".") == -1)
+         else if (str.isNumber() && isNaN(Number.parseInt(str)) == false && str.length < 18 && str.indexOf(".") == -1)
              return "int";
-         else if (str.isNumber() && isNaN(Number.parseFloat(str)) == false)
+         else if (str.isNumber() && isNaN(Number.parseFloat(str)) == false && ((str.length < 18 && str.indexOf(".") == -1) || (str.indexOf(".") < 18 && str.indexOf(".")>=0)))
              return "float";
          else
              return "nvarchar"
@@ -585,7 +602,7 @@ function getStructFromData() {
                     col[index] = columns[i];
                     break;
                 case "type":
-                    col[index] = getDataType(data[i].toString());
+                    col[index] = getStringDataType(data[i].toString());
                     break;
                 case "length":
                     switch (col["type"]) {
