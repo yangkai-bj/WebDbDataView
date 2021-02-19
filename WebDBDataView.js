@@ -361,8 +361,8 @@ function transferData(structure,row) {
     let _row = [];
     try {
         let types = structure["data"];
-        if (types.length == row.length) {
-            for (var i = 0; i < row.length; i++) {
+        if (types.length <= row.length) {
+            for (let i = 0; i < types.length; i++) {
                 let type = types[i].Type.value;
                 let p = type.indexOf("(");
                 if (p > 0) {
@@ -391,6 +391,7 @@ function transferData(structure,row) {
             }
         }
     } catch (e) {
+
     }
     return _row;
 }
@@ -424,8 +425,8 @@ function importData(){
                         }
                         sql = sql.replace("{VALUES}", values);
                         viewMessage(sql);
-                    } else if (data.length == __CONFIGS__.CURRENT_TABLE.structure.data.length) {
-                        tx.executeSql(sql, data, function (tx, results) {
+                    } else if (data.length >= __CONFIGS__.CURRENT_TABLE.structure.data.length) {
+                        tx.executeSql(sql, data.slice(0,__CONFIGS__.CURRENT_TABLE.structure.data.length), function (tx, results) {
                                 __IMPORT__.SourceFile.count += 1;
                                 __IMPORT__.SourceFile.imported += results.rowsAffected;
                                 viewMessage("导入第 " + __IMPORT__.SourceFile.count + " 条记录.[ imported:" + __IMPORT__.SourceFile.imported + " failed:" + __IMPORT__.SourceFile.failed + " ]")
@@ -438,7 +439,7 @@ function importData(){
                     } else {
                         __IMPORT__.SourceFile.count += 1;
                         __IMPORT__.SourceFile.failed += 1;
-                        viewMessage("第 " + __IMPORT__.SourceFile.count + " 条记录错误.[ imported:" + __IMPORT__.SourceFile.imported + " failed:" + __IMPORT__.SourceFile.failed + " ]\n" + "数据拆分验证错误,\n[ " + lines[i] + " ]")
+                        viewMessage("第 " + __IMPORT__.SourceFile.count + " 条记录错误.[ imported:" + __IMPORT__.SourceFile.imported + " failed:" + __IMPORT__.SourceFile.failed + " ]\n" + "数据解析后长度小于数据库结构,\n[ " + lines[i] + " ]")
                     }
                 }catch (e) {
                     __IMPORT__.SourceFile.count += 1;
