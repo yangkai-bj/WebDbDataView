@@ -298,7 +298,7 @@ var __ECHARTS__ = {
                 new Option("平行坐标", "ParallelAxis"),
                 new Option("桑基图", "Sankey"),
                 new Option("主题河流图", "ThemeRiver"),
-                new Option("单轴散点图","SingeAxis"),
+                new Option("单轴散点图", "SingeAxis"),
                 new Option("全国地图", "GeoOfChina"),
                 new Option("本地地图", "GeoOfLocal"),
                 new Option("迁徙地图", "GeoMigrateLinesOfChinaCity"),
@@ -319,20 +319,21 @@ var __ECHARTS__ = {
             value: "",
             options: [
                 new Option("默认", ""),
-                new Option("单色", "monochrome"),
+                new Option("浅色", "light"),
+                new Option("暗黑", "dark"),
                 new Option("粉笔", "Chalk"),
-                new Option("黑暗", "Dark"),
+                new Option("夕阳", "SettingSun"),
                 new Option("橙色", "Essos"),
                 new Option("信息", "Infographic"),
-                new Option("浅色", "light"),
                 new Option("甜饼", "Macarons"),
                 new Option("紫色", "Purple"),
                 new Option("热情", "Roma"),
                 new Option("阳光", "Shine"),
                 new Option("怀旧", "Vintage"),
-                new Option("湖蓝", "Walden"),
+                new Option("湖光", "Walden"),
                 new Option("大陆", "Westeros"),
                 new Option("仙境", "Wonderland"),
+                new Option("单色", "monochrome"),
                 new Option("极简", "simple")],
             type: "select"
         },
@@ -631,14 +632,14 @@ var __ECHARTS__ = {
             type: "select"
         },
 
-        hr_polar:{name: "极坐标", value: "", type: "hr"},
+        hr_polar: {name: "极坐标", value: "", type: "hr"},
         polarType: {
             name: "图形类别",
             value: "line",
             options: [new Option("线型图", "line"), new Option("柱状图", "bar"), new Option("面积图", "area")],
             type: "select"
         },
-        polarRoundCap:{
+        polarRoundCap: {
             name: "圆角",
             value: "false",
             options: [new Option("否", "false"), new Option("是", "true")],
@@ -803,7 +804,7 @@ var __ECHARTS__ = {
             type: "select"
         },
         liqiudFontSize: {name: "标题字号", value: 16, type: "input"},
-         liqiudLabeColor:{
+        liqiudLabeColor: {
             name: "标签颜色",
             value: "#E3F7FF",
             type: "color"
@@ -820,7 +821,7 @@ var __ECHARTS__ = {
             options: [new Option("自动", "auto"), new Option("向右", "right"), new Option("向左", "left")],
             type: "select"
         },
-        liqiudOpacity:{name: "透明度", value: 0.6, type: "input"},
+        liqiudOpacity: {name: "透明度", value: 0.6, type: "input"},
 
         hr_gauge: {name: "仪表盘", value: "", type: "hr"},
         gaugeAxisLabelFontSize: {name: "刻度字号", value: 10, type: "input"},
@@ -869,7 +870,7 @@ var __ECHARTS__ = {
             options: [new Option("靠内", "left"), new Option("居中", "center"), new Option("靠外", "right")],
             type: "select"
         },
-        sunburstItemStyleBorderRadius : {name: "圆角半径", value:0, type:"input"},
+        sunburstItemStyleBorderRadius: {name: "圆角半径", value: 0, type: "input"},
         sunburstHighlightPolicy: {
             name: "高亮显示",
             value: "self",
@@ -886,7 +887,7 @@ var __ECHARTS__ = {
             value: "['5%','5%']",
             type: "input"
         },
-        treemapItemStyleBorderRadius:{
+        treemapItemStyleBorderRadius: {
             name: "圆角半径", value: 0, type: "input"
         },
 
@@ -905,7 +906,7 @@ var __ECHARTS__ = {
         },
 
         hr_3D: {name: "3D图形", value: "", type: "hr"},
-        BoxHeightFor3D:{name: "高度(X轴)", value: 20, type: "input"},
+        BoxHeightFor3D: {name: "高度(X轴)", value: 20, type: "input"},
         BoxWidthFor3D: {name: "宽度(X轴)", value: 200, type: "input"},
         BoxDepthFor3D: {name: "深度(Y轴)", value: 80, type: "input"},
         AutoRotateFor3D: {
@@ -943,7 +944,7 @@ var __ECHARTS__ = {
             options: [new Option("是", "true"), new Option("否", "false")],
             type: "select"
         },
-        ringInRadiusFor3D:{name: "内半径(%)", value: "30%", type: "input"},
+        ringInRadiusFor3D: {name: "内半径(%)", value: "30%", type: "input"},
 
         hr_geo: {name: "地图", value: "", type: "hr"},
         geoAreaColor: {value: "#323c48", name: "区域颜色", type: "color"},
@@ -1176,14 +1177,14 @@ var __ECHARTS__ = {
             type: "select"
         },
 
-        hr_singeAxis:{name: "单轴散点图", value: "", type: "hr"},
-        singeAxisType:{
+        hr_singeAxis: {name: "单轴散点图", value: "", type: "hr"},
+        singeAxisType: {
             name: "类别",
             value: "scatter",
             options: [new Option("一般散点", "scatter"), new Option("效应散点", "effectScatter")],
             type: "select"
         },
-        singeAxisSymbolSize:{name: "散点最大值", value: 45, type: "input"},
+        singeAxisSymbolSize: {name: "散点最大值", value: 45, type: "input"},
 
         hr_dataZoom: {name: "数据缩放", value: "", type: "hr"},
         dataZoomBarDisplay: {
@@ -2368,6 +2369,400 @@ function getWaterGraphic(link) {
     return graphic;
 }
 
+function getAria(configs) {
+    return {
+        enabled: configs.ariaEnable.value.toBoolean(),
+        decal: {
+            show: configs.ariaEnable.value.toBoolean(),
+        }
+    };
+}
+
+function getTitle(configs) {
+    return {
+        show: configs.titleDisplay.value.toBoolean(),
+        text: configs.titleText.value,
+        link: configs.titleTextLink.value,
+        target: "blank",
+        subtext: configs.titleSubText.value,
+        sublink: configs.titleSubTextLink.value,
+        subtarget: "blank",
+        top: "top",
+        left: configs.titlePosition.value,
+        textStyle: {
+            color: configs.titleTextColor.value,
+            fontSize: Number(configs.titleTextFontSize.value),
+        },
+        subtextStyle: {
+            color: configs.titleSubTextColor.value,
+            fontSize: Number(configs.titleSubTextFontSize.value),
+        }
+    };
+}
+
+function getLegend(configs, data) {
+    return {
+        show: configs.legendDisplay.value.toBoolean(),
+        icon: configs.legendIcon.value,
+        type: configs.legendType.value,
+        selectedMode: configs.legendSelectedMode.value,
+        top: configs.legendPositionTop.value,
+        left: configs.legendPositionLeft.value,
+        orient: configs.legendOrient.value,
+        data: data,
+        textStyle: {
+            color: configs.legendTextColor.value
+        },
+    };
+}
+
+function getGrid(configs) {
+    return {
+        x: configs.grid_left.value,
+        y: configs.grid_top.value,
+        x2: configs.grid_right.value,
+        y2: configs.grid_bottom.value,
+        containLabel: configs.grid_containLabel.value.toBoolean(),
+        backgroundColor: "transparent"
+    }
+}
+
+function getBrush(configs) {
+    return configs.toolboxFeatureBrush.value.toBoolean() ? {
+        toolbox: ["rect", "polygon", "lineX", "lineY", "keep", "clear"],
+        xAxisIndex: 0
+    } : null;
+}
+
+function getMultiScreen(configs, container) {
+    return configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
+        show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
+        title: '视图组合',
+        icon: __SYS_IMAGES_PATH__.viewCombination,
+        onclick: function () {
+            __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
+            alert("视图已提交组合列表.");
+        }
+    } : {};
+}
+
+function getXAxis(configs,type,data) {
+    return {
+        type: type,
+        data: data,
+        inverse: configs.xAxisInverse.value.toBoolean(),
+        axisLine: {
+            show: configs.axisLineDisplay.value.toBoolean(),
+            lineStyle: {
+                color: configs.axisColor.value
+            },
+        },
+        axisTick: {
+            show: configs.axisLineDisplay.value.toBoolean(),
+            lineStyle: {
+                color: configs.axisColor.value
+            },
+        },
+        axisLabel: {
+            show: configs.axisLineDisplay.value.toBoolean(),
+            interval: "auto",
+            margin: 8,
+            rotate: Number(configs.xAxisLabelRotate.value),
+            textStyle: {
+                color: configs.axisTextColor.value
+            }
+        },
+        splitLine: {
+            show: configs.splitXLineDisplay.value.toBoolean(),
+            lineStyle: {
+                color: [
+                    configs.axisColor.value
+                ]
+            },
+        },
+        splitArea: {
+            show: configs.splitXAreaDisplay.value.toBoolean(),
+        }
+    };
+}
+
+function getYAxis(configs,type,data,position) {
+    return {
+        type: type,
+        data: data,
+        position: position,
+        inverse: configs.yAxisInverse.value.toBoolean(),
+        axisLine: {
+            show: configs.axisLineDisplay.value.toBoolean(),
+            lineStyle: {
+                color: configs.axisColor.value
+            },
+        },
+        axisTick: {
+            show: configs.axisLineDisplay.value.toBoolean(),
+            lineStyle: {
+                color: configs.axisColor.value
+            },
+        },
+        axisLabel: {
+            show: configs.axisLineDisplay.value.toBoolean(),
+            rotate: Number(configs.yAxisLabelRotate.value),
+            textStyle: {
+                color: configs.axisTextColor.value
+            }
+        },
+        splitLine: {
+            show: configs.splitYLineDisplay.value.toBoolean(),
+            lineStyle: {
+                color: [
+                    configs.axisColor.value
+                ]
+            },
+        },
+        splitArea: {
+            show: configs.splitYAreaDisplay.value.toBoolean(),
+        }
+    };
+}
+
+function getDataZoomXAxis(configs, xAxisIndex, type,start ,end) {
+    if (type == "inside") {
+        return {
+            type: type,
+            filterMode: configs.dataZoomFilterMode.value,
+            start: start,
+            xAxisIndex: xAxisIndex,
+            end: end
+        };
+    } else if (type == "slider") {
+        return {
+            show: configs.dataZoomBarDisplay.value.toBoolean(),
+            type: type,
+            filterMode: configs.dataZoomFilterMode.value,
+            xAxisIndex: xAxisIndex,
+            start: start,
+            end: end,
+            width: (100 - toPoint(configs.grid_left.value) - toPoint(configs.grid_right.value)) + "%",
+            height: configs.dataZoomBarWidth.value,
+            left: configs.grid_left.value,
+            top: (100 - toPoint(configs.grid_bottom.value)) + "%",
+            handleIcon: __SYS_IMAGES_PATH__.dataZoomHandleIcon[configs.dataZoomHandleIcon.value],
+            handleSize: configs.dataZoomHandleSize.value,
+            borderColor: configs.dataZoomBarColor.value,
+            handleStyle: {
+                color: configs.dataZoomBarColor.value,
+            },
+            textStyle: {
+                color: configs.dataZoomBarColor.value,
+            }
+        };
+    } else {
+        return {};
+    }
+}
+
+function getDataZoomYAxis(configs, yAxisIndex, type,start ,end, containerWidth) {
+    if (type == "inside") {
+        return {
+            type: type,
+            filterMode: configs.dataZoomFilterMode.value,
+            start: start,
+            yAxisIndex: yAxisIndex,
+            end: end
+        };
+    } else if (type == "slider") {
+        if (yAxisIndex == 0) {
+            return {
+                show: configs.dataZoomBarDisplay.value.toBoolean(),
+                type: "slider",
+                filterMode: configs.dataZoomFilterMode.value,
+                yAxisIndex: yAxisIndex,
+                start: start,
+                end: end,
+                width: configs.dataZoomBarWidth.value,
+                height: (100 - toPoint(configs.grid_top.value) - toPoint(configs.grid_bottom.value)) + "%",
+                top: configs.grid_top.value,
+                right: (100 - toPoint(configs.grid_right.value)) + "%",
+                handleIcon: __SYS_IMAGES_PATH__.dataZoomHandleIcon[configs.dataZoomHandleIcon.value],
+                handleSize: configs.dataZoomHandleSize.value,
+                borderColor: configs.dataZoomBarColor.value,
+                handleStyle: {
+                    color: configs.dataZoomBarColor.value,
+                },
+                textStyle: {
+                    color: configs.dataZoomBarColor.value,
+                }
+            };
+        } else if (yAxisIndex == 1) {
+            return {
+                show: configs.dataZoomBarDisplay.value.toBoolean(),
+                type: "slider",
+                filterMode: configs.dataZoomFilterMode.value,
+                yAxisIndex: yAxisIndex,
+                start: start,
+                end: end,
+                width: configs.dataZoomBarWidth.value,
+                height: (100 - toPoint(configs.grid_top.value) - toPoint(configs.grid_bottom.value)) + "%",
+                top: configs.grid_top.value,
+                right: (toPoint(configs.grid_right.value) - configs.dataZoomBarWidth.value * 100 / containerWidth) + "%",
+                handleIcon: __SYS_IMAGES_PATH__.dataZoomHandleIcon[configs.dataZoomHandleIcon.value],
+                handleSize: configs.dataZoomHandleSize.value,
+                borderColor: configs.dataZoomBarColor.value,
+                handleStyle: {
+                    color: configs.dataZoomBarColor.value,
+                },
+                textStyle: {
+                    color: configs.dataZoomBarColor.value,
+                }
+            };
+        }
+    } else {
+        return {};
+    }
+}
+
+function getToolbox(configs,container, magic) {
+    return {
+        show: configs.toolboxDisplay.value.toBoolean(),
+        feature: {
+            saveAsImage: {
+                show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
+                excludeComponents: ["toolbox", "dataZoom", "timeline", "visualMap", "brush"],
+                backgroundColor: configs.toolboxFeatureSaveAsImageBackgroundColor.value,
+            },
+            restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
+            dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
+            dataZoom: {show: configs.toolboxFeatureDataZoom.value.toBoolean(),},
+            magicType: magic?{
+                show: configs.toolboxFeatureMagicType.value.toBoolean(),
+                type: ["line", "bar", "stack", "tiled"]
+            }:{},
+            myMultiScreen: getMultiScreen(configs, container),
+        },
+        top: configs.toolbox_top.value,
+        left: configs.toolbox_left.value,
+        orient: configs.toolbox_orient.value,
+        emphasis: {
+            iconStyle: {
+                textPosition: configs.toolbox_textPosition.value,
+            }
+        },
+    };
+}
+
+function getTooltip(configs, trigger) {
+    return {
+        show: configs.tooltipDisplay.value.toBoolean(),
+        trigger: trigger,
+        axisPointer: {
+            type: configs.axisPointerType.value,
+        },
+    };
+}
+
+function getTimeline(configs, times) {
+    return {
+        show: configs.timelineDisplay.value.toBoolean(),
+        axisType: "category",
+        //考虑数据通用性，使用类目轴
+        //"value" 数值轴，适用于连续数据。
+        // "category" 类目轴，适用于离散的类目数据。
+        // "time" 时间轴，适用于连续的时序数据，与数值轴相比时间轴带有时间的格式化，在刻度计算上也有所不同，例如会根据跨度的范围来决定使用月，星期，日还是小时范围的刻度。
+        realtime: true,
+        //事实时更新数据
+        loop: true,
+        //循环播放
+        autoPlay: true,
+        //自动播放
+        // currentIndex: 2,
+        playInterval: configs.seriesLoopPlayInterval.value * 1000,
+        // controlStyle: {
+        //     position: "left"
+        // },
+        symbol: "emptyCircle",
+        //"circle", "rect", "roundRect", "triangle", "diamond", "pin", "arrow", "none"
+        symbolSize: 2,
+        data: times,
+        label: {
+            color: configs.timelineLabelColor.value,
+            fontSize: Number(configs.timelineLabelFontSize.value),
+            formatter: function (s) {
+                return s;
+            }
+        },
+        lineStyle: {
+            color: configs.timelineStyleColor.value,
+        },
+        controlStyle: {
+            color: configs.timelineStyleColor.value,
+        },
+        emphasis: {
+            label: {
+                color: configs.timelineEmphasisColor.value,
+            },
+            checkpointStyle: {
+                color: configs.timelineEmphasisColor.value,
+            },
+            controlStyle: {
+                color: configs.timelineEmphasisColor.value,
+            },
+        },
+        orient: configs.timelineOrient.value,
+        left: configs.timelineLeft.value,
+        right: configs.timelineRight.value,
+        top: configs.timelineTop.value,
+        bottom: configs.timelineBottom.value,
+    };
+}
+
+function setSeriesAnimation(series, configs, c) {
+    series.animation = configs.animation.value.toBoolean();
+    if (c >= 0) {
+        series.animationThreshold = Number(configs.animationThreshold.value);
+        series.animationEasing = getAnimationEasing(configs);
+        series.animationDuration = function (idx) {
+            return idx * Number(configs.animationDuration.value) + c * Number(configs.animationDuration.value);
+        };
+        series.animationDelay = function (idx) {
+            return idx * Number(configs.animationDelay.value) + c * Number(configs.animationDelay.value);
+        };
+        series.animationEasingUpdate = getAnimationEasingUpdate(configs);
+        series.animationDurationUpdate = function (idx) {
+            return idx * Number(configs.animationDurationUpdate.value) + c * Number(configs.animationDurationUpdate.value);
+        };
+        series.animationDelayUpdate = function (idx) {
+            return idx * Number(configs.animationDelayUpdate.value) + c * Number(configs.animationDelayUpdate.value);
+        };
+    } else {
+        series.animationType = configs.animationType.value;
+        series.animationTypeUpdate = configs.animationTypeUpdate.value;
+        //gauge
+        series.animationThreshold = Number(configs.animationThreshold.value);
+        series.animationEasing = getAnimationEasing(configs);
+        series.animationEasingUpdate = getAnimationEasingUpdate(configs);
+    }
+}
+
+function getMarkPoint(configs) {
+    let markPoint = {data: []};
+    if (configs.lineMarkPointMin.value.toBoolean())
+        markPoint.data.push({type: "min", name: configs.lineMarkPointMin.name});
+    if (configs.lineMarkPointMax.value.toBoolean())
+        markPoint.data.push({type: "max", name: configs.lineMarkPointMax.name});
+    return markPoint;
+}
+
+function getMarkLine(configs) {
+    let markLine = {data: []};
+    if (configs.lineMarkLineMin.value.toBoolean())
+        markLine.data.push({type: "min", name: configs.lineMarkLineMin.name});
+    if (configs.lineMarkLineMax.value.toBoolean())
+        markLine.data.push({type: "max", name: configs.lineMarkLineMax.name});
+    if (configs.lineMarkLineAvg.value.toBoolean())
+        markLine.data.push({type: "average", name: configs.lineMarkLineAvg.name});
+    return markLine;
+}
+
 function getBar(container, width, height, dataset, configs) {
     if (container == null) {
         container = document.createElement("div");
@@ -2433,24 +2828,8 @@ function getBar(container, width, height, dataset, configs) {
                     }
                 },
                 smooth: configs.lineSmooth.value.toBoolean(),
-
-                animation: configs.animation.value.toBoolean(),
-                animationThreshold: Number(configs.animationThreshold.value),
-                animationEasing: getAnimationEasing(configs),
-                animationDuration: function (idx) {
-                    return idx * Number(configs.animationDuration.value) + c * Number(configs.animationDuration.value);
-                },
-                animationDelay: function (idx) {
-                    return idx * Number(configs.animationDelay.value) + c * Number(configs.animationDelay.value);
-                },
-                animationEasingUpdate: getAnimationEasingUpdate(configs),
-                animationDurationUpdate: function (idx) {
-                    return idx * Number(configs.animationDurationUpdate.value) + c * Number(configs.animationDurationUpdate.value);
-                },
-                animationDelayUpdate: function (idx) {
-                    return idx * Number(configs.animationDelayUpdate.value) + c * Number(configs.animationDelayUpdate.value);
-                },
             };
+            setSeriesAnimation(series, configs, c);
 
             for (var i = 0; i < dataset["data"].length; i++) {
                 var r = dataset["data"][i];
@@ -2461,222 +2840,22 @@ function getBar(container, width, height, dataset, configs) {
     }
 
     var option = {
-        aria: {
-            enabled: configs.ariaEnable.value.toBoolean(),
-            decal:{
-                show: configs.ariaEnable.value.toBoolean(),
-            }
-        },
+        aria: getAria(configs),
         backgroundColor: configs.backgroundColor.value,
-        grid: {
-            x: configs.grid_left.value,
-            y: configs.grid_top.value,
-            x2: configs.grid_right.value,
-            y2: configs.grid_bottom.value,
-            containLabel: configs.grid_containLabel.value.toBoolean(),
-            backgroundColor: "transparent"
-        },
-        brush: configs.toolboxFeatureBrush.value.toBoolean() ? {
-            toolbox: ["rect", "polygon", "lineX", "lineY", "keep", "clear"],
-            xAxisIndex: 0
-        } : null,
-        toolbox: {
-            show: configs.toolboxDisplay.value.toBoolean(),
-            feature: {
-                saveAsImage: {
-                    show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
-                    excludeComponents: ["toolbox", "dataZoom", "timeline", "visualMap", "brush"],
-                    backgroundColor: configs.toolboxFeatureSaveAsImageBackgroundColor.value,
-                },
-                restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
-                dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                dataZoom: {show: configs.toolboxFeatureDataZoom.value.toBoolean(),},
-                magicType: {
-                    show: configs.toolboxFeatureMagicType.value.toBoolean(),
-                    type: ["line", "bar", "stack", "tiled"]
-                },
-                myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
-                    show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
-                    title: '视图组合',
-                    icon: __SYS_IMAGES_PATH__.viewCombination,
-                    onclick: function () {
-                        __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
-                        alert("视图已提交组合列表.");
-                    }
-                } : {},
-            },
-            top: configs.toolbox_top.value,
-            left: configs.toolbox_left.value,
-            orient: configs.toolbox_orient.value,
-            emphasis: {
-                iconStyle: {
-                    textPosition: configs.toolbox_textPosition.value,
-                }
-            },
-        },
-        title: {
-            show: configs.titleDisplay.value.toBoolean(),
-            text: configs.titleText.value,
-            link: configs.titleTextLink.value,
-            target: "blank",
-            subtext: configs.titleSubText.value,
-            sublink: configs.titleSubTextLink.value,
-            subtarget: "blank",
-            top: "top",
-            left: configs.titlePosition.value,
-            textStyle: {
-                color: configs.titleTextColor.value,
-                fontSize: Number(configs.titleTextFontSize.value),
-            },
-            subtextStyle: {
-                color: configs.titleSubTextColor.value,
-                fontSize: Number(configs.titleSubTextFontSize.value),
-            }
-        },
-        legend: {
-            show: configs.legendDisplay.value.toBoolean(),
-            icon: configs.legendIcon.value,
-            type: configs.legendType.value,
-            selectedMode: configs.legendSelectedMode.value,
-            top: configs.legendPositionTop.value,
-            left: configs.legendPositionLeft.value,
-            orient: configs.legendOrient.value,
-            data: columns.slice(1, columns.length),
-            textStyle: {
-                color: configs.legendTextColor.value
-            },
-        },
-
-        tooltip: {
-            show: configs.tooltipDisplay.value.toBoolean(),
-            trigger: "axis",
-            axisPointer: {
-                type: configs.axisPointerType.value,
-            },
-        },
-
-        xAxis: {
-            data: xAxis,
-            inverse: configs.xAxisInverse.value.toBoolean(),
-            axisLine: {
-                show: configs.axisLineDisplay.value.toBoolean(),
-                lineStyle: {
-                    color: configs.axisColor.value
-                },
-            },
-            axisTick: {
-                show: configs.axisLineDisplay.value.toBoolean(),
-                lineStyle: {
-                    color: configs.axisColor.value
-                },
-            },
-            axisLabel: {
-                show: configs.axisLineDisplay.value.toBoolean(),
-                interval: "auto",
-                margin: 8,
-                rotate: Number(configs.xAxisLabelRotate.value),
-                textStyle: {
-                    color: configs.axisTextColor.value
-                }
-            },
-            splitLine: {
-                show: configs.splitXLineDisplay.value.toBoolean(),
-                lineStyle: {
-                    color: [
-                        configs.axisColor.value
-                    ]
-                },
-            },
-            splitArea: {
-                show: configs.splitXAreaDisplay.value.toBoolean(),
-            }
-        },
-        yAxis: {
-            inverse: configs.yAxisInverse.value.toBoolean(),
-            axisLine: {
-                show: configs.axisLineDisplay.value.toBoolean(),
-                lineStyle: {
-                    color: configs.axisColor.value
-                },
-            },
-            axisTick: {
-                show: configs.axisLineDisplay.value.toBoolean(),
-                lineStyle: {
-                    color: configs.axisColor.value
-                },
-            },
-            axisLabel: {
-                show: configs.axisLineDisplay.value.toBoolean(),
-                rotate: Number(configs.yAxisLabelRotate.value),
-                textStyle: {
-                    color: configs.axisTextColor.value
-                }
-            },
-            splitLine: {
-                show: configs.splitYLineDisplay.value.toBoolean(),
-                lineStyle: {
-                    color: [
-                        configs.axisColor.value
-                    ]
-                },
-            },
-            splitArea: {
-                show: configs.splitYAreaDisplay.value.toBoolean(),
-            }
-        },
-        dataZoom: [{
-            type: "inside",
-            filterMode: configs.dataZoomFilterMode.value,
-            start: 0,
-            xAxisIndex: 0,
-            end: 100
-        }, {
-            type: "inside",
-            filterMode: configs.dataZoomFilterMode.value,
-            start: 0,
-            yAxisIndex: 0,
-            end: 100
-        }, {
-            show: configs.dataZoomBarDisplay.value.toBoolean(),
-            type: "slider",
-            filterMode: configs.dataZoomFilterMode.value,
-            yAxisIndex: 0,
-            start: 0,
-            end: 100,
-            width: configs.dataZoomBarWidth.value,
-            height: (100 - toPoint(configs.grid_top.value) - toPoint(configs.grid_bottom.value)) + "%",
-            top: configs.grid_top.value,
-            right: (100 - toPoint(configs.grid_right.value)) + "%",
-            handleIcon: __SYS_IMAGES_PATH__.dataZoomHandleIcon[configs.dataZoomHandleIcon.value],
-            handleSize: configs.dataZoomHandleSize.value,
-            borderColor: configs.dataZoomBarColor.value,
-            handleStyle: {
-                color: configs.dataZoomBarColor.value,
-            },
-            textStyle: {
-                color: configs.dataZoomBarColor.value,
-            },
-        }, {
-            show: configs.dataZoomBarDisplay.value.toBoolean(),
-            type: "slider",
-            filterMode: configs.dataZoomFilterMode.value,
-            xAxisIndex: 0,
-            start: 0,
-            end: 100,
-            width: (100 - toPoint(configs.grid_left.value) - toPoint(configs.grid_right.value)) + "%",
-            height: configs.dataZoomBarWidth.value,
-            left: configs.grid_left.value,
-            top: (100 - toPoint(configs.grid_bottom.value)) + "%",
-            handleIcon: __SYS_IMAGES_PATH__.dataZoomHandleIcon[configs.dataZoomHandleIcon.value],
-            handleSize: configs.dataZoomHandleSize.value,
-            borderColor: configs.dataZoomBarColor.value,
-            handleStyle: {
-                color: configs.dataZoomBarColor.value,
-            },
-            textStyle: {
-                color: configs.dataZoomBarColor.value,
-            },
-        }],
+        grid: getGrid(configs),
+        brush: getBrush(configs),
+        toolbox: getToolbox(configs, container,true),
+        title: getTitle(configs),
+        legend: getLegend(configs, columns.slice(1, columns.length)),
+        tooltip: getTooltip(configs, "axis"),
+        xAxis: getXAxis(configs, "category", xAxis),
+        yAxis: getYAxis(configs, "value", null, "left"),
+        dataZoom: [
+            getDataZoomXAxis(configs, 0, "inside", 0, 100),
+            getDataZoomXAxis(configs, 0, "slider", 0, 100),
+            getDataZoomYAxis(configs, 0, "inside", 0, 100,myChart.getWidth()),
+            getDataZoomYAxis(configs, 0, "slider", 0, 100,myChart.getWidth())
+        ],
         graphic: getWaterGraphic(__SYS_LOGO_LINK__),
         series: yAxis_series,
     };
@@ -2704,39 +2883,24 @@ function getTransversBar(container, width, height, dataset, configs) {
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
     var columns = [];
-    for (var i=0; i<dataset["columns"].length;i++){
+    for (var i = 0; i < dataset["columns"].length; i++) {
         columns.push(dataset["columns"][i].name);
     }
     var xAxis = [];
     var yAxis_series = [];
-    for (var c=0;c<columns.length;c++) {
-        if ( c==0 ){
-           for (var i = 0; i < dataset["data"].length; i++) {
+    for (var c = 0; c < columns.length; c++) {
+        if (c == 0) {
+            for (var i = 0; i < dataset["data"].length; i++) {
                 var r = dataset["data"][i];
                 xAxis.push(r[columns[c]].value);
             }
         } else {
-            var series = {name: columns[c],
+            var series = {
+                name: columns[c],
                 type: "bar",
                 data: [],
                 itemStyle: {
                     borderRadius: Number(configs.barItemStyleBorderRadius.value),
-                },
-                animation: configs.animation.value.toBoolean(),
-                animationThreshold: Number(configs.animationThreshold.value),
-                animationEasing: getAnimationEasing(configs),
-                animationDuration: function (idx) {
-                    return idx * Number(configs.animationDuration.value) + c * Number(configs.animationDuration.value);
-                },
-                animationDelay: function (idx) {
-                    return idx * Number(configs.animationDelay.value) + c * Number(configs.animationDelay.value);
-                },
-                animationEasingUpdate: getAnimationEasingUpdate(configs),
-                animationDurationUpdate: function (idx) {
-                    return idx * Number(configs.animationDurationUpdate.value) + c * Number(configs.animationDurationUpdate.value);
-                },
-                animationDelayUpdate: function (idx) {
-                    return idx * Number(configs.animationDelayUpdate.value) + c * Number(configs.animationDelayUpdate.value);
                 },
             };
 
@@ -2773,6 +2937,8 @@ function getTransversBar(container, width, height, dataset, configs) {
                 }
             };
 
+            setSeriesAnimation(series, configs, c);
+
             for (var i = 0; i < dataset["data"].length; i++) {
                 var r = dataset["data"][i];
                 series.data.push(r[columns[c]].value);
@@ -2782,245 +2948,33 @@ function getTransversBar(container, width, height, dataset, configs) {
     }
 
     var option = {
-        aria: {
-            enabled: configs.ariaEnable.value.toBoolean(),
-            decal:{
-                show: configs.ariaEnable.value.toBoolean(),
-            }
-        },
+        aria: getAria(configs),
         backgroundColor: configs.backgroundColor.value,
-        grid: {
-            x: configs.grid_left.value,
-            y: configs.grid_top.value,
-            x2: configs.grid_right.value,
-            y2: configs.grid_bottom.value,
-            containLabel: configs.grid_containLabel.value.toBoolean(),
-            backgroundColor: "transparent"
-        },
-        brush:  configs.toolboxFeatureBrush.value.toBoolean()?{
-            toolbox: ["rect", "polygon", "lineX", "lineY", "keep", "clear"],
-            xAxisIndex: 0
-        }:null,
-        toolbox: {
-            show: configs.toolboxDisplay.value.toBoolean(),
-            feature: {
-                saveAsImage: {
-                    show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
-                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"],
-                    backgroundColor:configs.toolboxFeatureSaveAsImageBackgroundColor.value,
-                },
-                restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
-                dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                dataZoom: {show: configs.toolboxFeatureDataZoom.value.toBoolean()},
-                magicType: {
-                    show: configs.toolboxFeatureMagicType.value.toBoolean(),
-                    type: ["stack", "tiled"]
-                },
-                myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
-                    show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
-                    title: '视图组合',
-                    icon: __SYS_IMAGES_PATH__.viewCombination,
-                    onclick: function () {
-                        __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
-                        alert("视图已提交组合列表.");
-                    }
-                } : {},
-            },
-            top: configs.toolbox_top.value,
-            left:configs.toolbox_left.value,
-            orient: configs.toolbox_orient.value,
-            emphasis: {
-                iconStyle: {
-                    textPosition: configs.toolbox_textPosition.value,
-                }
-            },
-        },
-        title: {
-            show: configs.titleDisplay.value.toBoolean(),
-            text: configs.titleText.value,
-            link: configs.titleTextLink.value,
-            target : "blank",
-            subtext: configs.titleSubText.value,
-            sublink: configs.titleSubTextLink.value,
-            subtarget: "blank",
-            top: "top",
-            left: configs.titlePosition.value,
-            textStyle: {
-                color: configs.titleTextColor.value,
-                fontSize: Number(configs.titleTextFontSize.value),
-            },
-            subtextStyle: {
-                color: configs.titleSubTextColor.value,
-                fontSize: Number(configs.titleSubTextFontSize.value),
-            }
-        },
-        tooltip: {
-            show: configs.tooltipDisplay.value.toBoolean(),
-            trigger: "axis",
-            axisPointer: {
-                type: configs.axisPointerType.value,
-            },
-        },
-        legend: {
-            show: configs.legendDisplay.value.toBoolean(),
-            icon: configs.legendIcon.value,
-            type: configs.legendType.value,
-            selectedMode: configs.legendSelectedMode.value,
-            top: configs.legendPositionTop.value,
-            left: configs.legendPositionLeft.value,
-            orient: configs.legendOrient.value,
-            data: columns.slice(1, columns.length),
-            textStyle: {
-                color: configs.legendTextColor.value
-            },
-        },
-        xAxis: {
-            type: "value",
-            inverse: configs.xAxisInverse.value.toBoolean(),
-            axisLine: {
-                show: configs.axisLineDisplay.value.toBoolean(),
-                lineStyle: {
-                    color: configs.axisColor.value
-                },
-            },
-            axisTick:{
-                show: configs.axisLineDisplay.value.toBoolean(),
-                lineStyle: {
-                    color: configs.axisColor.value
-                },
-            },
-            axisLabel: {
-                interval: "auto",
-                margin: 8,
-                rotate: Number(configs.xAxisLabelRotate.value),
-                textStyle: {
-                    color: configs.axisTextColor.value
-                }
-            },
-            splitLine: {
-                show: configs.splitXLineDisplay.value.toBoolean(),
-                lineStyle: {
-                    color: [
-                        configs.axisColor.value
-                    ]
-                },
-            },
-            splitArea: {
-                show: configs.splitXAreaDisplay.value.toBoolean(),
-            }
-        },
-        yAxis: {
-            type: "category",
-            data: xAxis,
-            inverse: configs.yAxisInverse.value.toBoolean(),
-            axisLine: {
-                show: configs.axisLineDisplay.value.toBoolean(),
-                lineStyle: {
-                    color: configs.axisColor.value
-                },
-            },
-            axisTick:{
-                show: configs.axisLineDisplay.value.toBoolean(),
-                lineStyle: {
-                    color: configs.axisColor.value
-                },
-            },
-            axisLabel: {
-                show: configs.axisLineDisplay.value.toBoolean(),
-                rotate: Number(configs.yAxisLabelRotate.value),
-                textStyle: {
-                    color: configs.axisTextColor.value
-                }
-            },
-            splitLine: {
-                show: configs.splitYLineDisplay.value.toBoolean(),
-                lineStyle: {
-                    color: [
-                        configs.axisColor.value
-                    ]
-                },
-            },
-            splitArea: {
-                show: configs.splitYAreaDisplay.value.toBoolean(),
-            }
-        },
-        dataZoom: [{
-            type: "inside",
-            filterMode: configs.dataZoomFilterMode.value,
-            start: 0,
-            xAxisIndex: 0,
-            end: 100
-        }, {
-            type: "inside",
-            filterMode: configs.dataZoomFilterMode.value,
-            start: 0,
-            yAxisIndex: 0,
-            end: 100
-        }, {
-            show: configs.dataZoomBarDisplay.value.toBoolean(),
-            type: "slider",
-            filterMode: configs.dataZoomFilterMode.value,
-            yAxisIndex: 0,
-            start: 0,
-            end: 100,
-            width: configs.dataZoomBarWidth.value,
-            height: (100 - toPoint(configs.grid_top.value) - toPoint(configs.grid_bottom.value)) + "%",
-            top: configs.grid_top.value,
-            right: (100 - toPoint(configs.grid_right.value)) + "%",
-            handleIcon: __SYS_IMAGES_PATH__.dataZoomHandleIcon[configs.dataZoomHandleIcon.value],
-            handleSize: configs.dataZoomHandleSize.value,
-            borderColor: configs.dataZoomBarColor.value,
-            handleStyle: {
-                color: configs.dataZoomBarColor.value,
-            }
-        }, {
-            show: configs.dataZoomBarDisplay.value.toBoolean(),
-            type: "slider",
-            filterMode: configs.dataZoomFilterMode.value,
-            xAxisIndex: 0,
-            start: 0,
-            end: 100,
-            width: (100 - toPoint(configs.grid_left.value) - toPoint(configs.grid_right.value)) + "%",
-            height: configs.dataZoomBarWidth.value,
-            left: configs.grid_left.value,
-            top: (100 - toPoint(configs.grid_bottom.value)) + "%",
-            handleIcon: __SYS_IMAGES_PATH__.dataZoomHandleIcon[configs.dataZoomHandleIcon.value],
-            handleSize: configs.dataZoomHandleSize.value,
-            borderColor: configs.dataZoomBarColor.value,
-            handleStyle: {
-                color: configs.dataZoomBarColor.value,
-            }
-        }],
+        grid: getGrid(configs),
+        brush: getBrush(configs),
+        toolbox: getToolbox(configs, container, true),
+        title: getTitle(configs),
+        tooltip: getTooltip(configs, "axis"),
+        legend: getLegend(configs, columns.slice(1, columns.length)),
+        xAxis: getXAxis(configs, "value", null),
+        yAxis: getYAxis(configs, "category", xAxis, "bottom"),
+
+        dataZoom: [
+            getDataZoomXAxis(configs, 0, "inside", 0, 100),
+            getDataZoomXAxis(configs, 0, "slider", 0, 100),
+            getDataZoomYAxis(configs, 0, "inside", 0, 100, myChart.getWidth()),
+            getDataZoomYAxis(configs, 0, "slider", 0, 100, myChart.getWidth())
+        ],
         graphic: getWaterGraphic(__SYS_LOGO_LINK__),
         series: yAxis_series,
     };
     setTimeout(() => {
-      myChart.hideLoading();
-      myChart.setOption(option);
+        myChart.hideLoading();
+        myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
     __ECHARTS__.addHistory(container, configs, dataset, width, height);
     return container;
-}
-
-function getMarkPoint(configs) {
-    let markPoint = {data: []};
-    if (configs.lineMarkPointMin.value.toBoolean())
-        markPoint.data.push({type: "min", name: configs.lineMarkPointMin.name});
-    if (configs.lineMarkPointMax.value.toBoolean())
-        markPoint.data.push({type: "max", name: configs.lineMarkPointMax.name});
-    return markPoint;
-}
-
-function getMarkLine(configs) {
-    let markLine = {data: []};
-    if (configs.lineMarkLineMin.value.toBoolean())
-        markLine.data.push({type: "min", name: configs.lineMarkLineMin.name});
-    if (configs.lineMarkLineMax.value.toBoolean())
-        markLine.data.push({type: "max", name: configs.lineMarkLineMax.name});
-    if (configs.lineMarkLineAvg.value.toBoolean())
-        markLine.data.push({type: "average", name: configs.lineMarkLineAvg.name});
-    return markLine;
 }
 
 function getLine(container, width, height, dataset, configs) {
@@ -3033,7 +2987,6 @@ function getLine(container, width, height, dataset, configs) {
     }
 
     var myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value});
-
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
     var columns = [];
@@ -3086,25 +3039,9 @@ function getLine(container, width, height, dataset, configs) {
                 markPoint: getMarkPoint(configs),
                 markLine: getMarkLine(configs),
                 markArea: {},
-
-                animation: configs.animation.value.toBoolean(),
-                animationThreshold: Number(configs.animationThreshold.value),
-                animationEasing: getAnimationEasing(configs),
-                animationDuration: function (idx) {
-                    return idx * Number(configs.animationDuration.value) + c * Number(configs.animationDuration.value);
-                },
-                animationDelay: function (idx) {
-                    return idx * Number(configs.animationDelay.value) + c * Number(configs.animationDelay.value);
-                },
-                animationEasingUpdate: getAnimationEasingUpdate(configs),
-                animationDurationUpdate: function (idx) {
-                    return idx * Number(configs.animationDurationUpdate.value) + c * Number(configs.animationDurationUpdate.value);
-                },
-                animationDelayUpdate: function (idx) {
-                    return idx * Number(configs.animationDelayUpdate.value) + c * Number(configs.animationDelayUpdate.value);
-                },
             };
 
+            setSeriesAnimation(series, configs, c);
             for (var i = 0; i < dataset["data"].length; i++) {
                 var r = dataset["data"][i];
                 series.data.push(r[columns[c]].value);
@@ -3115,208 +3052,20 @@ function getLine(container, width, height, dataset, configs) {
 
     var option = {
         backgroundColor: configs.backgroundColor.value,
-        grid: {
-            x: configs.grid_left.value,
-            y: configs.grid_top.value,
-            x2: configs.grid_right.value,
-            y2: configs.grid_bottom.value,
-            containLabel: configs.grid_containLabel.value.toBoolean(),
-            backgroundColor: "transparent"
-        },
-        brush: configs.toolboxFeatureBrush.value.toBoolean() ? {
-            toolbox: ["rect", "polygon", "lineX", "lineY", "keep", "clear"],
-            xAxisIndex: 0
-        } : null,
-        toolbox: {
-            show: configs.toolboxDisplay.value.toBoolean(),
-            feature: {
-                saveAsImage: {
-                    show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
-                    excludeComponents: ["toolbox", "dataZoom", "timeline", "visualMap", "brush"],
-                    backgroundColor:configs.toolboxFeatureSaveAsImageBackgroundColor.value,
-                },
-                restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
-                dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                dataZoom: {show: configs.toolboxFeatureDataZoom.value.toBoolean()},
-                magicType: {
-                    show: configs.toolboxFeatureMagicType.value.toBoolean(),
-                    type: ["line", "bar", "stack", "tiled"]
-                },
-                myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
-                    show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
-                    title: '视图组合',
-                    icon: __SYS_IMAGES_PATH__.viewCombination,
-                    onclick: function () {
-                        __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
-                        alert("视图已提交组合列表.");
-                    }
-                } : {},
-            },
-            top: configs.toolbox_top.value,
-            left: configs.toolbox_left.value,
-            orient: configs.toolbox_orient.value,
-            emphasis: {
-                iconStyle: {
-                    textPosition: configs.toolbox_textPosition.value,
-                }
-            },
-        },
-        title: {
-            show: configs.titleDisplay.value.toBoolean(),
-            text: configs.titleText.value,
-            link: configs.titleTextLink.value,
-            target : "blank",
-            subtext: configs.titleSubText.value,
-            sublink: configs.titleSubTextLink.value,
-            subtarget: "blank",
-            top: "top",
-            left: configs.titlePosition.value,
-            textStyle: {
-                color: configs.titleTextColor.value,
-                fontSize: Number(configs.titleTextFontSize.value),
-            },
-            subtextStyle: {
-                color: configs.titleSubTextColor.value,
-                fontSize: Number(configs.titleSubTextFontSize.value),
-            }
-        },
-        tooltip: {
-            show: configs.tooltipDisplay.value.toBoolean(),
-            trigger: "axis",
-            axisPointer: {
-                type: configs.axisPointerType.value,
-            },
-        },
-
-        legend: {
-            show: configs.legendDisplay.value.toBoolean(),
-            icon: configs.legendIcon.value,
-            type: configs.legendType.value,
-            selectedMode: configs.legendSelectedMode.value,
-            top: configs.legendPositionTop.value,
-            left: configs.legendPositionLeft.value,
-            orient: configs.legendOrient.value,
-            data: columns.slice(1, columns.length),
-            textStyle: {
-                color: configs.legendTextColor.value
-            },
-        },
-        xAxis: {
-            data: xAxis,
-            inverse: configs.xAxisInverse.value.toBoolean(),
-            axisLine: {
-                show: configs.axisLineDisplay.value.toBoolean(),
-                lineStyle: {
-                    color: configs.axisColor.value
-                },
-            },
-            axisTick: {
-                show: configs.axisLineDisplay.value.toBoolean(),
-                lineStyle: {
-                    color: configs.axisColor.value
-                },
-            },
-            axisLabel: {
-                show: configs.axisLineDisplay.value.toBoolean(),
-                interval: "auto",
-                margin: 8,
-                rotate: Number(configs.xAxisLabelRotate.value),
-                textStyle: {
-                    color: configs.axisTextColor.value
-                }
-            },
-            splitLine: {
-                show: configs.splitXLineDisplay.value.toBoolean(),
-                lineStyle: {
-                    color: [
-                        configs.axisColor.value
-                    ]
-                },
-            },
-            splitArea: {
-                show: configs.splitXAreaDisplay.value.toBoolean(),
-            }
-        },
-        yAxis: {
-            inverse: configs.yAxisInverse.value.toBoolean(),
-            axisLine: {
-                show: configs.axisLineDisplay.value.toBoolean(),
-                lineStyle: {
-                    color: configs.axisColor.value
-                },
-            },
-            axisTick: {
-                show: configs.axisLineDisplay.value.toBoolean(),
-                lineStyle: {
-                    color: configs.axisColor.value
-                },
-            },
-            axisLabel: {
-                show: configs.axisLineDisplay.value.toBoolean(),
-                rotate: Number(configs.yAxisLabelRotate.value),
-                textStyle: {
-                    color: configs.axisTextColor.value
-                }
-            },
-            splitLine: {
-                show: configs.splitYLineDisplay.value.toBoolean(),
-                lineStyle: {
-                    color: [
-                        configs.axisColor.value
-                    ]
-                },
-            },
-            splitArea: {
-                show: configs.splitYAreaDisplay.value.toBoolean(),
-            }
-        },
-        dataZoom: [{
-            type: "inside",
-            filterMode: configs.dataZoomFilterMode.value,
-            start: 0,
-            xAxisIndex: 0,
-            end: 100
-        }, {
-            type: "inside",
-            filterMode: configs.dataZoomFilterMode.value,
-            start: 0,
-            yAxisIndex: 0,
-            end: 100
-        }, {
-            show: configs.dataZoomBarDisplay.value.toBoolean(),
-            type: "slider",
-            filterMode: configs.dataZoomFilterMode.value,
-            yAxisIndex: 0,
-            start: 0,
-            end: 100,
-            width: configs.dataZoomBarWidth.value,
-            height: (100 - toPoint(configs.grid_top.value) - toPoint(configs.grid_bottom.value)) + "%",
-            top: configs.grid_top.value,
-            right: (100 - toPoint(configs.grid_right.value)) + "%",
-            handleIcon: __SYS_IMAGES_PATH__.dataZoomHandleIcon[configs.dataZoomHandleIcon.value],
-            handleSize: configs.dataZoomHandleSize.value,
-            borderColor: configs.dataZoomBarColor.value,
-            handleStyle: {
-                color: configs.dataZoomBarColor.value,
-            }
-        }, {
-            show: configs.dataZoomBarDisplay.value.toBoolean(),
-            type: "slider",
-            filterMode: configs.dataZoomFilterMode.value,
-            xAxisIndex: 0,
-            start: 0,
-            end: 100,
-            width: (100 - toPoint(configs.grid_left.value) - toPoint(configs.grid_right.value)) + "%",
-            height: configs.dataZoomBarWidth.value,
-            left: configs.grid_left.value,
-            top: (100 - toPoint(configs.grid_bottom.value)) + "%",
-            handleIcon: __SYS_IMAGES_PATH__.dataZoomHandleIcon[configs.dataZoomHandleIcon.value],
-            handleSize: configs.dataZoomHandleSize.value,
-            borderColor: configs.dataZoomBarColor.value,
-            handleStyle: {
-                color: configs.dataZoomBarColor.value,
-            }
-        }],
+        grid: getGrid(configs),
+        brush: getBrush(configs),
+        toolbox: getToolbox(configs, container, true),
+        title: getTitle(configs),
+        tooltip: getTooltip(configs, "axis"),
+        legend: getLegend(configs, columns.slice(1, columns.length)),
+        xAxis: getXAxis(configs, "category", xAxis),
+        yAxis: getYAxis(configs, "value", null, "left"),
+        dataZoom: [
+            getDataZoomXAxis(configs, 0, "inside", 0, 100),
+            getDataZoomXAxis(configs, 0, "slider", 0, 100),
+            getDataZoomYAxis(configs, 0, "inside", 0, 100, myChart.getWidth()),
+            getDataZoomYAxis(configs, 0, "slider", 0, 100, myChart.getWidth())
+        ],
         graphic: getWaterGraphic(__SYS_LOGO_LINK__),
         series: yAxis_series,
     };
@@ -3357,12 +3106,12 @@ function getBarAndLine(container, width, height, dataset, configs) {
             }
         } else {
             var serie = {};
-            if (c % 2 > 0) {
+            if ((c - 1) % 2 == 0) {
                 serie = {
                     name: columns[c],
                     type: "line",
                     data: [],
-                    yAxisIndex: c % 2,
+                    yAxisIndex: (c - 1) % 2,
                     lineStyle: {
                         width: Number(configs.lineStyleWidth.value),
                     },
@@ -3396,30 +3145,13 @@ function getBarAndLine(container, width, height, dataset, configs) {
                     markPoint: getMarkPoint(configs),
                     markLine: getMarkLine(configs),
                     markArea: {},
-                    animation: configs.animation.value.toBoolean(),
-                    animationThreshold: Number(configs.animationThreshold.value),
-                    animationEasing: getAnimationEasing(configs),
-                    animationDuration: function (idx) {
-                        return idx * Number(configs.animationDuration.value) + c * Number(configs.animationDuration.value);
-                    },
-                    animationDelay: function (idx) {
-                        return idx * Number(configs.animationDelay.value) + c * Number(configs.animationDelay.value);
-                    },
-                    animationEasingUpdate: getAnimationEasingUpdate(configs),
-                    animationDurationUpdate: function (idx) {
-                        return idx * Number(configs.animationDurationUpdate.value) + c * Number(configs.animationDurationUpdate.value);
-                    },
-                    animationDelayUpdate: function (idx) {
-                        return idx * Number(configs.animationDelayUpdate.value) + c * Number(configs.animationDelayUpdate.value);
-                    },
                 };
-
             }
             else {
                 serie = {
                     name: columns[c],
                     type: "bar",
-                    yAxisIndex: c % 2,
+                    yAxisIndex: (c - 1) % 2,
                     data: [],
                     label: {
                         show: configs.barLabelDisplay.value.toBoolean(),
@@ -3456,25 +3188,10 @@ function getBarAndLine(container, width, height, dataset, configs) {
                             }
                         }
                     },
-                    animation: configs.animation.value.toBoolean(),
-                    animationThreshold: Number(configs.animationThreshold.value),
-                    animationEasing: getAnimationEasing(configs),
-                    animationDuration: function (idx) {
-                        return idx * Number(configs.animationDuration.value) + c * Number(configs.animationDuration.value);
-                    },
-                    animationDelay: function (idx) {
-                        return idx * Number(configs.animationDelay.value) + c * Number(configs.animationDelay.value);
-                    },
-                    animationEasingUpdate: getAnimationEasingUpdate(configs),
-                    animationDurationUpdate: function (idx) {
-                        return idx * Number(configs.animationDurationUpdate.value) + c * Number(configs.animationDurationUpdate.value);
-                    },
-                    animationDelayUpdate: function (idx) {
-                        return idx * Number(configs.animationDelayUpdate.value) + c * Number(configs.animationDelayUpdate.value);
-                    },
                 }
             }
 
+            setSeriesAnimation(serie, configs, (c - 1));
             for (var i = 0; i < dataset["data"].length; i++) {
                 var r = dataset["data"][i];
                 serie.data.push(r[columns[c]].value);
@@ -3484,276 +3201,27 @@ function getBarAndLine(container, width, height, dataset, configs) {
     }
 
     var option = {
-        aria: {
-            enabled: configs.ariaEnable.value.toBoolean(),
-            decal:{
-                show: configs.ariaEnable.value.toBoolean(),
-            }
-        },
+        aria: getAria(configs),
         backgroundColor: configs.backgroundColor.value,
-        grid: {
-            x: configs.grid_left.value,
-            y: configs.grid_top.value,
-            x2: configs.grid_right.value,
-            y2: configs.grid_bottom.value,
-            containLabel: configs.grid_containLabel.value.toBoolean(),
-            backgroundColor: "transparent"
-        },
-        brush: configs.toolboxFeatureBrush.value.toBoolean() ? {
-            toolbox: ["rect", "polygon", "lineX", "lineY", "keep", "clear"],
-            xAxisIndex: 0
-        } : null,
-        toolbox: {
-            show: configs.toolboxDisplay.value.toBoolean(),
-            feature: {
-                saveAsImage: {
-                    show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
-                    excludeComponents: ["toolbox", "dataZoom", "timeline", "visualMap", "brush"],
-                    backgroundColor: configs.toolboxFeatureSaveAsImageBackgroundColor.value,
-                },
-                restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
-                dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                dataZoom: {show: configs.toolboxFeatureDataZoom.value.toBoolean()},
-                magicType: {
-                    show: configs.toolboxFeatureMagicType.value.toBoolean(),
-                    type: ["stack", "tiled"]
-                },
-                myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
-                    show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
-                    title: '视图组合',
-                    icon: __SYS_IMAGES_PATH__.viewCombination,
-                    onclick: function () {
-                        __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
-                        alert("视图已提交组合列表.");
-                    }
-                } : {},
-            },
-            top: configs.toolbox_top.value,
-            left: configs.toolbox_left.value,
-            orient: configs.toolbox_orient.value,
-            emphasis: {
-                iconStyle: {
-                    textPosition: configs.toolbox_textPosition.value,
-                }
-            },
-        },
-        title: {
-            show: configs.titleDisplay.value.toBoolean(),
-            text: configs.titleText.value,
-            link: configs.titleTextLink.value,
-            target: "blank",
-            subtext: configs.titleSubText.value,
-            sublink: configs.titleSubTextLink.value,
-            subtarget: "blank",
-            top: "top",
-            left: configs.titlePosition.value,
-            textStyle: {
-                color: configs.titleTextColor.value,
-                fontSize: Number(configs.titleTextFontSize.value),
-            },
-            subtextStyle: {
-                color: configs.titleSubTextColor.value,
-                fontSize: Number(configs.titleSubTextFontSize.value),
-            }
-        },
-        tooltip: {
-            show: configs.tooltipDisplay.value.toBoolean(),
-            trigger: "axis",
-            axisPointer: {
-                type: configs.axisPointerType.value,
-            },
-        },
-        legend: {
-            show: configs.legendDisplay.value.toBoolean(),
-            icon: configs.legendIcon.value,
-            type: configs.legendType.value,
-            selectedMode: configs.legendSelectedMode.value,
-            top: configs.legendPositionTop.value,
-            left: configs.legendPositionLeft.value,
-            orient: configs.legendOrient.value,
-            data: columns.slice(1, columns.length),
-            textStyle: {
-                color: configs.legendTextColor.value
-            },
-        },
-        xAxis: {
-            data: xAxis,
-            inverse: configs.xAxisInverse.value.toBoolean(),
-            axisLine: {
-                show: configs.axisLineDisplay.value.toBoolean(),
-                lineStyle: {
-                    color: configs.axisColor.value
-                },
-            },
-            axisTick: {
-                show: configs.axisLineDisplay.value.toBoolean(),
-                lineStyle: {
-                    color: configs.axisColor.value
-                },
-            },
-            axisLabel: {
-                show: configs.axisLineDisplay.value.toBoolean(),
-                interval: "auto",
-                margin: 8,
-                rotate: Number(configs.xAxisLabelRotate.value),
-                textStyle: {
-                    color: configs.axisTextColor.value
-                }
-            },
-            splitLine: {
-                show: configs.splitXLineDisplay.value.toBoolean(),
-                lineStyle: {
-                    color: [
-                        configs.axisColor.value
-                    ]
-                },
-            },
-            splitArea: {
-                show: configs.splitXAreaDisplay.value.toBoolean(),
-            }
-        },
-        yAxis: [{
-            position: "right",
-            inverse: configs.yAxisInverse.value.toBoolean(),
-            axisLine: {
-                show: configs.axisLineDisplay.value.toBoolean(),
-                lineStyle: {
-                    color: configs.axisColor.value
-                },
-            },
-            axisTick: {
-                show: configs.axisLineDisplay.value.toBoolean(),
-                lineStyle: {
-                    color: configs.axisColor.value
-                },
-            },
-            axisLabel: {
-                show: configs.axisLineDisplay.value.toBoolean(),
-                rotate: Number(configs.yAxisLabelRotate.value),
-                textStyle: {
-                    color: configs.axisTextColor.value
-                }
-            },
-            splitLine: {
-                show: configs.splitYLineDisplay.value.toBoolean(),
-                lineStyle: {
-                    color: [
-                        configs.axisColor.value
-                    ]
-                },
-            },
-            splitArea: {
-                show: configs.splitYAreaDisplay.value.toBoolean(),
-            }
-        },
-            {
-                position: "left",
-                inverse: configs.yAxisInverse.value.toBoolean(),
-                axisLine: {
-                    show: configs.axisLineDisplay.value.toBoolean(),
-                    lineStyle: {
-                        color: configs.axisColor.value
-                    },
-                },
-                axisTick: {
-                    show: configs.axisLineDisplay.value.toBoolean(),
-                    lineStyle: {
-                        color: configs.axisColor.value
-                    },
-                },
-                axisLabel: {
-                    show: configs.axisLineDisplay.value.toBoolean(),
-                    rotate: Number(configs.yAxisLabelRotate.value),
-                    textStyle: {
-                        color: configs.axisTextColor.value
-                    }
-                },
-                splitLine: {
-                    show: configs.splitYLineDisplay.value.toBoolean(),
-                    lineStyle: {
-                        color: [
-                            configs.axisColor.value
-                        ]
-                    },
-                },
-                splitArea: {
-                    show: configs.splitYAreaDisplay.value.toBoolean(),
-                }
-            }],
-        dataZoom: [{
-            type: "inside",
-            filterMode: configs.dataZoomFilterMode.value,
-            start: 0,
-            xAxisIndex: 0,
-            end: 100
-        }, {
-            type: "inside",
-            filterMode: configs.dataZoomFilterMode.value,
-            start: 0,
-            yAxisIndex: 0,
-            end: 100
-        }, {
-            type: "inside",
-            filterMode: configs.dataZoomFilterMode.value,
-            start: 0,
-            yAxisIndex: 1,
-            end: 100
-        }, {
-            show: configs.dataZoomBarDisplay.value.toBoolean(),
-            type: "slider",
-            filterMode: configs.dataZoomFilterMode.value,
-            yAxisIndex: 1,
-            start: 0,
-            end: 100,
-            width: configs.dataZoomBarWidth.value,
-            height: (100 - toPoint(configs.grid_top.value) - toPoint(configs.grid_bottom.value)) + "%",
-            top: configs.grid_top.value,
-            right: (100 - toPoint(configs.grid_right.value)) + "%",
-            handleIcon: __SYS_IMAGES_PATH__.dataZoomHandleIcon[configs.dataZoomHandleIcon.value],
-            handleSize: configs.dataZoomHandleSize.value,
-            borderColor: configs.dataZoomBarColor.value,
-            handleStyle: {
-                color: configs.dataZoomBarColor.value,
-            },
-            moveHandleSize: 7
-        }, {
-            show: configs.dataZoomBarDisplay.value.toBoolean(),
-            type: "slider",
-            filterMode: configs.dataZoomFilterMode.value,
-            yAxisIndex: 0,
-            start: 0,
-            end: 100,
-            width: configs.dataZoomBarWidth.value,
-            height: (100 - toPoint(configs.grid_top.value) - toPoint(configs.grid_bottom.value)) + "%",
-            top: configs.grid_top.value,
-            right: (toPoint(configs.grid_right.value) - configs.dataZoomBarWidth.value * 100 / containerWidth) + "%",
-            handleIcon: __SYS_IMAGES_PATH__.dataZoomHandleIcon[configs.dataZoomHandleIcon.value],
-            handleSize: configs.dataZoomHandleSize.value,
-            borderColor: configs.dataZoomBarColor.value,
-            handleStyle: {
-                color: configs.dataZoomBarColor.value,
-            },
-            moveHandleSize: 7
-        },
-            {
-                show: configs.dataZoomBarDisplay.value.toBoolean(),
-                type: "slider",
-                filterMode: configs.dataZoomFilterMode.value,
-                xAxisIndex: 0,
-                start: 0,
-                end: 100,
-                width: (100 - toPoint(configs.grid_left.value) - toPoint(configs.grid_right.value)) + "%",
-                height: configs.dataZoomBarWidth.value,
-                left: configs.grid_left.value,
-                top: (100 - toPoint(configs.grid_bottom.value)) + "%",
-                handleIcon: __SYS_IMAGES_PATH__.dataZoomHandleIcon[configs.dataZoomHandleIcon.value],
-                handleSize: configs.dataZoomHandleSize.value,
-                borderColor: configs.dataZoomBarColor.value,
-                handleStyle: {
-                    color: configs.dataZoomBarColor.value,
-                },
-                moveHandleSize: 7
-            }],
+        grid: getGrid(configs),
+        brush: getBrush(configs),
+        toolbox: getToolbox(configs, container,true),
+        title: getTitle(configs),
+        tooltip: getTooltip(configs, "axis"),
+        legend: getLegend(configs, columns.slice(1, columns.length)),
+        xAxis: getXAxis(configs, "category", xAxis),
+        yAxis: [
+            getYAxis(configs, "value", null,"left"),
+            getYAxis(configs, "value", null,"right")
+        ],
+        dataZoom: [
+            getDataZoomXAxis(configs, 0, "inside", 0, 100),
+            getDataZoomXAxis(configs, 0, "slider", 0, 100),
+            getDataZoomYAxis(configs, 0, "inside", 0, 100,myChart.getWidth()),
+            getDataZoomYAxis(configs, 0, "slider", 0, 100,myChart.getWidth()),
+            getDataZoomYAxis(configs, 1, "inside", 0, 100,myChart.getWidth()),
+            getDataZoomYAxis(configs, 1, "slider", 0, 100,myChart.getWidth())
+        ],
         graphic: getWaterGraphic(__SYS_LOGO_LINK__),
         series: yAxis_series,
     };
@@ -3846,24 +3314,8 @@ function getAreaStyle(container, width, height, dataset, configs) {
                 markPoint: getMarkPoint(configs),
                 markLine: getMarkLine(configs),
                 markArea: {},
-
-                animation: configs.animation.value.toBoolean(),
-                animationThreshold: Number(configs.animationThreshold.value),
-                animationEasing: getAnimationEasing(configs),
-                animationDuration: function (idx) {
-                    return idx * Number(configs.animationDuration.value) + c * Number(configs.animationDuration.value);
-                },
-                animationDelay: function (idx) {
-                    return idx * Number(configs.animationDelay.value) + c * Number(configs.animationDelay.value);
-                },
-                animationEasingUpdate: getAnimationEasingUpdate(configs),
-                animationDurationUpdate: function (idx) {
-                    return idx * Number(configs.animationDurationUpdate.value) + c * Number(configs.animationDurationUpdate.value);
-                },
-                animationDelayUpdate: function (idx) {
-                    return idx * Number(configs.animationDelayUpdate.value) + c * Number(configs.animationDelayUpdate.value);
-                },
             };
+            setSeriesAnimation(series, configs, c);
             for (var i = 0; i < dataset["data"].length; i++) {
                 var r = dataset["data"][i];
                 series.data.push(r[columns[c]].value);
@@ -3873,218 +3325,21 @@ function getAreaStyle(container, width, height, dataset, configs) {
     }
 
     var option = {
-        aria: {
-            enabled: configs.ariaEnable.value.toBoolean(),
-            decal:{
-                show: configs.ariaEnable.value.toBoolean(),
-            }
-        },
-        grid: {
-            x: configs.grid_left.value,
-            y: configs.grid_top.value,
-            x2: configs.grid_right.value,
-            y2: configs.grid_bottom.value,
-            containLabel: configs.grid_containLabel.value.toBoolean(),
-            backgroundColor: "transparent"
-        },
-        brush:  configs.toolboxFeatureBrush.value.toBoolean()?{
-            toolbox: ["rect", "polygon", "lineX", "lineY", "keep", "clear"],
-            xAxisIndex: 0
-        }:null,
-        toolbox: {
-            show: configs.toolboxDisplay.value.toBoolean(),
-            feature: {
-                saveAsImage: {
-                    show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
-                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"],
-                    backgroundColor:configs.toolboxFeatureSaveAsImageBackgroundColor.value,
-                },
-                restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
-                dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                dataZoom: {show: configs.toolboxFeatureDataZoom.value.toBoolean()},
-                magicType: {
-                    show: configs.toolboxFeatureMagicType.value.toBoolean(),
-                    type: ["stack", "tiled"]
-                },
-                myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
-                    show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
-                    title: '视图组合',
-                    icon: __SYS_IMAGES_PATH__.viewCombination,
-                    onclick: function () {
-                        __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
-                        alert("视图已提交组合列表.");
-                    }
-                } : {},
-            },
-            top: configs.toolbox_top.value,
-            left:configs.toolbox_left.value,
-            orient: configs.toolbox_orient.value,
-            emphasis: {
-                iconStyle: {
-                    textPosition: configs.toolbox_textPosition.value,
-                }
-            },
-        },
-        title: {
-            show: configs.titleDisplay.value.toBoolean(),
-            text: configs.titleText.value,
-            link: configs.titleTextLink.value,
-            target : "blank",
-            subtext: configs.titleSubText.value,
-            sublink: configs.titleSubTextLink.value,
-            subtarget: "blank",
-            top: "top",
-            left: configs.titlePosition.value,
-            textStyle: {
-                color: configs.titleTextColor.value,
-                fontSize: Number(configs.titleTextFontSize.value),
-            },
-            subtextStyle: {
-                color: configs.titleSubTextColor.value,
-                fontSize: Number(configs.titleSubTextFontSize.value),
-            }
-        },
-        tooltip: {
-            show: configs.tooltipDisplay.value.toBoolean(),
-            //显示活动标尺线.
-            trigger: "axis",
-             axisPointer: {
-                type: configs.axisPointerType.value,
-            },
-            //position: function (pt) {
-            //锁定位置
-            //    return [pt[0], "10%"];
-            //}
-        },
-        legend: {
-            show: configs.legendDisplay.value.toBoolean(),
-            icon: configs.legendIcon.value,
-            type: configs.legendType.value,
-            selectedMode: configs.legendSelectedMode.value,
-            top: configs.legendPositionTop.value,
-            left: configs.legendPositionLeft.value,
-            orient: configs.legendOrient.value,
-            data: columns.slice(1, columns.length),
-            textStyle: {
-                color: configs.legendTextColor.value
-            },
-        },
-        xAxis: {
-            data: xAxis,
-            inverse: configs.xAxisInverse.value.toBoolean(),
-            axisLine: {
-                show: configs.axisLineDisplay.value.toBoolean(),
-                lineStyle: {
-                    color: configs.axisColor.value
-                },
-            },
-            axisTick:{
-                show: configs.axisLineDisplay.value.toBoolean(),
-                lineStyle: {
-                    color: configs.axisColor.value
-                },
-            },
-            axisLabel: {
-                show: configs.axisLineDisplay.value.toBoolean(),
-                interval: "auto",
-                margin: 8,
-                rotate: Number(configs.xAxisLabelRotate.value),
-                textStyle: {
-                    color: configs.axisTextColor.value
-                }
-            },
-            splitLine: {
-                show: configs.splitXLineDisplay.value.toBoolean(),
-                lineStyle: {
-                    color: [
-                        configs.axisColor.value
-                    ]
-                },
-            },
-            splitArea: {
-                show: configs.splitXAreaDisplay.value.toBoolean(),
-            }
-        },
-        yAxis: {
-            inverse: configs.yAxisInverse.value.toBoolean(),
-            axisLine: {
-                show: configs.axisLineDisplay.value.toBoolean(),
-                lineStyle: {
-                    color: configs.axisColor.value
-                },
-            },
-            axisTick:{
-                show: configs.axisLineDisplay.value.toBoolean(),
-                lineStyle: {
-                    color: configs.axisColor.value
-                },
-            },
-            axisLabel: {
-                show: configs.axisLineDisplay.value.toBoolean(),
-                rotate: Number(configs.yAxisLabelRotate.value),
-                textStyle: {
-                    color: configs.axisTextColor.value
-                }
-            },
-            splitLine: {
-                show: configs.splitYLineDisplay.value.toBoolean(),
-                lineStyle: {
-                    color: [
-                        configs.axisColor.value
-                    ]
-                },
-            },
-            splitArea: {
-                show: configs.splitYAreaDisplay.value.toBoolean(),
-            }
-        },
-        dataZoom: [{
-            type: "inside",
-            filterMode: configs.dataZoomFilterMode.value,
-            start: 0,
-            xAxisIndex: 0,
-            end: 100
-        }, {
-            type: "inside",
-            filterMode: configs.dataZoomFilterMode.value,
-            start: 0,
-            yAxisIndex: 0,
-            end: 100
-        }, {
-            show: configs.dataZoomBarDisplay.value.toBoolean(),
-            type: "slider",
-            filterMode: configs.dataZoomFilterMode.value,
-            yAxisIndex: 0,
-            start: 0,
-            end: 100,
-            width: configs.dataZoomBarWidth.value,
-            height: (100 - toPoint(configs.grid_top.value) - toPoint(configs.grid_bottom.value)) + "%",
-            top: configs.grid_top.value,
-            right: (100 - toPoint(configs.grid_right.value)) + "%",
-            handleIcon: __SYS_IMAGES_PATH__.dataZoomHandleIcon[configs.dataZoomHandleIcon.value],
-            handleSize: configs.dataZoomHandleSize.value,
-            borderColor: configs.dataZoomBarColor.value,
-            handleStyle: {
-                color: configs.dataZoomBarColor.value,
-            }
-        }, {
-            show: configs.dataZoomBarDisplay.value.toBoolean(),
-            type: "slider",
-            filterMode: configs.dataZoomFilterMode.value,
-            xAxisIndex: 0,
-            start: 0,
-            end: 100,
-            width: (100 - toPoint(configs.grid_left.value) - toPoint(configs.grid_right.value)) + "%",
-            height: configs.dataZoomBarWidth.value,
-            left: configs.grid_left.value,
-            top: (100 - toPoint(configs.grid_bottom.value)) + "%",
-            handleIcon: __SYS_IMAGES_PATH__.dataZoomHandleIcon[configs.dataZoomHandleIcon.value],
-            handleSize: configs.dataZoomHandleSize.value,
-            borderColor: configs.dataZoomBarColor.value,
-            handleStyle: {
-                color: configs.dataZoomBarColor.value,
-            }
-        }],
+        aria: getAria(configs),
+        grid: getGrid(configs),
+        brush: getBrush(configs),
+        toolbox: getToolbox(configs, container,true),
+        title: getTitle(configs),
+        tooltip: getTooltip(configs, "axis"),
+        legend: getLegend(configs, columns.slice(1, columns.length)),
+        xAxis: getXAxis(configs, "category", xAxis),
+        yAxis: getYAxis(configs, "value", null, "left"),
+        dataZoom: [
+            getDataZoomXAxis(configs, 0, "inside", 0, 100),
+            getDataZoomXAxis(configs, 0, "slider", 0, 100),
+            getDataZoomYAxis(configs, 0, "inside", 0, 100,myChart.getWidth()),
+            getDataZoomYAxis(configs, 0, "slider", 0, 100,myChart.getWidth())
+        ],
         graphic: getWaterGraphic(__SYS_LOGO_LINK__),
         series: yAxis_series,
     };
@@ -4125,27 +3380,12 @@ function getPolar(container, width, height, dataset, configs) {
         } else {
             var series = {
                 name: columns[c],
-                type: configs.polarType.value=="area"?"bar":configs.polarType.value,
+                type: configs.polarType.value == "area" ? "bar" : configs.polarType.value,
                 coordinateSystem: "polar",
                 data: [],
                 roundCap: configs.polarRoundCap.value.toBoolean(),
-                animation: configs.animation.value.toBoolean(),
-                animationThreshold: Number(configs.animationThreshold.value),
-                animationEasing: getAnimationEasing(configs),
-                animationDuration: function (idx) {
-                    return idx * Number(configs.animationDuration.value) + c * Number(configs.animationDuration.value);
-                },
-                animationDelay: function (idx) {
-                    return idx * Number(configs.animationDelay.value) + c * Number(configs.animationDelay.value);
-                },
-                animationEasingUpdate: getAnimationEasingUpdate(configs),
-                animationDurationUpdate: function (idx) {
-                    return idx * Number(configs.animationDurationUpdate.value) + c * Number(configs.animationDurationUpdate.value);
-                },
-                animationDelayUpdate: function (idx) {
-                    return idx * Number(configs.animationDelayUpdate.value) + c * Number(configs.animationDelayUpdate.value);
-                },
             };
+            setSeriesAnimation(series, configs, -1);
 
             for (var i = 0; i < dataset["data"].length; i++) {
                 var r = dataset["data"][i];
@@ -4156,66 +3396,10 @@ function getPolar(container, width, height, dataset, configs) {
     }
 
     var option = {
-        aria: {
-            enabled: configs.ariaEnable.value.toBoolean(),
-            decal:{
-                show: configs.ariaEnable.value.toBoolean(),
-            }
-        },
+        aria: getAria(configs),
         backgroundColor: configs.backgroundColor.value,
-        title: {
-            show: configs.titleDisplay.value.toBoolean(),
-            text: configs.titleText.value,
-            link: configs.titleTextLink.value,
-            target : "blank",
-            subtext: configs.titleSubText.value,
-            sublink: configs.titleSubTextLink.value,
-            subtarget: "blank",
-            top: "top",
-            left: configs.titlePosition.value,
-            textStyle: {
-                color: configs.titleTextColor.value,
-                fontSize: Number(configs.titleTextFontSize.value),
-            },
-            subtextStyle: {
-                color: configs.titleSubTextColor.value,
-                fontSize: Number(configs.titleSubTextFontSize.value),
-            }
-        },
-        toolbox: {
-            show: configs.toolboxDisplay.value.toBoolean(),
-            feature: {
-                saveAsImage: {
-                    show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
-                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"],
-                    backgroundColor:configs.toolboxFeatureSaveAsImageBackgroundColor.value,
-                },
-                restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
-                dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                dataZoom: {show: configs.toolboxFeatureDataZoom.value.toBoolean()},
-                magicType: {
-                    show: configs.toolboxFeatureMagicType.value.toBoolean(),
-                    type: ["stack", "tiled"]
-                },
-                myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
-                    show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
-                    title: '视图组合',
-                    icon: __SYS_IMAGES_PATH__.viewCombination,
-                    onclick: function () {
-                        __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
-                        alert("视图已提交组合列表.");
-                    }
-                } : {},
-            },
-            top: configs.toolbox_top.value,
-            left:configs.toolbox_left.value,
-            orient: configs.toolbox_orient.value,
-            emphasis: {
-                iconStyle: {
-                    textPosition: configs.toolbox_textPosition.value,
-                }
-            },
-        },
+        title: getTitle(configs),
+        toolbox: getToolbox(configs, container, true),
         angleAxis: {
             axisLabel: {
                 show: configs.axisLineDisplay.value.toBoolean(),
@@ -4235,7 +3419,7 @@ function getPolar(container, width, height, dataset, configs) {
                     color: configs.axisColor.value
                 },
             },
-            axisTick:{
+            axisTick: {
                 show: configs.axisLineDisplay.value.toBoolean(),
                 lineStyle: {
                     color: configs.axisColor.value,
@@ -4244,8 +3428,8 @@ function getPolar(container, width, height, dataset, configs) {
             splitArea: {
                 show: configs.splitYAreaDisplay.value.toBoolean(),
             },
-            type: configs.polarType.value == "area" || configs.polarType.value == "line"?"category":null,
-            data: configs.polarType.value == "area" || configs.polarType.value == "line"?xAxis:null,
+            type: configs.polarType.value == "area" || configs.polarType.value == "line" ? "category" : null,
+            data: configs.polarType.value == "area" || configs.polarType.value == "line" ? xAxis : null,
             z: 10
         },
         radiusAxis: {
@@ -4264,44 +3448,23 @@ function getPolar(container, width, height, dataset, configs) {
             splitArea: {
                 show: configs.splitYAreaDisplay.value.toBoolean(),
             },
-            axisTick:{
+            axisTick: {
                 show: configs.axisLineDisplay.value.toBoolean(),
                 lineStyle: {
                     color: configs.axisColor.value,
                 },
             },
-            type: configs.polarType.value == "bar"?"category":null,
-            data: configs.polarType.value == "bar"?xAxis:null,
+            type: configs.polarType.value == "bar" ? "category" : null,
+            data: configs.polarType.value == "bar" ? xAxis : null,
             z: 10,
         },
         polar: {
-            center:[(toPoint(configs.grid_left.value) + (100-toPoint(configs.grid_left.value)-toPoint(configs.grid_right.value))/2) + "%",
-            (toPoint(configs.grid_top.value) + (100-toPoint(configs.grid_top.value)-toPoint(configs.grid_bottom.value))/2) + "%"],
+            center: [(toPoint(configs.grid_left.value) + (100 - toPoint(configs.grid_left.value) - toPoint(configs.grid_right.value)) / 2) + "%",
+                (toPoint(configs.grid_top.value) + (100 - toPoint(configs.grid_top.value) - toPoint(configs.grid_bottom.value)) / 2) + "%"],
         },
         series: yAxis_series,
-        legend: {
-            show: configs.legendDisplay.value.toBoolean(),
-            icon: configs.legendIcon.value,
-            type: configs.legendType.value,
-            selectedMode: configs.legendSelectedMode.value,
-            top: configs.legendPositionTop.value,
-            left: configs.legendPositionLeft.value,
-            orient: configs.legendOrient.value,
-            data: columns.slice(1, columns.length),
-            textStyle: {
-                color: configs.legendTextColor.value
-            },
-        },
-        tooltip: {
-            show: configs.tooltipDisplay.value.toBoolean(),
-            trigger: 'axis',//"item",
-            axisPointer: {
-                type: 'cross'
-            },
-            //formatter: function(param) {
-            //    return [param.seriesName, param.marker + "&ensp;" + param.name + ":<span style='display:inline-block;min-width:30px;text-align:right;font-weight:bold'>&ensp;" + param.value + "</span>"].join("<br>");
-            //}
-        },
+        legend: getLegend(configs, columns.slice(1, columns.length)),
+        tooltip: getTooltip(configs, "axis"),
         dataZoom: [{
             type: "inside",
             filterMode: configs.dataZoomFilterMode.value,
@@ -4320,8 +3483,8 @@ function getPolar(container, width, height, dataset, configs) {
     };
 
     setTimeout(() => {
-      myChart.hideLoading();
-      myChart.setOption(option);
+        myChart.hideLoading();
+        myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
     __ECHARTS__.addHistory(container, configs, dataset, width, height);
@@ -4389,10 +3552,11 @@ function getPie(container, width, height, dataset, configs) {
                 avoidLabelOverlap: true,
                 hoverAnimation: true,
                 data: [],
-                animation: configs.animation.value.toBoolean(),
-                animationType: configs.animationType.value,
-                animationTypeUpdate: configs.animationTypeUpdate.value,
+                //animation: configs.animation.value.toBoolean(),
+                //animationType: configs.animationType.value,
+                //animationTypeUpdate: configs.animationTypeUpdate.value,
             };
+            setSeriesAnimation(serie, configs, -1);
             for (var i = 0; i < dataset["data"].length; i++) {
                 var r = dataset["data"][i];
                 serie.data.push({"value": r[columns[c]].value, "name": legends[i]});
@@ -4415,66 +3579,10 @@ function getPie(container, width, height, dataset, configs) {
     }
 
     var option = {
-        aria: {
-            enabled: configs.ariaEnable.value.toBoolean(),
-            decal:{
-                show: configs.ariaEnable.value.toBoolean(),
-            }
-        },
+        aria: getAria(configs),
         backgroundColor: configs.backgroundColor.value,
-        title: {
-            show: configs.titleDisplay.value.toBoolean(),
-            text: configs.titleText.value,
-            link: configs.titleTextLink.value,
-            target : "blank",
-            subtext: configs.titleSubText.value,
-            sublink: configs.titleSubTextLink.value,
-            subtarget: "blank",
-            top: "top",
-            left: configs.titlePosition.value,
-            textStyle: {
-                color: configs.titleTextColor.value,
-                fontSize: Number(configs.titleTextFontSize.value),
-            },
-            subtextStyle: {
-                color: configs.titleSubTextColor.value,
-                fontSize: Number(configs.titleSubTextFontSize.value),
-            }
-        },
-        toolbox: {
-            show: configs.toolboxDisplay.value.toBoolean(),
-            feature: {
-                saveAsImage: {
-                    show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
-                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"],
-                    backgroundColor:configs.toolboxFeatureSaveAsImageBackgroundColor.value,
-                },
-                restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
-                dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                dataZoom: {show: configs.toolboxFeatureDataZoom.value.toBoolean()},
-                magicType: {
-                    show: configs.toolboxFeatureMagicType.value.toBoolean(),
-                    type: ["pie", "funnel"]
-                },
-                myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
-                    show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
-                    title: '视图组合',
-                    icon: __SYS_IMAGES_PATH__.viewCombination,
-                    onclick: function () {
-                        __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
-                        alert("视图已提交组合列表.");
-                    }
-                } : {},
-            },
-            top: configs.toolbox_top.value,
-            left: configs.toolbox_left.value,
-            orient: configs.toolbox_orient.value,
-            emphasis: {
-                iconStyle: {
-                    textPosition: configs.toolbox_textPosition.value,
-                }
-            },
-        },
+        title: getTitle(configs),
+        toolbox: getToolbox(configs, container,false),
         tooltip: {
             show:configs.tooltipDisplay.value.toBoolean() && !configs.richTextLabel.value.toBoolean(),
             trigger: "item",
@@ -4483,19 +3591,7 @@ function getPie(container, width, height, dataset, configs) {
                 return [param.seriesName, param.marker + "&ensp;" + param.name + ":<span style='display:inline-block;min-width:30px;text-align:right;font-weight:bold'>&ensp;" + param.value + "&ensp;(&ensp;"  + param.percent + "%&ensp;)</span>"].join("<br>");
             }
         },
-        legend: {
-            show: configs.legendDisplay.value.toBoolean(),
-            icon: configs.legendIcon.value,
-            type: configs.legendType.value,
-            selectedMode: configs.legendSelectedMode.value,
-            top: configs.legendPositionTop.value,
-            left: configs.legendPositionLeft.value,
-            orient: configs.legendOrient.value,
-            data: legends,
-            textStyle: {
-                color: configs.legendTextColor.value
-            },
-        },
+        legend: getLegend(configs, legends),
         series: series,
         graphic: getWaterGraphic(__SYS_LOGO_LINK__),
         label: {
@@ -4620,10 +3716,8 @@ function getRing(container, width, height, dataset, configs) {
                 avoidLabelOverlap: true,
                 hoverAnimation: true,
                 data: [],
-                animation: configs.animation.value.toBoolean(),
-                animationType: configs.animationType.value,
-                animationTypeUpdate: configs.animationTypeUpdate.value,
             };
+            setSeriesAnimation(serie, configs, -1);
             for (var i = 0; i < dataset["data"].length; i++) {
                 var r = dataset["data"][i];
                 serie.data.push({"value": r[columns[c]].value, "name": legends[i]});
@@ -4646,79 +3740,11 @@ function getRing(container, width, height, dataset, configs) {
     }
 
     var option = {
-        aria: {
-            enabled: configs.ariaEnable.value.toBoolean(),
-            decal:{
-                show: configs.ariaEnable.value.toBoolean(),
-            }
-        },
+        aria: getAria(configs),
         backgroundColor: configs.backgroundColor.value,
-        title: {
-            show: configs.titleDisplay.value.toBoolean(),
-            text: configs.titleText.value,
-            link: configs.titleTextLink.value,
-            target : "blank",
-            subtext: configs.titleSubText.value,
-            sublink: configs.titleSubTextLink.value,
-            subtarget: "blank",
-            top:"top",
-            left:configs.titlePosition.value,
-            textStyle: {
-                color: configs.titleTextColor.value,
-                fontSize: Number(configs.titleTextFontSize.value),
-            },
-            subtextStyle: {
-                color: configs.titleSubTextColor.value,
-                fontSize: Number(configs.titleSubTextFontSize.value),
-            }
-        },
-        toolbox: {
-            show: configs.toolboxDisplay.value.toBoolean(),
-            feature: {
-                saveAsImage: {
-                    show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
-                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"],
-                    backgroundColor:configs.toolboxFeatureSaveAsImageBackgroundColor.value,
-                },
-                restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
-                dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                dataZoom: {show: configs.toolboxFeatureDataZoom.value.toBoolean()},
-                magicType: {
-                    show: configs.toolboxFeatureMagicType.value.toBoolean(),
-                    type: ["pie", "funnel"]
-                },
-                myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
-                    show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
-                    title: '视图组合',
-                    icon: __SYS_IMAGES_PATH__.viewCombination,
-                    onclick: function () {
-                        __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
-                        alert("视图已提交组合列表.");
-                    }
-                } : {},
-            },
-            top: configs.toolbox_top.value,
-            left:configs.toolbox_left.value,
-            orient: configs.toolbox_orient.value,
-            emphasis: {
-                iconStyle: {
-                    textPosition: configs.toolbox_textPosition.value,
-                }
-            },
-        },
-        legend: {
-            show:configs.legendDisplay.value.toBoolean(),
-            icon: configs.legendIcon.value,
-            type: configs.legendType.value,
-            selectedMode: configs.legendSelectedMode.value,
-            top: configs.legendPositionTop.value,
-            left: configs.legendPositionLeft.value,
-            orient:configs.legendOrient.value,
-            data: legends,
-            textStyle: {
-                color: configs.legendTextColor.value
-            },
-        },
+        title: getTitle(configs),
+        toolbox: getToolbox(configs, container,false),
+        legend: getLegend(configs, legends),
         tooltip: {
             show:configs.tooltipDisplay.value.toBoolean() && !configs.richTextLabel.value.toBoolean(),
             trigger: "item",
@@ -4851,11 +3877,8 @@ function getRose(container, width, height, dataset, configs) {
                 avoidLabelOverlap: true,
                 hoverAnimation: true,
                 data: [],
-                animation: configs.animation.value.toBoolean(),
-                animationType: configs.animationType.value,
-                animationTypeUpdate: configs.animationTypeUpdate.value,
             };
-
+            setSeriesAnimation(serie, configs, -1);
             for (var i = 0; i < dataset["data"].length; i++) {
                 var r = dataset["data"][i];
                 serie.data.push({"value": r[columns[c]].value, "name": legends[i]});
@@ -4877,79 +3900,11 @@ function getRose(container, width, height, dataset, configs) {
     }
 
     var option = {
-        aria: {
-            enabled: configs.ariaEnable.value.toBoolean(),
-            decal:{
-                show: configs.ariaEnable.value.toBoolean(),
-            }
-        },
+        aria: getAria(configs),
         backgroundColor: configs.backgroundColor.value,
-        title: {
-            show: configs.titleDisplay.value.toBoolean(),
-            text: configs.titleText.value,
-            link: configs.titleTextLink.value,
-            target: "blank",
-            subtext: configs.titleSubText.value,
-            sublink: configs.titleSubTextLink.value,
-            subtarget: "blank",
-            top: "top",
-            left: configs.titlePosition.value,
-            textStyle: {
-                color: configs.titleTextColor.value,
-                fontSize: Number(configs.titleTextFontSize.value),
-            },
-            subtextStyle: {
-                color: configs.titleSubTextColor.value,
-                fontSize: Number(configs.titleSubTextFontSize.value),
-            }
-        },
-        toolbox: {
-            show: configs.toolboxDisplay.value.toBoolean(),
-            feature: {
-                saveAsImage: {
-                    show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
-                    excludeComponents: ["toolbox", "dataZoom", "timeline", "visualMap", "brush"],
-                    backgroundColor: configs.toolboxFeatureSaveAsImageBackgroundColor.value,
-                },
-                restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
-                dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                dataZoom: {show: configs.toolboxFeatureDataZoom.value.toBoolean()},
-                magicType: {
-                    show: configs.toolboxFeatureMagicType.value.toBoolean(),
-                    type: ["pie", "funnel"]
-                },
-                myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
-                    show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
-                    title: '视图组合',
-                    icon: __SYS_IMAGES_PATH__.viewCombination,
-                    onclick: function () {
-                        __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
-                        alert("视图已提交组合列表.");
-                    }
-                } : {},
-            },
-            top: configs.toolbox_top.value,
-            left: configs.toolbox_left.value,
-            orient: configs.toolbox_orient.value,
-            emphasis: {
-                iconStyle: {
-                    textPosition: configs.toolbox_textPosition.value,
-                }
-            },
-        },
-        legend: {
-            show: configs.legendDisplay.value.toBoolean(),
-            icon: configs.legendIcon.value,
-            type: configs.legendType.value,
-            selectedMode: configs.legendSelectedMode.value,
-            top: configs.legendPositionTop.value,
-            left: configs.legendPositionLeft.value,
-            orient: configs.legendOrient.value,
-            data: legends,
-            textStyle: {
-                color: configs.legendTextColor.value
-            },
-        },
+        title: getTitle(configs),
+        toolbox: getToolbox(configs, container,false),
+        legend: getLegend(configs, legends),
         tooltip: {
             show:configs.tooltipDisplay.value.toBoolean() && !configs.richTextLabel.value.toBoolean(),
             trigger: "item",
@@ -5074,24 +4029,9 @@ function getRadar(container, width, height, dataset, configs) {
                     normal: {}
                 },
                 data: [],
-                animation: configs.animation.value.toBoolean(),
-                animationThreshold: Number(configs.animationThreshold.value),
-                animationEasing: getAnimationEasing(configs),
-                animationDuration: function (idx) {
-                    return idx * Number(configs.animationDuration.value) + c * Number(configs.animationDuration.value);
-                },
-                animationDelay: function (idx) {
-                    return idx * Number(configs.animationDelay.value) + c * Number(configs.animationDelay.value);
-                },
-                animationEasingUpdate: getAnimationEasingUpdate(configs),
-                animationDurationUpdate: function (idx) {
-                    return idx * Number(configs.animationDurationUpdate.value) + c * Number(configs.animationDurationUpdate.value);
-                },
-                animationDelayUpdate: function (idx) {
-                    return idx * Number(configs.animationDelayUpdate.value) + c * Number(configs.animationDelayUpdate.value);
-                },
             };
 
+            setSeriesAnimation(serie, configs, c);
             var d = {name:columns[c], value:[]};
             for (var i = 0; i < dataset["data"].length; i++) {
                 var r = dataset["data"][i];
@@ -5103,85 +4043,15 @@ function getRadar(container, width, height, dataset, configs) {
     }
 
     var option = {
-        aria: {
-            enabled: configs.ariaEnable.value.toBoolean(),
-            decal:{
-                show: configs.ariaEnable.value.toBoolean(),
-            }
-        },
+        aria: getAria(configs),
         backgroundColor: configs.backgroundColor.value,
-        grid: {
-            x: configs.grid_left.value,
-            y: configs.grid_top.value,
-            x2: configs.grid_right.value,
-            y2: configs.grid_bottom.value,
-            containLabel: configs.grid_containLabel.value.toBoolean(),
-            backgroundColor: "transparent"
-        },
-        title: {
-            show: configs.titleDisplay.value.toBoolean(),
-            text: configs.titleText.value,
-            link: configs.titleTextLink.value,
-            target : "blank",
-            subtext: configs.titleSubText.value,
-            sublink: configs.titleSubTextLink.value,
-            subtarget: "blank",
-            top: "top",
-            left: configs.titlePosition.value,
-            textStyle: {
-                color: configs.titleTextColor.value,
-                fontSize: Number(configs.titleTextFontSize.value),
-            },
-            subtextStyle: {
-                color: configs.titleSubTextColor.value,
-                fontSize: Number(configs.titleSubTextFontSize.value),
-            }
-        },
-        legend: {
-            show: configs.legendDisplay.value.toBoolean(),
-            icon: configs.legendIcon.value,
-            type: configs.legendType.value,
-            selectedMode: configs.legendSelectedMode.value,
-            top: configs.legendPositionTop.value,
-            left: configs.legendPositionLeft.value,
-            orient: configs.legendOrient.value,
-            data: columns.slice(1),
-            textStyle: {
-                color: configs.legendTextColor.value
-            },
-        },
+        grid: getGrid(configs),
+        title: getTitle(configs),
+        legend: getLegend(configs, columns.slice(1, columns.length)),
         tooltip: {
             show: configs.tooltipDisplay.value.toBoolean(),
         },
-        toolbox: {
-            show: configs.toolboxDisplay.value.toBoolean(),
-            feature: {
-                saveAsImage: {
-                    show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
-                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"],
-                    backgroundColor:configs.toolboxFeatureSaveAsImageBackgroundColor.value,
-                },
-                restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
-                dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
-                    show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
-                    title: '视图组合',
-                    icon: __SYS_IMAGES_PATH__.viewCombination,
-                    onclick: function () {
-                        __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
-                        alert("视图已提交组合列表.");
-                    }
-                } : {},
-            },
-            top: configs.toolbox_top.value,
-            left: configs.toolbox_left.value,
-            orient: configs.toolbox_orient.value,
-            emphasis: {
-                iconStyle: {
-                    textPosition: configs.toolbox_textPosition.value,
-                }
-            },
-        },
+        toolbox: getToolbox(configs, container,false),
         radar: {
             center:[(toPoint(configs.grid_left.value) + (100-toPoint(configs.grid_left.value)-toPoint(configs.grid_right.value))/2) + "%",
             (toPoint(configs.grid_top.value) + (100-toPoint(configs.grid_top.value)-toPoint(configs.grid_bottom.value))/2) + "%"],
@@ -5303,24 +4173,9 @@ function getRegression(container, width, height, dataset, configs) {
                     symbolSize: configs.lineSymbolSize.value,
                     data: [],
 
-                    animation: configs.animation.value.toBoolean(),
-                    animationThreshold: Number(configs.animationThreshold.value),
-                    animationEasing: getAnimationEasing(configs),
-                    animationDuration: function (idx) {
-                        return idx * Number(configs.animationDuration.value) + c * Number(configs.animationDuration.value);
-                    },
-                    animationDelay: function (idx) {
-                        return idx * Number(configs.animationDelay.value) + c * Number(configs.animationDelay.value);
-                    },
-                    animationEasingUpdate: getAnimationEasingUpdate(configs),
-                    animationDurationUpdate: function (idx) {
-                        return idx * Number(configs.animationDurationUpdate.value) + c * Number(configs.animationDurationUpdate.value);
-                    },
-                    animationDelayUpdate: function (idx) {
-                        return idx * Number(configs.animationDelayUpdate.value) + c * Number(configs.animationDelayUpdate.value);
-                    },
                 };
 
+                setSeriesAnimation(serie, configs, c);
                 for (var i = 0; i < dataset["data"].length; i++) {
                     var r = dataset["data"][i];
                     serie.data.push([i, r[columns[c]].value]);
@@ -5371,23 +4226,8 @@ function getRegression(container, width, height, dataset, configs) {
                     coord: data[data.length - 1]
                 }],
             },
-            animation: configs.animation.value.toBoolean(),
-            animationThreshold: Number(configs.animationThreshold.value),
-            animationEasing: getAnimationEasing(configs),
-            animationDuration: function (idx) {
-                return idx * Number(configs.animationDuration.value);
-            },
-            animationDelay: function (idx) {
-                return idx * Number(configs.animationDelay.value);
-            },
-            animationEasingUpdate: getAnimationEasingUpdate(configs),
-            animationDurationUpdate: function (idx) {
-                return idx * Number(configs.animationDurationUpdate.value);
-            },
-            animationDelayUpdate: function (idx) {
-                return idx * Number(configs.animationDelayUpdate.value);
-            },
         };
+        setSeriesAnimation(regline, configs, 0);
         series.push(regline);
     }
 
@@ -5463,209 +4303,20 @@ function getRegression(container, width, height, dataset, configs) {
 
     var option = {
         backgroundColor: configs.backgroundColor.value,
-        grid: {
-            x: configs.grid_left.value,
-            y: configs.grid_top.value,
-            x2: configs.grid_right.value,
-            y2: configs.grid_bottom.value,
-            containLabel: configs.grid_containLabel.value.toBoolean(),
-            backgroundColor: "transparent"
-        },
-        brush:  configs.toolboxFeatureBrush.value.toBoolean()?{
-            toolbox: ["rect", "polygon", "lineX", "lineY", "keep", "clear"],
-            xAxisIndex: 0
-        }:null,
-        toolbox: {
-            show: configs.toolboxDisplay.value.toBoolean(),
-            feature: {
-                saveAsImage: {
-                    show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
-                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"],
-                    backgroundColor:configs.toolboxFeatureSaveAsImageBackgroundColor.value,
-                },
-                restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
-                dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                dataZoom: {show: configs.toolboxFeatureDataZoom.value.toBoolean()},
-                magicType: {
-                    show: configs.toolboxFeatureMagicType.value.toBoolean(),
-                    type: ["line", "bar",]
-                },
-                myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
-                    show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
-                    title: '视图组合',
-                    icon: __SYS_IMAGES_PATH__.viewCombination,
-                    onclick: function () {
-                        __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
-                        alert("视图已提交组合列表.");
-                    }
-                } : {},
-            },
-            top: configs.toolbox_top.value,
-            left:configs.toolbox_left.value,
-            orient: configs.toolbox_orient.value,
-            emphasis: {
-                iconStyle: {
-                    textPosition: configs.toolbox_textPosition.value,
-                }
-            },
-        },
-        title: {
-            show: configs.titleDisplay.value.toBoolean(),
-            text: configs.titleText.value,
-            link: configs.titleTextLink.value,
-            target : "blank",
-            subtext: configs.titleSubText.value,
-            sublink: configs.titleSubTextLink.value,
-            subtarget: "blank",
-            top: "top",
-            left: configs.titlePosition.value,
-            textStyle: {
-                color: configs.titleTextColor.value,
-                fontSize: Number(configs.titleTextFontSize.value),
-            },
-            subtextStyle: {
-                color: configs.titleSubTextColor.value,
-                fontSize: Number(configs.titleSubTextFontSize.value),
-            }
-        },
-        legend: {
-            show: configs.legendDisplay.value.toBoolean(),
-            icon: configs.legendIcon.value,
-            type: configs.legendType.value,
-            selectedMode: configs.legendSelectedMode.value,
-            top: configs.legendPositionTop.value,
-            left: configs.legendPositionLeft.value,
-            orient: configs.legendOrient.value,
-            data: columns.slice(1, columns.length).concat(columns_add),
-            textStyle: {
-                color: configs.legendTextColor.value
-            },
-        },
-        tooltip: {
-            show: configs.tooltipDisplay.value.toBoolean(),
-            trigger: "axis",
-            axisPointer: {
-                type: configs.axisPointerType.value,
-            }
-        },
-        xAxis: {
-            data: xAxis,
-            inverse: configs.xAxisInverse.value.toBoolean(),
-            axisLine: {
-                show: configs.axisLineDisplay.value.toBoolean(),
-                lineStyle: {
-                    color: configs.axisColor.value
-                },
-            },
-            splitNumber: 20,
-            axisTick:{
-                show: configs.axisLineDisplay.value.toBoolean(),
-                lineStyle: {
-                    color: configs.axisColor.value
-                },
-            },
-            axisLabel: {
-                show: configs.axisLineDisplay.value.toBoolean(),
-                interval: "auto",
-                textStyle: {
-                    color: configs.axisTextColor.value
-                },
-                margin: 8,
-                rotate: Number(configs.xAxisLabelRotate.value),
-            },
-            splitLine: {
-                show: configs.splitXLineDisplay.value.toBoolean(),
-                lineStyle: {
-                    color: [
-                        configs.axisColor.value
-                    ]
-                },
-            },
-            splitArea: {
-                show: configs.splitXAreaDisplay.value.toBoolean(),
-            }
-        },
-        yAxis: {
-            type: "value",
-            inverse: configs.yAxisInverse.value.toBoolean(),
-            axisLine: {
-                show: configs.axisLineDisplay.value.toBoolean(),
-                lineStyle: {
-                    color: configs.axisColor.value
-                },
-            },
-            axisTick:{
-                show: configs.axisLineDisplay.value.toBoolean(),
-                lineStyle: {
-                    color: configs.axisColor.value
-                },
-            },
-            axisLabel: {
-                show: configs.axisLineDisplay.value.toBoolean(),
-                rotate: Number(configs.yAxisLabelRotate.value),
-                textStyle: {
-                    color: configs.axisTextColor.value
-                }
-            },
-            splitLine: {
-                show: configs.splitYLineDisplay.value.toBoolean(),
-                lineStyle: {
-                    color: [
-                        configs.axisColor.value
-                    ]
-                },
-            },
-            splitArea: {
-                show: configs.splitYAreaDisplay.value.toBoolean(),
-            }
-        },
-        dataZoom: [{
-            type: "inside",
-            filterMode: configs.dataZoomFilterMode.value,
-            start: 0,
-            xAxisIndex: 0,
-            end: 100
-        }, {
-            type: "inside",
-            filterMode: configs.dataZoomFilterMode.value,
-            start: 0,
-            yAxisIndex: 0,
-            end: 100
-        }, {
-            show: configs.dataZoomBarDisplay.value.toBoolean(),
-            type: "slider",
-            filterMode: configs.dataZoomFilterMode.value,
-            yAxisIndex: 0,
-            start: 0,
-            end: 100,
-            width: configs.dataZoomBarWidth.value,
-            height: (100 - toPoint(configs.grid_top.value) - toPoint(configs.grid_bottom.value)) + "%",
-            top: configs.grid_top.value,
-            right: (100 - toPoint(configs.grid_right.value)) + "%",
-            handleIcon: __SYS_IMAGES_PATH__.dataZoomHandleIcon[configs.dataZoomHandleIcon.value],
-            handleSize: configs.dataZoomHandleSize.value,
-            borderColor: configs.dataZoomBarColor.value,
-            handleStyle: {
-                color: configs.dataZoomBarColor.value,
-            }
-        }, {
-            show: configs.dataZoomBarDisplay.value.toBoolean(),
-            type: "slider",
-            filterMode: configs.dataZoomFilterMode.value,
-            xAxisIndex: 0,
-            start: 0,
-            end: 100,
-            width: (100 - toPoint(configs.grid_left.value) - toPoint(configs.grid_right.value)) + "%",
-            height: configs.dataZoomBarWidth.value,
-            left: configs.grid_left.value,
-            top: (100 - toPoint(configs.grid_bottom.value)) + "%",
-            handleIcon: __SYS_IMAGES_PATH__.dataZoomHandleIcon[configs.dataZoomHandleIcon.value],
-            handleSize: configs.dataZoomHandleSize.value,
-            borderColor: configs.dataZoomBarColor.value,
-            handleStyle: {
-                color: configs.dataZoomBarColor.value,
-            }
-        }],
+        grid: getGrid(configs),
+        brush: getBrush(configs),
+        toolbox: getToolbox(configs, container,true),
+        title: getTitle(configs),
+        legend: getLegend(configs, columns.slice(1, columns.length).concat(columns_add)),
+        tooltip: getTooltip(configs, "axis"),
+        xAxis: getXAxis(configs, "category", xAxis),
+        yAxis: getYAxis(configs, "value", null, "left"),
+        dataZoom: [
+            getDataZoomXAxis(configs, 0, "inside", 0, 100),
+            getDataZoomXAxis(configs, 0, "slider", 0, 100),
+            getDataZoomYAxis(configs, 0, "inside", 0, 100,myChart.getWidth()),
+            getDataZoomYAxis(configs, 0, "slider", 0, 100,myChart.getWidth())
+        ],
         series: series,
         graphic: getWaterGraphic(__SYS_LOGO_LINK__),
     };
@@ -5785,82 +4436,14 @@ function getRelation(container, width, height, dataset, configs) {
                 width: Number(configs.relationLineWidth.value),
             }
         },
-        animation: configs.animation.value.toBoolean(),
-        animationThreshold: Number(configs.animationThreshold.value),
-        animationEasing: getAnimationEasing(configs),
-        animationDuration: function (idx) {
-            return idx * Number(configs.animationDuration.value);
-        },
-        animationDelay: function (idx) {
-            return idx * Number(configs.animationDelay.value);
-        },
-        animationEasingUpdate: getAnimationEasingUpdate(configs),
-        animationDurationUpdate: function (idx) {
-            return idx * Number(configs.animationDurationUpdate.value);
-        },
-        animationDelayUpdate: function (idx) {
-            return idx * Number(configs.animationDelayUpdate.value);
-        },
     };
+    setSeriesAnimation(serie, configs, 0);
 
     var option = {
         backgroundColor: configs.backgroundColor.value,
-        grid: {
-            x: configs.grid_left.value,
-            y: configs.grid_top.value,
-            x2: configs.grid_right.value,
-            y2: configs.grid_bottom.value,
-            containLabel: configs.grid_containLabel.value.toBoolean(),
-            backgroundColor: "transparent"
-        },
-        toolbox: {
-            show: configs.toolboxDisplay.value.toBoolean(),
-            feature: {
-                saveAsImage: {
-                    show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
-                    excludeComponents: ["toolbox", "dataZoom", "timeline", "visualMap", "brush"],
-                    backgroundColor: configs.toolboxFeatureSaveAsImageBackgroundColor.value,
-                },
-                restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
-                dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
-                    show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
-                    title: '视图组合',
-                    icon: __SYS_IMAGES_PATH__.viewCombination,
-                    onclick: function () {
-                        __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
-                        alert("视图已提交组合列表.");
-                    }
-                } : {},
-            },
-            top: configs.toolbox_top.value,
-            left:configs.toolbox_left.value,
-            orient: configs.toolbox_orient.value,
-            emphasis: {
-                iconStyle: {
-                    textPosition: configs.toolbox_textPosition.value,
-                }
-            },
-        },
-        title: {
-            show: configs.titleDisplay.value.toBoolean(),
-            text: configs.titleText.value,
-            link: configs.titleTextLink.value,
-            target : "blank",
-            subtext: configs.titleSubText.value,
-            sublink: configs.titleSubTextLink.value,
-            subtarget: "blank",
-            top:"top",
-            left:configs.titlePosition.value,
-            textStyle: {
-                color: configs.titleTextColor.value,
-                fontSize: Number(configs.titleTextFontSize.value),
-            },
-            subtextStyle: {
-                color: configs.titleSubTextColor.value,
-                fontSize: Number(configs.titleSubTextFontSize.value),
-            }
-        },
+        grid: getGrid(configs),
+        toolbox: getToolbox(configs, container,false),
+        title: getTitle(configs),
         tooltip: {
             show:configs.tooltipDisplay.value.toBoolean(),
             formatter: function (params) {
@@ -6055,109 +4638,24 @@ function getTree(container, width, height, dataset, configs) {
                     name: nodes[i].name,
                     children: getChildren(nodes[i].name)
                 }],
-                animation: configs.animation.value.toBoolean(),
-                animationThreshold: Number(configs.animationThreshold.value),
-                animationEasing: getAnimationEasing(configs),
-                animationDuration: function (idx) {
-                    return idx * Number(configs.animationDuration.value);
-                },
-                animationDelay: function (idx) {
-                    return idx * Number(configs.animationDelay.value);
-                },
-                animationEasingUpdate: getAnimationEasingUpdate(configs),
-                animationDurationUpdate: function (idx) {
-                    return idx * Number(configs.animationDurationUpdate.value);
-                },
-                animationDelayUpdate: function (idx) {
-                    return idx * Number(configs.animationDelayUpdate.value);
-                },
             };
+            setSeriesAnimation(serie, configs, 0);
             series.push(serie);
         }
     }
 
     var option = {
-        aria: {
-            enabled: configs.ariaEnable.value.toBoolean(),
-            decal:{
-                show: configs.ariaEnable.value.toBoolean(),
-            }
-        },
+        aria: getAria(configs),
         backgroundColor: configs.backgroundColor.value,
-        grid: {
-            x: configs.grid_left.value,
-            y: configs.grid_top.value,
-            x2: configs.grid_right.value,
-            y2: configs.grid_bottom.value,
-            containLabel: configs.grid_containLabel.value.toBoolean(),
-            backgroundColor: "transparent"
-        },
-        title: {
-            show: configs.titleDisplay.value.toBoolean(),
-            text: configs.titleText.value,
-            link: configs.titleTextLink.value,
-            target : "blank",
-            subtext: configs.titleSubText.value,
-            sublink: configs.titleSubTextLink.value,
-            subtarget: "blank",
-            top:"top",
-            left:configs.titlePosition.value,
-            textStyle: {
-                color: configs.titleTextColor.value,
-                fontSize: Number(configs.titleTextFontSize.value),
-            },
-            subtextStyle: {
-                color: configs.titleSubTextColor.value,
-                fontSize: Number(configs.titleSubTextFontSize.value),
-            }
-        },
-        toolbox: {
-            show: configs.toolboxDisplay.value.toBoolean(),
-            feature: {
-                saveAsImage: {
-                    show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
-                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"],
-                    backgroundColor:configs.toolboxFeatureSaveAsImageBackgroundColor.value,
-                },
-                restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
-                dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
-                    show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
-                    title: '视图组合',
-                    icon: __SYS_IMAGES_PATH__.viewCombination,
-                    onclick: function () {
-                        __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
-                        alert("视图已提交组合列表.");
-                    }
-                } : {},
-            },
-            top: configs.toolbox_top.value,
-            left:configs.toolbox_left.value,
-            orient: configs.toolbox_orient.value,
-            emphasis: {
-                iconStyle: {
-                    textPosition: configs.toolbox_textPosition.value,
-                }
-            },
-        },
+        grid: getGrid(configs),
+        title: getTitle(configs),
+        toolbox: getToolbox(configs, container,false),
         tooltip: {
             show:configs.tooltipDisplay.value.toBoolean(),
             trigger: "item",
             triggerOn: "mousemove"
         },
-        legend: {
-            show:configs.legendDisplay.value.toBoolean(),
-            icon: configs.legendIcon.value,
-            type: configs.legendType.value,
-            selectedMode: configs.legendSelectedMode.value,
-            top: configs.legendPositionTop.value,
-            left: configs.legendPositionLeft.value,
-            orient:configs.legendOrient.value,
-            data: legends,
-            textStyle: {
-                color: configs.legendTextColor.value
-            },
-        },
+        legend: getLegend(configs, legends),
         series:series,
         draggable: true,
         graphic: getWaterGraphic(__SYS_LOGO_LINK__),
@@ -6253,75 +4751,10 @@ function getWebkitDep(container, width, height, dataset, configs) {
 
     var option = {
         backgroundColor: configs.backgroundColor.value,
-        grid: {
-            x: configs.grid_left.value,
-            y: configs.grid_top.value,
-            x2: configs.grid_right.value,
-            y2: configs.grid_bottom.value,
-            containLabel: configs.grid_containLabel.value.toBoolean(),
-            backgroundColor: "transparent"
-        },
-        title: {
-            show: configs.titleDisplay.value.toBoolean(),
-            text: configs.titleText.value,
-            link: configs.titleTextLink.value,
-            target : "blank",
-            subtext: configs.titleSubText.value,
-            sublink: configs.titleSubTextLink.value,
-            subtarget: "blank",
-            top:"top",
-            left:configs.titlePosition.value,
-            textStyle: {
-                color: configs.titleTextColor.value,
-                fontSize: Number(configs.titleTextFontSize.value),
-            },
-            subtextStyle: {
-                color: configs.titleSubTextColor.value,
-                fontSize: Number(configs.titleSubTextFontSize.value),
-            }
-        },
-        legend: {
-            show:configs.legendDisplay.value.toBoolean(),
-            icon: configs.legendIcon.value,
-            type: configs.legendType.value,
-            selectedMode: configs.legendSelectedMode.value,
-            top: configs.legendPositionTop.value,
-            left: configs.legendPositionLeft.value,
-            orient:configs.legendOrient.value,
-            data: columns,
-            textStyle: {
-                color: configs.legendTextColor.value
-            },
-        },
-        toolbox: {
-            show: configs.toolboxDisplay.value.toBoolean(),
-            feature: {
-                saveAsImage: {
-                    show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
-                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"],
-                    backgroundColor:configs.toolboxFeatureSaveAsImageBackgroundColor.value,
-                },
-                restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
-                dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
-                    show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
-                    title: '视图组合',
-                    icon: __SYS_IMAGES_PATH__.viewCombination,
-                    onclick: function () {
-                        __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
-                        alert("视图已提交组合列表.");
-                    }
-                } : {},
-            },
-            top: configs.toolbox_top.value,
-            left:configs.toolbox_left.value,
-            orient: configs.toolbox_orient.value,
-            emphasis: {
-                iconStyle: {
-                    textPosition: configs.toolbox_textPosition.value,
-                }
-            },
-        },
+        grid: getGrid(configs),
+        title: getTitle(configs),
+        legend: getLegend(configs, columns),
+        toolbox: getToolbox(configs, container,false),
         series: [{
             type: "graph",
             layout: "force",
@@ -6414,23 +4847,8 @@ function getScatter(container, width, height, dataset, configs) {
                     shadowOffsetX: 0,
                     shadowOffsetY: 0,
                 },
-                animation: configs.animation.value.toBoolean(),
-                animationThreshold: Number(configs.animationThreshold.value),
-                animationEasing: getAnimationEasing(configs),
-                animationDuration: function (idx) {
-                    return idx * Number(configs.animationDuration.value) + c * Number(configs.animationDuration.value);
-                },
-                animationDelay: function (idx) {
-                    return idx * Number(configs.animationDelay.value) + c * Number(configs.animationDelay.value);
-                },
-                animationEasingUpdate: getAnimationEasingUpdate(configs),
-                animationDurationUpdate: function (idx) {
-                    return idx * Number(configs.animationDurationUpdate.value) + c * Number(configs.animationDurationUpdate.value);
-                },
-                animationDelayUpdate: function (idx) {
-                    return idx * Number(configs.animationDelayUpdate.value) + c * Number(configs.animationDelayUpdate.value);
-                },
             };
+            setSeriesAnimation(serie, configs, c);
             for (var i = 0; i < dataset["data"].length; i++) {
                 var d = [];
                 var row = dataset["data"][i];
@@ -6532,23 +4950,8 @@ function getScatter(container, width, height, dataset, configs) {
                     coord: data[data.length - 1]
                 }],
             },
-            animation: configs.animation.value.toBoolean(),
-            animationThreshold: Number(configs.animationThreshold.value),
-            animationEasing: getAnimationEasing(configs),
-            animationDuration: function (idx) {
-                return idx * Number(configs.animationDuration.value);
-            },
-            animationDelay: function (idx) {
-                return idx * Number(configs.animationDelay.value);
-            },
-            animationEasingUpdate: getAnimationEasingUpdate(configs),
-            animationDurationUpdate: function (idx) {
-                return idx * Number(configs.animationDurationUpdate.value);
-            },
-            animationDelayUpdate: function (idx) {
-                return idx * Number(configs.animationDelayUpdate.value);
-            },
         };
+        setSeriesAnimation(regline, configs, 0);
         series.push(regline);
     }
 
@@ -6556,75 +4959,10 @@ function getScatter(container, width, height, dataset, configs) {
 
     var option = {
         backgroundColor: configs.backgroundColor.value,
-        grid: {
-            x: configs.grid_left.value,
-            y: configs.grid_top.value,
-            x2: configs.grid_right.value,
-            y2: configs.grid_bottom.value,
-            containLabel: configs.grid_containLabel.value.toBoolean(),
-            backgroundColor: "transparent"
-        },
-        title: {
-            show: configs.titleDisplay.value.toBoolean(),
-            text: configs.titleText.value,
-            link: configs.titleTextLink.value,
-            target : "blank",
-            subtext: configs.titleSubText.value,
-            sublink: configs.titleSubTextLink.value,
-            subtarget: "blank",
-            top: "top",
-            left: configs.titlePosition.value,
-            textStyle: {
-                color: configs.titleTextColor.value,
-                fontSize: Number(configs.titleTextFontSize.value),
-            },
-            subtextStyle: {
-                color: configs.titleSubTextColor.value,
-                fontSize: Number(configs.titleSubTextFontSize.value),
-            }
-        },
-        legend: {
-            show: configs.legendDisplay.value.toBoolean(),
-            icon: configs.legendIcon.value,
-            type: configs.legendType.value,
-            selectedMode: configs.legendSelectedMode.value,
-            top: configs.legendPositionTop.value,
-            left: configs.legendPositionLeft.value,
-            orient: configs.legendOrient.value,
-            data: columns.slice().concat(columns_add),
-            textStyle: {
-                color: configs.legendTextColor.value
-            },
-        },
-        toolbox: {
-            show: configs.toolboxDisplay.value.toBoolean(),
-            feature: {
-                saveAsImage: {
-                    show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
-                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"],
-                    backgroundColor:configs.toolboxFeatureSaveAsImageBackgroundColor.value,
-                },
-                restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
-                dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
-                    show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
-                    title: '视图组合',
-                    icon: __SYS_IMAGES_PATH__.viewCombination,
-                    onclick: function () {
-                        __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
-                        alert("视图已提交组合列表.");
-                    }
-                } : {},
-            },
-            top: configs.toolbox_top.value,
-            left:configs.toolbox_left.value,
-            orient: configs.toolbox_orient.value,
-            emphasis: {
-                iconStyle: {
-                    textPosition: configs.toolbox_textPosition.value,
-                }
-            },
-        },
+        grid: getGrid(configs),
+        title: getTitle(configs),
+        legend: getLegend(configs, columns.slice().concat(columns_add)),
+        toolbox: getToolbox(configs, container,true),
         tooltip: {
             show: configs.tooltipDisplay.value.toBoolean(),
             trigger: "axis",
@@ -6632,120 +4970,15 @@ function getScatter(container, width, height, dataset, configs) {
                 type: configs.axisPointerType.value,
             }
         },
-        xAxis: {
-            inverse: configs.xAxisInverse.value.toBoolean(),
-            axisLine: {
-                show: configs.axisLineDisplay.value.toBoolean(),
-                lineStyle: {
-                    color: configs.axisColor.value
-                },
-            },
-            axisTick:{
-                show: configs.axisLineDisplay.value.toBoolean(),
-                lineStyle: {
-                    color: configs.axisColor.value
-                },
-            },
-            axisLabel: {
-                show: configs.axisLineDisplay.value.toBoolean(),
-                textStyle: {
-                    color: configs.axisTextColor.value
-                }
-            },
-            splitLine: {
-                show: configs.splitXLineDisplay.value.toBoolean(),
-                lineStyle: {
-                    type: "dashed",
-                    color: [
-                        configs.axisColor.value
-                    ]
-                }
-            },
-            splitArea: {
-                show: configs.splitXAreaDisplay.value.toBoolean(),
-            }
-        },
-        yAxis: {
-            inverse: configs.yAxisInverse.value.toBoolean(),
-            scale: true,
-            axisLine: {
-                show: configs.axisLineDisplay.value.toBoolean(),
-                lineStyle: {
-                    color: configs.axisColor.value
-                },
-            },
-            axisTick:{
-                show: configs.axisLineDisplay.value.toBoolean(),
-                lineStyle: {
-                    color: configs.axisColor.value
-                },
-            },
-            axisLabel: {
-                show: configs.axisLineDisplay.value.toBoolean(),
-                textStyle: {
-                    color: configs.axisTextColor.value
-                }
-            },
-            splitLine: {
-                show: configs.splitYLineDisplay.value.toBoolean(),
-                lineStyle: {
-                    type: "dashed",
-                    color: [
-                        configs.axisColor.value
-                    ]
-                },
-            },
-            splitArea: {
-                show: configs.splitYAreaDisplay.value.toBoolean(),
-            }
-        },
-        dataZoom: [{
-            type: "inside",
-            filterMode: configs.dataZoomFilterMode.value,
-            start: 0,
-            xAxisIndex: 0,
-            end: 100
-        }, {
-            type: "inside",
-            filterMode: configs.dataZoomFilterMode.value,
-            start: 0,
-            yAxisIndex: 0,
-            end: 100
-        }, {
-            show: configs.dataZoomBarDisplay.value.toBoolean(),
-            type: "slider",
-            filterMode: configs.dataZoomFilterMode.value,
-            yAxisIndex: 0,
-            start: 0,
-            end: 100,
-            width: configs.dataZoomBarWidth.value,
-            height: (100 - toPoint(configs.grid_top.value) - toPoint(configs.grid_bottom.value)) + "%",
-            top: configs.grid_top.value,
-            right: (100 - toPoint(configs.grid_right.value)) + "%",
-            handleIcon: __SYS_IMAGES_PATH__.dataZoomHandleIcon[configs.dataZoomHandleIcon.value],
-            handleSize: configs.dataZoomHandleSize.value,
-            borderColor: configs.dataZoomBarColor.value,
-            handleStyle: {
-                color: configs.dataZoomBarColor.value,
-            }
-        }, {
-            show: configs.dataZoomBarDisplay.value.toBoolean(),
-            type: "slider",
-            filterMode: configs.dataZoomFilterMode.value,
-            xAxisIndex: 0,
-            start: 0,
-            end: 100,
-            width: (100 - toPoint(configs.grid_left.value) - toPoint(configs.grid_right.value)) + "%",
-            height: configs.dataZoomBarWidth.value,
-            left: configs.grid_left.value,
-            top: (100 - toPoint(configs.grid_bottom.value)) + "%",
-            handleIcon: __SYS_IMAGES_PATH__.dataZoomHandleIcon[configs.dataZoomHandleIcon.value],
-            handleSize: configs.dataZoomHandleSize.value,
-            borderColor: configs.dataZoomBarColor.value,
-            handleStyle: {
-                color: configs.dataZoomBarColor.value,
-            }
-        }],
+        xAxis: getXAxis(configs, "value", null),
+        yAxis: getYAxis(configs, "value", null, "left"),
+
+        dataZoom: [
+            getDataZoomXAxis(configs, 0, "inside", 0, 100),
+            getDataZoomXAxis(configs, 0, "slider", 0, 100),
+            getDataZoomYAxis(configs, 0, "inside", 0, 100,myChart.getWidth()),
+            getDataZoomYAxis(configs, 0, "slider", 0, 100,myChart.getWidth())
+        ],
         series: series,
         graphic: getWaterGraphic(__SYS_LOGO_LINK__),
         animationDurationUpdate: 1500,
@@ -6824,23 +5057,8 @@ function getFunnel(container, width, height, dataset, configs) {
                         }
                     },
                     data: [],
-                    animation: configs.animation.value.toBoolean(),
-                    animationThreshold: Number(configs.animationThreshold.value),
-                    animationEasing: getAnimationEasing(configs),
-                    animationDuration: function (idx) {
-                        return idx * Number(configs.animationDuration.value) + c * Number(configs.animationDuration.value);
-                    },
-                    animationDelay: function (idx) {
-                        return idx * Number(configs.animationDelay.value) + c * Number(configs.animationDelay.value);
-                    },
-                    animationEasingUpdate: getAnimationEasingUpdate(configs),
-                    animationDurationUpdate: function (idx) {
-                        return idx * Number(configs.animationDurationUpdate.value) + c * Number(configs.animationDurationUpdate.value);
-                    },
-                    animationDelayUpdate: function (idx) {
-                        return idx * Number(configs.animationDelayUpdate.value) + c * Number(configs.animationDelayUpdate.value);
-                    },
                 };
+                setSeriesAnimation(serie, configs, c);
                 for (var i = 0; i < dataset["data"].length; i++) {
                     var row = dataset["data"][i];
                     serie.data.push({name: row[columns[0]].value, value: row[columns[c]].value});
@@ -6893,32 +5111,9 @@ function getFunnel(container, width, height, dataset, configs) {
     init();
 
     var option = {
-        aria: {
-            enabled: configs.ariaEnable.value.toBoolean(),
-            decal:{
-                show: configs.ariaEnable.value.toBoolean(),
-            }
-        },
+        aria: getAria(configs),
         backgroundColor: configs.backgroundColor.value,
-        title: {
-            show: configs.titleDisplay.value.toBoolean(),
-            text: configs.titleText.value,
-            link: configs.titleTextLink.value,
-            target : "blank",
-            subtext: configs.titleSubText.value,
-            sublink: configs.titleSubTextLink.value,
-            subtarget: "blank",
-            top:"top",
-            left:configs.titlePosition.value,
-            textStyle: {
-                color: configs.titleTextColor.value,
-                fontSize: Number(configs.titleTextFontSize.value),
-            },
-            subtextStyle: {
-                color: configs.titleSubTextColor.value,
-                fontSize: Number(configs.titleSubTextFontSize.value),
-            }
-        },
+        title: getTitle(configs),
         tooltip: {
             show:configs.tooltipDisplay.value.toBoolean(),
             trigger: "item",
@@ -6926,48 +5121,9 @@ function getFunnel(container, width, height, dataset, configs) {
                 return [params.seriesName, params.marker + params.name + ":&emsp;<span style='display:inline-block;min-width:30px;text-align:right;font-weight:bold'>" + params.value + "</span>"].join("<br>");
             },
         },
-        toolbox: {
-            show: configs.toolboxDisplay.value.toBoolean(),
-            feature: {
-                saveAsImage: {
-                    show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
-                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"],
-                    backgroundColor:configs.toolboxFeatureSaveAsImageBackgroundColor.value,
-                },
-                restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
-                dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
-                    show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
-                    title: '视图组合',
-                    icon: __SYS_IMAGES_PATH__.viewCombination,
-                    onclick: function () {
-                        __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
-                        alert("视图已提交组合列表.");
-                    }
-                } : {},
-            },
-            top: configs.toolbox_top.value,
-            left:configs.toolbox_left.value,
-            orient: configs.toolbox_orient.value,
-            emphasis: {
-                iconStyle: {
-                    textPosition: configs.toolbox_textPosition.value,
-                }
-            },
-        },
-        legend: {
-            show:configs.legendDisplay.value.toBoolean(),
-            icon: configs.legendIcon.value,
-            type: configs.legendType.value,
-            selectedMode: configs.legendSelectedMode.value,
-            top: configs.legendPositionTop.value,
-            left: configs.legendPositionLeft.value,
-            orient:configs.legendOrient.value,
-            data: legends,//columns.slice(1),
-            textStyle: {
-                color: configs.legendTextColor.value
-            },
-        },
+        toolbox: getToolbox(configs, container,false),
+        legend: getLegend(configs, legends),
+
         series: series,
         graphic: getWaterGraphic(__SYS_LOGO_LINK__),
     };
@@ -7059,23 +5215,9 @@ function getLiqiud(container, width, height, dataset, configs) {
                         opacity: 0.8
                     }
                 },
-                animation: configs.animation.value.toBoolean(),
-                animationThreshold: Number(configs.animationThreshold.value),
-                animationEasing: getAnimationEasing(configs),
-                animationDuration: function (idx) {
-                    return idx * Number(configs.animationDuration.value);
-                },
-                animationDelay: function (idx) {
-                    return idx * Number(configs.animationDelay.value);
-                },
-                animationEasingUpdate: getAnimationEasingUpdate(configs),
-                animationDurationUpdate: function (idx) {
-                    return idx * Number(configs.animationDurationUpdate.value);
-                },
-                animationDelayUpdate: function (idx) {
-                    return idx * Number(configs.animationDelayUpdate.value);
-                },
+
             };
+            setSeriesAnimation(serie, configs, 0);
             for (var c = 0; c < columns.length; c++) {
                 if (c == 0) {
                     legends.push(r[columns[c]].value);
@@ -7110,67 +5252,9 @@ function getLiqiud(container, width, height, dataset, configs) {
                 return [param.seriesName, param.marker + "&ensp;" + param.name + ":<span style='display:inline-block;min-width:30px;text-align:right;font-weight:bold'>&ensp;" + param.value + "</span>"].join("<br>");
             }
         },
-        title: {
-            show: configs.titleDisplay.value.toBoolean(),
-            text: configs.titleText.value,
-            link: configs.titleTextLink.value,
-            target : "blank",
-            subtext: configs.titleSubText.value,
-            sublink: configs.titleSubTextLink.value,
-            subtarget: "blank",
-            top:"top",
-            left:configs.titlePosition.value,
-            textStyle: {
-                color: configs.titleTextColor.value,
-                fontSize: Number(configs.titleTextFontSize.value),
-            },
-            subtextStyle: {
-                color: configs.titleSubTextColor.value,
-                fontSize: Number(configs.titleSubTextFontSize.value),
-            }
-        },
-        legend: {
-            show:configs.legendDisplay.value.toBoolean(),
-            icon: configs.legendIcon.value,
-            type: configs.legendType.value,
-            selectedMode: configs.legendSelectedMode.value,
-            top: configs.legendPositionTop.value,
-            left: configs.legendPositionLeft.value,
-            orient:configs.legendOrient.value,
-            data: legends,
-            textStyle: {
-                color: configs.legendTextColor.value
-            },
-        },
-        toolbox: {
-            show: configs.toolboxDisplay.value.toBoolean(),
-            feature: {
-                saveAsImage: {
-                    show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
-                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"],
-                    backgroundColor:configs.toolboxFeatureSaveAsImageBackgroundColor.value,
-                },
-                restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
-                dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
-                    show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
-                    title: '视图组合',
-                    icon: __SYS_IMAGES_PATH__.viewCombination,
-                    onclick: function () {
-                        __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
-                        alert("视图已提交组合列表.");
-                    }
-                } : {},
-            },
-            top: configs.toolbox_top.value,
-            left:configs.toolbox_left.value,
-            orient: configs.toolbox_orient.value,
-            emphasis: {
-                iconStyle: {
-                    textPosition: configs.toolbox_textPosition.value,
-                }
-            },
-        },
+        title: getTitle(configs),
+        legend: getLegend(configs, legends),
+        toolbox: getToolbox(configs, container,false),
         label: {
             formatter: function (param) {
                 return param.seriesName + "\n\n"
@@ -7283,23 +5367,8 @@ function getGaugeWithAll(container, width, height, dataset, configs) {
                 textShadowBlur: 10,
             },
             data: [],
-            animation: configs.animation.value.toBoolean(),
-            animationThreshold: Number(configs.animationThreshold.value),
-            animationEasing: getAnimationEasing(configs),
-            animationDuration: function (idx) {
-                return idx * Number(configs.animationDuration.value) + c * Number(configs.animationDuration.value);
-            },
-            animationDelay: function (idx) {
-                return idx * Number(configs.animationDelay.value) + c * Number(configs.animationDelay.value);
-            },
-            animationEasingUpdate: getAnimationEasingUpdate(configs),
-            animationDurationUpdate: function (idx) {
-                return idx * Number(configs.animationDurationUpdate.value) + c * Number(configs.animationDurationUpdate.value);
-            },
-            animationDelayUpdate: function (idx) {
-                return idx * Number(configs.animationDelayUpdate.value) + c * Number(configs.animationDelayUpdate.value);
-            },
         };
+        setSeriesAnimation(serie, configs, c);
         for (var c = 0; c < columns.length; c++) {
             if (c == 0)
                 legends.push(r[columns[c]].value);
@@ -7329,12 +5398,7 @@ function getGaugeWithAll(container, width, height, dataset, configs) {
     }
 
     var option = {
-        aria: {
-            enabled: configs.ariaEnable.value.toBoolean(),
-            decal:{
-                show: configs.ariaEnable.value.toBoolean(),
-            }
-        },
+        aria: getAria(configs),
         backgroundColor: configs.backgroundColor.value,
         grid: {
             x: configs.grid_left.value,
@@ -7344,71 +5408,13 @@ function getGaugeWithAll(container, width, height, dataset, configs) {
             containLabel: configs.grid_containLabel.value.toBoolean(),
             backgroundColor: "transparent"
         },
-        title: {
-            show: configs.titleDisplay.value.toBoolean(),
-            text: configs.titleText.value,
-            link: configs.titleTextLink.value,
-            target : "blank",
-            subtext: configs.titleSubText.value,
-            sublink: configs.titleSubTextLink.value,
-            subtarget: "blank",
-            top:"top",
-            left:configs.titlePosition.value,
-            textStyle: {
-                color: configs.titleTextColor.value,
-                fontSize: Number(configs.titleTextFontSize.value),
-            },
-            subtextStyle: {
-                color: configs.titleSubTextColor.value,
-                fontSize: Number(configs.titleSubTextFontSize.value),
-            }
-        },
-        legend: {
-            show:configs.legendDisplay.value.toBoolean(),
-            icon: configs.legendIcon.value,
-            type: configs.legendType.value,
-            selectedMode: configs.legendSelectedMode.value,
-            top: configs.legendPositionTop.value,
-            left: configs.legendPositionLeft.value,
-            orient:configs.legendOrient.value,
-            data: legends,
-            textStyle: {
-                color: configs.legendTextColor.value
-            },
-        },
+        title: getTitle(configs),
+        legend: getLegend(configs, legends),
         tooltip: {
             show:configs.tooltipDisplay.value.toBoolean(),
             formatter: "{b} : {c}%"
         },
-        toolbox: {
-            show: configs.toolboxDisplay.value.toBoolean(),
-            feature: {
-                saveAsImage: {
-                    show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
-                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"],
-                    backgroundColor:configs.toolboxFeatureSaveAsImageBackgroundColor.value,
-                },
-                restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
-                dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
-                    show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
-                    title: '视图组合',
-                    icon: __SYS_IMAGES_PATH__.viewCombination,
-                    onclick: function () {
-                        __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
-                        alert("视图已提交组合列表.");
-                    }
-                } : {},
-            },
-            right: "10",
-            orient: "vertical",
-            top: "top",
-            emphasis: {
-                iconStyle: {
-                    textPosition: "left"
-                }
-            },
-        },
+        toolbox: getToolbox(configs, container,false),
         series: series,
     };
     setTimeout(() => {
@@ -7516,23 +5522,8 @@ function getGaugeWithOne(container, width, height, dataset, configs) {
                         textShadowBlur: 10,
                     },
                     data: [],
-                    animation: configs.animation.value.toBoolean(),
-                    animationThreshold: Number(configs.animationThreshold.value),
-                    animationEasing: getAnimationEasing(configs),
-                    animationDuration: function (idx) {
-                        return idx * Number(configs.animationDuration.value) + c * Number(configs.animationDuration.value);
-                    },
-                    animationDelay: function (idx) {
-                        return idx * Number(configs.animationDelay.value) + c * Number(configs.animationDelay.value);
-                    },
-                    animationEasingUpdate: getAnimationEasingUpdate(configs),
-                    animationDurationUpdate: function (idx) {
-                        return idx * Number(configs.animationDurationUpdate.value) + c * Number(configs.animationDurationUpdate.value);
-                    },
-                    animationDelayUpdate: function (idx) {
-                        return idx * Number(configs.animationDelayUpdate.value) + c * Number(configs.animationDelayUpdate.value);
-                    },
                 };
+                setSeriesAnimation(serie, configs, c);
                 serie.data.push({
                     "name": legends[i] + "\n\n" + columns[c],
                     "value": r[columns[c]].value,
@@ -7560,84 +5551,21 @@ function getGaugeWithOne(container, width, height, dataset, configs) {
     }
 
     var option = {
-        aria: {
-            enabled: configs.ariaEnable.value.toBoolean(),
-            decal:{
-                show: configs.ariaEnable.value.toBoolean(),
-            }
-        },
+        aria: getAria(configs),
         backgroundColor: configs.backgroundColor.value,
-        title: {
-            show: configs.titleDisplay.value.toBoolean(),
-            text: configs.titleText.value,
-            link: configs.titleTextLink.value,
-            target : "blank",
-            subtext: configs.titleSubText.value,
-            sublink: configs.titleSubTextLink.value,
-            subtarget: "blank",
-            top:"top",
-            left:configs.titlePosition.value,
-            textStyle: {
-                color: configs.titleTextColor.value,
-                fontSize: Number(configs.titleTextFontSize.value),
-            },
-            subtextStyle: {
-                color: configs.titleSubTextColor.value,
-                fontSize: Number(configs.titleSubTextFontSize.value),
-            }
-        },
-        legend: {
-            show: configs.legendDisplay.value.toBoolean(),
-            icon: configs.legendIcon.value,
-            type: configs.legendType.value,
-            selectedMode: configs.legendSelectedMode.value,
-            top: configs.legendPositionTop.value,
-            left: configs.legendPositionLeft.value,
-            orient: configs.legendOrient.value,
-            data: legends,
-            textStyle: {
-                color: configs.legendTextColor.value
-            },
-        },
+        title: getTitle(configs),
+        legend: getLegend(configs, legends),
         tooltip: {
-            show:configs.tooltipDisplay.value.toBoolean(),
+            show: configs.tooltipDisplay.value.toBoolean(),
             formatter: "{b} : {c}%"
         },
-        toolbox: {
-            show: configs.toolboxDisplay.value.toBoolean(),
-            feature: {
-                saveAsImage: {
-                    show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
-                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"],
-                    backgroundColor:configs.toolboxFeatureSaveAsImageBackgroundColor.value,
-                },
-                restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
-                dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
-                    show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
-                    title: '视图组合',
-                    icon: __SYS_IMAGES_PATH__.viewCombination,
-                    onclick: function () {
-                        __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
-                        alert("视图已提交组合列表.");
-                    }
-                } : {},
-            },
-            top: configs.toolbox_top.value,
-            left:configs.toolbox_left.value,
-            orient: configs.toolbox_orient.value,
-            emphasis: {
-                iconStyle: {
-                    textPosition: configs.toolbox_textPosition.value,
-                }
-            },
-        },
+        toolbox: getToolbox(configs, container, false),
         series: seriesgroup[index],
         graphic: getWaterGraphic(__SYS_LOGO_LINK__),
     };
     setTimeout(() => {
-      myChart.hideLoading();
-      myChart.setOption(option);
+        myChart.hideLoading();
+        myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
     var timer;
@@ -7647,6 +5575,7 @@ function getGaugeWithOne(container, width, height, dataset, configs) {
     myChart.on("mouseout", function (params) {
         startTimer();
     });
+
     function doing() {
         let option = myChart.getOption();
         if (index < (seriesgroup.length - 1)) {
@@ -7659,15 +5588,15 @@ function getGaugeWithOne(container, width, height, dataset, configs) {
     }
 
     function startTimer() {
-        timer = setInterval(doing,  configs.seriesLoopPlayInterval.value * 1000);
+        timer = setInterval(doing, configs.seriesLoopPlayInterval.value * 1000);
     }
 
     function stopTimer() {
         clearInterval(timer);
-        timer=null;
+        timer = null;
     }
 
-    setTimeout(startTimer,  configs.seriesLoopPlayInterval.value * 1000);
+    setTimeout(startTimer, configs.seriesLoopPlayInterval.value * 1000);
 
     __ECHARTS__.addHistory(container, configs, dataset, width, height);
     return container;
@@ -7719,23 +5648,8 @@ function getCalendar(container, width, height, dataset, configs) {
                     coordinateSystem: "calendar",
                     calendarIndex: c - 1,
                     data: [],
-                    animation: configs.animation.value.toBoolean(),
-                    animationThreshold: Number(configs.animationThreshold.value),
-                    animationEasing: getAnimationEasing(configs),
-                    animationDuration: function (idx) {
-                        return idx * Number(configs.animationDuration.value) + c * Number(configs.animationDuration.value);
-                    },
-                    animationDelay: function (idx) {
-                        return idx * Number(configs.animationDelay.value) + c * Number(configs.animationDelay.value);
-                    },
-                    animationEasingUpdate: getAnimationEasingUpdate(configs),
-                    animationDurationUpdate: function (idx) {
-                        return idx * Number(configs.animationDurationUpdate.value) + c * Number(configs.animationDurationUpdate.value);
-                    },
-                    animationDelayUpdate: function (idx) {
-                        return idx * Number(configs.animationDelayUpdate.value) + c * Number(configs.animationDelayUpdate.value);
-                    },
                 };
+                setSeriesAnimation(serie, configs, c);
                 var visualMap = {
                     //type: "piecewise",
                     show: configs.visualMapDisplay.value.toBoolean(),
@@ -7787,7 +5701,7 @@ function getCalendar(container, width, height, dataset, configs) {
                 visualMap.min = valueMin;
                 visualMap.max = valueMax;
                 visualMap.show = configs.visualMapDisplay.value.toBoolean(),
-                calendar.range = [rangeMin, rangeMax];
+                    calendar.range = [rangeMin, rangeMax];
                 calendars.push(calendar);
                 series.push(serie);
                 visualMaps.push(visualMap);
@@ -7796,9 +5710,9 @@ function getCalendar(container, width, height, dataset, configs) {
         if (configs.calendarOrient.value == "vertical") {
             var width = (80 - 15 * calendars.length) / calendars.length;
             for (var i = 0; i < calendars.length; i++) {
-                calendars[i].top =  "15%";
+                calendars[i].top = "15%";
                 calendars[i].left = (15 * (i + 1) + width * i) + "%";
-                visualMaps[i].left = containerWidth * (15 * (i + 1) + width * i)/100 - 40 ;
+                visualMaps[i].left = containerWidth * (15 * (i + 1) + width * i) / 100 - 40;
                 calendars[i].width = width + "%";
                 visualMaps[i].itemHeight = containerWidth * width / 100;
                 calendars[i].bottom = "10%";
@@ -7809,7 +5723,7 @@ function getCalendar(container, width, height, dataset, configs) {
             var height = (95 - 10 * calendars.length) / calendars.length;
             for (var i = 0; i < calendars.length; i++) {
                 calendars[i].top = (10 * (i + 1) + height * i) + "%";
-                visualMaps[i].top = containerHeight * (10 * (i + 1) + height * i)/100 - 10;
+                visualMaps[i].top = containerHeight * (10 * (i + 1) + height * i) / 100 - 10;
                 calendars[i].left = "10%";
                 visualMaps[i].left = "1%";
                 calendars[i].width = "80%";
@@ -7822,85 +5736,27 @@ function getCalendar(container, width, height, dataset, configs) {
 
     init();
     var option = {
-        aria: {
-            enabled: configs.ariaEnable.value.toBoolean(),
-            decal:{
-                show: configs.ariaEnable.value.toBoolean(),
-            }
-        },
+        aria: getAria(configs),
         backgroundColor: configs.backgroundColor.value,
-        grid: {
-            x: configs.grid_left.value,
-            y: configs.grid_top.value,
-            x2: configs.grid_right.value,
-            y2: configs.grid_bottom.value,
-            containLabel: configs.grid_containLabel.value.toBoolean(),
-            backgroundColor: "transparent"
-        },
-        title: {
-            show: configs.titleDisplay.value.toBoolean(),
-            text: configs.titleText.value,
-            link: configs.titleTextLink.value,
-            target : "blank",
-            subtext: configs.titleSubText.value,
-            sublink: configs.titleSubTextLink.value,
-            subtarget: "blank",
-            top:"top",
-            left:configs.titlePosition.value,
-            textStyle: {
-                color: configs.titleTextColor.value,
-                fontSize: Number(configs.titleTextFontSize.value),
-            },
-            subtextStyle: {
-                color: configs.titleSubTextColor.value,
-                fontSize: Number(configs.titleSubTextFontSize.value),
-            }
-        },
+        grid: getGrid(configs),
+        title: getTitle(configs),
         tooltip: {
-            show:configs.tooltipDisplay.value.toBoolean(),
+            show: configs.tooltipDisplay.value.toBoolean(),
             position: "top",
-            formatter: function(param) {
+            formatter: function (param) {
                 let date = echarts.format.formatTime("yyyy-MM-dd", param.value[0]);
                 return [param.seriesName, param.marker + "&ensp;" + date + ":<span style='display:inline-block;min-width:30px;text-align:right;font-weight:bold'>&ensp;" + param.value[1] + "</span>"].join("<br>");
             }
         },
-        toolbox: {
-            show: configs.toolboxDisplay.value.toBoolean(),
-            feature: {
-                saveAsImage: {
-                    show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
-                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"],
-                    backgroundColor:configs.toolboxFeatureSaveAsImageBackgroundColor.value,
-                },
-                restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
-                dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
-                    show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
-                    title: '视图组合',
-                    icon: __SYS_IMAGES_PATH__.viewCombination,
-                    onclick: function () {
-                        __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
-                        alert("视图已提交组合列表.");
-                    }
-                } : {},
-            },
-            top: configs.toolbox_top.value,
-            left:configs.toolbox_left.value,
-            orient: configs.toolbox_orient.value,
-            emphasis: {
-                iconStyle: {
-                    textPosition: configs.toolbox_textPosition.value,
-                }
-            },
-        },
+        toolbox: getToolbox(configs, container, false),
         visualMap: visualMaps,
         calendar: calendars,
         series: series,
         graphic: getWaterGraphic(__SYS_LOGO_LINK__),
     };
     setTimeout(() => {
-      myChart.hideLoading();
-      myChart.setOption(option);
+        myChart.hideLoading();
+        myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
     __ECHARTS__.addHistory(container, configs, dataset, width, height);
@@ -8001,63 +5857,10 @@ function getGeoOfChina(container, width, height, dataset, configs) {
 
     var option = {
         backgroundColor: configs.backgroundColor.value,
-        grid: {
-            x: configs.grid_left.value,
-            y: configs.grid_top.value,
-            x2: configs.grid_right.value,
-            y2: configs.grid_bottom.value,
-            containLabel: configs.grid_containLabel.value.toBoolean(),
-            backgroundColor: "transparent"
-        },
+        grid: getGrid(configs),
         //backgroundColor: configs.geoBackgroundColor.value,
-        title: {
-            show: configs.titleDisplay.value.toBoolean(),
-            text: configs.titleText.value,
-            link: configs.titleTextLink.value,
-            target : "blank",
-            subtext: configs.titleSubText.value,
-            sublink: configs.titleSubTextLink.value,
-            subtarget: "blank",
-            top: "top",
-            left: configs.titlePosition.value,
-            textStyle: {
-                color: configs.titleTextColor.value,
-                fontSize: Number(configs.titleTextFontSize.value),
-            },
-            subtextStyle: {
-                color: configs.titleSubTextColor.value,
-                fontSize: Number(configs.titleSubTextFontSize.value),
-            }
-        },
-        toolbox: {
-            show: configs.toolboxDisplay.value.toBoolean(),
-            feature: {
-                saveAsImage: {
-                    show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
-                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"],
-                    backgroundColor:configs.toolboxFeatureSaveAsImageBackgroundColor.value,
-                },
-                restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
-                dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
-                    show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
-                    title: '视图组合',
-                    icon: __SYS_IMAGES_PATH__.viewCombination,
-                    onclick: function () {
-                        __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
-                        alert("视图已提交组合列表.");
-                    }
-                } : {},
-            },
-            top: configs.toolbox_top.value,
-            left: configs.toolbox_left.value,
-            orient: configs.toolbox_orient.value,
-            emphasis: {
-                iconStyle: {
-                    textPosition: configs.toolbox_textPosition.value,
-                }
-            },
-        },
+        title: getTitle(configs),
+        toolbox: getToolbox(configs, container,false),
         tooltip: {
             show: configs.tooltipDisplay.value.toBoolean(),
             formatter: function (params) {
@@ -8158,23 +5961,9 @@ function getGeoOfChina(container, width, height, dataset, configs) {
             }
         ],
         graphic: getWaterGraphic(__SYS_LOGO_LINK__),
-        animation: configs.animation.value.toBoolean(),
-        animationThreshold: Number(configs.animationThreshold.value),
-        animationEasing: getAnimationEasing(configs),
-        animationDuration: function (idx) {
-            return idx * Number(configs.animationDuration.value);
-        },
-        animationDelay: function (idx) {
-            return idx * Number(configs.animationDelay.value);
-        },
-        animationEasingUpdate: getAnimationEasingUpdate(configs),
-        animationDurationUpdate: function (idx) {
-            return idx * Number(configs.animationDurationUpdate.value);
-        },
-        animationDelayUpdate: function (idx) {
-            return idx * Number(configs.animationDelayUpdate.value);
-        },
     };
+    setSeriesAnimation(option, configs, 0);
+
     setTimeout(() => {
       myChart.hideLoading();
       myChart.setOption(option);
@@ -8323,63 +6112,10 @@ function getGeoOfLocal(container, width, height, dataset, configs) {
 
     var option = {
         backgroundColor: configs.backgroundColor.value,
-        grid: {
-            x: configs.grid_left.value,
-            y: configs.grid_top.value,
-            x2: configs.grid_right.value,
-            y2: configs.grid_bottom.value,
-            containLabel: configs.grid_containLabel.value.toBoolean(),
-            backgroundColor: "transparent"
-        },
+        grid: getGrid(configs),
         //backgroundColor: configs.geoBackgroundColor.value,
-        title: {
-            show: configs.titleDisplay.value.toBoolean(),
-            text: configs.titleText.value,
-            link: configs.titleTextLink.value,
-            target : "blank",
-            subtext: configs.titleSubText.value,
-            sublink: configs.titleSubTextLink.value,
-            subtarget: "blank",
-            top:"top",
-            left:configs.titlePosition.value,
-            textStyle: {
-                color: configs.titleTextColor.value,
-                fontSize: Number(configs.titleTextFontSize.value),
-            },
-            subtextStyle: {
-                color: configs.titleSubTextColor.value,
-                fontSize: Number(configs.titleSubTextFontSize.value),
-            }
-        },
-        toolbox: {
-            show: configs.toolboxDisplay.value.toBoolean(),
-            feature: {
-                saveAsImage: {
-                    show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
-                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"],
-                    backgroundColor:configs.toolboxFeatureSaveAsImageBackgroundColor.value,
-                },
-                restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
-                dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
-                    show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
-                    title: '视图组合',
-                    icon: __SYS_IMAGES_PATH__.viewCombination,
-                    onclick: function () {
-                        __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
-                        alert("视图已提交组合列表.");
-                    }
-                } : {},
-            },
-            top: configs.toolbox_top.value,
-            left:configs.toolbox_left.value,
-            orient: configs.toolbox_orient.value,
-            emphasis: {
-                iconStyle: {
-                    textPosition: configs.toolbox_textPosition.value,
-                }
-            },
-        },
+        title: getTitle(configs),
+        toolbox: getToolbox(configs, container,false),
 
         tooltip: {
             show:configs.tooltipDisplay.value.toBoolean(),
@@ -8483,23 +6219,8 @@ function getGeoOfLocal(container, width, height, dataset, configs) {
         ],
 
         graphic: getWaterGraphic(__SYS_LOGO_LINK__),
-        animation: configs.animation.value.toBoolean(),
-        animationThreshold: Number(configs.animationThreshold.value),
-        animationEasing: getAnimationEasing(configs),
-        animationDuration: function (idx) {
-            return idx * Number(configs.animationDuration.value);
-        },
-        animationDelay: function (idx) {
-            return idx * Number(configs.animationDelay.value);
-        },
-        animationEasingUpdate: getAnimationEasingUpdate(configs),
-        animationDurationUpdate: function (idx) {
-            return idx * Number(configs.animationDurationUpdate.value);
-        },
-        animationDelayUpdate: function (idx) {
-            return idx * Number(configs.animationDelayUpdate.value);
-        },
     };
+    setSeriesAnimation(option,configs,0);
 
     setTimeout(() => {
       myChart.hideLoading();
@@ -8644,23 +6365,8 @@ function getBar3D(container, width, height, dataset, configs) {
                     },
                     //itemStyle: {}
                 },
-                animation: configs.animation.value.toBoolean(),
-                animationThreshold: Number(configs.animationThreshold.value),
-                animationEasing: getAnimationEasing(configs),
-                animationDuration: function (idx) {
-                    return idx * Number(configs.animationDuration.value) + c * Number(configs.animationDuration.value);
-                },
-                animationDelay: function (idx) {
-                    return idx * Number(configs.animationDelay.value) + c * Number(configs.animationDelay.value);
-                },
-                animationEasingUpdate: getAnimationEasingUpdate(configs),
-                animationDurationUpdate: function (idx) {
-                    return idx * Number(configs.animationDurationUpdate.value) + c * Number(configs.animationDurationUpdate.value);
-                },
-                animationDelayUpdate: function (idx) {
-                    return idx * Number(configs.animationDelayUpdate.value) + c * Number(configs.animationDelayUpdate.value);
-                },
             };
+            setSeriesAnimation(serie, configs, c);
             for (var i = 0; i < dataset["data"].length; i++) {
                 var r = dataset["data"][i];
                 data.push([i, c - 1, r[columns[c]].value]);
@@ -8679,88 +6385,19 @@ function getBar3D(container, width, height, dataset, configs) {
     }
 
     var option = {
-        aria: {
-            enabled: configs.ariaEnable.value.toBoolean(),
-            decal:{
-                show: configs.ariaEnable.value.toBoolean(),
-            }
-        },
+        aria: getAria(configs),
         backgroundColor: configs.backgroundColor.value,
-        grid: {
-            x: configs.grid_left.value,
-            y: configs.grid_top.value,
-            x2: configs.grid_right.value,
-            y2: configs.grid_bottom.value,
-            containLabel: configs.grid_containLabel.value.toBoolean(),
-            backgroundColor: "transparent"
-        },
-        title: {
-            show: configs.titleDisplay.value.toBoolean(),
-            text: configs.titleText.value,
-            link: configs.titleTextLink.value,
-            target : "blank",
-            subtext: configs.titleSubText.value,
-            sublink: configs.titleSubTextLink.value,
-            subtarget: "blank",
-            top: "top",
-            left: configs.titlePosition.value,
-            textStyle: {
-                color: configs.titleTextColor.value,
-                fontSize: Number(configs.titleTextFontSize.value),
-            },
-            subtextStyle: {
-                color: configs.titleSubTextColor.value,
-                fontSize: Number(configs.titleSubTextFontSize.value),
-            }
-        },
-        legend: {
-            show: configs.legendDisplay.value.toBoolean(),
-            icon: configs.legendIcon.value,
-            type: configs.legendType.value,
-            selectedMode: configs.legendSelectedMode.value,
-            top: configs.legendPositionTop.value,
-            left: configs.legendPositionLeft.value,
-            orient: configs.legendOrient.value,
-            data: columns.slice(1, columns.length),
-            textStyle: {
-                color: configs.legendTextColor.value
-            },
-        },
+        grid: getGrid(configs),
+        title: getTitle(configs),
+        legend: getLegend(configs, columns.slice(1, columns.length)),
+
         tooltip: {
             show: configs.tooltipDisplay.value.toBoolean(),
             formatter: function (params) {
                 return rows[params.value[0]]+ "<br>" + params.marker + columns[params.value[1] + 1] +  ":&emsp;<span style='display:inline-block;min-width:30px;text-align:right;font-weight:bold'>" + params.value[2] + "</span>";
             },
         },
-        toolbox: {
-            show: configs.toolboxDisplay.value.toBoolean(),
-            feature: {
-                saveAsImage: {
-                    show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
-                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"],
-                    backgroundColor:configs.toolboxFeatureSaveAsImageBackgroundColor.value,
-                },
-                restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
-                dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
-                    show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
-                    title: '视图组合',
-                    icon: __SYS_IMAGES_PATH__.viewCombination,
-                    onclick: function () {
-                        __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
-                        alert("视图已提交组合列表.");
-                    }
-                } : {},
-            },
-            top: configs.toolbox_top.value,
-            left: configs.toolbox_left.value,
-            orient: configs.toolbox_orient.value,
-            emphasis: {
-                iconStyle: {
-                    textPosition: configs.toolbox_textPosition.value,
-                }
-            },
-        },
+        toolbox: getToolbox(configs, container,false),
         visualMap: {
             show: configs.visualMapDisplay.value.toBoolean(),
             min: valueMin,
@@ -8921,23 +6558,8 @@ function getLine3D(container, width, height, dataset, configs) {
                     },
                     //itemStyle: {}
                 },
-                animation: configs.animation.value.toBoolean(),
-                animationThreshold: Number(configs.animationThreshold.value),
-                animationEasing: getAnimationEasing(configs),
-                animationDuration: function (idx) {
-                    return idx * Number(configs.animationDuration.value) + c * Number(configs.animationDuration.value);
-                },
-                animationDelay: function (idx) {
-                    return idx * Number(configs.animationDelay.value) + c * Number(configs.animationDelay.value);
-                },
-                animationEasingUpdate: getAnimationEasingUpdate(configs),
-                animationDurationUpdate: function (idx) {
-                    return idx * Number(configs.animationDurationUpdate.value) + c * Number(configs.animationDurationUpdate.value);
-                },
-                animationDelayUpdate: function (idx) {
-                    return idx * Number(configs.animationDelayUpdate.value) + c * Number(configs.animationDelayUpdate.value);
-                },
             };
+            setSeriesAnimation(serie, configs, c);
             var data = [];
             for (var i = 0; i < dataset["data"].length; i++) {
                 var r = dataset["data"][i];
@@ -8958,81 +6580,16 @@ function getLine3D(container, width, height, dataset, configs) {
 
     var option = {
         backgroundColor: configs.backgroundColor.value,
-        grid: {
-            x: configs.grid_left.value,
-            y: configs.grid_top.value,
-            x2: configs.grid_right.value,
-            y2: configs.grid_bottom.value,
-            containLabel: configs.grid_containLabel.value.toBoolean(),
-            backgroundColor: "transparent"
-        },
-        title: {
-            show: configs.titleDisplay.value.toBoolean(),
-            text: configs.titleText.value,
-            link: configs.titleTextLink.value,
-            target : "blank",
-            subtext: configs.titleSubText.value,
-            sublink: configs.titleSubTextLink.value,
-            subtarget: "blank",
-            top:"top",
-            left:configs.titlePosition.value,
-            textStyle: {
-                color: configs.titleTextColor.value,
-                fontSize: Number(configs.titleTextFontSize.value),
-            },
-            subtextStyle: {
-                color: configs.titleSubTextColor.value,
-                fontSize: Number(configs.titleSubTextFontSize.value),
-            }
-        },
-        legend: {
-            show: configs.legendDisplay.value.toBoolean(),
-            icon: configs.legendIcon.value,
-            type: configs.legendType.value,
-            selectedMode: configs.legendSelectedMode.value,
-            top: configs.legendPositionTop.value,
-            left: configs.legendPositionLeft.value,
-            orient: configs.legendOrient.value,
-            data: columns.slice(1, columns.length),
-            textStyle: {
-                color: configs.legendTextColor.value
-            },
-        },
+        grid: getGrid(configs),
+        title: getTitle(configs),
+        legend: getLegend(configs, columns.slice(1, columns.length)),
         tooltip: {
             show:configs.tooltipDisplay.value.toBoolean(),
             formatter: function (params) {
                 return rows[params.value[0]]+ "<br>" + params.marker + columns[params.value[1] + 1] +  ":&emsp;<span style='display:inline-block;min-width:30px;text-align:right;font-weight:bold'>" + params.value[2] + "</span>";
             },
         },
-        toolbox: {
-            show: configs.toolboxDisplay.value.toBoolean(),
-            feature: {
-                saveAsImage: {
-                    show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
-                    excludeComponents: ["toolbox", "dataZoom", "timeline", "visualMap", "brush"],
-                    backgroundColor: configs.toolboxFeatureSaveAsImageBackgroundColor.value,
-                },
-                restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
-                dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
-                    show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
-                    title: '视图组合',
-                    icon: __SYS_IMAGES_PATH__.viewCombination,
-                    onclick: function () {
-                        __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
-                        alert("视图已提交组合列表.");
-                    }
-                } : {},
-            },
-            top: configs.toolbox_top.value,
-            left:configs.toolbox_left.value,
-            orient: configs.toolbox_orient.value,
-            emphasis: {
-                iconStyle: {
-                    textPosition: configs.toolbox_textPosition.value,
-                }
-            },
-        },
+        toolbox: getToolbox(configs, container,false),
         visualMap: {
             show:configs.visualMapDisplay.value.toBoolean(),
             min: valueMin,
@@ -9218,23 +6775,8 @@ function getScatter3D(container, width, height, dataset, configs) {
                     },
                     //itemStyle: {}
                 },
-                animation: configs.animation.value.toBoolean(),
-                animationThreshold: Number(configs.animationThreshold.value),
-                animationEasing: getAnimationEasing(configs),
-                animationDuration: function (idx) {
-                    return idx * Number(configs.animationDuration.value) + c * Number(configs.animationDuration.value);
-                },
-                animationDelay: function (idx) {
-                    return idx * Number(configs.animationDelay.value) + c * Number(configs.animationDelay.value);
-                },
-                animationEasingUpdate: getAnimationEasingUpdate(configs),
-                animationDurationUpdate: function (idx) {
-                    return idx * Number(configs.animationDurationUpdate.value) + c * Number(configs.animationDurationUpdate.value);
-                },
-                animationDelayUpdate: function (idx) {
-                    return idx * Number(configs.animationDelayUpdate.value) + c * Number(configs.animationDelayUpdate.value);
-                },
             };
+            setSeriesAnimation(serie, configs, c);
             var data = [];
             for (var i = 0; i < dataset["data"].length; i++) {
                 var r = dataset["data"][i];
@@ -9255,81 +6797,16 @@ function getScatter3D(container, width, height, dataset, configs) {
 
     var option = {
         backgroundColor: configs.backgroundColor.value,
-        grid: {
-            x: configs.grid_left.value,
-            y: configs.grid_top.value,
-            x2: configs.grid_right.value,
-            y2: configs.grid_bottom.value,
-            containLabel: configs.grid_containLabel.value.toBoolean(),
-            backgroundColor: "transparent"
-        },
-        title: {
-            show: configs.titleDisplay.value.toBoolean(),
-            text: configs.titleText.value,
-            link: configs.titleTextLink.value,
-            target : "blank",
-            subtext: configs.titleSubText.value,
-            sublink: configs.titleSubTextLink.value,
-            subtarget: "blank",
-            top:"top",
-            left:configs.titlePosition.value,
-            textStyle: {
-                color: configs.titleTextColor.value,
-                fontSize: Number(configs.titleTextFontSize.value),
-            },
-            subtextStyle: {
-                color: configs.titleSubTextColor.value,
-                fontSize: Number(configs.titleSubTextFontSize.value),
-            }
-        },
-        legend: {
-            show: configs.legendDisplay.value.toBoolean(),
-            icon: configs.legendIcon.value,
-            type: configs.legendType.value,
-            selectedMode: configs.legendSelectedMode.value,
-            top: configs.legendPositionTop.value,
-            left: configs.legendPositionLeft.value,
-            orient: configs.legendOrient.value,
-            data: columns.slice(1, columns.length),
-            textStyle: {
-                color: configs.legendTextColor.value
-            },
-        },
+        grid: getGrid(configs),
+        title: getTitle(configs),
+        legend: getLegend(configs, columns.slice(1, columns.length)),
         tooltip: {
             show: configs.tooltipDisplay.value.toBoolean(),
             formatter: function (params) {
                 return rows[params.value[0]]+ "<br>" + params.marker + columns[params.value[1] + 1] +  ":&emsp;<span style='display:inline-block;min-width:30px;text-align:right;font-weight:bold'>" + params.value[2] + "</span>";
             },
         },
-        toolbox: {
-            show: configs.toolboxDisplay.value.toBoolean(),
-            feature: {
-                saveAsImage: {
-                    show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
-                    excludeComponents: ["toolbox", "dataZoom", "timeline", "visualMap", "brush"],
-                    backgroundColor: configs.toolboxFeatureSaveAsImageBackgroundColor.value,
-                },
-                restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
-                dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
-                    show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
-                    title: '视图组合',
-                    icon: __SYS_IMAGES_PATH__.viewCombination,
-                    onclick: function () {
-                        __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
-                        alert("视图已提交组合列表.");
-                    }
-                } : {},
-            },
-            top: configs.toolbox_top.value,
-            left:configs.toolbox_left.value,
-            orient: configs.toolbox_orient.value,
-            emphasis: {
-                iconStyle: {
-                    textPosition: configs.toolbox_textPosition.value,
-                }
-            },
-        },
+        toolbox: getToolbox(configs, container,false),
         visualMap: {
             show:configs.visualMapDisplay.value.toBoolean(),
             min: valueMin,
@@ -9485,23 +6962,8 @@ function getCategoryLine(container, width, height, dataset, configs) {
         var serie = {
             name: row[columns[0]].value,
             data: data,
-            animation: configs.animation.value.toBoolean(),
-            animationThreshold: Number(configs.animationThreshold.value),
-            animationEasing: getAnimationEasing(configs),
-            animationDuration: function (idx) {
-                return idx * Number(configs.animationDuration.value);
-            },
-            animationDelay: function (idx) {
-                return idx * Number(configs.animationDelay.value);
-            },
-            animationEasingUpdate: getAnimationEasingUpdate(configs),
-            animationDurationUpdate: function (idx) {
-                return idx * Number(configs.animationDurationUpdate.value);
-            },
-            animationDelayUpdate: function (idx) {
-                return idx * Number(configs.animationDelayUpdate.value);
-            },
         };
+        setSeriesAnimation(serie, configs, 0);
         if (configs.categoryLineType.value == "bar") {
             serie.label = {
                 show: configs.barLabelDisplay.value.toBoolean(),
@@ -9645,92 +7107,11 @@ function getCategoryLine(container, width, height, dataset, configs) {
 
     var option = {
         baseOption: {
-            aria: {
-                enabled: configs.ariaEnable.value.toBoolean(),
-                decal: {
-                    show: configs.ariaEnable.value.toBoolean(),
-                }
-            },
+            aria: getAria(configs),
             backgroundColor: configs.backgroundColor.value,
-            grid: {
-                x: configs.grid_left.value,
-                y: configs.grid_top.value,
-                x2: configs.grid_right.value,
-                y2: configs.grid_bottom.value,
-                containLabel: configs.grid_containLabel.value.toBoolean(),
-                backgroundColor: "transparent"
-            },
-            title: {
-                show: configs.titleDisplay.value.toBoolean(),
-                text: configs.titleText.value,
-                link: configs.titleTextLink.value,
-                target: "blank",
-                subtext: configs.titleSubText.value,
-                sublink: configs.titleSubTextLink.value,
-                subtarget: "blank",
-                top: "top",
-                left: configs.titlePosition.value,
-                textStyle: {
-                    color: configs.titleTextColor.value,
-                    fontSize: Number(configs.titleTextFontSize.value),
-                },
-                subtextStyle: {
-                    color: configs.titleSubTextColor.value,
-                    fontSize: Number(configs.titleSubTextFontSize.value),
-                }
-            },
-            timeline: {
-                show: configs.timelineDisplay.value.toBoolean(),
-                axisType: "category",
-                //考虑数据通用性，使用类目轴
-                //"value" 数值轴，适用于连续数据。
-                // "category" 类目轴，适用于离散的类目数据。
-                // "time" 时间轴，适用于连续的时序数据，与数值轴相比时间轴带有时间的格式化，在刻度计算上也有所不同，例如会根据跨度的范围来决定使用月，星期，日还是小时范围的刻度。
-                realtime: true,
-                //事实时更新数据
-                loop: true,
-                //循环播放
-                autoPlay: true,
-                //自动播放
-                // currentIndex: 2,
-                playInterval: configs.seriesLoopPlayInterval.value * 1000,
-                // controlStyle: {
-                //     position: "left"
-                // },
-                symbol: "emptyCircle",
-                //"circle", "rect", "roundRect", "triangle", "diamond", "pin", "arrow", "none"
-                symbolSize: 2,
-                data: times,
-                label: {
-                    color: configs.timelineLabelColor.value,
-                    fontSize: Number(configs.timelineLabelFontSize.value),
-                    formatter: function (s) {
-                        return s;
-                    }
-                },
-                lineStyle: {
-                    color: configs.timelineStyleColor.value,
-                },
-                controlStyle: {
-                    color: configs.timelineStyleColor.value,
-                },
-                emphasis: {
-                    label: {
-                        color: configs.timelineEmphasisColor.value,
-                    },
-                    checkpointStyle: {
-                        color: configs.timelineEmphasisColor.value,
-                    },
-                    controlStyle: {
-                        color: configs.timelineEmphasisColor.value,
-                    },
-                },
-                orient: configs.timelineOrient.value,
-                left: configs.timelineLeft.value,
-                right: configs.timelineRight.value,
-                top: configs.timelineTop.value,
-                bottom: configs.timelineBottom.value,
-            },
+            grid: getGrid(configs),
+            title: getTitle(configs),
+            timeline: getTimeline(configs,times),
             tooltip: {
                 show: configs.tooltipDisplay.value.toBoolean(),
                 trigger: "axis",
@@ -9738,35 +7119,7 @@ function getCategoryLine(container, width, height, dataset, configs) {
                     type: configs.categoryLineType.value != "pie" ? configs.axisPointerType.value : "none",
                 },
             },
-            toolbox: {
-                show: configs.toolboxDisplay.value.toBoolean(),
-                feature: {
-                    saveAsImage: {
-                        show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
-                        excludeComponents: ["toolbox", "dataZoom", "timeline", "visualMap", "brush"],
-                        backgroundColor: configs.toolboxFeatureSaveAsImageBackgroundColor.value,
-                    },
-                    restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
-                    dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                    myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
-                        show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
-                        title: '视图组合',
-                        icon: __SYS_IMAGES_PATH__.viewCombination,
-                        onclick: function () {
-                            __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
-                            alert("视图已提交组合列表.");
-                        }
-                    } : {},
-                },
-                top: configs.toolbox_top.value,
-                left: configs.toolbox_left.value,
-                orient: configs.toolbox_orient.value,
-                emphasis: {
-                    iconStyle: {
-                        textPosition: configs.toolbox_textPosition.value,
-                    }
-                },
-            },
+            toolbox: getToolbox(configs, container,false),
             xAxis: {
                 type: "category",
                 data: columns.slice(1),
@@ -10081,69 +7434,11 @@ function getGeoMigrateLinesOfChinaCity(container, width, height, dataset, config
         });
 
         var option = {
-            aria: {
-                enabled: configs.ariaEnable.value.toBoolean(),
-                decal: {
-                    show: configs.ariaEnable.value.toBoolean(),
-                }
-            },
+            aria: getAria(configs),
             backgroundColor: configs.backgroundColor.value,
-            grid: {
-                x: configs.grid_left.value,
-                y: configs.grid_top.value,
-                x2: configs.grid_right.value,
-                y2: configs.grid_bottom.value,
-                containLabel: configs.grid_containLabel.value.toBoolean(),
-                backgroundColor: "transparent"
-            },
-            title: {
-                show: configs.titleDisplay.value.toBoolean(),
-                text: configs.titleText.value,
-                link: configs.titleTextLink.value,
-                target: "blank",
-                subtext: configs.titleSubText.value,
-                sublink: configs.titleSubTextLink.value,
-                subtarget: "blank",
-                top: "top",
-                left: configs.titlePosition.value,
-                textStyle: {
-                    color: configs.titleTextColor.value,
-                    fontSize: Number(configs.titleTextFontSize.value),
-                },
-                subtextStyle: {
-                    color: configs.titleSubTextColor.value,
-                    fontSize: Number(configs.titleSubTextFontSize.value),
-                }
-            },
-            toolbox: {
-                show: configs.toolboxDisplay.value.toBoolean(),
-                feature: {
-                    saveAsImage: {
-                        show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
-                        excludeComponents: ["toolbox", "dataZoom", "timeline", "visualMap", "brush"],
-                        backgroundColor: configs.toolboxFeatureSaveAsImageBackgroundColor.value,
-                    },
-                    restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
-                    dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                    myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
-                        show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
-                        title: '视图组合',
-                        icon: __SYS_IMAGES_PATH__.viewCombination,
-                        onclick: function () {
-                            __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
-                            alert("视图已提交组合列表.");
-                        }
-                    } : {},
-                },
-                top: configs.toolbox_top.value,
-                left: configs.toolbox_left.value,
-                orient: configs.toolbox_orient.value,
-                emphasis: {
-                    iconStyle: {
-                        textPosition: configs.toolbox_textPosition.value,
-                    }
-                },
-            },
+            grid: getGrid(configs),
+            title: getTitle(configs),
+            toolbox: getToolbox(configs, container,false),
             tooltip: {
                 //trigger: "item"
                 show: configs.tooltipDisplay.value.toBoolean(),
@@ -10155,19 +7450,7 @@ function getGeoMigrateLinesOfChinaCity(container, width, height, dataset, config
                     //    return params.seriesName + " ↣ " + params.name + ":<br>" + params.data.details;
                 },
             },
-            legend: {
-                show: configs.legendDisplay.value.toBoolean(),
-                icon: configs.legendIcon.value,
-                type: configs.legendType.value,
-                selectedMode: configs.legendSelectedMode.value,
-                top: configs.legendPositionTop.value,
-                left: configs.legendPositionLeft.value,
-                orient: configs.legendOrient.value,
-                data: getSerieNames(seriedata),
-                textStyle: {
-                    color: configs.legendTextColor.value
-                },
-            },
+            legend: getLegend(configs, getSerieNames(seriedata)),
             geo: {
                 map: "china",
                 label: {
@@ -10320,10 +7603,12 @@ function getCategoryLineForGauge(container, width, height, dataset, configs) {
                     textShadowBlur: 10,
                 },
                 data: [],
-                animation: configs.animation.value.toBoolean(),
-                animationEasing: getAnimationEasing(configs),
-                animationEasingUpdate: getAnimationEasingUpdate(configs),
+                //animation: configs.animation.value.toBoolean(),
+                //animationThreshold: Number(configs.animationThreshold.value),
+                //animationEasing: getAnimationEasing(configs),
+                //animationEasingUpdate: getAnimationEasingUpdate(configs),
             };
+            setSeriesAnimation(serie, configs, -1);
             serie.data.push({
                 "name": row[columns[0]].value + "\n\n" + columns[c],
                 "value": row[columns[c]].value,
@@ -10344,119 +7629,17 @@ function getCategoryLineForGauge(container, width, height, dataset, configs) {
 
     var option = {
         baseOption: {
-            aria: {
-                enabled: configs.ariaEnable.value.toBoolean(),
-                decal: {
-                    show: configs.ariaEnable.value.toBoolean(),
-                }
-            },
+            aria: getAria(configs),
             backgroundColor: configs.backgroundColor.value,
-            title: {
-                show: configs.titleDisplay.value.toBoolean(),
-                text: configs.titleText.value,
-                link: configs.titleTextLink.value,
-                target: "blank",
-                subtext: configs.titleSubText.value,
-                sublink: configs.titleSubTextLink.value,
-                subtarget: "blank",
-                top: "top",
-                left: configs.titlePosition.value,
-                textStyle: {
-                    color: configs.titleTextColor.value,
-                    fontSize: Number(configs.titleTextFontSize.value),
-                },
-                subtextStyle: {
-                    color: configs.titleSubTextColor.value,
-                    fontSize: Number(configs.titleSubTextFontSize.value),
-                }
-            },
-            timeline: {
-                show: configs.timelineDisplay.value.toBoolean(),
-                axisType: "category",
-                //考虑数据通用性，使用类目轴
-                //"value" 数值轴，适用于连续数据。
-                // "category" 类目轴，适用于离散的类目数据。
-                // "time" 时间轴，适用于连续的时序数据，与数值轴相比时间轴带有时间的格式化，在刻度计算上也有所不同，例如会根据跨度的范围来决定使用月，星期，日还是小时范围的刻度。
-                realtime: true,
-                //事实时更新数据
-                loop: true,
-                //循环播放
-                autoPlay: true,
-                //自动播放
-                // currentIndex: 2,
-                playInterval: configs.seriesLoopPlayInterval.value * 1000,
-                // controlStyle: {
-                //     position: "left"
-                // },
-                symbol: "emptyCircle",
-                //"circle", "rect", "roundRect", "triangle", "diamond", "pin", "arrow", "none"
-                symbolSize: 2,
-                data: times,
-                label: {
-                    color: configs.timelineLabelColor.value,
-                    fontSize: Number(configs.timelineLabelFontSize.value),
-                    formatter: function (s) {
-                        return s;
-                    }
-                },
-                lineStyle: {
-                    color: configs.timelineStyleColor.value,
-                },
-                controlStyle: {
-                    color: configs.timelineStyleColor.value,
-                },
-                emphasis: {
-                    label: {
-                        color: configs.timelineEmphasisColor.value,
-                    },
-                    checkpointStyle: {
-                        color: configs.timelineEmphasisColor.value,
-                    },
-                    controlStyle: {
-                        color: configs.timelineEmphasisColor.value,
-                    },
-                },
-                orient: configs.timelineOrient.value,
-                left: configs.timelineLeft.value,
-                right: configs.timelineRight.value,
-                top: configs.timelineTop.value,
-                bottom: configs.timelineBottom.value,
-            },
+            title: getTitle(configs),
+            timeline: getTimeline(configs,times),
             tooltip: {
                 show: configs.tooltipDisplay.value.toBoolean(),
                 formatter: function (params) {
                     return [params.seriesName, params.marker + params.dimensionNames[0] + ":&emsp;<span style='display:inline-block;min-width:30px;text-align:right;font-weight:bold'>" + params.data.value + "</span>"].join("<br>");
                 },
             },
-            toolbox: {
-                show: configs.toolboxDisplay.value.toBoolean(),
-                feature: {
-                    saveAsImage: {
-                        show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
-                        excludeComponents: ["toolbox", "dataZoom", "timeline", "visualMap", "brush"],
-                        backgroundColor: configs.toolboxFeatureSaveAsImageBackgroundColor.value,
-                    },
-                    restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
-                    dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                    myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
-                        show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
-                        title: '视图组合',
-                        icon: __SYS_IMAGES_PATH__.viewCombination,
-                        onclick: function () {
-                            __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
-                            alert("视图已提交组合列表.");
-                        }
-                    } : {},
-                },
-                top: configs.toolbox_top.value,
-                left: configs.toolbox_left.value,
-                orient: configs.toolbox_orient.value,
-                emphasis: {
-                    iconStyle: {
-                        textPosition: configs.toolbox_textPosition.value,
-                    }
-                },
-            },
+            toolbox: getToolbox(configs, container,false),
             series: {
                 type: "gauge",
             },
@@ -10585,11 +7768,12 @@ function getCategoryLineForLiqiud(container, width, height, dataset, configs) {
                         opacity: 0.8
                     }
                 },
-                animation: configs.animation.value.toBoolean(),
-                animationThreshold: Number(configs.animationThreshold.value),
-                animationEasing: getAnimationEasing(configs),
-                animationEasingUpdate: getAnimationEasingUpdate(configs),
+                //animation: configs.animation.value.toBoolean(),
+                //animationThreshold: Number(configs.animationThreshold.value),
+                //animationEasing: getAnimationEasing(configs),
+                //animationEasingUpdate: getAnimationEasingUpdate(configs),
             };
+            setSeriesAnimation(serie, configs, -1);
             for (let c = 1; c < columns.length; c++) {
                 serie.data.push({
                     name: columns[c],
@@ -10670,11 +7854,12 @@ function getCategoryLineForLiqiud(container, width, height, dataset, configs) {
                             opacity: 0.8
                         }
                     },
-                    animation: configs.animation.value.toBoolean(),
-                    animationThreshold: Number(configs.animationThreshold.value),
-                    animationEasing: getAnimationEasing(configs),
-                    animationEasingUpdate: getAnimationEasingUpdate(configs),
+                    //animation: configs.animation.value.toBoolean(),
+                    //animationThreshold: Number(configs.animationThreshold.value),
+                    //animationEasing: getAnimationEasing(configs),
+                    //animationEasingUpdate: getAnimationEasingUpdate(configs),
                 };
+                setSeriesAnimation(serie, configs, c);
                 for (let t = 0;t<3;t++) {
                     serie.data.push({
                         name: columns[c],
@@ -10695,123 +7880,17 @@ function getCategoryLineForLiqiud(container, width, height, dataset, configs) {
 
     var option = {
         baseOption: {
-            aria: {
-                enabled: configs.ariaEnable.value.toBoolean(),
-                decal: {
-                    show: configs.ariaEnable.value.toBoolean(),
-                }
-            },
+            aria: getAria(configs),
             backgroundColor: configs.backgroundColor.value,
-            title: {
-                show: configs.titleDisplay.value.toBoolean(),
-                text: configs.titleText.value,
-                link: configs.titleTextLink.value,
-                target: "blank",
-                subtext: configs.titleSubText.value,
-                sublink: configs.titleSubTextLink.value,
-                subtarget: "blank",
-                top: "top",
-                left: configs.titlePosition.value,
-                textStyle: {
-                    color: configs.titleTextColor.value,
-                    fontSize: Number(configs.titleTextFontSize.value),
-                },
-                subtextStyle: {
-                    color: configs.titleSubTextColor.value,
-                    fontSize: Number(configs.titleSubTextFontSize.value),
-                }
-            },
-            timeline: {
-                show: configs.timelineDisplay.value.toBoolean(),
-                axisType: "category",
-                //考虑数据通用性，使用类目轴
-                //"value" 数值轴，适用于连续数据。
-                // "category" 类目轴，适用于离散的类目数据。
-                // "time" 时间轴，适用于连续的时序数据，与数值轴相比时间轴带有时间的格式化，在刻度计算上也有所不同，例如会根据跨度的范围来决定使用月，星期，日还是小时范围的刻度。
-                realtime: true,
-                //事实时更新数据
-                loop: true,
-                //循环播放
-                autoPlay: true,
-                //自动播放
-                // currentIndex: 2,
-                playInterval: configs.seriesLoopPlayInterval.value * 1000,
-                // controlStyle: {
-                //     position: "left"
-                // },
-                symbol: "emptyCircle",
-                //"circle", "rect", "roundRect", "triangle", "diamond", "pin", "arrow", "none"
-                symbolSize: 2,
-                data: times,
-                label: {
-                    color: configs.timelineLabelColor.value,
-                    fontSize: Number(configs.timelineLabelFontSize.value),
-                    formatter: function (s) {
-                        return s;
-                    }
-                },
-                lineStyle: {
-                    color: configs.timelineStyleColor.value,
-                },
-                controlStyle: {
-                    color: configs.timelineStyleColor.value,
-                },
-                emphasis: {
-                    label: {
-                        show: true,
-                        formatter: function (s) {
-                            return s;
-                        },
-                        color: configs.timelineEmphasisColor.value,
-                    },
-                    checkpointStyle: {
-                        color: configs.timelineEmphasisColor.value,
-                    },
-                    controlStyle: {
-                        color: configs.timelineEmphasisColor.value,
-                    },
-                },
-                orient: configs.timelineOrient.value,
-                left: configs.timelineLeft.value,
-                right: configs.timelineRight.value,
-                top: configs.timelineTop.value,
-                bottom: configs.timelineBottom.value,
-            },
+            title: getTitle(configs),
+            timeline: getTimeline(configs,times),
             tooltip: {
                 show: configs.tooltipDisplay.value.toBoolean(),
                 formatter: function (params) {
                     return [params.name, params.marker + params.seriesName + ":&emsp;<span style='display:inline-block;min-width:30px;text-align:right;font-weight:bold'>" + Math.round(params.data.value*100,2) + "%</span>"].join("<br>");
                 },
             },
-            toolbox: {
-                show: configs.toolboxDisplay.value.toBoolean(),
-                feature: {
-                    saveAsImage: {
-                        show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
-                        excludeComponents: ["toolbox", "dataZoom", "timeline", "visualMap", "brush"],
-                        backgroundColor: configs.toolboxFeatureSaveAsImageBackgroundColor.value,
-                    },
-                    restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
-                    dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                    myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
-                        show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
-                        title: '视图组合',
-                        icon: __SYS_IMAGES_PATH__.viewCombination,
-                        onclick: function () {
-                            __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
-                            alert("视图已提交组合列表.");
-                        }
-                    } : {},
-                },
-                top: configs.toolbox_top.value,
-                left: configs.toolbox_left.value,
-                orient: configs.toolbox_orient.value,
-                emphasis: {
-                    iconStyle: {
-                        textPosition: configs.toolbox_textPosition.value,
-                    }
-                },
-            },
+            toolbox: getToolbox(configs, container,false),
             graphic: getWaterGraphic(__SYS_LOGO_LINK__),
         },
         options: options
@@ -10919,44 +7998,9 @@ function getCategoryLineForGeoOfChina(container, width, height, dataset, configs
                     }
                 }
                 let opt = {
-                    grid: {
-                        x: configs.grid_left.value,
-                        y: configs.grid_top.value,
-                        x2: configs.grid_right.value,
-                        y2: configs.grid_bottom.value,
-                        containLabel: configs.grid_containLabel.value.toBoolean(),
-                        backgroundColor: "transparent"
-                    },
+                    grid: getGrid(configs),
                     //backgroundColor: configs.geoBackgroundColor.value,
-                    toolbox: {
-                        show: configs.toolboxDisplay.value.toBoolean(),
-                        feature: {
-                            saveAsImage: {
-                                show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
-                                excludeComponents: ["toolbox", "dataZoom", "timeline", "visualMap", "brush"],
-                                backgroundColor: configs.toolboxFeatureSaveAsImageBackgroundColor.value,
-                            },
-                            restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
-                            dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                            myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
-                                show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
-                                title: '视图组合',
-                                icon: __SYS_IMAGES_PATH__.viewCombination,
-                                onclick: function () {
-                                    __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
-                                    alert("视图已提交组合列表.");
-                                }
-                            } : {},
-                        },
-                        top: configs.toolbox_top.value,
-                        left: configs.toolbox_left.value,
-                        orient: configs.toolbox_orient.value,
-                        emphasis: {
-                            iconStyle: {
-                                textPosition: configs.toolbox_textPosition.value,
-                            }
-                        },
-                    },
+                    toolbox: getToolbox(configs, container,false),
                     tooltip: {
                         show: configs.tooltipDisplay.value.toBoolean(),
                         formatter: function (params) {
@@ -11057,24 +8101,8 @@ function getCategoryLineForGeoOfChina(container, width, height, dataset, configs
                         }
                     ],
                     graphic: getWaterGraphic(__SYS_LOGO_LINK__),
-
-                    animation: configs.animation.value.toBoolean(),
-                    animationThreshold: Number(configs.animationThreshold.value),
-                    animationEasing: getAnimationEasing(configs),
-                    animationDuration: function (idx) {
-                        return idx * Number(configs.animationDuration.value) + c * Number(configs.animationDuration.value);
-                    },
-                    animationDelay: function (idx) {
-                        return idx * Number(configs.animationDelay.value) + c * Number(configs.animationDelay.value);
-                    },
-                    animationEasingUpdate: getAnimationEasingUpdate(configs),
-                    animationDurationUpdate: function (idx) {
-                        return idx * Number(configs.animationDurationUpdate.value) + c * Number(configs.animationDurationUpdate.value);
-                    },
-                    animationDelayUpdate: function (idx) {
-                        return idx * Number(configs.animationDelayUpdate.value) + c * Number(configs.animationDelayUpdate.value);
-                    },
                 };
+                setSeriesAnimation(opt,configs,c);
                 options.push(opt);
             }
         }
@@ -11084,125 +8112,15 @@ function getCategoryLineForGeoOfChina(container, width, height, dataset, configs
 
     var option = {
         baseOption: {
-            aria: {
-                enabled: configs.ariaEnable.value.toBoolean(),
-                decal: {
-                    show: configs.ariaEnable.value.toBoolean(),
-                }
-            },
+            aria: getAria(configs),
             backgroundColor: configs.backgroundColor.value,
-            grid: {
-                x: configs.grid_left.value,
-                y: configs.grid_top.value,
-                x2: configs.grid_right.value,
-                y2: configs.grid_bottom.value,
-                containLabel: configs.grid_containLabel.value.toBoolean(),
-                backgroundColor: "transparent"
-            },
-            title: {
-                show: configs.titleDisplay.value.toBoolean(),
-                text: configs.titleText.value,
-                link: configs.titleTextLink.value,
-                target: "blank",
-                subtext: configs.titleSubText.value,
-                sublink: configs.titleSubTextLink.value,
-                subtarget: "blank",
-                top: "top",
-                left: configs.titlePosition.value,
-                textStyle: {
-                    color: configs.titleTextColor.value,
-                    fontSize: Number(configs.titleTextFontSize.value),
-                },
-                subtextStyle: {
-                    color: configs.titleSubTextColor.value,
-                    fontSize: Number(configs.titleSubTextFontSize.value),
-                }
-            },
-            timeline: {
-                show: configs.timelineDisplay.value.toBoolean(),
-                axisType: "category",
-                //考虑数据通用性，使用类目轴
-                //"value" 数值轴，适用于连续数据。
-                // "category" 类目轴，适用于离散的类目数据。
-                // "time" 时间轴，适用于连续的时序数据，与数值轴相比时间轴带有时间的格式化，在刻度计算上也有所不同，例如会根据跨度的范围来决定使用月，星期，日还是小时范围的刻度。
-                realtime: true,
-                //事实时更新数据
-                loop: true,
-                //循环播放
-                autoPlay: true,
-                //自动播放
-                // currentIndex: 2,
-                playInterval: configs.seriesLoopPlayInterval.value * 1000,
-                // controlStyle: {
-                //     position: "left"
-                // },
-                symbol: "emptyCircle",
-                //"circle", "rect", "roundRect", "triangle", "diamond", "pin", "arrow", "none"
-                symbolSize: 2,
-                data: times,
-                label: {
-                    color: configs.timelineLabelColor.value,
-                    fontSize: Number(configs.timelineLabelFontSize.value),
-                    formatter: function (s) {
-                        return s;
-                    }
-                },
-                lineStyle: {
-                    color: configs.timelineStyleColor.value,
-                },
-                controlStyle: {
-                    color: configs.timelineStyleColor.value,
-                },
-                emphasis: {
-                    label: {
-                        color: configs.timelineEmphasisColor.value,
-                    },
-                    checkpointStyle: {
-                        color: configs.timelineEmphasisColor.value,
-                    },
-                    controlStyle: {
-                        color: configs.timelineEmphasisColor.value,
-                    },
-                },
-
-                orient: configs.timelineOrient.value,
-                left: configs.timelineLeft.value,
-                right: configs.timelineRight.value,
-                top: configs.timelineTop.value,
-                bottom: configs.timelineBottom.value,
-            },
+            grid: getGrid(configs),
+            title: getTitle(configs),
+            timeline: getTimeline(configs,times),
             tooltip: {
                 show: configs.tooltipDisplay.value.toBoolean(),
             },
-            toolbox: {
-                show: configs.toolboxDisplay.value.toBoolean(),
-                feature: {
-                    saveAsImage: {
-                        show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
-                        excludeComponents: ["toolbox", "dataZoom", "timeline", "visualMap", "brush"],
-                        backgroundColor: configs.toolboxFeatureSaveAsImageBackgroundColor.value,
-                    },
-                    restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
-                    dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                    myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
-                        show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
-                        title: '视图组合',
-                        icon: __SYS_IMAGES_PATH__.viewCombination,
-                        onclick: function () {
-                            __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
-                            alert("视图已提交组合列表.");
-                        }
-                    } : {},
-                },
-                top: configs.toolbox_top.value,
-                left: configs.toolbox_left.value,
-                orient: configs.toolbox_orient.value,
-                emphasis: {
-                    iconStyle: {
-                        textPosition: configs.toolbox_textPosition.value,
-                    }
-                },
-            },
+            toolbox: getToolbox(configs, container,false),
             graphic: getWaterGraphic(__SYS_LOGO_LINK__),
         },
         options: options
@@ -11303,44 +8221,9 @@ function getCategoryLineForGeoOfLocal(container, width, height, dataset, configs
                 }
 
                 let opt = {
-                    grid: {
-                        x: configs.grid_left.value,
-                        y: configs.grid_top.value,
-                        x2: configs.grid_right.value,
-                        y2: configs.grid_bottom.value,
-                        containLabel: configs.grid_containLabel.value.toBoolean(),
-                        backgroundColor: "transparent"
-                    },
+                    grid: getGrid(configs),
                     //backgroundColor: configs.geoBackgroundColor.value,
-                    toolbox: {
-                        show: configs.toolboxDisplay.value.toBoolean(),
-                        feature: {
-                            saveAsImage: {
-                                show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
-                                excludeComponents: ["toolbox", "dataZoom", "timeline", "visualMap", "brush"],
-                                backgroundColor: configs.toolboxFeatureSaveAsImageBackgroundColor.value,
-                            },
-                            restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
-                            dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                            myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
-                                show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
-                                title: '视图组合',
-                                icon: __SYS_IMAGES_PATH__.viewCombination,
-                                onclick: function () {
-                                    __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
-                                    alert("视图已提交组合列表.");
-                                }
-                            } : {},
-                        },
-                        top: configs.toolbox_top.value,
-                        left: configs.toolbox_left.value,
-                        orient: configs.toolbox_orient.value,
-                        emphasis: {
-                            iconStyle: {
-                                textPosition: configs.toolbox_textPosition.value,
-                            }
-                        },
-                    },
+                    toolbox: getToolbox(configs, container, false),
 
                     tooltip: {
                         show: configs.tooltipDisplay.value.toBoolean(),
@@ -11443,23 +8326,8 @@ function getCategoryLineForGeoOfLocal(container, width, height, dataset, configs
                         }
                     ],
                     graphic: getWaterGraphic(__SYS_LOGO_LINK__),
-                    animation: configs.animation.value.toBoolean(),
-                    animationThreshold: Number(configs.animationThreshold.value),
-                    animationEasing: getAnimationEasing(configs),
-                    animationDuration: function (idx) {
-                        return idx * Number(configs.animationDuration.value) + c * Number(configs.animationDuration.value);
-                    },
-                    animationDelay: function (idx) {
-                        return idx * Number(configs.animationDelay.value) + c * Number(configs.animationDelay.value);
-                    },
-                    animationEasingUpdate: getAnimationEasingUpdate(configs),
-                    animationDurationUpdate: function (idx) {
-                        return idx * Number(configs.animationDurationUpdate.value) + c * Number(configs.animationDurationUpdate.value);
-                    },
-                    animationDelayUpdate: function (idx) {
-                        return idx * Number(configs.animationDelayUpdate.value) + c * Number(configs.animationDelayUpdate.value);
-                    },
                 };
+                setSeriesAnimation(opt,configs,c);
                 options.push(opt);
             }
         }
@@ -11468,12 +8336,7 @@ function getCategoryLineForGeoOfLocal(container, width, height, dataset, configs
     init();
     var option = {
         baseOption: {
-            aria: {
-                enabled: configs.ariaEnable.value.toBoolean(),
-                decal: {
-                    show: configs.ariaEnable.value.toBoolean(),
-                }
-            },
+            aria: getAria(configs),
             backgroundColor: configs.backgroundColor.value,
             grid: {
                 x: configs.grid_left.value,
@@ -11483,109 +8346,12 @@ function getCategoryLineForGeoOfLocal(container, width, height, dataset, configs
                 containLabel: configs.grid_containLabel.value.toBoolean(),
                 backgroundColor: "transparent"
             },
-            title: {
-                show: configs.titleDisplay.value.toBoolean(),
-                text: configs.titleText.value,
-                link: configs.titleTextLink.value,
-                target: "blank",
-                subtext: configs.titleSubText.value,
-                sublink: configs.titleSubTextLink.value,
-                subtarget: "blank",
-                top: "top",
-                left: configs.titlePosition.value,
-                textStyle: {
-                    color: configs.titleTextColor.value,
-                    fontSize: Number(configs.titleTextFontSize.value),
-                },
-                subtextStyle: {
-                    color: configs.titleSubTextColor.value,
-                    fontSize: Number(configs.titleSubTextFontSize.value),
-                }
-            },
-            timeline: {
-                show: configs.timelineDisplay.value.toBoolean(),
-                axisType: "category",
-                //考虑数据通用性，使用类目轴
-                //"value" 数值轴，适用于连续数据。
-                // "category" 类目轴，适用于离散的类目数据。
-                // "time" 时间轴，适用于连续的时序数据，与数值轴相比时间轴带有时间的格式化，在刻度计算上也有所不同，例如会根据跨度的范围来决定使用月，星期，日还是小时范围的刻度。
-                realtime: true,
-                //事实时更新数据
-                loop: true,
-                //循环播放
-                autoPlay: true,
-                //自动播放
-                // currentIndex: 2,
-                playInterval: configs.seriesLoopPlayInterval.value * 1000,
-                // controlStyle: {
-                //     position: "left"
-                // },
-                symbol: "emptyCircle",
-                //"circle", "rect", "roundRect", "triangle", "diamond", "pin", "arrow", "none"
-                symbolSize: 2,
-                data: times,
-                label: {
-                    color: configs.timelineLabelColor.value,
-                    fontSize: Number(configs.timelineLabelFontSize.value),
-                    formatter: function (s) {
-                        return s;
-                    }
-                },
-                lineStyle: {
-                    color: configs.timelineStyleColor.value,
-                },
-                controlStyle: {
-                    color: configs.timelineStyleColor.value,
-                },
-                emphasis: {
-                    label: {
-                        color: configs.timelineEmphasisColor.value,
-                    },
-                    checkpointStyle: {
-                        color: configs.timelineEmphasisColor.value,
-                    },
-                    controlStyle: {
-                        color: configs.timelineEmphasisColor.value,
-                    },
-                },
-                orient: configs.timelineOrient.value,
-                left: configs.timelineLeft.value,
-                right: configs.timelineRight.value,
-                top: configs.timelineTop.value,
-                bottom: configs.timelineBottom.value,
-            },
+            title: getTitle(configs),
+            timeline: getTimeline(configs,times),
             tooltip: {
                 show: configs.tooltipDisplay.value.toBoolean(),
             },
-            toolbox: {
-                show: configs.toolboxDisplay.value.toBoolean(),
-                feature: {
-                    saveAsImage: {
-                        show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
-                        excludeComponents: ["toolbox", "dataZoom", "timeline", "visualMap", "brush"],
-                        backgroundColor: configs.toolboxFeatureSaveAsImageBackgroundColor.value,
-                    },
-                    restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
-                    dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                    myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
-                        show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
-                        title: '视图组合',
-                        icon: __SYS_IMAGES_PATH__.viewCombination,
-                        onclick: function () {
-                            __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
-                            alert("视图已提交组合列表.");
-                        }
-                    } : {},
-                },
-                top: configs.toolbox_top.value,
-                left: configs.toolbox_left.value,
-                orient: configs.toolbox_orient.value,
-                emphasis: {
-                    iconStyle: {
-                        textPosition: configs.toolbox_textPosition.value,
-                    }
-                },
-            },
+            toolbox: getToolbox(configs, container,false),
             graphic: getWaterGraphic(__SYS_LOGO_LINK__),
         },
         options: options
@@ -11717,61 +8483,10 @@ function getScrollingScreen(container, width, height, dataset, configs) {
         });
 
     var option = {
-        aria: {
-            enabled: configs.ariaEnable.value.toBoolean(),
-            decal:{
-                show: configs.ariaEnable.value.toBoolean(),
-            }
-        },
+        aria: getAria(configs),
         backgroundColor: configs.backgroundColor.value,
-        title: {
-            show: configs.titleDisplay.value.toBoolean(),
-            text: configs.titleText.value,
-            link: configs.titleTextLink.value,
-            target: "blank",
-            subtext: configs.titleSubText.value,
-            sublink: configs.titleSubTextLink.value,
-            subtarget: "blank",
-            top: "top",
-            left: configs.titlePosition.value,
-            textStyle: {
-                color: configs.titleTextColor.value,
-                fontSize: Number(configs.titleTextFontSize.value),
-            },
-            subtextStyle: {
-                color: configs.titleSubTextColor.value,
-                fontSize: Number(configs.titleSubTextFontSize.value),
-            }
-        },
-        toolbox: {
-            show: configs.toolboxDisplay.value.toBoolean(),
-            feature: {
-                saveAsImage: {
-                    show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
-                    excludeComponents: ["toolbox", "dataZoom", "timeline", "visualMap", "brush"],
-                    backgroundColor: configs.toolboxFeatureSaveAsImageBackgroundColor.value,
-                },
-                restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
-                dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
-                    show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
-                    title: '视图组合',
-                    icon: __SYS_IMAGES_PATH__.viewCombination,
-                    onclick: function () {
-                        __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
-                        alert("视图已提交组合列表.");
-                    }
-                } : {},
-            },
-            top: configs.toolbox_top.value,
-            left: configs.toolbox_left.value,
-            orient: configs.toolbox_orient.value,
-            emphasis: {
-                iconStyle: {
-                    textPosition: configs.toolbox_textPosition.value,
-                },
-            },
-        },
+        title: getTitle(configs),
+        toolbox: getToolbox(configs, container,false),
         graphic: scrollingScreenGraphic
     };
 
@@ -11889,61 +8604,10 @@ function getWalkingLantern(container, width, height, dataset, configs) {
     title = [title];
 
     var option = {
-        aria: {
-            enabled: configs.ariaEnable.value.toBoolean(),
-            decal:{
-                show: configs.ariaEnable.value.toBoolean(),
-            }
-        },
+        aria: getAria(configs),
         backgroundColor: configs.backgroundColor.value,
-        title: {
-            show: configs.titleDisplay.value.toBoolean(),
-            text: configs.titleText.value,
-            link: configs.titleTextLink.value,
-            target: "blank",
-            subtext: configs.titleSubText.value,
-            sublink: configs.titleSubTextLink.value,
-            subtarget: "blank",
-            top: "top",
-            left: configs.titlePosition.value,
-            textStyle: {
-                color: configs.titleTextColor.value,
-                fontSize: Number(configs.titleTextFontSize.value),
-            },
-            subtextStyle: {
-                color: configs.titleSubTextColor.value,
-                fontSize: Number(configs.titleSubTextFontSize.value),
-            }
-        },
-        toolbox: {
-            show: configs.toolboxDisplay.value.toBoolean(),
-            feature: {
-                saveAsImage: {
-                    show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
-                    excludeComponents: ["toolbox", "dataZoom", "timeline", "visualMap", "brush"],
-                    backgroundColor: configs.toolboxFeatureSaveAsImageBackgroundColor.value,
-                },
-                restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
-                dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
-                    show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
-                    title: '视图组合',
-                    icon: __SYS_IMAGES_PATH__.viewCombination,
-                    onclick: function () {
-                        __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
-                        alert("视图已提交组合列表.");
-                    }
-                } : {},
-            },
-            top: configs.toolbox_top.value,
-            left: configs.toolbox_left.value,
-            orient: configs.toolbox_orient.value,
-            emphasis: {
-                iconStyle: {
-                    textPosition: configs.toolbox_textPosition.value,
-                },
-            },
-        },
+        title: getTitle(configs),
+        toolbox: getToolbox(configs, container,false),
     };
 
     var pool = [];
@@ -12115,61 +8779,10 @@ function getWindowShades(container, width, height, dataset, configs) {
     title = [title];
 
     var option = {
-        aria: {
-            enabled: configs.ariaEnable.value.toBoolean(),
-            decal:{
-                show: configs.ariaEnable.value.toBoolean(),
-            }
-        },
+        aria: getAria(configs),
         backgroundColor: configs.backgroundColor.value,
-        title: {
-            show: configs.titleDisplay.value.toBoolean(),
-            text: configs.titleText.value,
-            link: configs.titleTextLink.value,
-            target: "blank",
-            subtext: configs.titleSubText.value,
-            sublink: configs.titleSubTextLink.value,
-            subtarget: "blank",
-            top: "top",
-            left: configs.titlePosition.value,
-            textStyle: {
-                color: configs.titleTextColor.value,
-                fontSize: Number(configs.titleTextFontSize.value),
-            },
-            subtextStyle: {
-                color: configs.titleSubTextColor.value,
-                fontSize: Number(configs.titleSubTextFontSize.value),
-            }
-        },
-        toolbox: {
-            show: configs.toolboxDisplay.value.toBoolean(),
-            feature: {
-                saveAsImage: {
-                    show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
-                    excludeComponents: ["toolbox", "dataZoom", "timeline", "visualMap", "brush"],
-                    backgroundColor: configs.toolboxFeatureSaveAsImageBackgroundColor.value,
-                },
-                restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
-                dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
-                    show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
-                    title: '视图组合',
-                    icon: __SYS_IMAGES_PATH__.viewCombination,
-                    onclick: function () {
-                        __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
-                        alert("视图已提交组合列表.");
-                    }
-                } : {},
-            },
-            top: configs.toolbox_top.value,
-            left: configs.toolbox_left.value,
-            orient: configs.toolbox_orient.value,
-            emphasis: {
-                iconStyle: {
-                    textPosition: configs.toolbox_textPosition.value,
-                },
-            },
-        },
+        title: getTitle(configs),
+        toolbox: getToolbox(configs, container,false),
     };
 
     var pool = [];
@@ -12305,23 +8918,8 @@ function getSurface(container, width, height, dataset, configs) {
         name: configs.titleText.value,
         type: "surface",
         data: [],
-        animation: configs.animation.value.toBoolean(),
-        animationThreshold: Number(configs.animationThreshold.value),
-        animationEasing: getAnimationEasing(configs),
-        animationDuration: function (idx) {
-            return idx * Number(configs.animationDuration.value) + c * Number(configs.animationDuration.value);
-        },
-        animationDelay: function (idx) {
-            return idx * Number(configs.animationDelay.value) + c * Number(configs.animationDelay.value);
-        },
-        animationEasingUpdate: getAnimationEasingUpdate(configs),
-        animationDurationUpdate: function (idx) {
-            return idx * Number(configs.animationDurationUpdate.value) + c * Number(configs.animationDurationUpdate.value);
-        },
-        animationDelayUpdate: function (idx) {
-            return idx * Number(configs.animationDelayUpdate.value) + c * Number(configs.animationDelayUpdate.value);
-        },
     };
+    setSeriesAnimation(serie, configs, -1);
 
     var data = [];
     for (var c = 0; c < columns.length; c++) {
@@ -12350,88 +8948,18 @@ function getSurface(container, width, height, dataset, configs) {
     series.push(serie);
 
     var option = {
-        aria: {
-            enabled: configs.ariaEnable.value.toBoolean(),
-            decal:{
-                show: configs.ariaEnable.value.toBoolean(),
-            }
-        },
+        aria: getAria(configs),
         backgroundColor: configs.backgroundColor.value,
-        grid: {
-            x: configs.grid_left.value,
-            y: configs.grid_top.value,
-            x2: configs.grid_right.value,
-            y2: configs.grid_bottom.value,
-            containLabel: configs.grid_containLabel.value.toBoolean(),
-            backgroundColor: "transparent"
-        },
-        title: {
-            show: configs.titleDisplay.value.toBoolean(),
-            text: configs.titleText.value,
-            link: configs.titleTextLink.value,
-            target: "blank",
-            subtext: configs.titleSubText.value,
-            sublink: configs.titleSubTextLink.value,
-            subtarget: "blank",
-            top: "top",
-            left: configs.titlePosition.value,
-            textStyle: {
-                color: configs.titleTextColor.value,
-                fontSize: Number(configs.titleTextFontSize.value),
-            },
-            subtextStyle: {
-                color: configs.titleSubTextColor.value,
-                fontSize: Number(configs.titleSubTextFontSize.value),
-            }
-        },
-        legend: {
-            show: configs.legendDisplay.value.toBoolean(),
-            icon: configs.legendIcon.value,
-            type: configs.legendType.value,
-            selectedMode: configs.legendSelectedMode.value,
-            top: configs.legendPositionTop.value,
-            left: configs.legendPositionLeft.value,
-            orient: configs.legendOrient.value,
-            data: columns.slice(1, columns.length),
-            textStyle: {
-                color: configs.legendTextColor.value
-            },
-        },
+        grid: getGrid(configs),
+        title: getTitle(configs),
+        legend: getLegend(configs, columns.slice(1, columns.length)),
         tooltip: {
             show: configs.tooltipDisplay.value.toBoolean(),
             formatter: function (params) {
                 return rows[params.value[0]]+ "<br>" + params.marker + columns[params.value[1] + 1] +  ":&emsp;<span style='display:inline-block;min-width:30px;text-align:right;font-weight:bold'>" + params.value[2] + "</span>";
             },
         },
-        toolbox: {
-            show: configs.toolboxDisplay.value.toBoolean(),
-            feature: {
-                saveAsImage: {
-                    show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
-                    excludeComponents: ["toolbox", "dataZoom", "timeline", "visualMap", "brush"],
-                    backgroundColor: configs.toolboxFeatureSaveAsImageBackgroundColor.value,
-                },
-                restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
-                dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
-                    show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
-                    title: '视图组合',
-                    icon: __SYS_IMAGES_PATH__.viewCombination,
-                    onclick: function () {
-                        __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
-                        alert("视图已提交组合列表.");
-                    }
-                } : {},
-            },
-            top: configs.toolbox_top.value,
-            left: configs.toolbox_left.value,
-            orient: configs.toolbox_orient.value,
-            emphasis: {
-                iconStyle: {
-                    textPosition: configs.toolbox_textPosition.value,
-                },
-            },
-        },
+        toolbox: getToolbox(configs, container,false),
         visualMap: {
             show: configs.visualMapDisplay.value.toBoolean(),
             min: valueMin,
@@ -12598,54 +9126,32 @@ function getBoxplot(container, width, height, dataset, configs) {
         }
     }
 
+    let serie = {
+        name: '盒须图',
+        type: 'boxplot',
+        data: data,
+        tooltip: {
+            formatter: function (param) {
+                return [
+                    param.marker + param.name,
+                    "<span style='color:" + param.color + " '>•</span>" + "&ensp;上&ensp;边&ensp;界:&emsp;<span style='display:inline-block;min-width:80px;text-align:right;font-weight:bold'>" + param.data[5] + "</span>",
+                    "<span style='color:" + param.color + " '>•</span>" + "&ensp;上四分位:&emsp;<span style='display:inline-block;min-width:80px;text-align:right;font-weight:bold'>" + param.data[4] + "</span>",
+                    "<span style='color:" + param.color + " '>•</span>" + "&ensp;中&ensp;&ensp;&ensp;&ensp;值:&emsp;<span style='display:inline-block;min-width:80px;text-align:right;font-weight:bold'>" + param.data[3] + "</span>",
+                    "<span style='color:" + param.color + " '>•</span>" + "&ensp;下四分位:&emsp;<span style='display:inline-block;min-width:80px;text-align:right;font-weight:bold'>" + param.data[2] + "</span>",
+                    "<span style='color:" + param.color + " '>•</span>" + "&ensp;下&ensp;边&ensp;界:&emsp;<span style='display:inline-block;min-width:80px;text-align:right;font-weight:bold'>" + param.data[1] + "</span>"
+                ].join("<br/>");
+            }
+        }
+    };
+
+    setSeriesAnimation(serie, configs, 0);
+
     var option = {
-        aria: {
-            enabled: configs.ariaEnable.value.toBoolean(),
-            decal:{
-                show: configs.ariaEnable.value.toBoolean(),
-            }
-        },
+        aria: getAria(configs),
         backgroundColor: configs.backgroundColor.value,
-        grid: {
-            x: configs.grid_left.value,
-            y: configs.grid_top.value,
-            x2: configs.grid_right.value,
-            y2: configs.grid_bottom.value,
-            containLabel: configs.grid_containLabel.value.toBoolean(),
-            backgroundColor: "transparent"
-        },
-        title: {
-            show: configs.titleDisplay.value.toBoolean(),
-            text: configs.titleText.value,
-            link: configs.titleTextLink.value,
-            target: "blank",
-            subtext: configs.titleSubText.value,
-            sublink: configs.titleSubTextLink.value,
-            subtarget: "blank",
-            top: "top",
-            left: configs.titlePosition.value,
-            textStyle: {
-                color: configs.titleTextColor.value,
-                fontSize: Number(configs.titleTextFontSize.value),
-            },
-            subtextStyle: {
-                color: configs.titleSubTextColor.value,
-                fontSize: Number(configs.titleSubTextFontSize.value),
-            }
-        },
-        legend: {
-            show: configs.legendDisplay.value.toBoolean(),
-            icon: configs.legendIcon.value,
-            type: configs.legendType.value,
-            selectedMode: configs.legendSelectedMode.value,
-            top: configs.legendPositionTop.value,
-            left: configs.legendPositionLeft.value,
-            orient: configs.legendOrient.value,
-            data: columns.slice(1, columns.length),
-            textStyle: {
-                color: configs.legendTextColor.value
-            },
-        },
+        grid: getGrid(configs),
+        title: getTitle(configs),
+        legend: getLegend(configs, columns.slice(1, columns.length)),
         tooltip: {
             show: configs.tooltipDisplay.value.toBoolean(),
             trigger: 'item',
@@ -12653,171 +9159,16 @@ function getBoxplot(container, width, height, dataset, configs) {
                 type: configs.axisPointerType.value,
             },
         },
-        toolbox: {
-            show: configs.toolboxDisplay.value.toBoolean(),
-            feature: {
-                saveAsImage: {
-                    show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
-                    excludeComponents: ["toolbox", "dataZoom", "timeline", "visualMap", "brush"],
-                    backgroundColor: configs.toolboxFeatureSaveAsImageBackgroundColor.value,
-                },
-                restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
-                dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
-                    show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
-                    title: '视图组合',
-                    icon: __SYS_IMAGES_PATH__.viewCombination,
-                    onclick: function () {
-                        __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
-                        alert("视图已提交组合列表.");
-                    }
-                } : {},
-            },
-            top: configs.toolbox_top.value,
-            left: configs.toolbox_left.value,
-            orient: configs.toolbox_orient.value,
-            emphasis: {
-                iconStyle: {
-                    textPosition: configs.toolbox_textPosition.value,
-                },
-            },
-        },
-        xAxis: {
-            type: 'category',
-            data: columns.slice(1,columns.length),
-            inverse: configs.xAxisInverse.value.toBoolean(),
-            axisLine: {
-                show: configs.axisLineDisplay.value.toBoolean(),
-                lineStyle: {
-                    color: configs.axisColor.value
-                },
-            },
-            axisTick: {
-                show: configs.axisLineDisplay.value.toBoolean(),
-                lineStyle: {
-                    color: configs.axisColor.value
-                },
-            },
-            axisLabel: {
-                show: configs.axisLineDisplay.value.toBoolean(),
-                interval: "auto",
-                margin: 8,
-                rotate: Number(configs.xAxisLabelRotate.value),
-                textStyle: {
-                    color: configs.axisTextColor.value
-                }
-            },
-            splitLine: {
-                show: configs.splitXLineDisplay.value.toBoolean(),
-                lineStyle: {
-                    color: [
-                        configs.axisColor.value
-                    ]
-                },
-            },
-            splitArea: {
-                show: configs.splitXAreaDisplay.value.toBoolean(),
-            }
-        },
-        yAxis: {
-            inverse: configs.yAxisInverse.value.toBoolean(),
-            axisLine: {
-                show: configs.axisLineDisplay.value.toBoolean(),
-                lineStyle: {
-                    color: configs.axisColor.value
-                },
-            },
-            axisTick: {
-                show: configs.axisLineDisplay.value.toBoolean(),
-                lineStyle: {
-                    color: configs.axisColor.value
-                },
-            },
-            axisLabel: {
-                show: configs.axisLineDisplay.value.toBoolean(),
-                rotate: Number(configs.yAxisLabelRotate.value),
-                textStyle: {
-                    color: configs.axisTextColor.value
-                }
-            },
-            splitLine: {
-                show: configs.splitYLineDisplay.value.toBoolean(),
-                lineStyle: {
-                    color: [
-                        configs.axisColor.value
-                    ]
-                },
-            },
-            splitArea: {
-                show: configs.splitYAreaDisplay.value.toBoolean(),
-            }
-        },
-        dataZoom: [{
-            type: "inside",
-            filterMode: configs.dataZoomFilterMode.value,
-            start: 0,
-            xAxisIndex: 0,
-            end: 100
-        }, {
-            type: "inside",
-            filterMode: configs.dataZoomFilterMode.value,
-            start: 0,
-            yAxisIndex: 0,
-            end: 100
-        }, {
-            show: configs.dataZoomBarDisplay.value.toBoolean(),
-            type: "slider",
-            filterMode: configs.dataZoomFilterMode.value,
-            yAxisIndex: 0,
-            start: 0,
-            end: 100,
-            width: configs.dataZoomBarWidth.value,
-            height: (100 - toPoint(configs.grid_top.value) - toPoint(configs.grid_bottom.value)) + "%",
-            top: configs.grid_top.value,
-            right: (100 - toPoint(configs.grid_right.value)) + "%",
-            handleIcon: __SYS_IMAGES_PATH__.dataZoomHandleIcon[configs.dataZoomHandleIcon.value],
-            handleSize: configs.dataZoomHandleSize.value,
-            borderColor: configs.dataZoomBarColor.value,
-            handleStyle: {
-                color: configs.dataZoomBarColor.value,
-            }
-        }, {
-            show: configs.dataZoomBarDisplay.value.toBoolean(),
-            type: "slider",
-            filterMode: configs.dataZoomFilterMode.value,
-            xAxisIndex: 0,
-            start: 0,
-            end: 100,
-            width: (100 - toPoint(configs.grid_left.value) - toPoint(configs.grid_right.value)) + "%",
-            height: configs.dataZoomBarWidth.value,
-            left: configs.grid_left.value,
-            top: (100 - toPoint(configs.grid_bottom.value)) + "%",
-            handleIcon: __SYS_IMAGES_PATH__.dataZoomHandleIcon[configs.dataZoomHandleIcon.value],
-            handleSize: configs.dataZoomHandleSize.value,
-            borderColor: configs.dataZoomBarColor.value,
-            handleStyle: {
-                color: configs.dataZoomBarColor.value,
-            }
-        }],
-        series: [
-            {
-                name: '盒须图',
-                type: 'boxplot',
-                data: data,
-                tooltip: {
-                    formatter: function (param) {
-                        return [
-                            param.marker + param.name,
-                            "<span style='color:" + param.color + " '>•</span>" + "&ensp;上&ensp;边&ensp;界:&emsp;<span style='display:inline-block;min-width:80px;text-align:right;font-weight:bold'>" + param.data[5] + "</span>",
-                            "<span style='color:" + param.color + " '>•</span>" + "&ensp;上四分位:&emsp;<span style='display:inline-block;min-width:80px;text-align:right;font-weight:bold'>" + param.data[4] + "</span>",
-                            "<span style='color:" + param.color + " '>•</span>" + "&ensp;中&ensp;&ensp;&ensp;&ensp;值:&emsp;<span style='display:inline-block;min-width:80px;text-align:right;font-weight:bold'>" + param.data[3] + "</span>",
-                            "<span style='color:" + param.color + " '>•</span>" + "&ensp;下四分位:&emsp;<span style='display:inline-block;min-width:80px;text-align:right;font-weight:bold'>" + param.data[2] + "</span>",
-                            "<span style='color:" + param.color + " '>•</span>" + "&ensp;下&ensp;边&ensp;界:&emsp;<span style='display:inline-block;min-width:80px;text-align:right;font-weight:bold'>" + param.data[1] + "</span>"
-                        ].join("<br/>");
-                    }
-                }
-            },
+        toolbox: getToolbox(configs, container,false),
+        xAxis: getXAxis(configs, "category", columns.slice(1,columns.length)),
+        yAxis: getYAxis(configs, "value", null, "left"),
+        dataZoom: [
+            getDataZoomXAxis(configs, 0, "inside", 0, 100),
+            getDataZoomXAxis(configs, 0, "slider", 0, 100),
+            getDataZoomYAxis(configs, 0, "inside", 0, 100,myChart.getWidth()),
+            getDataZoomYAxis(configs, 0, "slider", 0, 100,myChart.getWidth())
         ],
+        series: [serie],
         graphic: getWaterGraphic(__SYS_LOGO_LINK__),
     };
 
@@ -12891,7 +9242,6 @@ function getBoxplot(container, width, height, dataset, configs) {
         )
     }
 
-
     setTimeout(() => {
         myChart.hideLoading();
         myChart.setOption(option);
@@ -12924,69 +9274,11 @@ function getClock(container, width, height, dataset, configs) {
     var containerHeight = myChart.getHeight();//Number(height.replace(/px/i, ""));
     var option = {
         colors: [configs.clockLabelColor.value],
-        aria: {
-            enabled: configs.ariaEnable.value.toBoolean(),
-            decal:{
-                show: configs.ariaEnable.value.toBoolean(),
-            }
-        },
+        aria: getAria(configs),
         backgroundColor: configs.backgroundColor.value,
-        grid: {
-            x: configs.grid_left.value,
-            y: configs.grid_top.value,
-            x2: configs.grid_right.value,
-            y2: configs.grid_bottom.value,
-            containLabel: configs.grid_containLabel.value.toBoolean(),
-            backgroundColor: "transparent"
-        },
-        title: {
-            show: configs.titleDisplay.value.toBoolean(),
-            text: configs.titleText.value,
-            link: configs.titleTextLink.value,
-            target: "blank",
-            subtext: configs.titleSubText.value,
-            sublink: configs.titleSubTextLink.value,
-            subtarget: "blank",
-            top: "top",
-            left: configs.titlePosition.value,
-            textStyle: {
-                color: configs.titleTextColor.value,
-                fontSize: Number(configs.titleTextFontSize.value),
-            },
-            subtextStyle: {
-                color: configs.titleSubTextColor.value,
-                fontSize: Number(configs.titleSubTextFontSize.value),
-            }
-        },
-        toolbox: {
-            show: configs.toolboxDisplay.value.toBoolean(),
-            feature: {
-                saveAsImage: {
-                    show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
-                    excludeComponents: ["toolbox", "dataZoom", "timeline", "visualMap", "brush"],
-                    backgroundColor: configs.toolboxFeatureSaveAsImageBackgroundColor.value,
-                },
-                restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
-                dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
-                    show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
-                    title: '视图组合',
-                    icon: __SYS_IMAGES_PATH__.viewCombination,
-                    onclick: function () {
-                        __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
-                        alert("视图已提交组合列表.");
-                    }
-                } : {},
-            },
-            top: configs.toolbox_top.value,
-            left: configs.toolbox_left.value,
-            orient: configs.toolbox_orient.value,
-            emphasis: {
-                iconStyle: {
-                    textPosition: configs.toolbox_textPosition.value,
-                },
-            },
-        },
+        grid: getGrid(configs),
+        title: getTitle(configs),
+        toolbox: getToolbox(configs, container,false),
         graphic: getWaterGraphic(__SYS_LOGO_LINK__),
         series: [
             {
@@ -13383,13 +9675,22 @@ function getCandlestick(container, width, height, dataset, configs) {
         alert("K线图数据结构:[ 期间标识,开盘价,收盘价,最低价,最高价 ].")
     }
 
-    var option = {
-        aria: {
-            enabled: configs.ariaEnable.value.toBoolean(),
-            decal:{
-                show: configs.ariaEnable.value.toBoolean(),
-            }
+    let serie = {
+        name: 'K线图',
+        type: 'candlestick',
+        data: data,
+        //dimensions: ['日期', '开盘价', '收盘价', '最低价', '最高价'],
+        itemStyle: {
+            color: upColor,
+            color0: downColor,
+            borderColor: upBorderColor,
+            borderColor0: downBorderColor
         },
+    };
+    setSeriesAnimation(serie, configs, 0);
+
+    var option = {
+        aria: getAria(configs),
         backgroundColor: configs.backgroundColor.value,
         grid: {
             x: configs.grid_left.value,
@@ -13399,228 +9700,31 @@ function getCandlestick(container, width, height, dataset, configs) {
             containLabel: configs.grid_containLabel.value.toBoolean(),
             backgroundColor: "transparent"
         },
-        brush: configs.toolboxFeatureBrush.value.toBoolean() ? {
-            toolbox: ["rect", "polygon", "lineX", "lineY", "keep", "clear"],
-            xAxisIndex: 0
-        } : null,
-        toolbox: {
-            show: configs.toolboxDisplay.value.toBoolean(),
-            feature: {
-                saveAsImage: {
-                    show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
-                    excludeComponents: ["toolbox", "dataZoom", "timeline", "visualMap", "brush"],
-                    backgroundColor: configs.toolboxFeatureSaveAsImageBackgroundColor.value,
-                },
-                restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
-                dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                dataZoom: {show: configs.toolboxFeatureDataZoom.value.toBoolean(),},
-                myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
-                    show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
-                    title: '视图组合',
-                    icon: __SYS_IMAGES_PATH__.viewCombination,
-                    onclick: function () {
-                        __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
-                        alert("视图已提交组合列表.");
-                    }
-                } : {},
-            },
-            top: configs.toolbox_top.value,
-            left: configs.toolbox_left.value,
-            orient: configs.toolbox_orient.value,
-            emphasis: {
-                iconStyle: {
-                    textPosition: configs.toolbox_textPosition.value,
-                }
-            },
-        },
-        title: {
-            show: configs.titleDisplay.value.toBoolean(),
-            text: configs.titleText.value,
-            link: configs.titleTextLink.value,
-            target: "blank",
-            subtext: configs.titleSubText.value,
-            sublink: configs.titleSubTextLink.value,
-            subtarget: "blank",
-            top: "top",
-            left: configs.titlePosition.value,
-            textStyle: {
-                color: configs.titleTextColor.value,
-                fontSize: Number(configs.titleTextFontSize.value),
-            },
-            subtextStyle: {
-                color: configs.titleSubTextColor.value,
-                fontSize: Number(configs.titleSubTextFontSize.value),
-            }
-        },
-        legend: {
-            show: configs.legendDisplay.value.toBoolean(),
-            icon: configs.legendIcon.value,
-            type: configs.legendType.value,
-            selectedMode: configs.legendSelectedMode.value,
-            top: configs.legendPositionTop.value,
-            left: configs.legendPositionLeft.value,
-            orient: configs.legendOrient.value,
-            data: columns.slice(1, columns.length),
-            textStyle: {
-                color: configs.legendTextColor.value
-            },
-        },
+        brush: getBrush(configs),
+        toolbox: getToolbox(configs, container,false),
+        title: getTitle(configs),
+        legend: getLegend(configs, columns.slice(1, columns.length)),
 
-        tooltip: {
-            show: configs.tooltipDisplay.value.toBoolean(),
-            trigger: "axis",
-            axisPointer: {
-                type: configs.axisPointerType.value,
-            },
-            formatter: function (params) {
-                let param = params[0];
-                return [param.name,
-                    param.marker + "&ensp;" + param.seriesName,
-                    "<span style='color:" + param.color + " '>•</span>" + "&ensp;开盘价:&emsp;<span style='display:inline-block;min-width:30px;text-align:right;font-weight:bold'>" + param.data[1] + "</span>",
-                    "<span style='color:" + param.color + " '>•</span>" + "&ensp;最低价:&emsp;<span style='display:inline-block;min-width:30px;text-align:right;font-weight:bold'>" + param.data[3] + "</span>",
-                    "<span style='color:" + param.color + " '>•</span>" + "&ensp;最高价:&emsp;<span style='display:inline-block;min-width:30px;text-align:right;font-weight:bold'>" + param.data[4] + "</span>",
-                    "<span style='color:" + param.color + " '>•</span>" + "&ensp;收盘价:&emsp;<span style='display:inline-block;min-width:30px;text-align:right;font-weight:bold'>" + param.data[2] + "</span>"
-                ].join("<br>");
-            },
+        tooltip : getTooltip(configs, "axis").formatter = function (params) {
+            let param = params[0];
+            return [param.name,
+                param.marker + "&ensp;" + param.seriesName,
+                "<span style='color:" + param.color + " '>•</span>" + "&ensp;开盘价:&emsp;<span style='display:inline-block;min-width:30px;text-align:right;font-weight:bold'>" + param.data[1] + "</span>",
+                "<span style='color:" + param.color + " '>•</span>" + "&ensp;最低价:&emsp;<span style='display:inline-block;min-width:30px;text-align:right;font-weight:bold'>" + param.data[3] + "</span>",
+                "<span style='color:" + param.color + " '>•</span>" + "&ensp;最高价:&emsp;<span style='display:inline-block;min-width:30px;text-align:right;font-weight:bold'>" + param.data[4] + "</span>",
+                "<span style='color:" + param.color + " '>•</span>" + "&ensp;收盘价:&emsp;<span style='display:inline-block;min-width:30px;text-align:right;font-weight:bold'>" + param.data[2] + "</span>"
+            ].join("<br>");
         },
-
-        xAxis: {
-            data: xAxis,
-            inverse: configs.xAxisInverse.value.toBoolean(),
-            axisLine: {
-                show: configs.axisLineDisplay.value.toBoolean(),
-                lineStyle: {
-                    color: configs.axisColor.value
-                },
-            },
-            axisTick: {
-                show: configs.axisLineDisplay.value.toBoolean(),
-                lineStyle: {
-                    color: configs.axisColor.value
-                },
-            },
-            axisLabel: {
-                show: configs.axisLineDisplay.value.toBoolean(),
-                interval: "auto",
-                margin: 8,
-                rotate: Number(configs.xAxisLabelRotate.value),
-                textStyle: {
-                    color: configs.axisTextColor.value
-                }
-            },
-            splitLine: {
-                show: configs.splitXLineDisplay.value.toBoolean(),
-                lineStyle: {
-                    color: [
-                        configs.axisColor.value
-                    ]
-                },
-            },
-            splitArea: {
-                show: configs.splitXAreaDisplay.value.toBoolean(),
-            }
-        },
-        yAxis: {
-            inverse: configs.yAxisInverse.value.toBoolean(),
-            axisLine: {
-                show: configs.axisLineDisplay.value.toBoolean(),
-                lineStyle: {
-                    color: configs.axisColor.value
-                },
-            },
-            axisTick: {
-                show: configs.axisLineDisplay.value.toBoolean(),
-                lineStyle: {
-                    color: configs.axisColor.value
-                },
-            },
-            axisLabel: {
-                show: configs.axisLineDisplay.value.toBoolean(),
-                rotate: Number(configs.yAxisLabelRotate.value),
-                textStyle: {
-                    color: configs.axisTextColor.value
-                }
-            },
-            splitLine: {
-                show: configs.splitYLineDisplay.value.toBoolean(),
-                lineStyle: {
-                    color: [
-                        configs.axisColor.value
-                    ]
-                },
-            },
-            splitArea: {
-                show: configs.splitYAreaDisplay.value.toBoolean(),
-            }
-        },
-        dataZoom: [{
-            type: "inside",
-            filterMode: configs.dataZoomFilterMode.value,
-            start: 0,
-            xAxisIndex: 0,
-            end: 100
-        }, {
-            type: "inside",
-            filterMode: configs.dataZoomFilterMode.value,
-            start: 0,
-            yAxisIndex: 0,
-            end: 100
-        }, {
-            show: configs.dataZoomBarDisplay.value.toBoolean(),
-            type: "slider",
-            filterMode: configs.dataZoomFilterMode.value,
-            yAxisIndex: 0,
-            start: 0,
-            end: 100,
-            width: configs.dataZoomBarWidth.value,
-            height: (100 - toPoint(configs.grid_top.value) - toPoint(configs.grid_bottom.value)) + "%",
-            top: configs.grid_top.value,
-            right: (100 - toPoint(configs.grid_right.value)) + "%",
-            handleIcon: __SYS_IMAGES_PATH__.dataZoomHandleIcon[configs.dataZoomHandleIcon.value],
-            handleSize: configs.dataZoomHandleSize.value,
-            borderColor: configs.dataZoomBarColor.value,
-            handleStyle: {
-                color: configs.dataZoomBarColor.value,
-            },
-            textStyle: {
-                color: configs.dataZoomBarColor.value,
-            },
-        }, {
-            show: configs.dataZoomBarDisplay.value.toBoolean(),
-            type: "slider",
-            filterMode: configs.dataZoomFilterMode.value,
-            xAxisIndex: 0,
-            start: 0,
-            end: 100,
-            width: (100 - toPoint(configs.grid_left.value) - toPoint(configs.grid_right.value)) + "%",
-            height: configs.dataZoomBarWidth.value,
-            left: configs.grid_left.value,
-            top: (100 - toPoint(configs.grid_bottom.value)) + "%",
-            handleIcon: __SYS_IMAGES_PATH__.dataZoomHandleIcon[configs.dataZoomHandleIcon.value],
-            handleSize: configs.dataZoomHandleSize.value,
-            borderColor: configs.dataZoomBarColor.value,
-            handleStyle: {
-                color: configs.dataZoomBarColor.value,
-            },
-            textStyle: {
-                color: configs.dataZoomBarColor.value,
-            },
-        }],
+        xAxis: getXAxis(configs,"category",xAxis),
+        yAxis: getYAxis(configs,"value",null),
+        dataZoom: [
+            getDataZoomXAxis(configs, 0, "inside", 0, 100),
+            getDataZoomXAxis(configs, 0, "slider", 0, 100),
+            getDataZoomYAxis(configs, 0, "inside", 0, 100,myChart.getWidth()),
+            getDataZoomYAxis(configs, 0, "slider", 0, 100,myChart.getWidth())
+        ],
         graphic: getWaterGraphic(__SYS_LOGO_LINK__),
-        series: [
-            {
-                name: 'K线图',
-                type: 'candlestick',
-                data: data,
-                //dimensions: ['日期', '开盘价', '收盘价', '最低价', '最高价'],
-                itemStyle: {
-                    color: upColor,
-                    color0: downColor,
-                    borderColor: upBorderColor,
-                    borderColor0: downBorderColor
-                },
-            }
-        ]
+        series: [serie]
     };
 
 
@@ -13689,62 +9793,10 @@ function getBanners(container, width, height, dataset, configs) {
     }
 
     var option = {
-        aria: {
-            enabled: configs.ariaEnable.value.toBoolean(),
-            decal:{
-                show: configs.ariaEnable.value.toBoolean(),
-            }
-        },
+        aria: getAria(configs),
         backgroundColor: configs.bannerBackgroundColor.value,
-        title: {
-            show: configs.titleDisplay.value.toBoolean(),
-            text: configs.titleText.value,
-            link: configs.titleTextLink.value,
-            target: "blank",
-            subtext: configs.titleSubText.value,
-            sublink: configs.titleSubTextLink.value,
-            subtarget: "blank",
-            top: "top",
-            left: configs.titlePosition.value,
-            textStyle: {
-                color: configs.titleTextColor.value,
-                fontSize: Number(configs.titleTextFontSize.value),
-            },
-            subtextStyle: {
-                color: configs.titleSubTextColor.value,
-                fontSize: Number(configs.titleSubTextFontSize.value),
-            }
-        },
-        toolbox: {
-            show: configs.toolboxDisplay.value.toBoolean(),
-            feature: {
-                saveAsImage: {
-                    show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
-                    excludeComponents: ["toolbox", "dataZoom", "timeline", "visualMap", "brush"],
-                    backgroundColor: configs.toolboxFeatureSaveAsImageBackgroundColor.value,
-                },
-                restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
-                dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
-                    show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
-                    title: '视图组合',
-                    icon: __SYS_IMAGES_PATH__.viewCombination,
-                    onclick: function () {
-                        __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
-                        alert("视图已提交组合列表.");
-                    }
-                } : {},
-            },
-            top: configs.toolbox_top.value,
-            left: configs.toolbox_left.value,
-            orient: configs.toolbox_orient.value,
-            emphasis: {
-                iconStyle: {
-                    textPosition: configs.toolbox_textPosition.value,
-                },
-            },
-        },
-
+        title: getTitle(configs),
+        toolbox: getToolbox(configs, container,false),
         graphic: [banners[index]].concat(getWaterGraphic(__SYS_LOGO_LINK__))
     };
 
@@ -13832,23 +9884,8 @@ function getWordCloud(container, width, height, dataset, configs) {
                         }
                     },
                     data: [],
-                    animation: configs.animation.value.toBoolean(),
-                    animationThreshold: Number(configs.animationThreshold.value),
-                    animationEasing: getAnimationEasing(configs),
-                    animationDuration: function (idx) {
-                        return idx * Number(configs.animationDuration.value) + c * Number(configs.animationDuration.value);
-                    },
-                    animationDelay: function (idx) {
-                        return idx * Number(configs.animationDelay.value) + c * Number(configs.animationDelay.value);
-                    },
-                    animationEasingUpdate: getAnimationEasingUpdate(configs),
-                    animationDurationUpdate: function (idx) {
-                        return idx * Number(configs.animationDurationUpdate.value) + c * Number(configs.animationDurationUpdate.value);
-                    },
-                    animationDelayUpdate: function (idx) {
-                        return idx * Number(configs.animationDelayUpdate.value) + c * Number(configs.animationDelayUpdate.value);
-                    },
                 };
+                setSeriesAnimation(serie, configs, c);
                 for (var i = 0; i < dataset["data"].length; i++) {
                     var row = dataset["data"][i];
                     serie.data.push({
@@ -13884,81 +9921,16 @@ function getWordCloud(container, width, height, dataset, configs) {
 
     var option = {
         backgroundColor: configs.backgroundColor.value,
-        grid: {
-            x: configs.grid_left.value,
-            y: configs.grid_top.value,
-            x2: configs.grid_right.value,
-            y2: configs.grid_bottom.value,
-            containLabel: configs.grid_containLabel.value.toBoolean(),
-            backgroundColor: "transparent"
-        },
-        title: {
-            show: configs.titleDisplay.value.toBoolean(),
-            text: configs.titleText.value,
-            link: configs.titleTextLink.value,
-            target : "blank",
-            subtext: configs.titleSubText.value,
-            sublink: configs.titleSubTextLink.value,
-            subtarget: "blank",
-            top:"top",
-            left:configs.titlePosition.value,
-            textStyle: {
-                color: configs.titleTextColor.value,
-                fontSize: Number(configs.titleTextFontSize.value),
-            },
-            subtextStyle: {
-                color: configs.titleSubTextColor.value,
-                fontSize: Number(configs.titleSubTextFontSize.value),
-            }
-        },
+        grid: getGrid(configs),
+        title: getTitle(configs),
         tooltip: {
             show:configs.tooltipDisplay.value.toBoolean(),
             formatter: function(param) {
                 return [param.seriesName, param.marker + "&ensp;" + param.name + ":<span style='display:inline-block;min-width:30px;text-align:right;font-weight:bold'>&ensp;" + param.value + "</span>"].join("<br>");
             }
         },
-        legend: {
-            show:configs.legendDisplay.value.toBoolean(),
-            icon: configs.legendIcon.value,
-            type: configs.legendType.value,
-            selectedMode: configs.legendSelectedMode.value,
-            top: configs.legendPositionTop.value,
-            left: configs.legendPositionLeft.value,
-            orient:configs.legendOrient.value,
-            data: columns.slice(1),
-            textStyle: {
-                color: configs.legendTextColor.value
-            },
-        },
-        toolbox: {
-            show: configs.toolboxDisplay.value.toBoolean(),
-            feature: {
-                saveAsImage: {
-                    show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
-                    excludeComponents: ["toolbox","dataZoom", "timeline", "visualMap", "brush"],
-                    backgroundColor:configs.toolboxFeatureSaveAsImageBackgroundColor.value,
-                },
-                restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
-                dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
-                    show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
-                    title: '视图组合',
-                    icon: __SYS_IMAGES_PATH__.viewCombination,
-                    onclick: function () {
-                        __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
-                        alert("视图已提交组合列表.");
-                    }
-                } : {},
-            },
-            top: configs.toolbox_top.value,
-            left:configs.toolbox_left.value,
-            orient: configs.toolbox_orient.value,
-            emphasis: {
-                iconStyle: {
-                    textPosition: configs.toolbox_textPosition.value,
-                }
-            },
-        },
+        legend: getLegend(configs, columns.slice(1, columns.length)),
+        toolbox: getToolbox(configs, container,false),
         series: series,
         graphic: getWaterGraphic(__SYS_LOGO_LINK__),
     };
@@ -14029,7 +10001,7 @@ function getSunburst(container, width, height, dataset, configs) {
                     });
                 }
             }
-            series.push({
+            let serie = {
                 name: columns[c],
                 center: [100/(columns.length + 1)  * (c + 1) + "%", "50%"],
                 radius: eval(configs.sunburstRadius.value),//['15%', '90%'],
@@ -14052,62 +10024,18 @@ function getSunburst(container, width, height, dataset, configs) {
                     //borderWidth: 2,
                     borderRadius: Number(configs.sunburstItemStyleBorderRadius.value),
                 },
-                animation: configs.animation.value.toBoolean(),
-                animationThreshold: Number(configs.animationThreshold.value),
-                animationEasing: getAnimationEasing(configs),
-                animationDuration: function (idx) {
-                    return idx * Number(configs.animationDuration.value) + Number(configs.animationDuration.value);
-                },
-                animationDelay: function (idx) {
-                    return idx * Number(configs.animationDelay.value) + Number(configs.animationDelay.value);
-                },
-                animationEasingUpdate: getAnimationEasingUpdate(configs),
-                animationDurationUpdate: function (idx) {
-                    return idx * Number(configs.animationDurationUpdate.value) + Number(configs.animationDurationUpdate.value);
-                },
-                animationDelayUpdate: function (idx) {
-                    return idx * Number(configs.animationDelayUpdate.value) + Number(configs.animationDelayUpdate.value);
-                },
-            });
+            };
+            setSeriesAnimation(serie, configs, c);
+            series.push(serie);
         }
     } else
         alert("旭日图数据结构[父级名称(根级等于空),子级名称,子级数值a,子级数值b,...].");
 
     var option = {
-        aria: {
-            enabled: configs.ariaEnable.value.toBoolean(),
-            decal:{
-                show: configs.ariaEnable.value.toBoolean(),
-            }
-        },
+        aria: getAria(configs),
         backgroundColor: configs.backgroundColor.value,
-        grid: {
-            x: configs.grid_left.value,
-            y: configs.grid_top.value,
-            x2: configs.grid_right.value,
-            y2: configs.grid_bottom.value,
-            containLabel: configs.grid_containLabel.value.toBoolean(),
-            backgroundColor: "transparent"
-        },
-        title: {
-            show: configs.titleDisplay.value.toBoolean(),
-            text: configs.titleText.value,
-            link: configs.titleTextLink.value,
-            target: "blank",
-            subtext: configs.titleSubText.value,
-            sublink: configs.titleSubTextLink.value,
-            subtarget: "blank",
-            top: "top",
-            left: configs.titlePosition.value,
-            textStyle: {
-                color: configs.titleTextColor.value,
-                fontSize: Number(configs.titleTextFontSize.value),
-            },
-            subtextStyle: {
-                color: configs.titleSubTextColor.value,
-                fontSize: Number(configs.titleSubTextFontSize.value),
-            }
-        },
+        grid: getGrid(configs),
+        title: getTitle(configs),
 
         tooltip: {
             show: configs.tooltipDisplay.value.toBoolean(),
@@ -14115,35 +10043,7 @@ function getSunburst(container, width, height, dataset, configs) {
                 return [param.seriesName, param.marker + "&ensp;" + param.name + ":<span style='display:inline-block;min-width:30px;text-align:right;font-weight:bold'>&ensp;" + param.value + "</span>"].join("<br>");
             }
         },
-        toolbox: {
-            show: configs.toolboxDisplay.value.toBoolean(),
-            feature: {
-                saveAsImage: {
-                    show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
-                    excludeComponents: ["toolbox", "dataZoom", "timeline", "visualMap", "brush"],
-                    backgroundColor: configs.toolboxFeatureSaveAsImageBackgroundColor.value,
-                },
-                restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
-                dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
-                    show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
-                    title: '视图组合',
-                    icon: __SYS_IMAGES_PATH__.viewCombination,
-                    onclick: function () {
-                        __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
-                        alert("视图已提交组合列表.");
-                    }
-                } : {},
-            },
-            top: configs.toolbox_top.value,
-            left: configs.toolbox_left.value,
-            orient: configs.toolbox_orient.value,
-            emphasis: {
-                iconStyle: {
-                    textPosition: configs.toolbox_textPosition.value,
-                }
-            },
-        },
+        toolbox: getToolbox(configs, container,false),
         series: series,
         graphic: getWaterGraphic(__SYS_LOGO_LINK__)
     };
@@ -14232,7 +10132,7 @@ function getTreemap(container, width, height, dataset, configs) {
     } else
         alert("层级数据结构[父级名称(根级等于空),子级名称,子级数值a,子级数值b,...].");
 
-    var series = {
+    let series = {
         type: 'treemap',
         width: configs.treemapWidth.value,
         height: configs.treemapHeight.value,
@@ -14323,42 +10223,13 @@ function getTreemap(container, width, height, dataset, configs) {
             }
         },
     };
+    setSeriesAnimation(series, configs, -1);
 
     var option = {
-        aria: {
-            enabled: configs.ariaEnable.value.toBoolean(),
-            decal:{
-                show: configs.ariaEnable.value.toBoolean(),
-            }
-        },
+        aria: getAria(configs),
         backgroundColor: configs.backgroundColor.value,
-        grid: {
-            x: configs.grid_left.value,
-            y: configs.grid_top.value,
-            x2: configs.grid_right.value,
-            y2: configs.grid_bottom.value,
-            containLabel: configs.grid_containLabel.value.toBoolean(),
-            backgroundColor: "transparent"
-        },
-        title: {
-            show: configs.titleDisplay.value.toBoolean(),
-            text: configs.titleText.value,
-            link: configs.titleTextLink.value,
-            target: "blank",
-            subtext: configs.titleSubText.value,
-            sublink: configs.titleSubTextLink.value,
-            subtarget: "blank",
-            top: "top",
-            left: configs.titlePosition.value,
-            textStyle: {
-                color: configs.titleTextColor.value,
-                fontSize: Number(configs.titleTextFontSize.value),
-            },
-            subtextStyle: {
-                color: configs.titleSubTextColor.value,
-                fontSize: Number(configs.titleSubTextFontSize.value),
-            }
-        },
+        grid: getGrid(configs),
+        title: getTitle(configs),
 
         tooltip: {
             show: configs.tooltipDisplay.value.toBoolean(),
@@ -14368,35 +10239,7 @@ function getTreemap(container, width, height, dataset, configs) {
                 //return [param.data.name, param.marker + "&ensp;" + param.data.title + ":<span style='display:inline-block;min-width:30px;text-align:right;font-weight:bold'>&ensp;" + param.data.value + "</span>"].join("<br>");
             }
         },
-        toolbox: {
-            show: configs.toolboxDisplay.value.toBoolean(),
-            feature: {
-                saveAsImage: {
-                    show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
-                    excludeComponents: ["toolbox", "dataZoom", "timeline", "visualMap", "brush"],
-                    backgroundColor: configs.toolboxFeatureSaveAsImageBackgroundColor.value,
-                },
-                restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
-                dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
-                    show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
-                    title: '视图组合',
-                    icon: __SYS_IMAGES_PATH__.viewCombination,
-                    onclick: function () {
-                        __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
-                        alert("视图已提交组合列表.");
-                    }
-                } : {},
-            },
-            top: configs.toolbox_top.value,
-            left: configs.toolbox_left.value,
-            orient: configs.toolbox_orient.value,
-            emphasis: {
-                iconStyle: {
-                    textPosition: configs.toolbox_textPosition.value,
-                }
-            },
-        },
+        toolbox: getToolbox(configs, container,false),
         series: series,
         graphic: getWaterGraphic(__SYS_LOGO_LINK__)
     };
@@ -14490,42 +10333,18 @@ function getParallelAxis(container, width, height, dataset, configs) {
         data.push(d);
     }
 
-    var series = {
+    let series = {
         name: configs.titleText.value,
         type: 'parallel',
         smooth: configs.parallelSmooth.value.toBoolean(),
         data: data,
     };
+    setSeriesAnimation(series, configs, -1);
 
     var option = {
         backgroundColor: configs.backgroundColor.value,
-        grid: {
-            x: configs.grid_left.value,
-            y: configs.grid_top.value,
-            x2: configs.grid_right.value,
-            y2: configs.grid_bottom.value,
-            containLabel: configs.grid_containLabel.value.toBoolean(),
-            backgroundColor: "transparent"
-        },
-        title: {
-            show: configs.titleDisplay.value.toBoolean(),
-            text: configs.titleText.value,
-            link: configs.titleTextLink.value,
-            target: "blank",
-            subtext: configs.titleSubText.value,
-            sublink: configs.titleSubTextLink.value,
-            subtarget: "blank",
-            top: "top",
-            left: configs.titlePosition.value,
-            textStyle: {
-                color: configs.titleTextColor.value,
-                fontSize: Number(configs.titleTextFontSize.value),
-            },
-            subtextStyle: {
-                color: configs.titleSubTextColor.value,
-                fontSize: Number(configs.titleSubTextFontSize.value),
-            }
-        },
+        grid: getGrid(configs),
+        title: getTitle(configs),
 
         tooltip: {
             show: configs.tooltipDisplay.value.toBoolean(),
@@ -14537,35 +10356,7 @@ function getParallelAxis(container, width, height, dataset, configs) {
                 return value.join("<br>");
             }
         },
-        toolbox: {
-            show: configs.toolboxDisplay.value.toBoolean(),
-            feature: {
-                saveAsImage: {
-                    show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
-                    excludeComponents: ["toolbox", "dataZoom", "timeline", "visualMap", "brush"],
-                    backgroundColor: configs.toolboxFeatureSaveAsImageBackgroundColor.value,
-                },
-                restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
-                dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
-                    show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
-                    title: '视图组合',
-                    icon: __SYS_IMAGES_PATH__.viewCombination,
-                    onclick: function () {
-                        __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
-                        alert("视图已提交组合列表.");
-                    }
-                } : {},
-            },
-            top: configs.toolbox_top.value,
-            left: configs.toolbox_left.value,
-            orient: configs.toolbox_orient.value,
-            emphasis: {
-                iconStyle: {
-                    textPosition: configs.toolbox_textPosition.value,
-                }
-            },
-        },
+        toolbox: getToolbox(configs, container,false),
         parallelAxis: parallelAxis,
         series: series,
         graphic: getWaterGraphic(__SYS_LOGO_LINK__)
@@ -14653,45 +10444,16 @@ function getSankey(container, width, height, dataset, configs) {
                     curveness: 0.5
                 },
             });
+            setSeriesAnimation(series, configs, -1);
         }
     } else
         alert("桑基图数据结构:[source,target,value0,value1,...].");
 
     var option = {
-        aria: {
-            enabled: configs.ariaEnable.value.toBoolean(),
-            decal:{
-                show: configs.ariaEnable.value.toBoolean(),
-            }
-        },
+        aria: getAria(configs),
         backgroundColor: configs.backgroundColor.value,
-        grid: {
-            x: configs.grid_left.value,
-            y: configs.grid_top.value,
-            x2: configs.grid_right.value,
-            y2: configs.grid_bottom.value,
-            containLabel: configs.grid_containLabel.value.toBoolean(),
-            backgroundColor: "transparent"
-        },
-        title: {
-            show: configs.titleDisplay.value.toBoolean(),
-            text: configs.titleText.value,
-            link: configs.titleTextLink.value,
-            target: "blank",
-            subtext: configs.titleSubText.value,
-            sublink: configs.titleSubTextLink.value,
-            subtarget: "blank",
-            top: "top",
-            left: configs.titlePosition.value,
-            textStyle: {
-                color: configs.titleTextColor.value,
-                fontSize: Number(configs.titleTextFontSize.value),
-            },
-            subtextStyle: {
-                color: configs.titleSubTextColor.value,
-                fontSize: Number(configs.titleSubTextFontSize.value),
-            }
-        },
+        grid: getGrid(configs),
+        title: getTitle(configs),
 
         tooltip: {
             show: configs.tooltipDisplay.value.toBoolean(),
@@ -14700,48 +10462,8 @@ function getSankey(container, width, height, dataset, configs) {
                 return value.join("<br>");
             }
         },
-        toolbox: {
-            show: configs.toolboxDisplay.value.toBoolean(),
-            feature: {
-                saveAsImage: {
-                    show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
-                    excludeComponents: ["toolbox", "dataZoom", "timeline", "visualMap", "brush"],
-                    backgroundColor: configs.toolboxFeatureSaveAsImageBackgroundColor.value,
-                },
-                restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
-                dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
-                    show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
-                    title: '视图组合',
-                    icon: __SYS_IMAGES_PATH__.viewCombination,
-                    onclick: function () {
-                        __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
-                        alert("视图已提交组合列表.");
-                    }
-                } : {},
-            },
-            top: configs.toolbox_top.value,
-            left: configs.toolbox_left.value,
-            orient: configs.toolbox_orient.value,
-            emphasis: {
-                iconStyle: {
-                    textPosition: configs.toolbox_textPosition.value,
-                }
-            },
-        },
-        legend: {
-            show: configs.legendDisplay.value.toBoolean(),
-            icon: configs.legendIcon.value,
-            type: configs.legendType.value,
-            selectedMode: configs.legendSelectedMode.value,
-            top: configs.legendPositionTop.value,
-            left: configs.legendPositionLeft.value,
-            orient: configs.legendOrient.value,
-            data: legends,
-            textStyle: {
-                color: configs.legendTextColor.value
-            },
-        },
+        toolbox: getToolbox(configs, container,false),
+        legend: getLegend(configs, legends),
         series: series,
         graphic: getWaterGraphic(__SYS_LOGO_LINK__),
 
@@ -14782,41 +10504,22 @@ function getThemeRiver(container, width, height, dataset, configs) {
         }
     }
 
+    let serie = {
+        name: configs.titleText.value,
+        coordinateSystem: 'singleAxis',
+        type: 'themeRiver',
+        data: data,
+        label: {
+            show: false
+        }
+    };
+    setSeriesAnimation(serie, configs, -1);
+
     var option = {
-        aria: {
-            enabled: configs.ariaEnable.value.toBoolean(),
-            decal:{
-                show: configs.ariaEnable.value.toBoolean(),
-            }
-        },
+        aria: getAria(configs),
         backgroundColor: configs.backgroundColor.value,
-        grid: {
-            x: configs.grid_left.value,
-            y: configs.grid_top.value,
-            x2: configs.grid_right.value,
-            y2: configs.grid_bottom.value,
-            containLabel: configs.grid_containLabel.value.toBoolean(),
-            backgroundColor: "transparent"
-        },
-        title: {
-            show: configs.titleDisplay.value.toBoolean(),
-            text: configs.titleText.value,
-            link: configs.titleTextLink.value,
-            target: "blank",
-            subtext: configs.titleSubText.value,
-            sublink: configs.titleSubTextLink.value,
-            subtarget: "blank",
-            top: "top",
-            left: configs.titlePosition.value,
-            textStyle: {
-                color: configs.titleTextColor.value,
-                fontSize: Number(configs.titleTextFontSize.value),
-            },
-            subtextStyle: {
-                color: configs.titleSubTextColor.value,
-                fontSize: Number(configs.titleSubTextFontSize.value),
-            }
-        },
+        grid: getGrid(configs),
+        title: getTitle(configs),
 
         tooltip: {
             show: configs.tooltipDisplay.value.toBoolean(),
@@ -14825,35 +10528,7 @@ function getThemeRiver(container, width, height, dataset, configs) {
                 return value.join("<br>");
             }
         },
-        toolbox: {
-            show: configs.toolboxDisplay.value.toBoolean(),
-            feature: {
-                saveAsImage: {
-                    show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
-                    excludeComponents: ["toolbox", "dataZoom", "timeline", "visualMap", "brush"],
-                    backgroundColor: configs.toolboxFeatureSaveAsImageBackgroundColor.value,
-                },
-                restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
-                dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
-                    show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
-                    title: '视图组合',
-                    icon: __SYS_IMAGES_PATH__.viewCombination,
-                    onclick: function () {
-                        __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
-                        alert("视图已提交组合列表.");
-                    }
-                } : {},
-            },
-            top: configs.toolbox_top.value,
-            left: configs.toolbox_left.value,
-            orient: configs.toolbox_orient.value,
-            emphasis: {
-                iconStyle: {
-                    textPosition: configs.toolbox_textPosition.value,
-                }
-            },
-        },
+        toolbox: getToolbox(configs, container,false),
         emphasis: {
             focus: configs.themeRiverEmphasisFocus.value,
         },
@@ -14877,15 +10552,7 @@ function getThemeRiver(container, width, height, dataset, configs) {
                 color: configs.axisTextColor.value,
             }
         },
-        series: [{
-            name: configs.titleText.value,
-            coordinateSystem: 'singleAxis',
-            type: 'themeRiver',
-            data: data,
-            label: {
-                show: false
-            }
-        }],
+        series: [serie],
         graphic: getWaterGraphic(__SYS_LOGO_LINK__),
 
     };
@@ -15258,75 +10925,12 @@ function getPie3D(container, width, height, dataset, configs) {
     });
 
     let option = {
-        aria: {
-            enabled: configs.ariaEnable.value.toBoolean(),
-            decal: {
-                show: configs.ariaEnable.value.toBoolean(),
-            }
-        },
+        aria: getAria(configs),
         backgroundColor: configs.backgroundColor.value,
-        title: {
-            show: configs.titleDisplay.value.toBoolean(),
-            text: configs.titleText.value,
-            link: configs.titleTextLink.value,
-            target: "blank",
-            subtext: configs.titleSubText.value,
-            sublink: configs.titleSubTextLink.value,
-            subtarget: "blank",
-            top: "top",
-            left: configs.titlePosition.value,
-            textStyle: {
-                color: configs.titleTextColor.value,
-                fontSize: Number(configs.titleTextFontSize.value),
-            },
-            subtextStyle: {
-                color: configs.titleSubTextColor.value,
-                fontSize: Number(configs.titleSubTextFontSize.value),
-            }
-        },
-        legend: {
-            show: configs.legendDisplay.value.toBoolean(),
-            icon: configs.legendIcon.value,
-            type: configs.legendType.value,
-            selectedMode: configs.legendSelectedMode.value,
-            top: configs.legendPositionTop.value,
-            left: configs.legendPositionLeft.value,
-            orient: configs.legendOrient.value,
-            data: legends,
-            textStyle: {
-                color: configs.legendTextColor.value
-            },
-        },
+        title: getTitle(configs),
+        legend: getLegend(configs, legends),
 
-        toolbox: {
-            show: configs.toolboxDisplay.value.toBoolean(),
-            feature: {
-                saveAsImage: {
-                    show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
-                    excludeComponents: ["toolbox", "dataZoom", "timeline", "visualMap", "brush"],
-                    backgroundColor: configs.toolboxFeatureSaveAsImageBackgroundColor.value,
-                },
-                restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
-                dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
-                    show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
-                    title: '视图组合',
-                    icon: __SYS_IMAGES_PATH__.viewCombination,
-                    onclick: function () {
-                        __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
-                        alert("视图已提交组合列表.");
-                    }
-                } : {},
-            },
-            top: configs.toolbox_top.value,
-            left: configs.toolbox_left.value,
-            orient: configs.toolbox_orient.value,
-            emphasis: {
-                iconStyle: {
-                    textPosition: configs.toolbox_textPosition.value,
-                }
-            },
-        },
+        toolbox: getToolbox(configs, container,false),
 
         tooltip: {
             formatter: params => {
@@ -15402,72 +11006,12 @@ function getSingeAxis(container, width, height, dataset, configs) {
     columns = columns.splice(1);
 
     let option = {
-        aria: {
-            enabled: configs.ariaEnable.value.toBoolean(),
-            decal:{
-                show: configs.ariaEnable.value.toBoolean(),
-            }
-        },
+        aria: getAria(configs),
         backgroundColor: configs.backgroundColor.value,
-        grid: {
-            x: configs.grid_left.value,
-            y: configs.grid_top.value,
-            x2: configs.grid_right.value,
-            y2: configs.grid_bottom.value,
-            containLabel: configs.grid_containLabel.value.toBoolean(),
-            backgroundColor: "transparent"
-        },
-        brush: configs.toolboxFeatureBrush.value.toBoolean() ? {
-            toolbox: ["rect", "polygon", "lineX", "lineY", "keep", "clear"],
-            xAxisIndex: 0
-        } : null,
-        toolbox: {
-            show: configs.toolboxDisplay.value.toBoolean(),
-            feature: {
-                saveAsImage: {
-                    show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
-                    excludeComponents: ["toolbox", "dataZoom", "timeline", "visualMap", "brush"],
-                    backgroundColor: configs.toolboxFeatureSaveAsImageBackgroundColor.value,
-                },
-                restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
-                dataView: {show: configs.toolboxFeatureDataView.value.toBoolean(), readOnly: true},
-                dataZoom: {show: configs.toolboxFeatureDataZoom.value.toBoolean(),},
-                magicType: {
-                    show: configs.toolboxFeatureMagicType.value.toBoolean(),
-                    type: ["line", "bar", "stack", "tiled"]
-                },
-                myMultiScreen: configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
-                    show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
-                    title: '视图组合',
-                    icon: __SYS_IMAGES_PATH__.viewCombination,
-                    onclick: function () {
-                        __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
-                        alert("视图已提交组合列表.");
-                    }
-                } : {},
-            },
-            top: configs.toolbox_top.value,
-            left: configs.toolbox_left.value,
-            orient: configs.toolbox_orient.value,
-            emphasis: {
-                iconStyle: {
-                    textPosition: configs.toolbox_textPosition.value,
-                }
-            },
-        },
-        legend: {
-            show: configs.legendDisplay.value.toBoolean(),
-            icon: configs.legendIcon.value,
-            type: configs.legendType.value,
-            selectedMode: configs.legendSelectedMode.value,
-            top: configs.legendPositionTop.value,
-            left: configs.legendPositionLeft.value,
-            orient: configs.legendOrient.value,
-            data: columns,
-            textStyle: {
-                color: configs.legendTextColor.value
-            },
-        },
+        grid: getGrid(configs),
+        brush: getBrush(configs),
+        toolbox: getToolbox(configs, container,false),
+        legend: getLegend(configs, columns),
 
         tooltip: {
             show: configs.tooltipDisplay.value.toBoolean(),
@@ -15480,25 +11024,7 @@ function getSingeAxis(container, width, height, dataset, configs) {
             }
         },
         title: [
-            {
-                show: configs.titleDisplay.value.toBoolean(),
-                text: configs.titleText.value,
-                link: configs.titleTextLink.value,
-                target: "blank",
-                subtext: configs.titleSubText.value,
-                sublink: configs.titleSubTextLink.value,
-                subtarget: "blank",
-                top: "top",
-                left: configs.titlePosition.value,
-                textStyle: {
-                    color: configs.titleTextColor.value,
-                    fontSize: Number(configs.titleTextFontSize.value),
-                },
-                subtextStyle: {
-                    color: configs.titleSubTextColor.value,
-                    fontSize: Number(configs.titleSubTextFontSize.value),
-                }
-            }
+            getTitle(configs)
         ],
         singleAxis: [],
         series: [],
@@ -15553,7 +11079,7 @@ function getSingeAxis(container, width, height, dataset, configs) {
                 show: configs.splitXAreaDisplay.value.toBoolean(),
             }
         });
-        option.series.push({
+        let serie = {
             singleAxisIndex: idx,
             coordinateSystem: 'singleAxis',
             type: configs.singeAxisType.value,
@@ -15561,23 +11087,9 @@ function getSingeAxis(container, width, height, dataset, configs) {
             symbolSize: function (dataItem) {
                 return (dataItem[1] - section[dataItem[2]].min) * (Number(configs.singeAxisSymbolSize.value) + 3) / (section[dataItem[2]].max - section[dataItem[2]].min) + 3;
             },
-            animation: configs.animation.value.toBoolean(),
-            animationThreshold: Number(configs.animationThreshold.value),
-            animationEasing: getAnimationEasing(configs),
-            animationDuration: function (idx) {
-                return idx * Number(configs.animationDuration.value) + Number(configs.animationDuration.value);
-            },
-            animationDelay: function (idx) {
-                return idx * Number(configs.animationDelay.value) + Number(configs.animationDelay.value);
-            },
-            animationEasingUpdate: getAnimationEasingUpdate(configs),
-            animationDurationUpdate: function (idx) {
-                return idx * Number(configs.animationDurationUpdate.value) + Number(configs.animationDurationUpdate.value);
-            },
-            animationDelayUpdate: function (idx) {
-                return idx * Number(configs.animationDelayUpdate.value) + Number(configs.animationDelayUpdate.value);
-            },
-        });
+        };
+        setSeriesAnimation(serie,configs,0);
+        option.series.push(serie);
     });
 
     data.forEach(function (dataItem) {

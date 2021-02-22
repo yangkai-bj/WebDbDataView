@@ -22,9 +22,12 @@
         log('ECharts is not Loaded');
         return;
     }
+
+    let areaStyleColor = ["rgba(250,250,250,0.05)","rgba(200,200,200,0.02)"];
+
     echarts.registerTheme('simple', {
         "color": [
-            "white",
+            "white","white","white","white",
         ],
         "backgroundColor": "rgba(0,0,0,0)",
         "bar": {
@@ -221,10 +224,7 @@
             "splitArea": {
                 "show": false,
                 "areaStyle": {
-                    "color": [
-                        "rgba(250,250,250,0.05)",
-                        "rgba(200,200,200,0.02)"
-                    ]
+                    "color": areaStyleColor
                 }
             }
         },
@@ -258,10 +258,7 @@
             "splitArea": {
                 "show": false,
                 "areaStyle": {
-                    "color": [
-                        "rgba(250,250,250,0.05)",
-                        "rgba(200,200,200,0.02)"
-                    ]
+                    "color": areaStyleColor
                 }
             }
         },
@@ -295,10 +292,7 @@
             "splitArea": {
                 "show": false,
                 "areaStyle": {
-                    "color": [
-                        "rgba(250,250,250,0.05)",
-                        "rgba(200,200,200,0.02)"
-                    ]
+                    "color": areaStyleColor
                 }
             }
         },
@@ -332,10 +326,7 @@
             "splitArea": {
                 "show": false,
                 "areaStyle": {
-                    "color": [
-                        "rgba(250,250,250,0.05)",
-                        "rgba(200,200,200,0.02)"
-                    ]
+                    "color": areaStyleColor
                 }
             }
         },
@@ -462,6 +453,7 @@
         log('ECharts is not Loaded');
         return;
     }
+    let areaStyleColor = ["rgba(250,250,250,0.05)","rgba(200,200,200,0.02)"];
     echarts.registerTheme('monochrome', {
         "color": [
             "#505050",
@@ -661,10 +653,7 @@
             "splitArea": {
                 "show": false,
                 "areaStyle": {
-                    "color": [
-                        "rgba(250,250,250,0.05)",
-                        "rgba(200,200,200,0.02)"
-                    ]
+                    "color": areaStyleColor
                 }
             }
         },
@@ -698,10 +687,7 @@
             "splitArea": {
                 "show": false,
                 "areaStyle": {
-                    "color": [
-                        "rgba(250,250,250,0.05)",
-                        "rgba(200,200,200,0.02)"
-                    ]
+                    "color": areaStyleColor
                 }
             }
         },
@@ -735,10 +721,7 @@
             "splitArea": {
                 "show": false,
                 "areaStyle": {
-                    "color": [
-                        "rgba(250,250,250,0.05)",
-                        "rgba(200,200,200,0.02)"
-                    ]
+                    "color": areaStyleColor
                 }
             }
         },
@@ -772,10 +755,7 @@
             "splitArea": {
                 "show": false,
                 "areaStyle": {
-                    "color": [
-                        "rgba(250,250,250,0.05)",
-                        "rgba(200,200,200,0.02)"
-                    ]
+                    "color": areaStyleColor
                 }
             }
         },
@@ -2574,7 +2554,7 @@
         }
     });
 }));
-//##################Dark###############################
+//##################SettingSun###############################
 (function (root, factory) {
     if (typeof define === 'function' && define.amd) {
         // AMD. Register as an anonymous module.
@@ -2596,7 +2576,8 @@
         log('ECharts is not Loaded');
         return;
     }
-    echarts.registerTheme('Dark', {
+    let areaStyleColor = ["rgba(179, 59, 0,0.2)","rgba(179, 59, 0,0.1)"];
+    echarts.registerTheme('SettingSun', {
         "color": [
             "#dd6b66",
             "#759aa0",
@@ -2610,7 +2591,7 @@
             "#91ca8c",
             "#f49f42"
         ],
-        "backgroundColor": "rgba(51,51,51,1)",
+        "backgroundColor": "rgba(242,234,191,0.15)",
         "textStyle": {},
         "title": {
             "textStyle": {
@@ -2652,27 +2633,24 @@
         },
         "bar": {
             "itemStyle": {
-                "normal": {
-                    "borderWidth": 0,
-                    "borderColor": "#ccc"
-                },
-                "emphasis": {
-                    "borderWidth": 0,
-                    "borderColor": "#ccc"
-                }
+                "borderWidth": 0,
+                "borderColor": "#ccc"
+            },
+            "emphasis": {
+                "borderWidth": 0,
+                "borderColor": "#ccc"
             }
         },
         "pie": {
             "itemStyle": {
-                "normal": {
-                    "borderWidth": 0,
-                    "borderColor": "#ccc"
-                },
-                "emphasis": {
-                    "borderWidth": 0,
-                    "borderColor": "#ccc"
-                }
+                "borderWidth": 0,
+                "borderColor": "#ccc"
+            },
+            "emphasis": {
+                "borderWidth": 0,
+                "borderColor": "#ccc"
             }
+
         },
         "scatter": {
             "itemStyle": {
@@ -2876,9 +2854,7 @@
             "splitArea": {
                 "show": false,
                 "areaStyle": {
-                    "color": [
-                        "#eeeeee"
-                    ]
+                    "color": areaStyleColor
                 }
             }
         },
@@ -2912,9 +2888,7 @@
             "splitArea": {
                 "show": false,
                 "areaStyle": {
-                    "color": [
-                        "#eeeeee"
-                    ]
+                    "color": areaStyleColor
                 }
             }
         },
@@ -2948,9 +2922,7 @@
             "splitArea": {
                 "show": false,
                 "areaStyle": {
-                    "color": [
-                        "#eeeeee"
-                    ]
+                    "color": areaStyleColor
                 }
             }
         },
@@ -2984,9 +2956,7 @@
             "splitArea": {
                 "show": false,
                 "areaStyle": {
-                    "color": [
-                        "#eeeeee"
-                    ]
+                    "color": areaStyleColor
                 }
             }
         },
@@ -3093,6 +3063,7 @@
         }
     });
 }));
+
 //################Chalk#####################
 (function (root, factory) {
     if (typeof define === 'function' && define.amd) {
