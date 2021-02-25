@@ -35,13 +35,15 @@ var __CONFIGS__ = {
          value: 0,
          name: "类型",
          type: "select",
-         options: ["int", "varchar", "nvarchar", "decimal", "float", "date", "datetime", "boolean", "blob"],
+         options: ["int", "integer", "varchar", "nvarchar", "decimal", "float", "date", "datetime", "boolean", "blob"],
          width: "75px"
      },
      length: {value: 0, name: "长度", type: "input", width: "25px"},
      scale: {value: 0, name: "小数位数", type: "input", width: "50px"},
      allowNull: {value: true, name: "允许空值", type: "select", options: ["Y", "N"], width: "50px"},
      index: {value: false, name: "索引", type: "checkbox", width: "50px"},
+     auto_increment: {value: false, name: "自增", type: "checkbox", width: "50px"},
+     column_default: {value: null, name: "默认值", type: "input", width: "50px"},
  };
  var __DATASET__ = {
      sql: "",
@@ -889,24 +891,35 @@ function createTable(structure) {
 
 function  getCreateTableSql(title, stru) {
     //根据选项生成建表SQL
-    var cols = " (";
-    var key = "";
+    let cols = " (";
+    let key = "";
+    let auto_increment = false;
     for (var i=0;i<stru.length;i++) {
         if (stru[i].check == true && stru[i].name != "") {
             cols += stru[i].name + " " + stru[i].type;
             if (stru[i].type =="decimal" || stru[i].type == "float"){
-                cols +="(" + stru[i].length + "," + stru[i].scale + ")"
+                cols +="(" + stru[i].length + "," + stru[i].scale + ")";
             }
             if (stru[i].type =="nvarchar" || stru[i].type == "varchar"){
-                cols +="(" + stru[i].length + ")"
+                cols +="(" + stru[i].length + ")";
             }
-            if (stru[i].allowNull =="N"){
-                cols += " NOT NULL,"
-            }else {
-                cols += ","
+            if (stru[i].allowNull == "N" || stru[i].index == true || (stru[i].column_default != null && stru[i].column_default.trim() != "")){
+                cols += " NOT NULL";
+            } else {
+                cols += " NULL";
             }
-            if (stru[i].index == true){
-                key += stru[i].name + ","
+            if (stru[i].column_default != null && stru[i].column_default.trim() != "") {
+                cols += " DEFAULT " + stru[i].column_default + ",";
+            } else {
+                cols += ",";
+            }
+            if (stru[i].index == true) {
+                if (stru[i].auto_increment == true && auto_increment == false && stru[i].type == "integer") {
+                    key += stru[i].name + " AUTOINCREMENT,";
+                    auto_increment = true;
+                } else {
+                    key += stru[i].name + ","
+                }
             }
         }
     }
@@ -1865,16 +1878,18 @@ function execute() {
 
 function getTableStructure(sql){
     //从SQL中解析数据表结构.
-    var columns = [];
+    let columns = [];
     columns.push({id: 0, name: "Name", style: {textAlign: "center"}, order: ""});
     columns.push({id: 1, name: "Type", style: {textAlign: "center"}, order: ""});
     columns.push({id: 2, name: "AllowNull", style: {textAlign: "center"}, order: ""});
     columns.push({id: 3, name: "Index", style: {textAlign: "center"}, order: ""});
-    var data = [];
-    var stru = sql;
+    columns.push({id: 4, name: "AutoIncrement", style: {textAlign: "center"}, order: ""});
+    columns.push({id: 5, name: "Default", style: {textAlign: "center"}, order: ""});
+    let data = [];
+    let stru = sql;
     stru = stru.substring(stru.indexOf("(") + 1,stru.lastIndexOf(")"));
     stru = stru.split(",");
-    var _stru = [];
+    let _stru = [];
     for (var i=0;i<stru.length;i++){
         if (stru[i].trim() !="") {
             if (stru[i].indexOf(")") >= 0 && stru[i].indexOf("(") == -1) {
@@ -1885,98 +1900,99 @@ function getTableStructure(sql){
         }
     }
     stru = _stru;
-    var indexkey = [];
-    for (var i=0;i<stru.length;i++) {
-        var sp = stru[i].split(" ");
-        var _sp = [];
-        if (stru[i].toUpperCase().indexOf("PRIMARY KEY") > -1) {
+    let indexkey = [];
+    for (let i=0;i<stru.length;i++) {
+        let sp = stru[i].split(" ");
+        let tmp = [];
+        for (let i=0;i<sp.length;i++){
+            let s = sp[i].slice().replace(/[\r\n]/g,"");
+            if (s.trim()!="")
+                tmp.push(s);
+        }
+        sp = tmp;
+        if (sp[0].toUpperCase() == "PRIMARY") {
             indexkey = stru[i].substring(stru[i].indexOf("(") + 1, stru[i].lastIndexOf(")")).split(",");
         } else {
-            for (var s = 0; s < sp.length; s++) {
-                if (sp[s].trim() != "") {
-                    _sp.push(sp[s]);
+            let row = {
+                Name:{
+                    rowid: i,
+                    colid: 0,
+                    value: null,
+                    type: "string",
+                    format: null,
+                    style: {"text-align": "left", "color": "black"}
+                },
+                Type:{
+                    rowid: i,
+                    colid: 1,
+                    value: null,
+                    type: "string",
+                    format: null,
+                    style: {"text-align": "left", "color": "black"}
+                },
+                AllowNull:{
+                    rowid: i,
+                    colid: 2,
+                    value: null,
+                    type: "string",
+                    format: null,
+                    style: {"text-align": "center", "color": "black"}
+                },
+                Index:{
+                    rowid: i,
+                    colid: 3,
+                    value: null,
+                    type: "string",
+                    format: null,
+                    style: {"text-align": "center", "color": "black"}
+                },
+                AutoIncrement:{
+                    rowid: i,
+                    colid: 4,
+                    value: null,
+                    type: "string",
+                    format: null,
+                    style: {"text-align": "center", "color": "black"}
+                },
+                Default:{
+                    rowid: i,
+                    colid: 5,
+                    value: null,
+                    type: "string",
+                    format: null,
+                    style: {"text-align": "center", "color": "black"}
                 }
-            }
-        }
-        sp = _sp;
-        var row = {};
-        if (sp.length == 2) {
-            row["Name"] = {
-                rowid: i,
-                colid: 0,
-                value: sp[0].replace(/[\r\n]/g,""),
-                type: "string",
-                format: null,
-                style: {"text-align": "left", "color": "black"}
             };
-            row["Type"] = {
-                rowid: i,
-                colid: 1,
-                value: sp[1],
-                type: "string",
-                format: null,
-                style: {"text-align": "left", "color": "black"}
-            };
-            row["AllowNull"] = {
-                rowid: i,
-                colid: 2,
-                value: "Y",
-                type: "string",
-                format: null,
-                style: {"text-align": "center", "color": "black"}
-            };
-            row["Index"] = {
-                rowid: i,
-                colid: 3,
-                value: "N",
-                type: "string",
-                format: null,
-                style: {"text-align": "center", "color": "black"}
-            };
-        } else if (sp.length > 2) {
-            row["Name"] = {
-                rowid: i,
-                colid: 0,
-                value: sp[0].replace(/[\r\n]/g,""),
-                type: "string",
-                format: null,
-                style: {"text-align": "left", "color": "black"}
-            };
-            row["Type"] = {
-                rowid: i,
-                colid: 1,
-                value: sp[1],
-                type: "string",
-                format: null,
-                style: {"text-align": "left", "color": "black"}
-            };
-            row["AllowNull"] = {
-                rowid: i,
-                colid: 2,
-                value: "N",
-                type: "string",
-                format: null,
-                style: {"text-align": "center", "color": "black"}
-            };
-            row["Index"] = {
-                rowid: i,
-                colid: 3,
-                value: "N",
-                type: "string",
-                format: null,
-                style: {"text-align": "center", "color": "black"}
-            };
-        }
-        if (JSON.stringify(row) !="{}")
-            data.push(row);
-    }
 
+                row.Name.value = sp[0];
+                row.Type.value = sp[1];
+                try {
+                    row.AllowNull.value = (sp[2] == "NULL" ? "YES" : "NO");
+                }catch (e) {
+                    row.AllowNull.value = "YES";
+                }
+                row.Index.value = "NO";
+                row.AutoIncrement.value = "NO";
+                try {
+                    row.Default.value = (sp[4] == "DEFAULT"?sp[5]:"");
+                }catch (e) {
+                    row.Default.value = "";
+                }
+
+                data.push(row);
+        }
+    }
     if (indexkey.length > 0){
-        for(var i=0;i<indexkey.length;i++){
-            var key = indexkey[i];
-            for(var d=0;d<data.length;d++){
-                if (data[d]["Name"].value == key){
-                    data[d]["Index"].value = "Y"
+        for(let i=0;i<indexkey.length;i++){
+            let key = indexkey[i].split(" ");
+            for(let d=0;d<data.length;d++){
+                if (data[d]["Name"].value == key[0]){
+                    data[d]["Index"].value = "YES";
+                }
+                if (key.length == 2) {
+                    if (data[d]["Name"].value == key[0] && key[1] == "AUTOINCREMENT") {
+                        data[d]["AutoIncrement"].value = "YES";
+                    }
                 }
             }
         }
