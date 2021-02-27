@@ -1,8 +1,8 @@
 
 function checkGroupIndex(data, column, value){
-    var index = null;
-    for (var i = 0; i < data.length; i++) {
-        var row = data[i];
+    let index = null;
+    for (let i = 0; i < data.length; i++) {
+        let row = data[i];
         if (row[column].value == value) {
             index = i;
             break;
@@ -12,26 +12,26 @@ function checkGroupIndex(data, column, value){
 }
 
 function sortAsc(data) {
-    var _data = [];
+    let _data = [];
     if (data.length>0) {
-        for (var i = 0; i < data.length; i++) {
-            var dt = data[i];
-            for (var d = 0; d < _data.length; d++) {
+        for (let i = 0; i < data.length; i++) {
+            let dt = data[i];
+            for (let d = 0; d < _data.length; d++) {
                 if (dt == null || _data[d] == null){
                     if (dt != null && _data[d] == null){
-                        var tmp = _data[d];
+                        let tmp = _data[d];
                         _data[d] = dt;
                         dt = tmp
                     }
                 } else if (dt.toString().isNumber() && _data[d].toString().isNumber()) {
                     if (dt < _data[d]) {
-                        var tmp = _data[d];
+                        let tmp = _data[d];
                         _data[d] = dt;
                         dt = tmp
                     }
                 } else {
                     if (dt.toString().localeCompare(_data[d].toString()) < 0) {
-                        var tmp = _data[d];
+                        let tmp = _data[d];
                         _data[d] = dt;
                         dt = tmp
                     }
@@ -48,8 +48,8 @@ function getCount(data) {
 }
 
 function getCountNumber(data) {
-    var count = 0;
-    for(var i=0;i<data.length;i++) {
+    let count = 0;
+    for(let i=0;i<data.length;i++) {
         if (data[i].toString().isNumber())
             count += 1;
     }
@@ -57,8 +57,8 @@ function getCountNumber(data) {
 }
 
 function getMin(data) {
-    var min = data[0];
-    for(var i=1;i<data.length;i++) {
+    let min = data[0];
+    for(let i=1;i<data.length;i++) {
         if (data[i].toString().isNumber() && min.toString().isNumber()) {
             if (min > data[i]) {
                 min = data[i];
@@ -73,8 +73,8 @@ function getMin(data) {
 }
 
 function getMax(data) {
-    var max = data[0];
-    for(var i=1;i<data.length;i++) {
+    let max = data[0];
+    for(let i=1;i<data.length;i++) {
         if (data[i].toString().isNumber() && max.toString().isNumber()) {
             if (max < data[i]) {
                 max = data[i];
@@ -89,7 +89,7 @@ function getMax(data) {
 }
 
 function getMedian(data){
-    var _data = sortAsc(data);
+    let _data = sortAsc(data);
     if (_data.length%2 == 1) {
         return _data[Math.floor(_data.length / 2)];
     } else{
@@ -140,8 +140,8 @@ function getIQR(data){
 }
 
 function getSum(data) {
-    var sum = 0;
-    for(var i=0;i<data.length;i++) {
+    let sum = 0;
+    for(let i=0;i<data.length;i++) {
         if (data[i].toString().isNumber()) {
             sum += Number(data[i]);
         }
@@ -150,9 +150,9 @@ function getSum(data) {
 }
 
 function getAverage(data) {
-    var sum = 0;
-    var count = 0;
-    for(var i=0;i<data.length;i++) {
+    let sum = 0;
+    let count = 0;
+    for(let i=0;i<data.length;i++) {
         if (data[i].toString().isNumber()) {
             sum += Number(data[i]);
             count += 1;
@@ -168,10 +168,10 @@ function getAverage(data) {
 function getVariance(data){
     //总体方差
     try {
-        var avg = getAverage(data);
-        var sum = 0;
-        var count = 0;
-        for (var i = 0; i < data.length; i++) {
+        let avg = getAverage(data);
+        let sum = 0;
+        let count = 0;
+        for (let i = 0; i < data.length; i++) {
             if (data[i].toString().isNumber()) {
                 sum += Math.pow((Number(data[i]) - avg), 2);
                 count += 1;
@@ -189,7 +189,7 @@ function getVariance(data){
 
 function getStdev(data) {
     //总体标准差
-    var variance = getVariance(data);
+    let variance = getletiance(data);
     try {
         return Math.pow(variance, 1 / 2);
     }catch (e) {
@@ -199,8 +199,8 @@ function getStdev(data) {
 
 function getSterr(data) {
     //标准误差
-    var stdev = getStdev(data);
-    var n = getCountNumber(data);
+    let stdev = getStdev(data);
+    let n = getCountNumber(data);
     try {
         return stdev / Math.pow(n, 1 / 2);
     } catch (e) {
@@ -220,11 +220,11 @@ function getRange(data){
 function subtotal(column, target, calculation) {
     //当没有选择分组字段，即column=""时，需要特殊处理。
     if (__DATASET__.result.length > 0) {
-        var dataset = __DATASET__.result[__DATASET__.default.sheet];
-        var data = [];
-        var columns = [];
+        let dataset = __DATASET__.result[__DATASET__.default.sheet];
+        let data = [];
+        let columns = [];
         if (column != "") {
-            for (var i = 0; i < dataset.columns.length; i++) {
+            for (let i = 0; i < dataset.columns.length; i++) {
                 if (dataset.columns[i].name == column)
                     columns.push({id: 0, name: column, style: {textAlign: "center"}, order: "", type: "string"});
             }
@@ -244,7 +244,7 @@ function subtotal(column, target, calculation) {
             order: "",
             type: "string"
         });
-        for (var i = 0; i < dataset.data.length; i++) {
+        for (let i = 0; i < dataset.data.length; i++) {
             let r = dataset.data[i];
             let index = null;
             if (column != "")
@@ -253,7 +253,7 @@ function subtotal(column, target, calculation) {
                 index = checkGroupIndex(data, "全部", "全部");
 
             if (index == null) {
-                var row = {};
+                let row = {};
                 if (column != "") {
                     row[column] = {
                         rowid: data.length,

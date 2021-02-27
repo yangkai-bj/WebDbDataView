@@ -84,15 +84,15 @@ function storageSqlDialog(sql, editer, type){
     };
     tool.appendChild(open);
 
-    var add = document.createElement("div");
+    let add = document.createElement("div");
     add.className = "button";
     add.innerText = "保存";
     add.onclick = function(){
-        var name = $("sql-Manager-Content-name");
-        var sql = $("sql-Manager-Content-sql");
+        let name = $("sql-Manager-Content-name");
+        let sql = $("sql-Manager-Content-sql");
         if (name.value !="" && sql.value != "") {
-            var storage = window.localStorage;
-            var sqllist = JSON.parse(storage.getItem(__CONFIGS__.STORAGE.SCRIPTS));
+            let storage = window.localStorage;
+            let sqllist = JSON.parse(storage.getItem(__CONFIGS__.STORAGE.SCRIPTS));
             sqllist[name.value] = messageEncode(sql.value);
             storage.setItem(__CONFIGS__.STORAGE.SCRIPTS, JSON.stringify(sqllist));
             getSQLList($("sql-Manager-Content-table"))
@@ -102,14 +102,14 @@ function storageSqlDialog(sql, editer, type){
     };
     tool.appendChild(add);
 
-    var del = document.createElement("div");
+    let del = document.createElement("div");
     del.className = "button";
     del.innerText = "删除";
     del.onclick = function(){
-        var name = $("sql-Manager-Content-name");
+        let name = $("sql-Manager-Content-name");
         if (name.value !="") {
-            var storage = window.localStorage;
-            var sqllist = JSON.parse(storage.getItem(__CONFIGS__.STORAGE.SCRIPTS));
+            let storage = window.localStorage;
+            let sqllist = JSON.parse(storage.getItem(__CONFIGS__.STORAGE.SCRIPTS));
             delete sqllist[name.value];
             storage.setItem(__CONFIGS__.STORAGE.SCRIPTS, JSON.stringify(sqllist));
             getSQLList($("sql-Manager-Content-table"));
@@ -119,7 +119,7 @@ function storageSqlDialog(sql, editer, type){
     };
     tool.appendChild(del);
 
-    var rename = document.createElement("div");
+    let rename = document.createElement("div");
     rename.className = "button";
     rename.innerText = "重命名";
     rename.onclick = function(){
@@ -155,24 +155,24 @@ function storageSqlDialog(sql, editer, type){
     };
     tool.appendChild(rename);
 
-    var saveas = document.createElement("div");
+    let saveas = document.createElement("div");
     saveas.type = "div";
     saveas.className="button";
     saveas.innerText = "备份";
     saveas.onclick = function () {
-        var storage = window.localStorage;
-        var sqllist = {};
+        let storage = window.localStorage;
+        let sqllist = {};
         if (storage.getItem(__CONFIGS__.STORAGE.SCRIPTS) == null)
             storage.setItem(__CONFIGS__.STORAGE.SCRIPTS, "{}");
         else {
             sqllist = JSON.parse(storage.getItem(__CONFIGS__.STORAGE.SCRIPTS));
         }
-        var blob = new Blob([str2ab(JSON.stringify(sqllist))], {type: "application/octet-stream"});
+        let blob = new Blob([str2ab(JSON.stringify(sqllist))], {type: "application/octet-stream"});
         openDownloadDialog(blob, "WebDataView-SQL-backup.json");
     };
     tool.appendChild(saveas);
 
-    var input = document.createElement("input");
+    let input = document.createElement("input");
     input.type = "file";
     input.id = "openJson";
     input.style.display = "none";
@@ -205,7 +205,7 @@ function storageSqlDialog(sql, editer, type){
     };
     tool.appendChild(input);
 
-    var loadfile = document.createElement("div");
+    let loadfile = document.createElement("div");
     loadfile.type = "div";
     loadfile.className="button";
     loadfile.innerText = "恢复";
@@ -214,7 +214,7 @@ function storageSqlDialog(sql, editer, type){
     };
     tool.appendChild(loadfile);
 
-    var exit = document.createElement("div");
+    let exit = document.createElement("div");
     exit.className = "button";
     exit.innerText = "取消";
     exit.onclick = close.onclick = function(){
@@ -226,10 +226,10 @@ function storageSqlDialog(sql, editer, type){
 
 function getSQLList(table){
     table.innerText = "";
-    var tr = document.createElement("tr");
+    let tr = document.createElement("tr");
     tr.className = "tr";
     table.appendChild(tr);
-    var th = document.createElement("th");
+    let th = document.createElement("th");
     th.className= "th";
     th.style.width = "32px";
     th.innerText = "选择";
@@ -243,15 +243,15 @@ function getSQLList(table){
     th.className= "th";
     th.innerText = "名称";
     tr.appendChild(th);
-    var storage = window.localStorage;
-    var sqllist = {};
+    let storage = window.localStorage;
+    let sqllist = {};
     if (storage.getItem(__CONFIGS__.STORAGE.SCRIPTS) ==  null)
         storage.setItem(__CONFIGS__.STORAGE.SCRIPTS ,"{}");
     else {
         sqllist = JSON.parse(storage.getItem(__CONFIGS__.STORAGE.SCRIPTS));
     }
-    var i = 0;
-    for (var name in sqllist){
+    let i = 0;
+    for (let name in sqllist){
         tr = document.createElement("tr");
         if (i % 2 > 0) {
             tr.className = "alt-line";
@@ -260,10 +260,10 @@ function getSQLList(table){
         tr.setAttribute("name", name);
         tr.setAttribute("sql", sqllist[name]);
         tr.onclick = function() {
-            var name = $("sql-Manager-Content-name");
-            var sql = $("sql-Manager-Content-sql");
+            let name = $("sql-Manager-Content-name");
+            let sql = $("sql-Manager-Content-sql");
             name.value = this.getAttribute("name");
-            var _sql = messageDecode(this.getAttribute("sql"));
+            let _sql = messageDecode(this.getAttribute("sql"));
             _sql = _sql.substring(0, _sql.length - 1);
             sql.value = _sql;
             if (this.getElementsByClassName("check")[0].checked == true)
@@ -275,9 +275,9 @@ function getSQLList(table){
         };
         table.appendChild(tr);
 
-        var td = document.createElement("td");
+        let td = document.createElement("td");
         td.className= "td";
-        var check = document.createElement("input");
+        let check = document.createElement("input");
         check.type = "checkbox";
         check.className = "check";
         check.style.width = "36px";

@@ -893,7 +893,17 @@ function  getCreateTableSql(title, stru) {
     //根据选项生成建表SQL
     let cols = " (";
     let key = "";
-    let auto_increment = false;
+    let key_count = 0;
+    let auto_increment = null;
+    for (var i=0;i<stru.length;i++) {
+        if (stru[i].index == true && stru[i].type == "integer") {
+            key += stru[i].name + ",";
+            key_count += 1;
+            if (auto_increment == null)
+                auto_increment = stru[i].name;
+        }
+    }
+
     for (var i=0;i<stru.length;i++) {
         if (stru[i].check == true && stru[i].name != "") {
             cols += stru[i].name + " " + stru[i].type;
@@ -908,23 +918,22 @@ function  getCreateTableSql(title, stru) {
             } else {
                 cols += " NULL";
             }
-            if (stru[i].column_default != null && stru[i].column_default.trim() != "") {
+            if (key_count == 1 && stru[i].index == true ){
+                cols += " PRIMARY KEY";
+                if (stru[i].name == auto_increment){
+                    cols += " autoincrement,";
+                } else {
+                    cols += ",";
+                }
+            }else if(stru[i].column_default != null && stru[i].column_default.trim() != "") {
                 cols += " DEFAULT " + stru[i].column_default + ",";
             } else {
                 cols += ",";
             }
-            if (stru[i].index == true) {
-                if (stru[i].auto_increment == true && auto_increment == false && stru[i].type == "integer") {
-                    key += stru[i].name + " AUTOINCREMENT,";
-                    auto_increment = true;
-                } else {
-                    key += stru[i].name + ","
-                }
-            }
         }
     }
     var sql = "CREATE TABLE " + title + cols.substring(0,cols.length-1);
-    if (key != ""){
+    if (key_count > 1){
         sql += ",PRIMARY KEY (" + key.substring(0, key.lastIndexOf(",")) + "))"
     } else{
         sql += ")"
@@ -1283,10 +1292,8 @@ function viewDatabases(){
 }
 
 function getNow() {
-    var date = new Date();
-	var time = date.toLocaleString("zh", { hour12: false });
-	time += " " + date.getMilliseconds();
-	return time;
+    let date = new Date();
+    return date.Format("yyyy-MM-dd hh:mm:ss.S")
 }
 
 function viewMessage(msg){
@@ -1314,131 +1321,131 @@ function viewMessage(msg){
 }
 
 function viewTables(index) {
-    var database = __CONFIGS__.DATABASES[index];
-    var db = openDatabase(database.name, database.version, database.description, eval(database.size));
+    let database = __CONFIGS__.DATABASES[index];
+    let db = openDatabase(database.name, database.version, database.description, eval(database.size));
     __CONFIGS__.CURRENT_DATABASE.index = index;
     __CONFIGS__.CURRENT_DATABASE.value = database;
     __CONFIGS__.CURRENT_DATABASE.connect = db;
     __CONFIGS__.CURRENT_DATABASE.connect.transaction(function (tx) {
-        var sql ="SELECT type, name, tbl_name as 'tablename', rootpage, '' AS 'remarks' FROM sqlite_master WHERE type in ('table','view') and tbl_name not like '%_SYSTEM_%' " +
+        let sql = "SELECT type, name, tbl_name as 'tablename', rootpage, '' AS 'remarks' FROM sqlite_master WHERE type in ('table','view') and tbl_name not like '%_SYSTEM_%' and tbl_name <> 'sqlite_sequence' " +
             "UNION ALL " +
             "SELECT type, name, tbl_name as 'tablename', rootpage, 'Temporary' AS 'remarks' FROM sqlite_temp_master WHERE type = 'table' and tbl_name not like '%_SYSTEM_%' " +
             "ORDER BY type, tbl_name";
         tx.executeSql(sql, [], function (tx, results) {
-            var tbs = $("sidebar-tbs");
-            tbs.innerText = "";
-            var ul = document.createElement("ul");
-            ul.style.width = "80%";
-            ul.style.position = "relative";
-            tbs.appendChild(ul);
-            var len = results.rows.length;
-            var tables = [];
-            var hintOptions = __SQLEDITOR__.codeMirror.getOption("hintOptions");
-            for (var i = 0; i < len; i++){
-                if(results.rows.item(i).tablename != "__WebKitDatabaseInfoTable__" && results.rows.item(i).tablename != "") {
-                    var li = document.createElement("li");
-                    var a = document.createElement("a");
-                    li.appendChild(a)
-                    a.className = "list";
-                    hintOptions.tables[results.rows.item(i).tablename] = [];
-                    __SQLEDITOR__.codeMirror.setOption("hintOptions", hintOptions);
-                    a.innerText = results.rows.item(i).tablename;
-                    a.id = results.rows.item(i).tablename;
-                    a.setAttribute("type",results.rows.item(i).type);
-                    tables.push(results.rows.item(i).tablename);
-                    a.draggable = "true";
-                    a.ondragstart = function (event) {
-                        let sql = "/*脚本案例*/\r\n" +
-                            "SELECT\r\n" +
-                            "* \r\n" +
-                            "/*字段列表*/\r\n" +
-                            "FROM \r\n" +
-                            "{table}\r\n" +
-                            "ORDER BY 1";
-                        event.dataTransfer.setData("Text", sql.replace("{table}", event.target.id));
-                    };
-                    a.onclick = function(){
-                        __CONFIGS__.CURRENT_TABLE.name = this.id;
-                        __CONFIGS__.CURRENT_TABLE.type = this.getAttribute("type");
-                        __CONFIGS__.CURRENT_DATABASE.connect.transaction(function (tx) {
-                            var sql = "select sql from sqlite_master where type in ('table','view') and name='" + __CONFIGS__.CURRENT_TABLE.name + "'";
-                            //仅获取表结构，忽略视图.
-                            viewMessage(sql);
-                            tx.executeSql(sql, [],
-                                function (tx, results) {
-                                    var len = results.rows.length;
-                                    if (len > 0) {
-                                        viewMessage("数据库返回 " + len + " 条记录.");
-                                        __CONFIGS__.CURRENT_TABLE.sql = results.rows.item(0).sql;
-                                        if (__CONFIGS__.CURRENT_TABLE.type == "table")
-                                            __CONFIGS__.CURRENT_TABLE.structure = getTableStructure(results.rows.item(0).sql);
-                                        else
-                                            __CONFIGS__.CURRENT_TABLE.structure = [];
-                                        //显示表结构
-                                        $("ul-tb-" + __CONFIGS__.CURRENT_TABLE.name).innerText = "";
-                                        if ($("ul-tb-" + __CONFIGS__.CURRENT_TABLE.name).getAttribute("isOpen") == "false") {
-                                            var columns = [];
-                                            for (var m = 0; m < __CONFIGS__.CURRENT_TABLE.structure.data.length; m++) {
-                                                var l = document.createElement("li");
-                                                $("ul-tb-" + __CONFIGS__.CURRENT_TABLE.name).appendChild(l);
-                                                var col = document.createElement("a");
-                                                col.className = "list";
-                                                col.id = __CONFIGS__.CURRENT_TABLE.name + "." + __CONFIGS__.CURRENT_TABLE.structure.data[m]["Name"].value;
-                                                columns.push(__CONFIGS__.CURRENT_TABLE.structure.data[m]["Name"].value);
+                let tbs = $("sidebar-tbs");
+                tbs.innerText = "";
+                let ul = document.createElement("ul");
+                ul.style.width = "80%";
+                ul.style.position = "relative";
+                tbs.appendChild(ul);
+                let len = results.rows.length;
+                let tables = [];
+                let hintOptions = __SQLEDITOR__.codeMirror.getOption("hintOptions");
+                for (var i = 0; i < len; i++) {
+                    if (results.rows.item(i).tablename != "__WebKitDatabaseInfoTable__" && results.rows.item(i).tablename != "") {
+                        let li = document.createElement("li");
+                        let a = document.createElement("a");
+                        li.appendChild(a)
+                        a.className = "list";
+                        hintOptions.tables[results.rows.item(i).tablename] = [];
+                        __SQLEDITOR__.codeMirror.setOption("hintOptions", hintOptions);
+                        a.innerText = results.rows.item(i).tablename;
+                        a.id = results.rows.item(i).tablename;
+                        a.setAttribute("type", results.rows.item(i).type);
+                        tables.push(results.rows.item(i).tablename);
+                        a.draggable = "true";
+                        a.ondragstart = function (event) {
+                            let sql = "/*脚本案例*/\r\n" +
+                                "SELECT\r\n" +
+                                "* \r\n" +
+                                "/*字段列表*/\r\n" +
+                                "FROM \r\n" +
+                                "{table}\r\n" +
+                                "ORDER BY 1";
+                            event.dataTransfer.setData("Text", sql.replace("{table}", event.target.id));
+                        };
+                        a.onclick = function () {
+                            __CONFIGS__.CURRENT_TABLE.name = this.id;
+                            __CONFIGS__.CURRENT_TABLE.type = this.getAttribute("type");
+                            __CONFIGS__.CURRENT_DATABASE.connect.transaction(function (tx) {
+                                var sql = "select sql from sqlite_master where type in ('table','view') and name='" + __CONFIGS__.CURRENT_TABLE.name + "'";
+                                //仅获取表结构，忽略视图.
+                                viewMessage(sql);
+                                tx.executeSql(sql, [],
+                                    function (tx, results) {
+                                        let len = results.rows.length;
+                                        if (len > 0) {
+                                            viewMessage("数据库返回 " + len + " 条记录.");
+                                            __CONFIGS__.CURRENT_TABLE.sql = results.rows.item(0).sql;
+                                            if (__CONFIGS__.CURRENT_TABLE.type == "table")
+                                                __CONFIGS__.CURRENT_TABLE.structure = getTableStructure(results.rows.item(0).sql);
+                                            else
+                                                __CONFIGS__.CURRENT_TABLE.structure = [];
+                                            //显示表结构
+                                            $("ul-tb-" + __CONFIGS__.CURRENT_TABLE.name).innerText = "";
+                                            if ($("ul-tb-" + __CONFIGS__.CURRENT_TABLE.name).getAttribute("isOpen") == "false") {
+                                                let columns = [];
+                                                for (let m = 0; m < __CONFIGS__.CURRENT_TABLE.structure.data.length; m++) {
+                                                    let l = document.createElement("li");
+                                                    $("ul-tb-" + __CONFIGS__.CURRENT_TABLE.name).appendChild(l);
+                                                    let col = document.createElement("a");
+                                                    col.className = "list";
+                                                    col.id = __CONFIGS__.CURRENT_TABLE.name + "." + __CONFIGS__.CURRENT_TABLE.structure.data[m]["Name"].value;
+                                                    columns.push(__CONFIGS__.CURRENT_TABLE.structure.data[m]["Name"].value);
 
-                                                col.innerText = __CONFIGS__.CURRENT_TABLE.structure.data[m]["Name"].value + "\t" + __CONFIGS__.CURRENT_TABLE.structure.data[m]["Type"].value;
-                                                col.draggable = "true";
-                                                col.ondragstart = function (event) {
-                                                    event.dataTransfer.setData("Text", event.target.id);
-                                                };
-                                                l.appendChild(col);
+                                                    col.innerText = __CONFIGS__.CURRENT_TABLE.structure.data[m]["Name"].value + "\t" + __CONFIGS__.CURRENT_TABLE.structure.data[m]["Type"].value;
+                                                    col.draggable = "true";
+                                                    col.ondragstart = function (event) {
+                                                        event.dataTransfer.setData("Text", event.target.id);
+                                                    };
+                                                    l.appendChild(col);
+                                                }
+                                                let hintOptions = __SQLEDITOR__.codeMirror.getOption("hintOptions");
+                                                hintOptions.tables[__CONFIGS__.CURRENT_TABLE.name] = columns;
+                                                __SQLEDITOR__.codeMirror.setOption("hintOptions", hintOptions);
+
+                                                $("ul-tb-" + __CONFIGS__.CURRENT_TABLE.name).setAttribute("isOpen", "true");
+                                            } else {
+                                                $("ul-tb-" + __CONFIGS__.CURRENT_TABLE.name).setAttribute("isOpen", "false");
                                             }
-                                            var hintOptions = __SQLEDITOR__.codeMirror.getOption("hintOptions");
-                                            hintOptions.tables[__CONFIGS__.CURRENT_TABLE.name] = columns;
-                                            __SQLEDITOR__.codeMirror.setOption("hintOptions", hintOptions);
-
-                                            $("ul-tb-" + __CONFIGS__.CURRENT_TABLE.name).setAttribute("isOpen","true");
-                                        } else {
-                                            $("ul-tb-" + __CONFIGS__.CURRENT_TABLE.name).setAttribute("isOpen","false");
                                         }
-                                    }
-                                },
-                                function (tx, err) {
-                                    viewMessage(err.message);
-                                    __CONFIGS__.CURRENT_TABLE.sql = "";
-                                    __CONFIGS__.CURRENT_TABLE.structure = {"columns":[],"data":[]};
-                                    __CONFIGS__.CURRENT_TABLE.type = "";
-                                });
-                        });
+                                    },
+                                    function (tx, err) {
+                                        viewMessage(err.message);
+                                        __CONFIGS__.CURRENT_TABLE.sql = "";
+                                        __CONFIGS__.CURRENT_TABLE.structure = {"columns": [], "data": []};
+                                        __CONFIGS__.CURRENT_TABLE.type = "";
+                                    });
+                            });
 
-                        var tbs = $("sidebar-tbs");
-                        var l = tbs.getElementsByClassName("list");
-                        for (var i=0; i<l.length; i++ ){
-                            l[i].style.fontWeight = "normal";
-                        }
-                        this.style.fontWeight="bold";
-                    };
-                    var colul = document.createElement("ul");
-                    colul.id = "ul-tb-" + results.rows.item(i).tablename;
-                    colul.setAttribute("isOpen","false");
-                    li.appendChild(colul);
-                    ul.appendChild(li);
+                            let tbs = $("sidebar-tbs");
+                            let l = tbs.getElementsByClassName("list");
+                            for (let i = 0; i < l.length; i++) {
+                                l[i].style.fontWeight = "normal";
+                            }
+                            this.style.fontWeight = "bold";
+                        };
+                        let colul = document.createElement("ul");
+                        colul.id = "ul-tb-" + results.rows.item(i).tablename;
+                        colul.setAttribute("isOpen", "false");
+                        li.appendChild(colul);
+                        ul.appendChild(li);
+                    }
                 }
-            }
-            __CONFIGS__.TABLES = tables;
-        },
-        function (tx, err) {
-            viewMessage(err.message);
-        });
+                __CONFIGS__.TABLES = tables;
+            },
+            function (tx, err) {
+                viewMessage(err.message);
+            });
     });
 }
 
 function orderDataset(colid){
     // 对数据排序
     // 中文比较大小使用localeCompare
-    var index = __DATASET__.default.sheet;
-    var columns = __DATASET__["result"][index].columns;
-    var data = __DATASET__["result"][index].data;
+    let index = __DATASET__.default.sheet;
+    let columns = __DATASET__["result"][index].columns;
+    let data = __DATASET__["result"][index].data;
     switch (columns[colid].order) {
         case "":
             columns[colid].order = "asc";
@@ -1452,7 +1459,7 @@ function orderDataset(colid){
     }
     __DATASET__["result"][index].columns = columns;
 
-    var tmp = [];
+    let tmp = [];
     for (var i=0; i<data.length; i++) {
         let row = data[i];
         for (var x = 0; x < tmp.length; x++) {
@@ -1505,10 +1512,10 @@ function orderDataset(colid){
 function datasetTranspose(index) {
     //数据转置
     try {
-        var columns = __DATASET__["result"][index].columns;
-        var data = __DATASET__["result"][index].data;
-        var dataset = {columns: [], data: []};
-        var col = {
+        let columns = __DATASET__["result"][index].columns;
+        let data = __DATASET__["result"][index].data;
+        let dataset = {columns: [], data: []};
+        let col = {
             id: 0,
             name: columns[0].name,
             order: "",
@@ -1516,8 +1523,8 @@ function datasetTranspose(index) {
             style: columns[0].style
         };
         dataset.columns.push(col);
-        for (var i = 0; i < data.length; i++) {
-            var row = data[i];
+        for (let i = 0; i < data.length; i++) {
+            let row = data[i];
             col = {
                 id: i + 1,
                 name: row[columns[0].name].value,
@@ -1528,8 +1535,8 @@ function datasetTranspose(index) {
             dataset.columns.push(col);
         }
 
-        for (var c = 1; c < columns.length; c++) {
-            var nr = {};
+        for (let c = 1; c < columns.length; c++) {
+            let nr = {};
             nr[columns[0].name] = {
                 rowid: c - 1,
                 colid: 0,
@@ -1537,8 +1544,8 @@ function datasetTranspose(index) {
                 type: "string",
                 style: columns[c].style
             };
-            for (var i = 0; i < data.length; i++) {
-                var row = data[i];
+            for (let i = 0; i < data.length; i++) {
+                let row = data[i];
                 nr[row[columns[0].name].value] = {
                     rowid: c - 1,
                     colid: i + 1,
@@ -1550,7 +1557,7 @@ function datasetTranspose(index) {
             dataset.data.push(nr);
         }
         __DATASET__["result"][index] = dataset;
-    }catch (e) {
+    } catch (e) {
         console.log(e);
     }
 }
@@ -1568,16 +1575,16 @@ function viewDataset(index){
     let table = document.createElement("table");
     table.className = "table";
     table.id = "table";
-    var tr = document.createElement("tr");
+    let tr = document.createElement("tr");
     tr.type = "tr";
     table.appendChild(tr);
 
-    for (var c =0; c < columns.length; c++) {
-        var th = document.createElement("th");
+    for (let c =0; c < columns.length; c++) {
+        let th = document.createElement("th");
         th.type = "th";
         th.innerText = columns[c].name;
         th.style.textAlign = columns[c].style.textAlign;
-        var menu = document.createElement("li");
+        let menu = document.createElement("li");
         menu.className = "menu";
         menu.setAttribute("colid", c);
         menu.innerText = "︙";
@@ -1592,7 +1599,7 @@ function viewDataset(index){
         };
         th.appendChild(menu);
 
-        var order = document.createElement("span");
+        let order = document.createElement("span");
         order.className = "order";
         order.setAttribute("colid", c);
         switch (columns[c].order) {
@@ -1613,9 +1620,9 @@ function viewDataset(index){
         tr.appendChild(th);
     }
 
-    for (var i = 0; i < data.length; i++) {
+    for (let i = 0; i < data.length; i++) {
         if (i >= (__DATASET__.pages.default - 1) * __DATASET__.pages.size && i < __DATASET__.pages.default * __DATASET__.pages.size) {
-            var tr = document.createElement("tr");
+            let tr = document.createElement("tr");
             tr.type = "tr";
             tr.id = i;
             if (i % 2 > 0) {
@@ -1623,10 +1630,10 @@ function viewDataset(index){
                 //单数行
             }
             table.appendChild(tr);
-            var row = data[i];
-            for (var c = 0; c < columns.length; c++) {
-                var item = row[columns[c].name];
-                var td = document.createElement("td");
+            let row = data[i];
+            for (let c = 0; c < columns.length; c++) {
+                let item = row[columns[c].name];
+                let td = document.createElement("td");
                 td.type = "td";
                 td.id = item.rowid + "," + item.colid;
                 td.setAttribute("name", columns[c].name);
@@ -1641,8 +1648,8 @@ function viewDataset(index){
                             td.innerText = item.value;
                     } else
                         td.innerText = "";
-                    var _style = "";
-                    for (var key in item.style) {
+                    let _style = "";
+                    for (let key in item.style) {
                         _style += key + ": " + item.style[key] + ";";
                     }
                     td.style.cssText = _style;
@@ -1662,19 +1669,19 @@ function formatNumber(num,pattern){
     // formatNumber(12345.999,'#,##0.00');
     // formatNumber(12345.999,'#,##0.##');
     // formatNumber(123,'000000');
-    var is = false;
+    let is = false;
     if (num <0)
         is = true;
     num = Math.abs(num);
-    var strarr = num?num.toString().split('.'):['0'];
-    var fmtarr = pattern?pattern.split('.'):[''];
-    var retstr='';
+    let strarr = num?num.toString().split('.'):['0'];
+    let fmtarr = pattern?pattern.split('.'):[''];
+    let retstr='';
     // 整数部分
-    var str = strarr[0];
-    var fmt = fmtarr[0];
-    var i = str.length-1;
-    var comma = false;
-    for(var f=fmt.length-1;f>=0;f--){
+    let str = strarr[0];
+    let fmt = fmtarr[0];
+    let i = str.length-1;
+    let comma = false;
+    for(let f=fmt.length-1;f>=0;f--){
         switch(fmt.substr(f,1)){
             case '#':
                 if(i>=0 ) retstr = str.substr(i--,1) + retstr;
@@ -1691,7 +1698,7 @@ function formatNumber(num,pattern){
     }
     if(i>=0){
     if(comma){
-        var l = str.length;
+        let l = str.length;
         for(;i>=0;i--){
             retstr = str.substr(i,1) + retstr;
             if(i>0 && ((l-i)%3)==0) retstr = ',' + retstr;
@@ -1704,7 +1711,7 @@ function formatNumber(num,pattern){
     str=strarr.length>1?strarr[1]:'';
     fmt=fmtarr.length>1?fmtarr[1]:'';
     i=0;
-    for(var f=0;f<fmt.length;f++){
+    for(let f=0;f<fmt.length;f++){
         switch(fmt.substr(f,1)){
             case '#':
                 if(i<str.length) retstr+=str.substr(i++,1);
@@ -1724,12 +1731,12 @@ function fillSqlParam(sql) {
     if (params != null) {
         //参数去重
         let temp = [];
-        for (var i = 0; i < params.length; i++) {
+        for (let i = 0; i < params.length; i++) {
             if (temp.indexOf(params[i]) === -1)
                 temp.push(params[i]);
         }
         params = temp.slice(0);
-        for (var i = 0; i < params.length; i++) {
+        for (let i = 0; i < params.length; i++) {
             let param = params[i].toString();
             param = param.substring(param.indexOf("{") + 1, param.indexOf("}"));
             let value = prompt(param + " : ");
@@ -1752,7 +1759,7 @@ function execute() {
                 selection = fillSqlParam(selection);
             else {
                 let title = __SQLEDITOR__.title;
-                for (var param in __SQLEDITOR__.parameter) {
+                for (let param in __SQLEDITOR__.parameter) {
                     selection = selection.replaceAll("{" + param.toString() + "}", __SQLEDITOR__.parameter[param].toString())
                     if (title != null)
                         title = title.replaceAll("{" + param.toString() + "}", __SQLEDITOR__.parameter[param].toString());
@@ -1774,7 +1781,7 @@ function execute() {
                 $("page-label").innerText = " ● ";
                 $("dataset-label").innerText = " ● ";
                 sqls = selection.split(";");
-                for (var s = 0; s < sqls.length; s++) {
+                for (let s = 0; s < sqls.length; s++) {
                     let sql = sqls[s].slice(0).trim();
                     if (sql.trim() == "")
                         continue;
@@ -1783,17 +1790,17 @@ function execute() {
                     __DATASET__["result"] = [];
                     tx.executeSql(sql, [],
                         function (tx, results) {
-                            var aff = results.rowsAffected;
-                            var len = results.rows.length;
+                            let aff = results.rowsAffected;
+                            let len = results.rows.length;
                             if (len > 0) {
                                 viewMessage("数据库返回 " + len + " 条记录.");
                                 //##################################
                                 //取表头
                                 //##################################
-                                var columns = [];
-                                var co = 0;
-                                var r = JSON.parse(JSON.stringify(results.rows.item(0)));
-                                for (var key in r) {
+                                let columns = [];
+                                let co = 0;
+                                let r = JSON.parse(JSON.stringify(results.rows.item(0)));
+                                for (let key in r) {
                                     columns.push({
                                         id: co,
                                         name: key,
@@ -1806,16 +1813,16 @@ function execute() {
                                 //##################################
                                 //取数据
                                 //##################################
-                                var data = [];
-                                for (var i = 0; i < len; i++) {
-                                    var row = {};
-                                    var r = JSON.parse(JSON.stringify(results.rows.item(i)));
-                                    for (var c = 0; c < columns.length; c++) {
-                                        var _value = r[columns[c].name];
-                                        var _type = getTypeOf(_value);
-                                        var _format = null;
-                                        var _align = "left";
-                                        var _color = "black";
+                                let data = [];
+                                for (let i = 0; i < len; i++) {
+                                    let row = {};
+                                    let r = JSON.parse(JSON.stringify(results.rows.item(i)));
+                                    for (let c = 0; c < columns.length; c++) {
+                                        let _value = r[columns[c].name];
+                                        let _type = getTypeOf(_value);
+                                        let _format = null;
+                                        let _align = "left";
+                                        let _color = "black";
                                         if (_type == "number" && _value < 0)
                                             _color = "red";
                                         switch (_type) {
@@ -1876,83 +1883,101 @@ function execute() {
     }
 }
 
-function getTableStructure(sql){
+function getTableStructure(sql) {
     //从SQL中解析数据表结构.
     let columns = [];
     columns.push({id: 0, name: "Name", style: {textAlign: "center"}, order: ""});
     columns.push({id: 1, name: "Type", style: {textAlign: "center"}, order: ""});
-    columns.push({id: 2, name: "AllowNull", style: {textAlign: "center"}, order: ""});
+    columns.push({id: 2, name: "Nullable", style: {textAlign: "center"}, order: ""});
     columns.push({id: 3, name: "Index", style: {textAlign: "center"}, order: ""});
-    columns.push({id: 4, name: "AutoIncrement", style: {textAlign: "center"}, order: ""});
+    columns.push({id: 4, name: "Autoincrement", style: {textAlign: "center"}, order: ""});
     columns.push({id: 5, name: "Default", style: {textAlign: "center"}, order: ""});
     let data = [];
-    let stru = sql;
-    stru = stru.substring(stru.indexOf("(") + 1,stru.lastIndexOf(")"));
-    stru = stru.split(",");
-    let _stru = [];
-    for (var i=0;i<stru.length;i++){
-        if (stru[i].trim() !="") {
-            if (stru[i].indexOf(")") >= 0 && stru[i].indexOf("(") == -1) {
-                _stru[_stru.length - 1] += ("," + stru[i]);
+    let cols = sql.substring(sql.indexOf("(") + 1, sql.lastIndexOf(")"));
+    cols = cols.split(",");
+    let tmp = [];
+    let isAdd = false;
+    for (let i = 0; i < cols.length; i++) {
+        let col = cols[i].slice().replace(/[\r\n]/g, "").trim();
+        if (col != "") {
+            if (isAdd == true) {
+                tmp[tmp.length - 1] += ("," + col);
+                if (col.indexOf(")") >= 0 && col.indexOf("(") == -1)
+                    isAdd = false;
             } else {
-                _stru.push(stru[i]);
+                tmp.push(col);
+                if (col.indexOf("(") >= 0 && col.indexOf(")") == -1)
+                    isAdd = true;
             }
         }
     }
-    stru = _stru;
+    cols = [];
     let indexkey = [];
-    for (let i=0;i<stru.length;i++) {
-        let sp = stru[i].split(" ");
-        let tmp = [];
-        for (let i = 0; i < sp.length; i++) {
-            let s = sp[i].slice().replace(/[\r\n]/g, "");
-            if (s.trim() != "")
-                tmp.push(s);
-        }
-        sp = tmp;
-        if (sp[0].toUpperCase() == "PRIMARY") {
-            indexkey = stru[i].substring(stru[i].indexOf("(") + 1, stru[i].lastIndexOf(")")).split(",");
+    for (let i = 0;i < tmp.length; i++) {
+        let col = tmp[i].slice();
+        if (col.toUpperCase().indexOf("PRIMARY KEY") == 0 && col.indexOf("(") > 10 && col.lastIndexOf(")") > 11 ) {
+            try {
+                indexkey = col.substring(col.indexOf("(") + 1, col.lastIndexOf(")")).split(",");
+            } catch (e) {
+            }
         } else {
-            let row = {};
-            for (let c = 0; c < columns.length; c++) {
-                row[columns[c].name] = {
-                    rowid: i,
-                    colid: c,
-                    value: null,
-                    type: "string",
-                    format: null,
-                    style: {
-                        "text-align": "center", "color": "black"
-                    }
-                };
-            }
-            row.Name.value = sp[0];
-            row.Name.style["text-align"] = "left";
-            row.Type.value = sp[1];
-            row.Type.style["text-align"] = "left";
-            try {
-                row.AllowNull.value = (sp[2] == "NULL" ? "YES" : "NO");
-            } catch (e) {
-                row.AllowNull.value = "YES";
-            }
-            row.Index.value = "NO";
-            row.AutoIncrement.value = "NO";
-            try {
-                row.Default.value = (sp[4] == "DEFAULT" ? sp[5] : "");
-            } catch (e) {
-                row.Default.value = "";
-            }
-            data.push(row);
+            cols.push(col);
         }
+    }
+
+    for (let i = 0; i < cols.length; i++) {
+        let col = cols[i].split(" ");
+        let row = {};
+        for (let c = 0; c < columns.length; c++) {
+            row[columns[c].name] = {
+                rowid: i,
+                colid: c,
+                value: null,
+                type: "string",
+                format: null,
+                style: {
+                    "text-align": "center", "color": "black"
+                }
+            };
+        }
+        row.Name.value = col[0].slice();
+        row.Name.style["text-align"] = "left";
+        try {
+            row.Type.value = col[1].slice();
+            row.Type.style["text-align"] = "left";
+        }catch (e) {
+            row.Type.value = "";
+        }
+        try {
+            row.Nullable.value = ((col[2].toUpperCase() == "NOT" && col[3].toUpperCase() == "NULL") ? "NO" : "YES");
+        } catch (e) {
+            row.Nullable.value = "YES";
+        }
+        try {
+            row.Default.value = (col[4].toUpperCase() == "DEFAULT" ? col[5] : "");
+        } catch (e) {
+            row.Default.value = "";
+        }
+        try {
+            row.Index.value = ((col[4].toUpperCase() == "PRIMARY" && col[5].toUpperCase() == "KEY") ? "YES" : "NO");
+        } catch (e) {
+            row.Index.value = "NO"
+        }
+        try {
+            row.Autoincrement.value = (col[6].toUpperCase() == "AUTOINCREMENT" ? "YES" : "NO");
+        } catch (e) {
+            row.Autoincrement.value = "NO";
+        }
+        data.push(row);
+
     }
     if (indexkey.length > 0) {
         for (let i = 0; i < indexkey.length; i++) {
-            let key = indexkey[i].split(" ");
+            let key = indexkey[i].slice().replace(/[\r\n]/g, "").trim();
             for (let t = 0; t < data.length; t++) {
                 try {
-                    if (data[t]["Name"].value == key[0]) {
+                    if (data[t]["Name"].value == key) {
                         data[t]["Index"].value = "YES";
-                        data[t]["AutoIncrement"].value = (key[1] == "AUTOINCREMENT" ? "YES" : "NO");
                     }
                 } catch (e) {
                 }
@@ -1962,31 +1987,29 @@ function getTableStructure(sql){
     return {"columns":columns,"data":data};
 }
 
-function openDownloadDialog(url, saveName)
-{
-	if(typeof url == 'object' && url instanceof Blob)
-	{
-		url = URL.createObjectURL(url); // 创建blob地址
-	}
-	var aLink = document.createElement('a');
-	aLink.href = url;
-	aLink.download = saveName || '';
-	// HTML5新增的属性，指定保存文件名，可以不要后缀，注意，file:///模式下不会生效
-	var event;
-	if(window.MouseEvent) event = new MouseEvent('click');
-	else
-	{
-		event = document.createEvent('MouseEvents');
-		event.initMouseEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
-	}
-	aLink.dispatchEvent(event);
+function openDownloadDialog(url, saveName) {
+    if (typeof url == 'object' && url instanceof Blob) {
+        url = URL.createObjectURL(url); // 创建blob地址
+    }
+    let aLink = document.createElement('a');
+    aLink.href = url;
+    aLink.download = saveName || '';
+    // HTML5新增的属性，指定保存文件名，可以不要后缀，注意，file:///模式下不会生效
+    let event;
+    if (window.MouseEvent) {
+        event = new MouseEvent('click');
+    } else {
+        event = document.createEvent('MouseEvents');
+        event.initMouseEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+    }
+    aLink.dispatchEvent(event);
 }
 
 function str2ab(str) {
     //使用UTF8编码规则,涉及中文的转换.
-    var codes = [];
-    for (var i = 0; i != str.length; ++i) {
-        var code = str.charCodeAt(i);
+    let codes = [];
+    for (let i = 0; i != str.length; ++i) {
+        let code = str.charCodeAt(i);
         if (0x00 <= code && code <= 0x7f) {
             codes.push(code);
         } else if (0x80 <= code && code <= 0x7ff) {
@@ -1999,34 +2022,42 @@ function str2ab(str) {
             codes.push((128 | (63 & code)))
         }
     }
-    var buf = new ArrayBuffer(codes.length);
-    var result = new Uint8Array(buf);
+    let buf = new ArrayBuffer(codes.length);
+    let result = new Uint8Array(buf);
     for (i = 0; i < codes.length; i++) {
         result[i] = codes[i] & 0xff;
     }
     return result;
 }
 
-function sheet2blob(sheet, sheetName) {
-	sheetName = sheetName || 'sheet1';
-	var workbook = {
-		SheetNames: [sheetName],
-		Sheets: {}
-	};
-	workbook.Sheets[sheetName] = sheet;
+function workbook2blob(sheets, sheetNames) {
+    let workbook = {
+            SheetNames: [],
+            Sheets: {}
+        };
+    for (let i =0;i <sheets.length;i++) {
+        let name;
+        try {
+            name = sheetNames[i] || 'sheet' + (i + 1);
+        } catch (e) {
+            name = 'sheet' + (i + 1);
+        }
+        workbook.SheetNames.push(name);
+        workbook.Sheets[name] = XLSX.utils.aoa_to_sheet(sheets[i]);
+    }
 	// 生成excel的配置项
-	var wopts = {
+	let wopts = {
 		bookType: 'xlsx',
 		bookSST: false,
 		type: 'binary'
 	};
-	var wbout = XLSX.write(workbook, wopts);
-	var blob = new Blob([s2ab(wbout)], {type:"application/octet-stream"});
+	let wbout = XLSX.write(workbook, wopts);
+	let blob = new Blob([s2ab(wbout)], {type:"application/octet-stream"});
 	// 字符串转ArrayBuffer
 	function s2ab(s) {
-		var buf = new ArrayBuffer(s.length);
-		var view = new Uint8Array(buf);
-		for (var i=0; i!=s.length; ++i) view[i] = s.charCodeAt(i) & 0xFF;
+		let buf = new ArrayBuffer(s.length);
+		let view = new Uint8Array(buf);
+		for (let i=0; i!=s.length; ++i) view[i] = s.charCodeAt(i) & 0xFF;
 		return buf;
 	}
 	return blob;
@@ -2079,9 +2110,9 @@ function init() {
     //#######################################
     //初始化数据库菜单
     //#######################################
-    var dbstools = $("sidebar-dbs-tools");
+    let dbstools = $("sidebar-dbs-tools");
 
-    var crdb = document.createElement("div");
+    let crdb = document.createElement("div");
     crdb.type = "div";
     crdb.className = "button";
     crdb.innerText = "新增";
@@ -2089,13 +2120,13 @@ function init() {
     crdb.appendChild(__SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.create_database));
     let help_crdb = $("help-create-database");
     crdb.onclick = help_crdb.onclick = function () {
-        var db = createDatabase();
+        let db = createDatabase();
         setCenterPosition($("page"), db);
     };
     dbstools.appendChild(crdb);
     setTooltip(crdb, "创建数<br>据库");
 
-    var rmdb = document.createElement("div");
+    let rmdb = document.createElement("div");
     rmdb.type = "div";
     rmdb.className = "button";
     rmdb.innerText = "删除";
@@ -2106,14 +2137,14 @@ function init() {
             alert("请选择数据库.");
             return;
         }
-        var r = confirm("确定要删除数据库 " + __CONFIGS__.CURRENT_DATABASE.value.name + " 吗?");
+        let r = confirm("确定要删除数据库 " + __CONFIGS__.CURRENT_DATABASE.value.name + " 吗?");
         if (r == true) {
             if (checkStorage()) {
                 if (__CONFIGS__.CURRENT_DATABASE.value != null) {
-                    var storage = window.localStorage;
-                    var dbs = JSON.parse(storage.getItem(__CONFIGS__.STORAGE.DATABASES));
-                    var list = [];
-                    for (var i = 0; i < dbs.length; i++) {
+                    let storage = window.localStorage;
+                    let dbs = JSON.parse(storage.getItem(__CONFIGS__.STORAGE.DATABASES));
+                    let list = [];
+                    for (let i = 0; i < dbs.length; i++) {
                         if (i != __CONFIGS__.CURRENT_DATABASE.index) {
                             list.push(dbs[i]);
                         }
@@ -2134,7 +2165,7 @@ function init() {
     dbstools.appendChild(rmdb);
     setTooltip(rmdb, "删除<br>数据库");
 
-    var dbinfo = document.createElement("div");
+    let dbinfo = document.createElement("div");
     dbinfo.type = "div";
     dbinfo.className = "button";
     dbinfo.id = "test-button";
@@ -2153,7 +2184,7 @@ function init() {
     dbstools.appendChild(dbinfo);
     setTooltip(dbinfo, "功能测试");
 
-    var about = document.createElement("div");
+    let about = document.createElement("div");
     about.type = "div";
     about.className = "button";
     about.id = "about-and-help";
@@ -2178,9 +2209,9 @@ function init() {
     //#######################################
     //初始化数据表菜单
     //#######################################
-    var tbstools = $("sidebar-tbs-tools");
+    let tbstools = $("sidebar-tbs-tools");
     tbstools.innerText = "";
-    var crtb = document.createElement("div");
+    let crtb = document.createElement("div");
     crtb.type = "div";
     crtb.className = "button";
     crtb.id = "create-table";
@@ -2188,13 +2219,13 @@ function init() {
     crtb.appendChild(__SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.create_table));
     let help_crtb = $("help-create-table");
     crtb.onclick = help_crtb.onclick = function () {
-        var tb = createTable(null);
+        let tb = createTable(null);
         setCenterPosition($("page"), tb);
     };
     tbstools.appendChild(crtb);
     setTooltip(crtb, "创建<br>数据表");
 
-    var importtb = document.createElement("div");
+    let importtb = document.createElement("div");
     importtb.type = "div";
     importtb.className = "button";
     importtb.innerText = "导入";
@@ -2202,13 +2233,13 @@ function init() {
     importtb.appendChild(__SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.import));
     let help_importtb = $("help-import-data");
     importtb.onclick = help_importtb.onclick = function () {
-        var im = getImportContent();
+        let im = getImportContent();
         setCenterPosition($("page"), im);
     };
     tbstools.appendChild(importtb);
     setTooltip(importtb, "导入<br>外部数据");
 
-    var exConstr = document.createElement("div");
+    let exConstr = document.createElement("div");
     exConstr.type = "div";
     exConstr.className = "button";
     exConstr.innerText = "结构";
@@ -2222,30 +2253,30 @@ function init() {
         __DATASET__.default.sheet = 0;
         viewMessage(__CONFIGS__.CURRENT_TABLE.name + ":\n" + __CONFIGS__.CURRENT_TABLE.sql);
         viewDataset(0);
-        var label = $("dataset-label");
+        let label = $("dataset-label");
         label.innerText = (__DATASET__.default.sheet + 1) + " ● " + __DATASET__["result"].length;
 
     };
     tbstools.appendChild(exConstr);
     setTooltip(exConstr, "获取数据<br>表结构");
 
-    var rmtb = document.createElement("div");
+    let rmtb = document.createElement("div");
     rmtb.type = "div";
     rmtb.className = "button";
     rmtb.innerText = "删除";
     rmtb.id = "drop-table";
     rmtb.appendChild(__SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.drop_table));
     rmtb.onclick = function () {
-        var r = confirm("确定要删除数据表(视图) " + __CONFIGS__.CURRENT_TABLE.name + " 吗?");
+        let r = confirm("确定要删除数据表(视图) " + __CONFIGS__.CURRENT_TABLE.name + " 吗?");
         if (r == true) {
             if (checkStorage()) {
                 __CONFIGS__.CURRENT_DATABASE.connect.transaction(function (tx) {
-                    var sql = "drop " + __CONFIGS__.CURRENT_TABLE.type + " " + __CONFIGS__.CURRENT_TABLE.name;
+                    let sql = "drop " + __CONFIGS__.CURRENT_TABLE.type + " " + __CONFIGS__.CURRENT_TABLE.name;
                     viewMessage(sql);
                     tx.executeSql(sql, [],
                         function (tx, results) {
-                            var aff = results.rowsAffected;
-                            var len = results.rows.length;
+                            let aff = results.rowsAffected;
+                            let len = results.rows.length;
                             if (aff > 0) {
                                 viewMessage(aff + " 条记录被修改.")
                             }
@@ -2271,9 +2302,9 @@ function init() {
     //#######################################
     //初始化SQL菜单
     //#######################################
-    var sqltools = $("sql-tools");
+    let sqltools = $("sql-tools");
 
-    var newsql = document.createElement("div");
+    let newsql = document.createElement("div");
     newsql.type = "div";
     newsql.className = "button";
     newsql.innerText = "新建";
@@ -2281,7 +2312,7 @@ function init() {
     newsql.appendChild(__SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.create_sql));
     let help_createsql = $("help-create-sql");
     newsql.onclick = help_createsql.onclick = function () {
-        var openfile = $("openfile");
+        let openfile = $("openfile");
         openfile.value = "";
          __SQLEDITOR__.title =  __ECHARTS__.configs.titleText.value = __ECHARTS__.configs.titleSubText.value = null;
         __SQLEDITOR__.codeMirror.setValue("");
@@ -2300,7 +2331,7 @@ function init() {
     sqltools.appendChild(newsql);
     setTooltip(newsql, "新建<br>脚本");
 
-    var input = document.createElement("input");
+    let input = document.createElement("input");
     input.type = "file";
     input.id = "openfile";
     input.style.display = "none";
@@ -2308,8 +2339,8 @@ function init() {
     input.onchange = function () {
         if (window.FileReader) {
             try {
-                var file = this.files[0];
-                var reader = new FileReader();
+                let file = this.files[0];
+                let reader = new FileReader();
                 reader.onload = function () {
                     __SQLEDITOR__.codeMirror.setValue(this.result);
                     __SQLEDITOR__.title =  __ECHARTS__.configs.titleText.value = __ECHARTS__.configs.titleSubText.value = null;
@@ -2324,7 +2355,7 @@ function init() {
     };
     sqltools.appendChild(input);
 
-    var opensql = document.createElement("div");
+    let opensql = document.createElement("div");
     opensql.type = "div";
     opensql.className = "button";
     opensql.innerText = "打开";
@@ -2332,13 +2363,13 @@ function init() {
     opensql.appendChild(__SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.open_sql));
     let help_opensql = $("help-open-sql");
     opensql.onclick = help_opensql.onclick = function () {
-        var tb = storageSqlDialog("", __SQLEDITOR__);
+        let tb = storageSqlDialog("", __SQLEDITOR__);
         setCenterPosition($("page"), tb)
     };
     sqltools.appendChild(opensql);
     setTooltip(opensql, "打开<br>脚本");
 
-    var saveto = document.createElement("div");
+    let saveto = document.createElement("div");
     saveto.type = "div";
     saveto.className = "button";
     saveto.innerText = "保存";
@@ -2347,17 +2378,17 @@ function init() {
     let help_savesql = $("help-save-sql");
     saveto.onclick = help_savesql.onclick = function () {
         if (__SQLEDITOR__.title == null) {
-            var sql = __SQLEDITOR__.codeMirror.getValue();
-            var tb = storageSqlDialog(sql, __SQLEDITOR__, "_TO_SAVE_");
+            let sql = __SQLEDITOR__.codeMirror.getValue();
+            let tb = storageSqlDialog(sql, __SQLEDITOR__, "_TO_SAVE_");
             setCenterPosition($("page"), tb)
         } else {
-            var name = __SQLEDITOR__.title;
-            var res = confirm("您确定覆盖保存脚本 " + name + " 吗?");
+            let name = __SQLEDITOR__.title;
+            let res = confirm("您确定覆盖保存脚本 " + name + " 吗?");
             if (res == true) {
-                var sql = __SQLEDITOR__.codeMirror.getValue();
+                let sql = __SQLEDITOR__.codeMirror.getValue();
                 if (name != "" && sql != "") {
-                    var storage = window.localStorage;
-                    var sqllist = JSON.parse(storage.getItem(__CONFIGS__.STORAGE.SCRIPTS));
+                    let storage = window.localStorage;
+                    let sqllist = JSON.parse(storage.getItem(__CONFIGS__.STORAGE.SCRIPTS));
                     sqllist[name] = messageEncode(sql);
                     storage.setItem(__CONFIGS__.STORAGE.SCRIPTS, JSON.stringify(sqllist));
                 } else
@@ -2368,7 +2399,7 @@ function init() {
     sqltools.appendChild(saveto);
     setTooltip(saveto, "保存<br>脚本");
 
-    var loadfile = document.createElement("div");
+    let loadfile = document.createElement("div");
     loadfile.type = "div";
     loadfile.className = "button";
     loadfile.innerText = "导入";
@@ -2381,7 +2412,7 @@ function init() {
     sqltools.appendChild(loadfile);
     setTooltip(loadfile, "导入<br>脚本");
 
-    var saveas = document.createElement("div");
+    let saveas = document.createElement("div");
     saveas.type = "div";
     saveas.className = "button";
     saveas.innerText = "导出";
@@ -2397,7 +2428,7 @@ function init() {
     sqltools.appendChild(saveas);
     setTooltip(saveas, "导出<br>脚本");
 
-    var execsql = document.createElement("div");
+    let execsql = document.createElement("div");
     execsql.type = "div";
     execsql.className = "button";
     execsql.innerText = "提交";
@@ -2422,7 +2453,7 @@ function init() {
     sqltools.appendChild(execsql);
     setTooltip(execsql, "执行脚本<br>获取数据");
 
-    var tofull = document.createElement("div");
+    let tofull = document.createElement("div");
     sqltools.appendChild(tofull);
     tofull.className = "button";
     tofull.innerText = "❏";
@@ -2434,10 +2465,10 @@ function init() {
     };
     setTooltip(tofull, "全屏<br>编辑");
 
-    var editorCharset = document.createElement("select");
+    let editorCharset = document.createElement("select");
     editorCharset.type = "select";
     editorCharset.id = "set-editer-chartset";
-    for (var i = 0; i < __SQLEDITOR__.charset.options.length; i++) {
+    for (let i = 0; i < __SQLEDITOR__.charset.options.length; i++) {
         editorCharset.options.add(new Option(__SQLEDITOR__.charset.options[i], i));
     }
     try {
@@ -2462,10 +2493,10 @@ function init() {
     $("sqlediter").style.width = (getAbsolutePosition($("sqlContainer")).width - 2) + "px";
     __SQLEDITOR__.init($("sqlediter"));
 
-    var setFontSize = document.createElement("select");
+    let setFontSize = document.createElement("select");
     setFontSize.type = "select";
     setFontSize.id = "set-editer-font-size";
-    for (var size in __SQLEDITOR__.fontSize.options) {
+    for (let size in __SQLEDITOR__.fontSize.options) {
         setFontSize.options.add(new Option(size, __SQLEDITOR__.fontSize.options[size]));
     }
     setFontSize.style.cssFloat = "right";
@@ -2489,10 +2520,10 @@ function init() {
     sqltools.appendChild(setFontSize);
     setTooltip(setFontSize, "编辑器<br>字号");
 
-    var editorThemes = document.createElement("select");
+    let editorThemes = document.createElement("select");
     editorThemes.type = "select";
     editorThemes.id = "set-editer-theme";
-    for (var theme in __SQLEDITOR__.themes) {
+    for (let theme in __SQLEDITOR__.themes) {
         editorThemes.options.add(new Option(theme));
     }
     try {
@@ -2519,21 +2550,21 @@ function init() {
     //#######################################
     //初始化消息菜单
     //#######################################
-    var detailtools = $("detail-tools");
-    var clean = document.createElement("div");
+    let detailtools = $("detail-tools");
+    let clean = document.createElement("div");
     clean.type = "div";
     clean.className = "button";
     clean.innerText = "清空";
     clean.id = "clean-log";
     clean.appendChild(__SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.clear_logs));
     clean.onclick = function () {
-        var msgbox = $("messageBox");
+        let msgbox = $("messageBox");
         msgbox.innerHTML = "";
     };
     detailtools.appendChild(clean);
     setTooltip(clean, "清除终<br>端日志");
 
-    var logs = document.createElement("select");
+    let logs = document.createElement("select");
     logs.type = "select";
     logs.id = "log-records";
     logs.options.add(new Option("1000条", 1000));
@@ -2552,7 +2583,7 @@ function init() {
     logs.onchange = function () {
         __CONFIGS__.MAXLOGS = this.value;
         setUserConfig("pagelogs", this.value);
-        var msgbox = $("messageBox");
+        let msgbox = $("messageBox");
         if (__CONFIGS__.MAXLOGS > 0) {
             while (msgbox.getElementsByClassName("dt").length > __CONFIGS__.MAXLOGS) {
                 msgbox.removeChild(msgbox.getElementsByClassName("dt")[msgbox.getElementsByClassName("dt").length - 1])
@@ -2565,9 +2596,9 @@ function init() {
     //#######################################
     //初始化数据菜单
     //#######################################
-    var datatools = $("data-tools");
+    let datatools = $("data-tools");
 
-    var toup = document.createElement("div");
+    let toup = document.createElement("div");
     datatools.appendChild(toup);
     toup.className = "button";
     toup.innerText = "«";
@@ -2589,7 +2620,7 @@ function init() {
     };
     setTooltip(toup, "上一个<br>数据集");
 
-    var to = document.createElement("div");
+    let to = document.createElement("div");
     datatools.appendChild(to);
     to.className = "button";
     to.id = "dataset-label";
@@ -2607,7 +2638,7 @@ function init() {
     };
     setTooltip(to, "当前<br>数据集");
 
-    var todown = document.createElement("div");
+    let todown = document.createElement("div");
     datatools.appendChild(todown);
     todown.className = "button";
     todown.innerText = "»";
@@ -2629,7 +2660,7 @@ function init() {
     };
     setTooltip(todown, "下一个<br>数据集");
 
-    var datatran = document.createElement("div");
+    let datatran = document.createElement("div");
     datatools.appendChild(datatran);
     datatran.className = "button";
     datatran.innerText = "☇";
@@ -2647,7 +2678,7 @@ function init() {
     };
     setTooltip(datatran, "转置<br>数据");
 
-    var dataslice = document.createElement("div");
+    let dataslice = document.createElement("div");
     datatools.appendChild(dataslice);
     dataslice.className = "button";
     dataslice.innerText = "♯";
@@ -2656,13 +2687,13 @@ function init() {
     let help_datasetslice = $("help-dataset-slice");
     dataslice.onclick = help_datasetslice.onclick = function () {
         if (__DATASET__.result.length > 0) {
-            var dataslice = getDataSlice();
+            let dataslice = getDataSlice();
             setCenterPosition($("page"), dataslice);
         }
     };
     setTooltip(dataslice, "数据<br>切片");
 
-    var subtotal = document.createElement("div");
+    let subtotal = document.createElement("div");
     datatools.appendChild(subtotal);
     subtotal.type = "div";
     subtotal.className = "button";
@@ -2672,27 +2703,27 @@ function init() {
     let help_datasetsubtotal = $("help-dataset-subtotal");
     subtotal.onclick = help_datasetsubtotal.onclick = function () {
         if (__DATASET__["result"].length > 0) {
-            var dataset = __DATASET__["result"][__DATASET__.default.sheet];
-            var data = [];
-            var columns = [];
-            for (var i = 0; i < dataset["columns"].length; i++) {
+            let dataset = __DATASET__["result"][__DATASET__.default.sheet];
+            let data = [];
+            let columns = [];
+            for (let i = 0; i < dataset["columns"].length; i++) {
                 columns.push(dataset["columns"][i].name);
             }
-            for (var i = 0; i < dataset["data"].length; i++) {
-                var r = dataset["data"][i];
-                var row = [];
-                for (var c = 0; c < columns.length; c++) {
+            for (let i = 0; i < dataset["data"].length; i++) {
+                let r = dataset["data"][i];
+                let row = [];
+                for (let c = 0; c < columns.length; c++) {
                     row.push(r[columns[c]].value);
                 }
                 data.push(row);
             }
-            var subtotal = getSubtotal(columns, data);
+            let subtotal = getSubtotal(columns, data);
             setCenterPosition($("page"), subtotal);
         }
     };
     setTooltip(subtotal, "分类<br>汇总");
 
-    var download = document.createElement("div");
+    let download = document.createElement("div");
     datatools.appendChild(download);
     download.type = "div";
     download.className = "button";
@@ -2702,30 +2733,38 @@ function init() {
     let help_datasetdownload = $("help-dataset-download");
     download.onclick = help_datasetdownload.onclick = function () {
         if (__DATASET__["result"].length > 0) {
-            var dataset = __DATASET__["result"][__DATASET__.default.sheet];
-            var aoa = [];
-            var columns = [];
-            for (var i = 0; i < dataset["columns"].length; i++) {
+            let dataset = __DATASET__["result"][__DATASET__.default.sheet];
+            let aoa = [];
+            let columns = [];
+            for (let i = 0; i < dataset["columns"].length; i++) {
                 columns.push(dataset["columns"][i].name);
             }
             aoa.push(columns);
-            for (var i = 0; i < dataset["data"].length; i++) {
-                var r = dataset["data"][i];
-                var row = [];
-                for (var c = 0; c < columns.length; c++) {
+            for (let i = 0; i < dataset["data"].length; i++) {
+                let r = dataset["data"][i];
+                let row = [];
+                for (let c = 0; c < columns.length; c++) {
                     row.push(r[columns[c]].value);
                 }
                 aoa.push(row);
             }
-            let sheet = XLSX.utils.aoa_to_sheet(aoa);
+            let sheets = [];
+            sheets.push(aoa);
+            let comment = [
+                ['Application:', 'Web DataView for SQLite Database of browser'],
+                ['Database SQL:', __SQLEDITOR__.codeMirror.getValue()],
+                ['Creation time:', getNow()],
+                ['Get help from:', 'https://github.com/yangkai-bj'],
+            ];
+            sheets.push(comment);
             let title = __SQLEDITOR__.title != null ? __SQLEDITOR__.title.split("_")[0] : prompt("请输入文件名称:");
             if (title != null && title.trim() != "")
-                openDownloadDialog(sheet2blob(sheet), title + ".xlsx");
+                openDownloadDialog(workbook2blob(sheets, ['Dataset', 'Comment']), title + ".xlsx");
         }
     };
     setTooltip(download, "下载<br>数据集");
 
-    var remove = document.createElement("div");
+    let remove = document.createElement("div");
     datatools.appendChild(remove);
     remove.type = "div";
     remove.className = "button";
@@ -2754,7 +2793,7 @@ function init() {
     };
     setTooltip(remove, "删除<br>数据集");
 
-    var pageup = document.createElement("div");
+    let pageup = document.createElement("div");
     datatools.appendChild(pageup);
     pageup.className = "button";
     pageup.innerText = "«";
@@ -2764,14 +2803,14 @@ function init() {
     pageup.onclick = function () {
         if (__DATASET__.pages.default > 1) {
             __DATASET__.pages.default -= 1;
-            var label = $(this.getAttribute("label"));
+            let label = $(this.getAttribute("label"));
             label.innerText = __DATASET__.pages.default + " ● " + __DATASET__.pages.total;
             viewDataset(__DATASET__.default.sheet);
         }
     };
     setTooltip(pageup, "数据集<br>上一页");
 
-    var pagecurrent = document.createElement("div");
+    let pagecurrent = document.createElement("div");
     datatools.appendChild(pagecurrent);
     pagecurrent.className = "button";
     pagecurrent.style.fontSize = "100%";
@@ -2785,7 +2824,7 @@ function init() {
     };
     setTooltip(pagecurrent, "数据集<br>当前页");
 
-    var pagedown = document.createElement("div");
+    let pagedown = document.createElement("div");
     datatools.appendChild(pagedown);
     pagedown.className = "button";
     pagedown.innerText = "»";
@@ -2795,14 +2834,14 @@ function init() {
     pagedown.onclick = function () {
         if (__DATASET__.pages.default < __DATASET__.pages.total) {
             __DATASET__.pages.default += 1;
-            var label = $(this.getAttribute("label"));
+            let label = $(this.getAttribute("label"));
             label.innerText = __DATASET__.pages.default + " ● " + __DATASET__.pages.total;
             viewDataset(__DATASET__.default.sheet);
         }
     };
     setTooltip(pagedown, "数据集<br>下一页");
 
-    var analysis = document.createElement("div");
+    let analysis = document.createElement("div");
     analysis.style.display = "none";
     datatools.appendChild(analysis);
     analysis.className = "button";
@@ -2810,21 +2849,21 @@ function init() {
     analysis.style.cssFloat = "left";
     analysis.id = "Analysis";
     analysis.onclick = function () {
-        var dataset = __DATASET__["result"][__DATASET__.default.sheet];
-        var columns = [];
-        var data = [];
-        for (var i = 0; i < dataset["columns"].length; i++) {
+        let dataset = __DATASET__["result"][__DATASET__.default.sheet];
+        let columns = [];
+        let data = [];
+        for (let i = 0; i < dataset["columns"].length; i++) {
             columns.push(dataset["columns"][i].name);
         }
-        for (var i = 0; i < dataset["data"].length; i++) {
-            var r = dataset["data"][i];
-            var row = [];
-            for (var c = 0; c < columns.length; c++) {
+        for (let i = 0; i < dataset["data"].length; i++) {
+            let r = dataset["data"][i];
+            let row = [];
+            for (let c = 0; c < columns.length; c++) {
                 row.push(r[columns[c]].value);
             }
             data.push(row);
         }
-        var storage = window.localStorage;
+        let storage = window.localStorage;
         storage.setItem(__CONFIGS__.STORAGE.DATASET, JSON.stringify({
             "columns": columns,
             "data": data,
@@ -2880,7 +2919,7 @@ function init() {
     toecharts.id = "dataset-to-echarts";
     toecharts.onclick = function () {
         try {
-            var mecharts = document.createElement("div");
+            let mecharts = document.createElement("div");
             mecharts.className = "echarts";
             mecharts.id = "echarts-full-screen";
             mecharts.style.width = (getAbsolutePosition($("page")).width + 10) + "px";
@@ -2889,7 +2928,7 @@ function init() {
             mecharts.style.left = "0px";
             window.addEventListener("keydown", function (e) {
                 //keypress无法获取Esc键值,keydown和keyup可以.
-                var keycode = e.which || e.keyCode;
+                let keycode = e.which || e.keyCode;
                 if (keycode == 27) {
                     if ($("echarts-full-screen") != null) {
                         try {
@@ -2914,7 +2953,7 @@ function init() {
     };
     setTooltip(toecharts, "显示<br>大视图");
 
-    var toconfigs = document.createElement("div");
+    let toconfigs = document.createElement("div");
     datatools.appendChild(toconfigs);
     toconfigs.className = "button";
     toconfigs.innerText = "┅";
@@ -2923,12 +2962,12 @@ function init() {
     toconfigs.id = "dataset-to-configs";
     let help_echartsConfigs = $("help-select-echarts-configs");
     toconfigs.onclick = help_echartsConfigs.onclick = function () {
-        var configs = __ECHARTS__.getEchartsConfigs($("tableContainer"));
+        let configs = __ECHARTS__.getEchartsConfigs($("tableContainer"));
         setCenterPosition($("page"), configs);
     };
     setTooltip(toconfigs, "更多图<br>形参数");
 
-    var echartsThemes = document.createElement("select");
+    let echartsThemes = document.createElement("select");
     echartsThemes.className = "select";
     echartsThemes.type = "select";
     echartsThemes.id = "dataset-select-echarts-theme";
@@ -2971,7 +3010,7 @@ function init() {
     datatools.appendChild(echartsThemes);
     setTooltip(echartsThemes, "视图<br>主题");
 
-    var echartsType = document.createElement("select");
+    let echartsType = document.createElement("select");
     echartsType.type = "select";
     echartsType.id = "dataset-select-echarts-type";
     let help_echartsType = $("help-select-echarts-type");
@@ -3013,7 +3052,7 @@ function init() {
     datatools.appendChild(echartsType);
     setTooltip(echartsType, "视图<br>类型");
 
-    var echarts = document.createElement("div");
+    let echarts = document.createElement("div");
     datatools.appendChild(echarts);
     echarts.className = "button";
     echarts.innerText = "视图";
@@ -3084,8 +3123,8 @@ function getQRCode(parent,width,height,text,logoImage){
 }
 
 function getBrowserSize(){
-    var winWidth = 0;
-    var winHeight = 0;
+    let winWidth = 0;
+    let winHeight = 0;
     if (window.innerWidth) {
         winWidth = window.innerWidth;
     } else if ((document.body) && (document.body.clientWidth)) {
@@ -3128,17 +3167,17 @@ function resize() {
 
 function isScroll(el) {
      //检查节点是否 出现滚动条
-    var elems = el ? [el] : [document.documentElement, document.body];
-    var scrollX = false, scrollY = false;
-    for (var i = 0; i < elems.length; i++) {
-        var o = elems[i];
+    let elems = el ? [el] : [document.documentElement, document.body];
+    let scrollX = false, scrollY = false;
+    for (let i = 0; i < elems.length; i++) {
+        let o = elems[i];
         // test horizontal
-        var sl = o.scrollLeft;
+        let sl = o.scrollLeft;
         o.scrollLeft += (sl > 0) ? -1 : 1;
         o.scrollLeft !== sl && (scrollX = scrollX || true);
         o.scrollLeft = sl;
         // test vertical
-        var st = o.scrollTop;
+        let st = o.scrollTop;
         o.scrollTop += (st > 0) ? -1 : 1;
         o.scrollTop !== st && (scrollY = scrollY || true);
         o.scrollTop = st;
@@ -3152,9 +3191,9 @@ function isScroll(el) {
 
 function readWorkbookFromLocalFile(file) {
     function getData(result, sep) {
-        var data = [];
-        var lines = result.split("\n");
-        for (var i = 0; i < lines.length; i++) {
+        let data = [];
+        let lines = result.split("\n");
+        for (let i = 0; i < lines.length; i++) {
             data.push(lines[i].split(sep));
         }
         return data;
@@ -3162,16 +3201,16 @@ function readWorkbookFromLocalFile(file) {
 
     function fixData(data) {
         //文件流转BinaryString
-        var tmp = "";
-        var l = 0;
-        var w = 10240;
+        let tmp = "";
+        let l = 0;
+        let w = 10240;
         for (; l < data.byteLength / w; ++l) tmp += String.fromCharCode.apply(null, new Uint8Array(data.slice(l * w, l * w + w)));
         tmp += String.fromCharCode.apply(null, new Uint8Array(data.slice(l * w)));
         return tmp;
     }
 
-    var reader = new FileReader();
-    var rABS = true;
+    let reader = new FileReader();
+    let rABS = true;
     reader.onload = function (e) {
         let data = e.target.result;
         let workbook;
@@ -3182,7 +3221,7 @@ function readWorkbookFromLocalFile(file) {
         }
         let sheetNames = workbook.SheetNames;
         let selectDataSet = $("SelectedDataSet");
-        for (var i = 0; i < sheetNames.length; i++) {
+        for (let i = 0; i < sheetNames.length; i++) {
             let worksheet = workbook.Sheets[sheetNames[i]];
             let csv = XLSX.utils.sheet_to_csv(worksheet);
             __IMPORT__.SourceFile.data.push(csv);
@@ -3200,19 +3239,19 @@ function readWorkbookFromLocalFile(file) {
 }
 
 function getSubtotal(columns) {
-    var container = document.createElement("div");
+    let container = document.createElement("div");
     container.id = "subtotal-Content";
     container.className = "subtotal-Content";
-    var d = document.createElement("div");
+    let d = document.createElement("div");
     d.style.height= "22px";
-    var span = document.createElement("span");
+    let span = document.createElement("span");
     span.innerHTML = "分类字段 : ";
     d.appendChild(span);
-    var cols = document.createElement("select");
+    let cols = document.createElement("select");
     cols.type = "select";
     cols.id = "subtotal_groupby";
     cols.options.add(new Option("全部", ""));
-    for (var c = 0; c < columns.length; c++) {
+    for (let c = 0; c < columns.length; c++) {
         cols.options.add(new Option(columns[c], columns[c]));
     }
     d.appendChild(cols);
@@ -3225,7 +3264,7 @@ function getSubtotal(columns) {
     span.style.cssFloat = "right";
     d.appendChild(span);
 
-    var merge = document.createElement("input");
+    let merge = document.createElement("input");
     merge.type = "checkbox";
     merge.id = "subtotal_merge";
     merge.style.marginTop= "4px";
@@ -3238,7 +3277,7 @@ function getSubtotal(columns) {
     let hr = document.createElement("hr");
     container.appendChild(hr);
 
-    var table = document.createElement("table");
+    let table = document.createElement("table");
     container.appendChild(table);
     table.id = "subtotal-dialog-table";
     table.className = "table";
@@ -3246,10 +3285,10 @@ function getSubtotal(columns) {
     table.style.tableLayout = "fixed";
 
     table.innerText = "";
-    var tr = document.createElement("tr");
+    let tr = document.createElement("tr");
     tr.className = "tr";
     table.appendChild(tr);
-    var th = document.createElement("th");
+    let th = document.createElement("th");
     th.className = "th";
     th.style.width = "32px";
     th.innerText = "选择";
@@ -3269,28 +3308,28 @@ function getSubtotal(columns) {
     br.className = "br";
     container.appendChild(br);
 
-    var tool = document.createElement("div");
+    let tool = document.createElement("div");
     tool.className = "groupbar";
     container.appendChild(tool);
 
-    var add = document.createElement("div");
+    let add = document.createElement("div");
     add.className = "button";
     add.innerText = "增加";
     add.onclick = function () {
-        var table = $("subtotal-dialog-table");
+        let table = $("subtotal-dialog-table");
         table.appendChild(addSubtotal(columns,table.getElementsByTagName("tr").length - 1));
     };
     tool.appendChild(add);
 
-    var del = document.createElement("div");
+    let del = document.createElement("div");
     del.className = "button";
     del.innerText = "删除";
     del.onclick = function () {
-        var table = $("subtotal-dialog-table");
-        var columns = table.getElementsByTagName("tr");
+        let table = $("subtotal-dialog-table");
+        let columns = table.getElementsByTagName("tr");
         if (columns.length > 2) {
-            for (var i = columns.length - 1; i > 1; i--) {
-                var checks = columns[i].getElementsByClassName("check");
+            for (let i = columns.length - 1; i > 1; i--) {
+                let checks = columns[i].getElementsByClassName("check");
                 if (checks[0].checked == true) {
                     table.removeChild(columns[i]);
                 }
@@ -3301,21 +3340,21 @@ function getSubtotal(columns) {
     };
     tool.appendChild(del);
 
-    var confirm = document.createElement("div");
+    let confirm = document.createElement("div");
     confirm.className = "button";
     confirm.innerText = "确定";
     confirm.onclick = function () {
-        var merge = $("subtotal_merge").checked;
-        var column = $("subtotal_groupby").value;
-        var obj = document.getElementsByClassName("subtotal_object");
-        var typ = document.getElementsByClassName("subtotal_type");
-        var columns = [];
-        var data = [];
-        for (var i=0;i<obj.length;i++) {
-            var target = obj[i].value;
+        let merge = $("subtotal_merge").checked;
+        let column = $("subtotal_groupby").value;
+        let obj = document.getElementsByClassName("subtotal_object");
+        let typ = document.getElementsByClassName("subtotal_type");
+        let columns = [];
+        let data = [];
+        for (let i=0;i<obj.length;i++) {
+            let target = obj[i].value;
             if (merge){
                 //横向合并集合
-                var result = subtotal(column, target, typ[i].value);
+                let result = subtotal(column, target, typ[i].value);
                 if (columns.length == 0) {
                     columns = result["columns"];
                     data = result["data"];
@@ -3323,12 +3362,12 @@ function getSubtotal(columns) {
                     let col = result["columns"][1];
                     col.id = columns.length;
                     columns.push(col);
-                    for(var x=0;x<result["data"].length;x++){
+                    for(let x=0;x<result["data"].length;x++){
                         let r = result["data"][x];
-                        for(var c=0;c<data.length;c++){
+                        for(let c=0;c<data.length;c++){
                             let row = data[c];
                             if (row[column==""?"全部":column].value == r[column==""?"全部":column].value){
-                                var cell = r[col.name];
+                                let cell = r[col.name];
                                 cell.colid = col.id;
                                 row[col.name] = cell;
                                 break;
@@ -3354,7 +3393,7 @@ function getSubtotal(columns) {
     };
     tool.appendChild(confirm);
 
-    var cancel = document.createElement("div");
+    let cancel = document.createElement("div");
     cancel.className = "button";
     cancel.innerText = "退出";
     cancel.onclick = close.onclick = function () {
@@ -3377,8 +3416,8 @@ function addSubtotal(columns,i) {
         else
             this.getElementsByClassName("check")[0].setAttribute("checked", "checked");
     };
-    var td = document.createElement("td");
-    var check = document.createElement("input");
+    let td = document.createElement("td");
+    let check = document.createElement("input");
     check.type = "checkbox";
     check.className = "check";
     check.style.width = "36px";
@@ -3388,20 +3427,20 @@ function addSubtotal(columns,i) {
     td = document.createElement("td");
     td.style.width = "36px";
     td.style.textAlign = "center";
-    var cols = document.createElement("select");
+    let cols = document.createElement("select");
     cols.type = "select";
     cols.className = "subtotal_object";
-    for (var c = 0; c < columns.length; c++) {
+    for (let c = 0; c < columns.length; c++) {
         cols.options.add(new Option(columns[c], columns[c]));
     }
     td.appendChild(cols);
     tr.appendChild(td);
 
     td = document.createElement("td");
-    var ways = document.createElement("select");
+    let ways = document.createElement("select");
     ways.type = "select";
     ways.className = "subtotal_type";
-    var methods = [
+    let methods = [
         {name:"计数",value:"COUNT"},
         {name:"数字计数",value:"NUMCOUNT"},
         {name:"求和",value:"SUM"},
@@ -3414,7 +3453,7 @@ function addSubtotal(columns,i) {
         {name:"标准误差",value:"STERR"},
         {name:"全距",value:"RANGE"}
         ];
-    for (var c = 0; c < methods.length; c++) {
+    for (let c = 0; c < methods.length; c++) {
         ways.options.add(new Option(methods[c].name, methods[c].value));
     }
     tr.appendChild(td);
@@ -3423,24 +3462,24 @@ function addSubtotal(columns,i) {
 }
 
 function getParamDialog(title, sql) {
-    var reg = new RegExp(/\{[a-zA-Z0-9\u4e00-\u9fa5]+\}/, "g");
-    var params = sql.match(reg);
+    let reg = new RegExp(/\{[a-zA-Z0-9\u4e00-\u9fa5]+\}/, "g");
+    let params = sql.match(reg);
     if (params != null) {
         //参数去重
-        var temp = [];
-        for (var i = 0; i < params.length; i++) {
+        let temp = [];
+        for (let i = 0; i < params.length; i++) {
             if (temp.indexOf(params[i]) === -1)
                 temp.push(params[i]);
         }
         params = temp.slice(0);
 
-        var container = document.createElement("div");
+        let container = document.createElement("div");
         container.id = "sql-param-dialog";
         container.className = "sql-param-dialog";
 
-        var d = document.createElement("div");
+        let d = document.createElement("div");
         d.className = d.id = "sql-param-title-container";
-        var span = document.createElement("span");
+        let span = document.createElement("span");
         span.className = span.id = "sql-param-title";
         span.innerHTML = (title == null?"[ ]":"[ " + title + " ]");
         d.appendChild(span);
@@ -3455,13 +3494,13 @@ function getParamDialog(title, sql) {
         let hr = document.createElement("hr");
         container.appendChild(hr);
 
-        for (var i = 0; i < params.length; i++) {
+        for (let i = 0; i < params.length; i++) {
             d = document.createElement("div");
             span = document.createElement("span");
-            var param = params[i].toString().substring(params[i].indexOf("{") + 1, params[i].indexOf("}"));
+            let param = params[i].toString().substring(params[i].indexOf("{") + 1, params[i].indexOf("}"));
             span.innerHTML = param + " : ";
             d.appendChild(span);
-            var value = document.createElement("input");
+            let value = document.createElement("input");
             value.className = "sql-param-value";
             value.setAttribute("param", param.toString());
             value.style.cssFloat = "right";
@@ -3477,17 +3516,17 @@ function getParamDialog(title, sql) {
         br.className = "br";
         container.appendChild(br);
 
-        var tool = document.createElement("div");
+        let tool = document.createElement("div");
         tool.className = "groupbar";
         container.appendChild(tool);
 
-        var confirm = document.createElement("div");
+        let confirm = document.createElement("div");
         confirm.className = "button";
         confirm.innerText = "确定";
         confirm.onclick = function () {
             let param = {};
             let params = document.getElementsByClassName("sql-param-value");
-            for (var i = 0; i < params.length; i++) {
+            for (let i = 0; i < params.length; i++) {
                 if (params[i].value != null)
                     param[params[i].getAttribute("param")] = params[i].value;
             }
@@ -3497,7 +3536,7 @@ function getParamDialog(title, sql) {
         };
         tool.appendChild(confirm);
 
-        var cancel = document.createElement("div");
+        let cancel = document.createElement("div");
         cancel.className = "button";
         cancel.innerText = "退出";
         cancel.onclick= close.onclick = function () {
@@ -3511,11 +3550,11 @@ function getParamDialog(title, sql) {
 }
 
 function getDataSlice() {
-    var container = document.createElement("div");
+    let container = document.createElement("div");
     container.id = "data-slice-Content";
     container.className = "data-slice-Content";
-    var d = document.createElement("div");
-    var span = document.createElement("span");
+    let d = document.createElement("div");
+    let span = document.createElement("span");
     span.innerHTML = "数据切片 : ";
     d.appendChild(span);
     let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
@@ -3525,7 +3564,7 @@ function getDataSlice() {
     let hr = document.createElement("hr");
     container.appendChild(hr);
 
-    var table = document.createElement("table");
+    let table = document.createElement("table");
     container.appendChild(table);
     table.id = "data-slice-table";
     table.className = "table";
@@ -3533,10 +3572,10 @@ function getDataSlice() {
     table.style.tableLayout = "fixed";
 
     table.innerText = "";
-    var tr = document.createElement("tr");
+    let tr = document.createElement("tr");
     tr.className = "tr";
     table.appendChild(tr);
-    var th = document.createElement("th");
+    let th = document.createElement("th");
     th.className = "th";
     th.style.width = "32px";
     th.innerText = "选择";
@@ -3546,7 +3585,7 @@ function getDataSlice() {
     th.innerText = "切片字段";
     tr.appendChild(th);
     let columns = __DATASET__.result[__DATASET__.default.sheet].columns;
-    for (var i = 0; i < columns.length; i++) {
+    for (let i = 0; i < columns.length; i++) {
         tr = document.createElement("tr");
         if (i % 2 > 0) {
             tr.className = "alt-line";
@@ -3561,8 +3600,8 @@ function getDataSlice() {
                 this.getElementsByClassName("data-slice-column-check")[0].setAttribute("checked", "checked");
         };
 
-        var td = document.createElement("td");
-        var check = document.createElement("input");
+        let td = document.createElement("td");
+        let check = document.createElement("input");
         check.type = "checkbox";
         check.className = "data-slice-column-check";
         check.style.width = "18px";
@@ -3583,7 +3622,7 @@ function getDataSlice() {
     span = document.createElement("span");
     span.innerText = "切片范围 : ";
     d.appendChild(span);
-    var range_begin = document.createElement("input");
+    let range_begin = document.createElement("input");
     range_begin.id = "data-slice-range-begin";
     range_begin.style.width = "100px";
     range_begin.style.textAlign = "center";
@@ -3592,7 +3631,7 @@ function getDataSlice() {
     span = document.createElement("span");
     span.innerText = " - ";
     d.appendChild(span);
-    var range_end = document.createElement("input");
+    let range_end = document.createElement("input");
     range_end.id = "data-slice-range-end";
     range_end.style.width = "100px";
     range_end.style.textAlign = "center";
@@ -3603,10 +3642,10 @@ function getDataSlice() {
     br.className = "br";
     container.appendChild(br);
 
-    var tool = document.createElement("div");
+    let tool = document.createElement("div");
     tool.className = "groupbar";
     container.appendChild(tool);
-    var confirm = document.createElement("div");
+    let confirm = document.createElement("div");
     confirm.className = "button";
     confirm.innerText = "确定";
     confirm.onclick = function () {
@@ -3616,10 +3655,10 @@ function getDataSlice() {
         let end = Number($("data-slice-range-end").value) - 1;
         let col_tmp = [];
         let dataset = [];
-        var id = 0;
-        for (var i = 0; i < cols.length; i++) {
+        let id = 0;
+        for (let i = 0; i < cols.length; i++) {
             if (cols[i].checked == true) {
-                for (var c = 0; c < columns.length; c++) {
+                for (let c = 0; c < columns.length; c++) {
                     if (cols[i].name == columns[c].name) {
                         let col = columns[c];
                         col.id = id;
@@ -3632,11 +3671,11 @@ function getDataSlice() {
         }
         let rowid = 0;
         let data = __DATASET__.result[__DATASET__.default.sheet].data;
-        for (var i = 0; i < data.length; i++) {
+        for (let i = 0; i < data.length; i++) {
             let row = data[i];
             if (i >= begin && i <= end) {
-                var r = {};
-                for (var c = 0; c < col_tmp.length; c++) {
+                let r = {};
+                for (let c = 0; c < col_tmp.length; c++) {
                     let cell = row[col_tmp[c].name];
                     cell.rowid = rowid;
                     cell.colid = col_tmp[c].id;
@@ -3660,7 +3699,7 @@ function getDataSlice() {
     };
     tool.appendChild(confirm);
 
-    var cancel = document.createElement("div");
+    let cancel = document.createElement("div");
     cancel.className = "button";
     cancel.innerText = "退出";
     cancel.onclick = close.onclick = function () {
@@ -3675,11 +3714,11 @@ function getDataFilter(colid) {
     let columns = __DATASET__.result[__DATASET__.default.sheet].columns;
     let data = __DATASET__.result[__DATASET__.default.sheet].data;
 
-    var container = document.createElement("div");
+    let container = document.createElement("div");
     container.id = "data-filter-Content";
     container.className = "data-filter-Content";
-    var d = document.createElement("div");
-    var span = document.createElement("span");
+    let d = document.createElement("div");
+    let span = document.createElement("span");
     span.innerHTML = "筛选字段 :[ " + columns[Number(colid)].name + " ]";
     d.appendChild(span);
     let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
@@ -3689,11 +3728,11 @@ function getDataFilter(colid) {
     let hr = document.createElement("hr");
     container.appendChild(hr);
 
-    var tableContent =document.createElement("div");
+    let tableContent =document.createElement("div");
     tableContent.className = "data_filter_table_Content";
     container.appendChild(tableContent);
 
-    var table = document.createElement("table");
+    let table = document.createElement("table");
     tableContent.appendChild(table);
     table.id = "data-filter-table";
     table.className = "table";
@@ -3701,10 +3740,10 @@ function getDataFilter(colid) {
     table.style.tableLayout = "fixed";
 
     table.innerText = "";
-    var tr = document.createElement("tr");
+    let tr = document.createElement("tr");
     tr.className = "tr";
     table.appendChild(tr);
-    var th = document.createElement("th");
+    let th = document.createElement("th");
     th.className = "th";
     th.style.width = "32px";
     th.innerText = "选择";
@@ -3715,11 +3754,11 @@ function getDataFilter(colid) {
     tr.appendChild(th);
 
     let values = [];
-    for (var i = 0; i < data.length; i++) {
+    for (let i = 0; i < data.length; i++) {
         let row = data[i];
         let value = row[columns[Number(colid)].name].value;
         let is = false;
-        for(var v=0;v<values.length;v++){
+        for(let v=0;v<values.length;v++){
             if (value == values[v]) {
                 is = true;
                 break;
@@ -3731,7 +3770,7 @@ function getDataFilter(colid) {
 
     values = sortAsc(values);
 
-    for (var i = 0; i < values.length; i++) {
+    for (let i = 0; i < values.length; i++) {
         tr = document.createElement("tr");
         if (i % 2 > 0) {
             tr.className = "alt-line";
@@ -3746,8 +3785,8 @@ function getDataFilter(colid) {
                 this.getElementsByClassName("data-filter-check")[0].setAttribute("checked", "checked");
         };
 
-        var td = document.createElement("td");
-        var check = document.createElement("input");
+        let td = document.createElement("td");
+        let check = document.createElement("input");
         check.type = "checkbox";
         check.className = "data-filter-check";
         check.style.width = "18px";
@@ -3767,28 +3806,28 @@ function getDataFilter(colid) {
     br.className = "br";
     container.appendChild(br);
 
-    var tool = document.createElement("div");
+    let tool = document.createElement("div");
     tool.className = "groupbar";
     container.appendChild(tool);
 
-    var checkall = document.createElement("div");
+    let checkall = document.createElement("div");
     checkall.className = "button";
     checkall.innerText = "全选";
     checkall.onclick = function(){
         let filters = $("data-filter-table").getElementsByClassName("data-filter-check");
-        for (var i=0;i<filters.length;i++){
+        for (let i=0;i<filters.length;i++){
             filters[i].checked = true;
             filters[i].setAttribute("checked","checked");
         }
     };
     tool.appendChild(checkall);
 
-    var checknone = document.createElement("div");
+    let checknone = document.createElement("div");
     checknone.className = "button";
     checknone.innerText = "反选";
     checknone.onclick = function(){
         let filters = $("data-filter-table").getElementsByClassName("data-filter-check");
-        for (var i=0;i<filters.length;i++){
+        for (let i=0;i<filters.length;i++){
             if (filters[i].checked) {
                 filters[i].checked = false;
                 filters[i].removeAttribute("checked");
@@ -3800,13 +3839,13 @@ function getDataFilter(colid) {
     };
     tool.appendChild(checknone);
 
-    var confirm = document.createElement("div");
+    let confirm = document.createElement("div");
     confirm.className = "button";
     confirm.innerText = "确定";
     confirm.onclick = function() {
         let values = [];
         let filters = $("data-filter-table").getElementsByClassName("data-filter-check");
-        for (var i=0;i<filters.length;i++){
+        for (let i=0;i<filters.length;i++){
             if (filters[i].checked == true)
                 values.push(filters[i].getAttribute("value"))
         }
@@ -3816,9 +3855,9 @@ function getDataFilter(colid) {
         let rowid = 0;
         let data = __DATASET__.result[__DATASET__.default.sheet].data;
         let column = columns[Number(colid)].name;
-        for (var i=0; i<data.length;i++) {
+        for (let i=0; i<data.length;i++) {
             let row = data[i];
-            for (var v=0;v<values.length;v++){
+            for (let v=0;v<values.length;v++){
                 if (row[column].value == values[v]){
                     let r ={};
                     for(col in row){
@@ -3847,7 +3886,7 @@ function getDataFilter(colid) {
     };
     tool.appendChild(confirm);
 
-    var cancel = document.createElement("div");
+    let cancel = document.createElement("div");
     cancel.className = "button";
     cancel.innerText = "退出";
     cancel.onclick = close.onclick = function () {
@@ -3859,31 +3898,31 @@ function getDataFilter(colid) {
 }
 
 function getColumnMenu(colid) {
-    var ul = document.createElement("ul");
+    let ul = document.createElement("ul");
     ul.id = "table-column-menu-" + colid;
     ul.className = "table-column-menu";
     ul.onmouseleave = function(){
         this.style.display = "none";
     };
 
-    var li = document.createElement("li");
+    let li = document.createElement("li");
     li.id = "table-column-menu-filter";
     li.innerHTML = "筛选";
     li.setAttribute("colid", colid);
     li.onclick = function () {
         if (__DATASET__.result.length > 0) {
-            var datafilter = getDataFilter(this.getAttribute("colid"));
+            let datafilter = getDataFilter(this.getAttribute("colid"));
             setCenterPosition($("page"),datafilter);
         }
     };
     ul.appendChild(li);
 
-    var li = document.createElement("li");
+    li = document.createElement("li");
     li.id = "table-column-menu-formater";
     li.innerHTML = "格式";
     li.setAttribute("colid", colid);
     li.onclick = function () {
-        var formater = getFormat(this.getAttribute("colid"));
+        let formater = getFormat(this.getAttribute("colid"));
         setCenterPosition($("page"),formater);
     };
     ul.appendChild(li);
@@ -3927,7 +3966,7 @@ function getFormat(colid) {
         {name: "居中", value: "center"},
         {name: "右对齐", value: "right"}
     ];
-    for (var c = 0; c < methods.length; c++) {
+    for (let c = 0; c < methods.length; c++) {
         param.options.add(new Option(methods[c].name, methods[c].value));
     }
     param.value = style[param.id];
@@ -3964,7 +4003,7 @@ function getFormat(colid) {
         {name: "140%", value: "140%"},
         {name: "150%", value: "150%"}
     ];
-    for (var c = 0; c < methods.length; c++) {
+    for (let c = 0; c < methods.length; c++) {
         param.options.add(new Option(methods[c].name, methods[c].value));
     }
     param.value = style[param.id];
@@ -3984,7 +4023,7 @@ function getFormat(colid) {
         {name: "正常", value: "normal"},
         {name: "斜体", value: "italic"}
     ];
-    for (var c = 0; c < methods.length; c++) {
+    for (let c = 0; c < methods.length; c++) {
         param.options.add(new Option(methods[c].name, methods[c].value));
     }
     param.value = style[param.id];
@@ -4006,7 +4045,7 @@ function getFormat(colid) {
         {name: "bold", value: "bold"},
         {name: "bolder", value: "bolder"}
     ];
-    for (var c = 0; c < methods.length; c++) {
+    for (let c = 0; c < methods.length; c++) {
         param.options.add(new Option(methods[c].name, methods[c].value));
     }
     param.value = style[param.id];
@@ -4017,21 +4056,21 @@ function getFormat(colid) {
     br.className = "br";
     container.appendChild(br);
 
-    var tool = document.createElement("div");
+    let tool = document.createElement("div");
     tool.className = "groupbar";
     container.appendChild(tool);
 
-    var confirm = document.createElement("div");
+    let confirm = document.createElement("div");
     confirm.className = "button";
     confirm.innerText = "确定";
     confirm.onclick = function() {
         let param = $("table-data-format").getElementsByClassName("format-set");
         let format = {};
-        for(var i=0;i<param.length;i++){
+        for(let i=0;i<param.length;i++){
             format[param[i].id] = param[i].value;
         }
         let data = __DATASET__.result[__DATASET__.default.sheet].data;
-        for(var i =0;i<data.length;i++){
+        for(let i =0;i<data.length;i++){
             let row = data[i]
             for (col in row){
                 if (row[col].colid == Number(colid))
@@ -4043,7 +4082,7 @@ function getFormat(colid) {
     };
     tool.appendChild(confirm);
 
-    var cancel = document.createElement("div");
+    let cancel = document.createElement("div");
     cancel.className = "button";
     cancel.innerText = "退出";
     cancel.onclick = close.onclick = function () {
@@ -4056,7 +4095,7 @@ function getFormat(colid) {
 
 function setTooltip(parent, text) {
     parent.onmouseenter = function () {
-        var tip = document.createElement("span");
+        let tip = document.createElement("span");
         tip.className = "tooltip";
         tip.id = "tooltip-" + parent.id;
         tip.innerHTML = text;
@@ -4125,8 +4164,8 @@ function isArray(object) {
 }
 
 function getLength(object) {
-    var count = 0;
-    for (var i in object) count++;
+    let count = 0;
+    for (let i in object) count++;
     return count;
 }
 
@@ -4141,7 +4180,7 @@ function CompareObj(objA, objB, flag) {
         flag = objA==objB;
     }
     else {
-        for (var key in objA) {
+        for (let key in objA) {
             if (!flag) //跳出整个循环
                 break;
             if (!objB.hasOwnProperty(key)) {
@@ -4158,12 +4197,12 @@ function CompareObj(objA, objB, flag) {
                     flag = false;
                     break;
                 }
-                var oA = objA[key], oB = objB[key];
+                let oA = objA[key], oB = objB[key];
                 if (oA.length != oB.length) {
                     flag = false;
                     break;
                 }
-                for (var k in oA) {
+                for (let k in oA) {
                     if (!flag) //这里跳出循环是为了不让递归继续
                         break;
                     flag = CompareObj(oA[k], oB[k], flag);
@@ -4451,7 +4490,7 @@ function getMultiEcharts() {
 
         window.addEventListener("keydown", function (e) {
             //keypress无法获取Esc键值,keydown和keyup可以.
-            var keycode = e.which || e.keyCode;
+            let keycode = e.which || e.keyCode;
             if (keycode == 27) {
                 if ($("multi-echarts") != null) {
                     let mul = $("multi-echarts").getElementsByClassName("multi-echarts-view-contain");
