@@ -40,7 +40,7 @@ var __CONFIGS__ = {
      },
      length: {value: 0, name: "长度", type: "input", width: "25px"},
      scale: {value: 0, name: "小数位数", type: "input", width: "50px"},
-     allowNull: {value: true, name: "允许空值", type: "select", options: ["Y", "N"], width: "50px"},
+     allowNull: {value: "Y", name: "允许空值", type: "select", options: ["Y", "N"], width: "50px"},
      index: {value: false, name: "索引", type: "checkbox", width: "50px"},
      auto_increment: {value: false, name: "自增", type: "checkbox", width: "50px"},
      column_default: {value: null, name: "默认值", type: "input", width: "50px"},
@@ -60,12 +60,12 @@ var __CONFIGS__ = {
              let table = this;
 
              function setEvent(ob) {
-                 for (var i = 0; i < ob.length; i++) {
+                 for (let i = 0; i < ob.length; i++) {
                      if (ob[i].type == "td") {
                          ob[i].ondblclick = function () {
-                             var msg = "";
-                             var value = JSON.parse(this.getAttribute("value"));
-                             for (var key in value) {
+                             let msg = "";
+                             let value = JSON.parse(this.getAttribute("value"));
+                             for (let key in value) {
                                  msg += key + ": " + JSON.stringify(value[key]) + ";\n";
                              }
                              viewMessage(msg);
@@ -108,7 +108,7 @@ var __CONFIGS__ = {
                                  table.tomove.width = table.tomove.oldWidth + (event.x - table.tomove.oldX);
                                  table.tomove.style.width = table.tomove.width;
                                  table.tomove.style.cursor = 'col-resize';
-                                 for (var j = 0; j < table.entity.rows.length; j++) {
+                                 for (let j = 0; j < table.entity.rows.length; j++) {
                                      table.entity.rows[j].cells[table.tomove.cellIndex].width = table.tomove.width;
                                  }
                                  table.entity.offsetWidth += (event.x - table.tomove.oldX);
@@ -118,7 +118,7 @@ var __CONFIGS__ = {
                                  table.tomove.style.height = table.tomove.height;
                                  table.tomove.style.cursor = 'row-resize';
                                  let cell = table.tomove.parentNode.getElementsByTagName("td");
-                                 for (var r = 0; r < cell.length; r++) {
+                                 for (let r = 0; r < cell.length; r++) {
                                      cell[r].height = table.tomove.height;
                                  }
                                  table.entity.offsetHeight += (event.y - table.tomove.oldY);
@@ -129,7 +129,7 @@ var __CONFIGS__ = {
              }
 
              let tr = table.entity.getElementsByTagName("tr");
-             for (var i = 0; i < tr.length; i++) {
+             for (let i = 0; i < tr.length; i++) {
                  tr[i].onmouseleave = function () {
                      if (table.tomove != null) {
                          table.tomove.mouseDown = false;
@@ -211,20 +211,20 @@ var __CONFIGS__ = {
              "Shift-Ctrl-F 查找替换\n" +
              "Shift-Ctrl-R 查找全部并替换\n";
          this.codeMirror = CodeMirror.fromTextArea(textarea, this.options);
-         var colors = ["#fcc", "#ccf", "#fcf", "#aff", "#cfc", "#f5f577"];
-         var rulers = [];
-         for (var i = 1; i <= 6; i++) {
+         let colors = ["#fcc", "#ccf", "#fcf", "#aff", "#cfc", "#f5f577"];
+         let rulers = [];
+         for (let i = 1; i <= 6; i++) {
              rulers.push({color: colors[i], column: i * 40, lineStyle: "dotted"});
              //solid//dashed//dash-dot//dotted
          }
          this.codeMirror.setOption("rulers", rulers);
          this.codeMirror.on("gutterClick", function (cm, n) {
-             var info = cm.lineInfo(n);
+             let info = cm.lineInfo(n);
              cm.setGutterMarker(n, "breakpoints", info.gutterMarkers ? null : marker());
          });
 
          function marker() {
-             var marker = document.createElement("div");
+             let marker = document.createElement("div");
              marker.style.color = "#822";
              marker.innerHTML = "●";
              return marker;
@@ -241,11 +241,11 @@ var __CONFIGS__ = {
  }
 
  function messageEncode(str){
-    var encodedStr = "" ;
+    let encodedStr = "" ;
     if (str=="")
         return encodedStr ;
     else {
-        for (var i = 0 ; i < str.length ; i ++){
+        for (let i = 0 ; i < str.length ; i ++){
             encodedStr += "&#" + str.substring(i, i + 1).charCodeAt().toString(10) + ";" ;
         }
     }
@@ -253,12 +253,12 @@ var __CONFIGS__ = {
 }
 
 function messageDecode(str){
-    var decodeStr = "";
+    let decodeStr = "";
     if (str == "")
         return decodeStr ;
-　　var toParse = str.split(";");
-　　for (var i=0;i<toParse.length;i++) {
-　　　　var s = toParse[i];
+　　let toParse = str.split(";");
+　　for (let i=0;i<toParse.length;i++) {
+　　　　let s = toParse[i];
 　　　　decodeStr += String.fromCharCode(parseInt(s.substring(2)))
 　　}
 　　return decodeStr;
@@ -274,7 +274,7 @@ Date.prototype.Format = function(fmt) {
     // (new Date()).Format("yyyy-MM-dd hh:mm:ss.S") ==> 2006-07-02 08:09:04.423
     // (new Date()).Format("yyyy-M-d h:m:s.S")      ==> 2006-7-2 8:9:4.18
     //#######################################################################
-    var o = {
+    let o = {
         "M+": this.getMonth() + 1,                 //月份
         "d+": this.getDate(),                     //日
         "h+": this.getHours(),                    //小时
@@ -285,7 +285,7 @@ Date.prototype.Format = function(fmt) {
     };
     if (/(y+)/.test(fmt))
         fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
-    for (var k in o)
+    for (let k in o)
         if (new RegExp("(" + k + ")").test(fmt))
             fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
     return fmt;
@@ -293,13 +293,13 @@ Date.prototype.Format = function(fmt) {
 
 String.prototype.isNumber = function(){
      //用于判断字符串是否是符合数字
-    var str = this.toString();
-    var reg = new RegExp(/^([-+])?\d+(\.[0-9]{1,19})?$/);
-    //var result = reg.exec(str);
-    var result = str.match(reg,"g");
-    var re = false;
+    let str = this.toString();
+    let reg = new RegExp(/^([-+])?\d+(\.[0-9]{1,19})?$/);
+    //let result = reg.exec(str);
+    let result = str.match(reg,"g");
+    let re = false;
     if (result != null) {
-        for (var i = 0; i < result.length; i++) {
+        for (let i = 0; i < result.length; i++) {
             if (result[i] == str) {
                 re = true;
                 break;
@@ -312,12 +312,12 @@ String.prototype.isNumber = function(){
 String.prototype.isIDnumber = function(){
     //用于简单判断18位身份证号码
     //校验年份范围1900-2099
-    var str = this.toString();
-    var reg = RegExp(/^\d{6}((19|20)\d{2}(01|02|03|04|05|06|07|08|09|10|11|12)(01|02|03|04|05|06|07|08|09|10|11|12|11|12|13|14|15|16|17|18|19|20|21|22|23|24|25|26|27|28|29|30|31)\d{3}[0-9xX])/,"g");
-    var result = str.match(reg,"g");
-    var re = false;
+    let str = this.toString();
+    let reg = RegExp(/^\d{6}((19|20)\d{2}(01|02|03|04|05|06|07|08|09|10|11|12)(01|02|03|04|05|06|07|08|09|10|11|12|11|12|13|14|15|16|17|18|19|20|21|22|23|24|25|26|27|28|29|30|31)\d{3}[0-9xX])/,"g");
+    let result = str.match(reg,"g");
+    let re = false;
     if (result != null) {
-        for (var i = 0; i < result.length; i++) {
+        for (let i = 0; i < result.length; i++) {
             if (result[i] == str) {
                 re = true;
                 break;
@@ -329,12 +329,12 @@ String.prototype.isIDnumber = function(){
 
 String.prototype.isPhoneNumber = function(){
     //用于简单判断是否是手机号码
-    var str = this.toString();
-    var reg = RegExp(/^1[3|4|5|7|8]\d{9}/,"g");
-    var result = str.match(reg,"g");
-    var re = false;
+    let str = this.toString();
+    let reg = RegExp(/^1[3|4|5|7|8]\d{9}/,"g");
+    let result = str.match(reg,"g");
+    let re = false;
     if (result != null) {
-        for (var i = 0; i < result.length; i++) {
+        for (let i = 0; i < result.length; i++) {
             if (result[i] == str) {
                 re = true;
                 break;
@@ -345,9 +345,9 @@ String.prototype.isPhoneNumber = function(){
 };
 
 String.prototype.isDatetime = function () {
-    var str = this.toString();
+    let str = this.toString();
     try {
-        var d = new Date(str);
+        let d = new Date(str);
         if (d.toString() == "Invalid Date")
             return false;
         else
@@ -360,7 +360,7 @@ String.prototype.isDatetime = function () {
 String.prototype.replaceAll = function(search, replacement) {
     // 没有解决search参数中存在正则表达式符号的问题,
     // 不能采用replace(new RegExp(search, 'g'), replacement)方法;
-    var target = this;
+    let target = this;
     try {
         while (target.includes(search)) {
             target = target.replace(search, replacement);
@@ -422,24 +422,24 @@ function importData(){
     //#######################################
     __CONFIGS__.CURRENT_DATABASE.connect.transaction(function (tx) {
         try {
-            var sep = __IMPORT__.Separator.value;
-            var lines = __IMPORT__.SourceFile.data[__IMPORT__.SelectedDataSet.value].split("\r\n");
+            let sep = __IMPORT__.Separator.value;
+            let lines = __IMPORT__.SourceFile.data[__IMPORT__.SelectedDataSet.value].split("\r\n");
             if (lines.length == 1)
                 lines = __IMPORT__.SourceFile.data[__IMPORT__.SelectedDataSet.value].split("\n");
-            var table = __CONFIGS__.CURRENT_TABLE.name;
+            let table = __CONFIGS__.CURRENT_TABLE.name;
             __IMPORT__.SourceFile.total = lines.length - 1;
             //不含表头
             __IMPORT__.SourceFile.count = 0;
             __IMPORT__.SourceFile.imported = 0;
             __IMPORT__.SourceFile.failed = 0;
-            var sql = "insert into " + table + " values ({VALUES})";
+            let sql = "insert into " + table + " values ({VALUES})";
             //不要加字段列表，否则仅能导入两列数据.
-            for (var i = 0; i < lines.length; i++) {
+            for (let i = 0; i < lines.length; i++) {
                 try {
                     let data = transferData(__CONFIGS__.CURRENT_TABLE.structure, lines[i].trim().split(sep));
                     if (i == 0) {
-                        var values = "?";
-                        for (var c = 1; c < data.length; c++) {
+                        let values = "?";
+                        for (let c = 1; c < data.length; c++) {
                             values += ",?"
                         }
                         sql = sql.replace("{VALUES}", values);
@@ -476,8 +476,8 @@ function importData(){
 function getAbsolutePosition(obj)
 //获取控件绝对位置
 {
-    var position = {"left":0,"top":0,"width":0,"height":0};
-    var w=0,h=0;
+    let position = {"left":0,"top":0,"width":0,"height":0};
+    let w=0,h=0;
     position.width = obj.offsetWidth;
     position.height = obj.offsetHeight;
     while(obj.offsetParent)
@@ -517,7 +517,7 @@ function getTypeOf(d) {
     //判断数据类型,可能是非字符类型
     //由于数据库在本地,数据没有经过通讯字符转换,数据全部为元类型.
     //通过元类型判断
-     var type = typeof(d);
+     let type = typeof(d);
      if (type == "string") {
          if (d.isDatetime()) {
              if (d.length == 10)
@@ -539,7 +539,7 @@ function structInspect(data,sep){
 
     function washData(d){
         let row = [];
-        for(var i=0;i<d.length;i++){
+        for(let i=0;i<d.length;i++){
             if (d[i].trim() != "" && d[i] != null)
                 row.push(d[i]);
         }
@@ -548,7 +548,7 @@ function structInspect(data,sep){
 
     function addUp(row, id){
         let index = null;
-        for (var i=0;i<addup.length;i++){
+        for (let i=0;i<addup.length;i++){
             if (addup[i].columns == row.length) {
                 index = i;
                 break;
@@ -557,15 +557,15 @@ function structInspect(data,sep){
         if (index == null)
             addup.push({columns:row.length,start:id,count:1,lines:[row]});
         else {
-            addup[i].count += 1;
-            addup[i].lines.push(row);
+            addup[index].count += 1;
+            addup[index].lines.push(row);
         }
     }
 
     function getStart(){
         let index = 0;
         let max = 0;
-        for(var i=0;i<addup.length;i++){
+        for(let i=0;i<addup.length;i++){
             if (addup[i].count > max){
                 index = i;
                 max = addup[i].count;
@@ -574,7 +574,7 @@ function structInspect(data,sep){
         return addup[index];
     }
 
-    for (var i =0;i<data.length;i++){
+    for (let i =0;i<data.length;i++){
         addUp(washData(data[i].trim().split(sep)),i);
     }
 
@@ -583,19 +583,19 @@ function structInspect(data,sep){
 
 function getStructFromData() {
     let sep = __IMPORT__.Separator.value;
-    var lines = __IMPORT__.SourceFile.data[__IMPORT__.SelectedDataSet.value].split("\r\n");
+    let lines = __IMPORT__.SourceFile.data[__IMPORT__.SelectedDataSet.value].split("\r\n");
     if (lines.length == 1)
         lines = __IMPORT__.SourceFile.data[__IMPORT__.SelectedDataSet.value].split("\n");
 
     let start = structInspect(lines.slice(0,lines.length>1000?1000:lines.length),sep);
     //检测样本为前1000条数据
-    var columns = start.lines[0];
-    var data = start.lines[1];
+    let columns = start.lines[0];
+    let data = start.lines[1];
 
-    var stru = [];
-    for (var i=0;i<columns.length;i++) {
-        var col = {};
-        for (var index in __COLUMN__) {
+    let stru = [];
+    for (let i=0;i<columns.length;i++) {
+        let col = {};
+        for (let index in __COLUMN__) {
             switch (index) {
                 case "check":
                     col[index] = true;
@@ -635,11 +635,17 @@ function getStructFromData() {
 
                     }
                     break;
-                case  "allowNull":
+                case "allowNull":
                     col[index] = "Y";
                     break;
                 case "index":
-                    col[index] = "N";
+                    col[index] = false;
+                    break;
+                case "auto_increment":
+                    col[index] = false;
+                    break;
+                case "column_default":
+                    col[index] = null;
                     break;
             }
         }
@@ -649,7 +655,7 @@ function getStructFromData() {
 }
 
 function createTable(structure) {
-    var container = document.createElement("div");
+    let container = document.createElement("div");
     container.type = "div";
     container.className = "create-table-Content";
     container.id = "create-table-Content";
@@ -665,7 +671,7 @@ function createTable(structure) {
     let hr = document.createElement("hr");
     container.appendChild(hr);
 
-    var title = document.createElement("input");
+    let title = document.createElement("input");
     title.id = "table-Title";
     title.placeholder = "请输入数据表名称.";
     if (structure != null)
@@ -673,46 +679,46 @@ function createTable(structure) {
     title.style.width = "99.2%";
     container.appendChild(title);
 
-    var tablecontainer = document.createElement("div");
+    let tablecontainer = document.createElement("div");
     tablecontainer.className = "table-container";
     container.appendChild(tablecontainer);
 
-    var tb = document.createElement("table");
+    let tb = document.createElement("table");
     tablecontainer.appendChild(tb);
     tb.className = "table";
     tb.style.width = "100%";
     tb.id = "table-Content";
-    var tr = document.createElement("tr");
+    let tr = document.createElement("tr");
     tb.appendChild(tr);
-    for (var index in __COLUMN__) {
-        var th = document.createElement("th");
+    for (let index in __COLUMN__) {
+        let th = document.createElement("th");
         tr.appendChild(th);
         th.innerText = __COLUMN__[index].name;
     }
-    var cols = 3;
+    let cols = 3;
     if (structure != null)
         cols = structure["stru"].length;
 
-    for (var rows = 0; rows < cols; rows++) {
+    for (let rows = 0; rows < cols; rows++) {
         tr = document.createElement("tr");
         if (rows % 2 > 0) {
             tr.className = "alt-line";
             //单数行
         }
         tb.appendChild(tr);
-        for (var index in __COLUMN__) {
-            var td = document.createElement("td");
+        for (let index in __COLUMN__) {
+            let td = document.createElement("td");
             tr.appendChild(td);
-            var attri;
+            let attri;
             if (__COLUMN__[index].type == "select") {
                 attri = document.createElement("select");
                 attri.className = index;
                 attri.type = __COLUMN__[index].type;
-                for (var i = 0; i < __COLUMN__[index].options.length; i++) {
+                for (let i = 0; i < __COLUMN__[index].options.length; i++) {
                     attri.options.add(new Option(__COLUMN__[index].options[i], __COLUMN__[index].options[i]));
                 }
                 if (structure != null)
-                    for (var s = 0; s < attri.options.length; s++) {
+                    for (let s = 0; s < attri.options.length; s++) {
                         if (attri.options[s].value == structure["stru"][rows][index]) {
                             attri.selectedIndex = s;
                             break;
@@ -728,8 +734,9 @@ function createTable(structure) {
                         if (__COLUMN__[index].value == true) {
                             attri.setAttribute("checked", "checked");
                         }
-                    } else if (structure["stru"][rows][index] == true)
+                    } else if (structure["stru"][rows][index] == true) {
                         attri.setAttribute("checked", "checked");
+                    }
                     attri.onclick = function () {
                         if (this.checked == false) {
                             this.removeAttribute("checked");
@@ -753,12 +760,12 @@ function createTable(structure) {
     br.className = "br";
     container.appendChild(br);
 
-    var tool = document.createElement("div");
+    let tool = document.createElement("div");
     tool.className = "groupbar";
     tool.style.cssFloat = "left";
     container.appendChild(tool);
 
-    var add = document.createElement("a");
+    let add = document.createElement("a");
     add.className = "button";
     add.innerHTML = "增加";
     add.setAttribute("tb", tb.id);
@@ -770,15 +777,15 @@ function createTable(structure) {
             //单数行
         }
         table.appendChild(tr);
-        for (var index in __COLUMN__) {
-            var td = document.createElement("td");
+        for (let index in __COLUMN__) {
+            let td = document.createElement("td");
             tr.appendChild(td);
-            var attri;
+            let attri;
             if (__COLUMN__[index].type == "select") {
                 attri = document.createElement("select");
                 attri.className = index;
                 attri.type = __COLUMN__[index].type;
-                for (var i = 0; i < __COLUMN__[index].options.length; i++) {
+                for (let i = 0; i < __COLUMN__[index].options.length; i++) {
                     attri.options.add(new Option(__COLUMN__[index].options[i], __COLUMN__[index].options[i]));
                 }
             } else {
@@ -807,15 +814,15 @@ function createTable(structure) {
     };
     tool.appendChild(add);
 
-    var del = document.createElement("a");
+    let del = document.createElement("a");
     del.className = "button";
     del.innerHTML = "删除";
     del.onclick = function () {
         let table = $("table-Content");
         let columns = table.getElementsByTagName("tr");
         if (columns.length > 2) {
-            for (var i = columns.length - 1; i > 1; i--) {
-                var checks = columns[i].getElementsByClassName("check");
+            for (let i = columns.length - 1; i > 1; i--) {
+                let checks = columns[i].getElementsByClassName("check");
                 if (checks[0].checked == true) {
                     table.removeChild(columns[i]);
                 }
@@ -826,7 +833,7 @@ function createTable(structure) {
     };
     tool.appendChild(del);
 
-    var b = document.createElement("a");
+    let b = document.createElement("a");
     b.className = "button";
     b.innerHTML = "创建";
     b.onclick = function () {
@@ -839,10 +846,10 @@ function createTable(structure) {
                 let table = $("table-Content");
                 let rows = table.getElementsByTagName("tr");
                 let stru = [];
-                for (var i = 1; i < rows.length; i++) {
-                    var col = {};
-                    for (var index in __COLUMN__) {
-                        var column = rows[i].getElementsByClassName(index)[0];
+                for (let i = 1; i < rows.length; i++) {
+                    let col = {};
+                    for (let index in __COLUMN__) {
+                        let column = rows[i].getElementsByClassName(index)[0];
                         if (column.type == "checkbox") {
                             col[index] = column.checked;
                         } else {
@@ -851,14 +858,14 @@ function createTable(structure) {
                     }
                     stru.push(col);
                 }
-                var title = $("table-Title");
+                let title = $("table-Title");
                 if (title.value != "") {
-                    var sql = getCreateTableSql(title.value, stru);
+                    let sql = getCreateTableSql(title.value, stru);
                     viewMessage(sql);
                     tx.executeSql(sql, [],
                         function (tx, results) {
-                            var aff = results.rowsAffected;
-                            var len = results.rows.length;
+                            let aff = results.rowsAffected;
+                            let len = results.rows.length;
                             if (aff > 0) {
                                 viewMessage(aff + " 条记录被修改.")
                             }
@@ -882,7 +889,7 @@ function createTable(structure) {
     b.className = "button";
     b.innerHTML = "退出";
     b.onclick = close.onclick = function () {
-        var container = $("create-table-Content");
+        let container = $("create-table-Content");
         container.parentNode.removeChild(container);
     };
     tool.appendChild(b);
@@ -895,16 +902,16 @@ function  getCreateTableSql(title, stru) {
     let key = "";
     let key_count = 0;
     let auto_increment = null;
-    for (var i=0;i<stru.length;i++) {
-        if (stru[i].index == true && stru[i].type == "integer") {
+    for (let i=0;i<stru.length;i++) {
+        if (stru[i].index == true) {
             key += stru[i].name + ",";
             key_count += 1;
-            if (auto_increment == null)
+            if (auto_increment == null && stru[i].auto_increment  && stru[i].type == "integer")
                 auto_increment = stru[i].name;
         }
     }
 
-    for (var i=0;i<stru.length;i++) {
+    for (let i=0;i<stru.length;i++) {
         if (stru[i].check == true && stru[i].name != "") {
             cols += stru[i].name + " " + stru[i].type;
             if (stru[i].type =="decimal" || stru[i].type == "float"){
@@ -932,7 +939,7 @@ function  getCreateTableSql(title, stru) {
             }
         }
     }
-    var sql = "CREATE TABLE " + title + cols.substring(0,cols.length-1);
+    let sql = "CREATE TABLE " + title + cols.substring(0,cols.length-1);
     if (key_count > 1){
         sql += ",PRIMARY KEY (" + key.substring(0, key.lastIndexOf(",")) + "))"
     } else{
@@ -942,7 +949,7 @@ function  getCreateTableSql(title, stru) {
 }
 
 function createDatabase(){
-    var container = document.createElement("div");
+    let container = document.createElement("div");
     container.type = "div";
     container.className = "create-database-Content";
     container.id = "create-database-Content";
@@ -958,14 +965,14 @@ function createDatabase(){
     let hr = document.createElement("hr");
     container.appendChild(hr);
 
-    for (var name in __DATABASE__) {
+    for (let name in __DATABASE__) {
         d = document.createElement("div");
         container.appendChild(d);
-        var s = document.createElement("span");
+        let s = document.createElement("span");
         s.innerHTML = __DATABASE__[name].name + ":";
         d.appendChild(s);
         if (__DATABASE__[name].type == "text"){
-            var input = document.createElement("input");
+            let input = document.createElement("input");
             input.id = name;
             input.type = "text";
             input.value = __DATABASE__[name].value;
@@ -980,22 +987,22 @@ function createDatabase(){
     br.className = "br";
     container.appendChild(br);
 
-    var tool = document.createElement("div");
+    let tool = document.createElement("div");
     tool.className = "groupbar";
     tool.style.cssFloat= "left";
     container.appendChild(tool);
 
-    var b = document.createElement("a");
+    let b = document.createElement("a");
     b.className = "button";
     b.innerHTML = "创建";
     b.onclick = function(){
         if (checkStorage()) {
             if (__DATABASE__.Name.value.trim() != "") {
-                var db = {"name": __DATABASE__.Name.value,"version" : __DATABASE__.Version.value, "description": __DATABASE__.Description.value, "size": __DATABASE__.Size.value};
-                var storage = window.localStorage;
-                var dbs = JSON.parse(storage.getItem(__CONFIGS__.STORAGE.DATABASES));
-                var index = -1;
-                for (var i=0;i<dbs.length;i++){
+                let db = {"name": __DATABASE__.Name.value,"version" : __DATABASE__.Version.value, "description": __DATABASE__.Description.value, "size": __DATABASE__.Size.value};
+                let storage = window.localStorage;
+                let dbs = JSON.parse(storage.getItem(__CONFIGS__.STORAGE.DATABASES));
+                let index = -1;
+                for (let i=0;i<dbs.length;i++){
                     if (dbs[i].name == __DATABASE__.Name.value) {
                         index = i;
                         break;
@@ -1004,13 +1011,13 @@ function createDatabase(){
                 if (index == -1)
                     dbs.push(db);
                 else {
-                    var isOver = confirm("数据库 " + __DATABASE__.Name.value + " 已经存在,是否修改相关信息?");
+                    let isOver = confirm("数据库 " + __DATABASE__.Name.value + " 已经存在,是否修改相关信息?");
                     if (isOver)
                         dbs[index] = db;
                 }
                 storage.setItem(__CONFIGS__.STORAGE.DATABASES, JSON.stringify(dbs));
                 viewDatabases();
-                var container =$("create-database-Content");
+                let container =$("create-database-Content");
                 container.parentNode.removeChild(container);
             } else
                 alert("请输入数据库名称.");
@@ -1021,7 +1028,7 @@ function createDatabase(){
     b.className = "button";
     b.innerHTML = "退出";
     b.onclick = close.onclick = function(){
-        var container=$("create-database-Content");
+        let container=$("create-database-Content");
         container.parentNode.removeChild(container);
     };
     tool.appendChild(b);
@@ -1029,7 +1036,7 @@ function createDatabase(){
 }
 
 function getImportContent() {
-    var container = document.createElement("div");
+    let container = document.createElement("div");
     container.type = "div";
     container.className = "import-Content";
     container.id = "import-Content";
@@ -1045,21 +1052,21 @@ function getImportContent() {
     let hr = document.createElement("hr");
     container.appendChild(hr);
 
-    for (var name in __IMPORT__) {
+    for (let name in __IMPORT__) {
         d = document.createElement("div");
         container.appendChild(d);
-        var s = document.createElement("span");
+        let s = document.createElement("span");
         s.innerHTML = __IMPORT__[name].name + " :";
         d.appendChild(s);
         if (__IMPORT__[name].type == "view") {
-            var v = document.createElement("span");
+            let v = document.createElement("span");
             v.id = "table-title";
             v.innerHTML = "[ " + __CONFIGS__.CURRENT_TABLE.name + " ]";
             d.appendChild(v);
         } else if (__IMPORT__[name].type == "select") {
-            var input = document.createElement("select");
+            let input = document.createElement("select");
             input.id = name;
-            for (var i = 0; i < __IMPORT__[name].options.length; i++) {
+            for (let i = 0; i < __IMPORT__[name].options.length; i++) {
                 if (isArray(__IMPORT__[name].options[i]))
                     input.options.add(new Option(__IMPORT__[name].options[i][0], __IMPORT__[name].options[i][1]));
                 else
@@ -1071,7 +1078,7 @@ function getImportContent() {
             };
             d.appendChild(input);
         } else {
-            var input = document.createElement("input");
+            let input = document.createElement("input");
             input.id = name;
             try {
                 input.type = __IMPORT__[name].type;
@@ -1080,16 +1087,16 @@ function getImportContent() {
                     input.onchange = function () {
                         if (window.FileReader) {
                             try {
-                                var file = this.files[0];
-                                var filetype = file.name.split(".")[1];
+                                let file = this.files[0];
+                                let filetype = file.name.split(".")[1];
                                 __IMPORT__.SourceFile.value = file.name;
                                 __IMPORT__.SourceFile.data = [];
                                 let selectDataSet = $("SelectedDataSet");
-                                for (var i = selectDataSet.length - 1; i >= 0; i--) {
+                                for (let i = selectDataSet.length - 1; i >= 0; i--) {
                                     selectDataSet.remove(i);
                                 }
                                 if (filetype.toUpperCase() == "TXT" || filetype.toUpperCase() == "CSV") {
-                                    var reader = new FileReader();
+                                    let reader = new FileReader();
                                     reader.onload = function () {
                                         __IMPORT__.SourceFile.data.push(this.result);
                                         selectDataSet.options.add(new Option("默认", 0));
@@ -1126,22 +1133,22 @@ function getImportContent() {
     br.className = "br";
     container.appendChild(br);
 
-    var tool = document.createElement("div");
+    let tool = document.createElement("div");
     tool.className = "groupbar";
     tool.style.cssFloat= "left";
     tool.style.width = "100%";
     container.appendChild(tool);
 
-    var b = document.createElement("a");
+    let b = document.createElement("a");
     b.className = "button";
     b.id = "import-button";
     b.innerHTML = "导入";
     b.onclick = function(){
         if (__CONFIGS__.CURRENT_TABLE.name == "" || __CONFIGS__.CURRENT_TABLE.type == "view"){
-            var conf = confirm("您没有选择数据表，是否要根据数据结构创建一个名称为 " + __IMPORT__.SourceFile.value.split(".")[0] + " 的新表?");
+            let conf = confirm("您没有选择数据表，是否要根据数据结构创建一个名称为 " + __IMPORT__.SourceFile.value.split(".")[0] + " 的新表?");
             if (conf) {
-                var title = __IMPORT__.SourceFile.value.split(".")[0];
-                var tb = createTable({"title": title, "stru": getStructFromData()});
+                let title = __IMPORT__.SourceFile.value.split(".")[0];
+                let tb = createTable({"title": title, "stru": getStructFromData()});
                 setCenterPosition($("page"),tb);
                 $("import-Content").parentNode.removeChild($("import-Content"));
             }
@@ -1153,7 +1160,7 @@ function getImportContent() {
                 importData();
             else
                 alert("请选择需要导入的文件及数据集合.");
-            //var container =$("import-Content");
+            //let container =$("import-Content");
             //container.parentNode.removeChild(m);
         }
     };
@@ -1170,16 +1177,16 @@ function getImportContent() {
 }
 
 function getImportProgress(){
-    var container = document.createElement("div");
+    let container = document.createElement("div");
     container.id = "progress";
-    var v = document.createElement("div");
+    let v = document.createElement("div");
     container.appendChild(v);
     v.id = "progress-value";
-    var progress = setInterval(function(){Timer()},50);
+    let progress = setInterval(function(){Timer()},50);
     function Timer(){
         try {
-            var value = __IMPORT__.SourceFile.count / __IMPORT__.SourceFile.total;
-            var v = $("progress-value");
+            let value = __IMPORT__.SourceFile.count / __IMPORT__.SourceFile.total;
+            let v = $("progress-value");
             v.style.width = (value * 100) + "%";
             v.innerText = __IMPORT__.SourceFile.count + " / " + __IMPORT__.SourceFile.total;
             if (value == 1)
@@ -1234,29 +1241,29 @@ function viewDatabases(){
     //#######################################
     //初始化localStorage
     //#######################################
-    var storage = window.localStorage;
+    let storage = window.localStorage;
     if (storage.getItem(__CONFIGS__.STORAGE.DATABASES) == null){
         storage.setItem(__CONFIGS__.STORAGE.DATABASES,"[]")
     }
-    var dbslist = $("sidebar-dbs");
+    let dbslist = $("sidebar-dbs");
     dbslist.innerText = "";
-    var ul = document.createElement("ul");
+    let ul = document.createElement("ul");
     ul.style.width = "80%";
     ul.style.position = "relative";
     dbslist.appendChild(ul);
     __CONFIGS__.DATABASES = JSON.parse(storage.getItem(__CONFIGS__.STORAGE.DATABASES));
-    for (var i = 0; i < __CONFIGS__.DATABASES.length; i++){
+    for (let i = 0; i < __CONFIGS__.DATABASES.length; i++){
         if (__CONFIGS__.DATABASES[i].name != null) {
-            var li = document.createElement("li");
-            var a = document.createElement("a");
+            let li = document.createElement("li");
+            let a = document.createElement("a");
             a.className = "list";
             a.innerText = __CONFIGS__.DATABASES[i].name;
             a.setAttribute("index", i);
             a.id = __CONFIGS__.DATABASES[i].name;
             a.onclick = function () {
-                var dbs = $("sidebar-dbs");
-                var l = dbs.getElementsByClassName("list");
-                for (var i=0; i<l.length; i++ ){
+                let dbs = $("sidebar-dbs");
+                let l = dbs.getElementsByClassName("list");
+                for (let i=0; i<l.length; i++ ){
                     l[i].style.fontWeight = "normal";
                 }
                 this.style.fontWeight = "bold";
@@ -1268,10 +1275,10 @@ function viewDatabases(){
                 //显示库信息
                 $("ul-db-" + this.id).innerText = "";
                 if ($("ul-db-" + this.id).getAttribute("isOpen") == "false") {
-                    for(var key in __CONFIGS__.CURRENT_DATABASE.value) {
-                        var l = document.createElement("li");
+                    for(let key in __CONFIGS__.CURRENT_DATABASE.value) {
+                        let l = document.createElement("li");
                         $("ul-db-" + this.id).appendChild(l);
-                        var inf = document.createElement("a");
+                        let inf = document.createElement("a");
                         inf.className = "list";
                         inf.innerText = key + ": " + __CONFIGS__.CURRENT_DATABASE.value[key];
                         l.appendChild(inf);
@@ -1282,7 +1289,7 @@ function viewDatabases(){
                 }
             };
             li.appendChild(a);
-            var dul = document.createElement("ul");
+            let dul = document.createElement("ul");
             dul.id = "ul-db-" + __CONFIGS__.DATABASES[i].name;
             dul.setAttribute("isOpen","false");
             li.appendChild(dul);
@@ -1297,15 +1304,15 @@ function getNow() {
 }
 
 function viewMessage(msg){
-    var msgbox = $("messageBox");
-    var dt = document.createElement("dt");
+    let msgbox = $("messageBox");
+    let dt = document.createElement("dt");
     dt.type = "dt";
     dt.className = "dt";
     dt.innerText = getNow();
-    var first = msgbox.firstChild;
+    let first = msgbox.firstChild;
     msgbox.insertBefore(dt, first);
 
-    var message = document.createElement("dd");
+    let message = document.createElement("dd");
     message.type = "dd";
     message.className= "message";
     message.innerText = msg;
@@ -1313,7 +1320,7 @@ function viewMessage(msg){
 
     //保留日志设置
     if (__CONFIGS__.MAXLOGS > 0) {
-        var dts = msgbox.getElementsByClassName("dt");
+        let dts = msgbox.getElementsByClassName("dt");
         if (dts.length > __CONFIGS__.MAXLOGS) {
             msgbox.removeChild(dts[dts.length - 1]);
         }
@@ -1341,7 +1348,7 @@ function viewTables(index) {
                 let len = results.rows.length;
                 let tables = [];
                 let hintOptions = __SQLEDITOR__.codeMirror.getOption("hintOptions");
-                for (var i = 0; i < len; i++) {
+                for (let i = 0; i < len; i++) {
                     if (results.rows.item(i).tablename != "__WebKitDatabaseInfoTable__" && results.rows.item(i).tablename != "") {
                         let li = document.createElement("li");
                         let a = document.createElement("a");
@@ -1368,7 +1375,7 @@ function viewTables(index) {
                             __CONFIGS__.CURRENT_TABLE.name = this.id;
                             __CONFIGS__.CURRENT_TABLE.type = this.getAttribute("type");
                             __CONFIGS__.CURRENT_DATABASE.connect.transaction(function (tx) {
-                                var sql = "select sql from sqlite_master where type in ('table','view') and name='" + __CONFIGS__.CURRENT_TABLE.name + "'";
+                                let sql = "select sql from sqlite_master where type in ('table','view') and name='" + __CONFIGS__.CURRENT_TABLE.name + "'";
                                 //仅获取表结构，忽略视图.
                                 viewMessage(sql);
                                 tx.executeSql(sql, [],
@@ -1460,9 +1467,9 @@ function orderDataset(colid){
     __DATASET__["result"][index].columns = columns;
 
     let tmp = [];
-    for (var i=0; i<data.length; i++) {
+    for (let i=0; i<data.length; i++) {
         let row = data[i];
-        for (var x = 0; x < tmp.length; x++) {
+        for (let x = 0; x < tmp.length; x++) {
             switch (columns[colid].order) {
                 case "asc":
                     if (row[columns[colid].name].type == "number") {
@@ -1499,7 +1506,7 @@ function orderDataset(colid){
         tmp[tmp.length] = row;
     }
     //Reset rowid
-    for(var i=0;i<tmp.length;i++){
+    for(let i=0;i<tmp.length;i++){
         let row = tmp[i];
         for (column in row){
             row[column].rowid = i;
@@ -2876,7 +2883,7 @@ function init() {
 
     $("copyright").innerHTML = getUserConfig("CopyRight");
 
-    var toMultiEcharts = document.createElement("div");
+    let toMultiEcharts = document.createElement("div");
     datatools.appendChild(toMultiEcharts);
     toMultiEcharts.className = "button";
     toMultiEcharts.innerText = "☶";
@@ -2910,7 +2917,7 @@ function init() {
     };
     setTooltip(toMultiEcharts, "视图<br>组合");
 
-    var toecharts = document.createElement("div");
+    let toecharts = document.createElement("div");
     datatools.appendChild(toecharts);
     toecharts.className = "button";
     toecharts.innerText = "❏";
@@ -4425,10 +4432,10 @@ function getMultiEcharts() {
 
             let detail = document.createElement("div");
             let type = document.createElement("span");
-            type.innerText = history.configs.echartsType.value;
+            type.innerText = getOptionName(__ECHARTS__.configs.echartsType.options, history.configs.echartsType.value);
             detail.appendChild(type);
             let themes = document.createElement("span");
-            themes.innerText = history.configs.echartsTheme.value;
+            themes.innerText = getOptionName(__ECHARTS__.configs.echartsTheme.options, history.configs.echartsTheme.value);
             detail.appendChild(themes);
             row.appendChild(detail);
 
@@ -4609,6 +4616,7 @@ function setDragNook(parent, id) {
     parent.appendChild(nook);
     setDrag(nook);
 }
+
 
 
 

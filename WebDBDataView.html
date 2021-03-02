@@ -8,8 +8,15 @@
     <link rel="stylesheet" type="text/css" href="WebDBDataView.css">
     <link rel="stylesheet" type="text/css" href="StorageSQLDialog.css">
     <script type="text/javascript" src="sheetjs/xlsx.full.min.js"></script>
+
     <script type="text/javascript" src="echarts/v5.0/echarts.min.js"></script>
     <script type="text/javascript" src="echarts/v5.0/echarts-gl.min.js"></script>
+    <!--
+    echarts和echarts-gl中getRenderedCanvas方法冲突，
+    可将echarts-gl中的getRenderedCanvas方法名称修改
+    为getRenderedGLCanvas,可解决2D图形无法保存图像的
+    问题。但是无法解决3D图形保存图像。
+    -->
     <script type="text/javascript" src="echarts/v5.0/echarts-wordcloud.min.js"></script>
     <script type="text/javascript" src="echarts/v5.0/echarts-liquidfill.min.js"></script>
     <script type="text/javascript" src="echarts/v5.0/ecStat.js"></script>
