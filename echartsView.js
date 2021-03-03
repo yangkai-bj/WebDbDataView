@@ -8527,7 +8527,7 @@ function getScrollingScreen(container, width, height, dataset, configs) {
         grid: getGrid(configs),
         backgroundColor: configs.backgroundColor.value,
         title: getTitle(configs),
-        toolbox: getToolbox(configs, container, false),
+        //toolbox: getToolbox(configs, container, false),
         graphic: scrollingScreenGraphic
     };
 
@@ -8649,7 +8649,7 @@ function getWalkingLantern(container, width, height, dataset, configs) {
         grid: getGrid(configs),
         backgroundColor: configs.backgroundColor.value,
         title: getTitle(configs),
-        toolbox: getToolbox(configs, container, false),
+        //toolbox: getToolbox(configs, container, false),
     };
 
     let pool = [];
@@ -8825,7 +8825,7 @@ function getWindowShades(container, width, height, dataset, configs) {
         grid: getGrid(configs),
         backgroundColor: configs.backgroundColor.value,
         title: getTitle(configs),
-        toolbox: getToolbox(configs, container, false),
+        //toolbox: getToolbox(configs, container, false),
     };
 
     let pool = [];
@@ -9299,7 +9299,7 @@ function getClock(container, width, height, dataset, configs) {
         backgroundColor: configs.backgroundColor.value,
         grid: getGrid(configs),
         title: getTitle(configs),
-        toolbox: getToolbox(configs, container, false),
+        //toolbox: getToolbox(configs, container, false),
         graphic: getWaterGraphic(__SYS_LOGO_LINK__),
         series: [
             {
