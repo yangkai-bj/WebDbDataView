@@ -1,24 +1,4 @@
 
-String.prototype.toBoolean = function(){
-    let str = this.toString().toLowerCase().trim();
-    if (str == "true" || str == "false")
-        return eval(str);
-    else
-        return false
-};
-
-function stringToHex(str){
-    let val = "";
-    for (let i = 0; i < str.length; i++) {
-        if (val == "") {
-            val = str.charCodeAt(i).toString(16);
-        } else {
-            val += "," + str.charCodeAt(i).toString(16);
-        }
-    }
-    return val;
-}
-
 function getOptionName(options, value) {
     let name = "";
     try {
@@ -32,6 +12,95 @@ function getOptionName(options, value) {
     }
     return name;
 }
+
+function getLinearColor(x,y,x2,y2,colors) {
+    // 线性渐变，前四个参数分别是 x0, y0, x2, y2, 范围从 0 - 1，相当于在图形包围盒中的百分比，如果 globalCoord 为 `true`，则该四个值是绝对的像素位置
+    try {
+        colors = JSON.parse(colors);
+    } catch (e) {
+    }
+    let color = {
+        type: 'linear',
+        x: x,
+        y: y,
+        x2: x2,
+        y2: y2,
+        colorStops: [],
+        global: false // 缺省为 false
+    };
+
+    if (Array.isArray(colors)) {
+        if (colors.length > 1) {
+            for (let i = 0; i < colors.length; i++) {
+                color.colorStops.push({
+                    offset: i / (colors.length - 1),
+                    color: colors[i]
+                })
+            }
+            return color;
+        } else {
+            return colors[0]
+        }
+    } else
+        return colors;
+}
+
+function getRadialColor(x,y,r,colors) {
+    try {
+        colors = JSON.parse(colors);
+    } catch (e) {
+    }
+    let color = {
+        type: 'radial',
+        x: x,
+        y: y,
+        r: r,
+        colorStops: [],
+        global: false // 缺省为 false
+    };
+    if (Array.isArray(colors)) {
+        if (colors.length > 1) {
+            for (let i = 0; i < colors.length; i++) {
+                color.colorStops.push({
+                    offset: i / (colors.length - 1),
+                    color: colors[i]
+                })
+            }
+            return color;
+        } else {
+            return colors[0]
+        }
+    } else
+        return colors;
+}
+
+function getBackgroundColor(configs) {
+    switch (configs.gradientType.value) {
+        case "line":
+            if (configs.gradientReverse.value.toBoolean())
+                return getLinearColor(0, 0, 0, 1, configs.backgroundColor.value.toArray(["transparent"], ",").reverse());
+            else
+                return getLinearColor(0, 0, 0, 1, configs.backgroundColor.value.toArray(["transparent"], ","));
+            break;
+        case "radial":
+            if (configs.gradientReverse.value.toBoolean())
+                return getRadialColor(0.5, 0.75, 1.25, configs.backgroundColor.value.toArray(["transparent"], ",").reverse());
+            else
+                return getRadialColor(0.5, 0.75, 1.25, configs.backgroundColor.value.toArray(["transparent"], ","));
+            break;
+        case "single":
+            if (configs.gradientReverse.value.toBoolean()) {
+                return configs.backgroundColor.value.toArray(["transparent"], ",").reverse()[0];
+            }
+            else
+                return configs.backgroundColor.value.toArray(["transparent"], ",")[0];
+            break;
+        default:
+            return "transparent";
+            break;
+    }
+}
+
 
 function getEcharts(container, width, height, dataset, configs) {
     $("copyright").innerHTML = getUserConfig("CopyRight");
@@ -363,7 +432,9 @@ var __ECHARTS__ = {
                 new Option("极简", "simple")],
             type: "select"
         },
-        backgroundColor: {name: "图像背景", value: "transparent", type: "input"},
+        backgroundColor: {name: "背景颜色", value: '["transparent"]', type: "input"},
+        gradientType: {name: "渐变方式", value: "transparent", options: [new Option("透明", "transparent"), new Option("不变", "single"), new Option("线性", "line"), new Option("径向", "radial")], type: "select"},
+        gradientReverse: {name: "渐变反转", value: "false", options: [new Option("否", "false"), new Option("是", "true")], type: "select"},
         ariaEnable: {
             name: "无障碍访问",
             value: "false",
@@ -499,7 +570,17 @@ var __ECHARTS__ = {
         legendIcon: {
             name: "图标",
             value: "circle",
-            options: [new Option("圆形", "circle"), new Option("空心圆", "emptyCircle"), new Option("三角形", "triangle"), new Option("空心三角形", "emptyTriangle"), new Option("菱形", "diamond"), new Option("空心菱形", "emptyDiamond"), new Option("箭头", "arrow"), new Option("空心箭头", "emptyArrow"), new Option("图钉", "pin"), new Option("空心图钉", "emptyPin")],
+            options: [new Option("圆形", "circle"),
+                new Option("四边形", "roundRect"),
+                new Option("空心圆", "emptyCircle"),
+                new Option("三角形", "triangle"),
+                new Option("空心三角形", "emptyTriangle"),
+                new Option("菱形", "diamond"),
+                new Option("空心菱形", "emptyDiamond"),
+                new Option("箭头", "arrow"),
+                new Option("空心箭头", "emptyArrow"),
+                new Option("图钉", "pin"),
+                new Option("空心图钉", "emptyPin")],
             type: "select"
         },
         legendSelectedMode: {
@@ -818,9 +899,8 @@ var __ECHARTS__ = {
             options: [new Option("圆形", "circle"), new Option("心形", "cardioid"), new Option("菱形", "diamond"), new Option("三角形", "triangle"), new Option("右向三角形", "triangle-forward"), new Option("五边形", "pentagon"), new Option("星形", "star")],
             type: "select"
         },
-        wordCloudMinFontSize: {name: "最小字号", value: 12, type: "input"},
-        wordCloudMaxFontSize: {name: "最大字号", value: 60, type: "input"},
-        wordCloudRotationRange: {name: "旋转角度", value: 90, type: "input"},
+        wordCloudSizeRange: {name: "字号区间", value: "[16, 60]", type: "input"},
+        wordCloudRotationRange:{name: "角度区间", value: "[-45, 45]", type: "input"},
 
         hr_liqiud: {name: "水球图", value: "", type: "hr"},
         liqiudShape: {
@@ -863,7 +943,7 @@ var __ECHARTS__ = {
 
         hr_clock: {name: "时钟", value: "", type: "hr"},
         clockRadius: {name: "表盘半径", value: "75%", type: "input"},
-        clockCenter: {name: "表盘位置", value: "['50%','50%']", type: "input"},
+        clockCenter: {name: "表盘位置", value: '["50%","50%"]', type: "input"},
         clockLabelColor: {value: "#C0911F", name: "颜色", type: "color"},
         clockFontSize: {
             name: "字号",
@@ -877,7 +957,7 @@ var __ECHARTS__ = {
         },
 
         hr_sunburst: {name: "旭日图", value: "", type: "hr"},
-        sunburstRadius: {name: "内/外半径", value: "['15%', '90%']", type: "input"},
+        sunburstRadius: {name: "内/外半径", value: '["15%", "90%"]', type: "input"},
         sunburstSort: {
             name: "排序方式",
             value: "null",
@@ -904,13 +984,13 @@ var __ECHARTS__ = {
             type: "select"
         },
 
-        hr_treemap: {name: "层级数据", value: "", type: "hr"},
+        hr_treemap: {name: "矩形树图", value: "", type: "hr"},
         treemapWidth: {name: "组件宽度", value: "80%", type: "input"},
         treemapHeight: {name: "组件高度", value: "80%", type: "input"},
         treemapLabelFontSize: {name: "标签字号", value: "22", type: "input"},
         treemapLabelPosition: {
             name: "位置",
-            value: "['5%','5%']",
+            value: '["5%","5%"]',
             type: "input"
         },
         treemapItemStyleBorderRadius: {
@@ -1150,10 +1230,10 @@ var __ECHARTS__ = {
             options: [new Option("横向", "horizontal"), new Option("纵向", "vertical")],
             type: "select"
         },
-        timelineLeft: {name: "左边距(%)", value: "auto", type: "input"},
-        timelineRight: {name: "右边距(%)", value: "auto", type: "input"},
-        timelineTop: {name: "上边距(%)", value: "auto", type: "input"},
-        timelineBottom: {name: "下边距(%)", value: "auto", type: "input"},
+        timelineLeft: {name: "左边距(%)", value: "15%", type: "input"},
+        timelineRight: {name: "右边距(%)", value: "15%", type: "input"},
+        timelineTop: {name: "上边距(%)", value: "90%", type: "input"},
+        timelineBottom: {name: "下边距(%)", value: "10%", type: "input"},
         timelineLabelColor: {value: "#304654", name: "标签颜色", type: "color"},
         timelineLabelFontSize: {name: "字号", value: 12, type: "input"},
         timelineStyleColor: {value: "#304654", name: "轴线颜色", type: "color"},
@@ -1426,6 +1506,7 @@ var __ECHARTS__ = {
         let c = document.createElement("div");
         c.className = "groupbar";
         container.appendChild(c);
+
         let b = document.createElement("a");
         b.className = "button";
         b.innerHTML = "确定";
@@ -1458,6 +1539,21 @@ var __ECHARTS__ = {
             }
             let m = $("echarts-configs-Content");
             m.parentNode.removeChild(m);
+        };
+        c.appendChild(b);
+
+        b = document.createElement("a");
+        b.className = "button";
+        b.innerHTML = "重置";
+        b.onclick = close.onclick = function () {
+            let r = confirm("您确定要重置全部图形参数吗?");
+            if (r) {
+                setUserConfig("echartsconfig", JSON.stringify({}));
+                let m = $("echarts-configs-Content");
+                m.parentNode.removeChild(m);
+                alert("所有参数已恢复为系统初始值,系统将重新载入页面...");
+                location.reload();
+            }
         };
         c.appendChild(b);
 
@@ -2892,7 +2988,8 @@ function getBar(container, width, height, dataset, configs) {
 
     let option = {
         aria: getAria(configs),
-        backgroundColor: configs.backgroundColor.value,
+        backgroundColor: getBackgroundColor(configs),
+        //configs.backgroundColor.value,"green","yellow"
         grid: getGrid(configs),
         brush: getBrush(configs),
         toolbox: getToolbox(configs, container, true),
@@ -3000,7 +3097,7 @@ function getTransversBar(container, width, height, dataset, configs) {
 
         let option = {
             aria: getAria(configs),
-            backgroundColor: configs.backgroundColor.value,
+            backgroundColor: getBackgroundColor(configs),
             grid: getGrid(configs),
             brush: getBrush(configs),
             toolbox: getToolbox(configs, container, true),
@@ -3102,7 +3199,7 @@ function getLine(container, width, height, dataset, configs) {
         }
 
         let option = {
-            backgroundColor: configs.backgroundColor.value,
+            backgroundColor: getBackgroundColor(configs),
             grid: getGrid(configs),
             brush: getBrush(configs),
             toolbox: getToolbox(configs, container, true),
@@ -3253,7 +3350,7 @@ function getBarAndLine(container, width, height, dataset, configs) {
 
         let option = {
             aria: getAria(configs),
-            backgroundColor: configs.backgroundColor.value,
+            backgroundColor: getBackgroundColor(configs),
             grid: getGrid(configs),
             brush: getBrush(configs),
             toolbox: getToolbox(configs, container, true),
@@ -3296,7 +3393,6 @@ function getAreaStyle(container, width, height, dataset, configs) {
         }
 
         let myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value,renderer:configs.renderer.value});
-
         myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
         let columns = [];
@@ -3378,6 +3474,7 @@ function getAreaStyle(container, width, height, dataset, configs) {
         let option = {
             aria: getAria(configs),
             grid: getGrid(configs),
+            backgroundColor: getBackgroundColor(configs),
             brush: getBrush(configs),
             toolbox: getToolbox(configs, container, true),
             title: getTitle(configs),
@@ -3452,7 +3549,7 @@ function getPolar(container, width, height, dataset, configs) {
 
         let option = {
             aria: getAria(configs),
-            backgroundColor: configs.backgroundColor.value,
+            backgroundColor: getBackgroundColor(configs),
             title: getTitle(configs),
             toolbox: getToolbox(configs, container, true),
             angleAxis: {
@@ -3696,7 +3793,7 @@ function getPolarHeatmap(container, width, height, dataset, configs) {
             containLabel: configs.grid_containLabel.value.toBoolean(),
             backgroundColor: "transparent"
         },
-        backgroundColor: configs.backgroundColor.value,
+        backgroundColor: getBackgroundColor(configs),
         title: getTitle(configs),
         toolbox: getToolbox(configs, container, true),
         legend: getLegend(configs, null),
@@ -3720,6 +3817,58 @@ function getPolarHeatmap(container, width, height, dataset, configs) {
     return container;
 }
 
+function getPieRichText(colors) {
+    return {
+        formatter: "{a|{a}}{abg|}\n{hr|}\n  {b|{b}：}{c|{c}}  {per|{d}%}  ",
+        backgroundColor: "transparent",//"#eee",
+        borderColor: "#aaa",
+        borderWidth: 1,
+        borderRadius: 4,
+        //shadowBlur:3,
+        //shadowOffsetX: 2,
+        //shadowOffsetY: 2,
+        //shadowColor: "#999",
+        padding: [0, 7],
+        z: 9,
+        rich: {
+            a: {
+                color: colors[0],//"#999",
+                lineHeight: 22,
+                align: "center"
+            },
+            abg: {
+                backgroundColor: "transparent",
+                width: "100%",
+                align: "right",
+                height: 22,
+                borderRadius: [4, 4, 0, 0]
+            },
+            hr: {
+                borderColor: colors[1],//"#aaa",
+                width: "100%",
+                borderWidth: 0.5,
+                height: 0
+            },
+            b: {
+                color: colors[2],//"#eee",
+                fontSize: 16,
+                lineHeight: 33
+            },
+            c: {
+                color: colors[3],//"#eee",
+                fontSize: 16,
+                lineHeight: 33
+            },
+            per: {
+                color: colors[1],//"#eee",
+                backgroundColor: "#334455",
+                padding: [2, 4],
+                borderRadius: 2
+            }
+        }
+    }
+}
+
 function getPie(container, width, height, dataset, configs) {
         if (container == null) {
             container = document.createElement("div");
@@ -3731,64 +3880,58 @@ function getPie(container, width, height, dataset, configs) {
 
         let myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value,renderer:configs.renderer.value});
         myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
+        let colors = (typeof myChart._theme !== "undefined" ? myChart._theme.color : ['#c23531', '#2f4554', '#61a0a8', '#d48265', '#91c7ae', '#749f83', '#ca8622', '#bda29a', '#6e7074', '#546570', '#c4ccd3']);
 
         let columns = [];
         for (let i = 0; i < dataset["columns"].length; i++) {
             columns.push(dataset["columns"][i].name);
         }
-        let legends = [];
         let series = [];
-        for (let c = 0; c < columns.length; c++) {
-            if (c == 0) {
-                for (let i = 0; i < dataset["data"].length; i++) {
-                    let r = dataset["data"][i];
-                    legends.push(r[columns[c]].value);
-                }
-            } else {
-                let serie = {
-                    name: columns[c],
-                    type: "pie",
-                    radius: configs.outRadius.value,
-                    selectedMode: configs.pieSelectedMode.value,
+        for (let c = 1; c < columns.length; c++) {
+            let serie = {
+                name: columns[c],
+                type: "pie",
+                radius: configs.outRadius.value,
+                selectedMode: configs.pieSelectedMode.value,
+                label: {
+                    show: configs.pieLabelDisplay.value.toBoolean(),
+                    //控制label是否显示
+                    position: configs.pieLabelPosition.value,
+                    alignTo: configs.pieLabelAlignTo.value,
+                    bleedMargin: 25,
+                    //出血线
+                    margin: 20,
+                },
+                labelLine: {
+                    show: configs.pieLabelDisplay.value.toBoolean(),
+                },
+                emphasis: {
                     label: {
-                        show: configs.pieLabelDisplay.value.toBoolean(),
-                        //控制label是否显示
-                        position: configs.pieLabelPosition.value,
-                        alignTo: configs.pieLabelAlignTo.value,
-                        bleedMargin: 5,
-                        margin: 20,
+                        show: true,
+                        fontSize: "30",
+                        fontWeight: "bold"
+                    }
+                },
+                itemStyle: {
+                    label: {
+                        show: true,
                     },
-                    labelLine: {
-                        show: configs.pieLabelDisplay.value.toBoolean(),
-                    },
-                    emphasis: {
-                        label: {
-                            show: true,
-                            fontSize: "30",
-                            fontWeight: "bold"
-                        }
-                    },
-                    itemStyle: {
-                        label: {
-                            show: true,
-                        },
-                        borderRadius: configs.pieItemStyleBorderRadius.value,
-                        //borderColor: 'transparent',//'#fff',
-                        //borderWidth: 2
-                    },
-                    hoverOffset: 10,
-                    selectedOffset: 10,
-                    avoidLabelOverlap: true,
-                    hoverAnimation: true,
-                    data: [],
-                };
-                setSeriesAnimation(serie, configs, -1);
-                for (let i = 0; i < dataset["data"].length; i++) {
-                    let r = dataset["data"][i];
-                    serie.data.push({"value": r[columns[c]].value, "name": legends[i]});
-                }
-                series.push(serie);
+                    borderRadius: configs.pieItemStyleBorderRadius.value,
+                    //borderColor: 'transparent',//'#fff',
+                    //borderWidth: 2
+                },
+                hoverOffset: 10,
+                selectedOffset: 10,
+                avoidLabelOverlap: configs.richTextLabel.value.toBoolean() ? false : true,
+                hoverAnimation: true,
+                data: [],
+            };
+            setSeriesAnimation(serie, configs, -1);
+            for (let i = 0; i < dataset["data"].length; i++) {
+                let r = dataset["data"][i];
+                serie.data.push({"value": r[columns[c]].value, "name": r[columns[0]].value});
             }
+            series.push(serie);
         }
 
         let top = toPoint(configs.grid_top.value);
@@ -3806,9 +3949,9 @@ function getPie(container, width, height, dataset, configs) {
 
         let option = {
             aria: getAria(configs),
-            backgroundColor: configs.backgroundColor.value,
+            backgroundColor: getBackgroundColor(configs),
             title: getTitle(configs),
-            legend: getLegend(configs, legends),
+            legend: getLegend(configs, columns.slice(1,columns.length)),
             toolbox: getToolbox(configs, container, false),
             tooltip: getTooltip(configs, "item", function (param) {
                 console.log(param);
@@ -3827,48 +3970,7 @@ function getPie(container, width, height, dataset, configs) {
 
         if (configs.richTextLabel.value.toBoolean()) {
             //富文本
-            option.label = {
-                formatter: "{a|{a}}{abg|}\n{hr|}\n  {b|{b}：}{c}  {per|{d}%}  ",
-                backgroundColor: "#eee",
-                borderColor: "#aaa",
-                borderWidth: 1,
-                borderRadius: 4,
-                //shadowBlur:3,
-                //shadowOffsetX: 2,
-                //shadowOffsetY: 2,
-                //shadowColor: "#999",
-                padding: [0, 7],
-                rich: {
-                    a: {
-                        color: "#999",
-                        lineHeight: 22,
-                        align: "center"
-                    },
-                    abg: {
-                        backgroundColor: "",
-                        width: "100%",
-                        align: "right",
-                        height: 22,
-                        borderRadius: [4, 4, 0, 0]
-                    },
-                    hr: {
-                        borderColor: "#aaa",
-                        width: "100%",
-                        borderWidth: 0.5,
-                        height: 0
-                    },
-                    b: {
-                        fontSize: 16,
-                        lineHeight: 33
-                    },
-                    per: {
-                        color: "#eee",
-                        backgroundColor: "#334455",
-                        padding: [2, 4],
-                        borderRadius: 2
-                    }
-                }
-            };
+            option.label = getPieRichText(colors);
         }
 
         setTimeout(() => {
@@ -3890,66 +3992,58 @@ function getRing(container, width, height, dataset, configs) {
     }
 
     let myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value,renderer:configs.renderer.value});
-
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
+    let colors = (typeof myChart._theme !== "undefined" ? myChart._theme.color : ['#c23531', '#2f4554', '#61a0a8', '#d48265', '#91c7ae', '#749f83', '#ca8622', '#bda29a', '#6e7074', '#546570', '#c4ccd3']);
 
     let columns = [];
     for (let i = 0; i < dataset["columns"].length; i++) {
         columns.push(dataset["columns"][i].name);
     }
-    let legends = [];
     let series = [];
-    for (let c = 0; c < columns.length; c++) {
-        if (c == 0) {
-            for (let i = 0; i < dataset["data"].length; i++) {
-                let r = dataset["data"][i];
-                legends.push(r[columns[c]].value);
-            }
-        } else {
-            let serie = {
-                name: columns[c],
-                type: "pie",
-                selectedMode: configs.pieSelectedMode.value,
-                radius: [configs.inRadius.value, configs.outRadius.value],
-                avoidLabelOverlap: false,
+    for (let c = 1; c < columns.length; c++) {
+        let serie = {
+            name: columns[c],
+            type: "pie",
+            selectedMode: configs.pieSelectedMode.value,
+            radius: [configs.inRadius.value, configs.outRadius.value],
+            avoidLabelOverlap: false,
+            label: {
+                show: configs.pieLabelDisplay.value.toBoolean(),
+                position: configs.pieLabelPosition.value,
+                alignTo: configs.pieLabelAlignTo.value,
+                bleedMargin: 5,
+                margin: 20,
+            },
+            labelLine: {
+                show: configs.pieLabelDisplay.value.toBoolean(),
+            },
+            emphasis: {
                 label: {
-                    show: configs.pieLabelDisplay.value.toBoolean(),
-                    position: configs.pieLabelPosition.value,
-                    alignTo: configs.pieLabelAlignTo.value,
-                    bleedMargin: 5,
-                    margin: 20,
+                    show: true,
+                    fontSize: "30",
+                    fontWeight: "bold"
+                }
+            },
+            itemStyle: {
+                label: {
+                    show: true,
                 },
-                labelLine: {
-                    show: configs.pieLabelDisplay.value.toBoolean(),
-                },
-                emphasis: {
-                    label: {
-                        show: true,
-                        fontSize: "30",
-                        fontWeight: "bold"
-                    }
-                },
-                itemStyle: {
-                    label: {
-                        show: true,
-                    },
-                    borderRadius: configs.pieItemStyleBorderRadius.value,
-                    //borderColor: 'transparent',//'#fff',
-                    //borderWidth: 2
-                },
-                hoverOffset: 10,
-                selectedOffset: 10,
-                avoidLabelOverlap: true,
-                hoverAnimation: true,
-                data: [],
-            };
-            setSeriesAnimation(serie, configs, -1);
-            for (let i = 0; i < dataset["data"].length; i++) {
-                let r = dataset["data"][i];
-                serie.data.push({"value": r[columns[c]].value, "name": legends[i]});
-            }
-            series.push(serie);
+                borderRadius: configs.pieItemStyleBorderRadius.value,
+                //borderColor: 'transparent',//'#fff',
+                //borderWidth: 2
+            },
+            hoverOffset: 10,
+            selectedOffset: 10,
+            avoidLabelOverlap: configs.richTextLabel.value.toBoolean() ? false : true,
+            hoverAnimation: true,
+            data: [],
+        };
+        setSeriesAnimation(serie, configs, -1);
+        for (let i = 0; i < dataset["data"].length; i++) {
+            let r = dataset["data"][i];
+            serie.data.push({"value": r[columns[c]].value, "name": r[columns[0]].value});
         }
+        series.push(serie);
     }
 
     let top = toPoint(configs.grid_top.value);
@@ -3967,10 +4061,10 @@ function getRing(container, width, height, dataset, configs) {
 
     let option = {
         aria: getAria(configs),
-        backgroundColor: configs.backgroundColor.value,
+        backgroundColor: getBackgroundColor(configs),
         title: getTitle(configs),
         toolbox: getToolbox(configs, container, false),
-        legend: getLegend(configs, legends),
+        legend: getLegend(configs, columns.slice(1,columns.length)),
         tooltip: getTooltip(configs, "item", function (param) {
             return [param.seriesName,
                 param.marker + "&ensp;" +
@@ -3987,48 +4081,7 @@ function getRing(container, width, height, dataset, configs) {
 
     if (configs.richTextLabel.value.toBoolean()) {
         //富文本
-        option.label = {
-            formatter: "{a|{a}}{abg|}\n{hr|}\n  {b|{b}：}{c}  {per|{d}%}  ",
-            backgroundColor: "#eee",
-            borderColor: "#aaa",
-            borderWidth: 1,
-            borderRadius: 4,
-            //shadowBlur:3,
-            //shadowOffsetX: 2,
-            //shadowOffsetY: 2,
-            //shadowColor: "#999",
-            padding: [0, 7],
-            rich: {
-                a: {
-                    color: "#999",
-                    lineHeight: 22,
-                    align: "center"
-                },
-                abg: {
-                    backgroundColor: "",
-                    width: "100%",
-                    align: "right",
-                    height: 22,
-                    borderRadius: [4, 4, 0, 0]
-                },
-                hr: {
-                    borderColor: "#aaa",
-                    width: "100%",
-                    borderWidth: 0.5,
-                    height: 0
-                },
-                b: {
-                    fontSize: 16,
-                    lineHeight: 33
-                },
-                per: {
-                    color: "#eee",
-                    backgroundColor: "#334455",
-                    padding: [2, 4],
-                    borderRadius: 2
-                }
-            }
-        };
+        option.label = getPieRichText(colors);
     }
     setTimeout(() => {
         myChart.hideLoading();
@@ -4049,67 +4102,59 @@ function getRose(container, width, height, dataset, configs) {
     }
 
     let myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value,renderer:configs.renderer.value});
-
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
+    let colors = (typeof myChart._theme !== "undefined" ? myChart._theme.color : ['#c23531', '#2f4554', '#61a0a8', '#d48265', '#91c7ae', '#749f83', '#ca8622', '#bda29a', '#6e7074', '#546570', '#c4ccd3']);
 
     let columns = [];
     for (let i = 0; i < dataset["columns"].length; i++) {
         columns.push(dataset["columns"][i].name);
     }
-    let legends = [];
     let series = [];
-    for (let c = 0; c < columns.length; c++) {
-        if (c == 0) {
-            for (let i = 0; i < dataset["data"].length; i++) {
-                let r = dataset["data"][i];
-                legends.push(r[columns[c]].value);
-            }
-        } else {
-            let serie = {
-                name: columns[c],
-                type: "pie",
-                selectedMode: configs.pieSelectedMode.value,
-                radius: [configs.inRadius.value, configs.outRadius.value],
-                center: ["50%", "50%"],
-                roseType: "area",
+    for (let c = 1; c < columns.length; c++) {
+        let serie = {
+            name: columns[c],
+            type: "pie",
+            selectedMode: configs.pieSelectedMode.value,
+            radius: [configs.inRadius.value, configs.outRadius.value],
+            center: ["50%", "50%"],
+            roseType: "area",
+            label: {
+                show: configs.pieLabelDisplay.value.toBoolean(),
+                position: configs.pieLabelPosition.value,
+                alignTo: configs.pieLabelAlignTo.value,
+                bleedMargin: 5,
+                margin: 20,
+            },
+            labelLine: {
+                show: configs.pieLabelDisplay.value.toBoolean(),
+            },
+            emphasis: {
                 label: {
-                    show: configs.pieLabelDisplay.value.toBoolean(),
-                    position: configs.pieLabelPosition.value,
-                    alignTo: configs.pieLabelAlignTo.value,
-                    bleedMargin: 5,
-                    margin: 20,
+                    show: true,
+                    fontSize: "30",
+                    fontWeight: "bold"
+                }
+            },
+            itemStyle: {
+                label: {
+                    show: true,
                 },
-                labelLine: {
-                    show: configs.pieLabelDisplay.value.toBoolean(),
-                },
-                emphasis: {
-                    label: {
-                        show: true,
-                        fontSize: "30",
-                        fontWeight: "bold"
-                    }
-                },
-                itemStyle: {
-                    label: {
-                        show: true,
-                    },
-                    borderRadius: configs.pieItemStyleBorderRadius.value,
-                    //borderColor: 'transparent',//'#fff',
-                    //borderWidth: 2
-                },
-                hoverOffset: 10,
-                selectedOffset: 10,
-                avoidLabelOverlap: true,
-                hoverAnimation: true,
-                data: [],
-            };
-            setSeriesAnimation(serie, configs, -1);
-            for (let i = 0; i < dataset["data"].length; i++) {
-                let r = dataset["data"][i];
-                serie.data.push({"value": r[columns[c]].value, "name": legends[i]});
-            }
-            series.push(serie);
+                borderRadius: configs.pieItemStyleBorderRadius.value,
+                //borderColor: 'transparent',//'#fff',
+                //borderWidth: 2
+            },
+            hoverOffset: 10,
+            selectedOffset: 10,
+            avoidLabelOverlap: configs.richTextLabel.value.toBoolean() ? false : true,
+            hoverAnimation: true,
+            data: [],
+        };
+        setSeriesAnimation(serie, configs, -1);
+        for (let i = 0; i < dataset["data"].length; i++) {
+            let r = dataset["data"][i];
+            serie.data.push({"value": r[columns[c]].value, "name": r[columns[0]].value});
         }
+        series.push(serie);
     }
     let top = toPoint(configs.grid_top.value);
     let left = toPoint(configs.grid_left.value);
@@ -4126,10 +4171,10 @@ function getRose(container, width, height, dataset, configs) {
 
     let option = {
         aria: getAria(configs),
-        backgroundColor: configs.backgroundColor.value,
+        backgroundColor: getBackgroundColor(configs),
         title: getTitle(configs),
         toolbox: getToolbox(configs, container, false),
-        legend: getLegend(configs, legends),
+        legend: getLegend(configs, columns.slice(1,columns.length)),
         tooltip: getTooltip(configs, "item", function (param) {
             return [param.seriesName,
                 param.marker + "&ensp;" +
@@ -4146,48 +4191,7 @@ function getRose(container, width, height, dataset, configs) {
 
     if (configs.richTextLabel.value.toBoolean()) {
         //富文本
-        option.label = {
-            formatter: "{a|{a}}{abg|}\n{hr|}\n  {b|{b}：}{c}  {per|{d}%}  ",
-            backgroundColor: "#eee",
-            borderColor: "#aaa",
-            borderWidth: 1,
-            borderRadius: 4,
-            //shadowBlur:3,
-            //shadowOffsetX: 2,
-            //shadowOffsetY: 2,
-            //shadowColor: "#999",
-            padding: [0, 7],
-            rich: {
-                a: {
-                    color: "#999",
-                    lineHeight: 22,
-                    align: "center"
-                },
-                abg: {
-                    backgroundColor: "",
-                    width: "100%",
-                    align: "right",
-                    height: 22,
-                    borderRadius: [4, 4, 0, 0]
-                },
-                hr: {
-                    borderColor: "#aaa",
-                    width: "100%",
-                    borderWidth: 0.5,
-                    height: 0
-                },
-                b: {
-                    fontSize: 16,
-                    lineHeight: 33
-                },
-                per: {
-                    color: "#eee",
-                    backgroundColor: "#334455",
-                    padding: [2, 4],
-                    borderRadius: 2
-                }
-            }
-        };
+        option.label = getPieRichText(colors);
     }
     setTimeout(() => {
         myChart.hideLoading();
@@ -4269,7 +4273,7 @@ function getRadar(container, width, height, dataset, configs) {
 
     let option = {
         aria: getAria(configs),
-        backgroundColor: configs.backgroundColor.value,
+        backgroundColor: getBackgroundColor(configs),
         grid: getGrid(configs),
         title: getTitle(configs),
         legend: getLegend(configs, columns.slice(1, columns.length)),
@@ -4524,7 +4528,7 @@ function getRegression(container, width, height, dataset, configs) {
     init();
 
     let option = {
-        backgroundColor: configs.backgroundColor.value,
+        backgroundColor: getBackgroundColor(configs),
         grid: getGrid(configs),
         brush: getBrush(configs),
         toolbox: getToolbox(configs, container, true),
@@ -4662,7 +4666,7 @@ function getRelation(container, width, height, dataset, configs) {
     setSeriesAnimation(serie, configs, 0);
 
     let option = {
-        backgroundColor: configs.backgroundColor.value,
+        backgroundColor: getBackgroundColor(configs),
         grid: getGrid(configs),
         toolbox: getToolbox(configs, container, false),
         title: getTitle(configs),
@@ -4864,7 +4868,7 @@ function getTree(container, width, height, dataset, configs) {
 
     let option = {
         aria: getAria(configs),
-        backgroundColor: configs.backgroundColor.value,
+        backgroundColor: getBackgroundColor(configs),
         grid: getGrid(configs),
         title: getTitle(configs),
         toolbox: getToolbox(configs, container, false),
@@ -4968,7 +4972,7 @@ function getWebkitDep(container, width, height, dataset, configs) {
     };
 
     let option = {
-        backgroundColor: configs.backgroundColor.value,
+        backgroundColor: getBackgroundColor(configs),
         grid: getGrid(configs),
         title: getTitle(configs),
         legend: getLegend(configs, columns),
@@ -5051,7 +5055,7 @@ function getScatter(container, width, height, dataset, configs) {
                 },
                 symbol: configs.scatterSymbolShape.value,
                 symbolSize: function (data) {
-                    let size = eval(configs.scatterSymbolSize.value);
+                    let size = configs.scatterSymbolSize.value.toArray(['5%','5%'],",");
                     if (size[0] > size[1]) {
                         let tmp = size[1];
                         size[1] = size[0];
@@ -5071,7 +5075,7 @@ function getScatter(container, width, height, dataset, configs) {
                 let d = [];
                 let row = dataset["data"][i];
                 if (isNaN(Number(row[columns[0]].value)))
-                    d.push(i + 1);
+                    d.push(i);
                 else
                     d.push(row[columns[0]].value);
 
@@ -5176,7 +5180,7 @@ function getScatter(container, width, height, dataset, configs) {
     init();
 
     let option = {
-        backgroundColor: configs.backgroundColor.value,
+        backgroundColor: getBackgroundColor(configs),
         grid: getGrid(configs),
         title: getTitle(configs),
         legend: getLegend(configs, columns.slice().concat(columns_add)),
@@ -5227,69 +5231,61 @@ function getFunnel(container, width, height, dataset, configs) {
 
     let series = [];
     let columns = [];
-    let legends = [];
 
     function init() {
         for (let i = 0; i < dataset["columns"].length; i++) {
             columns.push(dataset["columns"][i].name);
         }
 
-        for (let c = 0; c < columns.length; c++) {
-            if (c == 0) {
-                for (let i = 0; i < dataset["data"].length; i++) {
-                    let row = dataset["data"][i];
-                    legends.push(row[columns[c]].value);
-                }
-            } else {
-                let min = +Infinity;
-                let max = -Infinity;
-                let serie = {
-                    name: columns[c],
-                    type: "funnel",
-                    min: 0,
-                    max: 100,
-                    minSize: configs.FunnelMinSize.value,
-                    maxSize: "100%",
-                    sort: configs.funnelSort.value,
-                    gap: Number(configs.funnelGap.value),
+        for (let c = 1; c < columns.length; c++) {
+            let min = +Infinity;
+            let max = -Infinity;
+            let serie = {
+                name: columns[c],
+                type: "funnel",
+                min: 0,
+                max: 100,
+                minSize: configs.FunnelMinSize.value,
+                maxSize: "100%",
+                sort: configs.funnelSort.value,
+                gap: Number(configs.funnelGap.value),
+                label: {
+                    show: true,
+                    position: configs.funnelLabelPosition.value,
+                    fontSize: Number(configs.funnelLabelFontSize.value),
+                    verticalAlign: "middle"
+                },
+                labelLine: {
+                    length: 20,
+                    lineStyle: {
+                        width: 1,
+                        type: "solid"
+                    }
+                },
+                itemStyle: {
+                    borderColor: "#fff",
+                    borderWidth: 1,
+                },
+                emphasis: {
                     label: {
-                        show: true,
-                        position: configs.funnelLabelPosition.value,
-                        fontSize: Number(configs.funnelLabelFontSize.value),
-                        verticalAlign: "middle"
-                    },
-                    labelLine: {
-                        length: 20,
-                        lineStyle: {
-                            width: 1,
-                            type: "solid"
-                        }
-                    },
-                    itemStyle: {
-                        borderColor: "#fff",
-                        borderWidth: 1,
-                    },
-                    emphasis: {
-                        label: {
-                            fontSize: 20
-                        }
-                    },
-                    data: [],
-                };
-                setSeriesAnimation(serie, configs, c);
-                for (let i = 0; i < dataset["data"].length; i++) {
-                    let row = dataset["data"][i];
-                    serie.data.push({name: row[columns[0]].value, value: row[columns[c]].value});
-                    if (row[columns[c]].value < min)
-                        min = row[columns[c]].value
-                    if (row[columns[c]].value > max)
-                        max = row[columns[c]].value
+                        fontSize: 20
+                    }
+                },
+                data: [],
+            };
+            setSeriesAnimation(serie, configs, c);
+            for (let i = 0; i < dataset["data"].length; i++) {
+                let row = dataset["data"][i];
+                serie.data.push({name: row[columns[0]].value, value: row[columns[c]].value});
+                if (row[columns[c]].value < min)
+                    min = row[columns[c]].value;
+                if (row[columns[c]].value > max)
+                    max = row[columns[c]].value;
 
-                }
-                serie.min = min;
-                serie.max = max;
-                series.push(serie);
             }
+            serie.min = min;
+            serie.max = max;
+            series.push(serie);
         }
 
         let top = toPoint(configs.grid_top.value);
@@ -5330,7 +5326,7 @@ function getFunnel(container, width, height, dataset, configs) {
 
     let option = {
         aria: getAria(configs),
-        backgroundColor: configs.backgroundColor.value,
+        backgroundColor: getBackgroundColor(configs),
         title: getTitle(configs),
         tooltip: {
             show: configs.tooltipDisplay.value.toBoolean(),
@@ -5340,7 +5336,7 @@ function getFunnel(container, width, height, dataset, configs) {
             },
         },
         toolbox: getToolbox(configs, container, false),
-        legend: getLegend(configs, legends),
+        legend: getLegend(configs, columns.slice(1,columns.length)),
 
         series: series,
         graphic: getWaterGraphic(__SYS_LOGO_LINK__),
@@ -5463,7 +5459,7 @@ function getLiqiud(container, width, height, dataset, configs) {
 
     init();
     let option = {
-        backgroundColor: configs.backgroundColor.value,
+        backgroundColor: getBackgroundColor(configs),
         tooltip: {
             show: configs.tooltipDisplay.value.toBoolean(),
             formatter: function (param) {
@@ -5618,7 +5614,7 @@ function getGaugeWithAll(container, width, height, dataset, configs) {
 
     let option = {
         aria: getAria(configs),
-        backgroundColor: configs.backgroundColor.value,
+        backgroundColor: getBackgroundColor(configs),
         grid: {
             x: configs.grid_left.value,
             y: configs.grid_top.value,
@@ -5772,7 +5768,7 @@ function getGaugeWithOne(container, width, height, dataset, configs) {
 
     let option = {
         aria: getAria(configs),
-        backgroundColor: configs.backgroundColor.value,
+        backgroundColor: getBackgroundColor(configs),
         title: getTitle(configs),
         legend: getLegend(configs, legends),
         tooltip: {
@@ -5952,7 +5948,7 @@ function getCalendar(container, width, height, dataset, configs) {
     init();
     let option = {
         aria: getAria(configs),
-        backgroundColor: configs.backgroundColor.value,
+        backgroundColor: getBackgroundColor(configs),
         grid: getGrid(configs),
         title: getTitle(configs),
         tooltip: getTooltip(configs, "item", function (param) {
@@ -6062,9 +6058,8 @@ function getGeoOfChina(container, width, height, dataset, configs) {
     init();
 
     let option = {
-        backgroundColor: configs.backgroundColor.value,
+        backgroundColor: getBackgroundColor(configs),
         grid: getGrid(configs),
-        //backgroundColor: configs.geoBackgroundColor.value,
         title: getTitle(configs),
         toolbox: getToolbox(configs, container, false),
         tooltip: getTooltip(configs, "item", function (params) {
@@ -6119,7 +6114,7 @@ function getGeoOfChina(container, width, height, dataset, configs) {
                 //    return value < 5 ? 5 : value;
                 //},
                 symbolSize: function (data) {
-                    let size = eval(configs.geoScatterSymbolSize.value);
+                    let size = configs.geoScatterSymbolSize.value.value.toArray();
                     if (size[0] > size[1]) {
                         let tmp = size[1];
                         size[1] = size[0];
@@ -6283,16 +6278,14 @@ function getGeoOfLocal(container, width, height, dataset, configs) {
     init();
 
     let option = {
-        backgroundColor: configs.backgroundColor.value,
+        backgroundColor: getBackgroundColor(configs),
         grid: getGrid(configs),
-        //backgroundColor: configs.geoBackgroundColor.value,
         title: getTitle(configs),
         toolbox: getToolbox(configs, container, false),
         tooltip: getTooltip(configs, "item", function (params) {
             return params.name + "<br>" + params.marker + params.seriesName + ":&emsp;<span style='display:inline-block;min-width:30px;text-align:right;font-weight:bold'>" + ((params["value"].length == 3) ? params.data["value"][2] : params.data["value"] + "</span>")
         }),
         visualMap: getVisualMap(configs, series[index].min, series[index].max),
-        //backgroundColor: "#013954",
         geo: {
             map: geoCoordMap.LocalMap,
             roam: true,
@@ -6341,7 +6334,7 @@ function getGeoOfLocal(container, width, height, dataset, configs) {
                 //    return value<5?5:value;
                 //},
                 symbolSize: function (data) {
-                    let size = eval(configs.geoScatterSymbolSize.value);
+                    let size = configs.geoScatterSymbolSize.value.toArray();
                     if (size[0] > size[1]) {
                         let tmp = size[1];
                         size[1] = size[0];
@@ -6433,7 +6426,6 @@ function getBar3D(container, width, height, dataset, configs) {
     }
 
     let myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value,renderer:configs.renderer.value});
-
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
     let containerWidth = myChart.getWidth();//Number(width.replace(/px/i, ""));
@@ -6458,6 +6450,7 @@ function getBar3D(container, width, height, dataset, configs) {
             let serie = {
                 name: columns[c],
                 type: "bar3D",
+                //stack: 'stack',
                 data: [],
                 bevelSize: 0.1,
                 //柱子的倒角尺寸。支持设置为从 0 到 1 的值。默认为 0，即没有倒角。
@@ -6528,7 +6521,7 @@ function getBar3D(container, width, height, dataset, configs) {
 
     let option = {
         aria: getAria(configs),
-        backgroundColor: configs.backgroundColor.value,
+        backgroundColor: getBackgroundColor(configs),
         grid: getGrid(configs),
         title: getTitle(configs),
         legend: getLegend(configs, columns.slice(1, columns.length)),
@@ -6703,7 +6696,7 @@ function getLine3D(container, width, height, dataset, configs) {
     }
 
     let option = {
-        backgroundColor: configs.backgroundColor.value,
+        backgroundColor: getBackgroundColor(configs),
         grid: getGrid(configs),
         title: getTitle(configs),
         legend: getLegend(configs, columns.slice(1, columns.length)),
@@ -6846,7 +6839,7 @@ function getScatter3D(container, width, height, dataset, configs) {
                 type: "scatter3D",
                 data: [],
                 symbolSize: function (data) {
-                    let size = eval(configs.scatterSymbolSizeFor3D.value);
+                    let size = configs.scatterSymbolSizeFor3D.value.toArray();
                     if (size[0] > size[1]) {
                         let tmp = size[1];
                         size[1] = size[0];
@@ -6904,7 +6897,7 @@ function getScatter3D(container, width, height, dataset, configs) {
     }
 
     let option = {
-        backgroundColor: configs.backgroundColor.value,
+        backgroundColor: getBackgroundColor(configs),
         grid: getGrid(configs),
         title: getTitle(configs),
         legend: getLegend(configs, columns.slice(1, columns.length)),
@@ -7021,8 +7014,8 @@ function getCategoryLine(container, width, height, dataset, configs) {
     }
 
     let myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value,renderer:configs.renderer.value});
-
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
+    let colors = (typeof myChart._theme !== "undefined" ? myChart._theme.color : ['#c23531', '#2f4554', '#61a0a8', '#d48265', '#91c7ae', '#749f83', '#ca8622', '#bda29a', '#6e7074', '#546570', '#c4ccd3']);
 
     let containerWidth = myChart.getWidth();//Number(width.replace(/px/i, ""));
     let containerHeight = myChart.getHeight();//Number(height.replace(/px/i, ""));
@@ -7109,48 +7102,7 @@ function getCategoryLine(container, width, height, dataset, configs) {
             serie.animationTypeUpdate = configs.animationTypeUpdate.value;
 
             if (configs.richTextLabel.value.toBoolean()) {
-                serie.label = {
-                    formatter: "{a|{a}}{abg|}\n{hr|}\n  {b|{b}：}{c}  {per|{d}%}  ",
-                    backgroundColor: "#eee",
-                    borderColor: "#aaa",
-                    borderWidth: 1,
-                    borderRadius: 4,
-                    //shadowBlur:3,
-                    //shadowOffsetX: 2,
-                    //shadowOffsetY: 2,
-                    //shadowColor: "#999",
-                    padding: [0, 7],
-                    rich: {
-                        a: {
-                            color: "#999",
-                            lineHeight: 22,
-                            align: "center"
-                        },
-                        abg: {
-                            backgroundColor: "",
-                            width: "100%",
-                            align: "right",
-                            height: 22,
-                            borderRadius: [4, 4, 0, 0]
-                        },
-                        hr: {
-                            borderColor: "#aaa",
-                            width: "100%",
-                            borderWidth: 0.5,
-                            height: 0
-                        },
-                        b: {
-                            fontSize: 16,
-                            lineHeight: 33
-                        },
-                        per: {
-                            color: "#eee",
-                            backgroundColor: "#334455",
-                            padding: [2, 4],
-                            borderRadius: 2
-                        }
-                    }
-                };
+                serie.label = getPieRichText(colors);
             }
             serie.labelLine = {
                 show: true
@@ -7200,7 +7152,7 @@ function getCategoryLine(container, width, height, dataset, configs) {
     let option = {
         baseOption: {
             aria: getAria(configs),
-            backgroundColor: configs.backgroundColor.value,
+            backgroundColor: getBackgroundColor(configs),
             grid: getGrid(configs),
             title: getTitle(configs),
             timeline: getTimeline(configs, times),
@@ -7526,7 +7478,7 @@ function getGeoMigrateLinesOfChinaCity(container, width, height, dataset, config
 
         option = {
             aria: getAria(configs),
-            backgroundColor: configs.backgroundColor.value,
+            backgroundColor: getBackgroundColor(configs),
             grid: getGrid(configs),
             title: getTitle(configs),
             toolbox: getToolbox(configs, container, false),
@@ -7717,7 +7669,7 @@ function getCategoryLineForGauge(container, width, height, dataset, configs) {
     let option = {
         baseOption: {
             aria: getAria(configs),
-            backgroundColor: configs.backgroundColor.value,
+            backgroundColor: getBackgroundColor(configs),
             title: getTitle(configs),
             timeline: getTimeline(configs, times),
             tooltip: getTooltip(configs, "item", function (params) {
@@ -7966,7 +7918,7 @@ function getCategoryLineForLiqiud(container, width, height, dataset, configs) {
     let option = {
         baseOption: {
             aria: getAria(configs),
-            backgroundColor: configs.backgroundColor.value,
+            backgroundColor: getBackgroundColor(configs),
             title: getTitle(configs),
             timeline: getTimeline(configs, times),
             tooltip: {
@@ -8133,7 +8085,7 @@ function getCategoryLineForGeoOfChina(container, width, height, dataset, configs
                             //    return value < 5 ? 5 : value;
                             //},
                             symbolSize: function (data) {
-                                let size = eval(configs.geoScatterSymbolSize.value);
+                                let size = configs.geoScatterSymbolSize.value.toArray();
                                 if (size[0] > size[1]) {
                                     let tmp = size[1];
                                     size[1] = size[0];
@@ -8177,7 +8129,7 @@ function getCategoryLineForGeoOfChina(container, width, height, dataset, configs
     let option = {
         baseOption: {
             aria: getAria(configs),
-            backgroundColor: configs.backgroundColor.value,
+            backgroundColor: getBackgroundColor(configs),
             grid: getGrid(configs),
             title: getTitle(configs),
             timeline: getTimeline(configs, times),
@@ -8336,7 +8288,7 @@ function getCategoryLineForGeoOfLocal(container, width, height, dataset, configs
                             //    return value < 5 ? 5 : value;
                             //},
                             symbolSize: function (data) {
-                                let size = eval(configs.geoScatterSymbolSize.value);
+                                let size = configs.geoScatterSymbolSize.value.toArray();
                                 if (size[0] > size[1]) {
                                     let tmp = size[1];
                                     size[1] = size[0];
@@ -8379,7 +8331,7 @@ function getCategoryLineForGeoOfLocal(container, width, height, dataset, configs
     let option = {
         baseOption: {
             aria: getAria(configs),
-            backgroundColor: configs.backgroundColor.value,
+            backgroundColor: getBackgroundColor(configs),
             grid: {
                 x: configs.grid_left.value,
                 y: configs.grid_top.value,
@@ -8525,7 +8477,7 @@ function getScrollingScreen(container, width, height, dataset, configs) {
     let option = {
         aria: getAria(configs),
         grid: getGrid(configs),
-        backgroundColor: configs.backgroundColor.value,
+        backgroundColor: getBackgroundColor(configs),
         title: getTitle(configs),
         //toolbox: getToolbox(configs, container, false),
         graphic: scrollingScreenGraphic
@@ -8647,7 +8599,7 @@ function getWalkingLantern(container, width, height, dataset, configs) {
     let option = {
         aria: getAria(configs),
         grid: getGrid(configs),
-        backgroundColor: configs.backgroundColor.value,
+        backgroundColor: getBackgroundColor(configs),
         title: getTitle(configs),
         //toolbox: getToolbox(configs, container, false),
     };
@@ -8823,7 +8775,7 @@ function getWindowShades(container, width, height, dataset, configs) {
     let option = {
         aria: getAria(configs),
         grid: getGrid(configs),
-        backgroundColor: configs.backgroundColor.value,
+        backgroundColor: getBackgroundColor(configs),
         title: getTitle(configs),
         //toolbox: getToolbox(configs, container, false),
     };
@@ -8992,7 +8944,7 @@ function getSurface(container, width, height, dataset, configs) {
 
     let option = {
         aria: getAria(configs),
-        backgroundColor: configs.backgroundColor.value,
+        backgroundColor: getBackgroundColor(configs),
         grid: getGrid(configs),
         title: getTitle(configs),
         legend: getLegend(configs, columns.slice(1, columns.length)),
@@ -9175,7 +9127,7 @@ function getBoxplot(container, width, height, dataset, configs) {
 
     let option = {
         aria: getAria(configs),
-        backgroundColor: configs.backgroundColor.value,
+        backgroundColor: getBackgroundColor(configs),
         grid: getGrid(configs),
         title: getTitle(configs),
         legend: getLegend(configs, columns.slice(1, columns.length)),
@@ -9209,7 +9161,7 @@ function getBoxplot(container, width, height, dataset, configs) {
                 },
                 symbol: configs.boxplotScatterSymbolShape.value,
                 symbolSize: function (data) {
-                    let size = eval(configs.boxplotScatterSymbolSize.value);
+                    let size = configs.boxplotScatterSymbolSize.value.toArray();
                     if (size[0] > size[1]) {
                         let tmp = size[1];
                         size[1] = size[0];
@@ -9244,7 +9196,7 @@ function getBoxplot(container, width, height, dataset, configs) {
                 },
                 symbol: configs.boxplotScatterSymbolShape.value,
                 symbolSize: function (data) {
-                    let size = eval(configs.boxplotScatterSymbolSize.value);
+                    let size = configs.boxplotScatterSymbolSize.value.toArray();
                     if (size[0] > size[1]) {
                         let tmp = size[1];
                         size[1] = size[0];
@@ -9296,7 +9248,7 @@ function getClock(container, width, height, dataset, configs) {
     let option = {
         colors: [configs.clockLabelColor.value],
         aria: getAria(configs),
-        backgroundColor: configs.backgroundColor.value,
+        backgroundColor: getBackgroundColor(configs),
         grid: getGrid(configs),
         title: getTitle(configs),
         //toolbox: getToolbox(configs, container, false),
@@ -9307,7 +9259,7 @@ function getClock(container, width, height, dataset, configs) {
                 name: 'clock',
                 type: 'gauge',
                 radius: configs.clockRadius.value,
-                center: eval(configs.clockCenter.value),
+                center: configs.clockCenter.value.toArray(),
                 startAngle: 90,
                 endAngle: echarts.version == "4.9.0" ? -269.99 : -270,
                 min: 0,
@@ -9410,7 +9362,7 @@ function getClock(container, width, height, dataset, configs) {
                 name: 'hour',
                 type: 'gauge',
                 radius: configs.clockRadius.value,
-                center: eval(configs.clockCenter.value),
+                center: configs.clockCenter.value.toArray(),
                 startAngle: 90,
                 endAngle: echarts.version == "4.9.0" ? -269.99 : -270,
                 min: 0,
@@ -9471,7 +9423,7 @@ function getClock(container, width, height, dataset, configs) {
                 name: 'minute',
                 type: 'gauge',
                 radius: configs.clockRadius.value,
-                center: eval(configs.clockCenter.value),
+                center: configs.clockCenter.value.toArray(),
                 startAngle: 90,
                 endAngle: echarts.version == "4.9.0" ? -269.99 : -270,
                 min: 0,
@@ -9530,7 +9482,7 @@ function getClock(container, width, height, dataset, configs) {
                 name: 'second',
                 type: 'gauge',
                 radius: configs.clockRadius.value,
-                center: eval(configs.clockCenter.value),
+                center: configs.clockCenter.value.toArray(),
                 startAngle: 90,
                 endAngle: echarts.version == "4.9.0" ? -269.99 : -270,
                 min: 0,
@@ -9712,7 +9664,7 @@ function getCandlestick(container, width, height, dataset, configs) {
 
     let option = {
         aria: getAria(configs),
-        backgroundColor: configs.backgroundColor.value,
+        backgroundColor: getBackgroundColor(configs),
         grid: {
             x: configs.grid_left.value,
             y: configs.grid_top.value,
@@ -9768,7 +9720,6 @@ function getBanners(container, width, height, dataset, configs) {
     }
 
     let myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value,renderer:configs.renderer.value});
-
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
     let containerWidth = myChart.getWidth();//Number(width.replace(/px/i, ""));
@@ -9815,7 +9766,7 @@ function getBanners(container, width, height, dataset, configs) {
 
     let option = {
         aria: getAria(configs),
-        backgroundColor: configs.bannerBackgroundColor.value,
+        backgroundColor: getBackgroundColor(configs),
         title: getTitle(configs),
         toolbox: getToolbox(configs, container, false),
         graphic: [banners[index]].concat(getWaterGraphic(__SYS_LOGO_LINK__))
@@ -9856,7 +9807,10 @@ function getWordCloud(container, width, height, dataset, configs) {
         container.style.height = height;
     }
 
-    let myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value,renderer:configs.renderer.value});
+    let myChart = echarts.init(container, configs.echartsTheme.value, {
+        locale: configs.local.value,
+        renderer: configs.renderer.value
+    });
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
     let colors = (typeof myChart._theme !== "undefined" ? myChart._theme.color : ['#c23531', '#2f4554', '#61a0a8', '#d48265', '#91c7ae', '#749f83', '#ca8622', '#bda29a', '#6e7074', '#546570', '#c4ccd3']);//["#294D99", "#156ACF", "#1598ED", "#45BDFF"]
 
@@ -9882,8 +9836,8 @@ function getWordCloud(container, width, height, dataset, configs) {
                     name: columns[c],
                     type: "wordCloud",
                     gridSize: 2,
-                    sizeRange: [configs.wordCloudMinFontSize.value, configs.wordCloudMaxFontSize.value],//[最小字号,最大字号],
-                    rotationRange: [-1 * configs.wordCloudRotationRange.value, configs.wordCloudRotationRange.value],//[旋转角度,旋转角度]
+                    sizeRange: configs.wordCloudSizeRange.value.toArray([16, 60],","),//[最小字号,最大字号],
+                    rotationRange: configs.wordCloudRotationRange.value.toArray([-45, 45], ","),//[旋转角度,旋转角度]
                     shape: configs.wordCloudShape.value,
                     //"circle", "cardioid", "diamond", "triangle-forward", "triangle", "pentagon", "star"
                     //maskImage: maskImage,
@@ -9942,7 +9896,7 @@ function getWordCloud(container, width, height, dataset, configs) {
     init();
 
     let option = {
-        backgroundColor: configs.backgroundColor.value,
+        backgroundColor: getLinearColor(0, 0, 0, 1, configs.backgroundColor.value.toArray(["transparent"],",")),
         grid: getGrid(configs),
         title: getTitle(configs),
         tooltip: getTooltip(configs, "item", function (param) {
@@ -10023,7 +9977,7 @@ function getSunburst(container, width, height, dataset, configs) {
                 let serie = {
                     name: columns[c],
                     center: [100 / (columns.length + 1) * (c + 1) + "%", "50%"],
-                    radius: eval(configs.sunburstRadius.value),//['15%', '90%'],
+                    radius: configs.sunburstRadius.value.toArray([['15%', '90%'],","]),//['15%', '90%'],
                     type: 'sunburst',
                     sort: configs.sunburstSort.value == "null" ? null : configs.sunburstSort.value,
                     //扇形块根据数据 value 的排序方式，如果未指定 value，则其值为子元素 value 之和。默认值 'desc' 表示降序排序；还可以设置为 'asc' 表示升序排序；null 表示不排序，使用原始数据的顺序；或者用回调函数进行排列：
@@ -10052,7 +10006,7 @@ function getSunburst(container, width, height, dataset, configs) {
 
         let option = {
             aria: getAria(configs),
-            backgroundColor: configs.backgroundColor.value,
+            backgroundColor: getBackgroundColor(configs),
             grid: getGrid(configs),
             title: getTitle(configs),
             tooltip: getTooltip(configs, "item", function (param) {
@@ -10193,7 +10147,7 @@ function getTreemap(container, width, height, dataset, configs) {
         },
         label: {
             normal: {
-                position: eval(configs.treemapLabelPosition.value),
+                position: configs.treemapLabelPosition.value.toArray(['5%','5%'],","),
                 formatter: function (params) {
                     let arr = [
                         '{name|' + params.data.name + '}',
@@ -10241,7 +10195,7 @@ function getTreemap(container, width, height, dataset, configs) {
 
     let option = {
         aria: getAria(configs),
-        backgroundColor: configs.backgroundColor.value,
+        backgroundColor: getBackgroundColor(configs),
         grid: getGrid(configs),
         title: getTitle(configs),
         tooltip: getTooltip(configs, "item", function (param) {
@@ -10352,7 +10306,7 @@ function getParallelAxis(container, width, height, dataset, configs) {
     setSeriesAnimation(series, configs, -1);
 
     let option = {
-        backgroundColor: configs.backgroundColor.value,
+        backgroundColor: getBackgroundColor(configs),
         grid: getGrid(configs),
         title: getTitle(configs),
         tooltip: getTooltip(configs, "item", function (param) {
@@ -10457,7 +10411,7 @@ function getSankey(container, width, height, dataset, configs) {
 
     let option = {
         aria: getAria(configs),
-        backgroundColor: configs.backgroundColor.value,
+        backgroundColor: getBackgroundColor(configs),
         grid: getGrid(configs),
         title: getTitle(configs),
         tooltip: getTooltip(configs, "item", function (param) {
@@ -10518,7 +10472,7 @@ function getThemeRiver(container, width, height, dataset, configs) {
 
     let option = {
         aria: getAria(configs),
-        backgroundColor: configs.backgroundColor.value,
+        backgroundColor: getBackgroundColor(configs),
         grid: getGrid(configs),
         title: getTitle(configs),
         tooltip: getTooltip(configs, "axis", function (param) {
@@ -10923,7 +10877,7 @@ function getPie3D(container, width, height, dataset, configs) {
 
     let option = {
         aria: getAria(configs),
-        backgroundColor: configs.backgroundColor.value,
+        backgroundColor: getBackgroundColor(configs),
         title: getTitle(configs),
         legend: getLegend(configs, legends),
         //toolbox: getToolbox(configs, container, false),
@@ -11000,7 +10954,7 @@ function getSingeAxis(container, width, height, dataset, configs) {
 
     let option = {
         aria: getAria(configs),
-        backgroundColor: configs.backgroundColor.value,
+        backgroundColor: getBackgroundColor(configs),
         grid: getGrid(configs),
         title: [
             getTitle(configs)
