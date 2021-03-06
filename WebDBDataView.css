@@ -63,6 +63,14 @@ img.title_close_button:hover{
     color: var(--main-title-color);
     margin-bottom: 0px
 }
+#main-version{
+    margin: 5px;
+    font-size: 30%;
+    color:snow;
+    background-color: sandybrown;
+    outline-style: none;
+    border-radius: 4px;
+}
 #sub-title{
     color:var(--sub-title-color);
     margin-left: 20px;

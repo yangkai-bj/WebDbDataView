@@ -1,4 +1,11 @@
-
+var __VERSION__ = {
+    version: "1.0.0",
+    date: "2021-03-06",
+    comment: [
+        "1.优化算法和压缩代码.",
+        "2.增加图形背景参数."
+        ]
+};
 var __CONFIGS__ = {
     STORAGE: {
         DATABASES: "__WEB_SQLITE_DATABASES__",
@@ -1965,6 +1972,8 @@ function workbook2blob(sheets, sheetNames) {
 function init() {
     try {
         $("main-title").appendChild(__SYS_IMAGES__.getLogoImage(__SYS_IMAGES__.logo_echarts));
+        $("main-version").innerText = __VERSION__.version;
+        $("main-version").title = __VERSION__.date + "\n" + __VERSION__.comment.join("\n");
     }catch (e) {
     }
 

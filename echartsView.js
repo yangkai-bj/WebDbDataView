@@ -31,12 +31,13 @@ function getLinearColor(x,y,x2,y2,colors) {
 
     if (Array.isArray(colors)) {
         if (colors.length > 1) {
-            for (let i = 0; i < colors.length; i++) {
-                color.colorStops.push({
-                    offset: i / (colors.length - 1),
-                    color: colors[i]
-                })
-            }
+            color.colorStops = colors.reduce(function (stops, item, index, arr) {
+                stops.push({
+                    offset: index / (arr.length - 1),
+                    color: item
+                });
+                return stops;
+            }, []);
             return color;
         } else {
             return colors[0]
@@ -60,12 +61,13 @@ function getRadialColor(x,y,r,colors) {
     };
     if (Array.isArray(colors)) {
         if (colors.length > 1) {
-            for (let i = 0; i < colors.length; i++) {
-                color.colorStops.push({
-                    offset: i / (colors.length - 1),
-                    color: colors[i]
-                })
-            }
+            color.colorStops = colors.reduce(function (stops, item, index, arr) {
+                stops.push({
+                    offset: index / (arr.length - 1),
+                    color: item
+                });
+                return stops;
+            }, []);
             return color;
         } else {
             return colors[0]
@@ -411,7 +413,7 @@ var __ECHARTS__ = {
         },
         echartsTheme: {
             name: "视图主题",
-            value: "",
+            value: null,
             options: [
                 new Option("默认", null),
                 new Option("浅色", "light"),
@@ -432,9 +434,6 @@ var __ECHARTS__ = {
                 new Option("极简", "simple")],
             type: "select"
         },
-        backgroundColor: {name: "背景颜色", value: '["transparent"]', type: "input"},
-        gradientType: {name: "渐变方式", value: "transparent", options: [new Option("透明", "transparent"), new Option("不变", "single"), new Option("线性", "line"), new Option("径向", "radial")], type: "select"},
-        gradientReverse: {name: "渐变反转", value: "false", options: [new Option("否", "false"), new Option("是", "true")], type: "select"},
         ariaEnable: {
             name: "无障碍访问",
             value: "false",
@@ -443,6 +442,9 @@ var __ECHARTS__ = {
         },
 
         hr_grid: {name: "整体布局", value: "", type: "hr"},
+        gradientType: {name: "背景模式", value: "transparent", options: [new Option("透明", "transparent"), new Option("单色", "single"), new Option("线性", "line"), new Option("径向", "radial")], type: "select"},
+        backgroundColor: {name: "背景颜色", value: '["transparent"]', type: "input"},
+        gradientReverse: {name: "渐变反转", value: "false", options: [new Option("否", "false"), new Option("是", "true")], type: "select"},
         grid_top: {name: "上边距(%)", value: "10%", type: "input"},
         grid_bottom: {name: "下边距(%)", value: "10%", type: "input"},
         grid_left: {name: "左边距(%)", value: "10%", type: "input"},
@@ -2919,21 +2921,24 @@ function getBar(container, width, height, dataset, configs) {
         container.style.height = height;
     }
 
-    let myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value,renderer:configs.renderer.value});
+    let myChart = echarts.init(container, configs.echartsTheme.value, {
+        locale: configs.local.value,
+        renderer: configs.renderer.value
+    });
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
-    let columns = [];
-    for (let i = 0; i < dataset["columns"].length; i++) {
-        columns.push(dataset["columns"][i].name);
-    }
+    let columns = dataset["columns"].reduce(function (tmp, column) {
+        tmp.push(column.name);
+        return tmp;
+    }, []);
     let xAxis = [];
     let yAxis_series = [];
     for (let c = 0; c < columns.length; c++) {
         if (c == 0) {
-            for (let i = 0; i < dataset["data"].length; i++) {
-                let r = dataset["data"][i];
-                xAxis.push(r[columns[c]].value);
-            }
+            xAxis = dataset["data"].reduce(function (tmp, row) {
+                tmp.push(row[columns[c]].value);
+                return tmp;
+            }, []);
         } else {
             let series = {
                 name: columns[c],
@@ -3018,487 +3023,500 @@ function getBar(container, width, height, dataset, configs) {
 }
 
 function getTransversBar(container, width, height, dataset, configs) {
-        if (container == null) {
-            container = document.createElement("div");
-            container.className = "echarts-container";
-            container.id = "echarts-container";
-            container.style.width = width;
-            container.style.height = height;
-        }
+    if (container == null) {
+        container = document.createElement("div");
+        container.className = "echarts-container";
+        container.id = "echarts-container";
+        container.style.width = width;
+        container.style.height = height;
+    }
 
-        let myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value,renderer:configs.renderer.value});
+    let myChart = echarts.init(container, configs.echartsTheme.value, {
+        locale: configs.local.value,
+        renderer: configs.renderer.value
+    });
 
-        myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
+    myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
-        let columns = [];
-        for (let i = 0; i < dataset["columns"].length; i++) {
-            columns.push(dataset["columns"][i].name);
-        }
-        let xAxis = [];
-        let yAxis_series = [];
-        for (let c = 0; c < columns.length; c++) {
-            if (c == 0) {
-                for (let i = 0; i < dataset["data"].length; i++) {
-                    let r = dataset["data"][i];
-                    xAxis.push(r[columns[c]].value);
+    let columns = dataset["columns"].reduce(function (tmp, column) {
+        tmp.push(column.name);
+        return tmp;
+    }, []);
+    let xAxis = [];
+    let yAxis_series = [];
+    for (let c = 0; c < columns.length; c++) {
+        if (c == 0) {
+            for (let i = 0; i < dataset["data"].length; i++) {
+                let r = dataset["data"][i];
+                xAxis.push(r[columns[c]].value);
+            }
+        } else {
+            let series = {
+                name: columns[c],
+                type: "bar",
+                data: [],
+                itemStyle: {
+                    borderRadius: Number(configs.barItemStyleBorderRadius.value),
+                },
+            };
+
+            series.label = {
+                show: configs.barLabelDisplay.value.toBoolean(),
+                rotate: configs.barLabelRotate.value,
+                align: "center",
+                verticalAlign: "middle",
+                position: configs.barLabelPosition.value,
+                distance: 15,
+                formatter: "{value|{c}}",
+                rich: {
+                    value: {
+                        color: configs.labelBarTextColor.value,
+                        fontSize: configs.labelBarFontSize.value,
+                    }
                 }
-            } else {
-                let series = {
-                    name: columns[c],
-                    type: "bar",
-                    data: [],
-                    itemStyle: {
-                        borderRadius: Number(configs.barItemStyleBorderRadius.value),
-                    },
-                };
-
-                series.label = {
-                    show: configs.barLabelDisplay.value.toBoolean(),
-                    rotate: configs.barLabelRotate.value,
+            };
+            series.emphasis = {
+                label: {
+                    show: configs.barEmphasisLabelDisplay.value.toBoolean(),
                     align: "center",
                     verticalAlign: "middle",
                     position: configs.barLabelPosition.value,
                     distance: 15,
                     formatter: "{value|{c}}",
+                    rotate: 0,
                     rich: {
                         value: {
                             color: configs.labelBarTextColor.value,
                             fontSize: configs.labelBarFontSize.value,
                         }
                     }
-                };
-                series.emphasis = {
+                }
+            };
+
+            setSeriesAnimation(series, configs, c);
+
+            for (let i = 0; i < dataset["data"].length; i++) {
+                let r = dataset["data"][i];
+                series.data.push(r[columns[c]].value);
+            }
+            yAxis_series.push(series);
+        }
+    }
+
+    let option = {
+        aria: getAria(configs),
+        backgroundColor: getBackgroundColor(configs),
+        grid: getGrid(configs),
+        brush: getBrush(configs),
+        toolbox: getToolbox(configs, container, true),
+        title: getTitle(configs),
+        tooltip: getTooltip(configs, "axis", null),
+        legend: getLegend(configs, columns.slice(1, columns.length)),
+        xAxis: getXAxis(configs, "value", null),
+        yAxis: getYAxis(configs, "category", xAxis, "bottom"),
+
+        dataZoom: [
+            getDataZoomXAxis(configs, 0, "inside", 0, 100),
+            getDataZoomXAxis(configs, 0, "slider", 0, 100),
+            getDataZoomYAxis(configs, 0, "inside", 0, 100, myChart.getWidth()),
+            getDataZoomYAxis(configs, 0, "slider", 0, 100, myChart.getWidth())
+        ],
+        graphic: getWaterGraphic(__SYS_LOGO_LINK__),
+        series: yAxis_series,
+    };
+    setTimeout(() => {
+        myChart.hideLoading();
+        myChart.setOption(option);
+    }, Number(configs.loadingTimes.value) * 1000);
+
+    __ECHARTS__.addHistory(container, configs, dataset, width, height);
+    return container;
+}
+
+function getLine(container, width, height, dataset, configs) {
+    if (container == null) {
+        container = document.createElement("div");
+        container.className = "echarts-container";
+        container.id = "echarts-container";
+        container.style.width = width;
+        container.style.height = height;
+    }
+
+    let myChart = echarts.init(container, configs.echartsTheme.value, {
+        locale: configs.local.value,
+        renderer: configs.renderer.value
+    });
+    myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
+
+    let columns = dataset["columns"].reduce(function (tmp, column) {
+        tmp.push(column.name);
+        return tmp;
+    }, []);
+    let xAxis = [];
+    let yAxis_series = [];
+    for (let c = 0; c < columns.length; c++) {
+        if (c == 0) {
+            for (let i = 0; i < dataset["data"].length; i++) {
+                let r = dataset["data"][i];
+                xAxis.push(r[columns[c]].value);
+            }
+        } else {
+            let series = {
+                name: columns[c],
+                type: "line",
+                data: [],
+                label: {
+                    show: configs.lineLabelDisplay.value.toBoolean(),
+                    align: "center",
+                    verticalAlign: "middle",
+                    position: "top",
+                    distance: 15,
+                    formatter: "{value|{c}}",
+                    rotate: configs.lineLabelRotate.value,
+                    rich: {
+                        value: {
+                            color: configs.lineLabelTextColor.value,
+                            fontSize: configs.lineLabelFontSize.value,
+                        }
+                    }
+                },
+                itemStyle: {},
+                lineStyle: {
+                    width: Number(configs.lineStyleWidth.value),
+                },
+                emphasis: {
                     label: {
-                        show: configs.barEmphasisLabelDisplay.value.toBoolean(),
+                        show: configs.lineEmphasisLabelDisplay.value.toBoolean(),
+                        position: "bottom",
+                        rotate: 0,
+                        fontSize: configs.lineLabelFontSize.value,
+                    }
+                },
+                symbol: configs.lineSymbol.value,
+                symbolSize: configs.lineSymbolSize.value,
+                smooth: configs.lineSmooth.value.toBoolean(),
+                markPoint: getMarkPoint(configs),
+                markLine: getMarkLine(configs),
+                markArea: {},
+            };
+
+            setSeriesAnimation(series, configs, c);
+            for (let i = 0; i < dataset["data"].length; i++) {
+                let r = dataset["data"][i];
+                series.data.push(r[columns[c]].value);
+            }
+            yAxis_series.push(series);
+        }
+    }
+
+    let option = {
+        backgroundColor: getBackgroundColor(configs),
+        grid: getGrid(configs),
+        brush: getBrush(configs),
+        toolbox: getToolbox(configs, container, true),
+        title: getTitle(configs),
+        tooltip: getTooltip(configs, "axis", null),
+        legend: getLegend(configs, columns.slice(1, columns.length)),
+        xAxis: getXAxis(configs, "category", xAxis),
+        yAxis: getYAxis(configs, "value", null, "left"),
+        dataZoom: [
+            getDataZoomXAxis(configs, 0, "inside", 0, 100),
+            getDataZoomXAxis(configs, 0, "slider", 0, 100),
+            getDataZoomYAxis(configs, 0, "inside", 0, 100, myChart.getWidth()),
+            getDataZoomYAxis(configs, 0, "slider", 0, 100, myChart.getWidth())
+        ],
+        graphic: getWaterGraphic(__SYS_LOGO_LINK__),
+        series: yAxis_series,
+    };
+
+    setTimeout(() => {
+        myChart.hideLoading();
+        myChart.setOption(option);
+    }, Number(configs.loadingTimes.value) * 1000);
+
+    __ECHARTS__.addHistory(container, configs, dataset, width, height);
+    return container;
+}
+
+function getBarAndLine(container, width, height, dataset, configs) {
+    if (container == null) {
+        container = document.createElement("div");
+        container.className = "echarts-container";
+        container.id = "echarts-container";
+        container.style.width = width;
+        container.style.height = height;
+    }
+
+    let myChart = echarts.init(container, configs.echartsTheme.value, {
+        locale: configs.local.value,
+        renderer: configs.renderer.value
+    });
+    myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
+    let containerWidth = myChart.getWidth();
+    let containerHeight = myChart.getHeight();
+
+    let columns = dataset["columns"].reduce(function (tmp, column) {
+        tmp.push(column.name);
+        return tmp;
+    }, []);
+    let xAxis = [];
+    let yAxis_series = [];
+    for (let c = 0; c < columns.length; c++) {
+        if (c == 0) {
+            for (let i = 0; i < dataset["data"].length; i++) {
+                let r = dataset["data"][i];
+                xAxis.push(r[columns[c]].value);
+            }
+        } else {
+            let serie = {};
+            if ((c - 1) % 2 == 0) {
+                serie = {
+                    name: columns[c],
+                    type: "line",
+                    data: [],
+                    yAxisIndex: (c - 1) % 2,
+                    lineStyle: {
+                        width: Number(configs.lineStyleWidth.value),
+                    },
+                    label: {
+                        show: configs.lineLabelDisplay.value.toBoolean(),
+                        align: "center",
+                        verticalAlign: "middle",
+                        position: "top",
+                        distance: 15,
+                        formatter: "{value|{c}}",
+                        rotate: configs.lineLabelRotate.value,
+                        rich: {
+                            value: {
+                                color: configs.lineLabelTextColor.value,
+                                fontSize: configs.lineLabelFontSize.value,
+                            }
+                        }
+                    },
+                    emphasis: {
+                        label: {
+                            show: configs.lineEmphasisLabelDisplay.value.toBoolean(),
+                            position: "bottom",
+                            rotate: 0,
+                            fontSize: configs.lineLabelFontSize.value,
+                        }
+                    },
+                    itemStyle: {},
+                    symbol: configs.lineSymbol.value,
+                    symbolSize: configs.lineSymbolSize.value,
+                    smooth: configs.lineSmooth.value.toBoolean(),
+                    markPoint: getMarkPoint(configs),
+                    markLine: getMarkLine(configs),
+                    markArea: {},
+                };
+            }
+            else {
+                serie = {
+                    name: columns[c],
+                    type: "bar",
+                    yAxisIndex: (c - 1) % 2,
+                    data: [],
+                    label: {
+                        show: configs.barLabelDisplay.value.toBoolean(),
                         align: "center",
                         verticalAlign: "middle",
                         position: configs.barLabelPosition.value,
                         distance: 15,
                         formatter: "{value|{c}}",
-                        rotate: 0,
+                        rotate: configs.barLabelRotate.value,
                         rich: {
                             value: {
                                 color: configs.labelBarTextColor.value,
                                 fontSize: configs.labelBarFontSize.value,
                             }
                         }
-                    }
-                };
-
-                setSeriesAnimation(series, configs, c);
-
-                for (let i = 0; i < dataset["data"].length; i++) {
-                    let r = dataset["data"][i];
-                    series.data.push(r[columns[c]].value);
-                }
-                yAxis_series.push(series);
-            }
-        }
-
-        let option = {
-            aria: getAria(configs),
-            backgroundColor: getBackgroundColor(configs),
-            grid: getGrid(configs),
-            brush: getBrush(configs),
-            toolbox: getToolbox(configs, container, true),
-            title: getTitle(configs),
-            tooltip: getTooltip(configs, "axis", null),
-            legend: getLegend(configs, columns.slice(1, columns.length)),
-            xAxis: getXAxis(configs, "value", null),
-            yAxis: getYAxis(configs, "category", xAxis, "bottom"),
-
-            dataZoom: [
-                getDataZoomXAxis(configs, 0, "inside", 0, 100),
-                getDataZoomXAxis(configs, 0, "slider", 0, 100),
-                getDataZoomYAxis(configs, 0, "inside", 0, 100, myChart.getWidth()),
-                getDataZoomYAxis(configs, 0, "slider", 0, 100, myChart.getWidth())
-            ],
-            graphic: getWaterGraphic(__SYS_LOGO_LINK__),
-            series: yAxis_series,
-        };
-        setTimeout(() => {
-            myChart.hideLoading();
-            myChart.setOption(option);
-        }, Number(configs.loadingTimes.value) * 1000);
-
-        __ECHARTS__.addHistory(container, configs, dataset, width, height);
-        return container;
-    }
-
-function getLine(container, width, height, dataset, configs) {
-        if (container == null) {
-            container = document.createElement("div");
-            container.className = "echarts-container";
-            container.id = "echarts-container";
-            container.style.width = width;
-            container.style.height = height;
-        }
-
-        let myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value,renderer:configs.renderer.value});
-        myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
-
-        let columns = [];
-        for (let i = 0; i < dataset["columns"].length; i++) {
-            columns.push(dataset["columns"][i].name);
-        }
-        let xAxis = [];
-        let yAxis_series = [];
-        for (let c = 0; c < columns.length; c++) {
-            if (c == 0) {
-                for (let i = 0; i < dataset["data"].length; i++) {
-                    let r = dataset["data"][i];
-                    xAxis.push(r[columns[c]].value);
-                }
-            } else {
-                let series = {
-                    name: columns[c],
-                    type: "line",
-                    data: [],
-                    label: {
-                        show: configs.lineLabelDisplay.value.toBoolean(),
-                        align: "center",
-                        verticalAlign: "middle",
-                        position: "top",
-                        distance: 15,
-                        formatter: "{value|{c}}",
-                        rotate: configs.lineLabelRotate.value,
-                        rich: {
-                            value: {
-                                color: configs.lineLabelTextColor.value,
-                                fontSize: configs.lineLabelFontSize.value,
-                            }
-                        }
                     },
-                    itemStyle: {},
-                    lineStyle: {
-                        width: Number(configs.lineStyleWidth.value),
+                    itemStyle: {
+                        borderRadius: Number(configs.barItemStyleBorderRadius.value),
                     },
                     emphasis: {
                         label: {
-                            show: configs.lineEmphasisLabelDisplay.value.toBoolean(),
-                            position: "bottom",
-                            rotate: 0,
-                            fontSize: configs.lineLabelFontSize.value,
-                        }
-                    },
-                    symbol: configs.lineSymbol.value,
-                    symbolSize: configs.lineSymbolSize.value,
-                    smooth: configs.lineSmooth.value.toBoolean(),
-                    markPoint: getMarkPoint(configs),
-                    markLine: getMarkLine(configs),
-                    markArea: {},
-                };
-
-                setSeriesAnimation(series, configs, c);
-                for (let i = 0; i < dataset["data"].length; i++) {
-                    let r = dataset["data"][i];
-                    series.data.push(r[columns[c]].value);
-                }
-                yAxis_series.push(series);
-            }
-        }
-
-        let option = {
-            backgroundColor: getBackgroundColor(configs),
-            grid: getGrid(configs),
-            brush: getBrush(configs),
-            toolbox: getToolbox(configs, container, true),
-            title: getTitle(configs),
-            tooltip: getTooltip(configs, "axis", null),
-            legend: getLegend(configs, columns.slice(1, columns.length)),
-            xAxis: getXAxis(configs, "category", xAxis),
-            yAxis: getYAxis(configs, "value", null, "left"),
-            dataZoom: [
-                getDataZoomXAxis(configs, 0, "inside", 0, 100),
-                getDataZoomXAxis(configs, 0, "slider", 0, 100),
-                getDataZoomYAxis(configs, 0, "inside", 0, 100, myChart.getWidth()),
-                getDataZoomYAxis(configs, 0, "slider", 0, 100, myChart.getWidth())
-            ],
-            graphic: getWaterGraphic(__SYS_LOGO_LINK__),
-            series: yAxis_series,
-        };
-
-        setTimeout(() => {
-            myChart.hideLoading();
-            myChart.setOption(option);
-        }, Number(configs.loadingTimes.value) * 1000);
-
-        __ECHARTS__.addHistory(container, configs, dataset, width, height);
-        return container;
-    }
-
-function getBarAndLine(container, width, height, dataset, configs) {
-        if (container == null) {
-            container = document.createElement("div");
-            container.className = "echarts-container";
-            container.id = "echarts-container";
-            container.style.width = width;
-            container.style.height = height;
-        }
-
-        let myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value,renderer:configs.renderer.value});
-        myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
-        let containerWidth = myChart.getWidth();
-        let containerHeight = myChart.getHeight();
-        let columns = [];
-        for (let i = 0; i < dataset["columns"].length; i++) {
-            columns.push(dataset["columns"][i].name);
-        }
-        let xAxis = [];
-        let yAxis_series = [];
-        for (let c = 0; c < columns.length; c++) {
-            if (c == 0) {
-                for (let i = 0; i < dataset["data"].length; i++) {
-                    let r = dataset["data"][i];
-                    xAxis.push(r[columns[c]].value);
-                }
-            } else {
-                let serie = {};
-                if ((c - 1) % 2 == 0) {
-                    serie = {
-                        name: columns[c],
-                        type: "line",
-                        data: [],
-                        yAxisIndex: (c - 1) % 2,
-                        lineStyle: {
-                            width: Number(configs.lineStyleWidth.value),
-                        },
-                        label: {
-                            show: configs.lineLabelDisplay.value.toBoolean(),
-                            align: "center",
-                            verticalAlign: "middle",
-                            position: "top",
-                            distance: 15,
-                            formatter: "{value|{c}}",
-                            rotate: configs.lineLabelRotate.value,
-                            rich: {
-                                value: {
-                                    color: configs.lineLabelTextColor.value,
-                                    fontSize: configs.lineLabelFontSize.value,
-                                }
-                            }
-                        },
-                        emphasis: {
-                            label: {
-                                show: configs.lineEmphasisLabelDisplay.value.toBoolean(),
-                                position: "bottom",
-                                rotate: 0,
-                                fontSize: configs.lineLabelFontSize.value,
-                            }
-                        },
-                        itemStyle: {},
-                        symbol: configs.lineSymbol.value,
-                        symbolSize: configs.lineSymbolSize.value,
-                        smooth: configs.lineSmooth.value.toBoolean(),
-                        markPoint: getMarkPoint(configs),
-                        markLine: getMarkLine(configs),
-                        markArea: {},
-                    };
-                }
-                else {
-                    serie = {
-                        name: columns[c],
-                        type: "bar",
-                        yAxisIndex: (c - 1) % 2,
-                        data: [],
-                        label: {
-                            show: configs.barLabelDisplay.value.toBoolean(),
+                            show: configs.barEmphasisLabelDisplay.value.toBoolean(),
                             align: "center",
                             verticalAlign: "middle",
                             position: configs.barLabelPosition.value,
                             distance: 15,
                             formatter: "{value|{c}}",
-                            rotate: configs.barLabelRotate.value,
+                            rotate: 0,
                             rich: {
                                 value: {
                                     color: configs.labelBarTextColor.value,
                                     fontSize: configs.labelBarFontSize.value,
                                 }
                             }
-                        },
-                        itemStyle: {
-                            borderRadius: Number(configs.barItemStyleBorderRadius.value),
-                        },
-                        emphasis: {
-                            label: {
-                                show: configs.barEmphasisLabelDisplay.value.toBoolean(),
-                                align: "center",
-                                verticalAlign: "middle",
-                                position: configs.barLabelPosition.value,
-                                distance: 15,
-                                formatter: "{value|{c}}",
-                                rotate: 0,
-                                rich: {
-                                    value: {
-                                        color: configs.labelBarTextColor.value,
-                                        fontSize: configs.labelBarFontSize.value,
-                                    }
-                                }
-                            }
-                        },
-                    }
+                        }
+                    },
                 }
-
-                setSeriesAnimation(serie, configs, (c - 1));
-                for (let i = 0; i < dataset["data"].length; i++) {
-                    let r = dataset["data"][i];
-                    serie.data.push(r[columns[c]].value);
-                }
-                yAxis_series.push(serie);
             }
+
+            setSeriesAnimation(serie, configs, (c - 1));
+            for (let i = 0; i < dataset["data"].length; i++) {
+                let r = dataset["data"][i];
+                serie.data.push(r[columns[c]].value);
+            }
+            yAxis_series.push(serie);
         }
-
-        let option = {
-            aria: getAria(configs),
-            backgroundColor: getBackgroundColor(configs),
-            grid: getGrid(configs),
-            brush: getBrush(configs),
-            toolbox: getToolbox(configs, container, true),
-            title: getTitle(configs),
-            tooltip: getTooltip(configs, "axis", null),
-            legend: getLegend(configs, columns.slice(1, columns.length)),
-            xAxis: getXAxis(configs, "category", xAxis),
-            yAxis: [
-                getYAxis(configs, "value", null, "left"),
-                getYAxis(configs, "value", null, "right")
-            ],
-            dataZoom: [
-                getDataZoomXAxis(configs, 0, "inside", 0, 100),
-                getDataZoomXAxis(configs, 0, "slider", 0, 100),
-                getDataZoomYAxis(configs, 0, "inside", 0, 100, myChart.getWidth()),
-                getDataZoomYAxis(configs, 0, "slider", 0, 100, myChart.getWidth()),
-                getDataZoomYAxis(configs, 1, "inside", 0, 100, myChart.getWidth()),
-                getDataZoomYAxis(configs, 1, "slider", 0, 100, myChart.getWidth())
-            ],
-            graphic: getWaterGraphic(__SYS_LOGO_LINK__),
-            series: yAxis_series,
-        };
-
-        setTimeout(() => {
-            myChart.hideLoading();
-            myChart.setOption(option);
-        }, Number(configs.loadingTimes.value) * 1000);
-
-        __ECHARTS__.addHistory(container, configs, dataset, width, height);
-        return container;
     }
+
+    let option = {
+        aria: getAria(configs),
+        backgroundColor: getBackgroundColor(configs),
+        grid: getGrid(configs),
+        brush: getBrush(configs),
+        toolbox: getToolbox(configs, container, true),
+        title: getTitle(configs),
+        tooltip: getTooltip(configs, "axis", null),
+        legend: getLegend(configs, columns.slice(1, columns.length)),
+        xAxis: getXAxis(configs, "category", xAxis),
+        yAxis: [
+            getYAxis(configs, "value", null, "left"),
+            getYAxis(configs, "value", null, "right")
+        ],
+        dataZoom: [
+            getDataZoomXAxis(configs, 0, "inside", 0, 100),
+            getDataZoomXAxis(configs, 0, "slider", 0, 100),
+            getDataZoomYAxis(configs, 0, "inside", 0, 100, myChart.getWidth()),
+            getDataZoomYAxis(configs, 0, "slider", 0, 100, myChart.getWidth()),
+            getDataZoomYAxis(configs, 1, "inside", 0, 100, myChart.getWidth()),
+            getDataZoomYAxis(configs, 1, "slider", 0, 100, myChart.getWidth())
+        ],
+        graphic: getWaterGraphic(__SYS_LOGO_LINK__),
+        series: yAxis_series,
+    };
+
+    setTimeout(() => {
+        myChart.hideLoading();
+        myChart.setOption(option);
+    }, Number(configs.loadingTimes.value) * 1000);
+
+    __ECHARTS__.addHistory(container, configs, dataset, width, height);
+    return container;
+}
 
 function getAreaStyle(container, width, height, dataset, configs) {
-        if (container == null) {
-            container = document.createElement("div");
-            container.className = "echarts-container";
-            container.id = "echarts-container";
-            container.style.width = width;
-            container.style.height = height;
-        }
+    if (container == null) {
+        container = document.createElement("div");
+        container.className = "echarts-container";
+        container.id = "echarts-container";
+        container.style.width = width;
+        container.style.height = height;
+    }
 
-        let myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value,renderer:configs.renderer.value});
-        myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
+    let myChart = echarts.init(container, configs.echartsTheme.value, {
+        locale: configs.local.value,
+        renderer: configs.renderer.value
+    });
+    myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
-        let columns = [];
-        for (let i = 0; i < dataset["columns"].length; i++) {
-            columns.push(dataset["columns"][i].name);
-        }
-        let xAxis = [];
-        let yAxis_series = [];
-        for (let c = 0; c < columns.length; c++) {
-            if (c == 0) {
-                for (let i = 0; i < dataset["data"].length; i++) {
-                    let r = dataset["data"][i];
-                    xAxis.push(r[columns[c]].value);
-                }
-            } else {
-                let series = {
-                    name: columns[c],
-                    type: "line",
-                    areaStyle: {
-                        //可指定渐变颜色
-                        //color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-                        //    offset: 0,
-                        //    color: "rgb(255, 158, 68)"
-                        //}, {
-                        //    offset: 1,
-                        //   color: "rgb(255, 70, 131)"
-                        //}])
-                    },
-                    //面积图
-                    sampling: "average",
-                    //抽样
-                    itemStyle: {
-                        //可指定系列颜色
-                        //color: "#d68262"
-                    },
-                    data: [],
-                    lineStyle: {
-                        width: Number(configs.lineStyleWidth.value),
-                    },
-                    label: {
-                        show: configs.lineLabelDisplay.value.toBoolean(),
-                        align: "center",
-                        verticalAlign: "middle",
-                        position: "top",
-                        distance: 15,
-                        formatter: "{value|{c}}",
-                        rotate: configs.lineLabelRotate.value,
-                        rich: {
-                            value: {
-                                color: configs.lineLabelTextColor.value,
-                                fontSize: configs.lineLabelFontSize.value,
-                            }
-                        }
-                    },
-                    emphasis: {
-                        label: {
-                            show: configs.lineEmphasisLabelDisplay.value.toBoolean(),
-                            position: "bottom",
-                            rotate: 0,
+    let columns = dataset["columns"].reduce(function (tmp, column) {
+        tmp.push(column.name);
+        return tmp;
+    }, []);
+    let xAxis = [];
+    let yAxis_series = [];
+    for (let c = 0; c < columns.length; c++) {
+        if (c == 0) {
+            for (let i = 0; i < dataset["data"].length; i++) {
+                let r = dataset["data"][i];
+                xAxis.push(r[columns[c]].value);
+            }
+        } else {
+            let series = {
+                name: columns[c],
+                type: "line",
+                areaStyle: {
+                    //可指定渐变颜色
+                    //color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                    //    offset: 0,
+                    //    color: "rgb(255, 158, 68)"
+                    //}, {
+                    //    offset: 1,
+                    //   color: "rgb(255, 70, 131)"
+                    //}])
+                },
+                //面积图
+                sampling: "average",
+                //抽样
+                itemStyle: {
+                    //可指定系列颜色
+                    //color: "#d68262"
+                },
+                data: [],
+                lineStyle: {
+                    width: Number(configs.lineStyleWidth.value),
+                },
+                label: {
+                    show: configs.lineLabelDisplay.value.toBoolean(),
+                    align: "center",
+                    verticalAlign: "middle",
+                    position: "top",
+                    distance: 15,
+                    formatter: "{value|{c}}",
+                    rotate: configs.lineLabelRotate.value,
+                    rich: {
+                        value: {
+                            color: configs.lineLabelTextColor.value,
                             fontSize: configs.lineLabelFontSize.value,
                         }
-                    },
-                    symbol: configs.lineSymbol.value,
-                    symbolSize: configs.lineSymbolSize.value,
-                    smooth: configs.lineSmooth.value.toBoolean(),
-                    markPoint: getMarkPoint(configs),
-                    markLine: getMarkLine(configs),
-                    markArea: {},
-                };
-                setSeriesAnimation(series, configs, c);
-                for (let i = 0; i < dataset["data"].length; i++) {
-                    let r = dataset["data"][i];
-                    series.data.push(r[columns[c]].value);
-                }
-                yAxis_series.push(series);
+                    }
+                },
+                emphasis: {
+                    label: {
+                        show: configs.lineEmphasisLabelDisplay.value.toBoolean(),
+                        position: "bottom",
+                        rotate: 0,
+                        fontSize: configs.lineLabelFontSize.value,
+                    }
+                },
+                symbol: configs.lineSymbol.value,
+                symbolSize: configs.lineSymbolSize.value,
+                smooth: configs.lineSmooth.value.toBoolean(),
+                markPoint: getMarkPoint(configs),
+                markLine: getMarkLine(configs),
+                markArea: {},
+            };
+            setSeriesAnimation(series, configs, c);
+            for (let i = 0; i < dataset["data"].length; i++) {
+                let r = dataset["data"][i];
+                series.data.push(r[columns[c]].value);
             }
+            yAxis_series.push(series);
         }
-
-        let option = {
-            aria: getAria(configs),
-            grid: getGrid(configs),
-            backgroundColor: getBackgroundColor(configs),
-            brush: getBrush(configs),
-            toolbox: getToolbox(configs, container, true),
-            title: getTitle(configs),
-            tooltip: getTooltip(configs, "axis", null),
-            legend: getLegend(configs, columns.slice(1, columns.length)),
-            xAxis: getXAxis(configs, "category", xAxis),
-            yAxis: getYAxis(configs, "value", null, "left"),
-            dataZoom: [
-                getDataZoomXAxis(configs, 0, "inside", 0, 100),
-                getDataZoomXAxis(configs, 0, "slider", 0, 100),
-                getDataZoomYAxis(configs, 0, "inside", 0, 100, myChart.getWidth()),
-                getDataZoomYAxis(configs, 0, "slider", 0, 100, myChart.getWidth())
-            ],
-            graphic: getWaterGraphic(__SYS_LOGO_LINK__),
-            series: yAxis_series,
-        };
-        setTimeout(() => {
-            myChart.hideLoading();
-            myChart.setOption(option);
-        }, Number(configs.loadingTimes.value) * 1000);
-
-        __ECHARTS__.addHistory(container, configs, dataset, width, height);
-        return container;
     }
+
+    let option = {
+        aria: getAria(configs),
+        grid: getGrid(configs),
+        backgroundColor: getBackgroundColor(configs),
+        brush: getBrush(configs),
+        toolbox: getToolbox(configs, container, true),
+        title: getTitle(configs),
+        tooltip: getTooltip(configs, "axis", null),
+        legend: getLegend(configs, columns.slice(1, columns.length)),
+        xAxis: getXAxis(configs, "category", xAxis),
+        yAxis: getYAxis(configs, "value", null, "left"),
+        dataZoom: [
+            getDataZoomXAxis(configs, 0, "inside", 0, 100),
+            getDataZoomXAxis(configs, 0, "slider", 0, 100),
+            getDataZoomYAxis(configs, 0, "inside", 0, 100, myChart.getWidth()),
+            getDataZoomYAxis(configs, 0, "slider", 0, 100, myChart.getWidth())
+        ],
+        graphic: getWaterGraphic(__SYS_LOGO_LINK__),
+        series: yAxis_series,
+    };
+    setTimeout(() => {
+        myChart.hideLoading();
+        myChart.setOption(option);
+    }, Number(configs.loadingTimes.value) * 1000);
+
+    __ECHARTS__.addHistory(container, configs, dataset, width, height);
+    return container;
+}
 
 function getPolar(container, width, height, dataset, configs) {
     if (configs.polarType.value == "heatmap") {
@@ -3517,10 +3535,10 @@ function getPolar(container, width, height, dataset, configs) {
         });
         myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
-        let columns = [];
-        for (let i = 0; i < dataset["columns"].length; i++) {
-            columns.push(dataset["columns"][i].name);
-        }
+        let columns = dataset["columns"].reduce(function (tmp, column) {
+            tmp.push(column.name);
+            return tmp;
+        }, []);
         let xAxis = [];
         let yAxis_series = [];
         for (let c = 0; c < columns.length; c++) {
@@ -3656,10 +3674,10 @@ function getPolarHeatmap(container, width, height, dataset, configs) {
     let myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value,renderer:configs.renderer.value});
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
-    let columns = [];
-    for (let i = 0; i < dataset["columns"].length; i++) {
-        columns.push(dataset["columns"][i].name);
-    }
+    let columns = dataset["columns"].reduce(function (tmp, column) {
+        tmp.push(column.name);
+        return tmp;
+    }, []);
     let xAxis = [];
     let data = [];
     for (let c = 0; c < columns.length; c++) {
@@ -3870,117 +3888,120 @@ function getPieRichText(colors) {
 }
 
 function getPie(container, width, height, dataset, configs) {
-        if (container == null) {
-            container = document.createElement("div");
-            container.className = "echarts-container";
-            container.id = "echarts-container";
-            container.style.width = width;
-            container.style.height = height;
-        }
-
-        let myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value,renderer:configs.renderer.value});
-        myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
-        let colors = (typeof myChart._theme !== "undefined" ? myChart._theme.color : ['#c23531', '#2f4554', '#61a0a8', '#d48265', '#91c7ae', '#749f83', '#ca8622', '#bda29a', '#6e7074', '#546570', '#c4ccd3']);
-
-        let columns = [];
-        for (let i = 0; i < dataset["columns"].length; i++) {
-            columns.push(dataset["columns"][i].name);
-        }
-        let series = [];
-        for (let c = 1; c < columns.length; c++) {
-            let serie = {
-                name: columns[c],
-                type: "pie",
-                radius: configs.outRadius.value,
-                selectedMode: configs.pieSelectedMode.value,
-                label: {
-                    show: configs.pieLabelDisplay.value.toBoolean(),
-                    //控制label是否显示
-                    position: configs.pieLabelPosition.value,
-                    alignTo: configs.pieLabelAlignTo.value,
-                    bleedMargin: 25,
-                    //出血线
-                    margin: 20,
-                },
-                labelLine: {
-                    show: configs.pieLabelDisplay.value.toBoolean(),
-                },
-                emphasis: {
-                    label: {
-                        show: true,
-                        fontSize: "30",
-                        fontWeight: "bold"
-                    }
-                },
-                itemStyle: {
-                    label: {
-                        show: true,
-                    },
-                    borderRadius: configs.pieItemStyleBorderRadius.value,
-                    //borderColor: 'transparent',//'#fff',
-                    //borderWidth: 2
-                },
-                hoverOffset: 10,
-                selectedOffset: 10,
-                avoidLabelOverlap: configs.richTextLabel.value.toBoolean() ? false : true,
-                hoverAnimation: true,
-                data: [],
-            };
-            setSeriesAnimation(serie, configs, -1);
-            for (let i = 0; i < dataset["data"].length; i++) {
-                let r = dataset["data"][i];
-                serie.data.push({"value": r[columns[c]].value, "name": r[columns[0]].value});
-            }
-            series.push(serie);
-        }
-
-        let top = toPoint(configs.grid_top.value);
-        let left = toPoint(configs.grid_left.value);
-        let groupWith = configs.groupWith.value;
-        let lines = parseInt(series.length / groupWith + 0.5);
-        let h = parseInt((100 - toPoint(configs.grid_top.value) - toPoint(configs.grid_bottom.value)) / lines);
-        let w = (100 - toPoint(configs.grid_left.value) - toPoint(configs.grid_right.value)) / groupWith;
-        for (let i = 0; i < series.length; i++) {
-            series[i].top = ((top + parseInt(i / groupWith) * h) + parseInt(i / groupWith) * top) + "%";
-            series[i].left = (left + (i % groupWith) * w) + "%";
-            series[i].width = w + "%";
-            series[i].height = h + "%";
-        }
-
-        let option = {
-            aria: getAria(configs),
-            backgroundColor: getBackgroundColor(configs),
-            title: getTitle(configs),
-            legend: getLegend(configs, columns.slice(1,columns.length)),
-            toolbox: getToolbox(configs, container, false),
-            tooltip: getTooltip(configs, "item", function (param) {
-                console.log(param);
-                return [param.seriesName,
-                    param.marker + "&ensp;" + param.name +
-                    ":<span style='display:inline-block;min-width:30px;text-align:right;font-weight:bold'>&ensp;" +
-                    param.value + "&ensp;(&ensp;" +
-                    param.percent + "%&ensp;)</span>"].join("<br>");
-            }),
-            label: {
-                fontSize: configs.pieLabelFontSize.value,
-            },
-            series: series,
-            graphic: getWaterGraphic(__SYS_LOGO_LINK__),
-        };
-
-        if (configs.richTextLabel.value.toBoolean()) {
-            //富文本
-            option.label = getPieRichText(colors);
-        }
-
-        setTimeout(() => {
-            myChart.hideLoading();
-            myChart.setOption(option);
-        }, Number(configs.loadingTimes.value) * 1000);
-
-        __ECHARTS__.addHistory(container, configs, dataset, width, height);
-        return container;
+    if (container == null) {
+        container = document.createElement("div");
+        container.className = "echarts-container";
+        container.id = "echarts-container";
+        container.style.width = width;
+        container.style.height = height;
     }
+
+    let myChart = echarts.init(container, configs.echartsTheme.value, {
+        locale: configs.local.value,
+        renderer: configs.renderer.value
+    });
+    myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
+    let colors = (typeof myChart._theme !== "undefined" ? myChart._theme.color : ['#c23531', '#2f4554', '#61a0a8', '#d48265', '#91c7ae', '#749f83', '#ca8622', '#bda29a', '#6e7074', '#546570', '#c4ccd3']);
+
+    let columns = dataset["columns"].reduce(function (tmp, column) {
+        tmp.push(column.name);
+        return tmp;
+    }, []);
+    let series = [];
+    for (let c = 1; c < columns.length; c++) {
+        let serie = {
+            name: columns[c],
+            type: "pie",
+            radius: configs.outRadius.value,
+            selectedMode: configs.pieSelectedMode.value,
+            label: {
+                show: configs.pieLabelDisplay.value.toBoolean(),
+                //控制label是否显示
+                position: configs.pieLabelPosition.value,
+                alignTo: configs.pieLabelAlignTo.value,
+                bleedMargin: 25,
+                //出血线
+                margin: 20,
+            },
+            labelLine: {
+                show: configs.pieLabelDisplay.value.toBoolean(),
+            },
+            emphasis: {
+                label: {
+                    show: true,
+                    fontSize: "30",
+                    fontWeight: "bold"
+                }
+            },
+            itemStyle: {
+                label: {
+                    show: true,
+                },
+                borderRadius: configs.pieItemStyleBorderRadius.value,
+                //borderColor: 'transparent',//'#fff',
+                //borderWidth: 2
+            },
+            hoverOffset: 10,
+            selectedOffset: 10,
+            avoidLabelOverlap: configs.richTextLabel.value.toBoolean() ? false : true,
+            hoverAnimation: true,
+            data: [],
+        };
+        setSeriesAnimation(serie, configs, -1);
+        for (let i = 0; i < dataset["data"].length; i++) {
+            let r = dataset["data"][i];
+            serie.data.push({"value": r[columns[c]].value, "name": r[columns[0]].value});
+        }
+        series.push(serie);
+    }
+
+    let top = toPoint(configs.grid_top.value);
+    let left = toPoint(configs.grid_left.value);
+    let groupWith = configs.groupWith.value;
+    let lines = parseInt(series.length / groupWith + 0.5);
+    let h = parseInt((100 - toPoint(configs.grid_top.value) - toPoint(configs.grid_bottom.value)) / lines);
+    let w = (100 - toPoint(configs.grid_left.value) - toPoint(configs.grid_right.value)) / groupWith;
+    for (let i = 0; i < series.length; i++) {
+        series[i].top = ((top + parseInt(i / groupWith) * h) + parseInt(i / groupWith) * top) + "%";
+        series[i].left = (left + (i % groupWith) * w) + "%";
+        series[i].width = w + "%";
+        series[i].height = h + "%";
+    }
+
+    let option = {
+        aria: getAria(configs),
+        backgroundColor: getBackgroundColor(configs),
+        title: getTitle(configs),
+        legend: getLegend(configs, columns.slice(1, columns.length)),
+        toolbox: getToolbox(configs, container, false),
+        tooltip: getTooltip(configs, "item", function (param) {
+            console.log(param);
+            return [param.seriesName,
+                param.marker + "&ensp;" + param.name +
+                ":<span style='display:inline-block;min-width:30px;text-align:right;font-weight:bold'>&ensp;" +
+                param.value + "&ensp;(&ensp;" +
+                param.percent + "%&ensp;)</span>"].join("<br>");
+        }),
+        label: {
+            fontSize: configs.pieLabelFontSize.value,
+        },
+        series: series,
+        graphic: getWaterGraphic(__SYS_LOGO_LINK__),
+    };
+
+    if (configs.richTextLabel.value.toBoolean()) {
+        //富文本
+        option.label = getPieRichText(colors);
+    }
+
+    setTimeout(() => {
+        myChart.hideLoading();
+        myChart.setOption(option);
+    }, Number(configs.loadingTimes.value) * 1000);
+
+    __ECHARTS__.addHistory(container, configs, dataset, width, height);
+    return container;
+}
 
 function getRing(container, width, height, dataset, configs) {
     if (container == null) {
@@ -3995,10 +4016,10 @@ function getRing(container, width, height, dataset, configs) {
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
     let colors = (typeof myChart._theme !== "undefined" ? myChart._theme.color : ['#c23531', '#2f4554', '#61a0a8', '#d48265', '#91c7ae', '#749f83', '#ca8622', '#bda29a', '#6e7074', '#546570', '#c4ccd3']);
 
-    let columns = [];
-    for (let i = 0; i < dataset["columns"].length; i++) {
-        columns.push(dataset["columns"][i].name);
-    }
+    let columns = dataset["columns"].reduce(function (tmp, column) {
+        tmp.push(column.name);
+        return tmp;
+    }, []);
     let series = [];
     for (let c = 1; c < columns.length; c++) {
         let serie = {
@@ -4105,10 +4126,10 @@ function getRose(container, width, height, dataset, configs) {
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
     let colors = (typeof myChart._theme !== "undefined" ? myChart._theme.color : ['#c23531', '#2f4554', '#61a0a8', '#d48265', '#91c7ae', '#749f83', '#ca8622', '#bda29a', '#6e7074', '#546570', '#c4ccd3']);
 
-    let columns = [];
-    for (let i = 0; i < dataset["columns"].length; i++) {
-        columns.push(dataset["columns"][i].name);
-    }
+    let columns = dataset["columns"].reduce(function (tmp, column) {
+        tmp.push(column.name);
+        return tmp;
+    }, []);
     let series = [];
     for (let c = 1; c < columns.length; c++) {
         let serie = {
@@ -4215,10 +4236,10 @@ function getRadar(container, width, height, dataset, configs) {
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
-    let columns = [];
-    for (let i = 0; i < dataset["columns"].length; i++) {
-        columns.push(dataset["columns"][i].name);
-    }
+    let columns = dataset["columns"].reduce(function (tmp, column) {
+        tmp.push(column.name);
+        return tmp;
+    }, []);
     let xAxis = [];
     let series = [];
     let xAxis_max = {};
@@ -4341,14 +4362,13 @@ function getRegression(container, width, height, dataset, configs) {
     }
 
     let myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value,renderer:configs.renderer.value});
-
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
     let regressionType = {"直线": "linear", "指数": "exponential", "对数": "logarithmic", "多项式": "polynomial"};
-    let columns = [];
-    for (let i = 0; i < dataset["columns"].length; i++) {
-        columns.push(dataset["columns"][i].name);
-    }
+    let columns = dataset["columns"].reduce(function (tmp, column) {
+        tmp.push(column.name);
+        return tmp;
+    }, []);
     let columns_add = [];
     let xAxis = [];
     let series = [];
@@ -4567,10 +4587,10 @@ function getRelation(container, width, height, dataset, configs) {
     let myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value,renderer:configs.renderer.value});
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
-    let columns = [];
-    for (let i = 0; i < dataset["columns"].length; i++) {
-        columns.push(dataset["columns"][i].name);
-    }
+    let columns = dataset["columns"].reduce(function (tmp, column) {
+        tmp.push(column.name);
+        return tmp;
+    }, []);
     if (columns.length != 2)
         alert("关系数据结构:[父级名称,子级名称].");
 
@@ -4756,10 +4776,10 @@ function getTree(container, width, height, dataset, configs) {
     let myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value,renderer:configs.renderer.value});
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
-    let columns = [];
-    for (let i = 0; i < dataset["columns"].length; i++) {
-        columns.push(dataset["columns"][i].name);
-    }
+    let columns = dataset["columns"].reduce(function (tmp, column) {
+        tmp.push(column.name);
+        return tmp;
+    }, []);
     if (columns.length != 2)
         alert("树形数据结构:[父级名称,子级名称].");
 
@@ -4814,12 +4834,11 @@ function getTree(container, width, height, dataset, configs) {
         return children;
     }
 
-
     let series = [];
     let legends = [];
     for (let i = 0; i < nodes.length; i++) {
         if (nodes[i].parent == null) {
-            legends.push({name: nodes[i].name, icon: "rectangle"});
+            legends.push({name: nodes[i].name, icon: configs.legendIcon.value});
             let serie = {
                 type: "tree",
                 name: nodes[i].name,
@@ -5035,9 +5054,10 @@ function getScatter(container, width, height, dataset, configs) {
     let regressionPolynomialOrder = Number(configs.regressionPolynomialOrder.value);
 
     function init() {
-        for (let i = 0; i < dataset["columns"].length; i++) {
-            columns.push(dataset["columns"][i].name);
-        }
+        columns = dataset["columns"].reduce(function (tmp, column) {
+            tmp.push(column.name);
+            return tmp;
+        }, []);
 
         for (let c = 1; c < columns.length; c++) {
             let serie = {
@@ -5055,7 +5075,7 @@ function getScatter(container, width, height, dataset, configs) {
                 },
                 symbol: configs.scatterSymbolShape.value,
                 symbolSize: function (data) {
-                    let size = configs.scatterSymbolSize.value.toArray(['5%','5%'],",");
+                    let size = configs.scatterSymbolSize.value.toArray(['5%', '5%'], ",");
                     if (size[0] > size[1]) {
                         let tmp = size[1];
                         size[1] = size[0];
@@ -5233,9 +5253,10 @@ function getFunnel(container, width, height, dataset, configs) {
     let columns = [];
 
     function init() {
-        for (let i = 0; i < dataset["columns"].length; i++) {
-            columns.push(dataset["columns"][i].name);
-        }
+        columns = dataset["columns"].reduce(function (tmp, column) {
+            tmp.push(column.name);
+            return tmp;
+        }, []);
 
         for (let c = 1; c < columns.length; c++) {
             let min = +Infinity;
@@ -5364,10 +5385,10 @@ function getLiqiud(container, width, height, dataset, configs) {
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
-    let columns = [];
-    for (let i = 0; i < dataset["columns"].length; i++) {
-        columns.push(dataset["columns"][i].name);
-    }
+    let columns = dataset["columns"].reduce(function (tmp, column) {
+        tmp.push(column.name);
+        return tmp;
+    }, []);
     let legends = [];
     let series = [];
 
@@ -5535,10 +5556,10 @@ function getGaugeWithAll(container, width, height, dataset, configs) {
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
-    let columns = [];
-    for (let i = 0; i < dataset["columns"].length; i++) {
-        columns.push(dataset["columns"][i].name);
-    }
+    let columns = dataset["columns"].reduce(function (tmp, column) {
+        tmp.push(column.name);
+        return tmp;
+    }, []);
     let legends = [];
     let series = [];
 
@@ -5685,10 +5706,10 @@ function getGaugeWithOne(container, width, height, dataset, configs) {
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
-    let columns = [];
-    for (let i = 0; i < dataset["columns"].length; i++) {
-        columns.push(dataset["columns"][i].name);
-    }
+    let columns = dataset["columns"].reduce(function (tmp, column) {
+        tmp.push(column.name);
+        return tmp;
+    }, []);
     let legends = [];
     let seriesgroup = [];
     let index = 0;
@@ -5831,10 +5852,10 @@ function getCalendar(container, width, height, dataset, configs) {
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
-    let columns = [];
-    for (let i = 0; i < dataset["columns"].length; i++) {
-        columns.push(dataset["columns"][i].name);
-    }
+    let columns = dataset["columns"].reduce(function (tmp, column) {
+        tmp.push(column.name);
+        return tmp;
+    }, []);
 
     let containerWidth = myChart.getWidth();//Number(width.replace(/px/i, ""));
     let containerHeight = myChart.getHeight();//Number(height.replace(/px/i, ""));
@@ -5984,10 +6005,10 @@ function getGeoOfChina(container, width, height, dataset, configs) {
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
-    let columns = [];
-    for (let i = 0; i < dataset["columns"].length; i++) {
-        columns.push(dataset["columns"][i].name);
-    }
+    let columns = dataset["columns"].reduce(function (tmp, column) {
+        tmp.push(column.name);
+        return tmp;
+    }, []);
 
     let containerWidth = myChart.getWidth();//Number(width.replace(/px/i, ""));
     let containerHeight = myChart.getHeight();//Number(height.replace(/px/i, ""));
@@ -6211,10 +6232,10 @@ function getGeoOfLocal(container, width, height, dataset, configs) {
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
-    let columns = [];
-    for (let i = 0; i < dataset["columns"].length; i++) {
-        columns.push(dataset["columns"][i].name);
-    }
+    let columns = dataset["columns"].reduce(function (tmp, column) {
+        tmp.push(column.name);
+        return tmp;
+    }, []);
 
     let containerWidth = myChart.getWidth();//Number(width.replace(/px/i, ""));
     let containerHeight = myChart.getHeight();//Number(height.replace(/px/i, ""));
@@ -6430,14 +6451,14 @@ function getBar3D(container, width, height, dataset, configs) {
 
     let containerWidth = myChart.getWidth();//Number(width.replace(/px/i, ""));
     let containerHeight = myChart.getHeight();//Number(height.replace(/px/i, ""));
-    let columns = [];
     let rows = [];
     let valueMin = +Infinity;
     let valueMax = -Infinity;
     let series = [];
-    for (let i = 0; i < dataset["columns"].length; i++) {
-        columns.push(dataset["columns"][i].name);
-    }
+    let columns = dataset["columns"].reduce(function (tmp, column) {
+        tmp.push(column.name);
+        return tmp;
+    }, []);
 
     for (let c = 0; c < columns.length; c++) {
         if (c == 0) {
@@ -6624,19 +6645,19 @@ function getLine3D(container, width, height, dataset, configs) {
     }
 
     let myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value,renderer:configs.renderer.value});
-
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
     let containerWidth = myChart.getWidth();//Number(width.replace(/px/i, ""));
     let containerHeight = myChart.getHeight();//Number(height.replace(/px/i, ""));
-    let columns = [];
+
+    let columns = dataset["columns"].reduce(function (tmp, column) {
+        tmp.push(column.name);
+        return tmp;
+    }, []);
     let rows = [];
     let series = [];
     let valueMin = +Infinity;
     let valueMax = -Infinity;
-    for (let i = 0; i < dataset["columns"].length; i++) {
-        columns.push(dataset["columns"][i].name);
-    }
 
     for (let c = 0; c < columns.length; c++) {
         if (c == 0) {
@@ -6813,19 +6834,19 @@ function getScatter3D(container, width, height, dataset, configs) {
     }
 
     let myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value,renderer:configs.renderer.value});
-
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
     let containerWidth = myChart.getWidth();//Number(width.replace(/px/i, ""));
     let containerHeight = myChart.getHeight();//Number(height.replace(/px/i, ""));
-    let columns = [];
+
+    let columns = dataset["columns"].reduce(function (tmp, column) {
+        tmp.push(column.name);
+        return tmp;
+    }, []);
     let rows = [];
     let series = [];
     let valueMin = +Infinity;
     let valueMax = -Infinity;
-    for (let i = 0; i < dataset["columns"].length; i++) {
-        columns.push(dataset["columns"][i].name);
-    }
 
     for (let c = 0; c < columns.length; c++) {
         if (c == 0) {
@@ -7020,12 +7041,12 @@ function getCategoryLine(container, width, height, dataset, configs) {
     let containerWidth = myChart.getWidth();//Number(width.replace(/px/i, ""));
     let containerHeight = myChart.getHeight();//Number(height.replace(/px/i, ""));
 
-    let columns = [];
+    let columns = dataset["columns"].reduce(function (tmp, column) {
+        tmp.push(column.name);
+        return tmp;
+    }, []);
     let times = [];
     let options = [];
-    for (let i = 0; i < dataset["columns"].length; i++) {
-        columns.push(dataset["columns"][i].name);
-    }
 
     for (let i = 0; i < dataset["data"].length; i++) {
         let opt = {
@@ -7259,10 +7280,10 @@ function getGeoMigrateLinesOfChinaCity(container, width, height, dataset, config
     let containerHeight = myChart.getHeight();//Number(height.replace(/px/i, ""));
     let colors = (typeof myChart._theme !== "undefined" ? myChart._theme.color : ['#c23531', '#2f4554', '#61a0a8', '#d48265', '#91c7ae', '#749f83', '#ca8622', '#bda29a', '#6e7074', '#546570', '#c4ccd3']);
 
-    let columns = [];
-    for (let i = 0; i < dataset["columns"].length; i++) {
-        columns.push(dataset["columns"][i].name);
-    }
+    let columns = dataset["columns"].reduce(function (tmp, column) {
+        tmp.push(column.name);
+        return tmp;
+    }, []);
 
     if (columns.length != 3)
         alert("迁徙数据结构:[源城市,目标城市,相关信息].");
@@ -7547,12 +7568,12 @@ function getCategoryLineForGauge(container, width, height, dataset, configs) {
     let containerHeight = myChart.getHeight();//Number(height.replace(/px/i, ""));
 
     let colors = (typeof myChart._theme !== "undefined" ? myChart._theme.color : ['#c23531', '#2f4554', '#61a0a8', '#d48265', '#91c7ae', '#749f83', '#ca8622', '#bda29a', '#6e7074', '#546570', '#c4ccd3']);
-    let columns = [];
+    let columns = dataset["columns"].reduce(function (tmp, column) {
+        tmp.push(column.name);
+        return tmp;
+    }, []);
     let times = [];
     let options = [];
-    for (let i = 0; i < dataset["columns"].length; i++) {
-        columns.push(dataset["columns"][i].name);
-    }
 
     for (let i = 0; i < dataset["data"].length; i++) {
         let opt = {
@@ -7711,15 +7732,14 @@ function getCategoryLineForLiqiud(container, width, height, dataset, configs) {
     let containerWidth = myChart.getWidth();//Number(width.replace(/px/i, ""));
     let containerHeight = myChart.getHeight();//Number(height.replace(/px/i, ""));
 
-    let columns = [];
+    let columns = dataset["columns"].reduce(function (tmp, column) {
+        tmp.push(column.name);
+        return tmp;
+    }, []);
     let times = [];
     let options = [];
-
     let colors = (typeof myChart._theme !== "undefined" ? myChart._theme.color : ['#c23531', '#2f4554', '#61a0a8', '#d48265', '#91c7ae', '#749f83', '#ca8622', '#bda29a', '#6e7074', '#546570', '#c4ccd3']);//["#294D99", "#156ACF", "#1598ED", "#45BDFF"]
 
-    for (let i = 0; i < dataset["columns"].length; i++) {
-        columns.push(dataset["columns"][i].name);
-    }
 
     for (let i = 0; i < dataset["data"].length; i++) {
         let opt = {
@@ -7954,10 +7974,10 @@ function getCategoryLineForGeoOfChina(container, width, height, dataset, configs
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
-    let columns = [];
-    for (let i = 0; i < dataset["columns"].length; i++) {
-        columns.push(dataset["columns"][i].name);
-    }
+    let columns = dataset["columns"].reduce(function (tmp, column) {
+        tmp.push(column.name);
+        return tmp;
+    }, []);
 
     let containerWidth = myChart.getWidth();//Number(width.replace(/px/i, ""));
     let containerHeight = myChart.getHeight();//Number(height.replace(/px/i, ""));
@@ -8163,10 +8183,10 @@ function getCategoryLineForGeoOfLocal(container, width, height, dataset, configs
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
-    let columns = [];
-    for (let i = 0; i < dataset["columns"].length; i++) {
-        columns.push(dataset["columns"][i].name);
-    }
+    let columns = dataset["columns"].reduce(function (tmp, column) {
+        tmp.push(column.name);
+        return tmp;
+    }, []);
 
     let containerWidth = myChart.getWidth();//Number(width.replace(/px/i, ""));
     let containerHeight = myChart.getHeight();//Number(height.replace(/px/i, ""));
@@ -8900,14 +8920,14 @@ function getSurface(container, width, height, dataset, configs) {
 
     let containerWidth = myChart.getWidth();//Number(width.replace(/px/i, ""));
     let containerHeight = myChart.getHeight();//Number(height.replace(/px/i, ""));
-    let columns = [];
+    let columns = dataset["columns"].reduce(function (tmp, column) {
+        tmp.push(column.name);
+        return tmp;
+    }, []);
     let rows = [];
     let series = [];
     let valueMin = +Infinity;
     let valueMax = -Infinity;
-    for (let i = 0; i < dataset["columns"].length; i++) {
-        columns.push(dataset["columns"][i].name);
-    }
 
     let serie = {
         name: configs.titleText.value,
@@ -9066,7 +9086,10 @@ function getBoxplot(container, width, height, dataset, configs) {
 
     let containerWidth = myChart.getWidth();//Number(width.replace(/px/i, ""));
     let containerHeight = myChart.getHeight();//Number(height.replace(/px/i, ""));
-    let columns = [];
+    let columns = dataset["columns"].reduce(function (tmp, column) {
+        tmp.push(column.name);
+        return tmp;
+    }, []);
     let data = [];
     let normal = [];
     //正常数
@@ -9074,9 +9097,6 @@ function getBoxplot(container, width, height, dataset, configs) {
     //异常数据
     let valueMin = +Infinity;
     let valueMax = -Infinity;
-    for (let i = 0; i < dataset["columns"].length; i++) {
-        columns.push(dataset["columns"][i].name);
-    }
     for (let c = 1; c < columns.length; c++) {
         let d = [];
         for (let i = 0; i < dataset["data"].length; i++) {
@@ -9237,10 +9257,10 @@ function getClock(container, width, height, dataset, configs) {
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
     let colors = (typeof myChart._theme !== "undefined" ? myChart._theme.color : ['#c23531', '#2f4554', '#61a0a8', '#d48265', '#91c7ae', '#749f83', '#ca8622', '#bda29a', '#6e7074', '#546570', '#c4ccd3']);
 
-    let columns = [];
-    for (let i = 0; i < dataset["columns"].length; i++) {
-        columns.push(dataset["columns"][i].name);
-    }
+    let columns = dataset["columns"].reduce(function (tmp, column) {
+        tmp.push(column.name);
+        return tmp;
+    }, []);
     let title = dataset["data"][0][columns[0]].value;
 
     let containerWidth = myChart.getWidth();//Number(width.replace(/px/i, ""));
@@ -9620,10 +9640,10 @@ function getCandlestick(container, width, height, dataset, configs) {
 
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
-    let columns = [];
-    for (let i = 0; i < dataset["columns"].length; i++) {
-        columns.push(dataset["columns"][i].name);
-    }
+    let columns = dataset["columns"].reduce(function (tmp, column) {
+        tmp.push(column.name);
+        return tmp;
+    }, []);
     let xAxis = [];
     let data = [];
     let upColor = configs.candlestickUpColor.value;
@@ -9724,13 +9744,12 @@ function getBanners(container, width, height, dataset, configs) {
 
     let containerWidth = myChart.getWidth();//Number(width.replace(/px/i, ""));
     let containerHeight = myChart.getHeight();//Number(height.replace(/px/i, ""));
-    let columns = [];
+    let columns = dataset["columns"].reduce(function (tmp, column) {
+        tmp.push(column.name);
+        return tmp;
+    }, []);
     let banners = [];
     let index = 0;
-
-    for (let i = 0; i < dataset["columns"].length; i++) {
-        columns.push(dataset["columns"][i].name);
-    }
 
     let lineHeight = containerHeight / columns.length;
 
@@ -9821,9 +9840,10 @@ function getWordCloud(container, width, height, dataset, configs) {
     //maskImage.src = "logo.png";
 
     function init() {
-        for (let i = 0; i < dataset["columns"].length; i++) {
-            columns.push(dataset["columns"][i].name);
-        }
+        columns = dataset["columns"].reduce(function (tmp, column) {
+        tmp.push(column.name);
+        return tmp;
+    }, []);
 
         for (let c = 0; c < columns.length; c++) {
             if (c == 0) {
@@ -10231,10 +10251,10 @@ function getParallelAxis(container, width, height, dataset, configs) {
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
     let colors = (typeof myChart._theme !== "undefined" ? myChart._theme.color : ['#c23531', '#2f4554', '#61a0a8', '#d48265', '#91c7ae', '#749f83', '#ca8622', '#bda29a', '#6e7074', '#546570', '#c4ccd3']);
 
-    let columns = [];
-    for (let i = 0; i < dataset["columns"].length; i++) {
-        columns.push(dataset["columns"][i].name);
-    }
+    let columns = dataset["columns"].reduce(function (tmp, column) {
+        tmp.push(column.name);
+        return tmp;
+    }, []);
 
     function getJSONNames(json) {
         let tmp = [];
@@ -10343,10 +10363,10 @@ function getSankey(container, width, height, dataset, configs) {
     let myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value,renderer:configs.renderer.value});
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
-    let columns = [];
-    for (let i = 0; i < dataset["columns"].length; i++) {
-        columns.push(dataset["columns"][i].name);
-    }
+    let columns = dataset["columns"].reduce(function (tmp, column) {
+        tmp.push(column.name);
+        return tmp;
+    }, []);
     let nodes = {};
     let links = {};
 
@@ -10445,10 +10465,10 @@ function getThemeRiver(container, width, height, dataset, configs) {
     let myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value,renderer:configs.renderer.value});
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
-    let columns = [];
-    for (let i = 0; i < dataset["columns"].length; i++) {
-        columns.push(dataset["columns"][i].name);
-    }
+    let columns = dataset["columns"].reduce(function (tmp, column) {
+        tmp.push(column.name);
+        return tmp;
+    }, []);
     let data = [];
     for (let i = 0; i < dataset["data"].length; i++) {
         let row = dataset["data"][i];

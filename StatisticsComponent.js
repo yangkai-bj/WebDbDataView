@@ -149,7 +149,7 @@ String.prototype.toArray = function(def,sep) {
         }
     } catch (e) {
         try {
-            tmp = eval(str.replaceAll("'",'"'));
+            tmp = eval(str.replaceAll("'", '"'));
             if (Array.isArray(tmp)) {
                 return tmp;
             } else {
@@ -158,18 +158,18 @@ String.prototype.toArray = function(def,sep) {
         } catch (e) {
             try {
                 if (typeof sep != "undefined") {
-                    tmp = str.split(sep);
-                    for(let i=0;i<tmp.length;i++) {
-                        let t = tmp[i].slice();
-                        if (t.DataType() == "int" || t.DataType() == "float") {
-                            tmp[i] = Number(t);
+                    return str.split(sep).reduce(function (tmp, item) {
+                        if (item.DataType() == "int" || item.DataType() == "float") {
+                            tmp.push(Number(item));
+                        } else {
+                            tmp.push(item);
                         }
-                    }
-                    return tmp;
+                        return tmp;
+                    }, []);
                 } else {
                     throw new Error("err");
                 }
-            }catch (e) {
+            } catch (e) {
                 if (typeof def != "undefined")
                     return def;
                 else
