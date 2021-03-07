@@ -1378,6 +1378,12 @@ var __ECHARTS__ = {
             options: ["100%", "110%", "120%", "130%", "140%", "150%"],
             type: "select"
         },
+        reportDownload: {
+            name: "下载",
+            value: "current",
+            options: [new Option("当前数据集", "current"), new Option("所有数据集", "all")],
+            type: "select"
+        },
     },
 
     getEchartsConfigs: function (parent) {

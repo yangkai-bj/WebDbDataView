@@ -1,9 +1,10 @@
 var __VERSION__ = {
-    version: "1.0.0",
+    version: "2.0.0",
     date: "2021-03-06",
     comment: [
         "1.优化算法和压缩代码.",
-        "2.增加图形背景参数."
+        "2.增加图形背景参数.",
+        "3.增加报表下载选择，可选择全部或当前报表。"
         ]
 };
 var __CONFIGS__ = {
@@ -2641,33 +2642,59 @@ function init() {
     let help_datasetdownload = $("help-dataset-download");
     download.onclick = help_datasetdownload.onclick = function () {
         if (__DATASET__["result"].length > 0) {
-            let dataset = __DATASET__["result"][__DATASET__.default.sheet];
-            let aoa = [];
-            let columns = [];
-            for (let i = 0; i < dataset["columns"].length; i++) {
-                columns.push(dataset["columns"][i].name);
-            }
-            aoa.push(columns);
-            for (let i = 0; i < dataset["data"].length; i++) {
-                let r = dataset["data"][i];
-                let row = [];
-                for (let c = 0; c < columns.length; c++) {
-                    row.push(r[columns[c]].value);
-                }
-                aoa.push(row);
-            }
             let sheets = [];
-            sheets.push(aoa);
+            let sheetNames = [];
+            if (__ECHARTS__.configs.reportDownload.value == "current") {
+                let dataset = __DATASET__["result"][__DATASET__.default.sheet];
+                let aoa = [];
+                let columns = dataset["columns"].reduce(function (tmp, column) {
+                    tmp.push(column.name);
+                    return tmp;
+                }, []);
+                aoa.push(columns);
+                for (let i = 0; i < dataset["data"].length; i++) {
+                    let r = dataset["data"][i];
+                    let row = [];
+                    for (let c = 0; c < columns.length; c++) {
+                        row.push(r[columns[c]].value);
+                    }
+                    aoa.push(row);
+                }
+                sheets.push(aoa);
+                sheetNames.push("Current")
+            } else if (__ECHARTS__.configs.reportDownload.value == "all") {
+                for (let d = 0; d < __DATASET__["result"].length; d++) {
+                    let dataset = __DATASET__["result"][d];
+                    let aoa = [];
+                    let columns = dataset["columns"].reduce(function (tmp, column) {
+                        tmp.push(column.name);
+                        return tmp;
+                    }, []);
+                    aoa.push(columns);
+                    for (let i = 0; i < dataset["data"].length; i++) {
+                        let r = dataset["data"][i];
+                        let row = [];
+                        for (let c = 0; c < columns.length; c++) {
+                            row.push(r[columns[c]].value);
+                        }
+                        aoa.push(row);
+                    }
+                    sheets.push(aoa);
+                    sheetNames.push("Sheet" + (d+1));
+                }
+            }
             let comment = [
                 ['Application:', 'Web DataView for SQLite Database of browser'],
+                ['Version:', __VERSION__.version + " (" + __VERSION__.date + ")"],
                 ['Database SQL:', __SQLEDITOR__.codeMirror.getValue()],
                 ['Creation time:', getNow()],
                 ['Get help from:', 'https://github.com/yangkai-bj'],
             ];
             sheets.push(comment);
+            sheetNames.push("Comment");
             let title = __SQLEDITOR__.title != null ? __SQLEDITOR__.title.split("_")[0] : prompt("请输入文件名称:");
             if (title != null && title.trim() != "")
-                openDownloadDialog(workbook2blob(sheets, ['Dataset', 'Comment']), title + ".xlsx");
+                openDownloadDialog(workbook2blob(sheets, sheetNames), title + ".xlsx");
         }
     };
     setTooltip(download, "下载<br>数据集");
