@@ -138,7 +138,7 @@ String.prototype.DataType = function(){
 String.prototype.toArray = function(def,sep) {
     //def:默认值,所有转换尝试失败后返回值,如果没有设置返回[];
     //sep:如果JSON和eval转换尝试失败后,采用分隔符进行分隔;
-    let str = this;
+    let str = this.trim();
     let tmp = [];
     try {
         tmp = JSON.parse(str);
@@ -158,6 +158,11 @@ String.prototype.toArray = function(def,sep) {
         } catch (e) {
             try {
                 if (typeof sep != "undefined") {
+
+                    if (str.indexOf("[") == 0)
+                        str = str.substring(str.indexOf("[") + 1, str.length - 1);
+                    if (str.lastIndexOf("]") == str.length - 1)
+                        str = str.substring(0, str.lastIndexOf("]"));
                     return str.split(sep).reduce(function (tmp, item) {
                         if (item.DataType() == "int" || item.DataType() == "float") {
                             tmp.push(Number(item));

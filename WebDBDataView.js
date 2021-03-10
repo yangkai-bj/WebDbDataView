@@ -1,10 +1,11 @@
 var __VERSION__ = {
-    version: "2.0.0",
-    date: "2021-03-06",
+    version: "2.0.1",
+    date: "2021/03/08",
     comment: [
-        "1.优化算法和压缩代码.",
-        "2.增加图形背景参数.",
-        "3.增加报表下载选择，可选择全部或当前报表。"
+        "优化算法和压缩代码.",
+        "增加图形背景参数.",
+        "增加报表下载选择,可选择全部或当前报表.",
+        "增加报表分页参数."
         ]
 };
 var __CONFIGS__ = {
@@ -54,11 +55,12 @@ var __CONFIGS__ = {
      column_default: {value: null, name: "默认值", type: "input", width: "50px"},
  };
  var __DATASET__ = {
-     sql: "",
-     time: "",
+     sql: null,
+     time: null,
      result: [],
      default: {sheet: 0, column: null, cell: []},
-     pages: {size: 200, total: 0, default: 1},
+     pages: {total: 0, default: 1},
+     //页数计算根据__ECHARTS__.configs.reportPageSize.value计算.
      table: {
          entity: null,
          tomove: null,
@@ -66,7 +68,6 @@ var __CONFIGS__ = {
              this.entity = tb;
              this.entity.style.fontSize = __ECHARTS__.configs.reportFontSize.value;
              let table = this;
-
              function setEvent(ob) {
                  for (let i = 0; i < ob.length; i++) {
                      if (ob[i].type == "td") {
@@ -1528,7 +1529,7 @@ function viewDataset(index){
     }
 
     for (let i = 0; i < data.length; i++) {
-        if (i >= (__DATASET__.pages.default - 1) * __DATASET__.pages.size && i < __DATASET__.pages.default * __DATASET__.pages.size) {
+        if (i >= (__DATASET__.pages.default - 1) * Number(__ECHARTS__.configs.reportPageSize.value) && i < __DATASET__.pages.default * Number(__ECHARTS__.configs.reportPageSize.value)) {
             let tr = document.createElement("tr");
             tr.type = "tr";
             tr.id = i;
@@ -1688,13 +1689,13 @@ function execute() {
                 $("page-label").innerText = " ● ";
                 $("dataset-label").innerText = " ● ";
                 sqls = selection.split(";");
+                __DATASET__.sql = selection;
+                __DATASET__.time = getNow();
+                __DATASET__.result = [];
                 for (let s = 0; s < sqls.length; s++) {
                     let sql = sqls[s].slice(0).trim();
                     if (sql.trim() == "")
                         continue;
-                    __DATASET__["sql"] = sql;
-                    __DATASET__["time"] = getNow();
-                    __DATASET__["result"] = [];
                     tx.executeSql(sql, [],
                         function (tx, results) {
                             let aff = results.rowsAffected;
@@ -1765,7 +1766,7 @@ function execute() {
 
                                 if (__DATASET__["result"].length > 0) {
                                     __DATASET__.default.sheet = 0;
-                                    __DATASET__.pages.total = Math.ceil(__DATASET__.result[0].data.length / __DATASET__.pages.size);
+                                    __DATASET__.pages.total = Math.ceil(__DATASET__.result[0].data.length / Number(__ECHARTS__.configs.reportPageSize.value));
                                     __DATASET__.pages.default = 1;
                                     $("page-label").innerText = __DATASET__.pages.default + " ● " + __DATASET__.pages.total;
                                     $("dataset-label").innerText = (__DATASET__.default.sheet + 1) + " ● " + __DATASET__.result.length;
@@ -1974,7 +1975,7 @@ function init() {
     try {
         $("main-title").appendChild(__SYS_IMAGES__.getLogoImage(__SYS_IMAGES__.logo_echarts));
         $("main-version").innerText = __VERSION__.version;
-        $("main-version").title = __VERSION__.date + "\n" + __VERSION__.comment.join("\n");
+        $("main-version").title = __VERSION__.date + "\n ● " + __VERSION__.comment.join("\n ● ");
     }catch (e) {
     }
 
@@ -2519,7 +2520,7 @@ function init() {
         if (__DATASET__["result"].length > 0) {
             if (__DATASET__.default.sheet > 0) {
                 __DATASET__.default.sheet -= 1;
-                __DATASET__.pages.total = Math.ceil(__DATASET__.result[__DATASET__.default.sheet].data.length / __DATASET__.pages.size);
+                __DATASET__.pages.total = Math.ceil(__DATASET__.result[__DATASET__.default.sheet].data.length / Number(__ECHARTS__.configs.reportPageSize.value));
                 __DATASET__.pages.default = 1;
             }
             $(this.getAttribute("label")).innerText = (__DATASET__.default.sheet + 1) + " ● " + __DATASET__.result.length;
@@ -2538,7 +2539,7 @@ function init() {
     to.setAttribute("pagelabel", "page-label");
     to.onclick = function () {
         if (__DATASET__.result.length > 0) {
-            __DATASET__.pages.total = Math.ceil(__DATASET__.result[__DATASET__.default.sheet].data.length / __DATASET__.pages.size);
+            __DATASET__.pages.total = Math.ceil(__DATASET__.result[__DATASET__.default.sheet].data.length / Number(__ECHARTS__.configs.reportPageSize.value));
             __DATASET__.pages.default = 1;
             this.innerText = (__DATASET__.default.sheet + 1) + " ● " + __DATASET__.result.length;
             $(this.getAttribute("pagelabel")).innerText = __DATASET__.pages.default + " ● " + __DATASET__.pages.total;
@@ -2559,7 +2560,7 @@ function init() {
         if (__DATASET__.result.length > 0) {
             if (__DATASET__.default.sheet < (__DATASET__.result.length - 1)) {
                 __DATASET__.default.sheet += 1;
-                __DATASET__.pages.total = Math.ceil(__DATASET__.result[__DATASET__.default.sheet].data.length / __DATASET__.pages.size);
+                __DATASET__.pages.total = Math.ceil(__DATASET__.result[__DATASET__.default.sheet].data.length / Number(__ECHARTS__.configs.reportPageSize.value));
                 __DATASET__.pages.default = 1;
             }
             $(this.getAttribute("label")).innerText = (__DATASET__.default.sheet + 1) + " ● " + __DATASET__.result.length;
@@ -2579,7 +2580,7 @@ function init() {
     datatran.onclick = help_datasettranspose.onclick = function () {
         if (__DATASET__.result.length > 0) {
             datasetTranspose(__DATASET__.default.sheet);
-            __DATASET__.pages.total = Math.ceil(__DATASET__.result[__DATASET__.default.sheet].data.length / __DATASET__.pages.size);
+            __DATASET__.pages.total = Math.ceil(__DATASET__.result[__DATASET__.default.sheet].data.length / Number(__ECHARTS__.configs.reportPageSize.value));
             __DATASET__.pages.default = 1;
             $("page-label").innerText = __DATASET__.pages.default + " ● " + __DATASET__.pages.total;
             viewDataset(__DATASET__.default.sheet);
@@ -2686,7 +2687,7 @@ function init() {
             let comment = [
                 ['Application:', 'Web DataView for SQLite Database of browser'],
                 ['Version:', __VERSION__.version + " (" + __VERSION__.date + ")"],
-                ['Database SQL:', __SQLEDITOR__.codeMirror.getValue()],
+                ['Database SQL:', __DATASET__.sql],
                 ['Creation time:', getNow()],
                 ['Get help from:', 'https://github.com/yangkai-bj'],
             ];
@@ -2714,7 +2715,7 @@ function init() {
                 __DATASET__.default.sheet = __DATASET__["result"].length - 1;
 
             if (__DATASET__["result"].length > 0) {
-                __DATASET__.pages.total = Math.ceil(__DATASET__.result[__DATASET__.default.sheet].data.length / __DATASET__.pages.size);
+                __DATASET__.pages.total = Math.ceil(__DATASET__.result[__DATASET__.default.sheet].data.length / Number(__ECHARTS__.configs.reportPageSize.value));
                 __DATASET__.pages.default = 1;
                 $("page-label").innerText = __DATASET__.pages.default + " ● " + __DATASET__.pages.total;
                 $("dataset-label").innerText = (__DATASET__.default.sheet + 1) + " ● " + __DATASET__.result.length;
@@ -3317,7 +3318,7 @@ function getSubtotal(columns) {
              __DATASET__["result"].push({columns:columns,data:data});
         if (__DATASET__["result"].length > 0) {
             __DATASET__.default.sheet = __DATASET__["result"].length - 1;
-            __DATASET__.pages.total = Math.ceil(__DATASET__.result[__DATASET__.default.sheet].data.length / __DATASET__.pages.size);
+            __DATASET__.pages.total = Math.ceil(__DATASET__.result[__DATASET__.default.sheet].data.length / Number(__ECHARTS__.configs.reportPageSize.value));
             __DATASET__.pages.default = 1;
             $("page-label").innerText = __DATASET__.pages.default + " ● " + __DATASET__.pages.total;
             $("dataset-label").innerText = (__DATASET__.default.sheet + 1) + " ● " + __DATASET__.result.length;
@@ -3416,7 +3417,9 @@ function getParamDialog(title, sql) {
         d.className = d.id = "sql-param-title-container";
         let span = document.createElement("span");
         span.className = span.id = "sql-param-title";
-        span.innerHTML = (title == null?"[ ]":"[ " + title + " ]");
+        span.innerHTML = (title == null?"●":"● " + title.split("_")[0]);
+        if (title.split("_").length > 1)
+            span.title = title.split("_").join("\n● ");
         d.appendChild(span);
         let close = document.createElement("img");
         close.className = "title_close_button";
@@ -3623,7 +3626,7 @@ function getDataSlice() {
         __DATASET__["result"].push({columns: col_tmp, data: dataset});
         if (__DATASET__["result"].length > 0) {
             __DATASET__.default.sheet = __DATASET__["result"].length - 1;
-            __DATASET__.pages.total = Math.ceil(__DATASET__.result[__DATASET__.default.sheet].data.length / __DATASET__.pages.size);
+            __DATASET__.pages.total = Math.ceil(__DATASET__.result[__DATASET__.default.sheet].data.length / Number(__ECHARTS__.configs.reportPageSize.value));
             __DATASET__.pages.default = 1;
             $("page-label").innerText = __DATASET__.pages.default + " ● " + __DATASET__.pages.total;
             $("dataset-label").innerText = (__DATASET__.default.sheet + 1) + " ● " + __DATASET__.result.length;
@@ -3810,7 +3813,7 @@ function getDataFilter(colid) {
         __DATASET__["result"].push({columns: columns, data: dataset});
         if (__DATASET__["result"].length > 0) {
             __DATASET__.default.sheet = __DATASET__["result"].length - 1;
-            __DATASET__.pages.total = Math.ceil(__DATASET__.result[__DATASET__.default.sheet].data.length / __DATASET__.pages.size);
+            __DATASET__.pages.total = Math.ceil(__DATASET__.result[__DATASET__.default.sheet].data.length / Number(__ECHARTS__.configs.reportPageSize.value));
             __DATASET__.pages.default = 1;
             $("page-label").innerText = __DATASET__.pages.default + " ● " + __DATASET__.pages.total;
             $("dataset-label").innerText = (__DATASET__.default.sheet + 1) + " ● " + __DATASET__.result.length;

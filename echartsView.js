@@ -1378,6 +1378,16 @@ var __ECHARTS__ = {
             options: ["100%", "110%", "120%", "130%", "140%", "150%"],
             type: "select"
         },
+        reportPageSize: {
+            name: "每页", value: 100,
+            options: [
+                new Option("50行", 50),
+                new Option("100行", 100),
+                new Option("150行", 150),
+                new Option("200行", 200),
+            ],
+            type: "select"
+        },
         reportDownload: {
             name: "下载",
             value: "current",
@@ -5081,7 +5091,7 @@ function getScatter(container, width, height, dataset, configs) {
                 },
                 symbol: configs.scatterSymbolShape.value,
                 symbolSize: function (data) {
-                    let size = configs.scatterSymbolSize.value.toArray(['5%', '5%'], ",");
+                    let size = configs.scatterSymbolSize.value.toArray([6, 18], ",");
                     if (size[0] > size[1]) {
                         let tmp = size[1];
                         size[1] = size[0];
@@ -6141,7 +6151,7 @@ function getGeoOfChina(container, width, height, dataset, configs) {
                 //    return value < 5 ? 5 : value;
                 //},
                 symbolSize: function (data) {
-                    let size = configs.geoScatterSymbolSize.value.value.toArray();
+                    let size = configs.geoScatterSymbolSize.value.value.toArray([6, 18], ",");
                     if (size[0] > size[1]) {
                         let tmp = size[1];
                         size[1] = size[0];
@@ -6361,7 +6371,7 @@ function getGeoOfLocal(container, width, height, dataset, configs) {
                 //    return value<5?5:value;
                 //},
                 symbolSize: function (data) {
-                    let size = configs.geoScatterSymbolSize.value.toArray();
+                    let size = configs.geoScatterSymbolSize.value.toArray([6, 18], ",");
                     if (size[0] > size[1]) {
                         let tmp = size[1];
                         size[1] = size[0];
@@ -6866,7 +6876,7 @@ function getScatter3D(container, width, height, dataset, configs) {
                 type: "scatter3D",
                 data: [],
                 symbolSize: function (data) {
-                    let size = configs.scatterSymbolSizeFor3D.value.toArray();
+                    let size = configs.scatterSymbolSizeFor3D.value.toArray([6, 18], ",");
                     if (size[0] > size[1]) {
                         let tmp = size[1];
                         size[1] = size[0];
@@ -8111,7 +8121,7 @@ function getCategoryLineForGeoOfChina(container, width, height, dataset, configs
                             //    return value < 5 ? 5 : value;
                             //},
                             symbolSize: function (data) {
-                                let size = configs.geoScatterSymbolSize.value.toArray();
+                                let size = configs.geoScatterSymbolSize.toArray([5,25],",");
                                 if (size[0] > size[1]) {
                                     let tmp = size[1];
                                     size[1] = size[0];
@@ -8314,7 +8324,7 @@ function getCategoryLineForGeoOfLocal(container, width, height, dataset, configs
                             //    return value < 5 ? 5 : value;
                             //},
                             symbolSize: function (data) {
-                                let size = configs.geoScatterSymbolSize.value.toArray();
+                                let size = configs.geoScatterSymbolSize.value.toArray([6, 18], ",");
                                 if (size[0] > size[1]) {
                                     let tmp = size[1];
                                     size[1] = size[0];
@@ -9187,7 +9197,7 @@ function getBoxplot(container, width, height, dataset, configs) {
                 },
                 symbol: configs.boxplotScatterSymbolShape.value,
                 symbolSize: function (data) {
-                    let size = configs.boxplotScatterSymbolSize.value.toArray();
+                    let size = configs.boxplotScatterSymbolSize.value.toArray([6, 18], ",");
                     if (size[0] > size[1]) {
                         let tmp = size[1];
                         size[1] = size[0];
@@ -9222,7 +9232,7 @@ function getBoxplot(container, width, height, dataset, configs) {
                 },
                 symbol: configs.boxplotScatterSymbolShape.value,
                 symbolSize: function (data) {
-                    let size = configs.boxplotScatterSymbolSize.value.toArray();
+                    let size = configs.boxplotScatterSymbolSize.value.toArray([6, 18], ",");
                     if (size[0] > size[1]) {
                         let tmp = size[1];
                         size[1] = size[0];
@@ -9285,7 +9295,7 @@ function getClock(container, width, height, dataset, configs) {
                 name: 'clock',
                 type: 'gauge',
                 radius: configs.clockRadius.value,
-                center: configs.clockCenter.value.toArray(),
+                center: configs.clockCenter.value.toArray(["50%","50%"],","),
                 startAngle: 90,
                 endAngle: echarts.version == "4.9.0" ? -269.99 : -270,
                 min: 0,
@@ -9388,7 +9398,7 @@ function getClock(container, width, height, dataset, configs) {
                 name: 'hour',
                 type: 'gauge',
                 radius: configs.clockRadius.value,
-                center: configs.clockCenter.value.toArray(),
+                center: configs.clockCenter.value.toArray(["50%","50%"],","),
                 startAngle: 90,
                 endAngle: echarts.version == "4.9.0" ? -269.99 : -270,
                 min: 0,
@@ -9449,7 +9459,7 @@ function getClock(container, width, height, dataset, configs) {
                 name: 'minute',
                 type: 'gauge',
                 radius: configs.clockRadius.value,
-                center: configs.clockCenter.value.toArray(),
+                center: configs.clockCenter.value.toArray(["50%","50%"],","),
                 startAngle: 90,
                 endAngle: echarts.version == "4.9.0" ? -269.99 : -270,
                 min: 0,
@@ -9508,7 +9518,7 @@ function getClock(container, width, height, dataset, configs) {
                 name: 'second',
                 type: 'gauge',
                 radius: configs.clockRadius.value,
-                center: configs.clockCenter.value.toArray(),
+                center: configs.clockCenter.value.toArray(["50%","50%"],","),
                 startAngle: 90,
                 endAngle: echarts.version == "4.9.0" ? -269.99 : -270,
                 min: 0,
@@ -10003,7 +10013,7 @@ function getSunburst(container, width, height, dataset, configs) {
                 let serie = {
                     name: columns[c],
                     center: [100 / (columns.length + 1) * (c + 1) + "%", "50%"],
-                    radius: configs.sunburstRadius.value.toArray([['15%', '90%'],","]),//['15%', '90%'],
+                    radius: configs.sunburstRadius.value.toArray(['15%', '90%'],","),//['15%', '90%'],
                     type: 'sunburst',
                     sort: configs.sunburstSort.value == "null" ? null : configs.sunburstSort.value,
                     //扇形块根据数据 value 的排序方式，如果未指定 value，则其值为子元素 value 之和。默认值 'desc' 表示降序排序；还可以设置为 'asc' 表示升序排序；null 表示不排序，使用原始数据的顺序；或者用回调函数进行排列：
@@ -10433,7 +10443,7 @@ function getSankey(container, width, height, dataset, configs) {
             setSeriesAnimation(series, configs, -1);
         }
     } else
-        alert("桑基图数据结构:[source,target,value0,value1,...].");
+        alert("桑基图数据结构:[父级,子级,数据1,数据2,...].");
 
     let option = {
         aria: getAria(configs),
