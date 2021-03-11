@@ -4,7 +4,7 @@ var __VERSION__ = {
     comment: [
         "优化算法和压缩代码.",
         "增加图形背景参数.",
-        "增加报表下载选择,可选择全部或当前报表.",
+        "增加报表下载选择.",
         "增加报表分页参数."
         ]
 };
@@ -563,7 +563,7 @@ function createTable(structure) {
 
     let d = document.createElement("div");
     let span = document.createElement("span");
-    span.innerHTML = "创建数据表 : ";
+    span.innerHTML = "●创建数据表 : ";
     d.appendChild(span);
     let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
     d.appendChild(close);
@@ -857,7 +857,7 @@ function createDatabase(){
 
     let d = document.createElement("div");
     let span = document.createElement("span");
-    span.innerHTML = "创建数据库 : ";
+    span.innerHTML = "●创建数据库 : ";
     d.appendChild(span);
     let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
     d.appendChild(close);
@@ -944,7 +944,7 @@ function getImportContent() {
 
     let d = document.createElement("div");
     let span = document.createElement("span");
-    span.innerHTML = "导入数据 :";
+    span.innerHTML = "●导入数据 :";
     d.appendChild(span);
     let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
     d.appendChild(close);
@@ -3181,7 +3181,7 @@ function getSubtotal(columns) {
     let d = document.createElement("div");
     d.style.height= "22px";
     let span = document.createElement("span");
-    span.innerHTML = "分类字段 : ";
+    span.innerHTML = "●分类字段 : ";
     d.appendChild(span);
     let cols = document.createElement("select");
     cols.type = "select";
@@ -3493,7 +3493,7 @@ function getDataSlice() {
     container.className = "data-slice-Content";
     let d = document.createElement("div");
     let span = document.createElement("span");
-    span.innerHTML = "数据切片 : ";
+    span.innerHTML = "●数据切片 : ";
     d.appendChild(span);
     let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
     d.appendChild(close);
@@ -3657,7 +3657,7 @@ function getDataFilter(colid) {
     container.className = "data-filter-Content";
     let d = document.createElement("div");
     let span = document.createElement("span");
-    span.innerHTML = "筛选字段 :[ " + columns[Number(colid)].name + " ]";
+    span.innerHTML = "●筛选字段 :[ " + columns[Number(colid)].name + " ]";
     d.appendChild(span);
     let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
     d.appendChild(close);
@@ -3845,7 +3845,7 @@ function getColumnMenu(colid) {
 
     let li = document.createElement("li");
     li.id = "table-column-menu-filter";
-    li.innerHTML = "筛选";
+    li.innerHTML = "●筛选";
     li.setAttribute("colid", colid);
     li.onclick = function () {
         if (__DATASET__.result.length > 0) {
@@ -3857,7 +3857,7 @@ function getColumnMenu(colid) {
 
     li = document.createElement("li");
     li.id = "table-column-menu-formater";
-    li.innerHTML = "格式";
+    li.innerHTML = "●格式";
     li.setAttribute("colid", colid);
     li.onclick = function () {
         let formater = getFormat(this.getAttribute("colid"));
@@ -3877,7 +3877,7 @@ function getFormat(colid) {
     container.className = "table-data-format";
     let d = document.createElement("div");
     let span = document.createElement("span");
-    span.innerHTML = "格式设置 : [ " + columns[Number(colid)].name + " ]";
+    span.innerHTML = "●格式设置 : [ " + columns[Number(colid)].name + " ]";
     d.appendChild(span);
     let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
     d.appendChild(close);

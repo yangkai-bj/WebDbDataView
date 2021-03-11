@@ -6,7 +6,7 @@ function storageSqlDialog(sql, editer, type){
     let d = document.createElement("div");
     d.style.width = "100%";
     let span = document.createElement("span");
-    span.innerHTML = "脚本管理 : ";
+    span.innerHTML = "●脚本管理 : ";
     d.appendChild(span);
     let sqlname = document.createElement("input");
     sqlname.id = sqlname.className = "sql-Manager-Content-name";

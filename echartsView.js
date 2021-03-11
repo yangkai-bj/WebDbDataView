@@ -1429,7 +1429,7 @@ var __ECHARTS__ = {
 
         let d = document.createElement("div");
         let span = document.createElement("span");
-        span.innerHTML = "报表及图形参数: ";
+        span.innerHTML = "●报表及图形参数: ";
         d.appendChild(span);
         let toconfig = document.createElement("select");
         toconfig.onchange = function () {
@@ -2008,7 +2008,7 @@ var geoCoordMap = {
         container.className = "local-map-config-Content";
         let d = document.createElement("div");
         let span = document.createElement("span");
-        span.innerHTML = "地图设置 : ";
+        span.innerHTML = "●地图设置 : ";
         d.appendChild(span);
         let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
         d.appendChild(close);
