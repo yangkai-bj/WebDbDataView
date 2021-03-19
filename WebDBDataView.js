@@ -1,11 +1,14 @@
 var __VERSION__ = {
-    version: "2.0.1",
-    date: "2021/03/08",
+    version: "2.0.2",
+    date: "2021/03/19",
     comment: [
+        "-- 2021/03/08",
         "优化算法和压缩代码.",
         "增加图形背景参数.",
         "增加报表下载选择.",
-        "增加报表分页参数."
+        "增加报表分页参数.",
+        "-- 2021/03/17",
+        "增加日志隐藏.",
         ]
 };
 var __CONFIGS__ = {
@@ -1973,17 +1976,29 @@ function workbook2blob(sheets, sheetNames) {
 
 function init() {
     try {
+        getQRCode($("page"), 90, 90, "https://gitee.com/yangkai-bj/", __SYS_IMAGES__.echo);
         $("main-title").appendChild(__SYS_IMAGES__.getLogoImage(__SYS_IMAGES__.logo_echarts));
         $("main-version").innerText = __VERSION__.version;
-        $("main-version").title = __VERSION__.date + "\n ● " + __VERSION__.comment.join("\n ● ");
-    }catch (e) {
+        $("main-version").title = "发布日期: " + __VERSION__.date + "\n ● " + __VERSION__.comment.join("\n ● ");
+    } catch (e) {
     }
 
-     getQRCode($("page"),90 ,90 ,"https://gitee.com/yangkai-bj/",__SYS_IMAGES__.echo);
-
     if (checkStorage()) {
-        setUserConfig("CopyRight","应用开发: 杨凯 ☎ (010)63603329 ✉ <a href='mailto:yangkai.bj@ccb.com'>yangkai.bj@ccb.com</a>");
+        setUserConfig("CopyRight", "杨凯 ☎ (010)63603329 ✉ <a href='mailto:yangkai.bj@ccb.com'>yangkai.bj@ccb.com</a>");
+        $("copyright").innerHTML = getUserConfig("CopyRight");
         $("footer").style.display = getUserConfig("help");
+        $("detail").style.display = getUserConfig("displayLogs");
+        if ($("detail").style.display == "none") {
+            $("page").onmousemove = function () {
+                let active = 3;
+                if (event.x > getAbsolutePosition($("page")).width - active) {
+                    $("detail").style.display = "block";
+                    setUserConfig("displayLogs", "block");
+                    $("page").onmousemove = null;
+                }
+                resize();
+            };
+        }
         $("themes").setAttribute("href", getUserConfig("pagethemes") == null ? "themes/default.css" : getUserConfig("pagethemes"));
 
         let config = getUserConfig("echartsconfig");
@@ -1993,7 +2008,6 @@ function init() {
                 try {
                     __ECHARTS__.configs[key].value = config[key];
                 } catch (e) {
-
                 }
             }
         }
@@ -2224,7 +2238,7 @@ function init() {
     newsql.onclick = help_createsql.onclick = function () {
         let openfile = $("openfile");
         openfile.value = "";
-         __SQLEDITOR__.title =  __ECHARTS__.configs.titleText.value = __ECHARTS__.configs.titleSubText.value = null;
+        __SQLEDITOR__.title = __ECHARTS__.configs.titleText.value = __ECHARTS__.configs.titleSubText.value = null;
         __SQLEDITOR__.codeMirror.setValue("");
         if (this.id == "help-create-sql") {
             let sql = "/*脚本案例*/\r\n" +
@@ -2253,7 +2267,7 @@ function init() {
                 let reader = new FileReader();
                 reader.onload = function () {
                     __SQLEDITOR__.codeMirror.setValue(this.result);
-                    __SQLEDITOR__.title =  __ECHARTS__.configs.titleText.value = __ECHARTS__.configs.titleSubText.value = null;
+                    __SQLEDITOR__.title = __ECHARTS__.configs.titleText.value = __ECHARTS__.configs.titleSubText.value = null;
                 };
                 reader.readAsText(file, __SQLEDITOR__.charset.options[__SQLEDITOR__.charset.value]);
             } catch (e) {
@@ -2331,7 +2345,7 @@ function init() {
     let help_downloadsql = $("help-download-sql");
     saveas.onclick = help_downloadsql.onclick = function () {
         let blob = new Blob([str2ab(__SQLEDITOR__.codeMirror.getValue())], {type: "application/octet-stream"});
-        let title = __SQLEDITOR__.title != null?__SQLEDITOR__.title.split("_")[0]:prompt("请输入文件名称:");
+        let title = __SQLEDITOR__.title != null ? __SQLEDITOR__.title.split("_")[0] : prompt("请输入文件名称:");
         if (title != null && title.trim() != "")
             openDownloadDialog(blob, title + ".sql");
     };
@@ -2461,6 +2475,32 @@ function init() {
     //初始化消息菜单
     //#######################################
     let detailtools = $("detail-tools");
+
+    let toDisplay = document.createElement("div");
+    toDisplay.type = "div";
+    toDisplay.className = "button";
+    toDisplay.innerText = "»";
+    toDisplay.style.fontSize = "150%";
+    toDisplay.id = "display-log";
+    toDisplay.onclick = function () {
+        if ($("detail").style.display != "none") {
+            $("detail").style.display = "none";
+            setUserConfig("displayLogs", "none");
+            resize();
+            $("page").onmousemove = function () {
+                let active = 3;
+                if (event.x > getAbsolutePosition($("page")).width - active) {
+                    $("detail").style.display = "block";
+                    setUserConfig("displayLogs", "block");
+                    $("page").onmousemove = null;
+                }
+                resize();
+            };
+        }
+    };
+    detailtools.appendChild(toDisplay);
+    setTooltip(toDisplay, "隐藏<br>日志");
+
     let clean = document.createElement("div");
     clean.type = "div";
     clean.className = "button";
@@ -2681,7 +2721,7 @@ function init() {
                         aoa.push(row);
                     }
                     sheets.push(aoa);
-                    sheetNames.push("Sheet" + (d+1));
+                    sheetNames.push("Sheet" + (d + 1));
                 }
             }
             let comment = [
@@ -2810,8 +2850,6 @@ function init() {
     };
     setTooltip(analysis, "Analysis");
 
-    $("copyright").innerHTML = getUserConfig("CopyRight");
-
     let toMultiEcharts = document.createElement("div");
     datatools.appendChild(toMultiEcharts);
     toMultiEcharts.className = "button";
@@ -2820,7 +2858,7 @@ function init() {
     toMultiEcharts.style.cssFloat = "right";
     toMultiEcharts.id = "dataset-to-multi-echarts";
     toMultiEcharts.onclick = $("help-dataset-to-multi-echarts").onclick = function () {
-         $("page").appendChild(getMultiEcharts());
+        $("page").appendChild(getMultiEcharts());
     };
     toMultiEcharts.ondragenter = function (event) {
         if (event.target.id == "dataset-to-multi-echarts") {
@@ -2838,7 +2876,7 @@ function init() {
             let id = event.dataTransfer.getData("Text");
             __ECHARTS__.sets.add(id);
         }
-    }
+    };
     toMultiEcharts.ondragleave = function (event) {
         if (event.target.id == "dataset-to-multi-echarts") {
             event.target.style.border = "1px dotted var(--main-border-color)";
@@ -2859,7 +2897,7 @@ function init() {
             mecharts.className = "echarts";
             mecharts.id = "echarts-full-screen";
             mecharts.style.width = (getAbsolutePosition($("page")).width + 10) + "px";
-            mecharts.style.height = (getAbsolutePosition($("page")).height + 25)  + "px";
+            mecharts.style.height = (getAbsolutePosition($("page")).height + 25) + "px";
             mecharts.style.top = "0px";
             mecharts.style.left = "0px";
             window.addEventListener("keydown", function (e) {
@@ -2877,11 +2915,11 @@ function init() {
             });
             let echart = getEcharts(
                 mecharts,
-                (getAbsolutePosition($("page")).width+5) + "px",
-                (getAbsolutePosition($("page")).height+20) + "px",
+                (getAbsolutePosition($("page")).width + 5) + "px",
+                (getAbsolutePosition($("page")).height + 20) + "px",
                 __DATASET__["result"][__DATASET__.default.sheet],
                 __ECHARTS__.configs);
-            setDragNook(mecharts,echart.getAttribute("_echarts_instance_"));
+            setDragNook(mecharts, echart.getAttribute("_echarts_instance_"));
             $("page").appendChild(mecharts);
         } catch (e) {
             console.log(e);
@@ -2908,10 +2946,10 @@ function init() {
     echartsThemes.type = "select";
     echartsThemes.id = "dataset-select-echarts-theme";
     let help_echartsThemes = $("help-select-echarts-themes");
-    for (let i=0;i<__ECHARTS__.configs.echartsTheme.options.length;i++) {
+    for (let i = 0; i < __ECHARTS__.configs.echartsTheme.options.length; i++) {
         let option = __ECHARTS__.configs.echartsTheme.options[i];
-        echartsThemes.options.add(new Option(option.innerText,option.value));
-        help_echartsThemes.options.add(new Option(option.innerText,option.value));
+        echartsThemes.options.add(new Option(option.innerText, option.value));
+        help_echartsThemes.options.add(new Option(option.innerText, option.value));
     }
     echartsThemes.value = help_echartsThemes.value = __ECHARTS__.configs.echartsTheme.value;
     echartsThemes.onchange = help_echartsThemes.onchange = function () {
@@ -2927,7 +2965,7 @@ function init() {
             try {
                 container.removeAttribute("_echarts_instance_");
                 echarts.getInstanceByDom(container).dispose();
-            }catch (e) {
+            } catch (e) {
             }
             let _width = (getAbsolutePosition(container).width * 1) + "px";
             let _height = (getAbsolutePosition(container).height * 1) + "px";
@@ -2938,7 +2976,7 @@ function init() {
                 _height,
                 __DATASET__["result"][__DATASET__.default.sheet],
                 __ECHARTS__.configs);
-            setDragNook(container,echart.getAttribute("_echarts_instance_"));
+            setDragNook(container, echart.getAttribute("_echarts_instance_"));
         } catch (e) {
             console.log(e);
         }
@@ -2950,10 +2988,10 @@ function init() {
     echartsType.type = "select";
     echartsType.id = "dataset-select-echarts-type";
     let help_echartsType = $("help-select-echarts-type");
-    for (let i=0;i<__ECHARTS__.configs.echartsType.options.length;i++) {
+    for (let i = 0; i < __ECHARTS__.configs.echartsType.options.length; i++) {
         let option = __ECHARTS__.configs.echartsType.options[i];
-        echartsType.options.add(new Option(option.innerText,option.value));
-        help_echartsType.options.add(new Option(option.innerText,option.value));
+        echartsType.options.add(new Option(option.innerText, option.value));
+        help_echartsType.options.add(new Option(option.innerText, option.value));
     }
     echartsType.value = help_echartsType.value = __ECHARTS__.configs.echartsType.value;
     echartsType.onchange = help_echartsType.onchange = function () {
@@ -3002,7 +3040,7 @@ function init() {
             try {
                 container.removeAttribute("_echarts_instance_");
                 echarts.getInstanceByDom(container).dispose();
-            }catch (e) {
+            } catch (e) {
             }
             let _width = (getAbsolutePosition(container).width * 1) + "px";
             let _height = (getAbsolutePosition(container).height * 1) + "px";
@@ -3013,7 +3051,7 @@ function init() {
                 _height,
                 __DATASET__["result"][__DATASET__.default.sheet],
                 __ECHARTS__.configs);
-            setDragNook(container,echart.getAttribute("_echarts_instance_"));
+            setDragNook(container, echart.getAttribute("_echarts_instance_"));
         } catch (e) {
             console.log(e);
         }
@@ -3025,6 +3063,7 @@ function init() {
     window.onresize = function () {
         resize();
     };
+
     //#########################body init end#######################################
 }
 
@@ -4547,6 +4586,7 @@ function setDragNook(parent, id) {
     parent.appendChild(nook);
     setDrag(nook);
 }
+
 
 
 

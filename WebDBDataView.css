@@ -273,6 +273,8 @@ img.title_close_button:hover{
     height: 100%;
     margin: 0px;
     cursor: pointer;
+    -webkit-animation: content-show 2s 1;
+    animation: content-show 2s 1;
 }
 
 .list:hover {
@@ -311,8 +313,8 @@ img.title_close_button:hover{
     background-color: var(--table-background-color);
     opacity: 0.8;
     transition: opacity 2s;
-    -webkit-animation: content-show 1s 1;/*infinite; /* Chrome, Safari, Opera */
-    animation: content-show 1s 1;/*infinite;*/
+    -webkit-animation: content-show 2s 1;/*infinite; /* Chrome, Safari, Opera */
+    animation: content-show 2s 1;/*infinite;*/
 }
 .table:hover{
     opacity: 1;
