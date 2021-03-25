@@ -2760,64 +2760,90 @@ function getDataZoomYAxis(configs, yAxisIndex, type,start ,end, containerWidth) 
     }
 }
 
-function getOptionToContent(dataset){
-    let columns = dataset["columns"];
-    let data = dataset["data"];
-    let table = document.createElement("table");
-    table.className = "table";
-    table.id = "table";
-    table.style.cssText = "width: 50%;margin: auto;";
-    let tr = document.createElement("tr");
-    tr.type = "tr";
-    table.appendChild(tr);
-
-    for (let c =0; c < columns.length; c++) {
-        let th = document.createElement("th");
-        th.type = "th";
-        th.innerText = columns[c].name;
-        th.style.textAlign = columns[c].style.textAlign;
-        tr.appendChild(th);
-    }
-
-    for (let i = 0; i < data.length; i++) {
+function getOptionToContent(dataset) {
+    function getTable(table, dataset) {
+        let columns = dataset.columns;
+        let data = dataset.data;
+        if (table == null) {
+            table = document.createElement("table");
+            table.className = "table";
+            table.id = "optionToContentTable";
+            table.style.cssText = "width: 50%;margin: auto";
+            table.style.fontSize = "15%";
+        } else {
+            table.innerHTML = "";
+        }
         let tr = document.createElement("tr");
         tr.type = "tr";
-        tr.id = i;
-        if (i % 2 > 0) {
-            tr.className = "alt-line";
-            //单数行
-        }
         table.appendChild(tr);
-        let row = data[i];
+
         for (let c = 0; c < columns.length; c++) {
-            let item = row[columns[c].name];
-            let td = document.createElement("td");
-            td.type = "td";
-            td.id = item.rowid + "," + item.colid;
-            td.setAttribute("name", columns[c].name);
-            td.setAttribute("value", JSON.stringify(item));
-            try {
-                if (item.value != null) {
-                    if (item.type == "number")
-                        td.innerText = formatNumber(item.value, item.format);
-                    else if (item.type == "date" || item.type == "datetime")
-                        td.innerText = new Date(item.value).Format(item.format);
-                    else
-                        td.innerText = item.value;
-                } else
-                    td.innerText = "";
-                let _style = "";
-                for (let key in item.style) {
-                    _style += key + ": " + item.style[key] + ";";
-                }
-                td.style.cssText = _style;
-            } catch (e) {
-                td.innerText = row[columns[c].name].value;
+            let th = document.createElement("th");
+            th.type = "th";
+            th.innerText = columns[c].name;
+            th.style.textAlign = columns[c].style.textAlign;
+            let order = document.createElement("span");
+            order.className = "order";
+            order.setAttribute("colid", c);
+            switch (columns[c].order) {
+                case "":
+                    order.innerText = "●";
+                    break;
+                case "asc":
+                    order.innerText = "▲";
+                    break;
+                case "desc":
+                    order.innerText = "▼";
+                    break;
             }
-            tr.appendChild(td);
+            order.onclick = function () {
+                getTable($("optionToContentTable"), orderDatasetBy(dataset, this.getAttribute("colid")));
+            };
+            th.appendChild(order);
+            tr.appendChild(th);
         }
+
+        for (let i = 0; i < data.length; i++) {
+            let tr = document.createElement("tr");
+            tr.type = "tr";
+            tr.id = i;
+            if (i % 2 > 0) {
+                tr.className = "alt-line";
+                //单数行
+            }
+            table.appendChild(tr);
+            let row = data[i];
+            for (let c = 0; c < columns.length; c++) {
+                let item = row[columns[c].name];
+                let td = document.createElement("td");
+                td.type = "td";
+                td.id = item.rowid + "," + item.colid;
+                td.setAttribute("name", columns[c].name);
+                td.setAttribute("value", JSON.stringify(item));
+                try {
+                    if (item.value != null) {
+                        if (item.type == "number")
+                            td.innerText = formatNumber(item.value, item.format);
+                        else if (item.type == "date" || item.type == "datetime")
+                            td.innerText = new Date(item.value).Format(item.format);
+                        else
+                            td.innerText = item.value;
+                    } else
+                        td.innerText = "";
+                    let _style = "";
+                    for (let key in item.style) {
+                        _style += key + ": " + item.style[key] + ";";
+                    }
+                    td.style.cssText = _style;
+                } catch (e) {
+                    td.innerText = row[columns[c].name].value;
+                }
+                tr.appendChild(td);
+            }
+        }
+        return table;
     }
-    return table;
+    return getTable(null, dataset);
 }
 
 function getToolbox(configs, container, dataset, magic) {
@@ -2828,7 +2854,7 @@ function getToolbox(configs, container, dataset, magic) {
                 show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
                 excludeComponents: ["toolbox", "dataZoom", "timeline", "visualMap", "brush"],
                 backgroundColor: configs.toolboxFeatureSaveAsImageBackgroundColor.value,
-                pixelRatio: 2,
+                pixelRatio: 5,
                 type: "png",
             },
             restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
@@ -2836,7 +2862,6 @@ function getToolbox(configs, container, dataset, magic) {
                 show: configs.toolboxFeatureDataView.value.toBoolean(),
                 readOnly: true,
                 backgroundColor: "transparent",
-                textColor: configs.titleTextColor.value,
                 lang: [' ', '关闭', ' '],
                 optionToContent: function() {
                     return getOptionToContent(dataset);

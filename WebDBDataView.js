@@ -1,6 +1,6 @@
 var __VERSION__ = {
-    version: "2.0.2",
-    date: "2021/03/19",
+    version: "2.0.4",
+    date: "2021/03/25",
     comment: [
         "-- 2021/03/08",
         "优化算法和压缩代码.",
@@ -9,8 +9,13 @@ var __VERSION__ = {
         "增加报表分页参数.",
         "-- 2021/03/17",
         "增加日志隐藏.",
-        ]
+        "-- 2021/03/22",
+        "修改数据视图显示方式.",
+        "-- 2021/03/25",
+        "优化数据集合排序算法."
+    ]
 };
+
 var __CONFIGS__ = {
     STORAGE: {
         DATABASES: "__WEB_SQLITE_DATABASES__",
@@ -1351,12 +1356,23 @@ function viewTables(index) {
     });
 }
 
-function orderDataset(colid){
+function orderDatasetBy(dataset, colid) {
     // 对数据排序
     // 中文比较大小使用localeCompare
-    let index = __DATASET__.default.sheet;
-    let columns = __DATASET__["result"][index].columns;
-    let data = __DATASET__["result"][index].data;
+    function exchange(r1, r2) {
+        for (col in r1) {
+            for (attr in r1[col]) {
+                if (attr != "rowid" && attr != "colid") {
+                    let tmp = r1[col][attr];
+                    r1[col][attr] = r2[col][attr];
+                    r2[col][attr] = tmp;
+                }
+            }
+        }
+    }
+
+    let columns = dataset.columns;
+    let data = dataset.data;
     switch (columns[colid].order) {
         case "":
             columns[colid].order = "asc";
@@ -1368,56 +1384,35 @@ function orderDataset(colid){
             columns[colid].order = "asc";
             break;
     }
-    __DATASET__["result"][index].columns = columns;
-
-    let tmp = [];
-    for (let i=0; i<data.length; i++) {
-        let row = data[i];
-        for (let x = 0; x < tmp.length; x++) {
+    for (let i = 0; i < data.length; i++) {
+        for (let x = 0; x < i; x++) {
             switch (columns[colid].order) {
                 case "asc":
-                    if (row[columns[colid].name].type == "number") {
-                        if (row[columns[colid].name].value < tmp[x][columns[colid].name].value) {
-                            let t = tmp[x];
-                            tmp[x] = row;
-                            row = t;
+                    if (data[i][columns[colid].name].type == "number") {
+                        if (data[i][columns[colid].name].value < data[x][columns[colid].name].value) {
+                            exchange(data[i], data[x]);
                         }
                     } else {
-                        if (row[columns[colid].name].value.toString().localeCompare(tmp[x][columns[colid].name].value.toString()) < 0) {
-                            let t = tmp[x];
-                            tmp[x] = row;
-                            row = t;
+                        if (data[i][columns[colid].name].value.toString().localeCompare(data[x][columns[colid].name].value.toString()) < 0) {
+                            exchange(data[i], data[x]);
                         }
                     }
                     break;
                 case "desc":
-                    if (row[columns[colid].name].type == "number") {
-                        if (row[columns[colid].name].value > tmp[x][columns[colid].name].value) {
-                            let t = tmp[x];
-                            tmp[x] = row;
-                            row = t;
+                    if (data[i][columns[colid].name].type == "number") {
+                        if (data[i][columns[colid].name].value > data[x][columns[colid].name].value) {
+                            exchange(data[i], data[x]);
                         }
                     } else {
-                        if (row[columns[colid].name].value.toString().localeCompare(tmp[x][columns[colid].name].value.toString()) > 0) {
-                            let t = tmp[x];
-                            tmp[x] = row;
-                            row = t;
+                        if (data[i][columns[colid].name].value.toString().localeCompare(data[x][columns[colid].name].value.toString()) > 0) {
+                            exchange(data[i], data[x]);
                         }
                     }
                     break;
             }
         }
-        tmp[tmp.length] = row;
     }
-    //Reset rowid
-    for(let i=0;i<tmp.length;i++){
-        let row = tmp[i];
-        for (column in row){
-            row[column].rowid = i;
-        }
-    }
-    __DATASET__["result"][index].data = tmp;
-    viewDataset(index);
+    return dataset;
 }
 
 function datasetTranspose(index) {
@@ -1525,7 +1520,9 @@ function viewDataset(index){
                 break;
         }
         order.onclick = function () {
-            orderDataset(this.getAttribute("colid"));
+            let index = __DATASET__.default.sheet;
+            orderDatasetBy(__DATASET__["result"][index],this.getAttribute("colid"));
+            viewDataset(index);
         };
         th.appendChild(order);
         tr.appendChild(th);
