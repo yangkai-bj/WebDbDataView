@@ -522,7 +522,7 @@ function subtotal(column, target, calculation) {
             }
             data[index][target + "-" + calculation].type = typeof data[index][target + "-" + calculation].value
         }
-        return {columns: columns, data: data};
+        return {columns: columns, data: data, title: null};
     }
 }
 

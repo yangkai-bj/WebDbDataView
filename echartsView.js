@@ -242,6 +242,9 @@ function getEcharts(container, width, height, dataset, configs) {
             case "DatasetImage":
                 return getDatasetImage(container, width, height, dataset, configs);
                 break;
+            case "MathFunciton":
+                return getFunctionLine(container, width, height, dataset, configs);
+                break;
         }
     } else {
          alert("本模块支持Echarts5.0.2及以上版本,您目前使用的版本是" + echarts.version + ".");
@@ -406,6 +409,7 @@ var __ECHARTS__ = {
                 new Option("圆环图(3D)", "Pie3D"),
                 new Option("散点图(3D)", "Scatter3D"),
                 new Option("曲面图(3D)", "Surface"),
+                new Option("函数图像", "MathFunciton"),
                 //new Option("测试", "DatasetImage")
             ],
             type: "select"
@@ -1293,6 +1297,23 @@ var __ECHARTS__ = {
         },
         singeAxisSymbolSize: {name: "散点最大值", value: 45, type: "input"},
 
+        hr_mathFunction: {name: "函数图像", value: "", type: "hr"},
+        mathFunctionXRange: {
+            name: "X区间",
+            value: "[-100, 100]",
+            type: "input"
+        },
+        mathFunctionXGrainSize: {
+            name: "X粒度",
+            value : 1,
+            type: "input",
+        },
+        mathFunctionYRange: {
+            name: "Y区间",
+            value: "[-100, 100]",
+            type: "input"
+        },
+
         hr_dataZoom: {name: "数据缩放", value: "", type: "hr"},
         dataZoomBarDisplay: {
             name: "是否显示",
@@ -1388,10 +1409,15 @@ var __ECHARTS__ = {
             type: "select"
         },
         reportDownload: {
-            name: "下载",
+            name: "下载方式",
             value: "current",
-            options: [new Option("当前数据集", "current"), new Option("所有数据集", "all")],
+            options: [new Option("当前数据集", "current"), new Option("所有数据集-合并为单一工作簿", "all-single"), new Option("所有数据集-拆分为多个工作簿", "all-multi")],
             type: "select"
+        },
+        reportDownloadDelay: {
+            name: "单位延时(毫秒)",
+            value: 1000,
+            type: "input"
         },
     },
 
@@ -1428,7 +1454,7 @@ var __ECHARTS__ = {
 
         let d = document.createElement("div");
         let span = document.createElement("span");
-        span.innerHTML = "●报表及图形参数: ";
+        span.innerHTML = "● 报表及图形参数 ";
         d.appendChild(span);
         let toconfig = document.createElement("select");
         toconfig.onchange = function () {
@@ -2007,7 +2033,7 @@ var geoCoordMap = {
         container.className = "local-map-config-Content";
         let d = document.createElement("div");
         let span = document.createElement("span");
-        span.innerHTML = "●地图设置 : ";
+        span.innerHTML = "● 地图设置 ";
         d.appendChild(span);
         let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
         d.appendChild(close);
@@ -2585,8 +2611,9 @@ function getMultiScreen(configs, container) {
     } : {};
 }
 
-function getXAxis(configs,type,data) {
+function getXAxis(configs, type, data, name) {
     return {
+        name: typeof name != "undefined"? name: null,
         type: type,
         data: data,
         inverse: configs.xAxisInverse.value.toBoolean(),
@@ -2625,8 +2652,9 @@ function getXAxis(configs,type,data) {
     };
 }
 
-function getYAxis(configs,type,data,position) {
+function getYAxis(configs,type,data,position, name) {
     return {
+        name: typeof name != "undefined"? name: null,
         type: type,
         data: data,
         position: position,
@@ -2760,16 +2788,16 @@ function getDataZoomYAxis(configs, yAxisIndex, type,start ,end, containerWidth) 
     }
 }
 
-function getOptionToContent(dataset) {
-    function getTable(table, dataset) {
+function getOptionToContent(dataset, configs, _echarts_instance_id) {
+    function getTable(table, dataset, configs, _echarts_instance_id) {
         let columns = dataset.columns;
         let data = dataset.data;
         if (table == null) {
             table = document.createElement("table");
             table.className = "table";
-            table.id = "optionToContentTable";
-            table.style.cssText = "width: 50%;margin: auto";
-            table.style.fontSize = "15%";
+            table.id = "optionToContentTable_" + _echarts_instance_id;
+            table.style.cssText = "width:" + (100 - toPoint(configs.grid_left.value) - toPoint(configs.grid_right.value)) + "%;margin: auto";
+            table.style.fontSize = configs.reportFontSize.value;
         } else {
             table.innerHTML = "";
         }
@@ -2797,7 +2825,7 @@ function getOptionToContent(dataset) {
                     break;
             }
             order.onclick = function () {
-                getTable($("optionToContentTable"), orderDatasetBy(dataset, this.getAttribute("colid")));
+                getTable($("optionToContentTable_" + _echarts_instance_id), orderDatasetBy(dataset, this.getAttribute("colid")), configs, _echarts_instance_id);
             };
             th.appendChild(order);
             tr.appendChild(th);
@@ -2843,7 +2871,7 @@ function getOptionToContent(dataset) {
         }
         return table;
     }
-    return getTable(null, dataset);
+    return getTable(null, dataset, configs, _echarts_instance_id);
 }
 
 function getToolbox(configs, container, dataset, magic) {
@@ -2864,7 +2892,7 @@ function getToolbox(configs, container, dataset, magic) {
                 backgroundColor: "transparent",
                 lang: [' ', '关闭', ' '],
                 optionToContent: function() {
-                    return getOptionToContent(dataset);
+                    return getOptionToContent(dataset, configs, container.getAttribute("_echarts_instance_"));
                 }
             },
             dataZoom: {show: configs.toolboxFeatureDataZoom.value.toBoolean(),},
@@ -11172,6 +11200,160 @@ function getSingeAxis(container, width, height, dataset, configs) {
     return container;
 }
 
+function getFunctionLine(container, width, height, dataset, configs) {
+    if (container == null) {
+        container = document.createElement("div");
+        container.className = "echarts-container";
+        container.id = "echarts-container";
+        container.style.width = width;
+        container.style.height = height;
+    }
+    let myChart = echarts.init(container, configs.echartsTheme.value, {
+        locale: configs.local.value,
+        renderer: configs.renderer.value
+    });
+    myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
+
+    let xRange = configs.mathFunctionXRange.value.toArray([-100,100],",");
+    let yRange = configs.mathFunctionYRange.value.toArray([-100,100],",");
+
+    let columns = [];
+    for (let i = 0; i < dataset["columns"].length; i++) {
+        columns.push(dataset["columns"][i].name);
+    }
+    let series = [];
+    for (let c = 1; c < columns.length; c++) {
+        let serie = {
+            name: columns[c],
+            type: 'line',
+            showSymbol: true,
+            clip: true,
+            smooth: true,
+            //平滑线
+            data: [],
+            lineStyle: {
+                width: Number(__ECHARTS__.configs.lineStyleWidth.value),
+            },
+            itemStyle: {},
+
+        };
+        for (let i = 0; i < dataset["data"].length; i++) {
+            let row = dataset["data"][i];
+            let type = getStringDataType(row[columns[0]].value.toString());
+            let x = row[columns[0]].value;
+            if (type != "float" && type != "int")
+                x = i;
+            if (Math.abs(row[columns[c]].value) != Infinity && (row[columns[c]].value >= yRange[0] && row[columns[c]].value <= yRange[1]))
+                serie.data.push([x , row[columns[c]].value]);
+            else
+                serie.data.push([x, null]);
+        }
+        setSeriesAnimation(serie, configs, c);
+        series.push(serie);
+    }
+
+    let option = {
+        aria: getAria(configs),
+        backgroundColor: getBackgroundColor(configs),
+        grid: getGrid(configs),
+        title: [
+            getTitle(configs)
+        ],
+        brush: getBrush(configs),
+        toolbox: getToolbox(configs, container, dataset, false),
+        legend: getLegend(configs, columns),
+        tooltip: getTooltip(configs, "axis", null),
+        animation: true,
+        xAxis: {
+            name: 'X',
+            axisLine: {
+                show: configs.axisLineDisplay.value.toBoolean(),
+                symbol: ["none", "arrow"],
+                symbolOffset: [-10, 10],
+                lineStyle: {
+                    color: configs.axisColor.value
+                },
+            },
+            min: Number(xRange[0]),
+            max: Number(xRange[1]),
+            minorTick: {
+                show: true,
+                lineStyle: {
+                    color: configs.axisColor.value
+                },
+            },
+            splitLine: {
+                lineStyle: {
+                    color: '#999'
+                }
+            },
+            minorSplitLine: {
+                show: true,
+                lineStyle: {
+                    color: '#ddd'
+                }
+            }
+        },
+
+        yAxis: {
+            name: 'Y',
+            axisLine: {
+                show: configs.axisLineDisplay.value.toBoolean(),
+                symbol: ["none", "arrow"],
+                symbolOffset: [-10, 10],
+                lineStyle: {
+                    color: configs.axisColor.value
+                },
+            },
+            min: Number(yRange[0]),
+            max: Number(yRange[1]),
+            minorTick: {
+                show: true,
+                lineStyle: {
+                    color: configs.axisColor.value
+                },
+            },
+            splitLine: {
+                lineStyle: {
+                    color: '#999'
+                }
+            },
+            minorSplitLine: {
+                show: true,
+                lineStyle: {
+                    color: '#ddd'
+                }
+            }
+        },
+
+        dataZoom: [{
+            show: true,
+            type: 'inside',
+            filterMode: 'none',
+            xAxisIndex: [0],
+            startValue: -20,
+            endValue: 20
+        }, {
+            show: true,
+            type: 'inside',
+            filterMode: 'none',
+            yAxisIndex: [0],
+            startValue: -20,
+            endValue: 20
+        }],
+        series: series,
+        graphic: getWaterGraphic(__SYS_LOGO_LINK__),
+    };
+
+    setTimeout(function () {
+        myChart.hideLoading();
+        myChart.setOption(option);
+    }, Number(configs.loadingTimes.value) * 1000);
+
+    __ECHARTS__.addHistory(container, configs, dataset, width, height);
+    return container;
+}
+
 function getDatasetImage(container, width, height, dataset, configs) {
     if (container == null) {
         container = document.createElement("div");
@@ -11238,3 +11420,4 @@ function getDatasetImage(container, width, height, dataset, configs) {
     __ECHARTS__.addHistory(container, configs, dataset, width, height);
     return container;
 }
+

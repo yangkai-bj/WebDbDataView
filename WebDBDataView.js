@@ -1,6 +1,6 @@
 var __VERSION__ = {
-    version: "2.0.4",
-    date: "2021/03/25",
+    version: "2.1.7",
+    date: "2021/04/02",
     comment: [
         "-- 2021/03/08",
         "优化算法和压缩代码.",
@@ -12,7 +12,12 @@ var __VERSION__ = {
         "-- 2021/03/22",
         "修改数据视图显示方式.",
         "-- 2021/03/25",
-        "优化数据集合排序算法."
+        "优化数据集合排序算法.",
+        "-- 2021/03/26",
+        "增加数学函数.",
+        "-- 2021/04/01",
+        "增加数据分组切片.",
+        "修改报表下载方式."
     ]
 };
 
@@ -170,6 +175,7 @@ var __CONFIGS__ = {
      codeMirror: null,
      parameter: null,
      charset: {value: 1, name: "字符集", type: "select", options: ["GBK", "UTF-8"]},
+     modes: {SQL: "text/x-sqlite",函数: "text/javascript"},
      themes: {
          默认: {name: "default", href: "codemirror/theme/default.css"},
          黑色: {name: "black", href: "codemirror/theme/black.css"},
@@ -541,7 +547,6 @@ function getStructFromData() {
                             break;
                         default:
                             col[index] = 0;
-
                     }
                     break;
                 case "allowNull":
@@ -571,7 +576,7 @@ function createTable(structure) {
 
     let d = document.createElement("div");
     let span = document.createElement("span");
-    span.innerHTML = "●创建数据表 : ";
+    span.innerHTML = "● 创建数据表 ";
     d.appendChild(span);
     let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
     d.appendChild(close);
@@ -865,7 +870,7 @@ function createDatabase(){
 
     let d = document.createElement("div");
     let span = document.createElement("span");
-    span.innerHTML = "●创建数据库 : ";
+    span.innerHTML = "● 创建数据库 ";
     d.appendChild(span);
     let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
     d.appendChild(close);
@@ -952,7 +957,7 @@ function getImportContent() {
 
     let d = document.createElement("div");
     let span = document.createElement("span");
-    span.innerHTML = "●导入数据 :";
+    span.innerHTML = "● 导入数据";
     d.appendChild(span);
     let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
     d.appendChild(close);
@@ -1420,7 +1425,8 @@ function datasetTranspose(index) {
     try {
         let columns = __DATASET__["result"][index].columns;
         let data = __DATASET__["result"][index].data;
-        let dataset = {columns: [], data: []};
+        let title = (typeof __DATASET__["result"][index].title == "undefined")? null:__DATASET__["result"][index].title;
+        let dataset = {columns: [], data: [], title: title};
         let col = {
             id: 0,
             name: columns[0].name,
@@ -1762,7 +1768,7 @@ function execute() {
                                     }
                                     data.push(row);
                                 }
-                                __DATASET__["result"].push({"columns": columns, "data": data});
+                                __DATASET__["result"].push({"columns": columns, "data": data, title: null});
 
                                 if (__DATASET__["result"].length > 0) {
                                     __DATASET__.default.sheet = 0;
@@ -1790,6 +1796,152 @@ function execute() {
         alert("请选择数据库!");
     }
 }
+
+function fixMathFunctionString(str) {
+    //用于修正函数字符串
+    try {
+        var reg = RegExp(/(\d+|\))([a-zA-Z\(]+)/, "g");
+        var result = str.match(reg, "g");
+        for (var i = 0; i < result.length; i++) {
+            result[i].toString().match(reg, "g");
+            str = str.replace(result[i].toString(), RegExp.$1 + "*" + RegExp.$2);
+        }
+    } catch (e) {
+    }
+    return str;
+}
+
+function executeFunction() {
+    let selection = "";
+    if (__SQLEDITOR__.codeMirror.somethingSelected())
+        selection = __SQLEDITOR__.codeMirror.getSelection();
+    else
+        selection = __SQLEDITOR__.codeMirror.getValue();
+    if (__SQLEDITOR__.parameter == null)
+        selection = fillSqlParam(selection);
+    else {
+        let title = __SQLEDITOR__.title;
+        for (let param in __SQLEDITOR__.parameter) {
+            selection = selection.replaceAll("{" + param.toString() + "}", __SQLEDITOR__.parameter[param].toString())
+            if (title != null)
+                title = title.replaceAll("{" + param.toString() + "}", __SQLEDITOR__.parameter[param].toString());
+        }
+        if (title != null) {
+            title = title.split("_");
+            __ECHARTS__.configs.titleText.value = title[0];
+            if (title.length > 1) {
+                __ECHARTS__.configs.titleSubText.value = title[1];
+            } else {
+                __ECHARTS__.configs.titleSubText.value = "";
+            }
+        }
+    }
+    let funs = [];
+    if (selection.trim() != "") {
+        funs = selection.split(";");
+        viewMessage(selection);
+        $("tableContainer").innerHTML = "";
+        $("page-label").innerText = " ● ";
+        $("dataset-label").innerText = " ● ";
+        __DATASET__.sql = selection;
+        __DATASET__.time = getNow();
+        __DATASET__.result = [];
+        let data = [];
+        let xRange = __ECHARTS__.configs.mathFunctionXRange.value.toArray([-100, 100], ",");
+        for (let x = xRange[0]; x <= xRange[1]; x += Number(__ECHARTS__.configs.mathFunctionXGrainSize.value)) {
+            let row = [x];
+            for (let s = 0; s < funs.length; s++) {
+                let f = funs[s].toString();
+                try {
+                    f = fixMathFunctionString(funs[s].toString());
+                    if (f.trim() != "") {
+                        let val = eval("(" + f + ")");
+                        row.push(val);
+                    } else
+                        row.push(null);
+                } catch (e) {
+                    row.push(f);
+                    viewMessage(e + "\n" + funs[s].toString() + " -> " + f);
+                }
+            }
+            data.push(row);
+        }
+        __DATASET__["result"].push(transferResultDataset(funs, data));
+        if (__DATASET__["result"].length > 0) {
+            __DATASET__.default.sheet = 0;
+            __DATASET__.pages.total = Math.ceil(__DATASET__.result[0].data.length / Number(__ECHARTS__.configs.reportPageSize.value));
+            __DATASET__.pages.default = 1;
+            $("page-label").innerText = __DATASET__.pages.default + " ● " + __DATASET__.pages.total;
+            $("dataset-label").innerText = (__DATASET__.default.sheet + 1) + " ● " + __DATASET__.result.length;
+            viewDataset(0);
+        }
+    }
+}
+
+function transferResultDataset(funs, dataset) {
+        let col = ["X"].concat(funs);
+        let columns = [];
+        for (let i = 0; i < col.length; i++) {
+            columns.push({id: i, name: col[i], type: "string", style: {textAlign: "center"}, order: ""});
+        }
+        let data = [];
+        for (let i = 0; i < dataset.length; i++) {
+            let row = {};
+            let r = dataset[i];
+            for (let c = 0; c < columns.length; c++) {
+                let _value = r[c];
+                let _type = getStringDataType(_value != null?_value.toString():null);
+                let _format = null;
+                let _align = "left";
+                let _color = "black";
+
+                switch (_type) {
+                    case "float":
+                        _type = "number";
+                        _value = Number.parseFloat(r[c]);
+                        _format = "#,##0.######";
+                        _align = "right";
+                        break;
+                    case "int":
+                        _type = "number";
+                        _value = Number.parseInt(r[c]);
+                        _format = "#,##0.######";
+                        _align = "right";
+                        break;
+                    case "date":
+                        _format = "yyyy-MM-dd";
+                        _align = "center";
+                        break;
+                    case "datetime":
+                        _format = "yyyy-MM-dd hh:mm:ss";
+                        _align = "center";
+                        break;
+                    default:
+                        _format = null;
+                        _align = "left";
+                }
+                if (_type == "number" && _value < 0)
+                    _color = "red";
+
+                row[columns[c].name] = {
+                    rowid: i,
+                    colid: c,
+                    value: _value,
+                    type: _type,
+                    format: _format,
+                    style: {"text-align": _align, "color": _color},
+                };
+            }
+            data.push(row);
+        }
+
+        return {
+            columns: columns,
+            total: data.length,
+            data: data,
+            title: null
+        };
+    }
 
 function getTableStructure(sql) {
     //从SQL中解析数据表结构.
@@ -1892,7 +2044,7 @@ function getTableStructure(sql) {
             }
         }
     }
-    return {"columns":columns,"data":data};
+    return {columns: columns,data: data, title: null};
 }
 
 function openDownloadDialog(url, saveName) {
@@ -2367,12 +2519,48 @@ function init() {
             if (paramdialog != null) {
                 setCenterPosition($("page"), paramdialog)
             } else {
-                execute();
+                if (__SQLEDITOR__.title != null) {
+                    let title = __SQLEDITOR__.title.split("_");
+                    __ECHARTS__.configs.titleText.value = title[0];
+                    if (title.length > 1) {
+                        __ECHARTS__.configs.titleSubText.value = title[1];
+                    } else {
+                        __ECHARTS__.configs.titleSubText.value = "";
+                    }
+                }
+                if (__SQLEDITOR__.options.mode == "text/x-sqlite")
+                    execute();
+                if (__SQLEDITOR__.options.mode == "text/javascript")
+                    executeFunction()
             }
         }
     };
     sqltools.appendChild(execsql);
     setTooltip(execsql, "执行脚本<br>获取数据");
+
+    let datasetSource = document.createElement("select");
+    datasetSource.type = "select";
+    datasetSource.id = "set-dataset-source";
+    datasetSource.style.cssFloat = "left";
+    for (m in __SQLEDITOR__.modes) {
+        datasetSource.options.add(new Option(m, __SQLEDITOR__.modes[m]));
+    }
+    try {
+        let mode = getUserConfig("editermode");
+        if (mode != null) {
+            __SQLEDITOR__.options.mode = datasetSource.value = mode;
+        } else
+            datasetSource.selectedIndex = 0;
+    } catch (e) {
+        console.log(e);
+    }
+    datasetSource.onchange = function () {
+        __SQLEDITOR__.options.mode = datasetSource.value = this.value;
+        __SQLEDITOR__.codeMirror.setOption("mode", this.value);
+        setUserConfig("editermode", this.value);
+    };
+    sqltools.appendChild(datasetSource);
+    setTooltip(datasetSource, "编辑器<br>模式");
 
     let tofull = document.createElement("div");
     sqltools.appendChild(tofull);
@@ -2679,9 +2867,28 @@ function init() {
     download.id = "dataset-download";
     let help_datasetdownload = $("help-dataset-download");
     download.onclick = help_datasetdownload.onclick = function () {
+        function fixFileName(str){
+            let sts = ['\\','/',':','*','?','"','<','>','|'];
+            for(let i =0;i < sts.length;i++){
+                str.replaceAll(sts[i],"");
+            }
+            return str;
+        }
+        function sleep(delay) {
+            let endTime = new Date().getTime() + parseInt(delay);
+            while (new Date().getTime() < endTime) ;
+            //用时间来控制延时,突破浏览器同时下载任务限制.
+        }
         if (__DATASET__["result"].length > 0) {
             let sheets = [];
             let sheetNames = [];
+            let comment = [
+                    ['Application:', 'Web DataView for SQLite Database of browser'],
+                    ['Version:', __VERSION__.version + " (" + __VERSION__.date + ")"],
+                    ['SQL/Function:', __DATASET__.sql],
+                    ['Creation time:', getNow()],
+                    ['Get help from:', 'https://github.com/yangkai-bj'],
+                ];
             if (__ECHARTS__.configs.reportDownload.value == "current") {
                 let dataset = __DATASET__["result"][__DATASET__.default.sheet];
                 let aoa = [];
@@ -2699,40 +2906,92 @@ function init() {
                     aoa.push(row);
                 }
                 sheets.push(aoa);
-                sheetNames.push("Current")
-            } else if (__ECHARTS__.configs.reportDownload.value == "all") {
-                for (let d = 0; d < __DATASET__["result"].length; d++) {
-                    let dataset = __DATASET__["result"][d];
-                    let aoa = [];
-                    let columns = dataset["columns"].reduce(function (tmp, column) {
-                        tmp.push(column.name);
-                        return tmp;
-                    }, []);
-                    aoa.push(columns);
-                    for (let i = 0; i < dataset["data"].length; i++) {
-                        let r = dataset["data"][i];
-                        let row = [];
-                        for (let c = 0; c < columns.length; c++) {
-                            row.push(r[columns[c]].value);
+                let sheetname = typeof dataset.title == "undefined" ? "Current" :
+                    (dataset.title == null ? "Current" :
+                        (dataset.title.trim() == "" ? "Current" : dataset.title));
+                sheetNames.push(sheetname);
+                sheets.push(comment);
+                sheetNames.push("Comment");
+                let title = __SQLEDITOR__.title != null ? __SQLEDITOR__.title.split("_")[0] : prompt("请输入文件名称:");
+                if (title != null && title.trim() != "")
+                    openDownloadDialog(workbook2blob(sheets, sheetNames), title + ".xlsx");
+            } else if (__ECHARTS__.configs.reportDownload.value == "all-single") {
+                if (__DATASET__["result"].length <= 255) {
+                    let res = true;
+                    if (__DATASET__["result"].length > 3)
+                        res = confirm("您确定下载 " + __DATASET__["result"].length + " 个工作表吗?");
+                    if (res == true) {
+                        for (let d = 0; d < __DATASET__["result"].length; d++) {
+                            let dataset = __DATASET__["result"][d];
+                            let aoa = [];
+                            let columns = dataset["columns"].reduce(function (tmp, column) {
+                                tmp.push(column.name);
+                                return tmp;
+                            }, []);
+                            aoa.push(columns);
+                            for (let i = 0; i < dataset["data"].length; i++) {
+                                let r = dataset["data"][i];
+                                let row = [];
+                                for (let c = 0; c < columns.length; c++) {
+                                    row.push(r[columns[c]].value);
+                                }
+                                aoa.push(row);
+                            }
+                            sheets.push(aoa);
+                            let sheetname = typeof __DATASET__["result"][d].title == "undefined" ? "Sheet" + (d + 1) :
+                                (__DATASET__["result"][d].title == null ? "Sheet" + (d + 1) :
+                                    (__DATASET__["result"][d].title.trim() == "" ? "Sheet" + (d + 1) : fixFileName(__DATASET__["result"][d].title)));
+                            sheetNames.push(sheetname);
                         }
-                        aoa.push(row);
+                        sheets.push(comment);
+                        sheetNames.push("Comment");
+                        let title = __SQLEDITOR__.title != null ? __SQLEDITOR__.title.split("_")[0] : prompt("请输入文件名称:");
+                        if (title != null && title.trim() != "")
+                            openDownloadDialog(workbook2blob(sheets, sheetNames), fixFileName(title) + ".xlsx");
                     }
-                    sheets.push(aoa);
-                    sheetNames.push("Sheet" + (d + 1));
-                }
+                } else
+                    alert("一个工作簿最多允许有255个数据表!");
+            } else if (__ECHARTS__.configs.reportDownload.value == "all-multi") {
+                if (__DATASET__["result"].length <= 255) {
+                    let res = true;
+                    if (__DATASET__["result"].length > 3)
+                        res = confirm("您确定下载 " + __DATASET__["result"].length + " 个工作簿吗?");
+                    if (res == true) {
+                        for (let d = 0; d < __DATASET__["result"].length; d++) {
+                            sheets = [];
+                            sheetNames = [];
+                            let dataset = __DATASET__["result"][d];
+                            let aoa = [];
+                            let columns = dataset["columns"].reduce(function (tmp, column) {
+                                tmp.push(column.name);
+                                return tmp;
+                            }, []);
+                            aoa.push(columns);
+                            for (let i = 0; i < dataset["data"].length; i++) {
+                                let r = dataset["data"][i];
+                                let row = [];
+                                for (let c = 0; c < columns.length; c++) {
+                                    row.push(r[columns[c]].value);
+                                }
+                                aoa.push(row);
+                            }
+                            sheets.push(aoa);
+                            let sheetname = typeof __DATASET__["result"][d].title == "undefined" ? "Sheet" + (d + 1) :
+                                (__DATASET__["result"][d].title == null ? "Sheet" + (d + 1) :
+                                    (__DATASET__["result"][d].title.trim() == "" ? "Sheet" + (d + 1) : fixFileName(__DATASET__["result"][d].title)));
+                            sheetNames.push(sheetname);
+                            sheets.push(comment);
+                            sheetNames.push("Comment");
+                            openDownloadDialog(workbook2blob(sheets, sheetNames), sheetname + ".xlsx");
+                            if (d < (__DATASET__["result"].length - 1)) {
+                                let delay = (aoa.length * columns.length) >= 10000 ? (aoa.length * columns.length / 10000) : 1;
+                                sleep(__ECHARTS__.configs.reportDownloadDelay.value * delay);
+                            }
+                        }
+                    }
+                } else
+                    alert("同时下载的工作簿个数不允许超过255个!");
             }
-            let comment = [
-                ['Application:', 'Web DataView for SQLite Database of browser'],
-                ['Version:', __VERSION__.version + " (" + __VERSION__.date + ")"],
-                ['Database SQL:', __DATASET__.sql],
-                ['Creation time:', getNow()],
-                ['Get help from:', 'https://github.com/yangkai-bj'],
-            ];
-            sheets.push(comment);
-            sheetNames.push("Comment");
-            let title = __SQLEDITOR__.title != null ? __SQLEDITOR__.title.split("_")[0] : prompt("请输入文件名称:");
-            if (title != null && title.trim() != "")
-                openDownloadDialog(workbook2blob(sheets, sheetNames), title + ".xlsx");
         }
     };
     setTooltip(download, "下载<br>数据集");
@@ -3217,7 +3476,7 @@ function getSubtotal(columns) {
     let d = document.createElement("div");
     d.style.height= "22px";
     let span = document.createElement("span");
-    span.innerHTML = "●分类字段 : ";
+    span.innerHTML = "● 分类字段 ";
     d.appendChild(span);
     let cols = document.createElement("select");
     cols.type = "select";
@@ -3351,7 +3610,7 @@ function getSubtotal(columns) {
                 __DATASET__["result"].push(subtotal(column, target, typ[i].value));
         }
         if (merge)
-             __DATASET__["result"].push({columns:columns,data:data});
+             __DATASET__["result"].push({columns: columns,data: data, title: null});
         if (__DATASET__["result"].length > 0) {
             __DATASET__.default.sheet = __DATASET__["result"].length - 1;
             __DATASET__.pages.total = Math.ceil(__DATASET__.result[__DATASET__.default.sheet].data.length / Number(__ECHARTS__.configs.reportPageSize.value));
@@ -3453,7 +3712,7 @@ function getParamDialog(title, sql) {
         d.className = d.id = "sql-param-title-container";
         let span = document.createElement("span");
         span.className = span.id = "sql-param-title";
-        span.innerHTML = (title == null?"●":"● " + title.split("_")[0]);
+        span.innerHTML = (title == null ? "●" : "● " + title.split("_")[0]);
         if (title.split("_").length > 1)
             span.title = title.split("_").join("\n● ");
         d.appendChild(span);
@@ -3481,7 +3740,8 @@ function getParamDialog(title, sql) {
             try {
                 if (__SQLEDITOR__.parameter[param.toString()] != null)
                     value.value = __SQLEDITOR__.parameter[param.toString()];
-            }catch(e){}
+            } catch (e) {
+            }
             d.appendChild(value);
             container.appendChild(d);
         }
@@ -3505,7 +3765,10 @@ function getParamDialog(title, sql) {
                     param[params[i].getAttribute("param")] = params[i].value;
             }
             __SQLEDITOR__.parameter = param;
-            execute();
+            if (__SQLEDITOR__.options.mode == "text/x-sqlite")
+                execute();
+            if (__SQLEDITOR__.options.mode == "text/javascript")
+                executeFunction();
             $("sql-param-dialog").parentNode.removeChild($("sql-param-dialog"));
         };
         tool.appendChild(confirm);
@@ -3513,7 +3776,7 @@ function getParamDialog(title, sql) {
         let cancel = document.createElement("div");
         cancel.className = "button";
         cancel.innerText = "退出";
-        cancel.onclick= close.onclick = function () {
+        cancel.onclick = close.onclick = function () {
             $("sql-param-dialog").parentNode.removeChild($("sql-param-dialog"));
         };
         tool.appendChild(cancel);
@@ -3524,12 +3787,77 @@ function getParamDialog(title, sql) {
 }
 
 function getDataSlice() {
+    function getGroups(setid, start, end, groupby) {
+        let data = __DATASET__.result[setid].data;
+        let groups = [];
+        for (let i = 0; i < data.length; i++) {
+            if (i >= start && i <= end) {
+                let row = data[i];
+                let ex = false;
+                for (let t = 0; t < groups.length; t++) {
+                    if (groups[t] === row[groupby].value) {
+                        ex = true;
+                        break;
+                    }
+                }
+                if (ex == false) {
+                    groups.push(row[groupby].value);
+                }
+            }
+        }
+        return groups;
+    }
+
+    function dataSlice(setid, cols, begin, end, groupby, groupvalue) {
+        let columns = __DATASET__.result[setid].columns;
+        let col_tmp = [];
+        let id = 0;
+        for (let i = 0; i < cols.length; i++) {
+            if (cols[i].checked == true) {
+                for (let c = 0; c < columns.length; c++) {
+                    if (cols[i].name == columns[c].name) {
+                        let col = columns[c];
+                        col.id = id;
+                        col_tmp.push(col);
+                        break;
+                    }
+                }
+                id++;
+            }
+        }
+        let rowid = 0;
+        let data = __DATASET__.result[setid].data;
+        let dataset = [];
+        for (let i = 0;i <= data.length; i++) {
+            let row = data[i];
+            if (i >= begin && i <= end) {
+                let r = {};
+                for (let c = 0; c < col_tmp.length; c++) {
+                    let cell = row[col_tmp[c].name];
+                    cell.rowid = rowid;
+                    cell.colid = col_tmp[c].id;
+                    r[col_tmp[c].name] = cell;
+                }
+                if (groupby == "none") {
+                    dataset.push(r);
+                    rowid++;
+                } else {
+                    if (row[groupby].value == groupvalue) {
+                        dataset.push(r);
+                        rowid++;
+                    }
+                }
+            }
+        }
+        __DATASET__["result"].push({columns: col_tmp, data: dataset, title: groupvalue});
+    }
+
     let container = document.createElement("div");
     container.id = "data-slice-Content";
     container.className = "data-slice-Content";
     let d = document.createElement("div");
     let span = document.createElement("span");
-    span.innerHTML = "●数据切片 : ";
+    span.innerHTML = "● 数据切片";
     d.appendChild(span);
     let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
     d.appendChild(close);
@@ -3594,11 +3922,11 @@ function getDataSlice() {
     d = document.createElement("div");
     container.appendChild(d);
     span = document.createElement("span");
-    span.innerText = "切片范围 : ";
+    span.innerText = "切片范围 : [";
     d.appendChild(span);
     let range_begin = document.createElement("input");
     range_begin.id = "data-slice-range-begin";
-    range_begin.style.width = "100px";
+    range_begin.style.width = "50px";
     range_begin.style.textAlign = "center";
     range_begin.value = 1;
     d.appendChild(range_begin);
@@ -3607,10 +3935,21 @@ function getDataSlice() {
     d.appendChild(span);
     let range_end = document.createElement("input");
     range_end.id = "data-slice-range-end";
-    range_end.style.width = "100px";
+    range_end.style.width = "50px";
     range_end.style.textAlign = "center";
     range_end.value = __DATASET__.result[__DATASET__.default.sheet].data.length;
     d.appendChild(range_end);
+    span = document.createElement("span");
+    span.innerText = "] 分组 : ";
+    d.appendChild(span);
+    let groupBy = document.createElement("select");
+    groupBy.id = "data-slice-groupby";
+    groupBy.style.width = "100px";
+    groupBy.options.add(new Option("不分组", "none"));
+    for (let i = 0; i < columns.length; i++) {
+        groupBy.options.add(new Option(columns[i].name, columns[i].name));
+    }
+    d.appendChild(groupBy);
 
     let br = document.createElement("hr");
     br.className = "br";
@@ -3624,42 +3963,21 @@ function getDataSlice() {
     confirm.innerText = "确定";
     confirm.onclick = function () {
         let cols = $("data-slice-table").getElementsByClassName("data-slice-column-check");
-        let columns = __DATASET__.result[__DATASET__.default.sheet].columns;
         let begin = Number($("data-slice-range-begin").value) - 1;
         let end = Number($("data-slice-range-end").value) - 1;
-        let col_tmp = [];
-        let dataset = [];
-        let id = 0;
-        for (let i = 0; i < cols.length; i++) {
-            if (cols[i].checked == true) {
-                for (let c = 0; c < columns.length; c++) {
-                    if (cols[i].name == columns[c].name) {
-                        let col = columns[c];
-                        col.id = id;
-                        col_tmp.push(col);
-                        break;
-                    }
-                }
-                id++;
-            }
+        let groupby = $("data-slice-groupby").value;
+        let groups = [];
+        let setid = __DATASET__.default.sheet;
+        if (groupby != "none"){
+            groups = getGroups(setid, begin, end, groupby);
         }
-        let rowid = 0;
-        let data = __DATASET__.result[__DATASET__.default.sheet].data;
-        for (let i = 0; i < data.length; i++) {
-            let row = data[i];
-            if (i >= begin && i <= end) {
-                let r = {};
-                for (let c = 0; c < col_tmp.length; c++) {
-                    let cell = row[col_tmp[c].name];
-                    cell.rowid = rowid;
-                    cell.colid = col_tmp[c].id;
-                    r[col_tmp[c].name] = cell;
-                }
-                dataset.push(r);
-                rowid ++;
+        if (groups.length>0) {
+            for (let g = 0; g < groups.length; g++) {
+                dataSlice(setid, cols,begin,end, groupby ,groups[g]);
             }
-        }
-        __DATASET__["result"].push({columns: col_tmp, data: dataset});
+        } else
+            dataSlice(setid, cols, begin, end, "none", null);
+
         if (__DATASET__["result"].length > 0) {
             __DATASET__.default.sheet = __DATASET__["result"].length - 1;
             __DATASET__.pages.total = Math.ceil(__DATASET__.result[__DATASET__.default.sheet].data.length / Number(__ECHARTS__.configs.reportPageSize.value));
@@ -3668,7 +3986,6 @@ function getDataSlice() {
             $("dataset-label").innerText = (__DATASET__.default.sheet + 1) + " ● " + __DATASET__.result.length;
             viewDataset(__DATASET__["result"].length - 1);
         }
-
         $("data-slice-Content").parentNode.removeChild($("data-slice-Content"));
     };
     tool.appendChild(confirm);
@@ -3693,7 +4010,7 @@ function getDataFilter(colid) {
     container.className = "data-filter-Content";
     let d = document.createElement("div");
     let span = document.createElement("span");
-    span.innerHTML = "●筛选字段 :[ " + columns[Number(colid)].name + " ]";
+    span.innerHTML = "● 筛选字段 [ " + columns[Number(colid)].name + " ]";
     d.appendChild(span);
     let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
     d.appendChild(close);
@@ -3845,8 +4162,7 @@ function getDataFilter(colid) {
                 }
             }
         }
-
-        __DATASET__["result"].push({columns: columns, data: dataset});
+        __DATASET__["result"].push({columns: columns, data: dataset, title: null});
         if (__DATASET__["result"].length > 0) {
             __DATASET__.default.sheet = __DATASET__["result"].length - 1;
             __DATASET__.pages.total = Math.ceil(__DATASET__.result[__DATASET__.default.sheet].data.length / Number(__ECHARTS__.configs.reportPageSize.value));
@@ -3881,7 +4197,7 @@ function getColumnMenu(colid) {
 
     let li = document.createElement("li");
     li.id = "table-column-menu-filter";
-    li.innerHTML = "●筛选";
+    li.innerHTML = "● 筛选";
     li.setAttribute("colid", colid);
     li.onclick = function () {
         if (__DATASET__.result.length > 0) {
@@ -3893,7 +4209,7 @@ function getColumnMenu(colid) {
 
     li = document.createElement("li");
     li.id = "table-column-menu-formater";
-    li.innerHTML = "●格式";
+    li.innerHTML = "● 格式";
     li.setAttribute("colid", colid);
     li.onclick = function () {
         let formater = getFormat(this.getAttribute("colid"));
@@ -3913,7 +4229,7 @@ function getFormat(colid) {
     container.className = "table-data-format";
     let d = document.createElement("div");
     let span = document.createElement("span");
-    span.innerHTML = "●格式设置 : [ " + columns[Number(colid)].name + " ]";
+    span.innerHTML = "● 格式设置 [ " + columns[Number(colid)].name + " ]";
     d.appendChild(span);
     let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
     d.appendChild(close);
