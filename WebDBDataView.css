@@ -189,6 +189,26 @@ img.title_close_button:hover{
     background-color: var(--toolbar-button-hover-background-color);
 }
 
+.toolbar .tabButton{
+    height: 100%;
+    width: 60px;
+    text-align: center;
+    line-height: 36px;
+    margin: 0px;
+    cursor: pointer;
+    float:left;
+    position: relative;
+    border-radius: 0px;
+}
+
+.toolbar .tabButton:hover{
+    border-top-style:solid;
+    border-top-color: lightgreen;
+    border-top-width: 2px;
+    color:var(--toolbar-button-hover-color);
+    background-color: var(--toolbar-button-hover-background-color);
+}
+
 .toolbar select {
     background-color: var(--toolbar-background-color);
     float: right;
@@ -246,9 +266,7 @@ img.title_close_button:hover{
     cursor: pointer;
     float:left;
     position: relative;
-    border-bottom-right-radius: 15px;
-    border-top-left-radius: 15px;
-    border-top-right-radius: 5px;
+    border-radius: 5px;
 }
 
 .groupbar .button::before {
@@ -486,7 +504,7 @@ img.title_close_button:hover{
     border-top-right-radius: 20px;
     box-shadow: 2px 2px 3px #aaaaaa;
     line-height: 20px;
-    z-index: 99;
+    z-index: 9999;
     -webkit-animation: content-show 1s 1;
     animation: content-show 1s 1;
 }
@@ -518,7 +536,7 @@ img.title_close_button:hover{
     border-top-right-radius: 20px;
     box-shadow: 2px 2px 3px #aaaaaa;
     line-height: 20px;
-    z-index: 99;
+    z-index: 9999;
     -webkit-animation: content-show 1s 1;
     animation: content-show 1s 1;
 }
@@ -550,7 +568,7 @@ img.title_close_button:hover{
     border-top-right-radius: 20px;
     box-shadow: 2px 2px 3px #aaaaaa;
     line-height: 20px;
-    z-index: 99;
+    z-index: 9999;
     -webkit-animation: content-show 12s 1;
     animation: content-show 1s 1;
 }
@@ -633,7 +651,7 @@ img.title_close_button:hover{
     box-shadow: 2px 2px 3px #aaaaaa;
     line-height: 20px;
     color: var(--toolbar-background-color);
-    z-index: 99;
+    z-index: 9999;
     -webkit-animation: content-show 1s 1;
     animation: content-show 1s 1;
 }
@@ -697,7 +715,7 @@ img.title_close_button:hover{
     border-top-right-radius: 20px;
     box-shadow: 2px 2px 3px #aaaaaa;
     line-height: 20px;
-    z-index: 99;
+    z-index: 9999;
     -webkit-animation: content-show 1s 1;
     animation: content-show 1s 1;
 }
@@ -761,7 +779,7 @@ img.title_close_button:hover{
     border-top-right-radius: 20px;
     box-shadow: 2px 2px 3px #aaaaaa;
     line-height: 20px;
-    z-index: 99;
+    z-index: 9999;
     -webkit-animation: content-show 1s 1;
     animation: content-show 1s 1;
 }
@@ -814,7 +832,7 @@ img.title_close_button:hover{
     border-top-right-radius: 20px;
     box-shadow: 2px 2px 3px #aaaaaa;
     line-height: 20px;
-    z-index: 99;
+    z-index: 9999;
     -webkit-animation: content-show 1s 1;
     animation: content-show 1s 1;
 }
@@ -847,7 +865,7 @@ img.title_close_button:hover{
     border-top-right-radius: 20px;
     box-shadow: 2px 2px 3px #aaaaaa;
     line-height: 20px;
-    z-index: 99;
+    z-index: 9999;
     -webkit-animation: content-show 1s 1;
     animation: content-show 1s 1;
 }
@@ -888,7 +906,7 @@ img.title_close_button:hover{
     border-top-right-radius: 20px;
     box-shadow: 2px 2px 3px #aaaaaa;
     line-height: 20px;
-    z-index: 99;
+    z-index: 9999;
     -webkit-animation: content-show 1s 1;
     animation: content-show 1s 1;
 }
@@ -953,7 +971,7 @@ hr.br{
     border-top-right-radius: 20px;
     box-shadow: 2px 2px 3px #aaaaaa;
     line-height: 20px;
-    z-index: 99;
+    z-index: 9999;
     -webkit-animation: content-show 1s 1;
     animation: content-show 1s 1;
 }
@@ -1171,5 +1189,18 @@ hr.br{
     position: absolute;
     border: 1px solid var(--main-border-color);
 }
+
+.container-title{
+    width: 100%;
+    cursor: pointer;
+    height: 22px;
+    border-radius: 10px;
+}
+
+.container-title:hover{
+    background-color: var(--toolbar-background-color);
+    color: whitesmoke;
+}
+
 
 

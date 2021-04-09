@@ -3,26 +3,22 @@ function storageSqlDialog(sql, editer, type){
     container.id = "sql-Manager-Content";
     container.className = "sql-Manager-Content";
 
-    let d = document.createElement("div");
-    d.style.width = "100%";
+    let title = document.createElement("div");
+    title.className = "container-title";
     let span = document.createElement("span");
     span.innerHTML = "● 脚本管理 ";
-    d.appendChild(span);
-    let sqlname = document.createElement("input");
-    sqlname.id = sqlname.className = "sql-Manager-Content-name";
-    sqlname.placeholder="请输入脚本名称.";
-    d.appendChild(sqlname);
+    title.appendChild(span);
     let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
-    d.appendChild(close);
-    container.appendChild(d);
+    title.appendChild(close);
+    container.appendChild(title);
 
     let hr = document.createElement("hr");
     container.appendChild(hr);
 
-    d = document.createElement("div");
+    let d = document.createElement("div");
     d.className = "toolbar";
     let b = document.createElement("a");
-    b.className = "button";
+    b.className = "tabButton";
     b.innerHTML = "列表";
     b.onclick = function () {
         $("table-container").style.display = "block";
@@ -30,7 +26,7 @@ function storageSqlDialog(sql, editer, type){
     };
     d.appendChild(b);
     b = document.createElement("a");
-    b.className = "button";
+    b.className = "tabButton";
     b.innerHTML = "详细";
     b.onclick = function () {
         $("table-container").style.display = "none";
@@ -58,6 +54,10 @@ function storageSqlDialog(sql, editer, type){
     editcontainer.className = editcontainer.id = "edit-container";
     editcontainer.style.display = "none";
     contentContainer.appendChild(editcontainer);
+    let sqlname = document.createElement("input");
+    sqlname.id = sqlname.className = "sql-Manager-Content-name";
+    sqlname.placeholder="请输入脚本名称.";
+    editcontainer.appendChild(sqlname);
 
     let edit = document.createElement("textarea");
     edit.className = edit.id = "sql-Manager-Content-sql";
@@ -79,6 +79,7 @@ function storageSqlDialog(sql, editer, type){
     open.innerText = "打开";
     open.onclick = function(){
         editer.title = $("sql-Manager-Content-name").value;
+        viewMessage("Open SQL/Function : " + editer.title);
         editer.codeMirror.setValue($("sql-Manager-Content-sql").value);
         $("sql-Manager-Content").parentNode.removeChild($("sql-Manager-Content"));
     };
@@ -221,6 +222,9 @@ function storageSqlDialog(sql, editer, type){
         $("sql-Manager-Content").parentNode.removeChild($("sql-Manager-Content"));
     };
     tool.appendChild(exit);
+
+    setDialogDrag(title);
+
     return container;
 }
 

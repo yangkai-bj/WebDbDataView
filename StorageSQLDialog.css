@@ -47,8 +47,8 @@
 .sql-Manager-Content .sql-Manager-Content-sql {
     position: relative;
     float: left;
-    width: 99%;
-    height: 97.5%;
+    width: 98.9%;
+    height: 90.5%;
     resize: none;
     font-size: 90%;
     color: var(--toolbar-background-color);
@@ -65,13 +65,15 @@
 }
 
 .sql-Manager-Content-name {
-    width: 70%;
+    margin-bottom: 1px;
+    margin-top: 1px;
+    width: 99.7%;
+    height: 9%;
     cursor: pointer;
-    background-color: transparent;
     color: var(--toolbar-background-color);
     outline-style: none;
-    border:0px;
-    border-bottom:1px solid var(--main-border-color);
+    border:1px solid var(--main-border-color);
+    border-radius: 5px;
 }
 .sql-Manager-Content-name:hover{
     outline-style: none;

@@ -1433,15 +1433,15 @@ var __ECHARTS__ = {
             }
         }
         //报表名称取编辑器文档名称
-        let title = __SQLEDITOR__.title;
-        if (title != null) {
+        let sqltitle = __SQLEDITOR__.title;
+        if (sqltitle != null) {
             for (let param in __SQLEDITOR__.parameter) {
-                title = title.replaceAll("{" + param.toString() + "}", __SQLEDITOR__.parameter[param].toString());
+                sqltitle = sqltitle.replaceAll("{" + param.toString() + "}", __SQLEDITOR__.parameter[param].toString());
             }
-            title = title.split("_");
-            __ECHARTS__.configs.titleText.value = title[0];
-            if (title.length > 1) {
-                __ECHARTS__.configs.titleSubText.value = title[1];
+            sqltitle = sqltitle.split("_");
+            __ECHARTS__.configs.titleText.value = sqltitle[0];
+            if (sqltitle.length > 1) {
+                __ECHARTS__.configs.titleSubText.value = sqltitle[1];
             } else {
                 __ECHARTS__.configs.titleSubText.value = "";
             }
@@ -1452,10 +1452,11 @@ var __ECHARTS__ = {
         container.className = "echarts-configs-Content";
         container.id = "echarts-configs-Content";
 
-        let d = document.createElement("div");
+        let title = document.createElement("div");
+        title.className = "container-title";
         let span = document.createElement("span");
         span.innerHTML = "● 报表及图形参数 ";
-        d.appendChild(span);
+        title.appendChild(span);
         let toconfig = document.createElement("select");
         toconfig.onchange = function () {
             $(this.value).scrollIntoView({behavior: "smooth", block: "start", inline: "nearest"});
@@ -1464,11 +1465,11 @@ var __ECHARTS__ = {
             //block: "start", "center", "end", 或 "nearest"。默认为 "start"。
             //inline:"start", "center", "end", 或 "nearest"。默认为 "nearest"。
         };
-        d.appendChild(toconfig);
+        title.appendChild(toconfig);
         let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
-        d.appendChild(close);
+        title.appendChild(close);
 
-        container.appendChild(d);
+        container.appendChild(title);
 
         let hr = document.createElement("hr");
         container.appendChild(hr);
@@ -1608,6 +1609,9 @@ var __ECHARTS__ = {
             m.parentNode.removeChild(m);
         };
         c.appendChild(b);
+
+        setDialogDrag(title);
+
         return container;
     }
 };
@@ -2031,21 +2035,22 @@ var geoCoordMap = {
         let container = document.createElement("div");
         container.id = "local-map-config-Content";
         container.className = "local-map-config-Content";
-        let d = document.createElement("div");
+        let title = document.createElement("div");
+        title.className = "container-title";
         let span = document.createElement("span");
         span.innerHTML = "● 地图设置 ";
-        d.appendChild(span);
+        title.appendChild(span);
         let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
-        d.appendChild(close);
-        container.appendChild(d);
+        title.appendChild(close);
+        container.appendChild(title);
 
         let hr = document.createElement("hr");
         container.appendChild(hr);
 
-        d = document.createElement("div");
+        let d = document.createElement("div");
         d.className = "toolbar";
         let b = document.createElement("a");
-        b.className = "button";
+        b.className = "tabButton";
         b.innerHTML = "国内城市";
         b.onclick = function () {
             $("city-coord-table").style.display = "block";
@@ -2053,7 +2058,7 @@ var geoCoordMap = {
         };
         d.appendChild(b);
         b = document.createElement("a");
-        b.className = "button";
+        b.className = "tabButton";
         b.innerHTML = "用户定义";
         b.onclick = function () {
             $("city-coord-table").style.display = "none";
@@ -2063,7 +2068,9 @@ var geoCoordMap = {
 
 
         let localmap = document.createElement("select");
+        localmap.className = "tabButton";
         localmap.id = "set-local-map";
+        localmap.style.cssFloat = "right";
         let regions = echarts.getMap("china").geoJson.features;
         let region = [];
         for (let i = 0; i < regions.length; i++) {
@@ -2091,7 +2098,7 @@ var geoCoordMap = {
         container.appendChild(d);
 
         b = document.createElement("a");
-        b.className = "button";
+        b.className = "tabButton";
         b.innerHTML = "本地地图:";
         b.style.cssFloat = "right";
         d.appendChild(b);
@@ -2379,6 +2386,8 @@ var geoCoordMap = {
             $("local-map-config-Content").parentNode.removeChild($("local-map-config-Content"));
         };
         d.appendChild(b);
+
+        setDialogDrag(title);
 
         return container;
     },

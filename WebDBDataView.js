@@ -1,6 +1,6 @@
 var __VERSION__ = {
-    version: "2.1.7",
-    date: "2021/04/02",
+    version: "2.1.9",
+    date: "2021/04/09",
     comment: [
         "-- 2021/03/08",
         "优化算法和压缩代码.",
@@ -574,24 +574,25 @@ function createTable(structure) {
     container.className = "create-table-Content";
     container.id = "create-table-Content";
 
-    let d = document.createElement("div");
+    let title = document.createElement("div");
+    title.className = "container-title";
     let span = document.createElement("span");
     span.innerHTML = "● 创建数据表 ";
-    d.appendChild(span);
+    title.appendChild(span);
     let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
-    d.appendChild(close);
-    container.appendChild(d);
+    title.appendChild(close);
+    container.appendChild(title);
 
     let hr = document.createElement("hr");
     container.appendChild(hr);
 
-    let title = document.createElement("input");
-    title.id = "table-Title";
-    title.placeholder = "请输入数据表名称.";
+    let tableTitle = document.createElement("input");
+    tableTitle.id = "table-Title";
+    tableTitle.placeholder = "请输入数据表名称.";
     if (structure != null)
-        title.value = structure["title"];
-    title.style.width = "99.2%";
-    container.appendChild(title);
+        tableTitle.value = structure["title"];
+    tableTitle.style.width = "99.2%";
+    container.appendChild(tableTitle);
 
     let tablecontainer = document.createElement("div");
     tablecontainer.className = "table-container";
@@ -807,6 +808,9 @@ function createTable(structure) {
         container.parentNode.removeChild(container);
     };
     tool.appendChild(b);
+
+    setDialogDrag(title);
+
     return container;
 }
 
@@ -868,19 +872,20 @@ function createDatabase(){
     container.className = "create-database-Content";
     container.id = "create-database-Content";
 
-    let d = document.createElement("div");
+    let title = document.createElement("div");
+    title.className = "container-title";
     let span = document.createElement("span");
     span.innerHTML = "● 创建数据库 ";
-    d.appendChild(span);
+    title.appendChild(span);
     let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
-    d.appendChild(close);
-    container.appendChild(d);
+    title.appendChild(close);
+    container.appendChild(title);
 
     let hr = document.createElement("hr");
     container.appendChild(hr);
 
     for (let name in __DATABASE__) {
-        d = document.createElement("div");
+        let d = document.createElement("div");
         container.appendChild(d);
         let s = document.createElement("span");
         s.innerHTML = __DATABASE__[name].name + ":";
@@ -946,6 +951,9 @@ function createDatabase(){
         container.parentNode.removeChild(container);
     };
     tool.appendChild(b);
+
+    setDialogDrag(title);
+
     return container;
 }
 
@@ -955,19 +963,20 @@ function getImportContent() {
     container.className = "import-Content";
     container.id = "import-Content";
 
-    let d = document.createElement("div");
+    let title = document.createElement("div");
+    title.className = "container-title";
     let span = document.createElement("span");
     span.innerHTML = "● 导入数据";
-    d.appendChild(span);
+    title.appendChild(span);
     let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
-    d.appendChild(close);
-    container.appendChild(d);
+    title.appendChild(close);
+    container.appendChild(title);
 
     let hr = document.createElement("hr");
     container.appendChild(hr);
 
     for (let name in __IMPORT__) {
-        d = document.createElement("div");
+        let d = document.createElement("div");
         container.appendChild(d);
         let s = document.createElement("span");
         s.innerHTML = __IMPORT__[name].name + " :";
@@ -1038,7 +1047,7 @@ function getImportContent() {
         }
     }
 
-    d = document.createElement("div");
+    let d = document.createElement("div");
     d.id = "progress-container";
     d.appendChild(getImportProgress());
     container.appendChild(d);
@@ -1087,6 +1096,9 @@ function getImportContent() {
         container.parentNode.removeChild(container);
     };
     tool.appendChild(b);
+
+    setDialogDrag(title);
+
     return container;
 }
 
@@ -2856,7 +2868,7 @@ function init() {
             setCenterPosition($("page"), subtotal);
         }
     };
-    setTooltip(subtotal, "分类<br>汇总");
+    setTooltip(subtotal, "分类<br>计算");
 
     let download = document.createElement("div");
     datatools.appendChild(download);
@@ -3473,37 +3485,14 @@ function getSubtotal(columns) {
     let container = document.createElement("div");
     container.id = "subtotal-Content";
     container.className = "subtotal-Content";
-    let d = document.createElement("div");
-    d.style.height= "22px";
+    let title = document.createElement("div");
+    title.className = "container-title";
     let span = document.createElement("span");
-    span.innerHTML = "● 分类字段 ";
-    d.appendChild(span);
-    let cols = document.createElement("select");
-    cols.type = "select";
-    cols.id = "subtotal_groupby";
-    cols.options.add(new Option("全部", ""));
-    for (let c = 0; c < columns.length; c++) {
-        cols.options.add(new Option(columns[c], columns[c]));
-    }
-    d.appendChild(cols);
-
+    span.innerHTML = "● 分类计算";
+    title.appendChild(span);
     let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
-    d.appendChild(close);
-
-    span = document.createElement("span");
-    span.innerHTML = "合并结果";
-    span.style.cssFloat = "right";
-    d.appendChild(span);
-
-    let merge = document.createElement("input");
-    merge.type = "checkbox";
-    merge.id = "subtotal_merge";
-    merge.style.marginTop= "4px";
-    merge.style.cssFloat = "right";
-    merge.style.width = "28px";
-    d.appendChild(merge);
-
-    container.appendChild(d);
+    title.appendChild(close);
+    container.appendChild(title);
 
     let hr = document.createElement("hr");
     container.appendChild(hr);
@@ -3534,6 +3523,32 @@ function getSubtotal(columns) {
     tr.appendChild(th);
 
     table.appendChild(addSubtotal(columns, 0));
+
+    let d = document.createElement("div");
+    container.appendChild(d);
+    d.style.height= "22px";
+    span = document.createElement("span");
+    span.innerHTML = "分类字段 : ";
+    d.appendChild(span);
+    let cols = document.createElement("select");
+    cols.type = "select";
+    cols.id = "subtotal_groupby";
+    cols.options.add(new Option("全部", ""));
+    for (let c = 0; c < columns.length; c++) {
+        cols.options.add(new Option(columns[c], columns[c]));
+    }
+    d.appendChild(cols);
+    span = document.createElement("span");
+    span.innerHTML = "合并结果";
+    span.style.cssFloat = "right";
+    d.appendChild(span);
+     let merge = document.createElement("input");
+    merge.type = "checkbox";
+    merge.id = "subtotal_merge";
+    merge.style.marginTop= "4px";
+    merge.style.cssFloat = "right";
+    merge.style.width = "28px";
+    d.appendChild(merge);
 
     let br = document.createElement("hr");
     br.className = "br";
@@ -3632,6 +3647,8 @@ function getSubtotal(columns) {
     };
     tool.appendChild(cancel);
 
+    setDialogDrag(title);
+
     return container;
 }
 
@@ -3692,7 +3709,7 @@ function addSubtotal(columns,i) {
     return tr;
 }
 
-function getParamDialog(title, sql) {
+function getParamDialog(titles, sql) {
     let reg = new RegExp(/\{[a-zA-Z0-9\u4e00-\u9fa5]+\}/, "g");
     let params = sql.match(reg);
     if (params != null) {
@@ -3708,27 +3725,28 @@ function getParamDialog(title, sql) {
         container.id = "sql-param-dialog";
         container.className = "sql-param-dialog";
 
-        let d = document.createElement("div");
-        d.className = d.id = "sql-param-title-container";
+        let title = document.createElement("div");
+        title.className = "container-title";
+        //title.className = title.id = "sql-param-title-container";
         let span = document.createElement("span");
         span.className = span.id = "sql-param-title";
-        span.innerHTML = (title == null ? "●" : "● " + title.split("_")[0]);
-        if (title.split("_").length > 1)
-            span.title = title.split("_").join("\n● ");
-        d.appendChild(span);
+        span.innerHTML = (titles == null ? "●" : "● " + titles.split("_")[0]);
+        if (titles.split("_").length > 1)
+            span.title = titles.split("_").join("\n● ");
+        title.appendChild(span);
         let close = document.createElement("img");
         close.className = "title_close_button";
         close.src = __SYS_IMAGES__.close.image;
         close.width = __SYS_IMAGES__.close.width;
         close.height = __SYS_IMAGES__.close.height;
-        d.appendChild(close);
-        container.appendChild(d);
+        title.appendChild(close);
+        container.appendChild(title);
 
         let hr = document.createElement("hr");
         container.appendChild(hr);
 
         for (let i = 0; i < params.length; i++) {
-            d = document.createElement("div");
+            let d = document.createElement("div");
             span = document.createElement("span");
             let param = params[i].toString().substring(params[i].indexOf("{") + 1, params[i].indexOf("}"));
             span.innerHTML = param + " : ";
@@ -3780,6 +3798,9 @@ function getParamDialog(title, sql) {
             $("sql-param-dialog").parentNode.removeChild($("sql-param-dialog"));
         };
         tool.appendChild(cancel);
+
+        setDialogDrag(title);
+
         return container;
     } else {
         return null
@@ -3855,13 +3876,14 @@ function getDataSlice() {
     let container = document.createElement("div");
     container.id = "data-slice-Content";
     container.className = "data-slice-Content";
-    let d = document.createElement("div");
+    let title = document.createElement("div");
+    title.className = "container-title";
     let span = document.createElement("span");
     span.innerHTML = "● 数据切片";
-    d.appendChild(span);
+    title.appendChild(span);
     let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
-    d.appendChild(close);
-    container.appendChild(d);
+    title.appendChild(close);
+    container.appendChild(title);
 
     let hr = document.createElement("hr");
     container.appendChild(hr);
@@ -3919,7 +3941,7 @@ function getDataSlice() {
         tr.appendChild(td);
     }
 
-    d = document.createElement("div");
+    let d = document.createElement("div");
     container.appendChild(d);
     span = document.createElement("span");
     span.innerText = "切片范围 : [";
@@ -3998,6 +4020,8 @@ function getDataSlice() {
     };
     tool.appendChild(cancel);
 
+    setDialogDrag(title);
+
     return container;
 }
 
@@ -4008,13 +4032,14 @@ function getDataFilter(colid) {
     let container = document.createElement("div");
     container.id = "data-filter-Content";
     container.className = "data-filter-Content";
-    let d = document.createElement("div");
+    let title = document.createElement("div");
+    title.className = "container-title";
     let span = document.createElement("span");
     span.innerHTML = "● 筛选字段 [ " + columns[Number(colid)].name + " ]";
-    d.appendChild(span);
+    title.appendChild(span);
     let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
-    d.appendChild(close);
-    container.appendChild(d);
+    title.appendChild(close);
+    container.appendChild(title);
 
     let hr = document.createElement("hr");
     container.appendChild(hr);
@@ -4184,6 +4209,8 @@ function getDataFilter(colid) {
     };
     tool.appendChild(cancel);
 
+    setDialogDrag(title);
+
     return container;
 }
 
@@ -4227,13 +4254,14 @@ function getFormat(colid) {
     let container = document.createElement("div");
     container.id = "table-data-format";
     container.className = "table-data-format";
-    let d = document.createElement("div");
+    let title = document.createElement("div");
+    title.className = "container-title";
     let span = document.createElement("span");
     span.innerHTML = "● 格式设置 [ " + columns[Number(colid)].name + " ]";
-    d.appendChild(span);
+    title.appendChild(span);
     let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
-    d.appendChild(close);
-    container.appendChild(d);
+    title.appendChild(close);
+    container.appendChild(title);
 
     let hr = document.createElement("hr");
     container.appendChild(hr);
@@ -4379,6 +4407,8 @@ function getFormat(colid) {
         $("table-data-format").parentNode.removeChild($("table-data-format"));
     };
     tool.appendChild(cancel);
+
+    setDialogDrag(title);
 
     return container;
 }
@@ -4899,6 +4929,71 @@ function setDragNook(parent, id) {
     parent.appendChild(nook);
     setDrag(nook);
 }
+
+//用于处理对话框拖动
+//拖拽的实现
+var dragParams = {
+    target: null,
+    left: 0,
+    top: 0,
+    currentX: 0,
+    currentY: 0,
+    flag: false
+};
+
+function setDialogDrag(bar, callback) {
+    //获取相关CSS属性
+    function getCss(o, key) {
+        return o.currentStyle ? o.currentStyle[key] : document.defaultView.getComputedStyle(o, false)[key];
+    };
+
+    bar.onmousedown = function (event) {
+        dragParams.flag = true;
+        if (dragParams.target !=null)
+            dragParams.target.style.zIndex = 9998;
+        dragParams.target = this.parentNode;
+        dragParams.target.style.zIndex = 9999;
+        if (getCss(dragParams.target, "left") !== "auto") {
+            dragParams.left = getCss(dragParams.target, "left");
+        }
+        if (getCss(dragParams.target, "top") !== "auto") {
+            dragParams.top = getCss(dragParams.target, "top");
+        }
+        if (!event) {
+            event = window.event;
+            //防止IE文字选中
+            bar.onselectstart = function () {
+                return false;
+            }
+        }
+        let e = event;
+        dragParams.currentX = e.clientX;
+        dragParams.currentY = e.clientY;
+    };
+    document.onmouseup = function () {
+        dragParams.flag = false;
+        if (getCss(dragParams.target, "left") !== "auto") {
+            dragParams.left = getCss(dragParams.target, "left");
+        }
+        if (getCss(dragParams.target, "top") !== "auto") {
+            dragParams.top = getCss(dragParams.target, "top");
+        }
+    };
+    document.onmousemove = function (event) {
+        let e = event ? event : window.event;
+        if (dragParams.flag) {
+            let nowX = e.clientX, nowY = e.clientY;
+            let disX = nowX - dragParams.currentX, disY = nowY - dragParams.currentY;
+            dragParams.target.style.left = parseInt(dragParams.left) + disX + "px";
+            dragParams.target.style.top = parseInt(dragParams.top) + disY + "px";
+        }
+
+        if (typeof callback == "function") {
+            callback(parseInt(dragParams.left) + disX, parseInt(dragParams.top) + disY);
+        }
+    }
+};
+
 
 
 
