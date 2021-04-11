@@ -9,6 +9,7 @@ function storageSqlDialog(sql, editer, type){
     span.innerHTML = "● 脚本管理 ";
     title.appendChild(span);
     let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
+    close.className = "container-close";
     title.appendChild(close);
     container.appendChild(title);
 

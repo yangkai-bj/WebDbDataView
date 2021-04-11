@@ -1,6 +1,6 @@
 var __VERSION__ = {
-    version: "2.1.9",
-    date: "2021/04/09",
+    version: "2.1.10",
+    date: "2021/04/11",
     comment: [
         "-- 2021/03/08",
         "优化算法和压缩代码.",
@@ -181,16 +181,16 @@ var __CONFIGS__ = {
          黑色: {name: "black", href: "codemirror/theme/black.css"},
          粉色: {name: "pink", href: "codemirror/theme/pink.css"},
          墨绿: {name: "blackish-green", href: "codemirror/theme/blackish-green.css"},
-         Cobalt: {name: "cobalt", href: "codemirror/theme/cobalt.css"},
-         Darcula: {name: "darcula", href: "codemirror/theme/darcula.css"},
-         Eclipse: {name: "eclipse", href: "codemirror/theme/eclipse.css"},
-         Elegant: {name: "elegant", href: "codemirror/theme/elegant.css"},
-         LightDuotone: {name: "duotone-light", href: "codemirror/theme/duotone-light.css"},
-         LightSolarized: {name: "solarized light", href: "codemirror/theme/solarized.css"},
-         Matrix: {name: "the-matrix", href: "codemirror/theme/the-matrix.css"},
-         Rubyblue: {name: "rubyblue", href: "codemirror/theme/rubyblue.css"},
-         Yonce: {name: "yonce", href: "codemirror/theme/yonce.css"},
-         Zenburn: {name: "zenburn", href: "codemirror/theme/zenburn.css"}
+         深蓝: {name: "cobalt", href: "codemirror/theme/cobalt.css"},
+         幻想: {name: "rubyblue", href: "codemirror/theme/rubyblue.css"},
+         初心: {name: "solarized light", href: "codemirror/theme/solarized.css"},
+         明亮: {name: "duotone-light", href: "codemirror/theme/duotone-light.css"},
+         宁静: {name: "darcula", href: "codemirror/theme/darcula.css"},
+         优雅: {name: "elegant", href: "codemirror/theme/elegant.css"},
+         矩阵: {name: "the-matrix", href: "codemirror/theme/the-matrix.css"},
+         锐利: {name: "yonce", href: "codemirror/theme/yonce.css"},
+         黄昏: {name: "zenburn", href: "codemirror/theme/zenburn.css"},
+         黯然: {name: "eclipse", href: "codemirror/theme/eclipse.css"}
      },
      fontSize: {
          options: {
@@ -580,6 +580,7 @@ function createTable(structure) {
     span.innerHTML = "● 创建数据表 ";
     title.appendChild(span);
     let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
+    close.className = "container-close";
     title.appendChild(close);
     container.appendChild(title);
 
@@ -878,6 +879,7 @@ function createDatabase(){
     span.innerHTML = "● 创建数据库 ";
     title.appendChild(span);
     let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
+    close.className = "container-close";
     title.appendChild(close);
     container.appendChild(title);
 
@@ -969,6 +971,7 @@ function getImportContent() {
     span.innerHTML = "● 导入数据";
     title.appendChild(span);
     let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
+    close.className = "container-close";
     title.appendChild(close);
     container.appendChild(title);
 
@@ -3491,6 +3494,7 @@ function getSubtotal(columns) {
     span.innerHTML = "● 分类计算";
     title.appendChild(span);
     let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
+    close.className = "container-close";
     title.appendChild(close);
     container.appendChild(title);
 
@@ -3734,11 +3738,8 @@ function getParamDialog(titles, sql) {
         if (titles.split("_").length > 1)
             span.title = titles.split("_").join("\n● ");
         title.appendChild(span);
-        let close = document.createElement("img");
-        close.className = "title_close_button";
-        close.src = __SYS_IMAGES__.close.image;
-        close.width = __SYS_IMAGES__.close.width;
-        close.height = __SYS_IMAGES__.close.height;
+        let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
+        close.className = "container-close";
         title.appendChild(close);
         container.appendChild(title);
 
@@ -3882,6 +3883,7 @@ function getDataSlice() {
     span.innerHTML = "● 数据切片";
     title.appendChild(span);
     let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
+    close.className = "container-close";
     title.appendChild(close);
     container.appendChild(title);
 
@@ -4038,6 +4040,7 @@ function getDataFilter(colid) {
     span.innerHTML = "● 筛选字段 [ " + columns[Number(colid)].name + " ]";
     title.appendChild(span);
     let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
+    close.className = "container-close";
     title.appendChild(close);
     container.appendChild(title);
 
@@ -4260,6 +4263,7 @@ function getFormat(colid) {
     span.innerHTML = "● 格式设置 [ " + columns[Number(colid)].name + " ]";
     title.appendChild(span);
     let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
+    close.className = "container-close";
     title.appendChild(close);
     container.appendChild(title);
 
@@ -4931,7 +4935,6 @@ function setDragNook(parent, id) {
 }
 
 //用于处理对话框拖动
-//拖拽的实现
 var dragParams = {
     target: null,
     left: 0,
@@ -4940,12 +4943,15 @@ var dragParams = {
     currentY: 0,
     flag: false
 };
-
+//拖拽的实现
 function setDialogDrag(bar, callback) {
     //获取相关CSS属性
     function getCss(o, key) {
-        return o.currentStyle ? o.currentStyle[key] : document.defaultView.getComputedStyle(o, false)[key];
-    };
+        if (o)
+            return o.currentStyle ? o.currentStyle[key] : document.defaultView.getComputedStyle(o, false)[key];
+        else
+            return null;
+    }
 
     bar.onmousedown = function (event) {
         dragParams.flag = true;
@@ -4992,7 +4998,7 @@ function setDialogDrag(bar, callback) {
             callback(parseInt(dragParams.left) + disX, parseInt(dragParams.top) + disY);
         }
     }
-};
+}
 
 
 

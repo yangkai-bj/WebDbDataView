@@ -1458,6 +1458,7 @@ var __ECHARTS__ = {
         span.innerHTML = "● 报表及图形参数 ";
         title.appendChild(span);
         let toconfig = document.createElement("select");
+        toconfig.style.color = "var(--main-title-color)";
         toconfig.onchange = function () {
             $(this.value).scrollIntoView({behavior: "smooth", block: "start", inline: "nearest"});
             //滚动参数
@@ -1467,6 +1468,7 @@ var __ECHARTS__ = {
         };
         title.appendChild(toconfig);
         let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
+        close.className = "container-close";
         title.appendChild(close);
 
         container.appendChild(title);
@@ -2041,6 +2043,7 @@ var geoCoordMap = {
         span.innerHTML = "● 地图设置 ";
         title.appendChild(span);
         let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
+        close.className = "container-close";
         title.appendChild(close);
         container.appendChild(title);
 
@@ -2355,6 +2358,22 @@ var geoCoordMap = {
             setUserConfig("geoCoordMapCity", JSON.stringify(geoCoordMap.City));
             setUserConfig("geoCoordMapCustom", JSON.stringify(geoCoordMap.Custom));
             $("local-map-config-Content").parentNode.removeChild($("local-map-config-Content"));
+        };
+        d.appendChild(b);
+
+        b = document.createElement("a");
+        b.className = "button";
+        b.innerHTML = "重置";
+        b.onclick = close.onclick = function () {
+            let r = confirm("警告:重置将删除您自行增加或修改的所有地图参数！\n您确定要继续重置吗?");
+            if (r) {
+                setUserConfig("geoCoordMapCity", null);
+                setUserConfig("geoCoordMapCustom", null);
+                let m = $("local-map-config-Content");
+                m.parentNode.removeChild(m);
+                alert("所有地图参数已恢复为系统初始值,系统将重新载入页面...");
+                location.reload();
+            }
         };
         d.appendChild(b);
 
@@ -8250,7 +8269,7 @@ function getCategoryLineForGeoOfChina(container, width, height, dataset, configs
                             //    return value < 5 ? 5 : value;
                             //},
                             symbolSize: function (data) {
-                                let size = configs.geoScatterSymbolSize.toArray([5,25],",");
+                                let size = configs.geoScatterSymbolSize.value.toArray([5,25],",");
                                 if (size[0] > size[1]) {
                                     let tmp = size[1];
                                     size[1] = size[0];
