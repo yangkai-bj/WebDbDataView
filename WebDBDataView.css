@@ -233,16 +233,13 @@ img.title_close_button:hover{
     color: var(--toolbar-button-tooltip-color);
     text-align: center;
     padding: 5px 0;
-    z-index: 99;
+    z-index: 10000;
     font-size: 6px;
-
     -webkit-animation: content-show 2s 1;/*infinite; /* Chrome, Safari, Opera */
     animation: content-show 2s 1;/*infinite;*/
-
     border-bottom-left-radius: 15px;
     border-top-right-radius: 15px;
     border-bottom-right-radius: 5px;
-
 }
 
 .groupbar {

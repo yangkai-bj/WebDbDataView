@@ -253,7 +253,7 @@ function getEcharts(container, width, height, dataset, configs) {
 
 var __ECHARTS__ = {
     history: {},
-    addHistory: function(container, configs, dataset, width, height) {
+    addHistory: function (container, configs, dataset, width, height) {
         let id = container.getAttribute("_echarts_instance_");
         __ECHARTS__.history[id] = JSON.stringify({
             id: id,
@@ -445,9 +445,19 @@ var __ECHARTS__ = {
         },
 
         hr_grid: {name: "整体布局", value: "", type: "hr"},
-        gradientType: {name: "背景模式", value: "transparent", options: [new Option("透明", "transparent"), new Option("单色", "single"), new Option("线性", "line"), new Option("径向", "radial")], type: "select"},
+        gradientType: {
+            name: "背景模式",
+            value: "transparent",
+            options: [new Option("透明", "transparent"), new Option("单色", "single"), new Option("线性", "line"), new Option("径向", "radial")],
+            type: "select"
+        },
         backgroundColor: {name: "背景颜色", value: '["transparent"]', type: "input"},
-        gradientReverse: {name: "渐变反转", value: "false", options: [new Option("否", "false"), new Option("是", "true")], type: "select"},
+        gradientReverse: {
+            name: "渐变反转",
+            value: "false",
+            options: [new Option("否", "false"), new Option("是", "true")],
+            type: "select"
+        },
         grid_top: {name: "上边距(%)", value: "10%", type: "input"},
         grid_bottom: {name: "下边距(%)", value: "10%", type: "input"},
         grid_left: {name: "左边距(%)", value: "10%", type: "input"},
@@ -821,7 +831,7 @@ var __ECHARTS__ = {
         pieLabelPosition: {
             name: "标签位置",
             value: "outside",
-            options: [new Option("outside", "outside"),new Option("inner", "inner"), new Option("center", "center")],
+            options: [new Option("outside", "outside"), new Option("inner", "inner"), new Option("center", "center")],
             type: "select"
         },
         pieItemStyleBorderRadius: {
@@ -905,7 +915,7 @@ var __ECHARTS__ = {
             type: "select"
         },
         wordCloudSizeRange: {name: "字号区间", value: "[16, 60]", type: "input"},
-        wordCloudRotationRange:{name: "角度区间", value: "[-45, 45]", type: "input"},
+        wordCloudRotationRange: {name: "角度区间", value: "[-45, 45]", type: "input"},
 
         hr_liqiud: {name: "水球图", value: "", type: "hr"},
         liqiudShape: {
@@ -1305,7 +1315,7 @@ var __ECHARTS__ = {
         },
         mathFunctionXGrainSize: {
             name: "X粒度",
-            value : 1,
+            value: 1,
             type: "input",
         },
         mathFunctionYRange: {
@@ -1455,9 +1465,25 @@ var __ECHARTS__ = {
         let title = document.createElement("div");
         title.className = "container-title";
         let span = document.createElement("span");
-        span.innerHTML = "● 报表及图形参数 ";
+        span.innerHTML = "● 图形及报表参数 ";
         title.appendChild(span);
+        let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
+        close.className = "container-close";
+        title.appendChild(close);
+        container.appendChild(title);
+
+        let hr = document.createElement("hr");
+        container.appendChild(hr);
+
+        let d = document.createElement("div");
+        d.className = "echarts-configs-item";
+        let s = document.createElement("span");
+        s.className = "echarts-config-name";
+        s.innerHTML = "快速定位:";
+        d.appendChild(s);
         let toconfig = document.createElement("select");
+        toconfig.className = "editinput";
+        toconfig.style.cssFloat = "right";
         toconfig.style.color = "var(--main-title-color)";
         toconfig.onchange = function () {
             $(this.value).scrollIntoView({behavior: "smooth", block: "start", inline: "nearest"});
@@ -1466,22 +1492,15 @@ var __ECHARTS__ = {
             //block: "start", "center", "end", 或 "nearest"。默认为 "start"。
             //inline:"start", "center", "end", 或 "nearest"。默认为 "nearest"。
         };
-        title.appendChild(toconfig);
-        let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
-        close.className = "container-close";
-        title.appendChild(close);
-
-        container.appendChild(title);
-
-        let hr = document.createElement("hr");
-        container.appendChild(hr);
+        d.appendChild(toconfig);
+        container.appendChild(d);
 
         let itemcontainer = document.createElement("div");
         itemcontainer.className = "echarts-configs-container";
         container.appendChild(itemcontainer);
 
         for (let name in __ECHARTS__.configs) {
-            let d = document.createElement("div");
+            d = document.createElement("div");
             d.className = "echarts-configs-item";
             itemcontainer.appendChild(d);
             let s = document.createElement("span");
@@ -2071,7 +2090,7 @@ var geoCoordMap = {
 
 
         let localmap = document.createElement("select");
-        localmap.className = "tabButton";
+        localmap.className = "button";
         localmap.id = "set-local-map";
         localmap.style.cssFloat = "right";
         let regions = echarts.getMap("china").geoJson.features;
@@ -2099,12 +2118,7 @@ var geoCoordMap = {
         };
         d.appendChild(localmap);
         container.appendChild(d);
-
-        b = document.createElement("a");
-        b.className = "tabButton";
-        b.innerHTML = "本地地图:";
-        b.style.cssFloat = "right";
-        d.appendChild(b);
+        setTooltip(localmap, "本地<br>地图");
 
         let tablecontainer = document.createElement("div");
         tablecontainer.className = "map-config-table-container";
