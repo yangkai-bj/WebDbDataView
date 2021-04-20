@@ -1,6 +1,6 @@
 var __VERSION__ = {
-    version: "2.1.11",
-    date: "2021/04/12",
+    version: "2.1.12",
+    date: "2021/04/13",
     comment: [
         "-- 2021/03/08",
         "优化算法和压缩代码.",
@@ -17,7 +17,9 @@ var __VERSION__ = {
         "增加数学函数.",
         "-- 2021/04/01",
         "增加数据分组切片.",
-        "修改报表下载方式."
+        "修改报表下载方式.",
+        "-- 2021/04/13",
+        "调整页面."
     ]
 };
 
@@ -3501,8 +3503,12 @@ function getSubtotal(columns) {
     let hr = document.createElement("hr");
     container.appendChild(hr);
 
+    let tableContent =document.createElement("div");
+    tableContent.className = "scroll-Content";
+    container.appendChild(tableContent);
+
     let table = document.createElement("table");
-    container.appendChild(table);
+    tableContent.appendChild(table);
     table.id = "subtotal-dialog-table";
     table.className = "table";
     table.style.width = "100%";
@@ -3890,8 +3896,12 @@ function getDataSlice() {
     let hr = document.createElement("hr");
     container.appendChild(hr);
 
+    let tableContent =document.createElement("div");
+    tableContent.className = "scroll-Content";
+    container.appendChild(tableContent);
+
     let table = document.createElement("table");
-    container.appendChild(table);
+    tableContent.appendChild(table);
     table.id = "data-slice-table";
     table.className = "table";
     table.style.width = "100%";
@@ -4048,7 +4058,7 @@ function getDataFilter(colid) {
     container.appendChild(hr);
 
     let tableContent =document.createElement("div");
-    tableContent.className = "data_filter_table_Content";
+    tableContent.className = "scroll-Content";
     container.appendChild(tableContent);
 
     let table = document.createElement("table");
@@ -4271,7 +4281,7 @@ function getFormat(colid) {
     container.appendChild(hr);
 
     let items = document.createElement("div");
-    items.className = "table-data-format-items";
+    items.className = "scroll-Content";
     container.appendChild(items);
 
     let item = document.createElement("div");
