@@ -48,4 +48,16 @@
 
     --drag-border-color: darkgoldenrod;
 
+    --copyright_color:gray;
+    /*版权说明颜色*/
+    --copyright_hover_color:#FF8000;
+    /*版权说明热点颜色*/
+
+
+    --tab-border-color: whitesmoke;
+    --tab-color: whitesmoke;
+    --tab-selected-color: red;
+    --tab-selected-backgroud-color: darkgoldenrod;
+    --tab-hover-color: salmon;
+
 }

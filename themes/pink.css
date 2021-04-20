@@ -55,4 +55,10 @@
     --copyright_hover_color:#FF8000;
     /*版权说明热点颜色*/
 
+    --tab-border-color: whitesmoke;
+    --tab-color: whitesmoke;
+    --tab-selected-color: red;
+    --tab-selected-backgroud-color: salmon;
+    --tab-hover-color: dodgerblue;
+
 }
