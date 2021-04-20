@@ -1482,7 +1482,8 @@ var __ECHARTS__ = {
         s.innerHTML = "快速定位:";
         d.appendChild(s);
         let toconfig = document.createElement("select");
-        toconfig.className = "editinput";
+        toconfig.className = "echarts-configs-editinput";
+        toconfig.id = "echarts-fast-to";
         toconfig.style.cssFloat = "right";
         toconfig.style.color = "var(--main-title-color)";
         toconfig.onchange = function () {
@@ -1496,7 +1497,7 @@ var __ECHARTS__ = {
         container.appendChild(d);
 
         let itemcontainer = document.createElement("div");
-        itemcontainer.className = "echarts-configs-container";
+        itemcontainer.id = itemcontainer.className = "echarts-configs-container";
         container.appendChild(itemcontainer);
 
         for (let name in __ECHARTS__.configs) {
@@ -1512,18 +1513,22 @@ var __ECHARTS__ = {
                 input.style.cssFloat = "right";
                 input.id = name;
                 input.type = "input";
-                input.className = "editinput";
+                input.className = "echarts-configs-editinput";
                 input.value = __ECHARTS__.configs[name].value;
                 input.onchange = function () {
                     __ECHARTS__.configs[this.id].value = this.value;
                 };
+                if (typeof __ECHARTS__.configs[name].title != "undefined")
+                    input.title = __ECHARTS__.configs[name].title;
+                else
+                    input.title = __ECHARTS__.configs[name].name;
                 d.appendChild(input);
             } else if (__ECHARTS__.configs[name].type == "select") {
                 let input = document.createElement("select");
                 input.style.cssFloat = "right";
                 input.id = name;
                 input.type = "select";
-                input.className = "editinput";
+                input.className = "echarts-configs-editinput";
                 for (let i = 0; i < __ECHARTS__.configs[name].options.length; i++) {
                     if (typeof __ECHARTS__.configs[name].options[i] === "object")
                         input.options.add(__ECHARTS__.configs[name].options[i]);
@@ -1534,17 +1539,25 @@ var __ECHARTS__ = {
                 input.onchange = function () {
                     __ECHARTS__.configs[this.id].value = this.value;
                 };
+                if (typeof __ECHARTS__.configs[name].title != "undefined")
+                    input.title = __ECHARTS__.configs[name].title;
+                else
+                    input.title = __ECHARTS__.configs[name].name;
                 d.appendChild(input);
             } else if (__ECHARTS__.configs[name].type == "color") {
                 let input = document.createElement("input");
                 input.style.cssFloat = "right";
                 input.id = name;
                 input.type = "color";
-                input.className = "editinput";
+                input.className = "echarts-configs-editinput";
                 input.value = __ECHARTS__.configs[name].value;
                 input.onchange = function () {
                     __ECHARTS__.configs[this.id].value = this.value;
                 };
+                if (typeof __ECHARTS__.configs[name].title != "undefined")
+                    input.title = __ECHARTS__.configs[name].title;
+                else
+                    input.title = __ECHARTS__.configs[name].name;
                 d.appendChild(input);
             } else if (__ECHARTS__.configs[name].type == "hr") {
                 s.innerHTML = "[ " + __ECHARTS__.configs[name].name + " ]";
@@ -1576,7 +1589,7 @@ var __ECHARTS__ = {
         b.className = "button";
         b.innerHTML = "确定";
         b.onclick = function () {
-            let configs = $("echarts-configs-Content").getElementsByClassName("editinput");
+            let configs = $("echarts-configs-container").getElementsByClassName("echarts-configs-editinput");
             let config = {};
             for (let i = 0; i < configs.length; i++) {
                 __ECHARTS__.configs[configs[i].id].value = configs[i].value;

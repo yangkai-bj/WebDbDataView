@@ -1,6 +1,7 @@
 var __VERSION__ = {
-    version: "2.1.12",
-    date: "2021/04/13",
+    name: "Web DataView for SQLite Database of browser",
+    version: "2.2.1",
+    date: "2021/04/20",
     comment: [
         "-- 2021/03/08",
         "优化算法和压缩代码.",
@@ -19,8 +20,14 @@ var __VERSION__ = {
         "增加数据分组切片.",
         "修改报表下载方式.",
         "-- 2021/04/13",
-        "调整页面."
-    ]
+        "调整页面.",
+        "-- 2021/04/16",
+        "优化数据集合."
+    ],
+    author: messageDecode(__SYS_LOGO_LINK__.author),
+    url: messageDecode(__SYS_LOGO_LINK__.link),
+    tel: messageDecode(__SYS_LOGO_LINK__.tel),
+    email: messageDecode(__SYS_LOGO_LINK__.email)
 };
 
 var __CONFIGS__ = {
@@ -70,10 +77,10 @@ var __CONFIGS__ = {
      column_default: {value: null, name: "默认值", type: "input", width: "50px"},
  };
  var __DATASET__ = {
-     sql: null,
-     time: null,
-     result: [],
-     default: {sheet: 0, column: null, cell: []},
+     result: [
+         //{eventid:null, title:[],sql: null,columns:[],data:[],parameter:null,time:null}
+     ],
+     default: {sheet: 0, column: null, cell: [], tab: 0},
      pages: {total: 0, default: 1},
      //页数计算根据__ECHARTS__.configs.reportPageSize.value计算.
      table: {
@@ -1442,8 +1449,8 @@ function datasetTranspose(index) {
     try {
         let columns = __DATASET__["result"][index].columns;
         let data = __DATASET__["result"][index].data;
-        let title = (typeof __DATASET__["result"][index].title == "undefined")? null:__DATASET__["result"][index].title;
-        let dataset = {columns: [], data: [], title: title};
+        //let title = (typeof __DATASET__["result"][index].title == "undefined")? []:__DATASET__["result"][index].title;
+        let dataset = {columns: [], data: []};
         let col = {
             id: 0,
             name: columns[0].name,
@@ -1485,18 +1492,27 @@ function datasetTranspose(index) {
             }
             dataset.data.push(nr);
         }
-        __DATASET__["result"][index] = dataset;
+        __DATASET__["result"][index].data = dataset.data;
+        __DATASET__["result"][index].columns = dataset.columns;
     } catch (e) {
         console.log(e);
     }
 }
 
-function viewDataset(index){
+function viewDataset(index, pageindex) {
+    if (__DATASET__.result.length > 0) {
+        __DATASET__.default.sheet = index;
+        __DATASET__.pages.total = Math.ceil(__DATASET__.result[__DATASET__.default.sheet].data.length / Number(__ECHARTS__.configs.reportPageSize.value));
+        __DATASET__.default.tab = __DATASET__.default.sheet - __DATASET__.default.sheet%10;
+        if (typeof  pageindex != "undefined")
+            __DATASET__.pages.default = pageindex;
+        setDataPageTools(index);
+    }
     let container = $("tableContainer");
     try {
         container.removeAttribute("_echarts_instance_");
         echarts.getInstanceByDom(container).dispose();
-    }catch (e) {
+    } catch (e) {
     }
     container.innerText = "";
     let columns = __DATASET__["result"][index].columns;
@@ -1508,7 +1524,7 @@ function viewDataset(index){
     tr.type = "tr";
     table.appendChild(tr);
 
-    for (let c =0; c < columns.length; c++) {
+    for (let c = 0; c < columns.length; c++) {
         let th = document.createElement("th");
         th.type = "th";
         th.innerText = columns[c].name;
@@ -1518,11 +1534,11 @@ function viewDataset(index){
         menu.setAttribute("colid", c);
         menu.innerText = "︙";
         menu.appendChild(getColumnMenu(c));
-        menu.onmouseenter = function(){
+        menu.onmouseenter = function () {
             let menu = document.getElementById("table-column-menu-" + this.getAttribute("colid"));
             menu.style.display = "block";
         };
-        menu.onmouseleave = function(){
+        menu.onmouseleave = function () {
             let menu = document.getElementById("table-column-menu-" + this.getAttribute("colid"));
             menu.style.display = "none";
         };
@@ -1544,15 +1560,15 @@ function viewDataset(index){
         }
         order.onclick = function () {
             let index = __DATASET__.default.sheet;
-            orderDatasetBy(__DATASET__["result"][index],this.getAttribute("colid"));
-            viewDataset(index);
+            orderDatasetBy(__DATASET__["result"][index], this.getAttribute("colid"));
+            viewDataset(index, 0);
         };
         th.appendChild(order);
         tr.appendChild(th);
     }
 
     for (let i = 0; i < data.length; i++) {
-        if (i >= (__DATASET__.pages.default - 1) * Number(__ECHARTS__.configs.reportPageSize.value) && i < __DATASET__.pages.default * Number(__ECHARTS__.configs.reportPageSize.value)) {
+        if (i >= __DATASET__.pages.default * Number(__ECHARTS__.configs.reportPageSize.value) && i < (__DATASET__.pages.default + 1) * Number(__ECHARTS__.configs.reportPageSize.value)) {
             let tr = document.createElement("tr");
             tr.type = "tr";
             tr.id = i;
@@ -1682,6 +1698,7 @@ function execute() {
     if (__CONFIGS__.CURRENT_DATABASE.connect != null) {
         __CONFIGS__.CURRENT_DATABASE.connect.transaction(function (tx) {
             let selection = "";
+            let title = __SQLEDITOR__.title;
             if (__SQLEDITOR__.codeMirror.somethingSelected())
                 selection = __SQLEDITOR__.codeMirror.getSelection();
             else
@@ -1689,32 +1706,27 @@ function execute() {
             if (__SQLEDITOR__.parameter == null)
                 selection = fillSqlParam(selection);
             else {
-                let title = __SQLEDITOR__.title;
                 for (let param in __SQLEDITOR__.parameter) {
                     selection = selection.replaceAll("{" + param.toString() + "}", __SQLEDITOR__.parameter[param].toString())
                     if (title != null)
                         title = title.replaceAll("{" + param.toString() + "}", __SQLEDITOR__.parameter[param].toString());
                 }
-                if (title != null) {
-                    title = title.split("_");
-                    __ECHARTS__.configs.titleText.value = title[0];
-                    if (title.length > 1) {
-                        __ECHARTS__.configs.titleSubText.value = title[1];
-                    } else {
-                        __ECHARTS__.configs.titleSubText.value = "";
-                    }
-                }
             }
+            if (title != null) {
+                title = title.split("_");
+                __ECHARTS__.configs.titleText.value = title[0];
+                if (title.length > 1) {
+                    __ECHARTS__.configs.titleSubText.value = title.slice(1).join(" ");
+                } else {
+                    __ECHARTS__.configs.titleSubText.value = "";
+                }
+            } else
+                title = [];
             let sqls = [];
             if (selection.trim() != "") {
                 viewMessage(selection);
-                $("tableContainer").innerHTML = "";
-                $("page-label").innerText = " ● ";
-                $("dataset-label").innerText = " ● ";
                 sqls = selection.split(";");
-                __DATASET__.sql = selection;
-                __DATASET__.time = getNow();
-                __DATASET__.result = [];
+
                 for (let s = 0; s < sqls.length; s++) {
                     let sql = sqls[s].slice(0).trim();
                     if (sql.trim() == "")
@@ -1785,15 +1797,17 @@ function execute() {
                                     }
                                     data.push(row);
                                 }
-                                __DATASET__["result"].push({"columns": columns, "data": data, title: null});
+                                __DATASET__.result.push({
+                                    title: title,
+                                    sql: sql,
+                                    parameter: __SQLEDITOR__.parameter,
+                                    columns: columns,
+                                    data: data,
+                                    time: getNow()
+                                });
 
-                                if (__DATASET__["result"].length > 0) {
-                                    __DATASET__.default.sheet = 0;
-                                    __DATASET__.pages.total = Math.ceil(__DATASET__.result[0].data.length / Number(__ECHARTS__.configs.reportPageSize.value));
-                                    __DATASET__.pages.default = 1;
-                                    $("page-label").innerText = __DATASET__.pages.default + " ● " + __DATASET__.pages.total;
-                                    $("dataset-label").innerText = (__DATASET__.default.sheet + 1) + " ● " + __DATASET__.result.length;
-                                    viewDataset(0);
+                                if (__DATASET__.result.length > 0) {
+                                    viewDataset(__DATASET__["result"].length - 1, 0);
                                 }
                             }
                             if (aff > 0) {
@@ -1830,6 +1844,7 @@ function fixMathFunctionString(str) {
 
 function executeFunction() {
     let selection = "";
+    let title = __SQLEDITOR__.title;
     if (__SQLEDITOR__.codeMirror.somethingSelected())
         selection = __SQLEDITOR__.codeMirror.getSelection();
     else
@@ -1837,32 +1852,27 @@ function executeFunction() {
     if (__SQLEDITOR__.parameter == null)
         selection = fillSqlParam(selection);
     else {
-        let title = __SQLEDITOR__.title;
         for (let param in __SQLEDITOR__.parameter) {
             selection = selection.replaceAll("{" + param.toString() + "}", __SQLEDITOR__.parameter[param].toString())
             if (title != null)
                 title = title.replaceAll("{" + param.toString() + "}", __SQLEDITOR__.parameter[param].toString());
         }
-        if (title != null) {
-            title = title.split("_");
-            __ECHARTS__.configs.titleText.value = title[0];
-            if (title.length > 1) {
-                __ECHARTS__.configs.titleSubText.value = title[1];
-            } else {
-                __ECHARTS__.configs.titleSubText.value = "";
-            }
-        }
     }
+    if (title != null) {
+        title = title.split("_");
+        __ECHARTS__.configs.titleText.value = title[0];
+        if (title.length > 1) {
+            __ECHARTS__.configs.titleSubText.value = title.slice(1).join(" ");
+        } else {
+            __ECHARTS__.configs.titleSubText.value = "";
+        }
+    } else
+        title = [];
     let funs = [];
     if (selection.trim() != "") {
         funs = selection.split(";");
         viewMessage(selection);
-        $("tableContainer").innerHTML = "";
-        $("page-label").innerText = " ● ";
-        $("dataset-label").innerText = " ● ";
-        __DATASET__.sql = selection;
-        __DATASET__.time = getNow();
-        __DATASET__.result = [];
+
         let data = [];
         let xRange = __ECHARTS__.configs.mathFunctionXRange.value.toArray([-100, 100], ",");
         for (let x = xRange[0]; x <= xRange[1]; x += Number(__ECHARTS__.configs.mathFunctionXGrainSize.value)) {
@@ -1883,82 +1893,81 @@ function executeFunction() {
             }
             data.push(row);
         }
-        __DATASET__["result"].push(transferResultDataset(funs, data));
-        if (__DATASET__["result"].length > 0) {
-            __DATASET__.default.sheet = 0;
-            __DATASET__.pages.total = Math.ceil(__DATASET__.result[0].data.length / Number(__ECHARTS__.configs.reportPageSize.value));
-            __DATASET__.pages.default = 1;
-            $("page-label").innerText = __DATASET__.pages.default + " ● " + __DATASET__.pages.total;
-            $("dataset-label").innerText = (__DATASET__.default.sheet + 1) + " ● " + __DATASET__.result.length;
-            viewDataset(0);
+        __DATASET__.result.push(transferResultDataset(funs, data, title, __SQLEDITOR__.parameter));
+
+        if (__DATASET__.result.length > 0) {
+            viewDataset(__DATASET__["result"].length - 1, 0);
         }
     }
 }
 
-function transferResultDataset(funs, dataset) {
-        let col = ["X"].concat(funs);
-        let columns = [];
-        for (let i = 0; i < col.length; i++) {
-            columns.push({id: i, name: col[i], type: "string", style: {textAlign: "center"}, order: ""});
-        }
-        let data = [];
-        for (let i = 0; i < dataset.length; i++) {
-            let row = {};
-            let r = dataset[i];
-            for (let c = 0; c < columns.length; c++) {
-                let _value = r[c];
-                let _type = getStringDataType(_value != null?_value.toString():null);
-                let _format = null;
-                let _align = "left";
-                let _color = "black";
-
-                switch (_type) {
-                    case "float":
-                        _type = "number";
-                        _value = Number.parseFloat(r[c]);
-                        _format = "#,##0.######";
-                        _align = "right";
-                        break;
-                    case "int":
-                        _type = "number";
-                        _value = Number.parseInt(r[c]);
-                        _format = "#,##0.######";
-                        _align = "right";
-                        break;
-                    case "date":
-                        _format = "yyyy-MM-dd";
-                        _align = "center";
-                        break;
-                    case "datetime":
-                        _format = "yyyy-MM-dd hh:mm:ss";
-                        _align = "center";
-                        break;
-                    default:
-                        _format = null;
-                        _align = "left";
-                }
-                if (_type == "number" && _value < 0)
-                    _color = "red";
-
-                row[columns[c].name] = {
-                    rowid: i,
-                    colid: c,
-                    value: _value,
-                    type: _type,
-                    format: _format,
-                    style: {"text-align": _align, "color": _color},
-                };
-            }
-            data.push(row);
-        }
-
-        return {
-            columns: columns,
-            total: data.length,
-            data: data,
-            title: null
-        };
+function transferResultDataset(funs, dataset, title, parameter) {
+    let col = ["X"].concat(funs);
+    let columns = [];
+    for (let i = 0; i < col.length; i++) {
+        columns.push({id: i, name: col[i], type: "string", style: {textAlign: "center"}, order: ""});
     }
+    let data = [];
+    for (let i = 0; i < dataset.length; i++) {
+        let row = {};
+        let r = dataset[i];
+        for (let c = 0; c < columns.length; c++) {
+            let _value = r[c];
+            let _type = getStringDataType(_value != null ? _value.toString() : null);
+            let _format = null;
+            let _align = "left";
+            let _color = "black";
+
+            switch (_type) {
+                case "float":
+                    _type = "number";
+                    _value = Number.parseFloat(r[c]);
+                    _format = "#,##0.######";
+                    _align = "right";
+                    break;
+                case "int":
+                    _type = "number";
+                    _value = Number.parseInt(r[c]);
+                    _format = "#,##0.######";
+                    _align = "right";
+                    break;
+                case "date":
+                    _format = "yyyy-MM-dd";
+                    _align = "center";
+                    break;
+                case "datetime":
+                    _format = "yyyy-MM-dd hh:mm:ss";
+                    _align = "center";
+                    break;
+                default:
+                    _format = null;
+                    _align = "left";
+            }
+            if (_type == "number" && _value < 0)
+                _color = "red";
+
+            row[columns[c].name] = {
+                rowid: i,
+                colid: c,
+                value: _value,
+                type: _type,
+                format: _format,
+                style: {"text-align": _align, "color": _color},
+            };
+        }
+        data.push(row);
+    }
+
+    return {
+        title: title,
+        sql: funs.join(";\n"),
+        parameter: parameter,
+        columns: columns,
+        total: data.length,
+        data: data,
+        time: getNow()
+    };
+}
 
 function getTableStructure(sql) {
     //从SQL中解析数据表结构.
@@ -2061,7 +2070,7 @@ function getTableStructure(sql) {
             }
         }
     }
-    return {columns: columns,data: data, title: null};
+    return {columns: columns,data: data, title: []};
 }
 
 function openDownloadDialog(url, saveName) {
@@ -2142,15 +2151,15 @@ function workbook2blob(sheets, sheetNames) {
 
 function init() {
     try {
-        getQRCode($("page"), 90, 90, "https://gitee.com/yangkai-bj/", __SYS_IMAGES__.echo);
+        getQRCode($("page"), 90, 90, __VERSION__.url, __SYS_IMAGES__.echo);
         $("main-title").appendChild(__SYS_IMAGES__.getLogoImage(__SYS_IMAGES__.logo_echarts));
         $("main-version").innerText = __VERSION__.version;
-        $("main-version").title = "发布日期: " + __VERSION__.date + "\n ● " + __VERSION__.comment.join("\n ● ");
+        $("main-version").title = "发布日期: " + __VERSION__.date + "\n ● ...\n ● " + __VERSION__.comment.splice(__VERSION__.comment.length%10 + (Math.floor(__VERSION__.comment.length/10)-1)*10).join("\n ● ");
     } catch (e) {
     }
 
     if (checkStorage()) {
-        setUserConfig("CopyRight", "杨凯 ☎ (010)63603329 ✉ <a href='mailto:yangkai.bj@ccb.com'>yangkai.bj@ccb.com</a>");
+        setUserConfig("CopyRight", __VERSION__.author + " ☎ " + __VERSION__.tel + " ✉ <a href='mailto:" + __VERSION__.email + "'>" + __VERSION__.email + "</a>");
         $("copyright").innerHTML = getUserConfig("CopyRight");
         $("footer").style.display = getUserConfig("help");
         $("detail").style.display = getUserConfig("displayLogs");
@@ -2259,13 +2268,13 @@ function init() {
     dbinfo.type = "div";
     dbinfo.className = "button";
     dbinfo.id = "test-button";
-    dbinfo.innerText = "测试";
+    dbinfo.innerText = "调试";
     dbinfo.style.display = "none";
     dbinfo.onclick = function () {
         //##########################################
         //字符串可传输编码转化
-        //let a = "";
-        //console.log(messageEncode(a));
+        let a = "yangkai.bj@ccb.com";
+        console.log(messageEncode(a));
         //##########################################
         //图片转base64代码
         //getBase64Image(null);
@@ -2336,16 +2345,15 @@ function init() {
     exConstr.id = "show-table-construct";
     exConstr.appendChild(__SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.table_construct));
     exConstr.onclick = function () {
-        __DATASET__["sql"] = __CONFIGS__.CURRENT_TABLE.sql;
-        __DATASET__["time"] = getNow();
-        __DATASET__["result"] = [];
-        __DATASET__["result"].push(__CONFIGS__.CURRENT_TABLE.structure);
-        __DATASET__.default.sheet = 0;
+        let result = __CONFIGS__.CURRENT_TABLE.structure;
+        result["title"] = [__CONFIGS__.CURRENT_TABLE.name];
+        result["sql"] = __CONFIGS__.CURRENT_TABLE.sql;
+        result["parameter"] = null;
+        result["time"] = getNow();
+        __DATASET__.result.push(result);
+        __DATASET__.default.sheet = __DATASET__.result.length - 1;
+        viewDataset(__DATASET__.default.sheet, 0);
         viewMessage(__CONFIGS__.CURRENT_TABLE.name + ":\n" + __CONFIGS__.CURRENT_TABLE.sql);
-        viewDataset(0);
-        let label = $("dataset-label");
-        label.innerText = (__DATASET__.default.sheet + 1) + " ● " + __DATASET__["result"].length;
-
     };
     tbstools.appendChild(exConstr);
     setTooltip(exConstr, "获取数据<br>表结构");
@@ -2510,10 +2518,21 @@ function init() {
     saveas.appendChild(__SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.unload_sql));
     let help_downloadsql = $("help-download-sql");
     saveas.onclick = help_downloadsql.onclick = function () {
-        let blob = new Blob([str2ab(__SQLEDITOR__.codeMirror.getValue())], {type: "application/octet-stream"});
         let title = __SQLEDITOR__.title != null ? __SQLEDITOR__.title.split("_")[0] : prompt("请输入文件名称:");
-        if (title != null && title.trim() != "")
-            openDownloadDialog(blob, title + ".sql");
+        if (title != null && title.trim() != "") {
+            let blob = null;
+            switch (__SQLEDITOR__.options.mode) {
+                case "text/x-sqlite":
+                    blob = new Blob([str2ab(__SQLEDITOR__.codeMirror.getValue())], {type: "text/plain"});
+                    //application/octet-stream   扩展名:*
+                    openDownloadDialog(blob, title + ".sql");
+                    break;
+                case "text/javascript":
+                    blob = new Blob([str2ab(__SQLEDITOR__.codeMirror.getValue())], {type: "application/x-javascript"});
+                    openDownloadDialog(blob, title + ".js");
+                    break;
+            }
+        }
     };
     sqltools.appendChild(saveas);
     setTooltip(saveas, "导出<br>脚本");
@@ -2681,7 +2700,7 @@ function init() {
     let toDisplay = document.createElement("div");
     toDisplay.type = "div";
     toDisplay.className = "button";
-    toDisplay.innerText = "»";
+    toDisplay.innerHTML = "&#187";//"»";
     toDisplay.style.fontSize = "150%";
     toDisplay.id = "display-log";
     toDisplay.onclick = function () {
@@ -2750,68 +2769,6 @@ function init() {
     //#######################################
     let datatools = $("data-tools");
 
-    let toup = document.createElement("div");
-    datatools.appendChild(toup);
-    toup.className = "button";
-    toup.innerText = "«";
-    toup.style.fontSize = "150%";
-    toup.setAttribute("label", "dataset-label");
-    toup.setAttribute("pagelabel", "page-label");
-    toup.id = "dataset-up";
-    toup.onclick = function () {
-        if (__DATASET__["result"].length > 0) {
-            if (__DATASET__.default.sheet > 0) {
-                __DATASET__.default.sheet -= 1;
-                __DATASET__.pages.total = Math.ceil(__DATASET__.result[__DATASET__.default.sheet].data.length / Number(__ECHARTS__.configs.reportPageSize.value));
-                __DATASET__.pages.default = 1;
-            }
-            $(this.getAttribute("label")).innerText = (__DATASET__.default.sheet + 1) + " ● " + __DATASET__.result.length;
-            $(this.getAttribute("pagelabel")).innerText = __DATASET__.pages.default + " ● " + __DATASET__.pages.total;
-            viewDataset(__DATASET__.default.sheet);
-        }
-    };
-    setTooltip(toup, "上一个<br>数据集");
-
-    let to = document.createElement("div");
-    datatools.appendChild(to);
-    to.className = "button";
-    to.id = "dataset-label";
-    to.innerText = "●";
-    to.style.fontSize = "100%";
-    to.setAttribute("pagelabel", "page-label");
-    to.onclick = function () {
-        if (__DATASET__.result.length > 0) {
-            __DATASET__.pages.total = Math.ceil(__DATASET__.result[__DATASET__.default.sheet].data.length / Number(__ECHARTS__.configs.reportPageSize.value));
-            __DATASET__.pages.default = 1;
-            this.innerText = (__DATASET__.default.sheet + 1) + " ● " + __DATASET__.result.length;
-            $(this.getAttribute("pagelabel")).innerText = __DATASET__.pages.default + " ● " + __DATASET__.pages.total;
-            viewDataset(__DATASET__.default.sheet);
-        }
-    };
-    setTooltip(to, "当前<br>数据集");
-
-    let todown = document.createElement("div");
-    datatools.appendChild(todown);
-    todown.className = "button";
-    todown.innerText = "»";
-    todown.style.fontSize = "150%";
-    todown.setAttribute("label", "dataset-label");
-    todown.setAttribute("pagelabel", "page-label");
-    todown.id = "dataset-down";
-    todown.onclick = function () {
-        if (__DATASET__.result.length > 0) {
-            if (__DATASET__.default.sheet < (__DATASET__.result.length - 1)) {
-                __DATASET__.default.sheet += 1;
-                __DATASET__.pages.total = Math.ceil(__DATASET__.result[__DATASET__.default.sheet].data.length / Number(__ECHARTS__.configs.reportPageSize.value));
-                __DATASET__.pages.default = 1;
-            }
-            $(this.getAttribute("label")).innerText = (__DATASET__.default.sheet + 1) + " ● " + __DATASET__.result.length;
-            $(this.getAttribute("pagelabel")).innerText = __DATASET__.pages.default + " ● " + __DATASET__.pages.total;
-            viewDataset(__DATASET__.default.sheet);
-        }
-    };
-    setTooltip(todown, "下一个<br>数据集");
-
     let datatran = document.createElement("div");
     datatools.appendChild(datatran);
     datatran.className = "button";
@@ -2822,10 +2779,7 @@ function init() {
     datatran.onclick = help_datasettranspose.onclick = function () {
         if (__DATASET__.result.length > 0) {
             datasetTranspose(__DATASET__.default.sheet);
-            __DATASET__.pages.total = Math.ceil(__DATASET__.result[__DATASET__.default.sheet].data.length / Number(__ECHARTS__.configs.reportPageSize.value));
-            __DATASET__.pages.default = 1;
-            $("page-label").innerText = __DATASET__.pages.default + " ● " + __DATASET__.pages.total;
-            viewDataset(__DATASET__.default.sheet);
+            viewDataset(__DATASET__.default.sheet, 0);
         }
     };
     setTooltip(datatran, "转置<br>数据");
@@ -2833,7 +2787,7 @@ function init() {
     let dataslice = document.createElement("div");
     datatools.appendChild(dataslice);
     dataslice.className = "button";
-    dataslice.innerText = "♯";
+    dataslice.innerHTML = "&#9839";//"♯";
     dataslice.style.fontSize = "150%";
     dataslice.id = "dataset-slice";
     let help_datasetslice = $("help-dataset-slice");
@@ -2850,7 +2804,7 @@ function init() {
     subtotal.type = "div";
     subtotal.className = "button";
     subtotal.style.fontSize = "130%";
-    subtotal.innerText = "Σ";
+    subtotal.innerHTML = "&#931";//"Σ";
     subtotal.id = "dataset-subtotal";
     let help_datasetsubtotal = $("help-dataset-subtotal");
     subtotal.onclick = help_datasetsubtotal.onclick = function () {
@@ -2880,34 +2834,36 @@ function init() {
     download.type = "div";
     download.className = "button";
     download.style.fontSize = "150%";
-    download.innerText = "⇣";
+    download.innerHTML = "&#8675";//"⇣";
     download.id = "dataset-download";
     let help_datasetdownload = $("help-dataset-download");
     download.onclick = help_datasetdownload.onclick = function () {
-        function fixFileName(str){
-            let sts = ['\\','/',':','*','?','"','<','>','|'];
-            for(let i =0;i < sts.length;i++){
-                str.replaceAll(sts[i],"");
+        function fixFileName(str) {
+            let sts = ['\\', '/', ':', '*', '?', '"', '<', '>', '|'];
+            for (let i = 0; i < sts.length; i++) {
+                str.replaceAll(sts[i], "");
             }
             return str;
         }
+
         function sleep(delay) {
             let endTime = new Date().getTime() + parseInt(delay);
             while (new Date().getTime() < endTime) ;
             //用时间来控制延时,突破浏览器同时下载任务限制.
         }
+
         if (__DATASET__["result"].length > 0) {
             let sheets = [];
             let sheetNames = [];
             let comment = [
-                    ['Application:', 'Web DataView for SQLite Database of browser'],
-                    ['Version:', __VERSION__.version + " (" + __VERSION__.date + ")"],
-                    ['SQL/Function:', __DATASET__.sql],
-                    ['Creation time:', getNow()],
-                    ['Get help from:', 'https://github.com/yangkai-bj'],
-                ];
+                ['Application:', __VERSION__.name],
+                ['Version:', __VERSION__.version + " (" + __VERSION__.date + ")"],
+                ['Creation time:', getNow()],
+                ['Get help from:', __VERSION__.url],
+            ];
             if (__ECHARTS__.configs.reportDownload.value == "current") {
                 let dataset = __DATASET__["result"][__DATASET__.default.sheet];
+                comment.push(['SQL/Function:', dataset.sql]);
                 let aoa = [];
                 let columns = dataset["columns"].reduce(function (tmp, column) {
                     tmp.push(column.name);
@@ -2924,13 +2880,13 @@ function init() {
                 }
                 sheets.push(aoa);
                 let sheetname = typeof dataset.title == "undefined" ? "Current" :
-                    (dataset.title == null ? "Current" :
-                        (dataset.title.trim() == "" ? "Current" : dataset.title));
+                    (dataset.title.length == 0 ? "Current" :
+                        (dataset.title[dataset.title.length - 1] == "" ? "Current" : dataset.title[dataset.title.length - 1]));
                 sheetNames.push(sheetname);
                 sheets.push(comment);
                 sheetNames.push("Comment");
-                let title = __SQLEDITOR__.title != null ? __SQLEDITOR__.title.split("_")[0] : prompt("请输入文件名称:");
-                if (title != null && title.trim() != "")
+                let title = dataset.title.length > 0 ? dataset.title[0] : prompt("请输入文件名称:");
+                if (title.trim() != "")
                     openDownloadDialog(workbook2blob(sheets, sheetNames), title + ".xlsx");
             } else if (__ECHARTS__.configs.reportDownload.value == "all-single") {
                 if (__DATASET__["result"].length <= 255) {
@@ -2940,6 +2896,7 @@ function init() {
                     if (res == true) {
                         for (let d = 0; d < __DATASET__["result"].length; d++) {
                             let dataset = __DATASET__["result"][d];
+                            comment.push(['SQL/Function:', dataset.sql]);
                             let aoa = [];
                             let columns = dataset["columns"].reduce(function (tmp, column) {
                                 tmp.push(column.name);
@@ -2955,14 +2912,14 @@ function init() {
                                 aoa.push(row);
                             }
                             sheets.push(aoa);
-                            let sheetname = typeof __DATASET__["result"][d].title == "undefined" ? "Sheet" + (d + 1) :
-                                (__DATASET__["result"][d].title == null ? "Sheet" + (d + 1) :
-                                    (__DATASET__["result"][d].title.trim() == "" ? "Sheet" + (d + 1) : fixFileName(__DATASET__["result"][d].title)));
+                            let sheetname = typeof dataset.title == "undefined" ? "Sheet" + (d + 1) :
+                                (dataset.title.length == 0 ? "Sheet" + (d + 1) :
+                                    (dataset.title[dataset.title.length - 1] == "" ? "Sheet" + (d + 1) : fixFileName(dataset.title[dataset.title.length - 1])));
                             sheetNames.push(sheetname);
                         }
                         sheets.push(comment);
                         sheetNames.push("Comment");
-                        let title = __SQLEDITOR__.title != null ? __SQLEDITOR__.title.split("_")[0] : prompt("请输入文件名称:");
+                        let title = prompt("请输入文件名称:");
                         if (title != null && title.trim() != "")
                             openDownloadDialog(workbook2blob(sheets, sheetNames), fixFileName(title) + ".xlsx");
                     }
@@ -2978,6 +2935,13 @@ function init() {
                             sheets = [];
                             sheetNames = [];
                             let dataset = __DATASET__["result"][d];
+                            comment = [
+                                ['Application:', __VERSION__.name],
+                                ['Version:', __VERSION__.version + " (" + __VERSION__.date + ")"],
+                                ['Creation time:', getNow()],
+                                ['Get help from:', __VERSION__.url],
+                                ['SQL/Function:', dataset.sql]
+                            ];
                             let aoa = [];
                             let columns = dataset["columns"].reduce(function (tmp, column) {
                                 tmp.push(column.name);
@@ -2993,9 +2957,9 @@ function init() {
                                 aoa.push(row);
                             }
                             sheets.push(aoa);
-                            let sheetname = typeof __DATASET__["result"][d].title == "undefined" ? "Sheet" + (d + 1) :
-                                (__DATASET__["result"][d].title == null ? "Sheet" + (d + 1) :
-                                    (__DATASET__["result"][d].title.trim() == "" ? "Sheet" + (d + 1) : fixFileName(__DATASET__["result"][d].title)));
+                            let sheetname = typeof dataset.title == "undefined" ? "Sheet" + (d + 1) :
+                                (dataset.title.length == 0 ? "Sheet" + (d + 1) :
+                                    (dataset.title[dataset.title.length - 1] == "" ? "Sheet" + (d + 1) : fixFileName(dataset.title[dataset.title.length - 1])));
                             sheetNames.push(sheetname);
                             sheets.push(comment);
                             sheetNames.push("Comment");
@@ -3018,7 +2982,7 @@ function init() {
     remove.type = "div";
     remove.className = "button";
     remove.style.fontSize = "120%";
-    remove.innerText = "✗";
+    remove.innerHTML = "&#10007";//"✗";
     remove.id = "dataset-remove";
     let help_datasetremove = $("help-dataset-remove");
     remove.onclick = help_datasetremove.onclick = function () {
@@ -3028,67 +2992,34 @@ function init() {
                 __DATASET__.default.sheet = __DATASET__["result"].length - 1;
 
             if (__DATASET__["result"].length > 0) {
-                __DATASET__.pages.total = Math.ceil(__DATASET__.result[__DATASET__.default.sheet].data.length / Number(__ECHARTS__.configs.reportPageSize.value));
-                __DATASET__.pages.default = 1;
-                $("page-label").innerText = __DATASET__.pages.default + " ● " + __DATASET__.pages.total;
-                $("dataset-label").innerText = (__DATASET__.default.sheet + 1) + " ● " + __DATASET__.result.length;
-                viewDataset(__DATASET__.default.sheet);
+                if (__DATASET__.default.tab >= __DATASET__["result"].length)
+                    __DATASET__.default.tab -= 10;
+                viewDataset(__DATASET__.default.sheet, 0);
             } else {
-                $("page-label").innerText = " ● ";
-                $("dataset-label").innerText = " ● ";
                 $("tableContainer").innerText = "";
+                __DATASET__.default.tab = 0;
+                setDataPageTools(0);
             }
         }
     };
     setTooltip(remove, "删除<br>数据集");
 
-    let pageup = document.createElement("div");
-    datatools.appendChild(pageup);
-    pageup.className = "button";
-    pageup.innerText = "«";
-    pageup.style.fontSize = "150%";
-    pageup.setAttribute("label", "page-label");
-    pageup.id = "dataset-page-up";
-    pageup.onclick = function () {
-        if (__DATASET__.pages.default > 1) {
-            __DATASET__.pages.default -= 1;
-            let label = $(this.getAttribute("label"));
-            label.innerText = __DATASET__.pages.default + " ● " + __DATASET__.pages.total;
-            viewDataset(__DATASET__.default.sheet);
+    let removeall = document.createElement("div");
+    datatools.appendChild(removeall);
+    removeall.type = "div";
+    removeall.className = "button";
+    removeall.style.fontSize = "120%";
+    removeall.innerText = "Ｒ";
+    removeall.id = "dataset-removeall";
+    removeall.onclick = function () {
+        if (__DATASET__["result"].length > 0) {
+            __DATASET__["result"] = [];
+            __DATASET__.default.tab = 0;
+            $("tableContainer").innerText = "";
+            setDataPageTools(0);
         }
     };
-    setTooltip(pageup, "数据集<br>上一页");
-
-    let pagecurrent = document.createElement("div");
-    datatools.appendChild(pagecurrent);
-    pagecurrent.className = "button";
-    pagecurrent.style.fontSize = "100%";
-    pagecurrent.id = "page-label";
-    pagecurrent.innerText = "●";
-    pagecurrent.onclick = function () {
-        if (__DATASET__.result.length > 0) {
-            this.innerText = __DATASET__.pages.default + " ● " + __DATASET__.pages.total;
-            viewDataset(__DATASET__.default.sheet);
-        }
-    };
-    setTooltip(pagecurrent, "数据集<br>当前页");
-
-    let pagedown = document.createElement("div");
-    datatools.appendChild(pagedown);
-    pagedown.className = "button";
-    pagedown.innerText = "»";
-    pagedown.style.fontSize = "150%";
-    pagedown.setAttribute("label", "page-label");
-    pagedown.id = "dataset-page-down";
-    pagedown.onclick = function () {
-        if (__DATASET__.pages.default < __DATASET__.pages.total) {
-            __DATASET__.pages.default += 1;
-            let label = $(this.getAttribute("label"));
-            label.innerText = __DATASET__.pages.default + " ● " + __DATASET__.pages.total;
-            viewDataset(__DATASET__.default.sheet);
-        }
-    };
-    setTooltip(pagedown, "数据集<br>下一页");
+    setTooltip(removeall, "删除所有<br>数据集");
 
     let analysis = document.createElement("div");
     analysis.style.display = "none";
@@ -3315,6 +3246,16 @@ function init() {
                 echarts.getInstanceByDom(container).dispose();
             } catch (e) {
             }
+            let dataset = __DATASET__["result"][__DATASET__.default.sheet];
+            if (dataset.title.length != 0) {
+                __ECHARTS__.configs.titleText.value = dataset.title[0];
+                if (dataset.title.length > 1) {
+                    __ECHARTS__.configs.titleSubText.value = dataset.title.slice(1).join(" ");
+                } else {
+                    __ECHARTS__.configs.titleSubText.value = "";
+                }
+            }
+
             let _width = (getAbsolutePosition(container).width * 1) + "px";
             let _height = (getAbsolutePosition(container).height * 1) + "px";
             container.innerHTML = "";
@@ -3322,7 +3263,7 @@ function init() {
                 container,
                 _width,
                 _height,
-                __DATASET__["result"][__DATASET__.default.sheet],
+                dataset,
                 __ECHARTS__.configs);
             setDragNook(container, echart.getAttribute("_echarts_instance_"));
         } catch (e) {
@@ -3332,6 +3273,8 @@ function init() {
     setTooltip(echarts, "绘制<br>视图");
 
     setPageThemes();
+
+    setDataPageTools(0);
 
     window.onresize = function () {
         resize();
@@ -3401,7 +3344,8 @@ function resize() {
     $("tableContainer").style.height = (getAbsolutePosition($("main")).height -
         getAbsolutePosition($("sql-tools")).height -
         getAbsolutePosition($("sqlContainer")).height -
-        getAbsolutePosition($("data-tools")).height) + "px";
+        getAbsolutePosition($("data-tools")).height -
+        getAbsolutePosition($("data-page-tools")).height - 5) + "px";
     $("sidebar-tbs").style.height = (getAbsolutePosition($("sidebar")).height -
         getAbsolutePosition($("sidebar-dbs-tools")).height -
         getAbsolutePosition($("sidebar-dbs")).height -
@@ -3634,15 +3578,20 @@ function getSubtotal(columns) {
             } else
                 __DATASET__["result"].push(subtotal(column, target, typ[i].value));
         }
-        if (merge)
-             __DATASET__["result"].push({columns: columns,data: data, title: null});
+        if (merge) {
+            let title = __DATASET__.result[__DATASET__.default.sheet].title.slice();
+            title.push("SUBTOTAL");
+            __DATASET__["result"].push({
+                columns: columns,
+                data: data,
+                title: title,
+                sql: null,
+                parameter: null,
+                time: getNow()
+            });
+        }
         if (__DATASET__["result"].length > 0) {
-            __DATASET__.default.sheet = __DATASET__["result"].length - 1;
-            __DATASET__.pages.total = Math.ceil(__DATASET__.result[__DATASET__.default.sheet].data.length / Number(__ECHARTS__.configs.reportPageSize.value));
-            __DATASET__.pages.default = 1;
-            $("page-label").innerText = __DATASET__.pages.default + " ● " + __DATASET__.pages.total;
-            $("dataset-label").innerText = (__DATASET__.default.sheet + 1) + " ● " + __DATASET__.result.length;
-            viewDataset(__DATASET__["result"].length - 1);
+            viewDataset(__DATASET__["result"].length - 1, 0);
         }
 
         $("subtotal-Content").parentNode.removeChild($("subtotal-Content"));
@@ -3838,6 +3787,10 @@ function getDataSlice() {
 
     function dataSlice(setid, cols, begin, end, groupby, groupvalue) {
         let columns = __DATASET__.result[setid].columns;
+        let sql = __DATASET__.result[setid].sql;
+        let title = __DATASET__.result[setid].title.slice();
+        title.push(groupvalue);
+        let parameter = __DATASET__.result[setid].parameter;
         let col_tmp = [];
         let id = 0;
         for (let i = 0; i < cols.length; i++) {
@@ -3856,7 +3809,7 @@ function getDataSlice() {
         let rowid = 0;
         let data = __DATASET__.result[setid].data;
         let dataset = [];
-        for (let i = 0;i <= data.length; i++) {
+        for (let i = 0; i <= data.length; i++) {
             let row = data[i];
             if (i >= begin && i <= end) {
                 let r = {};
@@ -3877,7 +3830,14 @@ function getDataSlice() {
                 }
             }
         }
-        __DATASET__["result"].push({columns: col_tmp, data: dataset, title: groupvalue});
+        __DATASET__["result"].push({
+            title: title,
+            sql: sql,
+            parameter: parameter,
+            columns: col_tmp,
+            data: dataset,
+            time: getNow()
+        });
     }
 
     let container = document.createElement("div");
@@ -4013,12 +3973,7 @@ function getDataSlice() {
             dataSlice(setid, cols, begin, end, "none", null);
 
         if (__DATASET__["result"].length > 0) {
-            __DATASET__.default.sheet = __DATASET__["result"].length - 1;
-            __DATASET__.pages.total = Math.ceil(__DATASET__.result[__DATASET__.default.sheet].data.length / Number(__ECHARTS__.configs.reportPageSize.value));
-            __DATASET__.pages.default = 1;
-            $("page-label").innerText = __DATASET__.pages.default + " ● " + __DATASET__.pages.total;
-            $("dataset-label").innerText = (__DATASET__.default.sheet + 1) + " ● " + __DATASET__.result.length;
-            viewDataset(__DATASET__["result"].length - 1);
+            viewDataset(__DATASET__["result"].length - 1, 0);
         }
         $("data-slice-Content").parentNode.removeChild($("data-slice-Content"));
     };
@@ -4200,14 +4155,16 @@ function getDataFilter(colid) {
                 }
             }
         }
-        __DATASET__["result"].push({columns: columns, data: dataset, title: null});
+        __DATASET__["result"].push({
+            title: __DATASET__.result[__DATASET__.default.sheet].title,
+            sql: __DATASET__.result[__DATASET__.default.sheet].sql,
+            parameter: __DATASET__.result[__DATASET__.default.sheet].parameter,
+            columns: columns,
+            data: dataset,
+            time: getNow()
+        });
         if (__DATASET__["result"].length > 0) {
-            __DATASET__.default.sheet = __DATASET__["result"].length - 1;
-            __DATASET__.pages.total = Math.ceil(__DATASET__.result[__DATASET__.default.sheet].data.length / Number(__ECHARTS__.configs.reportPageSize.value));
-            __DATASET__.pages.default = 1;
-            $("page-label").innerText = __DATASET__.pages.default + " ● " + __DATASET__.pages.total;
-            $("dataset-label").innerText = (__DATASET__.default.sheet + 1) + " ● " + __DATASET__.result.length;
-            viewDataset(__DATASET__["result"].length - 1);
+            viewDataset(__DATASET__["result"].length - 1, 0);
         }
 
         $("data-filter-Content").parentNode.removeChild($("data-filter-Content"));
@@ -5010,6 +4967,108 @@ function setDialogDrag(bar, callback) {
     }
 }
 
+function setDataPageTools(index) {
+    let main = document.getElementById("data-page-tools");
+    main.innerHTML = "";
+
+    let backward = document.createElement("span");
+    backward.className = "dataset-tab-toolbar";
+    backward.id = "data-page-tools-backward";
+    backward.innerHTML = "&#171";//"«";
+    main.appendChild(backward);
+    backward.onclick = function () {
+        if (__DATASET__.default.tab >= 10) {
+            __DATASET__.default.tab -= 10;
+            setDataPageTools(__DATASET__.default.sheet);
+        }
+    };
+
+    let co = 0;
+    for (let i = __DATASET__.default.tab; i < __DATASET__.result.length; i++) {
+        let tab = document.createElement("span");
+        tab.className = "data-page-tools-tab";
+        tab.innerHTML = i + 1;
+        tab.setAttribute("index", i);
+        if (i == __DATASET__.default.sheet) {
+            tab.style.background = "var(--tab-selected-backgroud-color)";
+            tab.style.color = "var(--tab-selected-color)";
+        }
+        tab.title = "● " + __DATASET__.result[i].title.join("\n- ");
+        co += 1;
+        tab.onclick = function () {
+            let index = Number(this.getAttribute("index"));
+            __DATASET__.default.sheet = index;
+            __DATASET__.pages.default = 0;
+            viewDataset(index, 0);
+        }
+        main.appendChild(tab);
+        if (co == 10)
+            break;
+    }
+    let forward = document.createElement("span");
+    forward.className = "dataset-tab-toolbar";
+    forward.id = "data-page-tools-forward";
+    forward.innerHTML = "&#187";//"»";
+    main.appendChild(forward);
+    forward.onclick = function () {
+        if (__DATASET__.result.length - __DATASET__.default.tab > 10) {
+            __DATASET__.default.tab += 10;
+            setDataPageTools(__DATASET__.default.sheet);
+        }
+    }
+
+    let todown = document.createElement("span");
+    todown.className = "dataset-page-toolbar";
+    todown.id = "data-page-tools-todown";
+    todown.innerHTML = "&#187";//"»";
+    todown.onclick = function() {
+        let label = $("data-page-tools-current");
+        if (__DATASET__.result.length > 0) {
+            if (__DATASET__.pages.default < __DATASET__.pages.total - 1) {
+                __DATASET__.pages.default += 1;
+                label.innerText = (__DATASET__.pages.default + 1) + " ● " + __DATASET__.pages.total;
+                viewDataset(__DATASET__.default.sheet);
+            }
+        } else {
+            label.innerText = " ● ";
+        }
+    }
+    main.appendChild(todown);
+
+    let curr = document.createElement("span");
+    curr.id = "data-page-tools-current";
+    if (__DATASET__.result.length > 0) {
+        curr.innerText = (__DATASET__.pages.default + 1) + " ● " + __DATASET__.pages.total;
+    }  else {
+        curr.innerText = " ● ";
+    }
+    curr.onclick = function() {
+        if (__DATASET__.result.length > 0) {
+            viewDataset(__DATASET__.default.sheet);
+        } else {
+            curr.innerHTML = " ● ";
+        }
+    }
+    main.appendChild(curr);
+
+    let toup = document.createElement("span");
+    toup.className = "dataset-page-toolbar";
+    toup.id = "data-page-tools-toup";
+    toup.innerHTML = "&#171";//"«";
+    toup.onclick = function() {
+        let label = $("data-page-tools-current");
+        if (__DATASET__.result.length > 0) {
+            if (__DATASET__.pages.default > 0) {
+                __DATASET__.pages.default -= 1;
+                label.innerText = (__DATASET__.pages.default + 1) + " ● " + __DATASET__.pages.total;
+                viewDataset(__DATASET__.default.sheet);
+            }
+        } else {
+            label.innerText = " ● ";
+        }
+    }
+    main.appendChild(toup);
+}
 
 
 
