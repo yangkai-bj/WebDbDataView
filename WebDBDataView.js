@@ -78,7 +78,7 @@ var __CONFIGS__ = {
  };
  var __DATASET__ = {
      result: [
-         //{eventid:null, title:[],sql: null,columns:[],data:[],parameter:null,time:null}
+         //{eventid:null, title:[],sql: null,columns:[],data:[],parameter:null,time:null, type:null}
      ],
      default: {sheet: 0, column: null, cell: [], tab: 0},
      pages: {total: 0, default: 1},
@@ -1447,9 +1447,9 @@ function orderDatasetBy(dataset, colid) {
 function datasetTranspose(index) {
     //数据转置
     try {
-        let columns = __DATASET__["result"][index].columns;
-        let data = __DATASET__["result"][index].data;
-        //let title = (typeof __DATASET__["result"][index].title == "undefined")? []:__DATASET__["result"][index].title;
+        let columns = __DATASET__.result[index].columns;
+        let data = __DATASET__.result[index].data;
+        //let title = (typeof __DATASET__.result[index].title == "undefined")? []:__DATASET__.result[index].title;
         let dataset = {columns: [], data: []};
         let col = {
             id: 0,
@@ -1492,8 +1492,8 @@ function datasetTranspose(index) {
             }
             dataset.data.push(nr);
         }
-        __DATASET__["result"][index].data = dataset.data;
-        __DATASET__["result"][index].columns = dataset.columns;
+        __DATASET__.result[index].data = dataset.data;
+        __DATASET__.result[index].columns = dataset.columns;
     } catch (e) {
         console.log(e);
     }
@@ -1515,8 +1515,8 @@ function viewDataset(index, pageindex) {
     } catch (e) {
     }
     container.innerText = "";
-    let columns = __DATASET__["result"][index].columns;
-    let data = __DATASET__["result"][index].data;
+    let columns = __DATASET__.result[index].columns;
+    let data = __DATASET__.result[index].data;
     let table = document.createElement("table");
     table.className = "table";
     table.id = "table";
@@ -1560,7 +1560,7 @@ function viewDataset(index, pageindex) {
         }
         order.onclick = function () {
             let index = __DATASET__.default.sheet;
-            orderDatasetBy(__DATASET__["result"][index], this.getAttribute("colid"));
+            orderDatasetBy(__DATASET__.result[index], this.getAttribute("colid"));
             viewDataset(index, 0);
         };
         th.appendChild(order);
@@ -1800,6 +1800,7 @@ function execute() {
                                 __DATASET__.result.push({
                                     title: title,
                                     sql: sql,
+                                    type: __SQLEDITOR__.options.mode,
                                     parameter: __SQLEDITOR__.parameter,
                                     columns: columns,
                                     data: data,
@@ -1807,7 +1808,7 @@ function execute() {
                                 });
 
                                 if (__DATASET__.result.length > 0) {
-                                    viewDataset(__DATASET__["result"].length - 1, 0);
+                                    viewDataset(__DATASET__.result.length - 1, 0);
                                 }
                             }
                             if (aff > 0) {
@@ -1896,7 +1897,7 @@ function executeFunction() {
         __DATASET__.result.push(transferResultDataset(funs, data, title, __SQLEDITOR__.parameter));
 
         if (__DATASET__.result.length > 0) {
-            viewDataset(__DATASET__["result"].length - 1, 0);
+            viewDataset(__DATASET__.result.length - 1, 0);
         }
     }
 }
@@ -1961,6 +1962,7 @@ function transferResultDataset(funs, dataset, title, parameter) {
     return {
         title: title,
         sql: funs.join(";\n"),
+        type: __SQLEDITOR__.options.mode,
         parameter: parameter,
         columns: columns,
         total: data.length,
@@ -2070,7 +2072,7 @@ function getTableStructure(sql) {
             }
         }
     }
-    return {columns: columns,data: data, title: []};
+    return {columns: columns, data: data, title: [], type: "text/x-sqlite"};
 }
 
 function openDownloadDialog(url, saveName) {
@@ -2808,8 +2810,8 @@ function init() {
     subtotal.id = "dataset-subtotal";
     let help_datasetsubtotal = $("help-dataset-subtotal");
     subtotal.onclick = help_datasetsubtotal.onclick = function () {
-        if (__DATASET__["result"].length > 0) {
-            let dataset = __DATASET__["result"][__DATASET__.default.sheet];
+        if (__DATASET__.result.length > 0) {
+            let dataset = __DATASET__.result[__DATASET__.default.sheet];
             let data = [];
             let columns = [];
             for (let i = 0; i < dataset["columns"].length; i++) {
@@ -2852,7 +2854,7 @@ function init() {
             //用时间来控制延时,突破浏览器同时下载任务限制.
         }
 
-        if (__DATASET__["result"].length > 0) {
+        if (__DATASET__.result.length > 0) {
             let sheets = [];
             let sheetNames = [];
             let comment = [
@@ -2862,8 +2864,8 @@ function init() {
                 ['Get help from:', __VERSION__.url],
             ];
             if (__ECHARTS__.configs.reportDownload.value == "current") {
-                let dataset = __DATASET__["result"][__DATASET__.default.sheet];
-                comment.push(['SQL/Function:', dataset.sql]);
+                let dataset = __DATASET__.result[__DATASET__.default.sheet];
+                comment.push([dataset.type + ":", dataset.sql]);
                 let aoa = [];
                 let columns = dataset["columns"].reduce(function (tmp, column) {
                     tmp.push(column.name);
@@ -2889,14 +2891,14 @@ function init() {
                 if (title.trim() != "")
                     openDownloadDialog(workbook2blob(sheets, sheetNames), title + ".xlsx");
             } else if (__ECHARTS__.configs.reportDownload.value == "all-single") {
-                if (__DATASET__["result"].length <= 255) {
+                if (__DATASET__.result.length <= 255) {
                     let res = true;
-                    if (__DATASET__["result"].length > 3)
-                        res = confirm("您确定下载 " + __DATASET__["result"].length + " 个工作表吗?");
+                    if (__DATASET__.result.length > 3)
+                        res = confirm("您确定下载 " + __DATASET__.result.length + " 个工作表吗?");
                     if (res == true) {
-                        for (let d = 0; d < __DATASET__["result"].length; d++) {
-                            let dataset = __DATASET__["result"][d];
-                            comment.push(['SQL/Function:', dataset.sql]);
+                        for (let d = 0; d < __DATASET__.result.length; d++) {
+                            let dataset = __DATASET__.result[d];
+                            comment.push([dataset.type + ":", dataset.sql]);
                             let aoa = [];
                             let columns = dataset["columns"].reduce(function (tmp, column) {
                                 tmp.push(column.name);
@@ -2926,21 +2928,21 @@ function init() {
                 } else
                     alert("一个工作簿最多允许有255个数据表!");
             } else if (__ECHARTS__.configs.reportDownload.value == "all-multi") {
-                if (__DATASET__["result"].length <= 255) {
+                if (__DATASET__.result.length <= 255) {
                     let res = true;
-                    if (__DATASET__["result"].length > 3)
-                        res = confirm("您确定下载 " + __DATASET__["result"].length + " 个工作簿吗?");
+                    if (__DATASET__.result.length > 3)
+                        res = confirm("您确定下载 " + __DATASET__.result.length + " 个工作簿吗?");
                     if (res == true) {
-                        for (let d = 0; d < __DATASET__["result"].length; d++) {
+                        for (let d = 0; d < __DATASET__.result.length; d++) {
                             sheets = [];
                             sheetNames = [];
-                            let dataset = __DATASET__["result"][d];
+                            let dataset = __DATASET__.result[d];
                             comment = [
                                 ['Application:', __VERSION__.name],
                                 ['Version:', __VERSION__.version + " (" + __VERSION__.date + ")"],
                                 ['Creation time:', getNow()],
                                 ['Get help from:', __VERSION__.url],
-                                ['SQL/Function:', dataset.sql]
+                                [dataset.type + ":", dataset.sql]
                             ];
                             let aoa = [];
                             let columns = dataset["columns"].reduce(function (tmp, column) {
@@ -2964,7 +2966,7 @@ function init() {
                             sheets.push(comment);
                             sheetNames.push("Comment");
                             openDownloadDialog(workbook2blob(sheets, sheetNames), sheetname + ".xlsx");
-                            if (d < (__DATASET__["result"].length - 1)) {
+                            if (d < (__DATASET__.result.length - 1)) {
                                 let delay = (aoa.length * columns.length) >= 10000 ? (aoa.length * columns.length / 10000) : 1;
                                 sleep(__ECHARTS__.configs.reportDownloadDelay.value * delay);
                             }
@@ -2986,13 +2988,13 @@ function init() {
     remove.id = "dataset-remove";
     let help_datasetremove = $("help-dataset-remove");
     remove.onclick = help_datasetremove.onclick = function () {
-        if (__DATASET__["result"].length > 0) {
-            __DATASET__["result"].splice(__DATASET__.default.sheet, 1);
-            if (__DATASET__.default.sheet >= __DATASET__["result"].length)
-                __DATASET__.default.sheet = __DATASET__["result"].length - 1;
+        if (__DATASET__.result.length > 0) {
+            __DATASET__.result.splice(__DATASET__.default.sheet, 1);
+            if (__DATASET__.default.sheet >= __DATASET__.result.length)
+                __DATASET__.default.sheet = __DATASET__.result.length - 1;
 
-            if (__DATASET__["result"].length > 0) {
-                if (__DATASET__.default.tab >= __DATASET__["result"].length)
+            if (__DATASET__.result.length > 0) {
+                if (__DATASET__.default.tab >= __DATASET__.result.length)
                     __DATASET__.default.tab -= 10;
                 viewDataset(__DATASET__.default.sheet, 0);
             } else {
@@ -3012,8 +3014,8 @@ function init() {
     removeall.innerText = "Ｒ";
     removeall.id = "dataset-removeall";
     removeall.onclick = function () {
-        if (__DATASET__["result"].length > 0) {
-            __DATASET__["result"] = [];
+        if (__DATASET__.result.length > 0) {
+            __DATASET__.result = [];
             __DATASET__.default.tab = 0;
             $("tableContainer").innerText = "";
             setDataPageTools(0);
@@ -3029,7 +3031,7 @@ function init() {
     analysis.style.cssFloat = "left";
     analysis.id = "Analysis";
     analysis.onclick = function () {
-        let dataset = __DATASET__["result"][__DATASET__.default.sheet];
+        let dataset = __DATASET__.result[__DATASET__.default.sheet];
         let columns = [];
         let data = [];
         for (let i = 0; i < dataset["columns"].length; i++) {
@@ -3121,7 +3123,7 @@ function init() {
                 mecharts,
                 (getAbsolutePosition($("page")).width + 5) + "px",
                 (getAbsolutePosition($("page")).height + 20) + "px",
-                __DATASET__["result"][__DATASET__.default.sheet],
+                __DATASET__.result[__DATASET__.default.sheet],
                 __ECHARTS__.configs);
             setDragNook(mecharts, echart.getAttribute("_echarts_instance_"));
             $("page").appendChild(mecharts);
@@ -3178,7 +3180,7 @@ function init() {
                 container,
                 _width,
                 _height,
-                __DATASET__["result"][__DATASET__.default.sheet],
+                __DATASET__.result[__DATASET__.default.sheet],
                 __ECHARTS__.configs);
             setDragNook(container, echart.getAttribute("_echarts_instance_"));
         } catch (e) {
@@ -3220,7 +3222,7 @@ function init() {
                 container,
                 _width,
                 _height,
-                __DATASET__["result"][__DATASET__.default.sheet],
+                __DATASET__.result[__DATASET__.default.sheet],
                 __ECHARTS__.configs);
             setDragNook(container, echart.getAttribute("_echarts_instance_"));
         } catch (e) {
@@ -3246,7 +3248,7 @@ function init() {
                 echarts.getInstanceByDom(container).dispose();
             } catch (e) {
             }
-            let dataset = __DATASET__["result"][__DATASET__.default.sheet];
+            let dataset = __DATASET__.result[__DATASET__.default.sheet];
             if (dataset.title.length != 0) {
                 __ECHARTS__.configs.titleText.value = dataset.title[0];
                 if (dataset.title.length > 1) {
@@ -3283,7 +3285,7 @@ function init() {
     //#########################body init end#######################################
 }
 
-function getQRCode(parent,width,height,text,logoImage){
+function getQRCode(parent,width,height,text,logoImage) {
     try {
         let qr = document.createElement("div");
         qr.id = qr.className = "qrcode";
@@ -3294,10 +3296,10 @@ function getQRCode(parent,width,height,text,logoImage){
         qr.style.left = (getAbsolutePosition(parent).width - width - 10) + "px";
         let logo = __SYS_IMAGES__.getLogoImage(logoImage);
         logo.id = "qrcode_logo";
-        logo.style.width = width/4.0 + "px";
-        logo.style.height = width/4.0 * (logoImage.width/logoImage.height) + "px";
-        logo.style.marginLeft = (width-width/4.0)/2 + "px";
-        logo.style.marginTop = (height-width/4.0 * (logoImage.width/logoImage.height))/2 + "px";
+        logo.style.width = width / 4.0 + "px";
+        logo.style.height = width / 4.0 * (logoImage.width / logoImage.height) + "px";
+        logo.style.marginLeft = (width - width / 4.0) / 2 + "px";
+        logo.style.marginTop = (height - width / 4.0 * (logoImage.width / logoImage.height)) / 2 + "px";
         qr.appendChild(logo);
 
         new QRCode("qrcode", {
@@ -3308,7 +3310,7 @@ function getQRCode(parent,width,height,text,logoImage){
             colorLight: "#FFFFFF",
             correctLevel: QRCode.CorrectLevel.H
         });
-    }catch (e) {
+    } catch (e) {
         console.log(e);
     }
 }
@@ -3576,22 +3578,23 @@ function getSubtotal(columns) {
                     }
                 }
             } else
-                __DATASET__["result"].push(subtotal(column, target, typ[i].value));
+                __DATASET__.result.push(subtotal(column, target, typ[i].value));
         }
         if (merge) {
-            let title = __DATASET__.result[__DATASET__.default.sheet].title.slice();
+            let title = __DATASET__.result[__DATASET__.default.sheet].title;
             title.push("SUBTOTAL");
-            __DATASET__["result"].push({
+            __DATASET__.result.push({
                 columns: columns,
                 data: data,
                 title: title,
-                sql: null,
-                parameter: null,
+                sql: __DATASET__.result[__DATASET__.default.sheet].sql,
+                type: __DATASET__.result[__DATASET__.default.sheet].type,
+                parameter: __DATASET__.result[__DATASET__.default.sheet].title.parameter,
                 time: getNow()
             });
         }
-        if (__DATASET__["result"].length > 0) {
-            viewDataset(__DATASET__["result"].length - 1, 0);
+        if (__DATASET__.result.length > 0) {
+            viewDataset(__DATASET__.result.length - 1, 0);
         }
 
         $("subtotal-Content").parentNode.removeChild($("subtotal-Content"));
@@ -3789,6 +3792,7 @@ function getDataSlice() {
         let columns = __DATASET__.result[setid].columns;
         let sql = __DATASET__.result[setid].sql;
         let title = __DATASET__.result[setid].title.slice();
+        let type = __DATASET__.result[setid].type;
         title.push(groupvalue);
         let parameter = __DATASET__.result[setid].parameter;
         let col_tmp = [];
@@ -3830,9 +3834,10 @@ function getDataSlice() {
                 }
             }
         }
-        __DATASET__["result"].push({
+        __DATASET__.result.push({
             title: title,
             sql: sql,
+            type: type,
             parameter: parameter,
             columns: col_tmp,
             data: dataset,
@@ -3972,8 +3977,8 @@ function getDataSlice() {
         } else
             dataSlice(setid, cols, begin, end, "none", null);
 
-        if (__DATASET__["result"].length > 0) {
-            viewDataset(__DATASET__["result"].length - 1, 0);
+        if (__DATASET__.result.length > 0) {
+            viewDataset(__DATASET__.result.length - 1, 0);
         }
         $("data-slice-Content").parentNode.removeChild($("data-slice-Content"));
     };
@@ -4155,16 +4160,17 @@ function getDataFilter(colid) {
                 }
             }
         }
-        __DATASET__["result"].push({
+        __DATASET__.result.push({
             title: __DATASET__.result[__DATASET__.default.sheet].title,
             sql: __DATASET__.result[__DATASET__.default.sheet].sql,
+            type: __DATASET__.result[__DATASET__.default.sheet].type,
             parameter: __DATASET__.result[__DATASET__.default.sheet].parameter,
             columns: columns,
             data: dataset,
             time: getNow()
         });
-        if (__DATASET__["result"].length > 0) {
-            viewDataset(__DATASET__["result"].length - 1, 0);
+        if (__DATASET__.result.length > 0) {
+            viewDataset(__DATASET__.result.length - 1, 0);
         }
 
         $("data-filter-Content").parentNode.removeChild($("data-filter-Content"));

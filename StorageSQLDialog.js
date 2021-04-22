@@ -80,7 +80,7 @@ function storageSqlDialog(sql, editer, type){
     open.innerText = "打开";
     open.onclick = function(){
         editer.title = $("sql-Manager-Content-name").value;
-        viewMessage("Open SQL/Function : " + editer.title);
+        viewMessage("Open " + __SQLEDITOR__.options.mode + " : " + editer.title);
         editer.codeMirror.setValue($("sql-Manager-Content-sql").value);
         $("sql-Manager-Content").parentNode.removeChild($("sql-Manager-Content"));
     };

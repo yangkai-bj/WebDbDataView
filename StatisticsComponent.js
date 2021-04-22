@@ -522,7 +522,9 @@ function subtotal(column, target, calculation) {
             }
             data[index][target + "-" + calculation].type = typeof data[index][target + "-" + calculation].value
         }
-        return {columns: columns, data: data, title: [calculation], sql: null, parameter: null, time: getNow()};
+        let title = dataset.title;
+        title.push(calculation);
+        return {columns: columns, data: data, title: title, sql: dataset.sql, type: dataset.type, parameter: dataset.parameter, time: getNow()};
     }
 }
 
