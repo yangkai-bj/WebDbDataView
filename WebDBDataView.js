@@ -1,7 +1,7 @@
 var __VERSION__ = {
     name: "Web DataView for SQLite Database of browser",
-    version: "2.2.1",
-    date: "2021/04/20",
+    version: "2.2.3",
+    date: "2021/04/29",
     comment: [
         "-- 2021/03/08",
         "优化算法和压缩代码.",
@@ -22,7 +22,9 @@ var __VERSION__ = {
         "-- 2021/04/13",
         "调整页面.",
         "-- 2021/04/16",
-        "优化数据集合."
+        "优化数据集合.",
+        "-- 2021/04/29",
+        "增加数据导入监控."
     ],
     author: messageDecode(__SYS_LOGO_LINK__.author),
     url: messageDecode(__SYS_LOGO_LINK__.link),
@@ -47,10 +49,12 @@ var __CONFIGS__ = {
  var __IMPORT__ = {
      Table: {value: "", name: "数据表", type: "view"},
      Charset: {value: 1, name: "字符集", type: "select", options: ["GBK", "UTF-8"]},
-     Separator: {value: ",", name: "分隔符", type: "select", options: [["逗号",","], ["竖线","|"], ["Tab","\t"]]},
-     SourceFile: {value: "", name: "源文件", type: "file", data: [], total: 0, count: 0, imported: 0, failed: 0},
-     SelectedDataSet: {value: -1, name: "数据集", type: "select", options: []}
- };
+     Separator: {value: ",", name: "分隔符", type: "select", options: [["逗号", ","], ["竖线", "|"], ["Tab", "\t"]]},
+     SourceFile: {
+         value: null, name: "源文件", type: "file", data: [], total: 0, count: 0, imported: 0, failed: 0, sql:null, error:[]
+     },
+     SelectedDataSet: {value: -1, name: "数据集", type: "select", options: []},
+ }
 
  var __DATABASE__ = {
      Name: {value: "", name: "库名称", type: "text"},
@@ -339,11 +343,79 @@ function transferData(structure,row) {
     return _row;
 }
 
-function importData(){
+function importData() {
     //#######################################
     //默认行分隔符:\r\n
     //数据分隔符:支持|,\t
     //#######################################
+
+    function getByteLength(val) {
+        let len = 0;
+        for (let i = 0; i < val.length; i++) {
+            //（unicode:汉字的编码大于255）
+            if (val.charCodeAt(i) < 0 || val.charCodeAt(i) > 255)
+                len = len + 2;
+            else
+                len = len + 1;
+        }
+        return len;
+    }
+
+    function getSubString(val, start, length) {
+        let value = "";
+        let len = 0;
+        for (let i = 0; i < val.length; i++) {
+            if (i >= start) {
+                if (val.charCodeAt(i) < 0 || val.charCodeAt(i) > 255)
+                    len = len + 2;
+                else
+                    len = len + 1;
+                value += val.charAt(i);
+            }
+            if (len == length)
+                break;
+        }
+        return value;
+    }
+
+    function viewPacket(packet) {
+        let container = $("progress-detail");
+        let item = document.createElement("div");
+        item.className = "progress-detail-item";
+        item.id = "progress-detail-item-" + packet.index;
+        container.appendChild(item);
+        let first = container.firstChild;
+        container.insertBefore(item, first);
+
+        let d_index = document.createElement("span");
+        d_index.className = "progress-detail-item-index";
+        d_index.innerText = packet.index;
+        d_index.setAttribute("index", packet.index);
+        d_index.title = packet.sql;
+        item.appendChild(d_index);
+        let d_size = document.createElement("span");
+        d_size.className = "progress-detail-item-size";
+        d_size.innerHTML = Math.round(getByteLength(packet.data.toString()) * 100 / 1024) / 100 + "Kb";
+        d_size.title = packet.data.toString();
+        item.appendChild(d_size);
+        let d_error = document.createElement("span");
+        d_error.className = "progress-detail-item-error";
+        d_error.innerHTML = (packet.error == null ? "&ensp;" : getSubString(packet.error, 0, 30) + "...");
+        d_error.title = packet.error;
+        item.appendChild(d_error);
+        return item;
+    }
+
+    function scrollto() {
+        let items = $("progress-detail").getElementsByClassName("progress-detail-item");
+        console.log(items[items.length - 1]);
+        items[items.length - 1].scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+            inline: "nearest"
+        });
+    }
+
     __CONFIGS__.CURRENT_DATABASE.connect.transaction(function (tx) {
         try {
             let sep = __IMPORT__.Separator.value;
@@ -356,38 +428,74 @@ function importData(){
             __IMPORT__.SourceFile.count = 0;
             __IMPORT__.SourceFile.imported = 0;
             __IMPORT__.SourceFile.failed = 0;
+            __IMPORT__.SourceFile.error = [];
+            __IMPORT__.SourceFile.row = null;
             let sql = "insert into " + table + " values ({VALUES})";
             //不要加字段列表，否则仅能导入两列数据.
             for (let i = 0; i < lines.length; i++) {
+                let data = transferData(__CONFIGS__.CURRENT_TABLE.structure, lines[i].trim().split(sep));
                 try {
-                    let data = transferData(__CONFIGS__.CURRENT_TABLE.structure, lines[i].trim().split(sep));
                     if (i == 0) {
                         let values = "?";
                         for (let c = 1; c < data.length; c++) {
-                            values += ",?"
+                            values += ",?";
                         }
-                        sql = sql.replace("{VALUES}", values);
+                        __IMPORT__.SourceFile.sql = sql = sql.replace("{VALUES}", values);
                         viewMessage(sql);
                     } else if (data.length >= __CONFIGS__.CURRENT_TABLE.structure.data.length) {
-                        tx.executeSql(sql, data.slice(0,__CONFIGS__.CURRENT_TABLE.structure.data.length), function (tx, results) {
+                        let row = data.slice(0, __CONFIGS__.CURRENT_TABLE.structure.data.length);
+                        tx.executeSql(sql, row, function (tx, results) {
                                 __IMPORT__.SourceFile.count += 1;
                                 __IMPORT__.SourceFile.imported += results.rowsAffected;
-                                viewMessage("导入第 " + __IMPORT__.SourceFile.count + " 条记录.[ imported:" + __IMPORT__.SourceFile.imported + " failed:" + __IMPORT__.SourceFile.failed + " ]")
+                                viewMessage("Imported:" + __IMPORT__.SourceFile.imported + "/" + __IMPORT__.SourceFile.count)
                             },
                             function (tx, error) {
                                 __IMPORT__.SourceFile.count += 1;
                                 __IMPORT__.SourceFile.failed += 1;
-                                viewMessage("第 " + __IMPORT__.SourceFile.count + " 条记录错误.[ imported:" + __IMPORT__.SourceFile.imported + " failed:" + __IMPORT__.SourceFile.failed + " ]\n" + error.message)
+                                let packet = {
+                                    index: __IMPORT__.SourceFile.count,
+                                    sql: __IMPORT__.SourceFile.sql,
+                                    data: row,
+                                    error: error.message,
+                                    beginTime: null,
+                                    endTime: getNow()
+                                };
+                                __IMPORT__.SourceFile.error.push(packet);
+                                viewPacket(packet);
+                                scrollto();
+                                viewMessage("Imported:" + __IMPORT__.SourceFile.imported + "/" + __IMPORT__.SourceFile.count + "\n" + error.message)
                             });
                     } else {
                         __IMPORT__.SourceFile.count += 1;
                         __IMPORT__.SourceFile.failed += 1;
-                        viewMessage("第 " + __IMPORT__.SourceFile.count + " 条记录错误.[ imported:" + __IMPORT__.SourceFile.imported + " failed:" + __IMPORT__.SourceFile.failed + " ]\n" + "数据解析后长度小于数据库结构,\n[ " + lines[i] + " ]")
+                        let packet = {
+                            index: __IMPORT__.SourceFile.count,
+                            sql: __IMPORT__.SourceFile.sql,
+                            data: data,
+                            error: "数据解析后长度小于数据库结构.",
+                            beginTime: null,
+                            endTime: getNow()
+                        };
+                        __IMPORT__.SourceFile.error.push(packet);
+                        viewPacket(packet);
+                        scrollto();
+                        viewMessage("Imported:" + __IMPORT__.SourceFile.imported + "/" + __IMPORT__.SourceFile.count + "\n" + "数据解析后长度小于数据库结构,\n[ " + lines[i] + " ]")
                     }
-                }catch (e) {
+                } catch (e) {
                     __IMPORT__.SourceFile.count += 1;
                     __IMPORT__.SourceFile.failed += 1;
-                    viewMessage("第 " + __IMPORT__.SourceFile.count + " 条记录错误.[ imported:" + __IMPORT__.SourceFile.imported + " failed:" + __IMPORT__.SourceFile.failed + " ]\n" + e + "\n[ " + lines[i] + " ]")
+                    let packet = {
+                        index: __IMPORT__.SourceFile.count,
+                        sql: __IMPORT__.SourceFile.sql,
+                        data: data,
+                        error: e,
+                        beginTime: null,
+                        endTime: getNow()
+                    };
+                    __IMPORT__.SourceFile.error.push(packet);
+                    viewPacket(packet);
+                    scrollto();
+                    viewMessage("Imported:" + __IMPORT__.SourceFile.imported + "/" + __IMPORT__.SourceFile.count + "\n" + e + "\n[ " + lines[i] + " ]")
                 }
             }
             //由于tx.executeSql异步执行，连续事务执行时间不可预计，不能添加事后统计，只能事中统计.
@@ -969,6 +1077,9 @@ function createDatabase(){
 }
 
 function getImportContent() {
+     __IMPORT__.SourceFile.count = 0;
+     __IMPORT__.SourceFile.total = 0;
+
     let container = document.createElement("div");
     container.type = "div";
     container.className = "import-Content";
@@ -1091,15 +1202,16 @@ function getImportContent() {
             let progressContainer = $("progress-container");
             progressContainer.innerHTML = "";
             progressContainer.appendChild(getImportProgress());
-            if ($("SelectedDataSet").length > 0)
+            if ($("SelectedDataSet").length > 0) {
                 importData();
-            else
+            } else
                 alert("请选择需要导入的文件及数据集合.");
             //let container =$("import-Content");
             //container.parentNode.removeChild(m);
         }
     };
     tool.appendChild(b);
+
     b = document.createElement("a");
     b.className = "button";
     b.innerHTML = "退出";
@@ -1114,14 +1226,21 @@ function getImportContent() {
     return container;
 }
 
-function getImportProgress(){
+function getImportProgress() {
     let container = document.createElement("div");
     container.id = "progress";
     let v = document.createElement("div");
     container.appendChild(v);
     v.id = "progress-value";
-    let progress = setInterval(function(){Timer()},50);
-    function Timer(){
+    let detail = document.createElement("div");
+    detail.id = "progress-detail";
+    container.appendChild(detail);
+
+    let progress = setInterval(function () {
+        Timer()
+    }, 50);
+
+    function Timer() {
         try {
             let value = __IMPORT__.SourceFile.count / __IMPORT__.SourceFile.total;
             let v = $("progress-value");
@@ -1129,12 +1248,14 @@ function getImportProgress(){
             v.innerText = __IMPORT__.SourceFile.count + " / " + __IMPORT__.SourceFile.total;
             if (value == 1)
                 Stop();
-        }catch (e) {
+        } catch (e) {
         }
     }
-    function Stop(){
+
+    function Stop() {
         clearInterval(progress);
     }
+
     return container;
 }
 
