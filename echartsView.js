@@ -2968,6 +2968,40 @@ function getToolbox(configs, container, dataset, magic) {
     };
 }
 
+function getToolbox3D(configs, container, dataset) {
+    return {
+        show: configs.toolboxDisplay.value.toBoolean(),
+        feature: {
+            saveAsImage: {
+                show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
+                excludeComponents: ["toolbox", "timeline", "visualMap", "brush"],
+                backgroundColor: configs.toolboxFeatureSaveAsImageBackgroundColor.value,
+                pixelRatio: 5,
+                type: "png",
+            },
+            restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
+            dataView: {
+                show: configs.toolboxFeatureDataView.value.toBoolean(),
+                readOnly: true,
+                backgroundColor: "transparent",
+                lang: [' ', '关闭', ' '],
+                optionToContent: function() {
+                    return getOptionToContent(dataset, configs, container.getAttribute("_echarts_instance_"));
+                }
+            },
+            myMultiScreen: getMultiScreen(configs, container),
+        },
+        top: configs.toolbox_top.value,
+        left: configs.toolbox_left.value,
+        orient: configs.toolbox_orient.value,
+        emphasis: {
+            iconStyle: {
+                textPosition: configs.toolbox_textPosition.value,
+            }
+        },
+    };
+}
+
 function getTooltip(configs, trigger, formatter) {
     let tip = {
         show: configs.tooltipDisplay.value.toBoolean(),
@@ -6740,7 +6774,7 @@ function getBar3D(container, width, height, dataset, configs) {
         tooltip: getTooltip(configs, "item", function (params) {
             return rows[params.value[0]] + "<br>" + params.marker + columns[params.value[1] + 1] + ":&emsp;<span style='display:inline-block;min-width:30px;text-align:right;font-weight:bold'>" + params.value[2] + "</span>";
         }),
-        //toolbox: getToolbox(configs, container, dataset, true),
+        toolbox: getToolbox3D(configs, container, dataset),
         visualMap: getVisualMap(configs, valueMin, valueMax),
         xAxis3D: {
             type: "category",
@@ -6915,7 +6949,7 @@ function getLine3D(container, width, height, dataset, configs) {
         tooltip: getTooltip(configs, "item", function (params) {
             return rows[params.value[0]] + "<br>" + params.marker + columns[params.value[1] + 1] + ":&emsp;<span style='display:inline-block;min-width:30px;text-align:right;font-weight:bold'>" + params.value[2] + "</span>";
         }),
-        //toolbox: getToolbox(configs, container, dataset, true),
+        toolbox: getToolbox3D(configs, container, dataset),
         visualMap: getVisualMap(configs, valueMin, valueMax),
 
         xAxis3D: {
@@ -7116,7 +7150,7 @@ function getScatter3D(container, width, height, dataset, configs) {
         tooltip: getTooltip(configs, "item", function (params) {
             return rows[params.value[0]] + "<br>" + params.marker + columns[params.value[1] + 1] + ":&emsp;<span style='display:inline-block;min-width:30px;text-align:right;font-weight:bold'>" + params.value[2] + "</span>";
         }),
-        //toolbox: getToolbox(configs, container, dataset, true),
+        toolbox: getToolbox3D(configs, container, dataset),
         visualMap: getVisualMap(configs, valueMin, valueMax),
 
         xAxis3D: {
@@ -7931,6 +7965,16 @@ function getCategoryLineForLiqiud(container, width, height, dataset, configs) {
     let options = [];
     let colors = (typeof myChart._theme !== "undefined" ? myChart._theme.color : ['#c23531', '#2f4554', '#61a0a8', '#d48265', '#91c7ae', '#749f83', '#ca8622', '#bda29a', '#6e7074', '#546570', '#c4ccd3']);//["#294D99", "#156ACF", "#1598ED", "#45BDFF"]
 
+    //计算所有数据最大与最小值及间距,用于转换
+    let b = {};
+    let t = [];
+    for (let i = 0; i < dataset["data"].length; i++) {
+        let row = dataset["data"][i];
+        for (let c = 1; c < columns.length; c++) {
+            t.push(row[columns[c]].value);
+        }
+    }
+    b = {max: getMax(t), length: getMax(t) - getMin(t), min: getMin(t)};
 
     for (let i = 0; i < dataset["data"].length; i++) {
         let opt = {
@@ -7950,7 +7994,6 @@ function getCategoryLineForLiqiud(container, width, height, dataset, configs) {
                 name: row[columns[0]].value,
                 z: 6,
                 type: "liquidFill",
-                dimensions: [columns[c]],
                 data: [],
                 color: colors,
                 //center: ["50%", "50%"],
@@ -8007,6 +8050,7 @@ function getCategoryLineForLiqiud(container, width, height, dataset, configs) {
                     baseline: "middle",
                     position: "inside",
                     formatter: function (param) {
+                        //return param.name + "\n\n" + Math.round(param.value * b[param.seriesIndex].length + b[param.seriesIndex].min,2);
                         return param.seriesName;
                     },
                 },
@@ -8022,14 +8066,16 @@ function getCategoryLineForLiqiud(container, width, height, dataset, configs) {
                 //animationEasingUpdate: getAnimationEasingUpdate(configs),
             };
             setSeriesAnimation(serie, configs, -1);
+
             for (let c = 1; c < columns.length; c++) {
+                serie.dimensions = columns[c];
                 serie.data.push({
                     name: columns[c],
-                    value: row[columns[c]].value,
+                    value: (row[columns[c]].value-b.min)/b.length,
                     direction: configs.liqiudDirection.value == "auto" ? (c % 2 == 0 ? "left" : "right") : configs.liqiudDirection.value
                 });
             }
-            opt.series = serie;
+            opt.series.push(serie);
             options.push(opt);
         } else {
             for (let c = 1; c < columns.length; c++) {
@@ -8093,7 +8139,7 @@ function getCategoryLineForLiqiud(container, width, height, dataset, configs) {
                         baseline: "middle",
                         position: "inside",
                         formatter: function (param) {
-                            return param.name + "\n\n" + Math.round(param.value * 100) + "%";
+                            return param.name + "\n\n" + Math.round(param.value * b.length + b.min,2);
                         },
                     },
 
@@ -8111,7 +8157,7 @@ function getCategoryLineForLiqiud(container, width, height, dataset, configs) {
                 for (let t = 0; t < 3; t++) {
                     serie.data.push({
                         name: columns[c],
-                        value: row[columns[c]].value,
+                        value: (row[columns[c]].value-b.min)/b.length,
                         direction: configs.liqiudDirection.value == "auto" ? (t % 2 == 0 ? "left" : "right") : configs.liqiudDirection.value
                     });
                 }
@@ -8135,7 +8181,7 @@ function getCategoryLineForLiqiud(container, width, height, dataset, configs) {
             tooltip: {
                 show: configs.tooltipDisplay.value.toBoolean(),
                 formatter: function (params) {
-                    return [params.name, params.marker + params.seriesName + ":&emsp;<span style='display:inline-block;min-width:30px;text-align:right;font-weight:bold'>" + Math.round(params.data.value * 100, 2) + "%</span>"].join("<br>");
+                    return [params.name, params.marker + params.seriesName + ":&emsp;<span style='display:inline-block;min-width:30px;text-align:right;font-weight:bold'>" + Math.round(params.data.value * b.length + b.min, 2) + "</span>"].join("<br>");
                 },
             },
             toolbox: getToolbox(configs, container, dataset, true),
@@ -9162,7 +9208,7 @@ function getSurface(container, width, height, dataset, configs) {
         tooltip: getTooltip(configs, "item", function (params) {
             return rows[params.value[0]] + "<br>" + params.marker + columns[params.value[1] + 1] + ":&emsp;<span style='display:inline-block;min-width:30px;text-align:right;font-weight:bold'>" + params.value[2] + "</span>";
         }),
-        //toolbox: getToolbox(configs, container, dataset, true),
+        toolbox: getToolbox3D(configs, container, dataset),
         visualMap: getVisualMap(configs, valueMin, valueMax),
 
         xAxis3D: {
@@ -9978,7 +10024,7 @@ function getBanners(container, width, height, dataset, configs) {
         aria: getAria(configs),
         backgroundColor: getBackgroundColor(configs),
         title: getTitle(configs),
-        toolbox: getToolbox(configs, container, dataset, true),
+        //toolbox: getToolbox(configs, container, dataset, true),
         graphic: [banners[index]].concat(getWaterGraphic(__SYS_LOGO_LINK__))
     };
 
@@ -11091,7 +11137,7 @@ function getPie3D(container, width, height, dataset, configs) {
         backgroundColor: getBackgroundColor(configs),
         title: getTitle(configs),
         legend: getLegend(configs, legends),
-        //toolbox: getToolbox(configs, container, dataset, true),
+        toolbox: getToolbox3D(configs, container, dataset),
         tooltip: getTooltip(configs, "item", function (params) {
             if (params.seriesName !== 'mouseoutSeries') {
                 return `${params.seriesName}<br/><span style="display:inline-block;margin-right:5px;border-radius:10px;width:10px;height:10px;background-color:${params.color};"></span>${option.series[params.seriesIndex].pieData.value}`;

@@ -1,7 +1,7 @@
 var __VERSION__ = {
     name: "Web DataView for SQLite Database of browser",
-    version: "2.2.3",
-    date: "2021/04/29",
+    version: "2.3.0",
+    date: "2021/05/03",
     comment: [
         "-- 2021/03/08",
         "优化算法和压缩代码.",
@@ -24,7 +24,10 @@ var __VERSION__ = {
         "-- 2021/04/16",
         "优化数据集合.",
         "-- 2021/04/29",
-        "增加数据导入监控."
+        "增加数据导入监控.",
+        "-- 2021/05/03",
+        "适配Echarts(5.1.0).",
+        "适配Echarts-gl(2.0.4)."
     ],
     author: messageDecode(__SYS_LOGO_LINK__.author),
     url: messageDecode(__SYS_LOGO_LINK__.link),
@@ -2273,6 +2276,98 @@ function workbook2blob(sheets, sheetNames) {
 }
 
 function init() {
+     try {
+        //Worker需要在服务器上运行
+        if (typeof(Worker) !== "undefined") {
+            let worker = new Worker("time.js");
+            worker.onmessage = function (event) {
+                $("time").title = event.data;
+                let times = event.data.toString().split("\n")[1].split(":");
+                $("time").width = 50;
+                $("time").height = 50;
+                let clockRadius = Math.min($("time").width / 2, $("time").height / 2);
+                let ctx = $("time").getContext("2d");
+
+                let hours = Number(times[0]);
+                let minutes = Number(times[1]);
+                let seconds = Number(times[2]);
+
+                hours = hours > 12 ? hours - 12 : hours;
+                let hour = hours + minutes / 60;
+                let minute = minutes + seconds / 60;
+
+                ctx.save();
+
+                ctx.translate($("time").width / 2, $("time").height / 2);
+                ctx.beginPath();
+
+                // draw numbers
+                ctx.font = '9px Arial';
+                ctx.fillStyle = "lightseagreen";
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                for (let n = 1; n <= 12; n++) {
+                    if (n == 3 || n == 6 || n == 9 || n == 12)
+                        ctx.fillStyle = "#FF8000";
+                    else
+                        ctx.fillStyle = "lightseagreen";
+                    let theta = (n - 3) * (Math.PI * 2) / 12;
+                    let x = clockRadius * 0.9 * Math.cos(theta);
+                    let y = clockRadius * 0.9 * Math.sin(theta);
+                    ctx.fillText("•", x, y);
+                }
+                ctx.fillStyle = "lightseagreen";
+
+                ctx.save();
+                let theta = (hour - 3) * 2 * Math.PI / 12;
+                ctx.rotate(theta);
+                ctx.beginPath();
+                ctx.moveTo(-1, -1.5);
+                ctx.lineTo(-1, 1.5);
+                ctx.lineTo(clockRadius * 0.6, 1);
+                ctx.lineTo(clockRadius * 0.6, -1);
+                ctx.fill();
+                ctx.restore();
+
+                // draw minute
+                ctx.save();
+                theta = (minute - 15) * 2 * Math.PI / 60;
+                ctx.rotate(theta);
+                ctx.beginPath();
+                ctx.moveTo(-1, -1);
+                ctx.lineTo(-1, 1);
+                ctx.lineTo(clockRadius * 0.7, 0.5);
+                ctx.lineTo(clockRadius * 0.7, -0.5);
+                ctx.fill();
+                ctx.restore();
+
+                // draw second
+                ctx.save();
+                theta = (seconds - 15) * 2 * Math.PI / 60;
+                ctx.rotate(theta);
+                ctx.beginPath();
+                ctx.moveTo(-7, -1);
+                ctx.lineTo(-7, 1);
+                ctx.lineTo(clockRadius * 0.8, 0.5);
+                ctx.lineTo(clockRadius * 0.8, -0.5);
+                ctx.fillStyle = "#FF8000";
+                ctx.fill();
+                ctx.restore();
+
+                ctx.restore();
+
+            }
+        }
+        else {
+            //alert("抱歉! Web Worker 不支持");
+            //worker.terminate();
+            //worker = undefined;
+        }
+    } catch(e){
+        console.log("Worker不能在本地运行.须部署在Web服务上,");
+        console.log(e);
+    }
+
     try {
         getQRCode($("page"), 90, 90, __VERSION__.url, __SYS_IMAGES__.echo);
         $("main-title").appendChild(__SYS_IMAGES__.getLogoImage(__SYS_IMAGES__.logo_echarts));
@@ -2723,9 +2818,8 @@ function init() {
 
     let tofull = document.createElement("div");
     sqltools.appendChild(tofull);
-    tofull.className = "button";
+    tofull.className = "charButton";
     tofull.innerText = "❏";
-    tofull.style.fontSize = "150%";
     tofull.style.cssFloat = "right";
     tofull.id = "set-editer-to-full";
     tofull.onclick = function () {
@@ -2822,9 +2916,8 @@ function init() {
 
     let toDisplay = document.createElement("div");
     toDisplay.type = "div";
-    toDisplay.className = "button";
+    toDisplay.className = "charButton";
     toDisplay.innerHTML = "&#187";//"»";
-    toDisplay.style.fontSize = "150%";
     toDisplay.id = "display-log";
     toDisplay.onclick = function () {
         if ($("detail").style.display != "none") {
@@ -2894,9 +2987,8 @@ function init() {
 
     let datatran = document.createElement("div");
     datatools.appendChild(datatran);
-    datatran.className = "button";
-    datatran.innerText = "☇";
-    datatran.style.fontSize = "150%";
+    datatran.className = "charButton";
+    datatran.innerHTML = "&#9735";//"☇"
     datatran.id = "dataset-transpose";
     let help_datasettranspose = $("help-dataset-transpose");
     datatran.onclick = help_datasettranspose.onclick = function () {
@@ -2909,9 +3001,8 @@ function init() {
 
     let dataslice = document.createElement("div");
     datatools.appendChild(dataslice);
-    dataslice.className = "button";
+    dataslice.className = "charButton";
     dataslice.innerHTML = "&#9839";//"♯";
-    dataslice.style.fontSize = "150%";
     dataslice.id = "dataset-slice";
     let help_datasetslice = $("help-dataset-slice");
     dataslice.onclick = help_datasetslice.onclick = function () {
@@ -2925,8 +3016,7 @@ function init() {
     let subtotal = document.createElement("div");
     datatools.appendChild(subtotal);
     subtotal.type = "div";
-    subtotal.className = "button";
-    subtotal.style.fontSize = "130%";
+    subtotal.className = "charButton";
     subtotal.innerHTML = "&#931";//"Σ";
     subtotal.id = "dataset-subtotal";
     let help_datasetsubtotal = $("help-dataset-subtotal");
@@ -2955,13 +3045,27 @@ function init() {
     let download = document.createElement("div");
     datatools.appendChild(download);
     download.type = "div";
-    download.className = "button";
-    download.style.fontSize = "150%";
+    download.className = "charButton";
     download.innerHTML = "&#8675";//"⇣";
     download.id = "dataset-download";
     let help_datasetdownload = $("help-dataset-download");
     download.onclick = help_datasetdownload.onclick = function () {
+        function removingRedundant(sheetNames) {
+            //sheet名称重复处理.
+            for (let i = 0; i < sheetNames.length; i++) {
+                let x = 0;
+                for (let t = i + 1; t < sheetNames.length; t++) {
+                    if (sheetNames[t] === sheetNames[i]) {
+                        x += 1;
+                        sheetNames[t] += "(" + x + ")";
+                    }
+                }
+            }
+            return sheetNames;
+        }
+
         function fixFileName(str) {
+            //文件名称合法性修正。
             let sts = ['\\', '/', ':', '*', '?', '"', '<', '>', '|'];
             for (let i = 0; i < sts.length; i++) {
                 str.replaceAll(sts[i], "");
@@ -3010,7 +3114,7 @@ function init() {
                 sheetNames.push("Comment");
                 let title = dataset.title.length > 0 ? dataset.title[0] : prompt("请输入文件名称:");
                 if (title.trim() != "")
-                    openDownloadDialog(workbook2blob(sheets, sheetNames), title + ".xlsx");
+                    openDownloadDialog(workbook2blob(sheets, removingRedundant(sheetNames)), title + ".xlsx");
             } else if (__ECHARTS__.configs.reportDownload.value == "all-single") {
                 if (__DATASET__.result.length <= 255) {
                     let res = true;
@@ -3044,7 +3148,7 @@ function init() {
                         sheetNames.push("Comment");
                         let title = prompt("请输入文件名称:");
                         if (title != null && title.trim() != "")
-                            openDownloadDialog(workbook2blob(sheets, sheetNames), fixFileName(title) + ".xlsx");
+                            openDownloadDialog(workbook2blob(sheets, removingRedundant(sheetNames)), fixFileName(title) + ".xlsx");
                     }
                 } else
                     alert("一个工作簿最多允许有255个数据表!");
@@ -3086,7 +3190,7 @@ function init() {
                             sheetNames.push(sheetname);
                             sheets.push(comment);
                             sheetNames.push("Comment");
-                            openDownloadDialog(workbook2blob(sheets, sheetNames), sheetname + ".xlsx");
+                            openDownloadDialog(workbook2blob(sheets, removingRedundant(sheetNames)), sheetname + ".xlsx");
                             if (d < (__DATASET__.result.length - 1)) {
                                 let delay = (aoa.length * columns.length) >= 10000 ? (aoa.length * columns.length / 10000) : 1;
                                 sleep(__ECHARTS__.configs.reportDownloadDelay.value * delay);
@@ -3103,8 +3207,7 @@ function init() {
     let remove = document.createElement("div");
     datatools.appendChild(remove);
     remove.type = "div";
-    remove.className = "button";
-    remove.style.fontSize = "120%";
+    remove.className = "charButton";
     remove.innerHTML = "&#10007";//"✗";
     remove.id = "dataset-remove";
     let help_datasetremove = $("help-dataset-remove");
@@ -3130,9 +3233,8 @@ function init() {
     let removeall = document.createElement("div");
     datatools.appendChild(removeall);
     removeall.type = "div";
-    removeall.className = "button";
-    removeall.style.fontSize = "120%";
-    removeall.innerText = "Ｒ";
+    removeall.className = "charButton";
+    removeall.innerHTML = "&#9850";//"♻";
     removeall.id = "dataset-removeall";
     removeall.onclick = function () {
         if (__DATASET__.result.length > 0) {
@@ -3179,9 +3281,8 @@ function init() {
 
     let toMultiEcharts = document.createElement("div");
     datatools.appendChild(toMultiEcharts);
-    toMultiEcharts.className = "button";
+    toMultiEcharts.className = "charButton";
     toMultiEcharts.innerText = "☶";
-    toMultiEcharts.style.fontSize = "150%";
     toMultiEcharts.style.cssFloat = "right";
     toMultiEcharts.id = "dataset-to-multi-echarts";
     toMultiEcharts.onclick = $("help-dataset-to-multi-echarts").onclick = function () {
@@ -3213,9 +3314,8 @@ function init() {
 
     let toecharts = document.createElement("div");
     datatools.appendChild(toecharts);
-    toecharts.className = "button";
+    toecharts.className = "charButton";
     toecharts.innerText = "❏";
-    toecharts.style.fontSize = "150%";
     toecharts.style.cssFloat = "right";
     toecharts.id = "dataset-to-echarts";
     toecharts.onclick = function () {
@@ -3256,9 +3356,8 @@ function init() {
 
     let toconfigs = document.createElement("div");
     datatools.appendChild(toconfigs);
-    toconfigs.className = "button";
+    toconfigs.className = "charButton";
     toconfigs.innerText = "┅";
-    toconfigs.style.fontSize = "150%";
     toconfigs.style.cssFloat = "right";
     toconfigs.id = "dataset-to-configs";
     let help_echartsConfigs = $("help-select-echarts-configs");
@@ -3914,7 +4013,10 @@ function getDataSlice() {
         let sql = __DATASET__.result[setid].sql;
         let title = __DATASET__.result[setid].title.slice();
         let type = __DATASET__.result[setid].type;
-        title.push(groupvalue);
+        if (groupvalue != null)
+            title.push(groupvalue);
+        else
+            title.push("result of data slicing");
         let parameter = __DATASET__.result[setid].parameter;
         let col_tmp = [];
         let id = 0;
@@ -4264,13 +4366,17 @@ function getDataFilter(colid) {
 
         let rowid = 0;
         let data = __DATASET__.result[__DATASET__.default.sheet].data;
+        let title =  __DATASET__.result[__DATASET__.default.sheet].title;
+        let sql = __DATASET__.result[__DATASET__.default.sheet].sql;
+        let type = __DATASET__.result[__DATASET__.default.sheet].type;
+        let parameter = __DATASET__.result[__DATASET__.default.sheet].parameter;
         let column = columns[Number(colid)].name;
         for (let i=0; i<data.length;i++) {
             let row = data[i];
             for (let v=0;v<values.length;v++){
                 if (row[column].value == values[v]){
                     let r ={};
-                    for(col in row){
+                    for(let col in row){
                         let cell = row[col];
                         cell.rowid = rowid;
                         r[col] = cell;
@@ -4281,11 +4387,12 @@ function getDataFilter(colid) {
                 }
             }
         }
+        title.push("result of Data filter");
         __DATASET__.result.push({
-            title: __DATASET__.result[__DATASET__.default.sheet].title,
-            sql: __DATASET__.result[__DATASET__.default.sheet].sql,
-            type: __DATASET__.result[__DATASET__.default.sheet].type,
-            parameter: __DATASET__.result[__DATASET__.default.sheet].parameter,
+            title: title,
+            sql: sql,
+            type: type,
+            parameter: parameter,
             columns: columns,
             data: dataset,
             time: getNow()

@@ -59,9 +59,13 @@ img.title_close_button:hover{
     box-shadow: 1px 1px 2px grey;
 }
 
+#title{
+    height: 50px;
+}
 #main-title{
     color: var(--main-title-color);
-    margin-bottom: 0px
+    margin-bottom: 0px;
+    height: 34px;
 }
 #main-version{
     padding-left: 5px;
@@ -75,11 +79,19 @@ img.title_close_button:hover{
 }
 #sub-title{
     color:var(--sub-title-color);
-    margin-left: 20px;
+    margin-left: 15px;
     font-size: 50%;
 }
 #link-title{
-    margin-top: 0px
+    margin-left:25px;
+    margin-top: 0px;
+    font-size: 25%;
+    font-weight: bolder;
+}
+#time{
+    width:50px;
+    height: 50px;
+    float: right;
 }
 
 .MainContainer{
@@ -251,6 +263,26 @@ img.title_close_button:hover{
 }
 
 .toolbar .button:hover{
+    color:var(--toolbar-button-hover-color);
+    background-color: var(--toolbar-button-hover-background-color);
+}
+
+.toolbar .charButton{
+    height: 100%;
+    width: 60px;
+    text-align: center;
+    font-size: 140%;
+    line-height: 36px;
+    margin: 0px;
+    cursor: pointer;
+    float:left;
+    position: relative;
+    border-bottom-right-radius: 15px;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 5px;
+}
+
+.toolbar .charButton:hover{
     color:var(--toolbar-button-hover-color);
     background-color: var(--toolbar-button-hover-background-color);
 }

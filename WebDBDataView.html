@@ -9,17 +9,19 @@
     <link rel="stylesheet" type="text/css" href="StorageSQLDialog.css">
     <script type="text/javascript" src="sheetjs/xlsx.full.min.js"></script>
 
-    <script type="text/javascript" src="echarts/v5.0/echarts.min.js"></script>
-    <script type="text/javascript" src="echarts/v5.0/echarts-gl.min.js"></script>
+    <script type="text/javascript" src="echarts/v5.1/echarts.min.js"></script>
+    <script type="text/javascript" src="echarts/v5.1/echarts-gl.min.js"></script>
     <!--
-    echarts和echarts-gl中getRenderedCanvas方法冲突，
+    echarts5.0和echarts-gl2.0.2中getRenderedCanvas方法冲突，
     可将echarts-gl中的getRenderedCanvas方法名称修改
     为getRenderedCanvas3D,可解决2D图形无法保存图像的
     问题。但是无法解决3D图形保存图像。
+
+    echart5.1和echarts-gl2.0.4已修正
     -->
-    <script type="text/javascript" src="echarts/v5.0/echarts-wordcloud.min.js"></script>
-    <script type="text/javascript" src="echarts/v5.0/echarts-liquidfill.min.js"></script>
-    <script type="text/javascript" src="echarts/v5.0/ecStat.js"></script>
+    <script type="text/javascript" src="echarts/v5.1/echarts-wordcloud.min.js"></script>
+    <script type="text/javascript" src="echarts/v5.1/echarts-liquidfill.min.js"></script>
+    <script type="text/javascript" src="echarts/v5.1/ecStat.js"></script>
     <script type="text/javascript" src="echarts/map/world.js"></script>
     <script type="text/javascript" src="echarts/map/china-and-region.js"></script>
     <script type="text/javascript" src="qrcode/qrcode.js"></script>
@@ -54,7 +56,7 @@
     <div class="page" id="page">
         <div class="header" id="header">
             <div id="title">
-                <h1 id="main-title">Web DataView<span id = "main-version"></span><span id="sub-title">for SQLite Database of browser.</span></h1>
+                <h1 id="main-title">Web DataView<span id = "main-version"></span><span id="sub-title">for SQLite Database of browser.</span><canvas id="time"></canvas></h1>
                 <h7 id="link-title"><a href = 'https://gitee.com/yangkai-bj/WebDbDataView.git' target="_blank">https://gitee.com/yangkai-bj/WebDbDataView.git</a>.</h7>
             </div>
         </div>
