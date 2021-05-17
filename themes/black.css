@@ -29,7 +29,7 @@
     --list-color:whitesmoke;
     --list-hover-color:sandybrown;
 
-    --detail-dt-color:dodgerblue;
+    --detail-dt-color:darkgoldenrod;
     --detail-message-color:whitesmoke;
 
     --footer-color:whitesmoke;
@@ -44,7 +44,7 @@
     --table-alt-tr-background-color:#A9A9A9;
     --table-tr-hover-background-color:#FFE4B5;
     --table-td-border-color:#F0F8FF;
-    --table-td-hover-border-color:salmon;
+    --table-td-hover-border-color: salmon;
 
     --drag-border-color: darkgoldenrod;
 
@@ -52,7 +52,6 @@
     /*版权说明颜色*/
     --copyright_hover_color:#FF8000;
     /*版权说明热点颜色*/
-
 
     --tab-border-color: whitesmoke;
     --tab-color: whitesmoke;
