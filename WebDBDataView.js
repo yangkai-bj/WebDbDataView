@@ -1,7 +1,7 @@
 var __VERSION__ = {
     name: "Web DataView for SQLite Database of browser",
-    version: "2.3.0",
-    date: "2021/05/03",
+    version: "2.3.2",
+    date: "2021/05/15",
     comment: [
         "-- 2021/03/08",
         "优化算法和压缩代码.",
@@ -27,7 +27,9 @@ var __VERSION__ = {
         "增加数据导入监控.",
         "-- 2021/05/03",
         "适配Echarts(5.1.0).",
-        "适配Echarts-gl(2.0.4)."
+        "适配Echarts-gl(2.0.4).",
+        "-- 2021/05/15",
+        "拆分图形和报表参数.",
     ],
     author: messageDecode(__SYS_LOGO_LINK__.author),
     url: messageDecode(__SYS_LOGO_LINK__.link),
@@ -89,13 +91,15 @@ var __CONFIGS__ = {
      ],
      default: {sheet: 0, column: null, cell: [], tab: 0},
      pages: {total: 0, default: 1},
-     //页数计算根据__ECHARTS__.configs.reportPageSize.value计算.
+     //页数计算根据__DATASET__.configs.reportPageSize.value计算.
      table: {
          entity: null,
          tomove: null,
          init: function (tb) {
              this.entity = tb;
-             this.entity.style.fontSize = __ECHARTS__.configs.reportFontSize.value;
+             this.entity.style.fontSize = __DATASET__.configs.reportFontSize.value;
+             this.entity.style.minWidth = __DATASET__.configs.reportMinWidth.value;
+             this.entity.style.maxWidth = __DATASET__.configs.reportMaxWidth.value;
              let table = this;
              function setEvent(ob) {
                  for (let i = 0; i < ob.length; i++) {
@@ -184,6 +188,241 @@ var __CONFIGS__ = {
 
          },
      },
+     configs: {
+         hr_view: {name: "显示设置", value: "", type: "hr"},
+         reportMinWidth: {
+             name: "最小宽度",
+             value: "50%",
+             options: ["30%", "50%", "100%", "120%", "130%", "140%", "150%"],
+             type: "select"
+         },
+         reportMaxWidth: {
+             name: "最大宽度",
+             value: "200%",
+             options: ["100%", "200%", "300%", "400%", "500%"],
+             type: "select"
+         },
+         reportFontFamily: {
+             name: "字体",
+             value: "default",
+             type: "input"
+         },
+         reportFontSize: {
+             name: "字号",
+             value: "100%",
+             options: ["100%", "110%", "120%", "130%", "140%", "150%"],
+             type: "select"
+         },
+         reportFontStyle: {
+             name: "样式",
+             value: "default",
+             options: ["default", "italic", "oblique"],
+             type: "select"
+         },
+         reportFontWeight: {
+             name: "粗细",
+             value: "default",
+             options: ["default", "lighter", "bold", "bolder"],
+             type: "select"
+         },
+         reportRowHeight: {
+             name: "行高",
+             value: "default",
+             options: ["default", "30px", "35px", "40px", "45px", "50px", "55px", "60px"],
+             type: "select"
+         },
+         hr_page: {name: "分页设置", value: "", type: "hr"},
+         reportPageSize: {
+             name: "每页", value: 100,
+             options: [
+                 new Option("50行", 50),
+                 new Option("100行", 100),
+                 new Option("150行", 150),
+                 new Option("200行", 200),
+                 new Option("500行", 500),
+                 new Option("1000行", 1000),
+             ],
+             type: "select"
+         },
+         hr_download: {name: "下载设置", value: "", type: "hr"},
+         reportDownload: {
+             name: "下载方式",
+             value: "current",
+             options: [new Option("当前数据集", "current"), new Option("所有数据集-合并为单一工作簿", "all-single"), new Option("所有数据集-拆分为多个工作簿", "all-multi")],
+             type: "select"
+         },
+         reportDownloadDelay: {
+             name: "下载延时(毫秒)",
+             value: 1000,
+             type: "input"
+         },
+     },
+     getDatasetConfigs: function (parent) {
+        let config = getUserConfig("datasetConfig");
+        if (config != null) {
+            config = JSON.parse(config);
+            for (key in config) {
+                try {
+                    __DATASET__.configs[key].value = config[key];
+                } catch (e) {
+                }
+            }
+        }
+
+        let container = document.createElement("div");
+        container.type = "div";
+        container.className = "dataset-configs-Content";
+        container.id = "dataset-configs-Content";
+
+        let title = document.createElement("div");
+        title.className = "container-title";
+        let span = document.createElement("span");
+        span.innerHTML = "● 报表设置 ";
+        title.appendChild(span);
+        let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
+        close.className = "container-close";
+        title.appendChild(close);
+        container.appendChild(title);
+
+        let hr = document.createElement("hr");
+        container.appendChild(hr);
+
+        let itemcontainer = document.createElement("div");
+        itemcontainer.id = itemcontainer.className = "dataset-configs-container";
+        container.appendChild(itemcontainer);
+
+        for (let name in __DATASET__.configs) {
+            d = document.createElement("div");
+            d.className = "dataset-configs-item";
+            itemcontainer.appendChild(d);
+            let s = document.createElement("span");
+            s.className = "dataset-config-name";
+            s.innerHTML = __DATASET__.configs[name].name + ":";
+            d.appendChild(s);
+            if (__DATASET__.configs[name].type == "input") {
+                let input = document.createElement("input");
+                input.style.cssFloat = "right";
+                input.id = name;
+                input.type = "input";
+                input.className = "dataset-configs-editinput";
+                input.value = __DATASET__.configs[name].value;
+                input.onchange = function () {
+                    __DATASET__.configs[this.id].value = this.value;
+                };
+                if (typeof __DATASET__.configs[name].title != "undefined")
+                    input.title = __DATASET__.configs[name].title;
+                else
+                    input.title = __DATASET__.configs[name].name;
+                d.appendChild(input);
+            } else if (__DATASET__.configs[name].type == "select") {
+                let input = document.createElement("select");
+                input.style.cssFloat = "right";
+                input.id = name;
+                input.type = "select";
+                input.className = "dataset-configs-editinput";
+                for (let i = 0; i < __DATASET__.configs[name].options.length; i++) {
+                    if (typeof __DATASET__.configs[name].options[i] === "object")
+                        input.options.add(__DATASET__.configs[name].options[i]);
+                    else
+                        input.options.add(new Option(__DATASET__.configs[name].options[i]));
+                }
+                input.value = __DATASET__.configs[name].value;
+                input.onchange = function () {
+                    __DATASET__.configs[this.id].value = this.value;
+                };
+                if (typeof __DATASET__.configs[name].title != "undefined")
+                    input.title = __DATASET__.configs[name].title;
+                else
+                    input.title = __DATASET__.configs[name].name;
+                d.appendChild(input);
+            } else if (__DATASET__.configs[name].type == "color") {
+                let input = document.createElement("input");
+                input.style.cssFloat = "right";
+                input.id = name;
+                input.type = "color";
+                input.className = "dataset-configs-editinput";
+                input.value = __DATASET__.configs[name].value;
+                input.onchange = function () {
+                    __DATASET__.configs[this.id].value = this.value;
+                };
+                if (typeof __DATASET__.configs[name].title != "undefined")
+                    input.title = __DATASET__.configs[name].title;
+                else
+                    input.title = __DATASET__.configs[name].name;
+                d.appendChild(input);
+            } else if (__DATASET__.configs[name].type == "hr") {
+                s.innerHTML = "[ " + __DATASET__.configs[name].name + " ]";
+                s.style.color = "var(--main-title-color)";
+                let c = document.createElement("div");
+                c.style.width = "70%";
+                c.style.cssFloat = "right";
+                d.appendChild(c);
+                d.id = name;
+                let h = document.createElement("hr");
+                h.style.marginTop = "10px";
+                c.appendChild(h)
+                //d.innerHTML = "";
+                //d.appendChild(h);
+            }
+        }
+
+        let br = document.createElement("hr");
+        br.className = "br";
+        container.appendChild(br);
+
+        let c = document.createElement("div");
+        c.className = "groupbar";
+        container.appendChild(c);
+
+        let b = document.createElement("a");
+        b.className = "button";
+        b.innerHTML = "确定";
+        b.onclick = function () {
+            let configs = $("dataset-configs-container").getElementsByClassName("dataset-configs-editinput");
+            let config = {};
+            for (let i = 0; i < configs.length; i++) {
+                __DATASET__.configs[configs[i].id].value = configs[i].value;
+                config[configs[i].id] = configs[i].value;
+            }
+            setUserConfig("datasetConfig", JSON.stringify(config));
+
+            if (__DATASET__.result.length > 0) {
+                viewDataset(__DATASET__.default.sheet, __DATASET__.pages.default);
+            }
+
+            let m = $("dataset-configs-Content");
+            m.parentNode.removeChild(m);
+        };
+        c.appendChild(b);
+
+        b = document.createElement("a");
+        b.className = "button";
+        b.innerHTML = "重置";
+        b.onclick = close.onclick = function () {
+            let r = confirm("您确定要重置全部报表参数吗?");
+            if (r) {
+                setUserConfig("datasetConfig", JSON.stringify({}));
+                let m = $("dataset-configs-Content");
+                m.parentNode.removeChild(m);
+                alert("所有参数已恢复为系统初始值,系统将重新载入页面...");
+                location.reload();
+            }
+        };
+        c.appendChild(b);
+
+        b = document.createElement("a");
+        b.className = "button";
+        b.innerHTML = "退出";
+        b.onclick = close.onclick = function () {
+            let m = $("dataset-configs-Content");
+            m.parentNode.removeChild(m);
+        };
+        c.appendChild(b);
+
+        setDialogDrag(title);
+
+        return container;
+    }
  };
 
  var __SQLEDITOR__ = {
@@ -1545,8 +1784,10 @@ function orderDatasetBy(dataset, colid) {
                         if (data[i][columns[colid].name].value < data[x][columns[colid].name].value) {
                             exchange(data[i], data[x]);
                         }
+                    } else if (data[i][columns[colid].name].type == "object") {
+                        exchange(data[i], data[x]);
                     } else {
-                        if (data[i][columns[colid].name].value.toString().localeCompare(data[x][columns[colid].name].value.toString()) < 0) {
+                        if (data[i][columns[colid].name].value.localeCompare(data[x][columns[colid].name].value) < 0) {
                             exchange(data[i], data[x]);
                         }
                     }
@@ -1556,8 +1797,10 @@ function orderDatasetBy(dataset, colid) {
                         if (data[i][columns[colid].name].value > data[x][columns[colid].name].value) {
                             exchange(data[i], data[x]);
                         }
+                    } else if (data[i][columns[colid].name].type == "object") {
+                        exchange(data[i], data[x]);
                     } else {
-                        if (data[i][columns[colid].name].value.toString().localeCompare(data[x][columns[colid].name].value.toString()) > 0) {
+                        if (data[i][columns[colid].name].value.localeCompare(data[x][columns[colid].name].value) > 0) {
                             exchange(data[i], data[x]);
                         }
                     }
@@ -1626,12 +1869,13 @@ function datasetTranspose(index) {
 function viewDataset(index, pageindex) {
     if (__DATASET__.result.length > 0) {
         __DATASET__.default.sheet = index;
-        __DATASET__.pages.total = Math.ceil(__DATASET__.result[__DATASET__.default.sheet].data.length / Number(__ECHARTS__.configs.reportPageSize.value));
+        __DATASET__.pages.total = Math.ceil(__DATASET__.result[__DATASET__.default.sheet].data.length / Number(__DATASET__.configs.reportPageSize.value));
         __DATASET__.default.tab = __DATASET__.default.sheet - __DATASET__.default.sheet%10;
         if (typeof  pageindex != "undefined")
             __DATASET__.pages.default = pageindex;
         setDataPageTools(index);
     }
+
     let container = $("tableContainer");
     try {
         container.removeAttribute("_echarts_instance_");
@@ -1644,15 +1888,22 @@ function viewDataset(index, pageindex) {
     let table = document.createElement("table");
     table.className = "table";
     table.id = "table";
+    if (__DATASET__.configs.reportFontFamily.value != "default")
+        table.style.fontFamily = __DATASET__.configs.reportFontFamily.value;
+    if (__DATASET__.configs.reportFontWeight.value != "default")
+        table.style.fontWeight = __DATASET__.configs.reportFontWeight.value;
+    if (__DATASET__.configs.reportFontStyle.value != "default")
+        table.style.fontStyle = __DATASET__.configs.reportFontStyle.value;
+
     let tr = document.createElement("tr");
     tr.type = "tr";
+    if (__DATASET__.configs.reportRowHeight.value != "default")
+        tr.style.height = __DATASET__.configs.reportRowHeight.value;
     table.appendChild(tr);
 
     for (let c = 0; c < columns.length; c++) {
         let th = document.createElement("th");
         th.type = "th";
-        th.innerText = columns[c].name;
-        th.style.textAlign = columns[c].style.textAlign;
         let menu = document.createElement("li");
         menu.className = "menu";
         menu.setAttribute("colid", c);
@@ -1668,33 +1919,37 @@ function viewDataset(index, pageindex) {
         };
         th.appendChild(menu);
 
-        let order = document.createElement("span");
-        order.className = "order";
-        order.setAttribute("colid", c);
+        let column = document.createElement("span");
+        column.className = "column";
+        column.innerText = columns[c].name;
+        column.style.textAlign = columns[c].style.textAlign;
         switch (columns[c].order) {
             case "":
-                order.innerText = "●";
+                column.title = "● " + columns[c].name;
                 break;
             case "asc":
-                order.innerText = "▲";
+                column.title = "▲ " + columns[c].name;
                 break;
             case "desc":
-                order.innerText = "▼";
+                column.title = "▼ " + columns[c].name;
                 break;
         }
-        order.onclick = function () {
+        column.setAttribute("colid", c);
+        column.onclick = function () {
             let index = __DATASET__.default.sheet;
             orderDatasetBy(__DATASET__.result[index], this.getAttribute("colid"));
             viewDataset(index, 0);
         };
-        th.appendChild(order);
+        th.appendChild(column);
         tr.appendChild(th);
     }
 
     for (let i = 0; i < data.length; i++) {
-        if (i >= __DATASET__.pages.default * Number(__ECHARTS__.configs.reportPageSize.value) && i < (__DATASET__.pages.default + 1) * Number(__ECHARTS__.configs.reportPageSize.value)) {
+        if (i >= __DATASET__.pages.default * Number(__DATASET__.configs.reportPageSize.value) && i < (__DATASET__.pages.default + 1) * Number(__DATASET__.configs.reportPageSize.value)) {
             let tr = document.createElement("tr");
             tr.type = "tr";
+            if (__DATASET__.configs.reportRowHeight.value != "default")
+                tr.style.height = __DATASET__.configs.reportRowHeight.value;
             tr.id = i;
             if (i % 2 > 0) {
                 tr.className = "alt-line";
@@ -2275,98 +2530,111 @@ function workbook2blob(sheets, sheetNames) {
 	return blob;
 }
 
+function appState(title, message) {
+    $("time").width = 150;
+    $("time").height = 50;
+    $("time").title = title;
+    let ctx = $("time").getContext("2d");
+    ctx.save();
+    ctx.translate($("time").width / 2, $("time").height / 2);
+    ctx.font = '14px Arial';
+    ctx.fillStyle = "#FF8000";
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(message, 0, 0);
+    ctx.restore();
+}
+
 function init() {
      try {
-        //Worker需要在服务器上运行
-        if (typeof(Worker) !== "undefined") {
-            let worker = new Worker("time.js");
-            worker.onmessage = function (event) {
-                $("time").title = event.data;
-                let times = event.data.toString().split("\n")[1].split(":");
-                $("time").width = 50;
-                $("time").height = 50;
-                let clockRadius = Math.min($("time").width / 2, $("time").height / 2);
-                let ctx = $("time").getContext("2d");
+         //Worker需要在服务器上运行
+         if (typeof(Worker) !== "undefined") {
+             appState("服务器运行.", "Web service •••");
+             let worker = new Worker("time.js");
+             worker.onmessage = function (event) {
+                 $("time").title = event.data;
+                 let times = event.data.toString().split("\n")[1].split(":");
+                 $("time").width = 50;
+                 $("time").height = 50;
+                 let ctx = $("time").getContext("2d");
 
-                let hours = Number(times[0]);
-                let minutes = Number(times[1]);
-                let seconds = Number(times[2]);
+                 let clockRadius = Math.min($("time").width / 2, $("time").height / 2);
+                 let hours = Number(times[0]);
+                 let minutes = Number(times[1]);
+                 let seconds = Number(times[2]);
 
-                hours = hours > 12 ? hours - 12 : hours;
-                let hour = hours + minutes / 60;
-                let minute = minutes + seconds / 60;
+                 hours = hours > 12 ? hours - 12 : hours;
+                 let hour = hours + minutes / 60;
+                 let minute = minutes + seconds / 60;
 
-                ctx.save();
+                 ctx.save();
 
-                ctx.translate($("time").width / 2, $("time").height / 2);
-                ctx.beginPath();
+                 ctx.translate($("time").width / 2, $("time").height / 2);
+                 ctx.beginPath();
 
-                // draw numbers
-                ctx.font = '9px Arial';
-                ctx.fillStyle = "lightseagreen";
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'middle';
-                for (let n = 1; n <= 12; n++) {
-                    if (n == 3 || n == 6 || n == 9 || n == 12)
-                        ctx.fillStyle = "#FF8000";
-                    else
-                        ctx.fillStyle = "lightseagreen";
-                    let theta = (n - 3) * (Math.PI * 2) / 12;
-                    let x = clockRadius * 0.9 * Math.cos(theta);
-                    let y = clockRadius * 0.9 * Math.sin(theta);
-                    ctx.fillText("•", x, y);
-                }
-                ctx.fillStyle = "lightseagreen";
+                 // draw numbers
+                 ctx.font = '9px Arial';
+                 ctx.fillStyle = "lightseagreen";
+                 ctx.textAlign = 'center';
+                 ctx.textBaseline = 'middle';
+                 for (let n = 1; n <= 12; n++) {
+                     if (n == 3 || n == 6 || n == 9 || n == 12)
+                         ctx.fillStyle = "#FF8000";
+                     else
+                         ctx.fillStyle = "lightseagreen";
+                     let theta = (n - 3) * (Math.PI * 2) / 12;
+                     let x = clockRadius * 0.9 * Math.cos(theta);
+                     let y = clockRadius * 0.9 * Math.sin(theta);
+                     ctx.fillText("•", x, y);
+                 }
+                 ctx.fillStyle = "lightseagreen";
 
-                ctx.save();
-                let theta = (hour - 3) * 2 * Math.PI / 12;
-                ctx.rotate(theta);
-                ctx.beginPath();
-                ctx.moveTo(-1, -1.5);
-                ctx.lineTo(-1, 1.5);
-                ctx.lineTo(clockRadius * 0.6, 1);
-                ctx.lineTo(clockRadius * 0.6, -1);
-                ctx.fill();
-                ctx.restore();
+                 ctx.save();
+                 let theta = (hour - 3) * 2 * Math.PI / 12;
+                 ctx.rotate(theta);
+                 ctx.beginPath();
+                 ctx.moveTo(-1, -1.5);
+                 ctx.lineTo(-1, 1.5);
+                 ctx.lineTo(clockRadius * 0.6, 1);
+                 ctx.lineTo(clockRadius * 0.6, -1);
+                 ctx.fill();
+                 ctx.restore();
 
-                // draw minute
-                ctx.save();
-                theta = (minute - 15) * 2 * Math.PI / 60;
-                ctx.rotate(theta);
-                ctx.beginPath();
-                ctx.moveTo(-1, -1);
-                ctx.lineTo(-1, 1);
-                ctx.lineTo(clockRadius * 0.7, 0.5);
-                ctx.lineTo(clockRadius * 0.7, -0.5);
-                ctx.fill();
-                ctx.restore();
+                 // draw minute
+                 ctx.save();
+                 theta = (minute - 15) * 2 * Math.PI / 60;
+                 ctx.rotate(theta);
+                 ctx.beginPath();
+                 ctx.moveTo(-1, -1);
+                 ctx.lineTo(-1, 1);
+                 ctx.lineTo(clockRadius * 0.7, 0.5);
+                 ctx.lineTo(clockRadius * 0.7, -0.5);
+                 ctx.fill();
+                 ctx.restore();
 
-                // draw second
-                ctx.save();
-                theta = (seconds - 15) * 2 * Math.PI / 60;
-                ctx.rotate(theta);
-                ctx.beginPath();
-                ctx.moveTo(-7, -1);
-                ctx.lineTo(-7, 1);
-                ctx.lineTo(clockRadius * 0.8, 0.5);
-                ctx.lineTo(clockRadius * 0.8, -0.5);
-                ctx.fillStyle = "#FF8000";
-                ctx.fill();
-                ctx.restore();
-
-                ctx.restore();
-
-            }
-        }
-        else {
-            //alert("抱歉! Web Worker 不支持");
-            //worker.terminate();
-            //worker = undefined;
-        }
-    } catch(e){
-        console.log("Worker不能在本地运行.须部署在Web服务上,");
-        console.log(e);
-    }
+                 // draw second
+                 ctx.save();
+                 theta = (seconds - 15) * 2 * Math.PI / 60;
+                 ctx.rotate(theta);
+                 ctx.beginPath();
+                 ctx.moveTo(-7, -1);
+                 ctx.lineTo(-7, 1);
+                 ctx.lineTo(clockRadius * 0.8, 0.5);
+                 ctx.lineTo(clockRadius * 0.8, -0.5);
+                 ctx.fillStyle = "#FF8000";
+                 ctx.fill();
+                 ctx.restore();
+                 ctx.restore();
+             }
+         }
+         else {
+             //worker.terminate();
+             //worker = undefined;
+             appState("本地运行.", "Local file •••");
+         }
+     } catch(e) {
+         appState("本地运行.", "Local file •••");
+     }
 
     try {
         getQRCode($("page"), 90, 90, __VERSION__.url, __SYS_IMAGES__.echo);
@@ -2400,6 +2668,17 @@ function init() {
             for (key in config) {
                 try {
                     __ECHARTS__.configs[key].value = config[key];
+                } catch (e) {
+                }
+            }
+        }
+
+        config = getUserConfig("datasetConfig");
+        if (config != null) {
+            config = JSON.parse(config);
+            for (key in config) {
+                try {
+                    __DATASET__.configs[key].value = config[key];
                 } catch (e) {
                 }
             }
@@ -3088,7 +3367,7 @@ function init() {
                 ['Creation time:', getNow()],
                 ['Get help from:', __VERSION__.url],
             ];
-            if (__ECHARTS__.configs.reportDownload.value == "current") {
+            if (__DATASET__.configs.reportDownload.value == "current") {
                 let dataset = __DATASET__.result[__DATASET__.default.sheet];
                 comment.push([dataset.type + ":", dataset.sql]);
                 let aoa = [];
@@ -3115,7 +3394,7 @@ function init() {
                 let title = dataset.title.length > 0 ? dataset.title[0] : prompt("请输入文件名称:");
                 if (title.trim() != "")
                     openDownloadDialog(workbook2blob(sheets, removingRedundant(sheetNames)), title + ".xlsx");
-            } else if (__ECHARTS__.configs.reportDownload.value == "all-single") {
+            } else if (__DATASET__.configs.reportDownload.value == "all-single") {
                 if (__DATASET__.result.length <= 255) {
                     let res = true;
                     if (__DATASET__.result.length > 3)
@@ -3152,7 +3431,7 @@ function init() {
                     }
                 } else
                     alert("一个工作簿最多允许有255个数据表!");
-            } else if (__ECHARTS__.configs.reportDownload.value == "all-multi") {
+            } else if (__DATASET__.configs.reportDownload.value == "all-multi") {
                 if (__DATASET__.result.length <= 255) {
                     let res = true;
                     if (__DATASET__.result.length > 3)
@@ -3193,7 +3472,7 @@ function init() {
                             openDownloadDialog(workbook2blob(sheets, removingRedundant(sheetNames)), sheetname + ".xlsx");
                             if (d < (__DATASET__.result.length - 1)) {
                                 let delay = (aoa.length * columns.length) >= 10000 ? (aoa.length * columns.length / 10000) : 1;
-                                sleep(__ECHARTS__.configs.reportDownloadDelay.value * delay);
+                                sleep(__DATASET__.configs.reportDownloadDelay.value * delay);
                             }
                         }
                     }
@@ -3245,6 +3524,19 @@ function init() {
         }
     };
     setTooltip(removeall, "删除所有<br>数据集");
+
+    let datasetSetting = document.createElement("div");
+    datatools.appendChild(datasetSetting);
+    datasetSetting.type = "div";
+    datasetSetting.className = "charButton";
+    datasetSetting.innerText = "┅";
+    datasetSetting.id = "dataset-setting";
+    datasetSetting.onclick = function () {
+        let configs = __DATASET__.getDatasetConfigs($("tableContainer"));
+        setCenterPosition($("page"), configs);
+
+    };
+    setTooltip(datasetSetting, "报表<br>设置");
 
     let analysis = document.createElement("div");
     analysis.style.display = "none";
@@ -4428,7 +4720,7 @@ function getColumnMenu(colid) {
 
     let li = document.createElement("li");
     li.id = "table-column-menu-filter";
-    li.innerHTML = "● 筛选";
+    li.innerHTML = "&emsp;● 筛选";
     li.setAttribute("colid", colid);
     li.onclick = function () {
         if (__DATASET__.result.length > 0) {
@@ -4440,7 +4732,7 @@ function getColumnMenu(colid) {
 
     li = document.createElement("li");
     li.id = "table-column-menu-formater";
-    li.innerHTML = "● 格式";
+    li.innerHTML = "&emsp;● 格式";
     li.setAttribute("colid", colid);
     li.onclick = function () {
         let formater = getFormat(this.getAttribute("colid"));

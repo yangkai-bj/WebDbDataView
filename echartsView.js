@@ -1400,35 +1400,6 @@ var __ECHARTS__ = {
         animationDurationUpdate: {name: "更新动画时长(毫秒)", value: 1000, type: "input"},
         animationDelayUpdate: {name: "更新动画延时(毫秒)", value: 10, type: "input"},
         animationFunctionType: {name: "动画附加", value: "In", options: ["In", "Out", "InOut"], type: "select"},
-
-        hr_report: {name: "报表设置", value: "", type: "hr"},
-        reportFontSize: {
-            name: "字号",
-            value: "100%",
-            options: ["100%", "110%", "120%", "130%", "140%", "150%"],
-            type: "select"
-        },
-        reportPageSize: {
-            name: "每页", value: 100,
-            options: [
-                new Option("50行", 50),
-                new Option("100行", 100),
-                new Option("150行", 150),
-                new Option("200行", 200),
-            ],
-            type: "select"
-        },
-        reportDownload: {
-            name: "下载方式",
-            value: "current",
-            options: [new Option("当前数据集", "current"), new Option("所有数据集-合并为单一工作簿", "all-single"), new Option("所有数据集-拆分为多个工作簿", "all-multi")],
-            type: "select"
-        },
-        reportDownloadDelay: {
-            name: "单位延时(毫秒)",
-            value: 1000,
-            type: "input"
-        },
     },
 
     getEchartsConfigs: function (parent) {
@@ -1465,7 +1436,7 @@ var __ECHARTS__ = {
         let title = document.createElement("div");
         title.className = "container-title";
         let span = document.createElement("span");
-        span.innerHTML = "● 图形及报表参数 ";
+        span.innerHTML = "● 图形参数 ";
         title.appendChild(span);
         let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
         close.className = "container-close";

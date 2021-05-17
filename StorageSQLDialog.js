@@ -42,6 +42,10 @@ function storageSqlDialog(sql, editer, type){
 
     let tablecontainer = document.createElement("div");
     tablecontainer.className = tablecontainer.id = "table-container";
+    if (type == "_TO_SAVE_") {
+        tablecontainer.style.display = "none";
+    } else
+        tablecontainer.style.display = "block";
     contentContainer.appendChild(tablecontainer);
     let sqltable = document.createElement("table");
     sqltable.style.tableLayout = "fixed";
@@ -53,7 +57,10 @@ function storageSqlDialog(sql, editer, type){
 
     let editcontainer = document.createElement("div");
     editcontainer.className = editcontainer.id = "edit-container";
-    editcontainer.style.display = "none";
+     if (type == "_TO_SAVE_") {
+         editcontainer.style.display = "block";
+    } else
+        editcontainer.style.display = "none";
     contentContainer.appendChild(editcontainer);
     let sqlname = document.createElement("input");
     sqlname.id = sqlname.className = "sql-Manager-Content-name";
@@ -225,7 +232,6 @@ function storageSqlDialog(sql, editer, type){
     tool.appendChild(exit);
 
     setDialogDrag(title);
-
     return container;
 }
 
