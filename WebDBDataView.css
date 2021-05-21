@@ -387,9 +387,57 @@ img.title_close_button:hover{
     cursor: pointer;
     -webkit-animation: content-show 2s 1;
     animation: content-show 2s 1;
+
 }
 
 .list:hover {
+    color:var(--list-hover-color);
+}
+
+.database-list {
+    list-style-type: disc;
+    list-style-image: var(--database-list-image);
+}
+.database-list li {
+    list-style-type: disc;
+    list-style-image: none;
+}
+
+.table-list {
+    list-style-type: disc;
+    list-style-image: var(--table-list-image);
+}
+.table-list li {
+    list-style-type: circle;
+    list-style-image: var(--column-list-image);
+}
+
+.table-list .column-name {
+    overflow: hidden;
+    color:var(--list-color);
+    height: 100%;
+    margin: 0px;
+    cursor: pointer;
+    -webkit-animation: content-show 2s 1;
+    animation: content-show 2s 1;
+}
+
+.table-list .column-name:hover {
+    color:var(--list-hover-color);
+}
+
+.table-list .column-type {
+    overflow: hidden;
+    float: right;
+    cursor: pointer;
+    font-size: 50%;
+    text-align: left;
+    color: var(--list-color);
+    -webkit-animation: content-show 2s 1;
+    animation: content-show 2s 1;
+}
+
+.table-list .column-type:hover {
     color:var(--list-hover-color);
 }
 
@@ -451,6 +499,7 @@ img.title_close_button:hover{
     border:1px solid var(--table-td-border-color);
     padding:3px 3px 2px 3px;
     white-space: nowrap;
+    word-break: keep-all;
     overflow: hidden;
     text-overflow: ellipsis;
     -o-text-overflow: ellipsis;

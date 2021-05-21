@@ -1,7 +1,7 @@
 var __VERSION__ = {
     name: "Web DataView for SQLite Database of browser",
-    version: "2.3.2",
-    date: "2021/05/15",
+    version: "2.3.4",
+    date: "2021/05/21",
     comment: [
         "-- 2021/03/08",
         "优化算法和压缩代码.",
@@ -203,33 +203,38 @@ var __CONFIGS__ = {
              type: "select"
          },
          reportFontFamily: {
-             name: "字体",
+             name: "报表字体",
              value: "default",
              type: "input"
          },
          reportFontSize: {
-             name: "字号",
+             name: "报表字号",
              value: "100%",
              options: ["100%", "110%", "120%", "130%", "140%", "150%"],
              type: "select"
          },
          reportFontStyle: {
-             name: "样式",
+             name: "字体样式",
              value: "default",
              options: ["default", "italic", "oblique"],
              type: "select"
          },
          reportFontWeight: {
-             name: "粗细",
+             name: "字体粗细",
              value: "default",
              options: ["default", "lighter", "bold", "bolder"],
              type: "select"
          },
          reportRowHeight: {
-             name: "行高",
+             name: "报表行高",
              value: "default",
              options: ["default", "30px", "35px", "40px", "45px", "50px", "55px", "60px"],
              type: "select"
+         },
+         reportScale:{
+             name: "小数位数",
+             value: 6,
+             type: "input"
          },
          hr_page: {name: "分页设置", value: "", type: "hr"},
          reportPageSize: {
@@ -237,8 +242,9 @@ var __CONFIGS__ = {
              options: [
                  new Option("50行", 50),
                  new Option("100行", 100),
-                 new Option("150行", 150),
                  new Option("200行", 200),
+                 new Option("300行", 300),
+                 new Option("400行", 400),
                  new Option("500行", 500),
                  new Option("1000行", 1000),
              ],
@@ -1556,6 +1562,7 @@ function viewDatabases(){
     for (let i = 0; i < __CONFIGS__.DATABASES.length; i++){
         if (__CONFIGS__.DATABASES[i].name != null) {
             let li = document.createElement("li");
+            li.className = "database-list";
             let a = document.createElement("a");
             a.className = "list";
             a.innerText = __CONFIGS__.DATABASES[i].name;
@@ -1652,8 +1659,9 @@ function viewTables(index) {
                 for (let i = 0; i < len; i++) {
                     if (results.rows.item(i).tablename != "__WebKitDatabaseInfoTable__" && results.rows.item(i).tablename != "") {
                         let li = document.createElement("li");
+                        li.className = "table-list";
                         let a = document.createElement("a");
-                        li.appendChild(a)
+                        li.appendChild(a);
                         a.className = "list";
                         hintOptions.tables[results.rows.item(i).tablename] = [];
                         __SQLEDITOR__.codeMirror.setOption("hintOptions", hintOptions);
@@ -1696,17 +1704,20 @@ function viewTables(index) {
                                                 for (let m = 0; m < __CONFIGS__.CURRENT_TABLE.structure.data.length; m++) {
                                                     let l = document.createElement("li");
                                                     $("ul-tb-" + __CONFIGS__.CURRENT_TABLE.name).appendChild(l);
-                                                    let col = document.createElement("a");
-                                                    col.className = "list";
+                                                    let col = document.createElement("span");
+                                                    col.className = "column-name";
                                                     col.id = __CONFIGS__.CURRENT_TABLE.name + "." + __CONFIGS__.CURRENT_TABLE.structure.data[m]["Name"].value;
                                                     columns.push(__CONFIGS__.CURRENT_TABLE.structure.data[m]["Name"].value);
-
-                                                    col.innerText = __CONFIGS__.CURRENT_TABLE.structure.data[m]["Name"].value + "\t" + __CONFIGS__.CURRENT_TABLE.structure.data[m]["Type"].value;
+                                                    col.innerText = __CONFIGS__.CURRENT_TABLE.structure.data[m]["Name"].value;
                                                     col.draggable = "true";
                                                     col.ondragstart = function (event) {
                                                         event.dataTransfer.setData("Text", event.target.id);
                                                     };
                                                     l.appendChild(col);
+                                                    let typ = document.createElement("span");
+                                                    typ.className = "column-type";
+                                                    typ.innerText = __CONFIGS__.CURRENT_TABLE.structure.data[m]["Type"].value;
+                                                    l.appendChild(typ);
                                                 }
                                                 let hintOptions = __SQLEDITOR__.codeMirror.getOption("hintOptions");
                                                 hintOptions.tables[__CONFIGS__.CURRENT_TABLE.name] = columns;
@@ -1870,7 +1881,7 @@ function viewDataset(index, pageindex) {
     if (__DATASET__.result.length > 0) {
         __DATASET__.default.sheet = index;
         __DATASET__.pages.total = Math.ceil(__DATASET__.result[__DATASET__.default.sheet].data.length / Number(__DATASET__.configs.reportPageSize.value));
-        __DATASET__.default.tab = __DATASET__.default.sheet - __DATASET__.default.sheet%10;
+        __DATASET__.default.tab = __DATASET__.default.sheet - __DATASET__.default.sheet % 10;
         if (typeof  pageindex != "undefined")
             __DATASET__.pages.default = pageindex;
         setDataPageTools(index);
@@ -1886,8 +1897,7 @@ function viewDataset(index, pageindex) {
     let columns = __DATASET__.result[index].columns;
     let data = __DATASET__.result[index].data;
     let table = document.createElement("table");
-    table.className = "table";
-    table.id = "table";
+    table.className = table.id = "table";
     if (__DATASET__.configs.reportFontFamily.value != "default")
         table.style.fontFamily = __DATASET__.configs.reportFontFamily.value;
     if (__DATASET__.configs.reportFontWeight.value != "default")
@@ -1944,6 +1954,10 @@ function viewDataset(index, pageindex) {
         tr.appendChild(th);
     }
 
+    let floatFormat = "#,##0.";
+    for (let i = 0; i < Number(__DATASET__.configs.reportScale.value); i++) {
+        floatFormat += "0";
+    }
     for (let i = 0; i < data.length; i++) {
         if (i >= __DATASET__.pages.default * Number(__DATASET__.configs.reportPageSize.value) && i < (__DATASET__.pages.default + 1) * Number(__DATASET__.configs.reportPageSize.value)) {
             let tr = document.createElement("tr");
@@ -1966,9 +1980,19 @@ function viewDataset(index, pageindex) {
                 td.setAttribute("value", JSON.stringify(item));
                 try {
                     if (item.value != null) {
-                        if (item.type == "number")
-                            td.innerText = formatNumber(item.value, item.format);
-                        else if (item.type == "date" || item.type == "datetime")
+                        if (item.type == "number") {
+                            let f = item.format;
+                            if ((item.value + '').indexOf('.') !== -1)
+                                f = floatFormat;
+                            else {
+                                if (columns[c]["format"] !== "undefined") {
+                                    if (item.format != columns[c].format)
+                                        f = columns[c].format;
+                                }
+                            }
+                            td.innerText = formatNumber(item.value, f);
+                            item.format = columns[c]["format"] = f;
+                        } else if (item.type == "date" || item.type == "datetime")
                             td.innerText = new Date(item.value).Format(item.format);
                         else
                             td.innerText = item.value;
@@ -2136,6 +2160,10 @@ function execute() {
                                 //取数据
                                 //##################################
                                 let data = [];
+                                let floatFormat = "#,##0.";
+                                for (let i = 0; i < Number(__DATASET__.configs.reportScale.value); i++) {
+                                    floatFormat += "0";
+                                }
                                 for (let i = 0; i < len; i++) {
                                     let row = {};
                                     let r = JSON.parse(JSON.stringify(results.rows.item(i)));
@@ -2145,12 +2173,15 @@ function execute() {
                                         let _format = null;
                                         let _align = "left";
                                         let _color = "black";
-                                        if (_type == "number" && _value < 0)
-                                            _color = "red";
                                         switch (_type) {
                                             case "number":
-                                                _format = "#,##0.######";
-                                                _align = "right";
+                                                if ((_value + '').indexOf('.') !== -1) {
+                                                    _format = floatFormat;
+                                                    _align = "right";
+                                                } else {
+                                                    _format = "#,##0";
+                                                    _align = "right";
+                                                }
                                                 break;
                                             case "date":
                                                 _format = "yyyy-MM-dd";
@@ -2164,6 +2195,10 @@ function execute() {
                                                 _format = null;
                                                 _align = "left";
                                         }
+                                        if (_type == "number" && _value < 0)
+                                            _color = "red";
+                                        if (c == 0)
+                                            _align = "center";
 
                                         row[columns[c].name] = {
                                             rowid: i,
@@ -2287,7 +2322,11 @@ function transferResultDataset(funs, dataset, title, parameter) {
     for (let i = 0; i < col.length; i++) {
         columns.push({id: i, name: col[i], type: "string", style: {textAlign: "center"}, order: ""});
     }
-    let data = [];
+    let data = []
+    let floatFormat = "#,##0.";
+    for (let i = 0; i < Number(__DATASET__.configs.reportScale.value); i++) {
+        floatFormat += "0";
+    }
     for (let i = 0; i < dataset.length; i++) {
         let row = {};
         let r = dataset[i];
@@ -2302,13 +2341,13 @@ function transferResultDataset(funs, dataset, title, parameter) {
                 case "float":
                     _type = "number";
                     _value = Number.parseFloat(r[c]);
-                    _format = "#,##0.######";
+                    _format = floatFormat;
                     _align = "right";
                     break;
                 case "int":
                     _type = "number";
                     _value = Number.parseInt(r[c]);
-                    _format = "#,##0.######";
+                    _format = "#,##0";
                     _align = "right";
                     break;
                 case "date":
@@ -2325,6 +2364,8 @@ function transferResultDataset(funs, dataset, title, parameter) {
             }
             if (_type == "number" && _value < 0)
                 _color = "red";
+            if (c == 0)
+                _align = "center";
 
             row[columns[c].name] = {
                 rowid: i,
@@ -4887,7 +4928,7 @@ function getFormat(colid) {
         let data = __DATASET__.result[__DATASET__.default.sheet].data;
         for(let i =0;i<data.length;i++){
             let row = data[i]
-            for (col in row){
+            for (let col in row){
                 if (row[col].colid == Number(colid))
                     row[col].style = format;
             }
