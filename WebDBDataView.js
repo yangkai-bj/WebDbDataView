@@ -2576,13 +2576,14 @@ function appState(title, message) {
     $("time").height = 50;
     $("time").title = title;
     let ctx = $("time").getContext("2d");
+    ctx.drawImage(__SYS_IMAGES__.getLogoImage(__SYS_IMAGES__.child, 25, 25), 0, 0);
     ctx.save();
     ctx.translate($("time").width / 2, $("time").height / 2);
-    ctx.font = '14px Arial';
+    ctx.font = '12px Arial';
     ctx.fillStyle = "#FF8000";
     ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText(message, 0, 0);
+    ctx.textBaseline = 'top';//'middle';
+    ctx.fillText(message, 0, 10);
     ctx.restore();
 }
 

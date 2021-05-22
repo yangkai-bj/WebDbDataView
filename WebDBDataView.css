@@ -450,14 +450,18 @@ img.title_close_button:hover{
     font-size: 100%;
 }
 
-.tableContainer{
+.tableContainer {
     position: relative;
     margin: 2px;
     font-size: 95%;
     width: 100%;
-    float:left;
+    float: left;
     height: 61%;
     overflow: scroll;
+    background-image: var(--themes-type-image);
+    background-repeat: no-repeat;
+    background-position: right bottom;
+    background-size:100px 100px;
 }
 
 .table {
