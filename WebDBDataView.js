@@ -1,7 +1,7 @@
 var __VERSION__ = {
     name: "Web DataView for SQLite Database of browser",
-    version: "2.3.4",
-    date: "2021/05/21",
+    version: "2.3.5",
+    date: "2021/05/26",
     comment: [
         "-- 2021/03/08",
         "优化算法和压缩代码.",
@@ -56,10 +56,20 @@ var __CONFIGS__ = {
      Charset: {value: 1, name: "字符集", type: "select", options: ["GBK", "UTF-8"]},
      Separator: {value: ",", name: "分隔符", type: "select", options: [["逗号", ","], ["竖线", "|"], ["Tab", "\t"]]},
      SourceFile: {
-         value: null, name: "源文件", type: "file", data: [], total: 0, count: 0, imported: 0, failed: 0, sql:null, error:[]
+         value: null,
+         name: "源文件",
+         type: "file",
+         data: [],
+         total: 0,
+         count: 0,
+         imported: 0,
+         failed: 0,
+         sql: null,
+         error: [],
+         progress: null
      },
      SelectedDataSet: {value: -1, name: "数据集", type: "select", options: []},
- }
+ };
 
  var __DATABASE__ = {
      Name: {value: "", name: "库名称", type: "text"},
@@ -1406,8 +1416,9 @@ function getImportContent() {
                             } catch (e) {
                                 alert("请选择需要导入的文件.")
                             }
+                            $("progress-container").innerText = "";
                         } else {
-                            showMessage("本应用适用于Chrome浏览器或IE10及以上版本。")
+                            showMessage("本应用适用于Chrome或Edge浏览器。")
                         }
                     };
                 }
@@ -1420,7 +1431,6 @@ function getImportContent() {
 
     let d = document.createElement("div");
     d.id = "progress-container";
-    d.appendChild(getImportProgress());
     container.appendChild(d);
 
     let br = document.createElement("hr");
@@ -1447,9 +1457,7 @@ function getImportContent() {
                 $("import-Content").parentNode.removeChild($("import-Content"));
             }
         } else {
-            let progressContainer = $("progress-container");
-            progressContainer.innerHTML = "";
-            progressContainer.appendChild(getImportProgress());
+            $("progress-container").appendChild(getImportProgress());
             if ($("SelectedDataSet").length > 0) {
                 importData();
             } else
@@ -1484,7 +1492,7 @@ function getImportProgress() {
     detail.id = "progress-detail";
     container.appendChild(detail);
 
-    let progress = setInterval(function () {
+    __IMPORT__.SourceFile.progress = setInterval(function () {
         Timer()
     }, 50);
 
@@ -1495,12 +1503,12 @@ function getImportProgress() {
             v.style.width = (value * 100) + "%";
             v.innerText = __IMPORT__.SourceFile.count + " / " + __IMPORT__.SourceFile.total;
             if (value == 1)
-                Stop();
+                Stop(__IMPORT__.SourceFile.progress);
         } catch (e) {
         }
     }
 
-    function Stop() {
+    function Stop(progress) {
         clearInterval(progress);
     }
 
@@ -2576,7 +2584,7 @@ function appState(title, message) {
     $("time").height = 50;
     $("time").title = title;
     let ctx = $("time").getContext("2d");
-    ctx.drawImage(__SYS_IMAGES__.getLogoImage(__SYS_IMAGES__.child, 25, 25), 0, 0);
+    ctx.drawImage(__SYS_IMAGES__.getLogoImage(__SYS_IMAGES__.child, 30, 30), 0, 20, 30, 30);
     ctx.save();
     ctx.translate($("time").width / 2, $("time").height / 2);
     ctx.font = '12px Arial';
@@ -2608,7 +2616,7 @@ function init() {
                  hours = hours > 12 ? hours - 12 : hours;
                  let hour = hours + minutes / 60;
                  let minute = minutes + seconds / 60;
-
+                 ctx.drawImage(__SYS_IMAGES__.getLogoImage(__SYS_IMAGES__.h24[minutes%24], 50, 50), 0, 0, 50, 50);
                  ctx.save();
 
                  ctx.translate($("time").width / 2, $("time").height / 2);
