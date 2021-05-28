@@ -26,26 +26,65 @@
         + .csv
         + .xls
         + .xlsx
-    + 如果没有选择既定数据表，系统将根据数据内容解析数据格式并转至创建表．
+    + 如果没有选择既定数据表,系统将根据数据内容解析数据格式并转至创建表．
 
 ## 脚本相关
 + ### 新建脚本
+
 + ### 保存脚本
+    为增加脚本的复用性,可将脚本以Local Storage方式保存至浏览器.
 + ### 打开脚本
+
 + ### 导入脚本
+
 + ### 导出脚本
+
 + ### 备份所有脚本
+    可将脚本全部导出备份.
 + ### 恢复所有脚本
+    从备份恢复所有脚本.
 + ### 执行脚本
+    提交脚本,从数据库抽取数据.
 + ### 编辑器主题
+    + 默认
+    + 黑色
+    + 粉色
+    + 墨绿
+    + 深蓝
+    + 幻想
+    + 初心
+    + 明亮
+    + 宁静
+    + 优雅
+    + 矩阵
+    + 锐利
+    + 黄昏
+    + 黯然
 
 ## 报表相关
 + ### 数据转置
+    将当前数据集行列转换.
 + ### 数据切片
-+ ### 分类汇总
+    + 纵向切片
+    + 横向切片
++ ### 分类计算
+    + 计数 
+    + 数字计数
+    + 合计
+    + 最大值
+    + 最小值
+    + 数值平均数
+    + 中位数
+    + 方差
+    + 标准差
+    + 全距
+    
 + ### 数据排序
+
 + ### 数据筛选
+
 + ### 报表下载
+
 + ### 删除数据集
     + 删除当前数据集
     + 删除所有数据集
@@ -61,59 +100,75 @@
 + ### 绘制图像
     对当前数据集转换后绘制Echarts图像.
 + ### 图像类型
-    目前支持43中图像：
-      `options: [
-                new Option("柱状图", "Bar"),
-                new Option("线型图", "Line"),
-                new Option("柱状&线型", "BarAndLine"),
-                new Option("条形图", "TransversBar"),
-                new Option("面积图", "AreaStyle"),
-                new Option("饼图", "Pie"),
-                new Option("圆环图", "Ring"),
-                new Option("玫瑰图", "Rose"),
-                new Option("雷达图", "Radar"),
-                new Option("极坐标", "Polar"),
-                new Option("回归序列", "Regression"),
-                new Option("盒须图", "Boxplot"),
-                new Option("K线图", "Candlestick"),
-                new Option("散点图", "Scatter"),
-                new Option("漏斗/金字塔", "Funnel"),
-                new Option("树形结构", "Tree"),
-                new Option("关系图", "Relation"),
-                new Option("分类集中", "WebkitDep"),
-                new Option("词云图", "WordCloud"),
-                new Option("水球图", "Liqiud"),
-                new Option("仪表盘", "Gauge"),
-                new Option("时钟", "Clock"),
-                new Option("旭日图", "Sunburst"),
-                new Option("矩形树图", "Treemap"),
-                new Option("日历图", "Calendar"),
-                new Option("类目轴", "CategoryLine"),
-                new Option("平行坐标", "ParallelAxis"),
-                new Option("桑基图", "Sankey"),
-                new Option("主题河流图", "ThemeRiver"),
-                new Option("单轴散点图", "SingeAxis"),
-                new Option("全国地图", "GeoOfChina"),
-                new Option("本地地图", "GeoOfLocal"),
-                new Option("迁徙地图", "GeoMigrateLinesOfChinaCity"),
-                new Option("横幅标语", "Banners"),
-                new Option("数据滚屏", "ScrollingScreen"),
-                new Option("数据走马灯", "WalkingLantern"),
-                new Option("数据百叶窗", "WindowShades"),
-                new Option("柱状图(3D)", "Bar3D"),
-                new Option("线型图(3D)", "Line3D"),
-                new Option("圆环图(3D)", "Pie3D"),
-                new Option("散点图(3D)", "Scatter3D"),
-                new Option("曲面图(3D)", "Surface"),
-                new Option("函数图像", "MathFunciton")
-            ],  `
+    + 柱状图
+    + 线型图
+    + 柱状&线型
+    + 条形图
+    + 面积图
+    + 饼图
+    + 圆环图
+    + 玫瑰图
+    + 雷达图
+    + 极坐标
+    + 回归序列
+    + 盒须图
+    + K线图
+    + 散点图
+    + 漏斗/金字塔
+    + 树形结构
+    + 关系图
+    + 分类集中
+    + 词云图
+    + 水球图
+    + 仪表盘
+    + 时钟
+    + 旭日图
+    + 矩形树图
+    + 日历图
+    + 类目轴
+    + 平行坐标
+    + 桑基图
+    + 主题河流图
+    + 单轴散点图
+    + 全国地图
+    + 本地地图
+    + 迁徙地图
+    + 横幅标语
+    + 数据滚屏
+    + 数据走马灯
+    + 数据百叶窗
+    + 柱状图(3D)
+    + 线型图(3D)
+    + 圆环图(3D)
+    + 散点图(3D)
+    + 曲面图(3D)
+    + 函数图像
 
 + ### 图像主题
+    + 默认
+    + 浅色
+    + 暗黑
+    + 粉笔
+    + 夕阳
+    + 橙色
+    + 信息
+    + 甜饼
+    + 紫色
+    + 热情
+    + 阳光
+    + 怀旧
+    + 湖光
+    + 大陆
+    + 仙境
+    + 单色
+    + 极简
 + ### 图像参数
+    
 + ### 组合展示
+    用于多个数据图像的组合大屏展示.
 
 ## 注意事项
-+ ### 根据本人工作需要开发，功能不够完善，敬请谅解．
++ ### 所有功能根据本人工作需要开发，不妥之处敬请谅解．
 + ### 重要数据务必做好备份,**务必谨慎操作浏览器数据清理**.
 
 
