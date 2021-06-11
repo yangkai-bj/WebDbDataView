@@ -1,3 +1,35 @@
+function getStorageSql(key) {
+    try {
+        let storage = window.localStorage;
+        let sqllist = {};
+        if (storage.getItem(__CONFIGS__.STORAGE.SCRIPTS) == null)
+            storage.setItem(__CONFIGS__.STORAGE.SCRIPTS, "{}");
+        else {
+            sqllist = JSON.parse(storage.getItem(__CONFIGS__.STORAGE.SCRIPTS));
+        }
+        return sqllist[key].sql.binary2str();
+    } catch (e) {
+        console.log(e);
+        return null;
+    }
+}
+
+function saveStorageSql(key, sql) {
+    try {
+        let storage = window.localStorage;
+        let sqllist = {};
+        if (storage.getItem(__CONFIGS__.STORAGE.SCRIPTS) == null)
+            storage.setItem(__CONFIGS__.STORAGE.SCRIPTS, "{}");
+        else {
+            sqllist = JSON.parse(storage.getItem(__CONFIGS__.STORAGE.SCRIPTS));
+        }
+        sqllist[key] = {sql:sql.str2binary(),time:getNow()};
+        storage.setItem(__CONFIGS__.STORAGE.SCRIPTS, JSON.stringify(sqllist));
+    } catch (e) {
+        console.log(e);
+    }
+}
+
 function storageSqlDialog(sql, editer, type){
     let container = document.createElement("div");
     container.id = "sql-Manager-Content";
@@ -100,14 +132,12 @@ function storageSqlDialog(sql, editer, type){
         let name = $("sql-Manager-Content-name");
         let sql = $("sql-Manager-Content-sql");
         if (name.value !="" && sql.value != "") {
-            let storage = window.localStorage;
-            let sqllist = JSON.parse(storage.getItem(__CONFIGS__.STORAGE.SCRIPTS));
-            sqllist[name.value] = messageEncode(sql.value);
-            storage.setItem(__CONFIGS__.STORAGE.SCRIPTS, JSON.stringify(sqllist));
+            saveStorageSql(name.value, sql.value);
             getSQLList($("sql-Manager-Content-table"))
         }
         if (type == "_TO_SAVE_")
             editer.title = $("sql-Manager-Content-name").value;
+        $("sql-Manager-Content").parentNode.removeChild($("sql-Manager-Content"));
     };
     tool.appendChild(add);
 
@@ -176,8 +206,15 @@ function storageSqlDialog(sql, editer, type){
         else {
             sqllist = JSON.parse(storage.getItem(__CONFIGS__.STORAGE.SCRIPTS));
         }
-        let blob = new Blob([str2ab(JSON.stringify(sqllist))], {type: "application/octet-stream"});
-        openDownloadDialog(blob, "WebDataView-SQL-backup.json");
+        let hash = JSON.stringify(sqllist).hex_md5_hash();
+        let wr = {
+            appName: __VERSION__.name,
+            backup: sqllist,
+            hash: hash,
+            date:getNow()
+        };
+        let blob = new Blob([str2ab(JSON.stringify(wr))], {type: "application/octet-stream"});
+        openDownloadDialog(blob, __VERSION__.name + " SQL backup.json");
     };
     tool.appendChild(saveas);
 
@@ -186,22 +223,45 @@ function storageSqlDialog(sql, editer, type){
     input.id = "openJson";
     input.style.display = "none";
     input.className = "openJson";
-    input.accept = "text/plain,.json";
+    input.accept = "text/plain,application/json";
     input.onchange = function () {
         if (window.FileReader) {
             try {
                 let file = this.files[0];
                 let reader = new FileReader();
                 reader.onload = function () {
-                    let isOver = confirm("您确定覆盖当前存储的所有脚本吗?");
-                    if (isOver) {
-                        console.log(this.result);
-                        let storage = window.localStorage;
-                        let sqllist = JSON.parse(this.result);
-                        storage.setItem(__CONFIGS__.STORAGE.SCRIPTS, JSON.stringify(sqllist));
-                        getSQLList($("sql-Manager-Content-table"));
-                        $("table-container").style.display = "block";
-                        $("edit-container").style.display = "none";
+                    try {
+                        let js = JSON.parse(this.result);
+                        let sqllist = js.backup;
+                        let hash = js.hash;
+                        if (JSON.stringify(sqllist).hex_md5_hash() === hash) {
+                            if (confirm("文件名称:" + file.name + "\n"
+                                + "文件大小:" + file.size + " bytes\n"
+                                + "文件类型:" + file.type + "\n"
+                                + "数据来源:" + js.appName + "\n"
+                                + "校验代码:" + hash + "\n"
+                                + "备份时间:" + ((typeof js.date) == "undefined"? file.lastModified.Format("yyyy-MM-dd hh:mm:ss.S"): js.date) + "\n\n"
+                                + "您确定使用上述备份文件覆盖当前存储的所有脚本吗?")) {
+                                let storage = window.localStorage;
+                                storage.setItem(__CONFIGS__.STORAGE.SCRIPTS, JSON.stringify(sqllist));
+                                getSQLList($("sql-Manager-Content-table"));
+                                $("table-container").style.display = "block";
+                                $("edit-container").style.display = "none";
+                            }
+                        } else {
+                            alert("文件名称:" + file.name + "\n"
+                                + "文件大小:" + file.size + " bytes\n"
+                                + "文件类型:" + file.type + "\n"
+                                + "数据来源:" + js.appName + "\n"
+                                + "校验代码:" + hash + "\n"
+                                + "备份时间:" + ((typeof js.date) == "undefined"? file.lastModified.Format("yyyy-MM-dd hh:mm:ss.S"): js.date) + "\n\n"
+                                + "备份文件校验错误!")
+                        }
+                    }catch (e) {
+                        alert("文件名称:" + file.name + "\n"
+                            + "文件大小:" + file.size + " bytes\n"
+                            + "文件类型:" + file.type + "\n\n"
+                            + "该文件不是标准化的备份文件,请重新选择!")
                     }
                 };
                 reader.readAsText(file, __SQLEDITOR__.charset.options[__SQLEDITOR__.charset.value]);
@@ -209,7 +269,7 @@ function storageSqlDialog(sql, editer, type){
                 alert("请选择需要导入的文件.")
             }
         } else {
-            showMessage("本应用适用于Chrome浏览器或IE10及以上版本。")
+            showMessage("本应用适用于Chrome或Edge浏览器。")
         }
     };
     tool.appendChild(input);
@@ -242,8 +302,20 @@ function getSQLList(table){
     table.appendChild(tr);
     let th = document.createElement("th");
     th.className= "th";
-    th.style.width = "32px";
-    th.innerText = "选择";
+    th.style.width = "40px";
+    let check = document.createElement("input");
+    check.type = "checkbox";
+    check.className = "sqls-checkall";
+    check.style.width = "18px";
+    check.onclick = function(){
+        let sqls = $("sql-Manager-Content-table").getElementsByClassName("check");
+        for (let i=0;i<sqls.length;i++){
+            sqls[i].checked = this.checked;
+            this.checked?sqls[i].setAttribute("checked", "checked"):sqls[i].removeAttribute("checked");
+        }
+    };
+    th.style.textAlign = "center";
+    th.appendChild(check);
     tr.appendChild(th);
     th = document.createElement("th");
     th.className= "th";
@@ -252,7 +324,12 @@ function getSQLList(table){
     tr.appendChild(th);
     th = document.createElement("th");
     th.className= "th";
-    th.innerText = "名称";
+    th.innerText = "脚本名称";
+    tr.appendChild(th);
+    th = document.createElement("th");
+    th.className= "th";
+    th.style.width = "120px";
+    th.innerText = "编辑时间";
     tr.appendChild(th);
     let storage = window.localStorage;
     let sqllist = {};
@@ -269,14 +346,11 @@ function getSQLList(table){
             //单数行
         }
         tr.setAttribute("name", name);
-        tr.setAttribute("sql", sqllist[name]);
         tr.onclick = function() {
             let name = $("sql-Manager-Content-name");
             let sql = $("sql-Manager-Content-sql");
             name.value = this.getAttribute("name");
-            let _sql = messageDecode(this.getAttribute("sql"));
-            _sql = _sql.substring(0, _sql.length - 1);
-            sql.value = _sql;
+            sql.value = getStorageSql(this.getAttribute("name"));
             if (this.getElementsByClassName("check")[0].checked == true)
                 this.getElementsByClassName("check")[0].removeAttribute("checked");
             else
@@ -291,7 +365,7 @@ function getSQLList(table){
         let check = document.createElement("input");
         check.type = "checkbox";
         check.className = "check";
-        check.style.width = "36px";
+        check.style.width = "40px";
         td.appendChild(check);
         tr.appendChild(td);
 
@@ -304,7 +378,13 @@ function getSQLList(table){
 
         td = document.createElement("td");
         td.className= "td";
-        td.innerText = name;
+        td.innerText = td.title = name;
+        tr.appendChild(td);
+
+        td = document.createElement("td");
+        td.className= "td";
+        td.style.width = "120px";
+        td.innerText = td.title = sqllist[name].time;
         tr.appendChild(td);
         i += 1;
     }

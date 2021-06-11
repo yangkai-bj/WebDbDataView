@@ -1,7 +1,7 @@
 var __VERSION__ = {
     name: "Web DataView for SQLite Database of browser",
-    version: "2.3.5",
-    date: "2021/05/26",
+    version: "2.3.8",
+    date: "2021/06/11",
     comment: [
         "-- 2021/03/08",
         "优化算法和压缩代码.",
@@ -30,11 +30,18 @@ var __VERSION__ = {
         "适配Echarts-gl(2.0.4).",
         "-- 2021/05/15",
         "拆分图形和报表参数.",
+        "-- 2021/06/01",
+        "增加公共函数模块.",
+        "增加脚本备份文件完整性校验.",
+         "-- 2021/06/07",
+        "修改脚本存储方式.",
+        "-- 2021/06/11",
+        "增加文件加密/解密模块.",
     ],
-    author: messageDecode(__SYS_LOGO_LINK__.author),
-    url: messageDecode(__SYS_LOGO_LINK__.link),
-    tel: messageDecode(__SYS_LOGO_LINK__.tel),
-    email: messageDecode(__SYS_LOGO_LINK__.email)
+    author: __SYS_LOGO_LINK__.author.decode(),
+    url: __SYS_LOGO_LINK__.link.decode(),
+    tel: __SYS_LOGO_LINK__.tel.decode(),
+    email: __SYS_LOGO_LINK__.email.decode()
 };
 
 var __CONFIGS__ = {
@@ -79,7 +86,7 @@ var __CONFIGS__ = {
  };
 
  var __COLUMN__ = {
-     check: {value: true, name: "选择", type: "checkbox", width: "50px"},
+     check: {value: false, name: "选择", type: "checkbox", width: "50px"},
      name: {value: "", name: "名称", type: "input", width: "100px"},
      type: {
          value: 0,
@@ -526,38 +533,6 @@ var __CONFIGS__ = {
      }
  };
 
- function $(id){
-     try{
-         return document.getElementById(id);
-     } catch (e) {
-         return null;
-     }
- }
-
- function messageEncode(str){
-    let encodedStr = "" ;
-    if (str=="")
-        return encodedStr ;
-    else {
-        for (let i = 0 ; i < str.length ; i ++){
-            encodedStr += "&#" + str.substring(i, i + 1).charCodeAt().toString(10) + ";" ;
-        }
-    }
-    return encodedStr;
-}
-
-function messageDecode(str){
-    let decodeStr = "";
-    if (str == "")
-        return decodeStr ;
-　　let toParse = str.split(";");
-　　for (let i=0;i<toParse.length;i++) {
-　　　　let s = toParse[i];
-　　　　decodeStr += String.fromCharCode(parseInt(s.substring(2)))
-　　}
-　　return decodeStr;
-}
-
 function transferData(structure,row) {
     //####################################
     //用于数据导入的行数据转换
@@ -575,10 +550,10 @@ function transferData(structure,row) {
                 }
                 switch (type.toUpperCase()) {
                     case "DATE":
-                        _row.push(new Date(row[i]).Format("yyyy-MM-dd"));
+                        _row.push(new Date(row[i]).format("yyyy-MM-dd"));
                         break;
                     case "DATETIME":
-                        _row.push(new Date(row[i]).Format("yyyy-MM-dd hh:mm:ss.S"));
+                        _row.push(new Date(row[i]).format("yyyy-MM-dd hh:mm:ss.S"));
                         break;
                     case "INT":
                         _row.push(Number.parseInt(row[i]));
@@ -984,7 +959,23 @@ function createTable(structure) {
     for (let index in __COLUMN__) {
         let th = document.createElement("th");
         tr.appendChild(th);
-        th.innerText = __COLUMN__[index].name;
+        if (index != "check")
+            th.innerText = __COLUMN__[index].name;
+        else {
+            let check = document.createElement("input");
+            check.type = "checkbox";
+            check.className = "columns-checkall";
+            check.style.width = "18px";
+            check.onclick = function () {
+                let columns = $("table-Content").getElementsByClassName("check");
+                for (let i = 0; i < columns.length; i++) {
+                    columns[i].checked = this.checked;
+                    this.checked ? columns[i].setAttribute("checked", "checked") : columns[i].removeAttribute("checked");
+                }
+            };
+            th.style.textAlign = "center";
+            th.appendChild(check);
+        }
     }
     let cols = 3;
     if (structure != null)
@@ -1614,11 +1605,6 @@ function viewDatabases(){
     }
 }
 
-function getNow() {
-    let date = new Date();
-    return date.Format("yyyy-MM-dd hh:mm:ss.S")
-}
-
 function viewMessage(msg){
     let msgbox = $("messageBox");
     let dt = document.createElement("dt");
@@ -1998,10 +1984,11 @@ function viewDataset(index, pageindex) {
                                         f = columns[c].format;
                                 }
                             }
-                            td.innerText = formatNumber(item.value, f);
+                            //td.innerText = formatNumber(item.value, f);
+                            td.innerText = item.value.format(f);
                             item.format = columns[c]["format"] = f;
                         } else if (item.type == "date" || item.type == "datetime")
-                            td.innerText = new Date(item.value).Format(item.format);
+                            td.innerText = new Date(item.value).format(item.format);
                         else
                             td.innerText = item.value;
                     } else
@@ -2020,67 +2007,6 @@ function viewDataset(index, pageindex) {
     }
     __DATASET__.table.init(table);
     container.appendChild(table);
-}
-
-function formatNumber(num,pattern){
-    // 用法
-    // formatNumber(12345.999,'#,##0.00');
-    // formatNumber(12345.999,'#,##0.##');
-    // formatNumber(123,'000000');
-    let is = false;
-    if (num <0)
-        is = true;
-    num = Math.abs(num);
-    let strarr = num?num.toString().split('.'):['0'];
-    let fmtarr = pattern?pattern.split('.'):[''];
-    let retstr='';
-    // 整数部分
-    let str = strarr[0];
-    let fmt = fmtarr[0];
-    let i = str.length-1;
-    let comma = false;
-    for(let f=fmt.length-1;f>=0;f--){
-        switch(fmt.substr(f,1)){
-            case '#':
-                if(i>=0 ) retstr = str.substr(i--,1) + retstr;
-                break;
-            case '0':
-                if(i>=0) retstr = str.substr(i--,1) + retstr;
-                else retstr = '0' + retstr;
-                break;
-            case ',':
-                comma = true;
-                retstr=','+ retstr;
-            break;
-        }
-    }
-    if(i>=0){
-    if(comma){
-        let l = str.length;
-        for(;i>=0;i--){
-            retstr = str.substr(i,1) + retstr;
-            if(i>0 && ((l-i)%3)==0) retstr = ',' + retstr;
-        }
-    }
-        else retstr = str.substr(0,i+1) + retstr;
-    }
-    retstr = retstr+'.';
-    // 处理小数部分
-    str=strarr.length>1?strarr[1]:'';
-    fmt=fmtarr.length>1?fmtarr[1]:'';
-    i=0;
-    for(let f=0;f<fmt.length;f++){
-        switch(fmt.substr(f,1)){
-            case '#':
-                if(i<str.length) retstr+=str.substr(i++,1);
-                break;
-            case '0':
-                if(i<str.length) retstr+= str.substr(i++,1);
-                else retstr+='0';
-            break;
-        }
-    }
-    return is?"-" + retstr.replace(/^,+/,'').replace(/\.$/,''): retstr.replace(/^,+/,'').replace(/\.$/,'');
 }
 
 function fillSqlParam(sql) {
@@ -2503,49 +2429,6 @@ function getTableStructure(sql) {
     return {columns: columns, data: data, title: [], type: "text/x-sqlite"};
 }
 
-function openDownloadDialog(url, saveName) {
-    if (typeof url == 'object' && url instanceof Blob) {
-        url = URL.createObjectURL(url); // 创建blob地址
-    }
-    let aLink = document.createElement('a');
-    aLink.href = url;
-    aLink.download = saveName || '';
-    // HTML5新增的属性，指定保存文件名，可以不要后缀，注意，file:///模式下不会生效
-    let event;
-    if (window.MouseEvent) {
-        event = new MouseEvent('click');
-    } else {
-        event = document.createEvent('MouseEvents');
-        event.initMouseEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
-    }
-    aLink.dispatchEvent(event);
-}
-
-function str2ab(str) {
-    //使用UTF8编码规则,涉及中文的转换.
-    let codes = [];
-    for (let i = 0; i != str.length; ++i) {
-        let code = str.charCodeAt(i);
-        if (0x00 <= code && code <= 0x7f) {
-            codes.push(code);
-        } else if (0x80 <= code && code <= 0x7ff) {
-            codes.push((192 | (31 & (code >> 6))));
-            codes.push((128 | (63 & code)))
-        } else if ((0x800 <= code && code <= 0xd7ff)
-            || (0xe000 <= code && code <= 0xffff)) {
-            codes.push((224 | (15 & (code >> 12))));
-            codes.push((128 | (63 & (code >> 6))));
-            codes.push((128 | (63 & code)))
-        }
-    }
-    let buf = new ArrayBuffer(codes.length);
-    let result = new Uint8Array(buf);
-    for (i = 0; i < codes.length; i++) {
-        result[i] = codes[i] & 0xff;
-    }
-    return result;
-}
-
 function workbook2blob(sheets, sheetNames) {
     let workbook = {
             SheetNames: [],
@@ -2816,19 +2699,48 @@ function init() {
     dbinfo.className = "button";
     dbinfo.id = "test-button";
     dbinfo.innerText = "调试";
-    dbinfo.style.display = "none";
+    //dbinfo.style.display = "none";
     dbinfo.onclick = function () {
         //##########################################
         //字符串可传输编码转化
-        let a = "yangkai.bj@ccb.com";
-        console.log(messageEncode(a));
+        //let a = "yangkai.bj@ccb.com";
+        //console.log(a.encode());
         //##########################################
         //图片转base64代码
-        //getBase64Image(null);
+        // let tb = getImageBase64Code();
+        // setCenterPosition($("page"), tb);
+        //##########################################
+
+        //存量脚本升级转换
+        // try {
+        //     let storage = window.localStorage;
+        //     let sqllist = {};
+        //     if (storage.getItem(__CONFIGS__.STORAGE.SCRIPTS) == null)
+        //         storage.setItem(__CONFIGS__.STORAGE.SCRIPTS, "{}");
+        //     else {
+        //         sqllist = JSON.parse(storage.getItem(__CONFIGS__.STORAGE.SCRIPTS));
+        //     }
+        //     for (let name in sqllist) {
+        //         let sql;
+        //         if (typeof sqllist[name] == "object") {
+        //             if (typeof sqllist[name].sql == "undefined" && typeof sqllist[name].time == "undefined") {
+        //                 sql = sqllist[name];
+        //                 sqllist[name] = {sql: sql, time: getNow()};
+        //             }
+        //         } else if (typeof sqllist[name] == "string") {
+        //             sql = sqllist[name].decode().str2binary();
+        //             sqllist[name] = {sql: sql, time: getNow()};
+        //         }
+        //     }
+        //     storage.setItem(__CONFIGS__.STORAGE.SCRIPTS, JSON.stringify(sqllist));
+        //     alert("脚本转换完成!")
+        // } catch (e) {
+        //     alert(e);
+        // }
         //##########################################
     };
     dbstools.appendChild(dbinfo);
-    setTooltip(dbinfo, "功能测试");
+    setTooltip(dbinfo, "脚本<br>转换");
 
     let about = document.createElement("div");
     about.type = "div";
@@ -3032,10 +2944,7 @@ function init() {
             if (res == true) {
                 let sql = __SQLEDITOR__.codeMirror.getValue();
                 if (name != "" && sql != "") {
-                    let storage = window.localStorage;
-                    let sqllist = JSON.parse(storage.getItem(__CONFIGS__.STORAGE.SCRIPTS));
-                    sqllist[name] = messageEncode(sql);
-                    storage.setItem(__CONFIGS__.STORAGE.SCRIPTS, JSON.stringify(sqllist));
+                    saveStorageSql(name, sql);
                 } else
                     alert("脚本及脚本名称不能为空!");
             }
@@ -3835,6 +3744,13 @@ function init() {
         }
     };
     setTooltip(echarts, "绘制<br>视图");
+    //其他工具
+    $("file-security").onclick = function() {
+        setCenterPosition($("page"), getFileSecurity());
+    };
+    $("image-base64").onclick = function(){
+        setCenterPosition($("page"), getImageBase64Code());
+    };
 
     setPageThemes();
 
@@ -4029,7 +3945,19 @@ function getSubtotal(columns) {
     let th = document.createElement("th");
     th.className = "th";
     th.style.width = "32px";
-    th.innerText = "选择";
+    let check = document.createElement("input");
+    check.type = "checkbox";
+    check.className = "file-checkall";
+    check.style.width = "18px";
+    check.onclick = function(){
+        let columns = $("subtotal-dialog-table").getElementsByClassName("check");
+        for (let i=0;i<columns.length;i++){
+            columns[i].checked = this.checked;
+            this.checked?columns[i].setAttribute("checked", "checked"):columns[i].removeAttribute("checked");
+        }
+    };
+    th.style.textAlign = "center";
+    th.appendChild(check);
     tr.appendChild(th);
     th = document.createElement("th");
     th.className = "th";
@@ -4444,7 +4372,19 @@ function getDataSlice() {
     let th = document.createElement("th");
     th.className = "th";
     th.style.width = "32px";
-    th.innerText = "选择";
+    let check = document.createElement("input");
+    check.type = "checkbox";
+    check.className = "file-checkall";
+    check.style.width = "18px";
+    check.onclick = function(){
+        let columns = $("data-slice-table").getElementsByClassName("data-slice-column-check");
+        for (let i=0;i<columns.length;i++){
+            columns[i].checked = this.checked;
+            this.checked?columns[i].setAttribute("checked", "checked"):columns[i].removeAttribute("checked");
+        }
+    };
+    th.style.textAlign = "center";
+    th.appendChild(check);
     tr.appendChild(th);
     th = document.createElement("th");
     th.className = "th";
@@ -4600,7 +4540,19 @@ function getDataFilter(colid) {
     let th = document.createElement("th");
     th.className = "th";
     th.style.width = "32px";
-    th.innerText = "选择";
+    let check = document.createElement("input");
+    check.type = "checkbox";
+    check.className = "file-checkall";
+    check.style.width = "18px";
+    check.onclick = function(){
+        let filters = $("data-filter-table").getElementsByClassName("data-filter-check");
+        for (let i=0;i<filters.length;i++){
+            filters[i].checked = this.checked;
+            this.checked?filters[i].setAttribute("checked", "checked"):filters[i].removeAttribute("checked");
+        }
+    };
+    th.style.textAlign = "center";
+    th.appendChild(check);
     tr.appendChild(th);
     th = document.createElement("th");
     th.className = "th";
@@ -4663,18 +4615,6 @@ function getDataFilter(colid) {
     let tool = document.createElement("div");
     tool.className = "groupbar";
     container.appendChild(tool);
-
-    let checkall = document.createElement("div");
-    checkall.className = "button";
-    checkall.innerText = "全选";
-    checkall.onclick = function(){
-        let filters = $("data-filter-table").getElementsByClassName("data-filter-check");
-        for (let i=0;i<filters.length;i++){
-            filters[i].checked = true;
-            filters[i].setAttribute("checked","checked");
-        }
-    };
-    tool.appendChild(checkall);
 
     let checknone = document.createElement("div");
     checknone.className = "button";
@@ -5020,64 +4960,6 @@ function setCenterPosition(parent, obj) {
     let left = (parentposi.width - objposi.width) / 2;
     obj.style.top = top + "px";
     obj.style.left = left + "px";
-}
-
-function isObj(object) {
-    return object && typeof (object) == 'object' && Object.prototype.toString.call(object).toLowerCase() == "[object object]";
-}
-
-function isArray(object) {
-    return object && typeof (object) == 'object' && object.constructor == Array;
-}
-
-function getLength(object) {
-    let count = 0;
-    for (let i in object) count++;
-    return count;
-}
-
-function Compare(objA, objB) {
-    if (!isObj(objA) || !isObj(objB)) return false; //判断类型是否正确
-    if (getLength(objA) != getLength(objB)) return false; //判断长度是否一致
-    return CompareObj(objA, objB, true);//默认为true
-}
-
-function CompareObj(objA, objB, flag) {
-    if (!isObj(objA)&&!isObj(objB)){
-        flag = objA==objB;
-    }
-    else {
-        for (let key in objA) {
-            if (!flag) //跳出整个循环
-                break;
-            if (!objB.hasOwnProperty(key)) {
-                flag = false;
-                break;
-            }
-            if (!isArray(objA[key])) { //子级不是数组时,比较属性值
-                if (objB[key] != objA[key]) {
-                    flag = false;
-                    break;
-                }
-            } else {
-                if (!isArray(objB[key])) {
-                    flag = false;
-                    break;
-                }
-                let oA = objA[key], oB = objB[key];
-                if (oA.length != oB.length) {
-                    flag = false;
-                    break;
-                }
-                for (let k in oA) {
-                    if (!flag) //这里跳出循环是为了不让递归继续
-                        break;
-                    flag = CompareObj(oA[k], oB[k], flag);
-                }
-            }
-        }
-    }
-    return flag;
 }
 
 function setEchartDrag(ec) {

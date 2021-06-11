@@ -138,7 +138,6 @@ function getEcharts(container, width, height, dataset, configs) {
                 return getRose(container, width, height, dataset, configs);
                 break;
             case "Gauge":
-                //return getGaugeWithOne(container, width, height, dataset,configs);
                 return getCategoryLineForGauge(container, width, height, dataset, configs);
                 break;
             case "Radar":
@@ -850,7 +849,7 @@ var __ECHARTS__ = {
             options: [new Option("是", "true"), new Option("否", "false")],
             type: "select"
         },
-        groupWith: {name: "每行序列数", value: 2, type: "input"},
+        pieGroupWith: {name: "每行序列数", value: 2, type: "input"},
         animationType: {
             name: "初始动画",
             value: "expansion",
@@ -916,6 +915,7 @@ var __ECHARTS__ = {
         },
         wordCloudSizeRange: {name: "字号区间", value: "[16, 60]", type: "input"},
         wordCloudRotationRange: {name: "角度区间", value: "[-45, 45]", type: "input"},
+        wordCloudGroupWith: {name: "每行序列数", value: 2, type: "input"},
 
         hr_liqiud: {name: "水球图", value: "", type: "hr"},
         liqiudShape: {
@@ -2514,7 +2514,7 @@ function getWaterGraphic(link) {
             bottom: 110,
             z: -100,
             onclick: function (){
-                window.open(messageDecode(link.link))},
+                window.open(link.link.decode())},
             children: [
                 {
                     type: 'image',
@@ -2550,7 +2550,7 @@ function getWaterGraphic(link) {
                     z: -100,
                     style: {
                         fill: '#fff',
-                        text: messageDecode(link.title).trim(),
+                        text: link.title.decode().trim(),
                         font: 'bold 18px Microsoft YaHei',
                         opacity: link.opacity,
                     }
@@ -4031,7 +4031,7 @@ function getPolarHeatmap(container, width, height, dataset, configs) {
     return container;
 }
 
-function getPieRichText(colors) {
+function getPieRichText(configs, colors) {
     return {
         formatter: "{a|{a}}{abg|}\n{hr|}\n  {b|{b}：}{c|{c}}  {per|{d}%}  ",
         backgroundColor: "transparent",//"#eee",
@@ -4048,7 +4048,8 @@ function getPieRichText(colors) {
             a: {
                 color: colors[0],//"#999",
                 lineHeight: 22,
-                align: "center"
+                align: "center",
+                fontSize: Number(configs.pieLabelFontSize.value)+1
             },
             abg: {
                 backgroundColor: "transparent",
@@ -4065,19 +4066,20 @@ function getPieRichText(colors) {
             },
             b: {
                 color: colors[2],//"#eee",
-                fontSize: 16,
+                fontSize: Number(configs.pieLabelFontSize.value),
                 lineHeight: 33
             },
             c: {
                 color: colors[3],//"#eee",
-                fontSize: 16,
+                fontSize: Number(configs.pieLabelFontSize.value),
                 lineHeight: 33
             },
             per: {
-                color: colors[1],//"#eee",
-                backgroundColor: "#334455",
-                padding: [2, 4],
-                borderRadius: 2
+                color: colors[0],//"#eee",
+                backgroundColor: colors[3],
+                padding: [4, 4, 4, 4],
+                borderRadius: 2,
+                fontSize: Number(configs.pieLabelFontSize.value)-1
             }
         }
     }
@@ -4097,7 +4099,7 @@ function getPie(container, width, height, dataset, configs) {
         renderer: configs.renderer.value
     });
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
-    let colors = (typeof myChart._theme !== "undefined" ? myChart._theme.color : ['#c23531', '#2f4554', '#61a0a8', '#d48265', '#91c7ae', '#749f83', '#ca8622', '#bda29a', '#6e7074', '#546570', '#c4ccd3']);
+    let colors = ((typeof myChart._theme !== "undefined" && myChart._theme.color != null) ? myChart._theme.color : ['#c23531', '#2f4554', '#61a0a8', '#d48265', '#91c7ae', '#749f83', '#ca8622', '#bda29a', '#6e7074', '#546570', '#c4ccd3']);
 
     let columns = dataset["columns"].reduce(function (tmp, column) {
         tmp.push(column.name);
@@ -4153,7 +4155,7 @@ function getPie(container, width, height, dataset, configs) {
 
     let top = toPoint(configs.grid_top.value);
     let left = toPoint(configs.grid_left.value);
-    let groupWith = configs.groupWith.value;
+    let groupWith = configs.pieGroupWith.value;
     let lines = parseInt(series.length / groupWith + 0.5);
     let h = parseInt((100 - toPoint(configs.grid_top.value) - toPoint(configs.grid_bottom.value)) / lines);
     let w = (100 - toPoint(configs.grid_left.value) - toPoint(configs.grid_right.value)) / groupWith;
@@ -4171,7 +4173,6 @@ function getPie(container, width, height, dataset, configs) {
         legend: getLegend(configs, columns.slice(1, columns.length)),
         toolbox: getToolbox(configs, container, dataset, false),
         tooltip: getTooltip(configs, "item", function (param) {
-            console.log(param);
             return [param.seriesName,
                 param.marker + "&ensp;" + param.name +
                 ":<span style='display:inline-block;min-width:30px;text-align:right;font-weight:bold'>&ensp;" +
@@ -4187,7 +4188,7 @@ function getPie(container, width, height, dataset, configs) {
 
     if (configs.richTextLabel.value.toBoolean()) {
         //富文本
-        option.label = getPieRichText(colors);
+        option.label = getPieRichText(configs, colors);
     }
 
     setTimeout(() => {
@@ -4210,7 +4211,7 @@ function getRing(container, width, height, dataset, configs) {
 
     let myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value,renderer:configs.renderer.value});
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
-    let colors = (typeof myChart._theme !== "undefined" ? myChart._theme.color : ['#c23531', '#2f4554', '#61a0a8', '#d48265', '#91c7ae', '#749f83', '#ca8622', '#bda29a', '#6e7074', '#546570', '#c4ccd3']);
+    let colors = ((typeof myChart._theme !== "undefined" && myChart._theme.color != null) ? myChart._theme.color : ['#c23531', '#2f4554', '#61a0a8', '#d48265', '#91c7ae', '#749f83', '#ca8622', '#bda29a', '#6e7074', '#546570', '#c4ccd3']);
 
     let columns = dataset["columns"].reduce(function (tmp, column) {
         tmp.push(column.name);
@@ -4265,7 +4266,7 @@ function getRing(container, width, height, dataset, configs) {
 
     let top = toPoint(configs.grid_top.value);
     let left = toPoint(configs.grid_left.value);
-    let groupWith = configs.groupWith.value;
+    let groupWith = configs.pieGroupWith.value;
     let lines = parseInt(series.length / groupWith + 0.5);
     let h = parseInt((100 - toPoint(configs.grid_top.value) - toPoint(configs.grid_bottom.value)) / lines);
     let w = (100 - toPoint(configs.grid_left.value) - toPoint(configs.grid_right.value)) / groupWith;
@@ -4298,7 +4299,7 @@ function getRing(container, width, height, dataset, configs) {
 
     if (configs.richTextLabel.value.toBoolean()) {
         //富文本
-        option.label = getPieRichText(colors);
+        option.label = getPieRichText(configs, colors);
     }
     setTimeout(() => {
         myChart.hideLoading();
@@ -4320,7 +4321,7 @@ function getRose(container, width, height, dataset, configs) {
 
     let myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value,renderer:configs.renderer.value});
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
-    let colors = (typeof myChart._theme !== "undefined" ? myChart._theme.color : ['#c23531', '#2f4554', '#61a0a8', '#d48265', '#91c7ae', '#749f83', '#ca8622', '#bda29a', '#6e7074', '#546570', '#c4ccd3']);
+    let colors = ((typeof myChart._theme !== "undefined" && myChart._theme.color != null) ? myChart._theme.color : ['#c23531', '#2f4554', '#61a0a8', '#d48265', '#91c7ae', '#749f83', '#ca8622', '#bda29a', '#6e7074', '#546570', '#c4ccd3']);
 
     let columns = dataset["columns"].reduce(function (tmp, column) {
         tmp.push(column.name);
@@ -4375,7 +4376,7 @@ function getRose(container, width, height, dataset, configs) {
     }
     let top = toPoint(configs.grid_top.value);
     let left = toPoint(configs.grid_left.value);
-    let groupWith = configs.groupWith.value;
+    let groupWith = configs.pieGroupWith.value;
     let lines = parseInt(series.length / groupWith + 0.5);
     let h = parseInt((100 - toPoint(configs.grid_top.value) - toPoint(configs.grid_bottom.value)) / lines);
     let w = (100 - toPoint(configs.grid_left.value) - toPoint(configs.grid_right.value)) / groupWith;
@@ -4408,7 +4409,7 @@ function getRose(container, width, height, dataset, configs) {
 
     if (configs.richTextLabel.value.toBoolean()) {
         //富文本
-        option.label = getPieRichText(colors);
+        option.label = getPieRichText(configs, colors);
     }
     setTimeout(() => {
         myChart.hideLoading();
@@ -5568,472 +5569,6 @@ function getFunnel(container, width, height, dataset, configs) {
     return container;
 }
 
-function getLiqiud(container, width, height, dataset, configs) {
-    if (container == null) {
-        container = document.createElement("div");
-        container.className = "echarts-container";
-        container.id = "echarts-container";
-        container.style.width = width;
-        container.style.height = height;
-    }
-
-    let myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value,renderer:configs.renderer.value});
-
-    myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
-
-    let columns = dataset["columns"].reduce(function (tmp, column) {
-        tmp.push(column.name);
-        return tmp;
-    }, []);
-    let legends = [];
-    let series = [];
-
-    function init() {
-        for (let i = 0; i < dataset["data"].length; i++) {
-            let r = dataset["data"][i];
-            let serie = {
-                name: r[columns[0]].value,
-                type: "liquidFill",
-                data: [],
-                color: ["#294D99", "#156ACF", "#1598ED", "#45BDFF"],
-                //center: ["50%", "50%"],
-                //radius: "50%",
-                amplitude: "8%",
-                waveLength: "80%",
-                phase: "auto",
-                period: "auto",
-                direction: "right",
-                smooth: configs.lineSmooth.value.toBoolean(),
-
-                shape: configs.liqiudShape.value,
-
-                waveAnimation: true,
-
-                outline: {
-                    show: true,
-                    borderDistance: 3,
-                    itemStyle: {
-                        color: "#1598ED",//"none",
-                        borderColor: "#294D99",
-                        borderWidth: 2,
-                        shadowBlur: 10,
-                        shadowColor: "rgba(0, 0, 0, 0.25)"
-                    }
-                },
-
-                backgroundStyle: {
-                    color: "#E3F7FF"
-                },
-
-                itemStyle: {
-                    opacity: 0.6,
-                    shadowBlur: 50,
-                    shadowColor: "rgba(0, 0, 0, 0.4)"
-                },
-
-                label: {
-                    show: true,
-                    insideColor: "#fff",
-                    fontSize: configs.liqiudFontSize.value,
-                    fontWeight: "bold",
-                    align: "center",
-                    baseline: "middle",
-                    position: "inside"
-                },
-
-                emphasis: {
-                    itemStyle: {
-                        opacity: 0.8
-                    }
-                },
-
-            };
-            setSeriesAnimation(serie, configs, 0);
-            for (let c = 0; c < columns.length; c++) {
-                if (c == 0) {
-                    legends.push(r[columns[c]].value);
-                }
-                else {
-                    serie.data.push({
-                        name: columns[c],
-                        value: r[columns[c]].value
-                    });
-                }
-            }
-            series.push(serie);
-        }
-
-        let groupWith = configs.groupWith.value;
-        let lines = parseInt(series.length / groupWith + 0.5);
-        let radius = 80 / (lines > groupWith ? lines : groupWith);
-        for (let i = 0; i < series.length; i++) {
-            series[i].radius = radius + "%";
-            let x = radius * 2 / 3 + (i % groupWith) * (radius + 5);
-            let y = radius * 2 / 3 + parseInt(i / groupWith) * (radius + 5);
-            series[i].center = [x + "%", y + "%"];
-        }
-    }
-
-    init();
-    let option = {
-        backgroundColor: getBackgroundColor(configs),
-        tooltip: {
-            show: configs.tooltipDisplay.value.toBoolean(),
-            formatter: function (param) {
-                return [param.seriesName, param.marker + "&ensp;" + param.name + ":<span style='display:inline-block;min-width:30px;text-align:right;font-weight:bold'>&ensp;" + param.value + "</span>"].join("<br>");
-            }
-        },
-        title: getTitle(configs),
-        legend: getLegend(configs, legends),
-        toolbox: getToolbox(configs, container, dataset, true),
-        label: {
-            formatter: function (param) {
-                return param.seriesName + "\n\n"
-                    + param.name + "\n\n"
-                    + Math.round(param.value * 10000) / 100 + "%";
-            },
-        },
-        series: series,
-        graphic: getWaterGraphic(__SYS_LOGO_LINK__),
-    };
-
-    setTimeout(() => {
-        myChart.hideLoading();
-        myChart.setOption(option);
-    }, Number(configs.loadingTimes.value) * 1000);
-
-    myChart.on("mouseover", function (params) {
-        stopTimer();
-    });
-    myChart.on("mouseout", function (params) {
-        startTimer();
-    });
-
-    let timer;
-
-    function doing() {
-        let option = myChart.getOption();
-        for (let i = 0; i < option.series.length; i++) {
-            if (option.series[i].data.length > 1) {
-                let data = option.series[i].data.slice(1);
-                data.push(option.series[i].data[0]);
-                option.series[i].data = data;
-            }
-        }
-
-        myChart.setOption(option);
-    }
-
-    function startTimer() {
-        timer = setInterval(doing, configs.seriesLoopPlayInterval.value * 1000);
-    }
-
-    function stopTimer() {
-        clearInterval(timer);
-        timer = null;
-    }
-
-    setTimeout(startTimer, configs.seriesLoopPlayInterval.value * 1000);
-
-    __ECHARTS__.addHistory(container, configs, dataset, width, height);
-    return container;
-}
-
-function getGaugeWithAll(container, width, height, dataset, configs) {
-    if (container == null) {
-        container = document.createElement("div");
-        container.className = "echarts-container";
-        container.id = "echarts-container";
-        container.style.width = width;
-        container.style.height = height;
-    }
-
-    let myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value,renderer:configs.renderer.value});
-
-    myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
-
-    let columns = dataset["columns"].reduce(function (tmp, column) {
-        tmp.push(column.name);
-        return tmp;
-    }, []);
-    let legends = [];
-    let series = [];
-
-    for (let i = 0; i < dataset["data"].length; i++) {
-        let r = dataset["data"][i];
-        let serie = {
-            name: legends[i],
-            type: "gauge",
-            title: {
-                fontWeight: "bolder",
-                fontSize: configs.gaugeTitleFontSize.value,
-                color: "gray",
-                textShadowColor: "rgba(0, 0, 0, 0.5)",
-                textShadowBlur: 10,
-            },
-            axisLine: {
-                lineStyle: {
-                    width: configs.gaugeAxisLineWidth.value,//10, //圆X轴宽度
-                    shadowColor: "rgba(0, 0, 0, 0.5)",
-                    shadowBlur: 10,
-                    color: [[0.2, "#3CB371"], [0.8, "#6388ae"], [1, "#DB7093"]]
-                    //默认[[0.2, "#91c7ae"], [0.8, "#63869e"], [1, "#c23531"]]
-                }
-            },
-            axisLabel: {
-                fontSize: configs.gaugeAxisLabelFontSize.value,
-                textShadowColor: "rgba(0, 0, 0, 0.5)",
-                textShadowBlur: 10,
-            },
-            splitLine: {
-                length: 15,
-            },
-            pointer: {
-                width: 5, //指针宽度
-                length: "60%"  //指针长度
-            },
-            detail: {
-                formatter: ["{value}%", ""].join("\n"),
-                fontSize: configs.gaugeLabelFontSize.value,
-                textShadowColor: "rgba(0, 0, 0, 0.5)",
-                textShadowBlur: 10,
-            },
-            data: [],
-        };
-        setSeriesAnimation(serie, configs, c);
-        for (let c = 0; c < columns.length; c++) {
-            if (c == 0)
-                legends.push(r[columns[c]].value);
-            else {
-                serie.data.push({
-                    "name": legends[i] + "\n\n" + columns[c],
-                    "value": r[columns[c]].value,
-                    itemStyle: {
-                        shadowColor: "rgba(0, 0, 0, 0.5)",
-                        shadowBlur: 10
-                    }
-                })
-            }
-        }
-
-        series.push(serie);
-    }
-
-    let groupWith = configs.groupWith.value;
-    let lines = parseInt(series.length / groupWith + 0.5);
-    let radius = 80 / (lines > groupWith ? lines : groupWith);
-    for (let i = 0; i < series.length; i++) {
-        series[i].radius = radius + "%";
-        let x = radius * 2 / 3 + (i % groupWith) * (radius + 5);
-        let y = radius * 2 / 3 + parseInt(i / groupWith) * (radius + 5);
-        series[i].center = [x + "%", y + "%"];
-    }
-
-    let option = {
-        aria: getAria(configs),
-        backgroundColor: getBackgroundColor(configs),
-        grid: {
-            x: configs.grid_left.value,
-            y: configs.grid_top.value,
-            x2: configs.grid_right.value,
-            y2: configs.grid_bottom.value,
-            containLabel: configs.grid_containLabel.value.toBoolean(),
-            backgroundColor: "transparent"
-        },
-        title: getTitle(configs),
-        legend: getLegend(configs, legends),
-        tooltip: {
-            show: configs.tooltipDisplay.value.toBoolean(),
-            formatter: "{b} : {c}%"
-        },
-        toolbox: getToolbox(configs, container, dataset, true),
-        series: series,
-    };
-    setTimeout(() => {
-        myChart.hideLoading();
-        myChart.setOption(option);
-    }, Number(configs.loadingTimes.value) * 1000);
-    let timer;
-    myChart.on("mouseover", function (params) {
-        stopTimer();
-    });
-    myChart.on("mouseout", function (params) {
-        startTimer();
-    });
-
-    function doing() {
-        let option = myChart.getOption();
-        for (let i = 0; i < option.series.length; i++) {
-            if (option.series[i].data.length > 1) {
-                let data = option.series[i].data.slice(1);
-                data.push(option.series[i].data[0]);
-                option.series[i].data = data;
-            }
-        }
-
-        myChart.setOption(option);
-    }
-
-    function startTimer() {
-        timer = setInterval(doing, configs.seriesLoopPlayInterval.value * 1000);
-    }
-
-    function stopTimer() {
-        clearInterval(timer);
-        timer = null;
-    }
-
-    setTimeout(startTimer, configs.seriesLoopPlayInterval.value * 1000);
-
-    __ECHARTS__.addHistory(container, configs, dataset, width, height);
-    return container;
-}
-
-function getGaugeWithOne(container, width, height, dataset, configs) {
-    if (container == null) {
-        container = document.createElement("div");
-        container.className = "echarts-container";
-        container.id = "echarts-container";
-        container.style.width = width;
-        container.style.height = height;
-    }
-
-    let myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value,renderer:configs.renderer.value});
-
-    myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
-
-    let columns = dataset["columns"].reduce(function (tmp, column) {
-        tmp.push(column.name);
-        return tmp;
-    }, []);
-    let legends = [];
-    let seriesgroup = [];
-    let index = 0;
-
-    for (let c = 0; c < columns.length; c++) {
-        let series = [];
-        for (let i = 0; i < dataset["data"].length; i++) {
-            let r = dataset["data"][i];
-            if (c == 0) {
-                legends.push(r[columns[c]].value);
-            } else {
-                let serie = {
-                    name: legends[i],
-                    type: "gauge",
-                    title: {
-                        fontWeight: "bolder",
-                        fontSize: configs.gaugeTitleFontSize.value,
-                        color: "gray",
-                        textShadowColor: "rgba(0, 0, 0, 0.5)",
-                        textShadowBlur: 10,
-                    },
-                    axisLine: {
-                        lineStyle: {
-                            width: configs.gaugeAxisLineWidth.value,//10, //圆X轴宽度
-                            shadowColor: "rgba(0, 0, 0, 0.5)",
-                            shadowBlur: 10,
-                            color: [[0.2, "#3CB371"], [0.8, "#6388ae"], [1, "#DB7093"]]
-                            //默认[[0.2, "#91c7ae"], [0.8, "#63869e"], [1, "#c23531"]]
-                        }
-                    },
-                    axisLabel: {
-                        fontSize: configs.gaugeAxisLabelFontSize.value,
-                        textShadowColor: "rgba(0, 0, 0, 0.5)",
-                        textShadowBlur: 10,
-                    },
-                    splitLine: {
-                        length: 15,
-                    },
-                    pointer: {
-                        width: 5, //指针宽度
-                        length: "60%"  //指针长度
-                    },
-                    detail: {
-                        formatter: ["{value}%", ""].join("\n"),
-                        fontSize: configs.gaugeLabelFontSize.value,
-                        textShadowColor: "rgba(0, 0, 0, 0.5)",
-                        textShadowBlur: 10,
-                    },
-                    data: [],
-                };
-                setSeriesAnimation(serie, configs, c);
-                serie.data.push({
-                    "name": legends[i] + "\n\n" + columns[c],
-                    "value": r[columns[c]].value,
-                    itemStyle: {
-                        shadowColor: "rgba(0, 0, 0, 0.5)",
-                        shadowBlur: 10
-                    }
-                });
-                series.push(serie);
-            }
-        }
-        seriesgroup.push(series);
-    }
-
-    let groupWith = configs.groupWith.value;
-    for (let g = 0; g < seriesgroup.length; g++) {
-        let lines = parseInt(seriesgroup[g].length / groupWith + 0.5);
-        let radius = 80 / (lines > groupWith ? lines : groupWith);
-        for (let i = 0; i < seriesgroup[g].length; i++) {
-            let x = radius * 2 / 3 + (i % groupWith) * (radius + 5);
-            let y = radius * 2 / 3 + parseInt(i / groupWith) * (radius + 5);
-            seriesgroup[g][i].radius = radius + "%";
-            seriesgroup[g][i].center = [x + "%", y + "%"];
-        }
-    }
-
-    let option = {
-        aria: getAria(configs),
-        backgroundColor: getBackgroundColor(configs),
-        title: getTitle(configs),
-        legend: getLegend(configs, legends),
-        tooltip: {
-            show: configs.tooltipDisplay.value.toBoolean(),
-            formatter: "{b} : {c}%"
-        },
-        toolbox: getToolbox(configs, container, dataset, true),
-        series: seriesgroup[index],
-        graphic: getWaterGraphic(__SYS_LOGO_LINK__),
-    };
-    setTimeout(() => {
-        myChart.hideLoading();
-        myChart.setOption(option);
-    }, Number(configs.loadingTimes.value) * 1000);
-
-    let timer;
-    myChart.on("mouseover", function (params) {
-        stopTimer();
-    });
-    myChart.on("mouseout", function (params) {
-        startTimer();
-    });
-
-    function doing() {
-        let option = myChart.getOption();
-        if (index < (seriesgroup.length - 1)) {
-            index += 1;
-        } else {
-            index = 0;
-        }
-        option.series = seriesgroup[index];
-        myChart.setOption(option);
-    }
-
-    function startTimer() {
-        timer = setInterval(doing, configs.seriesLoopPlayInterval.value * 1000);
-    }
-
-    function stopTimer() {
-        clearInterval(timer);
-        timer = null;
-    }
-
-    setTimeout(startTimer, configs.seriesLoopPlayInterval.value * 1000);
-
-    __ECHARTS__.addHistory(container, configs, dataset, width, height);
-    return container;
-}
 
 function getCalendar(container, width, height, dataset, configs) {
     if (container == null) {
@@ -7232,7 +6767,7 @@ function getCategoryLine(container, width, height, dataset, configs) {
 
     let myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value,renderer:configs.renderer.value});
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
-    let colors = (typeof myChart._theme !== "undefined" ? myChart._theme.color : ['#c23531', '#2f4554', '#61a0a8', '#d48265', '#91c7ae', '#749f83', '#ca8622', '#bda29a', '#6e7074', '#546570', '#c4ccd3']);
+    let colors = ((typeof myChart._theme !== "undefined" && myChart._theme.color != null) ? myChart._theme.color : ['#c23531', '#2f4554', '#61a0a8', '#d48265', '#91c7ae', '#749f83', '#ca8622', '#bda29a', '#6e7074', '#546570', '#c4ccd3']);
 
     let containerWidth = myChart.getWidth();//Number(width.replace(/px/i, ""));
     let containerHeight = myChart.getHeight();//Number(height.replace(/px/i, ""));
@@ -7319,7 +6854,7 @@ function getCategoryLine(container, width, height, dataset, configs) {
             serie.animationTypeUpdate = configs.animationTypeUpdate.value;
 
             if (configs.richTextLabel.value.toBoolean()) {
-                serie.label = getPieRichText(colors);
+                serie.label = getPieRichText(configs, colors);
             }
             serie.labelLine = {
                 show: true
@@ -7474,7 +7009,7 @@ function getGeoMigrateLinesOfChinaCity(container, width, height, dataset, config
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
     let containerWidth = myChart.getWidth();//Number(width.replace(/px/i, ""));
     let containerHeight = myChart.getHeight();//Number(height.replace(/px/i, ""));
-    let colors = (typeof myChart._theme !== "undefined" ? myChart._theme.color : ['#c23531', '#2f4554', '#61a0a8', '#d48265', '#91c7ae', '#749f83', '#ca8622', '#bda29a', '#6e7074', '#546570', '#c4ccd3']);
+    let colors = ((typeof myChart._theme !== "undefined" && myChart._theme.color != null) ? myChart._theme.color : ['#c23531', '#2f4554', '#61a0a8', '#d48265', '#91c7ae', '#749f83', '#ca8622', '#bda29a', '#6e7074', '#546570', '#c4ccd3']);
 
     let columns = dataset["columns"].reduce(function (tmp, column) {
         tmp.push(column.name);
@@ -7763,7 +7298,7 @@ function getCategoryLineForGauge(container, width, height, dataset, configs) {
     let containerWidth = myChart.getWidth();//Number(width.replace(/px/i, ""));
     let containerHeight = myChart.getHeight();//Number(height.replace(/px/i, ""));
 
-    let colors = (typeof myChart._theme !== "undefined" ? myChart._theme.color : ['#c23531', '#2f4554', '#61a0a8', '#d48265', '#91c7ae', '#749f83', '#ca8622', '#bda29a', '#6e7074', '#546570', '#c4ccd3']);
+    let colors = ((typeof myChart._theme !== "undefined" && myChart._theme.color != null) ? myChart._theme.color : ['#c23531', '#2f4554', '#61a0a8', '#d48265', '#91c7ae', '#749f83', '#ca8622', '#bda29a', '#6e7074', '#546570', '#c4ccd3']);
     let columns = dataset["columns"].reduce(function (tmp, column) {
         tmp.push(column.name);
         return tmp;
@@ -7934,7 +7469,7 @@ function getCategoryLineForLiqiud(container, width, height, dataset, configs) {
     }, []);
     let times = [];
     let options = [];
-    let colors = (typeof myChart._theme !== "undefined" ? myChart._theme.color : ['#c23531', '#2f4554', '#61a0a8', '#d48265', '#91c7ae', '#749f83', '#ca8622', '#bda29a', '#6e7074', '#546570', '#c4ccd3']);//["#294D99", "#156ACF", "#1598ED", "#45BDFF"]
+    let colors = ((typeof myChart._theme !== "undefined" && myChart._theme.color != null) ? myChart._theme.color : ['#c23531', '#2f4554', '#61a0a8', '#d48265', '#91c7ae', '#749f83', '#ca8622', '#bda29a', '#6e7074', '#546570', '#c4ccd3']);//["#294D99", "#156ACF", "#1598ED", "#45BDFF"]
 
     //计算所有数据最大与最小值及间距,用于转换
     let b = {};
@@ -8596,7 +8131,7 @@ function getScrollingScreen(container, width, height, dataset, configs) {
 
     let myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value,renderer:configs.renderer.value});
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
-    let colorPalette = (typeof myChart._theme !== "undefined" ? myChart._theme.color : ['#c23531', '#2f4554', '#61a0a8', '#d48265', '#91c7ae', '#749f83', '#ca8622', '#bda29a', '#6e7074', '#546570', '#c4ccd3']);
+    let colorPalette = ((typeof myChart._theme !== "undefined" && myChart._theme.color != null) ? myChart._theme.color : ['#c23531', '#2f4554', '#61a0a8', '#d48265', '#91c7ae', '#749f83', '#ca8622', '#bda29a', '#6e7074', '#546570', '#c4ccd3']);
 
     let containerWidth = myChart.getWidth();//Number(width.replace(/px/i, ""));
     let containerHeight = myChart.getHeight();//Number(height.replace(/px/i, ""));
@@ -8760,7 +8295,7 @@ function getWalkingLantern(container, width, height, dataset, configs) {
 
     let myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value,renderer:configs.renderer.value});
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
-    let colorPalette = (typeof myChart._theme !== "undefined" ? myChart._theme.color : ['#c23531', '#2f4554', '#61a0a8', '#d48265', '#91c7ae', '#749f83', '#ca8622', '#bda29a', '#6e7074', '#546570', '#c4ccd3']);
+    let colorPalette = ((typeof myChart._theme !== "undefined" && myChart._theme.color != null) ? myChart._theme.color : ['#c23531', '#2f4554', '#61a0a8', '#d48265', '#91c7ae', '#749f83', '#ca8622', '#bda29a', '#6e7074', '#546570', '#c4ccd3']);
 
     let containerWidth = myChart.getWidth();//Number(width.replace(/px/i, ""));
     let containerHeight = myChart.getHeight();//Number(height.replace(/px/i, ""));
@@ -8935,7 +8470,7 @@ function getWindowShades(container, width, height, dataset, configs) {
 
     let myChart = echarts.init(container, configs.echartsTheme.value);
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
-    let colorPalette = (typeof myChart._theme !== "undefined" ? myChart._theme.color : ['#c23531', '#2f4554', '#61a0a8', '#d48265', '#91c7ae', '#749f83', '#ca8622', '#bda29a', '#6e7074', '#546570', '#c4ccd3']);
+    let colorPalette = ((typeof myChart._theme !== "undefined" && myChart._theme.color != null) ? myChart._theme.color : ['#c23531', '#2f4554', '#61a0a8', '#d48265', '#91c7ae', '#749f83', '#ca8622', '#bda29a', '#6e7074', '#546570', '#c4ccd3']);
 
     let containerWidth = myChart.getWidth();//Number(width.replace(/px/i, ""));
     let containerHeight = myChart.getHeight();//Number(height.replace(/px/i, ""));
@@ -9463,7 +8998,7 @@ function getClock(container, width, height, dataset, configs) {
 
     let myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value,renderer:configs.renderer.value});
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
-    let colors = (typeof myChart._theme !== "undefined" ? myChart._theme.color : ['#c23531', '#2f4554', '#61a0a8', '#d48265', '#91c7ae', '#749f83', '#ca8622', '#bda29a', '#6e7074', '#546570', '#c4ccd3']);
+    let colors = ((typeof myChart._theme !== "undefined" && myChart._theme.color != null) ? myChart._theme.color : ['#c23531', '#2f4554', '#61a0a8', '#d48265', '#91c7ae', '#749f83', '#ca8622', '#bda29a', '#6e7074', '#546570', '#c4ccd3']);
 
     let columns = dataset["columns"].reduce(function (tmp, column) {
         tmp.push(column.name);
@@ -10039,7 +9574,7 @@ function getWordCloud(container, width, height, dataset, configs) {
         renderer: configs.renderer.value
     });
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
-    let colors = (typeof myChart._theme !== "undefined" ? myChart._theme.color : ['#c23531', '#2f4554', '#61a0a8', '#d48265', '#91c7ae', '#749f83', '#ca8622', '#bda29a', '#6e7074', '#546570', '#c4ccd3']);//["#294D99", "#156ACF", "#1598ED", "#45BDFF"]
+    let colors = ((typeof myChart._theme !== "undefined" && myChart._theme.color != null) ? myChart._theme.color : ['#c23531', '#2f4554', '#61a0a8', '#d48265', '#91c7ae', '#749f83', '#ca8622', '#bda29a', '#6e7074', '#546570', '#c4ccd3']);//["#294D99", "#156ACF", "#1598ED", "#45BDFF"]
 
     let series = [];
     let columns = [];
@@ -10108,7 +9643,7 @@ function getWordCloud(container, width, height, dataset, configs) {
 
         let top = toPoint(configs.grid_top.value);
         let left = toPoint(configs.grid_left.value);
-        let groupWith = configs.groupWith.value;
+        let groupWith = configs.wordCloudGroupWith.value;
         let lines = parseInt(series.length / groupWith + 0.5);
         let height = parseInt((100 - toPoint(configs.grid_top.value) - toPoint(configs.grid_bottom.value)) / lines);
         let width = (100 - toPoint(configs.grid_left.value) - toPoint(configs.grid_right.value)) / groupWith;
@@ -10156,7 +9691,7 @@ function getSunburst(container, width, height, dataset, configs) {
 
         let myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value,renderer:configs.renderer.value});
         myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
-        let colors = (typeof myChart._theme !== "undefined" ? myChart._theme.color : ['#c23531', '#2f4554', '#61a0a8', '#d48265', '#91c7ae', '#749f83', '#ca8622', '#bda29a', '#6e7074', '#546570', '#c4ccd3']);
+        let colors = ((typeof myChart._theme !== "undefined" && myChart._theme.color != null) ? myChart._theme.color : ['#c23531', '#2f4554', '#61a0a8', '#d48265', '#91c7ae', '#749f83', '#ca8622', '#bda29a', '#6e7074', '#546570', '#c4ccd3']);
 
         let columns = [];
         let series = [];
@@ -10266,7 +9801,7 @@ function getTreemap(container, width, height, dataset, configs) {
 
     let myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value,renderer:configs.renderer.value});
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
-    let colors = (typeof myChart._theme !== "undefined" ? myChart._theme.color : ['#c23531', '#2f4554', '#61a0a8', '#d48265', '#91c7ae', '#749f83', '#ca8622', '#bda29a', '#6e7074', '#546570', '#c4ccd3']);
+    let colors = ((typeof myChart._theme !== "undefined" && myChart._theme.color != null)  ? myChart._theme.color : ['#c23531', '#2f4554', '#61a0a8', '#d48265', '#91c7ae', '#749f83', '#ca8622', '#bda29a', '#6e7074', '#546570', '#c4ccd3']);
     let columns = [];
     let datas = [];
     let parent = "";
@@ -10457,7 +9992,7 @@ function getParallelAxis(container, width, height, dataset, configs) {
 
     let myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value,renderer:configs.renderer.value});
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
-    let colors = (typeof myChart._theme !== "undefined" ? myChart._theme.color : ['#c23531', '#2f4554', '#61a0a8', '#d48265', '#91c7ae', '#749f83', '#ca8622', '#bda29a', '#6e7074', '#546570', '#c4ccd3']);
+    let colors = ((typeof myChart._theme !== "undefined" && myChart._theme.color != null) ? myChart._theme.color : ['#c23531', '#2f4554', '#61a0a8', '#d48265', '#91c7ae', '#749f83', '#ca8622', '#bda29a', '#6e7074', '#546570', '#c4ccd3']);
 
     let columns = dataset["columns"].reduce(function (tmp, column) {
         tmp.push(column.name);
