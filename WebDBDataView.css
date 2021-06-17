@@ -286,19 +286,35 @@ img.title_close_button:hover{
     background-color: var(--toolbar-button-hover-background-color);
 }
 
-.toolbar .tabButton{
+.tabToolbar {
+    background-color: transparent;
+    color: var(--toolbar-color);
+    width:100%;
+    height: 36px;
+    line-height: 36px;
+    padding:0px;
+    float:left;
+    margin: 0px;
+    position: relative;
+    white-space: nowrap;
+    overflow:hidden;
+}
+
+.tabToolbar .tabButton{
+    background-color: var(--toolbar-background-color);
     height: 100%;
     width: 60px;
     text-align: center;
     line-height: 36px;
-    margin: 0px;
+    margin-right: 1px;
     cursor: pointer;
     float:left;
     position: relative;
-    border-radius: 0px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
 }
 
-.toolbar .tabButton:hover{
+.tabToolbar .tabButton:hover{
     border-top-style:solid;
     border-top-color: lightgreen;
     border-top-width: 2px;
@@ -306,7 +322,7 @@ img.title_close_button:hover{
     background-color: var(--toolbar-button-hover-background-color);
 }
 
-.toolbar select {
+.toolbar select,.tabToolbar select {
     background-color: var(--toolbar-background-color);
     float: right;
     height: 100%;
@@ -318,7 +334,7 @@ img.title_close_button:hover{
     border-top-right-radius: 5px;
 }
 
-.toolbar select:hover {
+.toolbar select:hover,.tabToolbar select:hover {
     background-color: var(--toolbar-button-hover-background-color);
 }
 

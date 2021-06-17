@@ -2054,7 +2054,7 @@ var geoCoordMap = {
         container.appendChild(hr);
 
         let d = document.createElement("div");
-        d.className = "toolbar";
+        d.className = "tabToolbar";
         let b = document.createElement("a");
         b.className = "tabButton";
         b.innerHTML = "国内城市";
