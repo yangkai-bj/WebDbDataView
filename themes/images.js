@@ -1,3 +1,134 @@
+function getImageBase64Code() {
+    let container = document.createElement("div");
+    container.id = "image-base64-code";
+    container.className = "table-data-format";
+    container.style.width = "600px";
+    let title = document.createElement("div");
+    title.className = "container-title";
+    let span = document.createElement("span");
+    span.innerHTML = "● 图片转码";
+    title.appendChild(span);
+    let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
+    close.className = "container-close";
+    title.appendChild(close);
+    container.appendChild(title);
+
+    let hr = document.createElement("hr");
+    container.appendChild(hr);
+    let source = document.createElement("input");
+    source.type = "file";
+    source.id = "source-image-file";
+    source.style.display = "none";
+    source.onchange = function () {
+        if (this.files.length > 0) {
+            let file = this.files[0];
+            if (!/image\/\w+/.test(file.type)) {
+                alert("请选择图片文件！");
+                return false;
+            }
+            let reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = function (e) {
+                $("image-container").innerHTML = "";
+                let image = document.createElement("img");
+                image.id = "source-image-file-image";
+                image.type = "img";
+                image.src = this.result;
+                image.style.display = "none";
+                image.onload = function () {
+                    this.alt = this.title = $("source-image-file").files[0].name + "\nwidth:" + this.width + "\nheight:" + this.height;
+
+                    function getSize(w, h, width, height) {
+                        if (width > w || height > h) {
+                            if (width > w) {
+                                height = height / (width / w);
+                                width = w;
+                            }
+                            if (height > h) {
+                                width = width / (height / h);
+                                height = h;
+                            }
+                        }
+                        return [width, height];
+                    }
+
+                    let parent = getAbsolutePosition($("image-container"));
+                    let size = getSize(parent.width, parent.height, this.width, this.height);
+                    this.width = size[0];
+                    this.height = size[1];
+                    this.style.margin = "auto";
+                    this.style.display = "block";
+                    this.style.padding = (parent.height - size[1]) / 2 + "px 0";
+                };
+                $("image-container").appendChild(image);
+            };
+        } else
+            $("image-container").innerHTML = "";
+    };
+    container.appendChild(source);
+
+    let filecontainer = document.createElement("div");
+    filecontainer.className = "tabToolbar-content-container";
+    filecontainer.id = "image-container";
+    filecontainer.style.width = "100%";
+    filecontainer.style.height = "370.8px";
+    container.appendChild(filecontainer);
+
+    let br = document.createElement("hr");
+    br.className = "br";
+    container.appendChild(br);
+
+    let tool = document.createElement("div");
+    tool.className = "groupbar";
+    container.appendChild(tool);
+
+    let show = document.createElement("div");
+    show.className = "button";
+    show.innerText = "打开";
+    show.onclick = function () {
+        $("source-image-file").click();
+    };
+    tool.appendChild(show);
+
+    let confirm = document.createElement("div");
+    confirm.className = "button";
+    confirm.innerText = "代码";
+    confirm.onclick = function () {
+        ///检验是否为图像文件
+        let file = $("source-image-file").files[0];
+        if (!/image\/\w+/.test(file.type)) {
+            alert("请选择图片文件！");
+            return false;
+        }
+        let reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = function (e) {
+            $("image-container").innerHTML = "";
+            let edit = document.createElement("textarea");
+            edit.id = "source-image-file-code";
+            edit.style.cssText = "width: 98.9%;\n" +
+                "height: 600px;\n" +
+                "resize: none;";
+            edit.type = "textarea";
+            edit.setAttribute("readonly", "readonly");
+            edit.value = this.result;
+            $("image-container").appendChild(edit);
+        }
+    };
+    tool.appendChild(confirm);
+
+    let cancel = document.createElement("div");
+    cancel.className = "button";
+    cancel.innerText = "退出";
+    cancel.onclick = close.onclick = function () {
+        $("image-base64-code").parentNode.removeChild($("image-base64-code"));
+    };
+    tool.appendChild(cancel);
+
+    setDialogDrag(title);
+
+    return container;
+}
 
 function getBase64Image(src) {
     //图片转BASE64代码方法
