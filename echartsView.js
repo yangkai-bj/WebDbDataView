@@ -2053,28 +2053,37 @@ var geoCoordMap = {
         let hr = document.createElement("hr");
         container.appendChild(hr);
 
-        let d = document.createElement("div");
-        d.className = "tabToolbar";
+        let toolbar = document.createElement("div");
+        toolbar.className = "tabToolbar";
         let b = document.createElement("a");
         b.className = "tabButton";
         b.innerHTML = "国内城市";
         b.onclick = function () {
             $("city-coord-table").style.display = "block";
             $("custom-coord-table").style.display = "none";
+            let tb = this.parentNode.getElementsByClassName("tabButton");
+            for (let i = 0; i < tb.length; i++) {
+                tb[i].style.background = "var(--toolbar-background-color)";
+            }
+            this.style.background = "var(--toolbar-button-hover-background-color)";
         };
-        d.appendChild(b);
+        toolbar.appendChild(b);
         b = document.createElement("a");
         b.className = "tabButton";
         b.innerHTML = "用户定义";
         b.onclick = function () {
             $("city-coord-table").style.display = "none";
             $("custom-coord-table").style.display = "block";
+            let tb = this.parentNode.getElementsByClassName("tabButton");
+            for (let i = 0; i < tb.length; i++) {
+                tb[i].style.background = "var(--toolbar-background-color)";
+            }
+            this.style.background = "var(--toolbar-button-hover-background-color)";
         };
-        d.appendChild(b);
-
+        toolbar.appendChild(b);
 
         let localmap = document.createElement("select");
-        localmap.className = "button";
+        localmap.className = "tabButton";
         localmap.id = "set-local-map";
         localmap.style.cssFloat = "right";
         let regions = echarts.getMap("china").geoJson.features;
@@ -2096,16 +2105,25 @@ var geoCoordMap = {
         } catch (e) {
             console.log(e);
         }
+        localmap.onclick = function() {
+            let tb = this.parentNode.getElementsByClassName("tabButton");
+            for (let i = 0; i < tb.length; i++) {
+                tb[i].style.background = "var(--toolbar-background-color)";
+            }
+            this.style.background = "var(--toolbar-button-hover-background-color)";
+        };
         localmap.onchange = function () {
             geoCoordMap.LocalMap = this.value;
             setUserConfig("localMap", geoCoordMap.LocalMap);
         };
-        d.appendChild(localmap);
-        container.appendChild(d);
+        toolbar.appendChild(localmap);
+        container.appendChild(toolbar);
         setTooltip(localmap, "本地<br>地图");
 
         let tablecontainer = document.createElement("div");
-        tablecontainer.className = "map-config-table-container";
+        tablecontainer.className = "tabToolbar-content-container";
+        tablecontainer.style.width = "100%";
+        tablecontainer.style.height = "330px";
         container.appendChild(tablecontainer);
 
         let table = document.createElement("table");
@@ -2295,12 +2313,13 @@ var geoCoordMap = {
             };
         }
 
-        let br = document.createElement("p");
+        let br = document.createElement("hr");
+        br.className = "br";
         container.appendChild(br);
 
-        d = document.createElement("div");
-        d.className = "groupbar";
-        container.appendChild(d);
+        let groupbar = document.createElement("div");
+        groupbar.className = "groupbar";
+        container.appendChild(groupbar);
         b = document.createElement("a");
         b.className = "button";
         b.innerHTML = "增加";
@@ -2311,7 +2330,7 @@ var geoCoordMap = {
                 geoCoordMap.addGeoCoord($("custom-coord-table"), geoCoordMap.Custom);
 
         };
-        d.appendChild(b);
+        groupbar.appendChild(b);
 
         b = document.createElement("a");
         b.className = "button";
@@ -2347,7 +2366,7 @@ var geoCoordMap = {
                 }
             }
         };
-        d.appendChild(b);
+        groupbar.appendChild(b);
 
         b = document.createElement("a");
         b.className = "button";
@@ -2357,7 +2376,7 @@ var geoCoordMap = {
             setUserConfig("geoCoordMapCustom", JSON.stringify(geoCoordMap.Custom));
             $("local-map-config-Content").parentNode.removeChild($("local-map-config-Content"));
         };
-        d.appendChild(b);
+        groupbar.appendChild(b);
 
         b = document.createElement("a");
         b.className = "button";
@@ -2373,7 +2392,7 @@ var geoCoordMap = {
                 location.reload();
             }
         };
-        d.appendChild(b);
+        groupbar.appendChild(b);
 
         b = document.createElement("a");
         b.className = "button";
@@ -2402,7 +2421,7 @@ var geoCoordMap = {
             }
             $("local-map-config-Content").parentNode.removeChild($("local-map-config-Content"));
         };
-        d.appendChild(b);
+        groupbar.appendChild(b);
 
         setDialogDrag(title);
 
