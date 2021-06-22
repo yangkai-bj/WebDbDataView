@@ -307,7 +307,7 @@ img.title_close_button:hover{
     overflow: scroll;
 }
 
-.tabToolbar .tabButton,select{
+.tabToolbar .tabButton, .tabToolbar select{
     background-color: var(--toolbar-background-color);
     color: var(--toolbar-color);
     height: 100%;
@@ -322,7 +322,7 @@ img.title_close_button:hover{
     border-top-right-radius: 5px;
 }
 
-.tabToolbar .tabButton:hover,select:hover{
+.tabToolbar .tabButton:hover, .tabToolbar select:hover{
     border-top-style:solid;
     border-top-color: lightgreen;
     border-top-width: 2px;
@@ -665,38 +665,6 @@ img.title_close_button:hover{
     background-color: sandybrown;
 }
 
-.import-Content {
-    font-size: 90%;
-    position: absolute;
-    margin: 10px;
-    padding: 10px;
-    top:10px;
-    left:10px;
-    width: 350px;
-    border:1px solid var(--main-border-color);
-    background-color: whitesmoke;
-    color: var(--toolbar-background-color);
-    border-bottom-left-radius: 20px;
-    border-top-right-radius: 20px;
-    box-shadow: 2px 2px 3px #aaaaaa;
-    line-height: 20px;
-    z-index: 9999;
-    -webkit-animation: content-show 1s 1;
-    animation: content-show 1s 1;
-}
-
-.import-Content select ,input{
-    font-size: 90%;
-    padding: 0px;
-    margin: 0px;
-    width: 300px;
-    background-color: transparent;
-    color: var(--toolbar-background-color);
-    outline-style: none;
-    border:0px;
-    border-bottom:1px solid var(--main-border-color);
-}
-
 .create-database-Content{
     font-size: 90%;
     position: absolute;
@@ -766,6 +734,52 @@ img.title_close_button:hover{
     border-bottom:1px solid var(--main-border-color);
 }
 
+.import-configs-content {
+    font-size: 90%;
+    position: fixed;
+    margin: 10px;
+    padding: 10px;
+    top:10px;
+    left:10px;
+    width: 350px;
+    border:1px solid var(--main-border-color);
+    background-color: whitesmoke;
+    border-bottom-left-radius: 20px;
+    border-top-right-radius: 20px;
+    box-shadow: 2px 2px 3px #aaaaaa;
+    line-height: 18px;
+    color: var(--toolbar-background-color);
+    z-index: 9999;
+    -webkit-animation: content-show 1s 1;
+    animation: content-show 1s 1;
+}
+
+.import-configs-content .import-configs-item{
+    margin-bottom: 3px;
+    width:100%;
+    height: 18px;
+}
+
+.import-configs-content .import-configs-name{
+    width: 15%;
+    text-align: right;
+}
+
+.import-configs-content .import-configs-value{
+    width: 85%;
+    cursor: pointer;
+    height: 100%;
+    line-height: 18px;
+    font-size: 90%;
+    padding: 0px;
+    margin: 0px;
+    background-color: transparent;
+    color: var(--toolbar-background-color);
+    outline-style: none;
+    border: 0px;
+    border-bottom: 1px solid var(--main-border-color);
+}
+
 #progress {
     margin: auto;
     margin-top: 5px;
@@ -799,7 +813,7 @@ img.title_close_button:hover{
 }
 
 .progress-detail-item{
-    margin-bottom: 3px;
+    margin-bottom: 1px;
     width:100%;
     float: left;
     height: 18px;
@@ -1002,7 +1016,7 @@ img.title_close_button:hover{
     -webkit-animation: content-show 1s 1;
     animation: content-show 1s 1;
 }
-.subtotal-Content select ,input {
+.subtotal-Content select, .subtotal-Content input {
     font-size: 90%;
     width: 110px;
     padding: 0px;
@@ -1059,7 +1073,7 @@ img.title_close_button:hover{
 
 .sql-param-dialog {
     font-size: 90%;
-    position: absolute;
+    position: fixed;
     margin: 10px;
     padding: 10px;
     top:10px;
@@ -1067,19 +1081,14 @@ img.title_close_button:hover{
     width: 350px;
     border:1px solid var(--main-border-color);
     background-color: whitesmoke;
-    color: var(--toolbar-background-color);
     border-bottom-left-radius: 20px;
     border-top-right-radius: 20px;
     box-shadow: 2px 2px 3px #aaaaaa;
-    line-height: 20px;
+    line-height: 18px;
+    color: var(--toolbar-background-color);
     z-index: 9999;
     -webkit-animation: content-show 1s 1;
     animation: content-show 1s 1;
-}
-
-.sql-param-dialog .sql-param-title-container{
-    white-space: nowrap;
-    height: 22px;
 }
 
 .sql-param-dialog .sql-param-title {
@@ -1093,14 +1102,25 @@ img.title_close_button:hover{
     height: 22px;
     display:block;
 }
-.sql-param-dialog .title_close_button{
-    position: relative;
-    float: right;
+
+.sql-param-dialog .sql-param-dialog-item{
+    margin-bottom: 3px;
+    width:100%;
+    height: 18px;
 }
 
-.sql-param-dialog select ,input {
+.sql-param-dialog .sql-param-dialog-name {
+    float: left;
+    text-align: center;
+}
+
+.sql-param-dialog .sql-param-dialog-value{
+    float: right;
+    width: 80%;
+    cursor: pointer;
+    height: 100%;
+    line-height: 18px;
     font-size: 90%;
-    width: 180px;
     padding: 0px;
     margin: 0px;
     background-color: transparent;
@@ -1130,7 +1150,7 @@ img.title_close_button:hover{
     animation: content-show 1s 1;
 }
 
-.data-slice-Content select ,input {
+.data-slice-Content select, .data-slice-Content input {
     font-size: 90%;
     margin: 1px;
     width: 180px;
@@ -1172,7 +1192,7 @@ img.title_close_button:hover{
     animation: content-show 1s 1;
 }
 
-.data-filter-Content select ,input {
+.data-filter-Content select, .data-filter-Content input {
     font-size: 90%;
     width: 180px;
     padding: 0px;
@@ -1221,7 +1241,7 @@ img.title_close_button:hover{
     width: 100px;
 }
 
-.table-data-format-item select ,input {
+.table-data-format-item select, .table-data-format-item input {
     width: 80%;
     padding: 0px;
     margin: 0px;

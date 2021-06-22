@@ -1,7 +1,7 @@
 var __VERSION__ = {
     name: "Web DataView for SQLite Database of browser",
-    version: "2.3.9",
-    date: "2021/06/17",
+    version: "2.4.0",
+    date: "2021/06/22",
     comment: [
         "-- 2021/03/08",
         "优化算法和压缩代码.",
@@ -451,7 +451,7 @@ var __CONFIGS__ = {
  var __SQLEDITOR__ = {
      title: null,
      codeMirror: null,
-     parameter: null,
+     parameter: {},
      charset: {value: 1, name: "字符集", type: "select", options: ["GBK", "UTF-8"]},
      modes: {SQL: "text/x-sqlite",函数: "text/javascript"},
      themes: {
@@ -1330,9 +1330,7 @@ function getImportContent() {
 
     let container = document.createElement("div");
     container.type = "div";
-    container.className = "import-Content";
-    container.id = "import-Content";
-
+    container.className = container.id = "import-configs-content";
     let title = document.createElement("div");
     title.className = "container-title";
     let span = document.createElement("span");
@@ -1347,81 +1345,82 @@ function getImportContent() {
     container.appendChild(hr);
 
     for (let name in __IMPORT__) {
-        let d = document.createElement("div");
-        container.appendChild(d);
-        let s = document.createElement("span");
-        s.innerHTML = __IMPORT__[name].name + " :";
-        d.appendChild(s);
-        if (__IMPORT__[name].type == "view") {
-            let v = document.createElement("span");
-            v.id = "table-title";
-            v.innerHTML = "[ " + __CONFIGS__.CURRENT_TABLE.name + " ]";
-            d.appendChild(v);
-        } else if (__IMPORT__[name].type == "select") {
-            let input = document.createElement("select");
-            input.id = name;
+        let item = document.createElement("div");
+        item.className = "import-configs-item";
+        container.appendChild(item);
+        let itemname = document.createElement("span");
+        itemname.className = "import-configs-name";
+        itemname.innerHTML = __IMPORT__[name].name + " : ";
+        item.appendChild(itemname);
+        let itemvalue = null;
+        if (name == "Table") {
+            itemvalue = document.createElement("input");
+            itemvalue.className = "import-configs-value";
+            itemvalue.id = name;
+            itemvalue.readOnly = true;
+            itemvalue.value = __CONFIGS__.CURRENT_TABLE.name;
+        } else if (name == "Charset" || name == "Separator" || name == "SelectedDataSet") {
+            itemvalue = document.createElement("select");
+            itemvalue.className = "import-configs-value";
+            itemvalue.id = name;
             for (let i = 0; i < __IMPORT__[name].options.length; i++) {
                 if (isArray(__IMPORT__[name].options[i]))
-                    input.options.add(new Option(__IMPORT__[name].options[i][0], __IMPORT__[name].options[i][1]));
+                    itemvalue.options.add(new Option(__IMPORT__[name].options[i][0], __IMPORT__[name].options[i][1]));
                 else
-                    input.options.add(new Option(__IMPORT__[name].options[i], i));
+                    itemvalue.options.add(new Option(__IMPORT__[name].options[i], i));
             }
-            input.value = __IMPORT__[name].value;
-            input.onchange = function(){
+            itemvalue.value = __IMPORT__[name].value;
+            itemvalue.onchange = function () {
                 __IMPORT__[this.id].value = this.value;
             };
-            d.appendChild(input);
-        } else {
-            let input = document.createElement("input");
-            input.id = name;
-            try {
-                input.type = __IMPORT__[name].type;
-                if (input.type == "file") {
-                    input.accept = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,text/plain,.csv";
-                    input.onchange = function () {
-                        if (window.FileReader) {
-                            try {
-                                let file = this.files[0];
-                                let filetype = file.name.split(".")[1];
-                                __IMPORT__.SourceFile.value = file.name;
-                                __IMPORT__.SourceFile.data = [];
-                                let selectDataSet = $("SelectedDataSet");
-                                for (let i = selectDataSet.length - 1; i >= 0; i--) {
-                                    selectDataSet.remove(i);
-                                }
-                                if (filetype.toUpperCase() == "TXT" || filetype.toUpperCase() == "CSV") {
-                                    let reader = new FileReader();
-                                    reader.onload = function () {
-                                        __IMPORT__.SourceFile.data.push(this.result);
-                                        selectDataSet.options.add(new Option("默认", 0));
-                                        __IMPORT__.SelectedDataSet.value = selectDataSet.selectedIndex = 0;
-                                    };
-                                    reader.readAsText(file, __IMPORT__.Charset.options[__IMPORT__.Charset.value]);
-                                } else if (filetype.toUpperCase() == "XLS" || filetype.toUpperCase() == "XLSX") {
-                                    readWorkbookFromLocalFile(file);
-                                } else {
-                                    showMessage("仅适用于XLSX、XLS、TXT和CSV文件。");
-                                    return;
-                                }
-                            } catch (e) {
-                                alert("请选择需要导入的文件.")
+        } else if (name == "SourceFile") {
+            itemvalue = document.createElement("input");
+            itemvalue.className = "import-configs-value";
+            itemvalue.id = name;
+            itemvalue.type = __IMPORT__[name].type;
+            if (itemvalue.type == "file") {
+                itemvalue.accept = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,text/plain,.csv";
+                itemvalue.onchange = function () {
+                    if (window.FileReader) {
+                        try {
+                            let file = this.files[0];
+                            let filetype = file.name.split(".")[1];
+                            __IMPORT__.SourceFile.value = file.name;
+                            __IMPORT__.SourceFile.data = [];
+                            let selectDataSet = $("SelectedDataSet");
+                            for (let i = selectDataSet.length - 1; i >= 0; i--) {
+                                selectDataSet.remove(i);
                             }
-                            $("progress-container").innerText = "";
-                        } else {
-                            showMessage("本应用适用于Chrome或Edge浏览器。")
+                            if (filetype.toUpperCase() == "TXT" || filetype.toUpperCase() == "CSV") {
+                                let reader = new FileReader();
+                                reader.onload = function () {
+                                    __IMPORT__.SourceFile.data.push(this.result);
+                                    selectDataSet.options.add(new Option("默认", 0));
+                                    __IMPORT__.SelectedDataSet.value = selectDataSet.selectedIndex = 0;
+                                };
+                                reader.readAsText(file, __IMPORT__.Charset.options[__IMPORT__.Charset.value]);
+                            } else if (filetype.toUpperCase() == "XLS" || filetype.toUpperCase() == "XLSX") {
+                                readWorkbookFromLocalFile(file);
+                            } else {
+                                showMessage("仅适用于XLSX、XLS、TXT和CSV文件。");
+                                return;
+                            }
+                        } catch (e) {
+                            alert("请选择需要导入的文件.")
                         }
-                    };
-                }
-            } catch (e) {
-                input.type = "text";
+                        $("progress-container").innerText = "";
+                    } else {
+                        showMessage("本应用适用于Chrome或Edge浏览器。")
+                    }
+                };
             }
-            d.appendChild(input);
         }
+        item.appendChild(itemvalue);
     }
 
-    let d = document.createElement("div");
-    d.id = "progress-container";
-    container.appendChild(d);
+    let progress = document.createElement("div");
+    progress.id = "progress-container";
+    container.appendChild(progress);
 
     let br = document.createElement("hr");
     br.className = "br";
@@ -1444,7 +1443,7 @@ function getImportContent() {
                 let title = __IMPORT__.SourceFile.value.split(".")[0];
                 let tb = createTable({"title": title, "stru": getStructFromData()});
                 setCenterPosition($("page"),tb);
-                $("import-Content").parentNode.removeChild($("import-Content"));
+                $("import-configs-content").parentNode.removeChild($("import-configs-content"));
             }
         } else {
             $("progress-container").appendChild(getImportProgress());
@@ -1452,7 +1451,7 @@ function getImportContent() {
                 importData();
             } else
                 alert("请选择需要导入的文件及数据集合.");
-            //let container =$("import-Content");
+            //let container =$("import-configs-content");
             //container.parentNode.removeChild(m);
         }
     };
@@ -1462,7 +1461,7 @@ function getImportContent() {
     b.className = "button";
     b.innerHTML = "退出";
     b.onclick = close.onclick = function(){
-        let container =$("import-Content");
+        let container =$("import-configs-content");
         container.parentNode.removeChild(container);
     };
     tool.appendChild(b);
@@ -4161,7 +4160,7 @@ function addSubtotal(columns,i) {
 }
 
 function getParamDialog(titles, sql) {
-    let reg = new RegExp(/\{[a-zA-Z0-9\u4e00-\u9fa5]+\}/, "g");
+    let reg = new RegExp(/\{[\[\]\:\,\;\-\"\'a-zA-Z0-9\u4e00-\u9fa5]+\}/, "g");
     let params = sql.match(reg);
     if (params != null) {
         //参数去重
@@ -4173,12 +4172,10 @@ function getParamDialog(titles, sql) {
         params = temp.slice(0);
 
         let container = document.createElement("div");
-        container.id = "sql-param-dialog";
-        container.className = "sql-param-dialog";
+        container.id = container.className = "sql-param-dialog";
 
         let title = document.createElement("div");
         title.className = "container-title";
-        //title.className = title.id = "sql-param-title-container";
         let span = document.createElement("span");
         span.className = span.id = "sql-param-title";
         span.innerHTML = (titles == null ? "●" : "● " + titles.split("_")[0]);
@@ -4194,22 +4191,23 @@ function getParamDialog(titles, sql) {
         container.appendChild(hr);
 
         for (let i = 0; i < params.length; i++) {
-            let d = document.createElement("div");
-            span = document.createElement("span");
+            let item = document.createElement("div");
+            item.className = "sql-param-dialog-item";
+            container.appendChild(item);
+
             let param = params[i].toString().substring(params[i].indexOf("{") + 1, params[i].indexOf("}"));
-            span.innerHTML = param + " : ";
-            d.appendChild(span);
-            let value = document.createElement("input");
-            value.className = "sql-param-value";
-            value.setAttribute("param", param.toString());
-            value.style.cssFloat = "right";
-            try {
-                if (__SQLEDITOR__.parameter[param.toString()] != null)
-                    value.value = __SQLEDITOR__.parameter[param.toString()];
-            } catch (e) {
-            }
-            d.appendChild(value);
-            container.appendChild(d);
+
+            let itemname = document.createElement("span");
+            itemname.className = "sql-param-dialog-name";
+            itemname.innerHTML = param + " : ";
+            item.appendChild(itemname);
+
+            let itemvalue = document.createElement("input");
+            itemvalue.className = "sql-param-dialog-value";
+            itemvalue.setAttribute("param", param);
+            if (typeof __SQLEDITOR__.parameter[param] != "undefined")
+                itemvalue.value = __SQLEDITOR__.parameter[param];
+            item.appendChild(itemvalue);
         }
 
         let br = document.createElement("hr");
@@ -4225,7 +4223,7 @@ function getParamDialog(titles, sql) {
         confirm.innerText = "确定";
         confirm.onclick = function () {
             let param = {};
-            let params = document.getElementsByClassName("sql-param-value");
+            let params = document.getElementsByClassName("sql-param-dialog-value");
             for (let i = 0; i < params.length; i++) {
                 if (params[i].value != null)
                     param[params[i].getAttribute("param")] = params[i].value;

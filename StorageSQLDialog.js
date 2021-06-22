@@ -49,13 +49,18 @@ function storageSqlDialog(sql, editer, type){
     container.appendChild(hr);
 
     let d = document.createElement("div");
-    d.className = "toolbar";
+    d.className = "tabToolbar";
     let b = document.createElement("a");
     b.className = "tabButton";
     b.innerHTML = "列表";
     b.onclick = function () {
         $("table-container").style.display = "block";
         $("edit-container").style.display = "none";
+        let tb = this.parentNode.getElementsByClassName("tabButton");
+        for (let i = 0; i < tb.length; i++) {
+            tb[i].style.background = "var(--toolbar-background-color)";
+        }
+        this.style.background = "var(--toolbar-button-hover-background-color)";
     };
     d.appendChild(b);
     b = document.createElement("a");
@@ -64,6 +69,11 @@ function storageSqlDialog(sql, editer, type){
     b.onclick = function () {
         $("table-container").style.display = "none";
         $("edit-container").style.display = "block";
+        let tb = this.parentNode.getElementsByClassName("tabButton");
+        for (let i = 0; i < tb.length; i++) {
+            tb[i].style.background = "var(--toolbar-background-color)";
+        }
+        this.style.background = "var(--toolbar-button-hover-background-color)";
     };
     d.appendChild(b);
     container.appendChild(d);
