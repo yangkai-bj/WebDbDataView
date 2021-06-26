@@ -1,7 +1,7 @@
 var __VERSION__ = {
     name: "Web DataView for SQLite Database of browser",
-    version: "2.4.0",
-    date: "2021/06/22",
+    version: "2.4.1",
+    date: "2021/06/24",
     comment: [
         "-- 2021/03/08",
         "优化算法和压缩代码.",
@@ -37,6 +37,8 @@ var __VERSION__ = {
         "修改脚本存储方式.",
         "-- 2021/06/11",
         "增加文件加密/解密模块.",
+        "-- 2021/06/24",
+        "增加外部数据读取模块.",
     ],
     author: __SYS_LOGO_LINK__.author.decode(),
     url: __SYS_LOGO_LINK__.link.decode(),
@@ -1974,15 +1976,15 @@ function viewDataset(index, pageindex) {
                     if (item.value != null) {
                         if (item.type == "number") {
                             let f = item.format;
-                            if ((item.value + '').indexOf('.') !== -1)
+                            if ((item.value + '').indexOf('.') !== -1) {
                                 f = floatFormat;
-                            else {
+                                item.value = Math.round(item.value * Math.pow(10,Number(__DATASET__.configs.reportScale.value))) / Math.pow(10,Number(__DATASET__.configs.reportScale.value));
+                            } else {
                                 if (columns[c]["format"] !== "undefined") {
                                     if (item.format != columns[c].format)
                                         f = columns[c].format;
                                 }
                             }
-                            //td.innerText = formatNumber(item.value, f);
                             td.innerText = item.value.format(f);
                             item.format = columns[c]["format"] = f;
                         } else if (item.type == "date" || item.type == "datetime")
@@ -2701,8 +2703,13 @@ function init() {
     dbinfo.onclick = function () {
         //##########################################
         //字符串可传输编码转化
-        let a = "yangkai.bj@ccb.com";
-        console.log(a.encode());
+        let a = "2021/00/02 12:12:100";
+        console.log(a.toDatetime("yyyy-MM-dd hh:mm:ss"));
+
+        //##########################################
+        //字符串可传输编码转化
+        // let a = "yangkai.bj@ccb.com";
+        // console.log(a.encode());
         //##########################################
         //图片转base64代码
         // let tb = getImageBase64Code();
@@ -3220,6 +3227,20 @@ function init() {
     //初始化数据菜单
     //#######################################
     let datatools = $("data-tools");
+
+    let dataReader = document.createElement("div");
+    datatools.appendChild(dataReader);
+    dataReader.type = "div";
+    dataReader.className = "charButton";
+    dataReader.innerText = "⚘";
+    dataReader.style.cssFloat = "left";
+    dataReader.id = "data-reader";
+    dataReader.onclick = function () {
+        let reader = getDataReaderContent();
+        setCenterPosition($("page"), reader);
+
+    };
+    setTooltip(dataReader, "读取外<br>部数据");
 
     let datatran = document.createElement("div");
     datatools.appendChild(datatran);

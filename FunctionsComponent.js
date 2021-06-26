@@ -471,18 +471,74 @@ String.prototype.isPhoneNumber = function(){
     }
     return re;
 };
+String.prototype.toDatetime = function (format) {
+    let str = this.toString();
+    let d = "Invalid Date";
+    let a = str.split(" ");
+    let b = [];
+    let c = [];
+    if (a.length == 2) {
+        b = (a[0].split("-").length == 3 ? a[0].split("-") : (a[0].split("/").length == 3 ? a[0].split("/") : (a[0].split(".").length == 3 ? a[0].split(".") : [])));
+        c = a[1].split(":");
+        if (b.length == 3 && c.length == 3) {
+            try {
+                let t = new Date(Number(b[0]), Number(b[1]) - 1, Number(b[2]), Number(c[0]), Number(c[1]), Number(c[2]));
+                if (t.toString() != "Invalid Date")
+                    d = t.format(format);
+            } catch (e) {
+            }
+        }
+    } else if (a.length == 1) {
+        b = (a[0].split("-").length == 3 ? a[0].split("-") : (a[0].split("/").length == 3 ? a[0].split("/") : (a[0].split(".").length == 3 ? a[0].split(".") : [])));
+        if (b.length == 3) {
+            try {
+                let t = new Date(Number(b[0]), Number(b[1]) - 1, Number(b[2]));
+                if (t.toString() != "Invalid Date")
+                    d = t.format(format);
+            } catch (e) {
+            }
+        }
+    }
+    return d;
+};
 
 String.prototype.isDatetime = function () {
     let str = this.toString();
-    try {
-        let d = new Date(str);
-        if (d.toString() == "Invalid Date")
+    let a = str.split(" ");
+    let b = [];
+    let c = [];
+    if (a.length == 2) {
+        b = (a[0].split("-").length == 3 ? a[0].split("-") : (a[0].split("/").length == 3 ? a[0].split("/") : (a[0].split(".").length == 3 ? a[0].split(".") : [])));
+        c = a[1].split(":");
+        if (b.length == 3 && c.length == 3) {
+            try {
+                let d = new Date(Number(b[0]), Number(b[1]) - 1, Number(b[2]), Number(c[0]), Number(c[1]), Number(c[2]));
+                console.log(d.format("yyyy-MM-dd hh:mm:ss"));
+                if (d.toString() == "Invalid Date")
+                    return false;
+                else
+                    return true;
+            } catch (e) {
+                return false;
+            }
+        } else
             return false;
-        else
-            return true;
-    } catch (e) {
+    } else if (a.length == 1) {
+        b = (a[0].split("-").length == 3 ? a[0].split("-") : (a[0].split("/").length == 3 ? a[0].split("/") : (a[0].split(".").length == 3 ? a[0].split(".") : [])));
+        if (b.length == 3) {
+            try {
+                let d = new Date(Number(b[0]), Number(b[1]) - 1, Number(b[2]));
+                if (d.toString() == "Invalid Date")
+                    return false;
+                else
+                    return true;
+            } catch (e) {
+                return false;
+            }
+        } else
+            return false;
+    } else
         return false;
-    }
 };
 
 String.prototype.replaceAll = function(search, replacement) {
@@ -503,7 +559,7 @@ String.prototype.DataType = function(){
       //判断字符是否符合数字规则
      let str = this.trim();
      try {
-         if (str.isDatetime() && str.length == 10)
+         if (str.isDatetime() && str.indexOf(":") == -1)
              return "date";
          else if (str.isDatetime() && str.indexOf(":") != -1)
              return "datetime";

@@ -40,10 +40,11 @@ function getLinearColor(x,y,x2,y2,colors) {
             }, []);
             return color;
         } else {
-            return colors[0]
+            return colors[0];
         }
-    } else
+    } else {
         return colors;
+    }
 }
 
 function getRadialColor(x,y,r,colors) {
@@ -70,10 +71,11 @@ function getRadialColor(x,y,r,colors) {
             }, []);
             return color;
         } else {
-            return colors[0]
+            return colors[0];
         }
-    } else
+    } else {
         return colors;
+    }
 }
 
 function getBackgroundColor(configs) {
@@ -2833,91 +2835,110 @@ function getDataZoomYAxis(configs, yAxisIndex, type,start ,end, containerWidth) 
     }
 }
 
-function getOptionToContent(dataset, configs, _echarts_instance_id) {
-    function getTable(table, dataset, configs, _echarts_instance_id) {
-        let columns = dataset.columns;
-        let data = dataset.data;
-        if (table == null) {
-            table = document.createElement("table");
-            table.className = "table";
-            table.id = "optionToContentTable_" + _echarts_instance_id;
-            table.style.cssText = "width:" + (100 - toPoint(configs.grid_left.value) - toPoint(configs.grid_right.value)) + "%;margin: auto";
-            table.style.fontSize = configs.reportFontSize.value;
-        } else {
-            table.innerHTML = "";
+function getDataViewTable(table, dataset, configs, _echarts_instance_id) {
+    let floatFormat = "#,##0.";
+    for (let i = 0; i < Number(__DATASET__.configs.reportScale.value); i++) {
+        floatFormat += "0";
+    }
+
+    let columns = dataset.columns;
+    let data = dataset.data;
+    if (table == null) {
+        table = document.createElement("table");
+        table.className = "table";
+        table.id = "optionToContentTable_" + _echarts_instance_id;
+        table.style.cssText = "width:" + (100 - toPoint(configs.grid_left.value) - toPoint(configs.grid_right.value)) + "%;margin: auto";
+        if (__DATASET__.configs.reportFontFamily.value != "default")
+            table.style.fontFamily = __DATASET__.configs.reportFontFamily.value;
+        if (__DATASET__.configs.reportFontWeight.value != "default")
+            table.style.fontWeight = __DATASET__.configs.reportFontWeight.value;
+        if (__DATASET__.configs.reportFontStyle.value != "default")
+            table.style.fontStyle = __DATASET__.configs.reportFontStyle.value;
+        table.style.fontSize = __DATASET__.configs.reportFontSize.value
+    } else {
+        table.innerHTML = "";
+    }
+
+    let tr = document.createElement("tr");
+    tr.type = "tr";
+    if (__DATASET__.configs.reportRowHeight.value != "default")
+        tr.style.height = __DATASET__.configs.reportRowHeight.value;
+    table.appendChild(tr);
+
+    for (let c = 0; c < columns.length; c++) {
+        let th = document.createElement("th");
+        th.type = "th";
+        th.innerText = columns[c].name;
+        th.style.textAlign = columns[c].style.textAlign;
+        switch (columns[c].order) {
+            case "":
+                th.title = "● " + columns[c].name;
+                break;
+            case "asc":
+                th.title = "▲ " + columns[c].name;
+                break;
+            case "desc":
+                th.title = "▼ " + columns[c].name;
+                break;
         }
+        th.setAttribute("colid", c);
+        th.onclick = function () {
+            getDataViewTable($("optionToContentTable_" + _echarts_instance_id), orderDatasetBy(dataset, this.getAttribute("colid")), configs, _echarts_instance_id);
+        };
+        tr.appendChild(th);
+    }
+
+    for (let i = 0; i < data.length; i++) {
         let tr = document.createElement("tr");
         tr.type = "tr";
+        if (__DATASET__.configs.reportRowHeight.value != "default")
+            tr.style.height = __DATASET__.configs.reportRowHeight.value;
+        tr.id = i;
+        if (i % 2 > 0) {
+            tr.className = "alt-line";
+            //单数行
+        }
         table.appendChild(tr);
-
+        let row = data[i];
         for (let c = 0; c < columns.length; c++) {
-            let th = document.createElement("th");
-            th.type = "th";
-            th.innerText = columns[c].name;
-            th.style.textAlign = columns[c].style.textAlign;
-            let order = document.createElement("span");
-            order.className = "order";
-            order.setAttribute("colid", c);
-            switch (columns[c].order) {
-                case "":
-                    order.innerText = "●";
-                    break;
-                case "asc":
-                    order.innerText = "▲";
-                    break;
-                case "desc":
-                    order.innerText = "▼";
-                    break;
-            }
-            order.onclick = function () {
-                getTable($("optionToContentTable_" + _echarts_instance_id), orderDatasetBy(dataset, this.getAttribute("colid")), configs, _echarts_instance_id);
-            };
-            th.appendChild(order);
-            tr.appendChild(th);
-        }
-
-        for (let i = 0; i < data.length; i++) {
-            let tr = document.createElement("tr");
-            tr.type = "tr";
-            tr.id = i;
-            if (i % 2 > 0) {
-                tr.className = "alt-line";
-                //单数行
-            }
-            table.appendChild(tr);
-            let row = data[i];
-            for (let c = 0; c < columns.length; c++) {
-                let item = row[columns[c].name];
-                let td = document.createElement("td");
-                td.type = "td";
-                td.id = item.rowid + "," + item.colid;
-                td.setAttribute("name", columns[c].name);
-                td.setAttribute("value", JSON.stringify(item));
-                try {
-                    if (item.value != null) {
-                        if (item.type == "number")
-                            td.innerText = formatNumber(item.value, item.format);
-                        else if (item.type == "date" || item.type == "datetime")
-                            td.innerText = new Date(item.value).Format(item.format);
-                        else
-                            td.innerText = item.value;
-                    } else
-                        td.innerText = "";
-                    let _style = "";
-                    for (let key in item.style) {
-                        _style += key + ": " + item.style[key] + ";";
-                    }
-                    td.style.cssText = _style;
-                } catch (e) {
-                    td.innerText = row[columns[c].name].value;
+            let item = row[columns[c].name];
+            let td = document.createElement("td");
+            td.type = "td";
+            td.id = item.rowid + "," + item.colid;
+            try {
+                if (item.value != null) {
+                    if (item.type == "number") {
+                        let f = item.format;
+                        if ((item.value + '').indexOf('.') !== -1)
+                            f = floatFormat;
+                        else {
+                            if (columns[c]["format"] !== "undefined") {
+                                if (item.format != columns[c].format)
+                                    f = columns[c].format;
+                            }
+                        }
+                        td.innerText = item.value.format(f);
+                        item.format = columns[c]["format"] = f;
+                    } else if (item.type == "date" || item.type == "datetime")
+                        td.innerText = new Date(item.value).format(item.format);
+                    else
+                        td.innerText = item.value;
+                } else
+                    td.innerText = "";
+                let _style = "";
+                for (let key in item.style) {
+                    _style += key + ": " + item.style[key] + ";";
                 }
-                tr.appendChild(td);
+                td.style.cssText = _style;
+            } catch (e) {
+                td.innerText = row[columns[c].name].value;
             }
+            tr.appendChild(td);
         }
-        return table;
     }
-    return getTable(null, dataset, configs, _echarts_instance_id);
+    return table;
 }
+
 
 function getToolbox(configs, container, dataset, magic) {
     return {
@@ -2937,7 +2958,7 @@ function getToolbox(configs, container, dataset, magic) {
                 backgroundColor: "transparent",
                 lang: [' ', '关闭', ' '],
                 optionToContent: function() {
-                    return getOptionToContent(dataset, configs, container.getAttribute("_echarts_instance_"));
+                    return getDataViewTable(null, dataset, configs, container.getAttribute("_echarts_instance_"));
                 }
             },
             dataZoom: {show: configs.toolboxFeatureDataZoom.value.toBoolean(),},
@@ -2976,7 +2997,7 @@ function getToolbox3D(configs, container, dataset) {
                 backgroundColor: "transparent",
                 lang: [' ', '关闭', ' '],
                 optionToContent: function() {
-                    return getOptionToContent(dataset, configs, container.getAttribute("_echarts_instance_"));
+                    return getDataViewTable(null, dataset, configs, container.getAttribute("_echarts_instance_"));
                 }
             },
             myMultiScreen: getMultiScreen(configs, container),
