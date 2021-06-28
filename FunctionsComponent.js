@@ -471,6 +471,7 @@ String.prototype.isPhoneNumber = function(){
     }
     return re;
 };
+
 String.prototype.toDatetime = function (format) {
     let str = this.toString();
     let d = "Invalid Date";
@@ -555,9 +556,9 @@ String.prototype.replaceAll = function(search, replacement) {
     return target;
 };
 
-String.prototype.DataType = function(){
+String.prototype.getStringDataType = function(){
       //判断字符是否符合数字规则
-     let str = this.trim();
+     let str = this.toString().trim();
      try {
          if (str.isDatetime() && str.indexOf(":") == -1)
              return "date";
@@ -575,6 +576,22 @@ String.prototype.DataType = function(){
      catch (e){
          return "nvarchar"
      }
+};
+
+function getTypeOf(data) {
+    //判断数据类型,可能是非字符类型
+    //由于数据库在本地,数据没有经过通讯字符转换,数据全部为元类型.
+    //通过元类型判断
+     let type = typeof(data);
+     if (type == "string") {
+         if (data.isDatetime()) {
+             if (data.indexOf(":") == -1)
+                 type = "date";
+             else if (data.indexOf(":") != -1)
+                 type = "datetime";
+         }
+     }
+     return type;
 }
 
 String.prototype.toArray = function(def,sep) {

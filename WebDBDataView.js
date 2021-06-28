@@ -461,10 +461,10 @@ var __CONFIGS__ = {
          黑色: {name: "black", href: "codemirror/theme/black.css"},
          粉色: {name: "pink", href: "codemirror/theme/pink.css"},
          墨绿: {name: "blackish-green", href: "codemirror/theme/blackish-green.css"},
+         蓝色: {name: "duotone-light", href: "codemirror/theme/duotone-light.css"},
          深蓝: {name: "cobalt", href: "codemirror/theme/cobalt.css"},
          幻想: {name: "rubyblue", href: "codemirror/theme/rubyblue.css"},
          初心: {name: "solarized light", href: "codemirror/theme/solarized.css"},
-         明亮: {name: "duotone-light", href: "codemirror/theme/duotone-light.css"},
          宁静: {name: "darcula", href: "codemirror/theme/darcula.css"},
          优雅: {name: "elegant", href: "codemirror/theme/elegant.css"},
          矩阵: {name: "the-matrix", href: "codemirror/theme/the-matrix.css"},
@@ -681,7 +681,20 @@ function importData() {
                         tx.executeSql(sql, row, function (tx, results) {
                                 __IMPORT__.SourceFile.count += 1;
                                 __IMPORT__.SourceFile.imported += results.rowsAffected;
-                                viewMessage("Imported:" + __IMPORT__.SourceFile.imported + "/" + __IMPORT__.SourceFile.count)
+                                if (__IMPORT__.SourceFile.imported%100 == 0 || __IMPORT__.SourceFile.total == __IMPORT__.SourceFile.count ) {
+                                    let packet = {
+                                        index: __IMPORT__.SourceFile.count,
+                                        sql: __IMPORT__.SourceFile.sql,
+                                        data: row,
+                                        error: "",
+                                        beginTime: null,
+                                        endTime: getNow()
+                                    };
+                                    __IMPORT__.SourceFile.error.push(packet);
+                                    viewPacket(packet);
+                                    scrollto();
+                                    viewMessage("Imported:" + __IMPORT__.SourceFile.imported + "/" + __IMPORT__.SourceFile.count)
+                                }
                             },
                             function (tx, error) {
                                 __IMPORT__.SourceFile.count += 1;
@@ -757,46 +770,6 @@ function getAbsolutePosition(obj)
     return position;
 }
 
-function getStringDataType(str){
-      //判断字符是否符合数字规则
-     try {
-         str = str.trim();
-         if (str.isDatetime() && str.length == 10)
-             return "date";
-         else if (str.isDatetime() && str.indexOf(":") != -1)
-             return "datetime";
-         else if (str.isIDnumber() || str.isPhoneNumber())
-             return "nvarchar";
-         else if (str.isNumber() && isNaN(Number.parseInt(str)) == false && str.length < 18 && str.indexOf(".") == -1)
-             return "int";
-         else if (str.isNumber() && isNaN(Number.parseFloat(str)) == false && ((str.length < 18 && str.indexOf(".") == -1) || (str.indexOf(".") < 18 && str.indexOf(".")>=0)))
-             return "float";
-         else
-             return "nvarchar"
-     }
-     catch (e){
-         return "nvarchar"
-     }
-}
-
-function getTypeOf(d) {
-    //判断数据类型,可能是非字符类型
-    //由于数据库在本地,数据没有经过通讯字符转换,数据全部为元类型.
-    //通过元类型判断
-     let type = typeof(d);
-     if (type == "string") {
-         if (d.isDatetime()) {
-             if (d.length == 10)
-                 type = "date";
-             else if (d.length > 10)
-                 type = "datetime";
-             else
-                 type = "string";
-         }
-     }
-     return type;
-}
-
 function structInspect(data,sep){
     // 数据结构检测
     // 获取可导入数据
@@ -870,7 +843,7 @@ function getStructFromData() {
                     col[index] = columns[i];
                     break;
                 case "type":
-                    col[index] = getStringDataType(data[i].toString());
+                    col[index] = data[i].toString().getStringDataType();
                     break;
                 case "length":
                     switch (col["type"]) {
@@ -2256,7 +2229,7 @@ function transferResultDataset(funs, dataset, title, parameter) {
     for (let i = 0; i < col.length; i++) {
         columns.push({id: i, name: col[i], type: "string", style: {textAlign: "center"}, order: ""});
     }
-    let data = []
+    let data = [];
     let floatFormat = "#,##0.";
     for (let i = 0; i < Number(__DATASET__.configs.reportScale.value); i++) {
         floatFormat += "0";
@@ -2266,7 +2239,7 @@ function transferResultDataset(funs, dataset, title, parameter) {
         let r = dataset[i];
         for (let c = 0; c < columns.length; c++) {
             let _value = r[c];
-            let _type = getStringDataType(_value != null ? _value.toString() : null);
+            let _type = _value.toString().getStringDataType();
             let _format = null;
             let _align = "left";
             let _color = "black";
@@ -4942,6 +4915,7 @@ function setPageThemes() {
     themes.options.add(new Option("黑色", "themes/black.css"));
     themes.options.add(new Option("粉色", "themes/pink.css"));
     themes.options.add(new Option("墨绿", "themes/blackish-green.css"));
+    themes.options.add(new Option("蓝色", "themes/blue.css"));
     try {
         let theme = getUserConfig("pagethemes");
         if (theme != null)

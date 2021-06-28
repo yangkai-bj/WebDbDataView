@@ -287,7 +287,7 @@ function readData() {
                 let r = lines[i].split(sep);
                 for (let c = 0; c < columns.length; c++) {
                     let _value = r[c];
-                    let _type = ((typeof _value) !== "undefined" ? _value.DataType() : "string");
+                    let _type = ((typeof _value) !== "undefined" ? _value.getStringDataType() : "string");
                     let _format = null;
                     let _align = "left";
                     let _color = "black";
