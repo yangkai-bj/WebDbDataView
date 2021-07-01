@@ -1,4 +1,13 @@
+
 function getImageBase64Code() {
+    function handler(event) {
+        event.clipboardData.setData('text/plain', $("source-image-file-code").value);
+        event.preventDefault();
+        alert("代码已复制到粘贴板.");
+    }
+
+    document.addEventListener('copy', handler);   // 增加copy监听
+
     let container = document.createElement("div");
     container.id = "image-base64-code";
     container.className = "table-data-format";
@@ -15,6 +24,38 @@ function getImageBase64Code() {
 
     let hr = document.createElement("hr");
     container.appendChild(hr);
+
+    let tabtools = document.createElement("div");
+    tabtools.className = "tabToolbar";
+    tabtools.id = "imageTabToolbar";
+    let b = document.createElement("a");
+    b.className = "tabButton";
+    b.innerHTML = "图片";
+    b.onclick = function () {
+        $("image-container").style.display = "block";
+        $("source-image-file-code").style.display = "none";
+        let tb = this.parentNode.getElementsByClassName("tabButton");
+        for (let i = 0; i < tb.length; i++) {
+            tb[i].style.background = "var(--toolbar-background-color)";
+        }
+        this.style.background = "var(--toolbar-button-hover-background-color)";
+    };
+    tabtools.appendChild(b);
+    b = document.createElement("a");
+    b.className = "tabButton";
+    b.innerHTML = "代码";
+    b.onclick = function () {
+        $("image-container").style.display = "none";
+        $("source-image-file-code").style.display = "block";
+        let tb = this.parentNode.getElementsByClassName("tabButton");
+        for (let i = 0; i < tb.length; i++) {
+            tb[i].style.background = "var(--toolbar-background-color)";
+        }
+        this.style.background = "var(--toolbar-button-hover-background-color)";
+    };
+    tabtools.appendChild(b);
+    container.appendChild(tabtools);
+
     let source = document.createElement("input");
     source.type = "file";
     source.id = "source-image-file";
@@ -33,7 +74,7 @@ function getImageBase64Code() {
                 let image = document.createElement("img");
                 image.id = "source-image-file-image";
                 image.type = "img";
-                image.src = this.result;
+                image.src = $("source-image-file-code").value = this.result;
                 image.style.display = "none";
                 image.onload = function () {
                     this.alt = this.title = $("source-image-file").files[0].name + "\nwidth:" + this.width + "\nheight:" + this.height;
@@ -74,6 +115,16 @@ function getImageBase64Code() {
     filecontainer.style.height = "370.8px";
     container.appendChild(filecontainer);
 
+    let imagecode = document.createElement("textarea");
+    imagecode.id = "source-image-file-code";
+    imagecode.style.cssText = "width: 100%;\n" +
+        "height: 370.8px;\n" +
+        "resize: none;" +
+        "display: none;" +
+        "font-size: 90%;\n";
+    imagecode.type = "textarea";
+    container.appendChild(imagecode);
+
     let br = document.createElement("hr");
     br.className = "br";
     container.appendChild(br);
@@ -86,41 +137,81 @@ function getImageBase64Code() {
     show.className = "button";
     show.innerText = "打开";
     show.onclick = function () {
+        $("image-container").style.display = "block";
+        $("source-image-file-code").style.display = "none";
+
+        let tb = $("imageTabToolbar").getElementsByClassName("tabButton");
+        for (let i = 0; i < tb.length; i++) {
+            tb[i].style.background = "var(--toolbar-background-color)";
+        }
+        tb[0].style.background = "var(--toolbar-button-hover-background-color)";
+
         $("source-image-file").click();
     };
     tool.appendChild(show);
 
-    let confirm = document.createElement("div");
-    confirm.className = "button";
-    confirm.innerText = "代码";
-    confirm.onclick = function () {
-        ///检验是否为图像文件
-        let file = $("source-image-file").files[0];
-        if (!/image\/\w+/.test(file.type)) {
-            alert("请选择图片文件！");
-            return false;
+    let toimage = document.createElement("div");
+    toimage.className = "button";
+    toimage.id = "toimage";
+    toimage.innerText = "解析";
+    toimage.onclick = close.onclick = function () {
+        $("image-container").innerHTML = "";
+        let image = document.createElement("img");
+        image.id = "source-image-file-image";
+        image.type = "img";
+        image.src = $("source-image-file-code").value;
+        image.style.display = "none";
+        image.onload = function () {
+            this.alt = this.title = "width:" + this.width + "\nheight:" + this.height;
+
+            function getSize(w, h, width, height) {
+                if (width > w || height > h) {
+                    if (width > w) {
+                        height = height / (width / w);
+                        width = w;
+                    }
+                    if (height > h) {
+                        width = width / (height / h);
+                        height = h;
+                    }
+                }
+                return [width, height];
+            }
+
+            let parent = getAbsolutePosition($("image-container"));
+            let size = getSize(parent.width, parent.height, this.width, this.height);
+            this.width = size[0];
+            this.height = size[1];
+            this.style.margin = "auto";
+            this.style.display = "block";
+            this.style.padding = (parent.height - size[1]) / 2 + "px 0";
+        };
+        $("image-container").appendChild(image);
+        $("image-container").style.display = "block";
+        $("source-image-file-code").style.display = "none";
+
+        let tb = $("imageTabToolbar").getElementsByClassName("tabButton");
+        for (let i = 0; i < tb.length; i++) {
+            tb[i].style.background = "var(--toolbar-background-color)";
         }
-        let reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = function (e) {
-            $("image-container").innerHTML = "";
-            let edit = document.createElement("textarea");
-            edit.id = "source-image-file-code";
-            edit.style.cssText = "width: 98.9%;\n" +
-                "height: 600px;\n" +
-                "resize: none;";
-            edit.type = "textarea";
-            edit.setAttribute("readonly", "readonly");
-            edit.value = this.result;
-            $("image-container").appendChild(edit);
-        }
+        tb[0].style.background = "var(--toolbar-button-hover-background-color)";
     };
-    tool.appendChild(confirm);
+    tool.appendChild(toimage);
+
+    let copyto = document.createElement("div");
+    copyto.className = "button";
+    copyto.id = "copyto";
+    copyto.innerText = "复制";
+    copyto.onclick = close.onclick = function () {
+        document.execCommand('copy');   // 执行copy命令触发监听
+    };
+    tool.appendChild(copyto);
 
     let cancel = document.createElement("div");
     cancel.className = "button";
     cancel.innerText = "退出";
     cancel.onclick = close.onclick = function () {
+        document.removeEventListener('copy', handler);   // 移除copy监听，不产生影响
         $("image-base64-code").parentNode.removeChild($("image-base64-code"));
     };
     tool.appendChild(cancel);
