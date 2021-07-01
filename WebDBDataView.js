@@ -105,6 +105,7 @@ var __CONFIGS__ = {
      column_default: {value: null, name: "默认值", type: "input", width: "50px"},
  };
  var __DATASET__ = {
+     toFullScreen: false,
      result: [
          //{eventid:null, title:[],sql: null,columns:[],data:[],parameter:null,time:null, type:null}
      ],
@@ -2838,6 +2839,9 @@ function init() {
     //初始化SQL菜单
     //#######################################
     let sqltools = $("sql-tools");
+    sqltools.ondblclick = function() {
+        __DATASET__.toFullScreen = requestFullScreen($("main"));
+    };
 
     let newsql = document.createElement("div");
     newsql.type = "div";
@@ -2899,7 +2903,7 @@ function init() {
     let help_opensql = $("help-open-sql");
     opensql.onclick = help_opensql.onclick = function () {
         let tb = storageSqlDialog("", __SQLEDITOR__);
-        setCenterPosition($("page"), tb)
+        setCenterPosition($("main"), tb)
     };
     sqltools.appendChild(opensql);
     setTooltip(opensql, "打开<br>脚本");
@@ -2915,7 +2919,7 @@ function init() {
         if (__SQLEDITOR__.title == null) {
             let sql = __SQLEDITOR__.codeMirror.getValue();
             let tb = storageSqlDialog(sql, __SQLEDITOR__, "_TO_SAVE_");
-            setCenterPosition($("page"), tb)
+            setCenterPosition($("main"), tb)
         } else {
             let name = __SQLEDITOR__.title;
             let res = confirm("您确定覆盖保存脚本 " + name + " 吗?");
@@ -2987,7 +2991,7 @@ function init() {
                 selection = __SQLEDITOR__.codeMirror.getValue();
             let paramdialog = getParamDialog(__SQLEDITOR__.title, selection);
             if (paramdialog != null) {
-                setCenterPosition($("page"), paramdialog)
+                setCenterPosition($("main"), paramdialog)
             } else {
                 if (__SQLEDITOR__.title != null) {
                     let title = __SQLEDITOR__.title.split("_");
@@ -3200,6 +3204,9 @@ function init() {
     //初始化数据菜单
     //#######################################
     let datatools = $("data-tools");
+    datatools.ondblclick = function() {
+        __DATASET__.toFullScreen = requestFullScreen($("main"));
+    };
 
     let dataReader = document.createElement("div");
     datatools.appendChild(dataReader);
@@ -3210,7 +3217,7 @@ function init() {
     dataReader.id = "data-reader";
     dataReader.onclick = function () {
         let reader = getDataReaderContent();
-        setCenterPosition($("page"), reader);
+        setCenterPosition($("main"), reader);
 
     };
     setTooltip(dataReader, "读取外<br>部数据");
@@ -3238,7 +3245,7 @@ function init() {
     dataslice.onclick = help_datasetslice.onclick = function () {
         if (__DATASET__.result.length > 0) {
             let dataslice = getDataSlice();
-            setCenterPosition($("page"), dataslice);
+            setCenterPosition($("main"), dataslice);
         }
     };
     setTooltip(dataslice, "数据<br>切片");
@@ -3267,7 +3274,7 @@ function init() {
                 data.push(row);
             }
             let subtotal = getSubtotal(columns, data);
-            setCenterPosition($("page"), subtotal);
+            setCenterPosition($("main"), subtotal);
         }
     };
     setTooltip(subtotal, "分类<br>计算");
@@ -3484,7 +3491,7 @@ function init() {
     datasetSetting.id = "dataset-setting";
     datasetSetting.onclick = function () {
         let configs = __DATASET__.getDatasetConfigs($("tableContainer"));
-        setCenterPosition($("page"), configs);
+        setCenterPosition($("main"), configs);
 
     };
     setTooltip(datasetSetting, "报表<br>设置");
@@ -3606,7 +3613,7 @@ function init() {
     let help_echartsConfigs = $("help-select-echarts-configs");
     toconfigs.onclick = help_echartsConfigs.onclick = function () {
         let configs = __ECHARTS__.getEchartsConfigs($("tableContainer"));
-        setCenterPosition($("page"), configs);
+        setCenterPosition($("main"), configs);
     };
     setTooltip(toconfigs, "更多图<br>形参数");
 
@@ -4706,7 +4713,7 @@ function getColumnMenu(colid) {
     li.onclick = function () {
         if (__DATASET__.result.length > 0) {
             let datafilter = getDataFilter(this.getAttribute("colid"));
-            setCenterPosition($("page"),datafilter);
+            setCenterPosition($("main"),datafilter);
         }
     };
     ul.appendChild(li);
@@ -4717,7 +4724,7 @@ function getColumnMenu(colid) {
     li.setAttribute("colid", colid);
     li.onclick = function () {
         let formater = getFormat(this.getAttribute("colid"));
-        setCenterPosition($("page"),formater);
+        setCenterPosition($("main"),formater);
     };
     ul.appendChild(li);
 

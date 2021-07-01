@@ -915,3 +915,36 @@ function getFileUrlByBase64(dataurl) {
     let url = URL.createObjectURL(blob);
     return url;
 }
+
+function requestFullScreen(element) {
+    //全屏显示,
+    if (__DATASET__.toFullScreen){
+        if (document.cancelFullScreen) {
+            document.cancelFullScreen();
+        } else if (document.mozCancelFullScreen) {
+            document.mozCancelFullScreen();
+        } else if (document.webkitCancelFullScreen) {
+            document.webkitCancelFullScreen();
+        } else if (document.msExitFullscreen) {
+            document.msExitFullscreen();
+        }
+        return false;
+    } else {
+        if (element.requestFullscreen){
+            element.requestFullscreen();
+        }
+        //FireFox
+        else if (element.mozRequestFullScreen) {
+            element.mozRequestFullScreen();
+        }
+        //Chrome等
+        else if (element.webkitRequestFullScreen) {
+            element.webkitRequestFullScreen();
+        }
+        //IE11
+        else if (element.msRequestFullscreen) {
+            element.msRequestFullscreen();
+        }
+        return true;
+    }
+}

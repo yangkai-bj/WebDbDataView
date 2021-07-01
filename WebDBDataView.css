@@ -1523,6 +1523,20 @@ hr.br{
     float: right;
 }
 
+textarea {
+    color: var(--toolbar-background-color);
+    border-radius: 5px;
+}
+
+textarea:hover {
+    outline-style: none;
+    border:1px solid var(--main-border-color);
+}
+textarea:enabled {
+    outline-style: none;
+    border:1px solid var(--main-border-color);
+}
+
 
 
 
