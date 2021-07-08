@@ -14,46 +14,6 @@ const __DATA_READER__ = {
      Selected: {value: -1, name: "数据集", type: "select", options: []},
  };
 
-function readExcelFile(file) {
-    function fixData(data) {
-        //文件流转BinaryString
-        let tmp = "";
-        let l = 0;
-        let w = 10240;
-        for (; l < data.byteLength / w; ++l) tmp += String.fromCharCode.apply(null, new Uint8Array(data.slice(l * w, l * w + w)));
-        tmp += String.fromCharCode.apply(null, new Uint8Array(data.slice(l * w)));
-        return tmp;
-    }
-
-    let reader = new FileReader();
-    let rABS = true;
-    reader.onload = function (e) {
-        let data = e.target.result;
-        let workbook;
-        if (rABS) {
-            workbook = XLSX.read(data, {type: "binary"});
-        } else {
-            workbook = XLSX.read(btoa(fixData(data)), {type: "base64"});
-        }
-        let sheetNames = workbook.SheetNames;
-        let selectDataSet = $("Selected");
-        for (let i = 0; i < sheetNames.length; i++) {
-            let worksheet = workbook.Sheets[sheetNames[i]];
-            let csv = XLSX.utils.sheet_to_csv(worksheet);
-            __DATA_READER__.SourceFile.data.push(csv);
-            selectDataSet.options.add(new Option(sheetNames[i], i));
-            //return csv;
-        }
-        __DATA_READER__.Selected.value = selectDataSet.selectedIndex = 0;
-    };
-    try {
-        reader.readAsBinaryString(file);
-    } catch (e) {
-        reader.readAsArrayBuffer(file);
-        rABS = false;
-    }
-}
-
 function getReadProgress() {
     let container = document.createElement("div");
     container.id = "progress";
@@ -84,6 +44,45 @@ function getReadProgress() {
 }
 
 function getDataReaderContent() {
+    function readExcelFile(file) {
+        function fixData(data) {
+            //文件流转BinaryString
+            let tmp = "";
+            let l = 0;
+            let w = 10240;
+            for (; l < data.byteLength / w; ++l) tmp += String.fromCharCode.apply(null, new Uint8Array(data.slice(l * w, l * w + w)));
+            tmp += String.fromCharCode.apply(null, new Uint8Array(data.slice(l * w)));
+            return tmp;
+        }
+
+        let reader = new FileReader();
+        let rABS = true;
+        reader.onload = function (e) {
+            let data = e.target.result;
+            let workbook;
+            if (rABS) {
+                workbook = XLSX.read(data, {type: "binary"});
+            } else {
+                workbook = XLSX.read(btoa(fixData(data)), {type: "base64"});
+            }
+            let sheetNames = workbook.SheetNames;
+            let selectDataSet = $("Selected");
+            for (let i = 0; i < sheetNames.length; i++) {
+                let worksheet = workbook.Sheets[sheetNames[i]];
+                let csv = XLSX.utils.sheet_to_csv(worksheet);
+                __DATA_READER__.SourceFile.data.push(csv);
+                selectDataSet.options.add(new Option(sheetNames[i], i));
+                //return csv;
+            }
+            __DATA_READER__.Selected.value = selectDataSet.selectedIndex = 0;
+        };
+        try {
+            reader.readAsBinaryString(file);
+        } catch (e) {
+            reader.readAsArrayBuffer(file);
+            rABS = false;
+        }
+    }
     __DATA_READER__.SourceFile.count = 0;
     __DATA_READER__.SourceFile.total = 0;
 

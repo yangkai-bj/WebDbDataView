@@ -19,7 +19,7 @@ function getFileSecurity() {
             data = data.encrypt(key);
             let title = str2ab(name).toString().encrypt(key);
             let file = {
-                name: {
+                title: {
                     name: title,
                     size: title.length,
                     hash: {
@@ -67,10 +67,11 @@ function getFileSecurity() {
             let title = str2ab(name).toString().encrypt(key);
             let js = {
                 files: [],
-                time: getNow()
+                time: getNow(),
+                application:{name:__VERSION__ .name,version:__VERSION__.version,url:__VERSION__.url}
             };
             let jsfile = {
-                name:
+                title:
                     {
                         name: title,
                         size: title.length,
@@ -134,10 +135,10 @@ function getFileSecurity() {
                     error: null
                 };
                 let jsfile = js.files[index];
-                let title = (jsfile.name.name.length >= jsfile.name.size ? jsfile.name.name.substring(0, jsfile.name.size) : jsfile.name.name);
+                let title = (jsfile.title.name.length >= jsfile.title.size ? jsfile.title.name.substring(0, jsfile.title.size) : jsfile.title.name);
                 let name = ab2str(title.decrypt(key).split(","));
-                if (name.hex_md5_hash() == jsfile.name.hash.source && title.hex_md5_hash() == jsfile.name.hash.target) {
-                    infor.name = ((name.hex_md5_hash() == jsfile.name.hash.source && title.hex_md5_hash() == jsfile.name.hash.target) ? name : "未知");
+                if (name.hex_md5_hash() == jsfile.title.hash.source && title.hex_md5_hash() == jsfile.title.hash.target) {
+                    infor.name = ((name.hex_md5_hash() == jsfile.title.hash.source && title.hex_md5_hash() == jsfile.title.hash.target) ? name : "未知");
                     infor.type = jsfile.type;
                     infor.size = getFileSizeString(jsfile.size, " B");
                     let hash2 = jsfile.file.hex_md5_hash();
@@ -616,7 +617,8 @@ function getFileSecurity() {
                     let pkname = prompt("请输入打包文件名称:");
                     let js = {
                         files: [],
-                        time: getNow()
+                        time: getNow(),
+                        application:{name:__VERSION__ .name,version:__VERSION__.version,url:__VERSION__.url}
                     };
                     for (let i = 0; i < files.length; i++) {
                         let file = files[i];

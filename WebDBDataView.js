@@ -1,7 +1,7 @@
 var __VERSION__ = {
     name: "Web DataView for SQLite Database of browser",
-    version: "2.4.1",
-    date: "2021/06/24",
+    version: "2.4.2",
+    date: "2021/07/02",
     comment: [
         "-- 2021/03/08",
         "优化算法和压缩代码.",
@@ -665,6 +665,18 @@ function importData() {
             __IMPORT__.SourceFile.failed = 0;
             __IMPORT__.SourceFile.error = [];
             __IMPORT__.SourceFile.row = null;
+            let pres = {
+                10: false,
+                20: false,
+                30: false,
+                40: false,
+                50: false,
+                60: false,
+                70: false,
+                80: false,
+                90: false,
+                100: false
+            };
             let sql = "insert into " + table + " values ({VALUES})";
             //不要加字段列表，否则仅能导入两列数据.
             for (let i = 0; i < lines.length; i++) {
@@ -682,68 +694,75 @@ function importData() {
                         tx.executeSql(sql, row, function (tx, results) {
                                 __IMPORT__.SourceFile.count += 1;
                                 __IMPORT__.SourceFile.imported += results.rowsAffected;
-                                if (__IMPORT__.SourceFile.imported%100 == 0 || __IMPORT__.SourceFile.total == __IMPORT__.SourceFile.count ) {
-                                    let packet = {
-                                        index: __IMPORT__.SourceFile.count,
-                                        sql: __IMPORT__.SourceFile.sql,
-                                        data: row,
-                                        error: "",
-                                        beginTime: null,
-                                        endTime: getNow()
-                                    };
-                                    __IMPORT__.SourceFile.error.push(packet);
-                                    viewPacket(packet);
-                                    scrollto();
-                                    viewMessage("Imported:" + __IMPORT__.SourceFile.imported + "/" + __IMPORT__.SourceFile.count)
+                                let pre = Math.floor(__IMPORT__.SourceFile.count * 100 / __IMPORT__.SourceFile.total);
+                                if (typeof pres[pre] !== "undefined") {
+                                    if ((pre % 10 == 0 && pres[pre] == false) || __IMPORT__.SourceFile.count == __IMPORT__.SourceFile.total) {
+                                        pres[pre] = true;
+                                        let packet = {
+                                            index: __IMPORT__.SourceFile.count,
+                                            sql: __IMPORT__.SourceFile.sql,
+                                            data: row,
+                                            error: __IMPORT__.SourceFile.imported + " / " + __IMPORT__.SourceFile.count + "(" + pre + "%)",
+                                            beginTime: null,
+                                            endTime: getNow()
+                                        };
+                                        __IMPORT__.SourceFile.error.push(packet);
+                                        viewPacket(packet);
+                                        scrollto();
+                                        viewMessage("Imported:" + __IMPORT__.SourceFile.imported + " / " + __IMPORT__.SourceFile.count + "(" + pre + "%)")
+                                    }
                                 }
                             },
                             function (tx, error) {
                                 __IMPORT__.SourceFile.count += 1;
                                 __IMPORT__.SourceFile.failed += 1;
+                                let pre = Math.floor(__IMPORT__.SourceFile.count * 100 / __IMPORT__.SourceFile.total);
                                 let packet = {
                                     index: __IMPORT__.SourceFile.count,
                                     sql: __IMPORT__.SourceFile.sql,
                                     data: row,
-                                    error: error.message,
+                                    error: __IMPORT__.SourceFile.imported + " / " + __IMPORT__.SourceFile.count + "(" + pre + "%)" + "\n" + error.message,
                                     beginTime: null,
                                     endTime: getNow()
                                 };
                                 __IMPORT__.SourceFile.error.push(packet);
                                 viewPacket(packet);
                                 scrollto();
-                                viewMessage("Imported:" + __IMPORT__.SourceFile.imported + "/" + __IMPORT__.SourceFile.count + "\n" + error.message)
+                                viewMessage("Imported:" + __IMPORT__.SourceFile.imported + " / " + __IMPORT__.SourceFile.count + "(" + pre + "%)" + "\n" + error.message)
                             });
                     } else {
                         __IMPORT__.SourceFile.count += 1;
                         __IMPORT__.SourceFile.failed += 1;
+                        let pre = Math.floor(__IMPORT__.SourceFile.count * 100 / __IMPORT__.SourceFile.total);
                         let packet = {
                             index: __IMPORT__.SourceFile.count,
                             sql: __IMPORT__.SourceFile.sql,
                             data: data,
-                            error: "数据解析后长度小于数据库结构.",
+                            error: __IMPORT__.SourceFile.imported + " / " + __IMPORT__.SourceFile.count + "(" + pre + "%)" + "\n数据解析后长度小于数据库结构.",
                             beginTime: null,
                             endTime: getNow()
                         };
                         __IMPORT__.SourceFile.error.push(packet);
                         viewPacket(packet);
                         scrollto();
-                        viewMessage("Imported:" + __IMPORT__.SourceFile.imported + "/" + __IMPORT__.SourceFile.count + "\n" + "数据解析后长度小于数据库结构,\n[ " + lines[i] + " ]")
+                        viewMessage("Imported:" + __IMPORT__.SourceFile.imported + " / " + __IMPORT__.SourceFile.count + "(" + pre + "%)" + "\n数据解析后长度小于数据库结构.")
                     }
                 } catch (e) {
                     __IMPORT__.SourceFile.count += 1;
                     __IMPORT__.SourceFile.failed += 1;
+                    let pre = Math.floor(__IMPORT__.SourceFile.count * 100 / __IMPORT__.SourceFile.total);
                     let packet = {
                         index: __IMPORT__.SourceFile.count,
                         sql: __IMPORT__.SourceFile.sql,
                         data: data,
-                        error: e,
+                        error: __IMPORT__.SourceFile.imported + " / " + __IMPORT__.SourceFile.count + "(" + pre + "%)" + e,
                         beginTime: null,
                         endTime: getNow()
                     };
                     __IMPORT__.SourceFile.error.push(packet);
                     viewPacket(packet);
                     scrollto();
-                    viewMessage("Imported:" + __IMPORT__.SourceFile.imported + "/" + __IMPORT__.SourceFile.count + "\n" + e + "\n[ " + lines[i] + " ]")
+                    viewMessage("Imported:" + __IMPORT__.SourceFile.imported + " / " + __IMPORT__.SourceFile.count + "(" + pre + "%)" + e)
                 }
             }
             //由于tx.executeSql异步执行，连续事务执行时间不可预计，不能添加事后统计，只能事中统计.
@@ -1376,7 +1395,7 @@ function getImportContent() {
                                 };
                                 reader.readAsText(file, __IMPORT__.Charset.options[__IMPORT__.Charset.value]);
                             } else if (filetype.toUpperCase() == "XLS" || filetype.toUpperCase() == "XLSX") {
-                                readWorkbookFromLocalFile(file);
+                                readExcelFile(file);
                             } else {
                                 showMessage("仅适用于XLSX、XLS、TXT和CSV文件。");
                                 return;
@@ -3259,21 +3278,7 @@ function init() {
     let help_datasetsubtotal = $("help-dataset-subtotal");
     subtotal.onclick = help_datasetsubtotal.onclick = function () {
         if (__DATASET__.result.length > 0) {
-            let dataset = __DATASET__.result[__DATASET__.default.sheet];
-            let data = [];
-            let columns = [];
-            for (let i = 0; i < dataset["columns"].length; i++) {
-                columns.push(dataset["columns"][i].name);
-            }
-            for (let i = 0; i < dataset["data"].length; i++) {
-                let r = dataset["data"][i];
-                let row = [];
-                for (let c = 0; c < columns.length; c++) {
-                    row.push(r[columns[c]].value);
-                }
-                data.push(row);
-            }
-            let subtotal = getSubtotal(columns, data);
+            let subtotal = getSubtotal();
             setCenterPosition($("main"), subtotal);
         }
     };
@@ -3860,7 +3865,7 @@ function isScroll(el) {
     };
  }
 
-function readWorkbookFromLocalFile(file) {
+function readExcelFile(file) {
     function getData(result, sep) {
         let data = [];
         let lines = result.split("\n");
@@ -3909,7 +3914,13 @@ function readWorkbookFromLocalFile(file) {
     }
 }
 
-function getSubtotal(columns) {
+function getSubtotal(colid) {
+    let dataset = __DATASET__.result[__DATASET__.default.sheet];
+    let columns = [];
+    for (let i = 0; i < dataset["columns"].length; i++) {
+        columns.push(dataset["columns"][i].name);
+    }
+
     let container = document.createElement("div");
     container.id = "subtotal-Content";
     container.className = "subtotal-Content";
@@ -3926,7 +3937,27 @@ function getSubtotal(columns) {
     let hr = document.createElement("hr");
     container.appendChild(hr);
 
-    let tableContent =document.createElement("div");
+    let d = document.createElement("div");
+    container.appendChild(d);
+    d.style.height = "22px";
+    span = document.createElement("span");
+    span.innerHTML = "分类字段:";
+    d.appendChild(span);
+    let cols = document.createElement("select");
+    cols.type = "select";
+    cols.id = "subtotal_groupby";
+    cols.style.width = "80%";
+    cols.style.cssFloat = "right";
+    cols.options.add(new Option("全部", ""));
+    for (let c = 0; c < columns.length; c++) {
+        cols.options.add(new Option(columns[c], columns[c]));
+    }
+    if (typeof colid != "undefined") {
+        cols.selectedIndex = colid + 1;
+    }
+    d.appendChild(cols);
+
+    let tableContent = document.createElement("div");
     tableContent.className = "scroll-Content";
     container.appendChild(tableContent);
 
@@ -3947,12 +3978,12 @@ function getSubtotal(columns) {
     let check = document.createElement("input");
     check.type = "checkbox";
     check.className = "file-checkall";
-    check.style.width = "18px";
-    check.onclick = function(){
+    check.style.width = "32px";
+    check.onclick = function () {
         let columns = $("subtotal-dialog-table").getElementsByClassName("check");
-        for (let i=0;i<columns.length;i++){
+        for (let i = 0; i < columns.length; i++) {
             columns[i].checked = this.checked;
-            this.checked?columns[i].setAttribute("checked", "checked"):columns[i].removeAttribute("checked");
+            this.checked ? columns[i].setAttribute("checked", "checked") : columns[i].removeAttribute("checked");
         }
     };
     th.style.textAlign = "center";
@@ -3969,31 +4000,19 @@ function getSubtotal(columns) {
 
     table.appendChild(addSubtotal(columns, 0));
 
-    let d = document.createElement("div");
+    d = document.createElement("div");
     container.appendChild(d);
-    d.style.height= "22px";
-    span = document.createElement("span");
-    span.innerHTML = "分类字段 : ";
-    d.appendChild(span);
-    let cols = document.createElement("select");
-    cols.type = "select";
-    cols.id = "subtotal_groupby";
-    cols.options.add(new Option("全部", ""));
-    for (let c = 0; c < columns.length; c++) {
-        cols.options.add(new Option(columns[c], columns[c]));
-    }
-    d.appendChild(cols);
-    span = document.createElement("span");
-    span.innerHTML = "合并结果";
-    span.style.cssFloat = "right";
-    d.appendChild(span);
-     let merge = document.createElement("input");
+    let merge = document.createElement("input");
     merge.type = "checkbox";
     merge.id = "subtotal_merge";
-    merge.style.marginTop= "4px";
-    merge.style.cssFloat = "right";
+    merge.style.marginTop = "4px";
+    merge.style.cssFloat = "left";
     merge.style.width = "28px";
     d.appendChild(merge);
+    span = document.createElement("span");
+    span.innerHTML = "合并结果";
+    span.style.cssFloat = "left";
+    d.appendChild(span);
 
     let br = document.createElement("hr");
     br.className = "br";
@@ -4008,7 +4027,7 @@ function getSubtotal(columns) {
     add.innerText = "增加";
     add.onclick = function () {
         let table = $("subtotal-dialog-table");
-        table.appendChild(addSubtotal(columns,table.getElementsByTagName("tr").length - 1));
+        table.appendChild(addSubtotal(columns, table.getElementsByTagName("tr").length - 1));
     };
     tool.appendChild(add);
 
@@ -4041,9 +4060,9 @@ function getSubtotal(columns) {
         let typ = document.getElementsByClassName("subtotal_type");
         let columns = [];
         let data = [];
-        for (let i=0;i<obj.length;i++) {
+        for (let i = 0; i < obj.length; i++) {
             let target = obj[i].value;
-            if (merge){
+            if (merge) {
                 //横向合并集合
                 let result = subtotal(column, target, typ[i].value);
                 if (columns.length == 0) {
@@ -4053,11 +4072,11 @@ function getSubtotal(columns) {
                     let col = result["columns"][1];
                     col.id = columns.length;
                     columns.push(col);
-                    for(let x=0;x<result["data"].length;x++){
+                    for (let x = 0; x < result["data"].length; x++) {
                         let r = result["data"][x];
-                        for(let c=0;c<data.length;c++){
+                        for (let c = 0; c < data.length; c++) {
                             let row = data[c];
-                            if (row[column==""?"全部":column].value == r[column==""?"全部":column].value){
+                            if (row[column == "" ? "全部" : column].value == r[column == "" ? "全部" : column].value) {
                                 let cell = r[col.name];
                                 cell.colid = col.id;
                                 row[col.name] = cell;
@@ -4119,12 +4138,12 @@ function addSubtotal(columns,i) {
     let check = document.createElement("input");
     check.type = "checkbox";
     check.className = "check";
-    check.style.width = "36px";
+    check.style.width = "32px";
     td.appendChild(check);
     tr.appendChild(td);
 
     td = document.createElement("td");
-    td.style.width = "36px";
+    td.style.width = "32px";
     td.style.textAlign = "center";
     let cols = document.createElement("select");
     cols.type = "select";
@@ -4725,6 +4744,16 @@ function getColumnMenu(colid) {
     li.onclick = function () {
         let formater = getFormat(this.getAttribute("colid"));
         setCenterPosition($("main"),formater);
+    };
+    ul.appendChild(li);
+
+    li = document.createElement("li");
+    li.id = "table-column-menu-subtotal";
+    li.innerHTML = "&emsp;● 分类计算";
+    li.setAttribute("colid", colid);
+    li.onclick = function () {
+        let subtotal = getSubtotal(Number(this.getAttribute("colid")));
+        setCenterPosition($("main"),subtotal);
     };
     ul.appendChild(li);
 
