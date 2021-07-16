@@ -1,7 +1,7 @@
 var __VERSION__ = {
     name: "Web DataView for SQLite Database of browser",
-    version: "2.4.2",
-    date: "2021/07/02",
+    version: "2.4.5",
+    date: "2021/07/15",
     comment: [
         "-- 2021/03/08",
         "优化算法和压缩代码.",
@@ -44,6 +44,58 @@ var __VERSION__ = {
     url: __SYS_LOGO_LINK__.link.decode(),
     tel: __SYS_LOGO_LINK__.tel.decode(),
     email: __SYS_LOGO_LINK__.email.decode()
+};
+
+var __XMLHTTP__ = {
+    server: null,
+    url: null,
+    time: null,
+    elements: {},
+    hook: function (dom, timeout) {
+        __XMLHTTP__.elements[dom.id] = dom;
+        function startTime() {
+            dom.innerHTML = (__XMLHTTP__.time == null ? "": __XMLHTTP__.time.format("yyyy-MM-dd hh:mm:ss"));
+            dom.title = "授时服务:\n" + (__XMLHTTP__.url == null?"":__XMLHTTP__.url.split("?")[0]) + "\n" + __XMLHTTP__.server;
+            if (typeof __XMLHTTP__.elements[dom.id] != "undefined") {
+                setTimeout(function () {
+                    startTime();
+                }, timeout);
+            }
+            __XMLHTTP__.getResponse();
+        }
+        startTime();
+    },
+    unhook: function (dom) {
+        delete __XMLHTTP__.elements[dom.id];
+    },
+    getResponse: function () {
+        let xhr = null;
+        try {
+            if (window.XMLHttpRequest) {
+                xhr = new window.XMLHttpRequest();
+            } else { // ie
+                xhr = new ActiveObject("Microsoft.XMLHTTP");
+            }
+        }catch (e) {
+        }
+        // 通过get或HEAD的方式请求当前文件
+        if (xhr != null) {
+            xhr.open("GET", location.href + "?timestamp=" + new Date().format("yyyyMMddhhmmssS"), true);
+            //增加时间戳，避免前端缓存导致客户端不更新。
+            xhr.onreadystatechange = function () {
+                try {
+                    if (xhr.readyState == 4 && xhr.status == 200) {
+                        //console.log(xhr.getAllResponseHeaders());
+                        __XMLHTTP__.server = xhr.getResponseHeader("Server");
+                        __XMLHTTP__.url = xhr.responseURL;
+                        __XMLHTTP__.time = new Date(xhr.getResponseHeader("Date"));
+                    }
+                } catch (e) {
+                }
+            };
+            xhr.send();
+        }
+    }
 };
 
 var __CONFIGS__ = {
@@ -709,7 +761,7 @@ function importData() {
                                         __IMPORT__.SourceFile.error.push(packet);
                                         viewPacket(packet);
                                         scrollto();
-                                        viewMessage("Imported:" + __IMPORT__.SourceFile.imported + " / " + __IMPORT__.SourceFile.count + "(" + pre + "%)")
+                                        viewMessage("Imported : " + __IMPORT__.SourceFile.imported + " / " + __IMPORT__.SourceFile.count + "(" + pre + "%)")
                                     }
                                 }
                             },
@@ -721,14 +773,14 @@ function importData() {
                                     index: __IMPORT__.SourceFile.count,
                                     sql: __IMPORT__.SourceFile.sql,
                                     data: row,
-                                    error: __IMPORT__.SourceFile.imported + " / " + __IMPORT__.SourceFile.count + "(" + pre + "%)" + "\n" + error.message,
+                                    error: __IMPORT__.SourceFile.imported + " / " + __IMPORT__.SourceFile.count + "(" + pre + "%),\n" + error.message,
                                     beginTime: null,
                                     endTime: getNow()
                                 };
                                 __IMPORT__.SourceFile.error.push(packet);
                                 viewPacket(packet);
                                 scrollto();
-                                viewMessage("Imported:" + __IMPORT__.SourceFile.imported + " / " + __IMPORT__.SourceFile.count + "(" + pre + "%)" + "\n" + error.message)
+                                viewMessage("Imported : " + __IMPORT__.SourceFile.imported + " / " + __IMPORT__.SourceFile.count + "(" + pre + "%),\n" + error.message)
                             });
                     } else {
                         __IMPORT__.SourceFile.count += 1;
@@ -738,14 +790,14 @@ function importData() {
                             index: __IMPORT__.SourceFile.count,
                             sql: __IMPORT__.SourceFile.sql,
                             data: data,
-                            error: __IMPORT__.SourceFile.imported + " / " + __IMPORT__.SourceFile.count + "(" + pre + "%)" + "\n数据解析后长度小于数据库结构.",
+                            error: __IMPORT__.SourceFile.imported + " / " + __IMPORT__.SourceFile.count + "(" + pre + "%),\n" + "数据解析后长度小于数据库结构.",
                             beginTime: null,
                             endTime: getNow()
                         };
                         __IMPORT__.SourceFile.error.push(packet);
                         viewPacket(packet);
                         scrollto();
-                        viewMessage("Imported:" + __IMPORT__.SourceFile.imported + " / " + __IMPORT__.SourceFile.count + "(" + pre + "%)" + "\n数据解析后长度小于数据库结构.")
+                        viewMessage("Imported : " + __IMPORT__.SourceFile.imported + " / " + __IMPORT__.SourceFile.count + "(" + pre + "%),\n" + "数据解析后长度小于数据库结构.")
                     }
                 } catch (e) {
                     __IMPORT__.SourceFile.count += 1;
@@ -762,7 +814,7 @@ function importData() {
                     __IMPORT__.SourceFile.error.push(packet);
                     viewPacket(packet);
                     scrollto();
-                    viewMessage("Imported:" + __IMPORT__.SourceFile.imported + " / " + __IMPORT__.SourceFile.count + "(" + pre + "%)" + e)
+                    viewMessage("Imported : " + __IMPORT__.SourceFile.imported + " / " + __IMPORT__.SourceFile.count + "(" + pre + "%),\n" + e)
                 }
             }
             //由于tx.executeSql异步执行，连续事务执行时间不可预计，不能添加事后统计，只能事中统计.
@@ -2695,9 +2747,10 @@ function init() {
     dbinfo.style.display = "none";
     dbinfo.onclick = function () {
         //##########################################
+        ajax();
         //字符串可传输编码转化
-        let a = "2021/00/02 12:12:100";
-        console.log(a.toDatetime("yyyy-MM-dd hh:mm:ss"));
+        // let a = "2021/00/02 12:12:100";
+        // console.log(a.toDatetime("yyyy-MM-dd hh:mm:ss"));
 
         //##########################################
         //字符串可传输编码转化

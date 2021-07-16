@@ -3,14 +3,21 @@ function getStorageSql(key) {
         let storage = window.localStorage;
         let sqllist = {};
         if (storage.getItem(__CONFIGS__.STORAGE.SCRIPTS) == null)
-            storage.setItem(__CONFIGS__.STORAGE.SCRIPTS, "{}");
+            storage.setItem(__CONFIGS__.STORAGE.SCRIPTS, '{}');
         else {
             sqllist = JSON.parse(storage.getItem(__CONFIGS__.STORAGE.SCRIPTS));
         }
-        return sqllist[key].sql.binary2str();
+        let str = sqllist[key].sql.binary2str();
+        let sql = '';
+        //处理字符串数组的结束符\0
+        for (let i = 0 ; i < str.length ; i ++) {
+            if (str.charCodeAt(i) != 0)
+                sql += str.charAt(i);
+        }
+        return sql;
     } catch (e) {
-        console.log(e);
         return null;
+        console.log(e);
     }
 }
 
@@ -19,7 +26,7 @@ function saveStorageSql(key, sql) {
         let storage = window.localStorage;
         let sqllist = {};
         if (storage.getItem(__CONFIGS__.STORAGE.SCRIPTS) == null)
-            storage.setItem(__CONFIGS__.STORAGE.SCRIPTS, "{}");
+            storage.setItem(__CONFIGS__.STORAGE.SCRIPTS, '{}');
         else {
             sqllist = JSON.parse(storage.getItem(__CONFIGS__.STORAGE.SCRIPTS));
         }
@@ -130,7 +137,8 @@ function storageSqlDialog(sql, editer, type){
     open.onclick = function(){
         editer.title = $("sql-Manager-Content-name").value;
         viewMessage("Open " + __SQLEDITOR__.options.mode + " : " + editer.title);
-        editer.codeMirror.setValue($("sql-Manager-Content-sql").value);
+        let sql = $("sql-Manager-Content-sql").value;
+        editer.codeMirror.setValue(sql);
         $("sql-Manager-Content").parentNode.removeChild($("sql-Manager-Content"));
     };
     tool.appendChild(open);
