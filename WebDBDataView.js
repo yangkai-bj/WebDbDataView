@@ -1,7 +1,7 @@
 var __VERSION__ = {
     name: "Web DataView for SQLite Database of browser",
-    version: "2.4.5",
-    date: "2021/07/15",
+    version: "2.4.8",
+    date: "2021/07/23",
     comment: [
         "-- 2021/03/08",
         "优化算法和压缩代码.",
@@ -39,6 +39,8 @@ var __VERSION__ = {
         "增加文件加密/解密模块.",
         "-- 2021/06/24",
         "增加外部数据读取模块.",
+        "-- 2021/07/18",
+        "调整部分组件加载方式.",
     ],
     author: __SYS_LOGO_LINK__.author.decode(),
     url: __SYS_LOGO_LINK__.link.decode(),
@@ -48,27 +50,7 @@ var __VERSION__ = {
 
 var __XMLHTTP__ = {
     server: null,
-    url: null,
-    time: null,
-    elements: {},
-    hook: function (dom, timeout) {
-        __XMLHTTP__.elements[dom.id] = dom;
-        function startTime() {
-            dom.innerHTML = (__XMLHTTP__.time == null ? "": __XMLHTTP__.time.format("yyyy-MM-dd hh:mm:ss"));
-            dom.title = "授时服务:\n" + (__XMLHTTP__.url == null?"":__XMLHTTP__.url.split("?")[0]) + "\n" + __XMLHTTP__.server;
-            if (typeof __XMLHTTP__.elements[dom.id] != "undefined") {
-                setTimeout(function () {
-                    startTime();
-                }, timeout);
-            }
-            __XMLHTTP__.getResponse();
-        }
-        startTime();
-    },
-    unhook: function (dom) {
-        delete __XMLHTTP__.elements[dom.id];
-    },
-    getResponse: function () {
+    request: function () {
         let xhr = null;
         try {
             if (window.XMLHttpRequest) {
@@ -76,25 +58,294 @@ var __XMLHTTP__ = {
             } else { // ie
                 xhr = new ActiveObject("Microsoft.XMLHTTP");
             }
-        }catch (e) {
+        } catch (e) {
         }
+        return xhr;
+    },
+    time: null,
+    abstract: null,
+    elements: {},
+    checking: {
+        certificated: false,
+    },
+    hook: function (dom, timeout) {
+        __XMLHTTP__.elements[dom.id] = dom;
+        function startTime() {
+            dom.innerHTML = (__XMLHTTP__.time == null ? "" : __XMLHTTP__.time.format("yyyy-MM-dd hh:mm:ss"));
+            dom.title = "授时服务:\n" +
+                (__XMLHTTP__.server == null ? "" : __XMLHTTP__.server) + "\n" +
+                (__XMLHTTP__.abstract == null ? "" : __XMLHTTP__.abstract);
+            if (typeof __XMLHTTP__.elements[dom.id] != "undefined") {
+                setTimeout(function () {
+                    startTime();
+                }, timeout);
+            }
+            __XMLHTTP__.getResponse();
+        }
+
+        startTime();
+    },
+    unhook: function (dom) {
+        delete __XMLHTTP__.elements[dom.id];
+    },
+    getResponse: function () {
+        let xhr = __XMLHTTP__.request();
         // 通过get或HEAD的方式请求当前文件
         if (xhr != null) {
             xhr.open("GET", location.href + "?timestamp=" + new Date().format("yyyyMMddhhmmssS"), true);
             //增加时间戳，避免前端缓存导致客户端不更新。
+            //不能跨域名
             xhr.onreadystatechange = function () {
                 try {
                     if (xhr.readyState == 4 && xhr.status == 200) {
                         //console.log(xhr.getAllResponseHeaders());
-                        __XMLHTTP__.server = xhr.getResponseHeader("Server");
-                        __XMLHTTP__.url = xhr.responseURL;
+                        __XMLHTTP__.server = xhr.responseURL.split("/").slice(0, 3).join("/");
+                        __XMLHTTP__.abstract = xhr.getResponseHeader("Server");
                         __XMLHTTP__.time = new Date(xhr.getResponseHeader("Date"));
+                    } else if (xhr.status == 404) {
+                        __XMLHTTP__.server = null;
+                        __XMLHTTP__.abstract = null;
+                        __XMLHTTP__.time = null;
                     }
                 } catch (e) {
                 }
             };
             xhr.send();
         }
+    },
+    certificate: function (byServer) {
+        let title = document.title;
+        let scripts = [
+            {name: "主程序", src: "WebDBDataView.js", type: "text/javascript", element: "script", load: false},
+            {name: "主程序", src: "themes/default.css", type: "text/css", element: "link", load: false},
+            {name: "主程序", src: "WebDBDataView.css", type: "text/css", element: "link", load: false},
+            {name: "资料库", src: "themes/images.js", type: "text/javascript", element: "script", load: false},
+            {name: "公共函数", src: "FunctionsComponent.js", type: "text/javascript", element: "script", load: false},
+            {
+                name: "Echarts",
+                src: "echarts/v5.1/echarts.min.js",
+                type: "text/javascript",
+                element: "script",
+                load: false
+            },
+            {name: "Echarts", src: "echartsThemes.js", type: "text/javascript", element: "script", load: false},
+            {name: "Echarts", src: "echartsView.js", type: "text/javascript", element: "script", load: false},
+            {name: "二维码组件", src: "qrcode/qrcode.js", type: "text/javascript", element: "script", load: false},
+            {
+                name: "codemirror",
+                src: "codemirror/codemirror.js",
+                type: "text/javascript",
+                element: "script",
+                load: false
+            },
+            {
+                name: "codemirror",
+                src: "codemirror/matchbrackets.js",
+                type: "text/javascript",
+                element: "script",
+                load: false
+            },
+            {name: "codemirror", src: "codemirror/sqlite.js", type: "text/javascript", element: "script", load: false},
+            {
+                name: "codemirror",
+                src: "codemirror/javascript.js",
+                type: "text/javascript",
+                element: "script",
+                load: false
+            },
+            {
+                name: "codemirror",
+                src: "codemirror/show-hint.js",
+                type: "text/javascript",
+                element: "script",
+                load: false
+            },
+            {
+                name: "codemirror",
+                src: "codemirror/sql-hint.js",
+                type: "text/javascript",
+                element: "script",
+                load: false
+            },
+            {
+                name: "codemirror",
+                src: "codemirror/fullscreen.js",
+                type: "text/javascript",
+                element: "script",
+                load: false
+            },
+            {
+                name: "codemirror",
+                src: "codemirror/placeholder.js",
+                type: "text/javascript",
+                element: "script",
+                load: false
+            },
+            {name: "codemirror", src: "codemirror/dialog.js", type: "text/javascript", element: "script", load: false},
+            {
+                name: "codemirror",
+                src: "codemirror/searchcursor.js",
+                type: "text/javascript",
+                element: "script",
+                load: false
+            },
+            {name: "codemirror", src: "codemirror/search.js", type: "text/javascript", element: "script", load: false},
+            {
+                name: "codemirror",
+                src: "codemirror/jump-to-line.js",
+                type: "text/javascript",
+                element: "script",
+                load: false
+            },
+            {name: "codemirror", src: "codemirror/rulers.js", type: "text/javascript", element: "script", load: false},
+            {name: "codemirror", src: "codemirror/codemirror.css", type: "text/css", element: "link", load: false},
+            {name: "codemirror", src: "codemirror/theme/default.css", type: "text/css", element: "link", load: false},
+            {name: "codemirror", src: "codemirror/fullscreen.css", type: "text/css", element: "link", load: false},
+            {name: "codemirror", src: "codemirror/show-hint.css", type: "text/css", element: "link", load: false},
+            {name: "codemirror", src: "codemirror/dialog.css", type: "text/css", element: "link", load: false},
+            {name: "Excel组件", src: "sheetjs/xlsx.full.min.js", type: "text/javascript", element: "script", load: true},
+            {name: "常用统计函数", src: "StatisticsComponent.js", type: "text/javascript", element: "script", load: true},
+            {name: "脚本管理组件", src: "StorageSQLDialog.js", type: "text/javascript", element: "script", load: true},
+            {name: "脚本管理组件", src: "StorageSQLDialog.css", type: "text/css", element: "link", load: true},
+            {name: "文件加密组件", src: "FileSecurityComponent.js", type: "text/javascript", element: "script", load: true},
+            {name: "数据读取组件", src: "DataReaderComponent.js", type: "text/javascript", element: "script", load: true},
+            {
+                name: "Echarts",
+                src: "echarts/v5.1/echarts-gl.min.js",
+                type: "text/javascript",
+                element: "script",
+                load: true
+            },
+            {
+                name: "Echarts",
+                src: "echarts/v5.1/echarts-wordcloud.min.js",
+                type: "text/javascript",
+                element: "script",
+                load: true
+            },
+            {
+                name: "Echarts",
+                src: "echarts/v5.1/echarts-liquidfill.min.js",
+                type: "text/javascript",
+                element: "script",
+                load: true
+            },
+            {name: "回归函数组件", src: "echarts/v5.1/ecStat.js", type: "text/javascript", element: "script", load: true},
+            {name: "世界地图组件", src: "echarts/map/world.js", type: "text/javascript", element: "script", load: true},
+            {
+                name: "中国地图组件",
+                src: "echarts/map/china-and-region.js",
+                type: "text/javascript",
+                element: "script",
+                load: true
+            },
+        ];
+
+        if (byServer) {
+            for (let i = 0; i < scripts.length; i++) {
+                if (scripts[i].load)
+                    document.title = "加载(" + Math.floor((i + 1) * 100 / scripts.length) + "%)" + scripts[i].name + "...";
+                else
+                    document.title = "验证(" + Math.floor((i + 1) * 100 / scripts.length) + "%)" + scripts[i].name + "...";
+                let xhr = __XMLHTTP__.request();
+                if (xhr != null) {
+                    xhr.open("GET", scripts[i].src + "?timestamp=" + new Date().format("yyyyMMddhhmmssS"), true);
+                    xhr.onreadystatechange = function () {
+                        try {
+                            if (xhr.readyState == 4 && xhr.status == 404)
+                                viewMessage("验证 " + scripts[i].name + "(" + scripts[i].src + ")...fails.");
+                            else if (xhr.readyState == 4 && xhr.status == 200) {
+                                let url = xhr.responseURL.split("?")[0];
+                                if (scripts[i].load == false) {
+                                    url = url.split("/");
+                                    viewMessage("验证 " + scripts[i].name + "(" + url[url.length - 1] + ")" + "...OK.");
+                                } else {
+                                    switch (scripts[i].element) {
+                                        case "script":
+                                            let script = document.createElement(scripts[i].element);
+                                            script.type = scripts[i].type;
+                                            script.id = "onload-" + scripts[i].element + "-" + i;
+                                            script.src = xhr.responseURL.split("?")[0];
+                                            document.head.appendChild(script);
+                                            url = url.split("/");
+                                            viewMessage("加载 " + scripts[i].name + "(" + url[url.length - 1] + ")" + "...OK.");
+                                            break;
+                                        case "link":
+                                            let link = document.createElement(scripts[i].element);
+                                            link.type = scripts[i].type;
+                                            link.id = "onload-" + scripts[i].element + "-" + i;
+                                            link.rel = "stylesheet";
+                                            link.href = xhr.responseURL.split("?")[0];
+                                            document.head.appendChild(link);
+                                            url = url.split("/");
+                                            viewMessage("加载 " + scripts[i].name + "(" + url[url.length - 1] + ")" + "...OK.");
+                                            break;
+                                    }
+                                }
+                            }
+                        } catch (e) {
+                        }
+                    };
+                    xhr.send();
+                }
+                sleep(100);
+            }
+        } else {
+            for (let i = 0; i < scripts.length; i++) {
+                if (scripts[i].load) {
+                    document.title = "加载(" + Math.floor((i + 1) * 100 / scripts.length) + "%)" + scripts[i].name + "...";
+                    switch (scripts[i].element) {
+                        case "script":
+                            let script = document.createElement(scripts[i].element);
+                            script.type = scripts[i].type;
+                            script.id = "onload-" + scripts[i].element + "-" + i;
+                            script.src = scripts[i].src;
+                            document.head.appendChild(script);
+                            viewMessage("加载 " + scripts[i].name + "(" + scripts[i].src + ")" + "...OK.");
+                            break;
+                        case "link":
+                            let link = document.createElement(scripts[i].element);
+                            link.type = scripts[i].type;
+                            link.id = "onload-" + scripts[i].element + "-" + i;
+                            link.rel = "stylesheet";
+                            link.href = scripts[i].src;
+                            document.head.appendChild(link);
+                            viewMessage("加载 " + scripts[i].name + "(" + scripts[i].src + ")" + "...OK.");
+                            break;
+                    }
+                } else {
+                    document.title = "验证(" + Math.floor((i + 1) * 100 / scripts.length) + "%)" + scripts[i].name + "...";
+                    let checked = false;
+                    switch (scripts[i].element) {
+                        case "script":
+                            let sc = document.getElementsByTagName("script");
+                            for (let l = 0; l < sc.length; l++) {
+                                if (sc[l].src.indexOf(scripts[i].src) >= 0) {
+                                    checked = true;
+                                    break;
+                                }
+                            }
+                            break;
+                        case "link":
+                            let li = document.getElementsByTagName("link");
+                            for (let l = 0; l < li.length; l++) {
+                                if (li[l].href.indexOf(scripts[i].src) >= 0) {
+                                    checked = true;
+                                    break;
+                                }
+                            }
+                            break;
+                    }
+                    if (checked)
+                        viewMessage("验证 " + scripts[i].name + "(" + scripts[i].src + ")" + "...OK.");
+                    else
+                        viewMessage("验证 " + scripts[i].name + "(" + scripts[i].src + ")" + "...fails.");
+                }
+                sleep(100);
+            }
+        }
+        document.title = title;
+        __XMLHTTP__.checking.certificated = true;
     }
 };
 
@@ -558,35 +809,47 @@ var __CONFIGS__ = {
          hintOptions: {tables: {}}
      },
      init: function (textarea) {
-         textarea.placeholder = "\n" +
-             "F10 自动完成\n" +
-             "F11 全屏编辑切换;Esc 取消全屏\n" +
-             "Ctrl-Z 撤销键入\n" +
-             "Ctrl-Y 恢复键入\n" +
-             "Shift-F 查找\n" +
-             "Shift-Ctrl-F 查找替换\n" +
-             "Shift-Ctrl-R 查找全部并替换\n";
-         this.codeMirror = CodeMirror.fromTextArea(textarea, this.options);
-         let colors = ["#fcc", "#ccf", "#fcf", "#aff", "#cfc", "#f5f577"];
-         let rulers = [];
-         for (let i = 1; i <= 6; i++) {
-             rulers.push({color: colors[i], column: i * 40, lineStyle: "dotted"});
-             //solid//dashed//dash-dot//dotted
-         }
-         this.codeMirror.setOption("rulers", rulers);
-         this.codeMirror.on("gutterClick", function (cm, n) {
-             let info = cm.lineInfo(n);
-             cm.setGutterMarker(n, "breakpoints", info.gutterMarkers ? null : marker());
-         });
+         let messasge = "初始化脚本编辑器";
+         try {
+             textarea.placeholder = "\n" +
+                 "F10 自动完成\n" +
+                 "F11 全屏编辑切换;Esc 取消全屏\n" +
+                 "Ctrl-Z 撤销键入\n" +
+                 "Ctrl-Y 恢复键入\n" +
+                 "Shift-F 查找\n" +
+                 "Shift-Ctrl-F 查找替换\n" +
+                 "Shift-Ctrl-R 查找全部并替换\n";
+             this.codeMirror = CodeMirror.fromTextArea(textarea, this.options);
+             let colors = ["#fcc", "#ccf", "#fcf", "#aff", "#cfc", "#f5f577"];
+             let rulers = [];
+             for (let i = 1; i <= 6; i++) {
+                 rulers.push({color: colors[i], column: i * 40, lineStyle: "dotted"});
+                 //solid//dashed//dash-dot//dotted
+             }
+             this.codeMirror.setOption("rulers", rulers);
+             this.codeMirror.on("gutterClick", function (cm, n) {
+                 let info = cm.lineInfo(n);
+                 cm.setGutterMarker(n, "breakpoints", info.gutterMarkers ? null : marker());
+             });
 
-         function marker() {
-             let marker = document.createElement("div");
-             marker.style.color = "#822";
-             marker.innerHTML = "●";
-             return marker;
+             function marker() {
+                 let marker = document.createElement("div");
+                 marker.style.color = "#822";
+                 marker.innerHTML = "●";
+                 return marker;
+             }
+             viewMessage(messasge + "...OK.");
+         } catch (e) {
+             viewMessage(messasge + "...fails.");
          }
      }
  };
+
+ function sleep(delay) {
+    let endTime = new Date().getTime() + parseInt(delay);
+    while (new Date().getTime() < endTime) ;
+    //用时间来控制延时,突破浏览器同时下载任务限制.
+}
 
 function transferData(structure,row) {
     //####################################
@@ -2523,164 +2786,163 @@ function appState(title, message) {
     ctx.restore();
 }
 
-function init() {
-     try {
-         //Worker需要在服务器上运行
-         if (typeof(Worker) !== "undefined") {
-             appState("服务器运行.", "Web service •••");
-             let worker = new Worker("time.js");
-             worker.onmessage = function (event) {
-                 $("time").title = event.data;
-                 let times = event.data.toString().split("\n")[1].split(":");
-                 $("time").width = 50;
-                 $("time").height = 50;
-                 let ctx = $("time").getContext("2d");
+function drawClock(data) {
+     $("time").title = data;
+    let times = data.toString().split("\n")[1].split(":");
+    $("time").width = 50;
+    $("time").height = 50;
+    let ctx = $("time").getContext("2d");
 
-                 let clockRadius = Math.min($("time").width / 2, $("time").height / 2);
-                 let hours = Number(times[0]);
-                 let minutes = Number(times[1]);
-                 let seconds = Number(times[2]);
+    let clockRadius = Math.min($("time").width / 2, $("time").height / 2);
+    let hours = Number(times[0]);
+    let minutes = Number(times[1]);
+    let seconds = Number(times[2]);
 
-                 hours = hours > 12 ? hours - 12 : hours;
-                 let hour = hours + minutes / 60;
-                 let minute = minutes + seconds / 60;
-                 ctx.drawImage(__SYS_IMAGES__.getLogoImage(__SYS_IMAGES__.h24[minutes%24], 50, 50), 0, 0, 50, 50);
-                 ctx.save();
+    hours = hours > 12 ? hours - 12 : hours;
+    let hour = hours + minutes / 60;
+    let minute = minutes + seconds / 60;
+    ctx.drawImage(__SYS_IMAGES__.getLogoImage(__SYS_IMAGES__.h24[minutes % 24], 50, 50), 0, 0, 50, 50);
+    ctx.save();
 
-                 ctx.translate($("time").width / 2, $("time").height / 2);
-                 ctx.beginPath();
+    ctx.translate($("time").width / 2, $("time").height / 2);
+    ctx.beginPath();
 
-                 // draw numbers
-                 ctx.font = '9px Arial';
-                 ctx.fillStyle = "lightseagreen";
-                 ctx.textAlign = 'center';
-                 ctx.textBaseline = 'middle';
-                 for (let n = 1; n <= 12; n++) {
-                     if (n == 3 || n == 6 || n == 9 || n == 12)
-                         ctx.fillStyle = "#FF8000";
-                     else
-                         ctx.fillStyle = "lightseagreen";
-                     let theta = (n - 3) * (Math.PI * 2) / 12;
-                     let x = clockRadius * 0.9 * Math.cos(theta);
-                     let y = clockRadius * 0.9 * Math.sin(theta);
-                     ctx.fillText("•", x, y);
-                 }
-                 ctx.fillStyle = "lightseagreen";
-
-                 ctx.save();
-                 let theta = (hour - 3) * 2 * Math.PI / 12;
-                 ctx.rotate(theta);
-                 ctx.beginPath();
-                 ctx.moveTo(-1, -1.5);
-                 ctx.lineTo(-1, 1.5);
-                 ctx.lineTo(clockRadius * 0.6, 1);
-                 ctx.lineTo(clockRadius * 0.6, -1);
-                 ctx.fill();
-                 ctx.restore();
-
-                 // draw minute
-                 ctx.save();
-                 theta = (minute - 15) * 2 * Math.PI / 60;
-                 ctx.rotate(theta);
-                 ctx.beginPath();
-                 ctx.moveTo(-1, -1);
-                 ctx.lineTo(-1, 1);
-                 ctx.lineTo(clockRadius * 0.7, 0.5);
-                 ctx.lineTo(clockRadius * 0.7, -0.5);
-                 ctx.fill();
-                 ctx.restore();
-
-                 // draw second
-                 ctx.save();
-                 theta = (seconds - 15) * 2 * Math.PI / 60;
-                 ctx.rotate(theta);
-                 ctx.beginPath();
-                 ctx.moveTo(-7, -1);
-                 ctx.lineTo(-7, 1);
-                 ctx.lineTo(clockRadius * 0.8, 0.5);
-                 ctx.lineTo(clockRadius * 0.8, -0.5);
-                 ctx.fillStyle = "#FF8000";
-                 ctx.fill();
-                 ctx.restore();
-                 ctx.restore();
-             }
-         }
-         else {
-             //worker.terminate();
-             //worker = undefined;
-             appState("本地运行.", "Local file •••");
-         }
-     } catch(e) {
-         appState("本地运行.", "Local file •••");
-     }
-
-    try {
-        getQRCode($("page"), 90, 90, __VERSION__.url, __SYS_IMAGES__.echo);
-        $("main-title").appendChild(__SYS_IMAGES__.getLogoImage(__SYS_IMAGES__.logo_echarts));
-        $("main-version").innerText = __VERSION__.version;
-        $("main-version").title = "发布日期: " + __VERSION__.date + "\n ● ...\n ● " + __VERSION__.comment.splice(__VERSION__.comment.length%10 + (Math.floor(__VERSION__.comment.length/10)-1)*10).join("\n ● ");
-    } catch (e) {
+    // draw numbers
+    ctx.font = '9px Arial';
+    ctx.fillStyle = "lightseagreen";
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    for (let n = 1; n <= 12; n++) {
+        if (n == 3 || n == 6 || n == 9 || n == 12)
+            ctx.fillStyle = "#FF8000";
+        else
+            ctx.fillStyle = "lightseagreen";
+        let theta = (n - 3) * (Math.PI * 2) / 12;
+        let x = clockRadius * 0.9 * Math.cos(theta);
+        let y = clockRadius * 0.9 * Math.sin(theta);
+        ctx.fillText("•", x, y);
     }
+    ctx.fillStyle = "lightseagreen";
+
+    ctx.save();
+    let theta = (hour - 3) * 2 * Math.PI / 12;
+    ctx.rotate(theta);
+    ctx.beginPath();
+    ctx.moveTo(-1, -1.5);
+    ctx.lineTo(-1, 1.5);
+    ctx.lineTo(clockRadius * 0.6, 1);
+    ctx.lineTo(clockRadius * 0.6, -1);
+    ctx.fill();
+    ctx.restore();
+
+    // draw minute
+    ctx.save();
+    theta = (minute - 15) * 2 * Math.PI / 60;
+    ctx.rotate(theta);
+    ctx.beginPath();
+    ctx.moveTo(-1, -1);
+    ctx.lineTo(-1, 1);
+    ctx.lineTo(clockRadius * 0.7, 0.5);
+    ctx.lineTo(clockRadius * 0.7, -0.5);
+    ctx.fill();
+    ctx.restore();
+
+    // draw second
+    ctx.save();
+    theta = (seconds - 15) * 2 * Math.PI / 60;
+    ctx.rotate(theta);
+    ctx.beginPath();
+    ctx.moveTo(-7, -1);
+    ctx.lineTo(-7, 1);
+    ctx.lineTo(clockRadius * 0.8, 0.5);
+    ctx.lineTo(clockRadius * 0.8, -0.5);
+    ctx.fillStyle = "#FF8000";
+    ctx.fill();
+    ctx.restore();
+    ctx.restore();
+}
+
+function initConfigs() {
+    let checked = false;
+
 
     if (checkStorage()) {
-        setUserConfig("CopyRight", __VERSION__.author + " ☎ " + __VERSION__.tel + " ✉ <a href='mailto:" + __VERSION__.email + "'>" + __VERSION__.email + "</a>");
-        $("copyright").innerHTML = getUserConfig("CopyRight");
-        $("footer").style.display = getUserConfig("help");
-        $("detail").style.display = getUserConfig("displayLogs");
-        if ($("detail").style.display == "none") {
-            $("page").onmousemove = function () {
-                let active = 3;
-                if (event.x > getAbsolutePosition($("page")).width - active) {
-                    $("detail").style.display = "block";
-                    setUserConfig("displayLogs", "block");
-                    $("page").onmousemove = null;
-                }
-                resize();
-            };
-        }
-        $("themes").setAttribute("href", getUserConfig("pagethemes") == null ? "themes/default.css" : getUserConfig("pagethemes"));
+        try {
+            let message = "初始化系统参数";
+            $("main-title").appendChild(__SYS_IMAGES__.getLogoImage(__SYS_IMAGES__.logo_echarts));
+            $("main-version").innerText = __VERSION__.version;
+            $("main-version").title = "发布日期: " + __VERSION__.date + "\n ● ...\n ● " + __VERSION__.comment.splice(__VERSION__.comment.length % 10 + (Math.floor(__VERSION__.comment.length / 10) - 1) * 10).join("\n ● ");
+            let copyright = __VERSION__.author + " ☎ " + __VERSION__.tel + " ✉ <a href='mailto:" + __VERSION__.email + "'>" + __VERSION__.email + "</a>";
+            setUserConfig("CopyRight", copyright);
+            $("copyright").innerHTML = copyright;
+            $("footer").style.display = getUserConfig("help");
+            $("detail").style.display = getUserConfig("displayLogs");
+            if ($("detail").style.display == "none") {
+                $("page").onmousemove = function () {
+                    let active = 3;
+                    if (event.x > getAbsolutePosition($("page")).width - active) {
+                        $("detail").style.display = "block";
+                        setUserConfig("displayLogs", "block");
+                        $("page").onmousemove = null;
+                    }
+                    resize();
+                };
+            }
+            $("themes").setAttribute("href", getUserConfig("pagethemes") == null ? "themes/default.css" : getUserConfig("pagethemes"));
 
-        let config = getUserConfig("echartsconfig");
-        if (config != null) {
-            config = JSON.parse(config);
-            for (key in config) {
-                try {
-                    __ECHARTS__.configs[key].value = config[key];
-                } catch (e) {
+            let config = getUserConfig("echartsconfig");
+            if (config != null) {
+                config = JSON.parse(config);
+                for (key in config) {
+                    try {
+                        __ECHARTS__.configs[key].value = config[key];
+                    } catch (e) {
+                    }
                 }
             }
-        }
 
-        config = getUserConfig("datasetConfig");
-        if (config != null) {
-            config = JSON.parse(config);
-            for (key in config) {
-                try {
-                    __DATASET__.configs[key].value = config[key];
-                } catch (e) {
+            config = getUserConfig("datasetConfig");
+            if (config != null) {
+                config = JSON.parse(config);
+                for (key in config) {
+                    try {
+                        __DATASET__.configs[key].value = config[key];
+                    } catch (e) {
+                    }
                 }
             }
-        }
 
-        let map = getUserConfig("localMap");
-        if (map != null) {
-            geoCoordMap.LocalMap = map;
-        }
-        if (getUserConfig("geoCoordMapCity") != null) {
-            let coord = JSON.parse(getUserConfig("geoCoordMapCity"));
-            geoCoordMap.City = coord;
-        }
-        if (getUserConfig("geoCoordMapCustom") != null) {
-            let coord = JSON.parse(getUserConfig("geoCoordMapCustom"));
-            geoCoordMap.Custom = coord;
-        }
+            let map = getUserConfig("localMap");
+            if (map != null) {
+                geoCoordMap.LocalMap = map;
+            }
+            if (getUserConfig("geoCoordMapCity") != null) {
+                let coord = JSON.parse(getUserConfig("geoCoordMapCity"));
+                geoCoordMap.City = coord;
+            }
+            if (getUserConfig("geoCoordMapCustom") != null) {
+                let coord = JSON.parse(getUserConfig("geoCoordMapCustom"));
+                geoCoordMap.Custom = coord;
+            }
 
-        resize();
-        viewDatabases();
+            getQRCode($("page"), 90, 90, __VERSION__.url, __SYS_IMAGES__.echo);
+            resize();
+            viewDatabases();
+            viewMessage(message + "...OK.");
+            checked = true;
+        } catch (e) {
+            viewMessage(message + "...fails.");
+            checked = false;
+        }
     } else {
-        alert("当前浏览器不支持Local Storage ！")
+        alert("当前浏览器不支持Local Storage,建议使用Chrome或Edge浏览器.");
+        checked = false;
     }
+    return checked;
+}
 
+function initMenus() {
+     let message = "初始化系统菜单";
     //#######################################
     //初始化数据库菜单
     //#######################################
@@ -2911,7 +3173,7 @@ function init() {
     //初始化SQL菜单
     //#######################################
     let sqltools = $("sql-tools");
-    sqltools.ondblclick = function() {
+    sqltools.ondblclick = function () {
         __DATASET__.toFullScreen = requestFullScreen($("main"));
     };
 
@@ -3276,7 +3538,7 @@ function init() {
     //初始化数据菜单
     //#######################################
     let datatools = $("data-tools");
-    datatools.ondblclick = function() {
+    datatools.ondblclick = function () {
         __DATASET__.toFullScreen = requestFullScreen($("main"));
     };
 
@@ -3366,12 +3628,6 @@ function init() {
                 str.replaceAll(sts[i], "");
             }
             return str;
-        }
-
-        function sleep(delay) {
-            let endTime = new Date().getTime() + parseInt(delay);
-            while (new Date().getTime() < endTime) ;
-            //用时间来控制延时,突破浏览器同时下载任务限制.
         }
 
         if (__DATASET__.result.length > 0) {
@@ -3540,6 +3796,16 @@ function init() {
         }
     };
     setTooltip(removeall, "删除所有<br>数据集");
+
+    let fileSecurity = document.createElement("div");
+    datatools.appendChild(fileSecurity);
+    fileSecurity.type = "div";
+    fileSecurity.className = "charButton";
+    fileSecurity.innerText = "☍";
+    fileSecurity.onclick = $("file-security").onclick = function () {
+        setCenterPosition($("main"), getFileSecurity());
+    };
+    setTooltip(fileSecurity, "文件加密<br>解密");
 
     let datasetSetting = document.createElement("div");
     datatools.appendChild(datasetSetting);
@@ -3801,22 +4067,55 @@ function init() {
         }
     };
     setTooltip(echarts, "绘制<br>视图");
+
     //其他工具
-    $("file-security").onclick = function() {
-        setCenterPosition($("page"), getFileSecurity());
-    };
-    $("image-base64").onclick = function(){
+    $("image-base64").onclick = function () {
         setCenterPosition($("page"), getImageBase64Code());
     };
 
-    setPageThemes();
+    viewMessage(message + "...OK.")
+}
 
-    setDataPageTools(0);
+function init() {
+    if (initConfigs()) {
+        initMenus();
+        setPageThemes();
+        setDataPageTools(0);
+        window.onresize = function () {
+            resize();
+        };
 
-    window.onresize = function () {
-        resize();
-    };
-
+        try {
+            //Worker需要在服务器上运行
+            if (typeof(Worker) !== "undefined") {
+                appState("服务器运行.", "Web service •••");
+                let worker = new Worker("time.js");
+                worker.onmessage = function (event) {
+                    let message = JSON.parse(event.data);
+                    switch (message.type) {
+                        case "time":
+                            drawClock(message.value);
+                            break;
+                        case "certificate":
+                            if (__XMLHTTP__.checking.certificated == false)
+                                __XMLHTTP__.certificate(true);
+                            break;
+                    }
+                }
+            }
+            else {
+                //worker.terminate();
+                //worker = undefined;
+                appState("本地运行.", "Local file •••");
+                if (__XMLHTTP__.checking.certificated == false)
+                    __XMLHTTP__.certificate(false);
+            }
+        } catch (e) {
+            appState("本地运行.", "Local file •••");
+            if (__XMLHTTP__.checking.certificated == false)
+                __XMLHTTP__.certificate(false);
+        }
+    }
     //#########################body init end#######################################
 }
 

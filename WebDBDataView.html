@@ -1,44 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
     <title>Web Database DataView</title>
+    <meta charset="UTF-8">
+    <meta name="keywords" content="HTML, CSS, JavaScript, SQLite, SQL">
+    <meta name="description" content="数据存储,数据加工,数据展示,数据视图,文件加密">
+    <meta name="author" content="杨凯">
+    <link id="themes" rel="stylesheet" type="text/css" href="themes/default.css"/>
+    <link rel="stylesheet" type="text/css" href="WebDBDataView.css"/>
     <script type="text/javascript" src="themes/images.js"></script>
-    <link id="themes" rel="stylesheet" type="text/css" href="themes/default.css">
-    <link rel="stylesheet" type="text/css" href="WebDBDataView.css">
-    <link rel="stylesheet" type="text/css" href="StorageSQLDialog.css">
-    <script type="text/javascript" src="sheetjs/xlsx.full.min.js"></script>
-
     <script type="text/javascript" src="echarts/v5.1/echarts.min.js"></script>
-    <script type="text/javascript" src="echarts/v5.1/echarts-gl.min.js"></script>
-    <script type="text/javascript" src="echarts/v5.1/echarts-wordcloud.min.js"></script>
-    <script type="text/javascript" src="echarts/v5.1/echarts-liquidfill.min.js"></script>
-    <script type="text/javascript" src="echarts/v5.1/ecStat.js"></script>
-    <script type="text/javascript" src="echarts/map/world.js"></script>
-    <script type="text/javascript" src="echarts/map/china-and-region.js"></script>
-    <script type="text/javascript" src="qrcode/qrcode.js"></script>
-    <script type="text/javascript" src="StatisticsComponent.js"></script>
-    <script type="text/javascript" src="FunctionsComponent.js"></script>
-    <script type="text/javascript" src="FileSecurityComponent.js"></script>
-    <script type="text/javascript" src="DataReaderComponent.js"></script>
     <script type="text/javascript" src="echartsThemes.js"></script>
-    <script type="text/javascript" src="WebDBDataView.js"></script>
-    <script type="text/javascript" src="StorageSQLDialog.js"></script>
     <script type="text/javascript" src="echartsView.js"></script>
+    <script type="text/javascript" src="qrcode/qrcode.js"></script>
+    <script type="text/javascript" src="FunctionsComponent.js"></script>
+    <script type="text/javascript" src="WebDBDataView.js"></script>
+    <!--<script type="text/javascript" src="sheetjs/xlsx.full.min.js"></script>-->
+    <!--<script type="text/javascript" src="StatisticsComponent.js"></script>-->
+    <!--<script type="text/javascript" src="echarts/v5.1/echarts-gl.min.js"></script>-->
+    <!--<script type="text/javascript" src="echarts/v5.1/echarts-wordcloud.min.js"></script>-->
+    <!--<script type="text/javascript" src="echarts/v5.1/echarts-liquidfill.min.js"></script>-->
+    <!--<script type="text/javascript" src="echarts/v5.1/ecStat.js"></script>-->
+    <!--<script type="text/javascript" src="echarts/map/world.js"></script>-->
+    <!--<script type="text/javascript" src="echarts/map/china-and-region.js"></script>-->
+    <!--<script type="text/javascript" src="StorageSQLDialog.js"></script>-->
+    <!--<link rel="stylesheet" type="text/css" href="StorageSQLDialog.css">-->
+    <!--<script type="text/javascript" src="FileSecurityComponent.js"></script>-->
+    <!--<script type="text/javascript" src="DataReaderComponent.js"></script>-->
 
     <link rel="stylesheet" href="codemirror/codemirror.css" />
+    <link id= "sqlediterTheme" rel="stylesheet" href="codemirror/theme/default.css" />
+    <link rel="stylesheet" href="codemirror/fullscreen.css"/>
+    <link rel="stylesheet" href="codemirror/show-hint.css" />
+    <link rel="stylesheet" href="codemirror/dialog.css"/>
     <script type="text/javascript" src="codemirror/codemirror.js"></script>
     <script type="text/javascript" src="codemirror/matchbrackets.js"></script>
     <script type="text/javascript" src="codemirror/sqlite.js"></script>
     <script type="text/javascript" src="codemirror/javascript.js"></script>
-    <link rel="stylesheet" href="codemirror/show-hint.css" />
     <script type="text/javascript" src="codemirror/show-hint.js"></script>
     <script type="text/javascript" src="codemirror/sql-hint.js"></script>
-    <link id= "sqlediterTheme" rel="stylesheet" href="codemirror/theme/default.css" />
-    <link rel="stylesheet" href="codemirror/fullscreen.css">
     <script type="text/javascript" src="codemirror/fullscreen.js"></script>
     <script type="text/javascript" src="codemirror/placeholder.js"></script>
-    <link rel="stylesheet" href="codemirror/dialog.css">
     <script type="text/javascript" src="codemirror/dialog.js"></script>
     <script type="text/javascript" src="codemirror/searchcursor.js"></script>
     <script type="text/javascript" src="codemirror/search.js"></script>

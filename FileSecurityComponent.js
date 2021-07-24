@@ -6,6 +6,45 @@ function getFileSecurity() {
         //用时间来控制延时,突破浏览器同时下载任务限制.
     }
 
+    function getHTML(title, data, hash) {
+        return "<!DOCTYPE html>\n" +
+            "<html>\n" +
+            "<head>\n" +
+            "<meta charset='utf-8'>\n" +
+            "<title>" + title + "</title>\n" +
+            "<meta name='description' content='This is an encrypted file. Please use Chrome or Edge browser to open it. " +
+            "The password is an 8-bit string containing numbers and English characters; Generally, the period of validity " +
+            "is set for the encrypted document. If the period of validity is exceeded, the document cannot be decrypted; " +
+            "In decryption, the time-service must be provided by the time-server used in encryption, not other time-servers " +
+            "or local time; Double MD5 (plaintext and ciphertext) verification is used for the whole document and each node, " +
+            "Any editing or tampering will result in document invalidation;'>\n" +
+            "<meta name='author' content='杨凯'>\n" +
+            "<meta name='date' content='" + data.time +"'>\n" +
+            "<style>\n" +
+            "body{background-color: dimgrey;color: whitesmoke;font-family: Arial, Verdana}\n" +
+            "h2{margin: auto;width: 80%;text-align: left}\n" +
+            "div{margin: auto;padding-left: 5px;padding-right: 5px;;width: 80%;border: 1px solid coral;border-radius: 5px;overflow: hidden;height: 100%}\n" +
+            "code{font-family: Verdana,Arial;font-size: 10px;width: 100%;white-space: normal;word-break: break-all;word-wrap: break-word;}\n" +
+            "h5{margin: auto;width: 80%;text-align: center}\n" +
+            "a{font-size: 80%;padding-left: 5px;padding-right: 5px;color: snow;background-color: sandybrown;outline-style: none;border-radius: 4px;}\n" +
+            "span{font-size: 80%;padding-left: 5px;padding-right: 5px;color: snow;background-color: #00A7AA;outline-style: none;border-radius: 4px;}\n" +
+            "</style>\n" +
+            "</head>\n" +
+            "<body>\n" +
+            "<h2>&emsp;&emsp;本文档是&emsp;<span>" + title + "</span>&emsp;的加密文件,请使用<span>" +
+            "Chrome</span>或<span>Edge</span>浏览器打开,使用" + data.application.link +
+            "可解密该文档;密码是包含数字和英文字母的8位字符串;一般情况下,加密文档设置了有效期,如果" +
+            "超出有效期,文档将不能解密;解密时,必须由加密时所采用的同域名服务器提供授时服务;文档整体" +
+            "和各节点采用双重(明文和密文)MD5验证,任何编辑或篡改都将导致文档失效.</h2>\n" +
+            "<div>\n" +
+            "<span>Ciphertext</span><code>" + JSON.stringify(data) + "</code>\n" +
+            "<span>Hash</span><code>" + hash + "</code>\n" +
+            "</div>\n" +
+            "<h5>技术支持: 杨凯&emsp;电话: (010)63603329&emsp;邮箱: <a href='mailto:yangkai.bj@ccb.com'>yangkai.bj@ccb.com</a>&emsp;创建时间: " + data.time + "</h5>\n" +
+            "</body>\n" +
+            "</html>";
+    }
+
     function s2ab(s) {
         let buf = new ArrayBuffer(s.length);
         let view = new Uint8Array(buf);
@@ -81,7 +120,11 @@ function getFileSecurity() {
             let expiryDateHash = expiryDate.hex_md5_hash();
             expiryDate = expiryDate.Encrypt(key, mode);
             let js = {
-                application:{url:"<a href='" + window.location.href.split("?")[0] + "'>" + __VERSION__ .name + "</a>", version:__VERSION__.version, help: __VERSION__.url},
+                application: {
+                    link: "<a href='" + window.location.href.split("?")[0] + "'>" + __VERSION__.name + "</a>",
+                    version: __VERSION__.version,
+                    help: __VERSION__.url
+                },
                 mode: mode,
                 expiry: {
                     date: expiryDate,
@@ -111,13 +154,13 @@ function getFileSecurity() {
                 }
             };
             js.files.push(jsfile);
-            let blob = new Blob([s2ab(JSON.stringify(js))], {type: "application/octet-stream"});
-            openDownloadDialog(blob, name + ".encrypted");
-            sleep((jsfile.size/1024/1024 <= 1?1:jsfile.size/1024/1024) * 1000);
+            let blob = new Blob([str2ab(getHTML(name, js, JSON.stringify(js).hex_md5_hash()))], {type: "text/html"});
+            openDownloadDialog(blob, name.split(".")[0] + ".encrypted.html");
+            sleep((jsfile.size / 1024 / 1024 <= 1 ? 1 : jsfile.size / 1024 / 1024) * 1000);
             return {
                 name: name,
                 type: jsfile.type,
-                size: getFileSizeString(jsfile.size," B"),
+                size: getFileSizeString(jsfile.size, " B"),
                 hash1: jsfile.hash.source,
                 hash2: jsfile.hash.target,
                 time: js.time,
@@ -128,15 +171,16 @@ function getFileSecurity() {
             return {
                 name: name,
                 type: type,
-                size: getFileSizeString(size," B"),
+                size: getFileSizeString(size, " B"),
                 commit: false,
                 error: e,
             };
         }
     }
 
-    function checkExpiryDate(expiry, key, mode, now){
+    function checkExpiryDate(expiry, key, mode, server) {
         let checked = {
+            server: null,
             startDate: null,
             validPeriod: null,
             endDate: null,
@@ -149,19 +193,24 @@ function getFileSecurity() {
             expiryDate = ab2str(expiry.date.Decrypt(key, mode).split(","));
             if (expiry.date.toString().hex_md5_hash() == expiry.hash.target && str2ab(expiryDate).toString().hex_md5_hash() == expiry.hash.source) {
                 expiryDate = JSON.parse(expiryDate);
+                checked.server = (expiryDate.server == "undefined" ? null : expiryDate.server);
                 checked.validPeriod = Number(expiryDate.validPeriod);
                 checked.startDate = new Date(expiryDate.startDate);
                 checked.endDate = new Date(expiryDate.startDate);
                 checked.endDate.setDate(checked.endDate.getDate() + checked.validPeriod);
-                checked.days = Math.floor((now - checked.startDate) / (1 * 24 * 60 * 60 * 1000));
-                if (checked.days <= checked.validPeriod || checked.validPeriod == 0) {
-                    checked.checked = true;
-                    checked.information = "加密文件有效期验证通过";
+                checked.days = Math.floor((server.time - checked.startDate) / (1 * 24 * 60 * 60 * 1000));
+                if (checked.server == server.server || checked.server == null) {
+                    if (checked.days <= checked.validPeriod || checked.validPeriod == 0) {
+                        checked.checked = true;
+                        checked.information = "加密文件有效期验证通过";
+                    } else {
+                        if ((checked.days - checked.validPeriod) <= 9)
+                            checked.information = ("加密文件有效期已超出 " + (checked.days - checked.validPeriod) + " 天");
+                        else
+                            checked.information = "加密文件有效期已超出";
+                    }
                 } else {
-                    if ((checked.days - checked.validPeriod) <= 9)
-                        checked.information = ("加密文件有效期已超出 " + (checked.days - checked.validPeriod) + " 天");
-                    else
-                        checked.information = "加密文件有效期已超出";
+                    checked.information = "当前授时服务器非加密授时服务器.";
                 }
             } else {
                 checked.information = "解密密码错误";
@@ -172,7 +221,7 @@ function getFileSecurity() {
         return checked;
     }
 
-    function fileDecrypt(filename, data, key, now) {
+    function fileDecrypt(filename, data, key, server) {
         let infors = [];
         let infor = {
             name: null,
@@ -185,10 +234,10 @@ function getFileSecurity() {
         };
         try {
             let js = JSON.parse(data);
-            let expiryDate = checkExpiryDate(js.expiry, key, js.mode, now);
-            $(filename).getElementsByClassName("file-expiryDate")[0].innerText = (expiryDate.validPeriod==0?"长期":(expiryDate.endDate==null?"":expiryDate.endDate.format("yyyy-MM-dd")));
+            let expiryDate = checkExpiryDate(js.expiry, key, js.mode, server);
+            $(filename).getElementsByClassName("file-expiryDate")[0].innerText = (expiryDate.validPeriod == 0 ? "长期" : (expiryDate.endDate == null ? "" : expiryDate.endDate.format("yyyy-MM-dd")));
             if (expiryDate.checked) {
-                let count = 0 ;
+                let count = 0;
                 for (let index = 0; index < js.files.length; index++) {
                     infor = {
                         name: null,
@@ -220,7 +269,7 @@ function getFileSecurity() {
                                     openDownloadDialog(blob, infor.name);
                                     sleep((jsfile.size / 1024 / 1024 <= 1 ? 1 : jsfile.size / 1024 / 1024) * 1000);
                                     infor.commit = true;
-                                    count ++;
+                                    count++;
                                 } else {
                                     infor.commit = false;
                                     infor.error = "原文完整性校验未通过";
@@ -556,7 +605,7 @@ function getFileSecurity() {
     container.appendChild(d);
     span = document.createElement("span");
     span.className = "http-server-datetime";
-    span.id = "http-server-datetime-" + new Date().format("yyyyMMddhhmmssS")
+    span.id = "http-server-datetime-" + new Date().format("yyyyMMddhhmmssS");
     span.style.cssFloat = "left";
     __XMLHTTP__.hook(span, 1000);
     d.appendChild(span);
@@ -578,8 +627,8 @@ function getFileSecurity() {
     let enmode = document.createElement("select");
     enmode.id = "encrypt-mode";
     enmode.style.cssFloat = "right";
-    enmode.options.add(new Option("NORMAL", 0));
     enmode.options.add(new Option("DES3", 1));
+    enmode.options.add(new Option("Normal", 0));
     enmode.title = "加密方式";
     d.appendChild(enmode);
 
@@ -618,8 +667,8 @@ function getFileSecurity() {
         }
         tb[0].style.background = "var(--toolbar-button-hover-background-color)";
 
-        let serverTime = __XMLHTTP__.time;
-        if (serverTime != null) {
+        let server = {server: __XMLHTTP__.server, time: __XMLHTTP__.time, url: __XMLHTTP__.url};
+        if (server.time != null) {
             let files = $("source-encrypt-file").files;
             if (files.length > 0) {
                 let pattern = /^.*(?=.{8,})(?=.*\d{1,7})(?=.*[A-Za-z]{1,7}).*$/
@@ -637,7 +686,7 @@ function getFileSecurity() {
                         if ($(file.name).getElementsByClassName("file-check")[0].checked == true && key.length > 0) {
                             $(file.name).getElementsByClassName("file-comment")[0].innerText = "队列等候...";
                             try {
-                                if (file.size <= 10 * 1024 * 1024) {
+                                if (file.size <= 20 * 1024 * 1024) {
                                     let reader = new FileReader();
                                     reader.readAsBinaryString(file);
                                     reader.onloadstart = function () {
@@ -647,8 +696,10 @@ function getFileSecurity() {
                                         let deinf = {};
                                         if (key.length > 0 && key != null) {
                                             let expiryDate = {
-                                                startDate: serverTime,
-                                                validPeriod: $("encrypt-expiry-date").value
+                                                server: server.server,
+                                                startDate: server.time,
+                                                validPeriod: $("encrypt-expiry-date").value,
+                                                timestamp: new Date().format("yyyyMMddhhmmssS")
                                             };
                                             let infor = fileEncrypt(this.result, key, file.name, file.type, file.size, mode, JSON.stringify(expiryDate));
                                             let endDate = new Date(expiryDate.startDate);
@@ -696,7 +747,7 @@ function getFileSecurity() {
                                             $(file.name).getElementsByClassName("file-comment")[0].innerText = "请输入8位加密密码!";
                                     }
                                 } else
-                                    $(file.name).getElementsByClassName("file-comment")[0].innerText = "加密文件不能大于10MB.";
+                                    $(file.name).getElementsByClassName("file-comment")[0].innerText = "明文不能大于20MB.";
                             } catch (e) {
                                 $(file.name).getElementsByClassName("file-comment")[0].innerText = e;
                             }
@@ -706,7 +757,7 @@ function getFileSecurity() {
                 }
             }
         } else {
-            alert("连接授时服务器失败.");
+            alert("连接授时服务器失败,不能执行文件加密操作.");
         }
     };
     tool.appendChild(encrypt);
@@ -723,8 +774,8 @@ function getFileSecurity() {
         }
         tb[0].style.background = "var(--toolbar-button-hover-background-color)";
 
-        let serverTime = __XMLHTTP__.time;
-        if (serverTime != null) {
+        let server = {server: __XMLHTTP__.server, time: __XMLHTTP__.time, url: __XMLHTTP__.url};
+        if (server.time != null) {
             let files = $("source-encrypt-file").files;
             if (files.length > 0) {
                 let checkedAll = {
@@ -739,8 +790,8 @@ function getFileSecurity() {
                         checkedAll.size += files[i].size;
                     }
                 }
-                if (checkedAll.size <= 10 * 1024 * 1024) {
-                    let pattern = /^.*(?=.{8,})(?=.*\d{1,7})(?=.*[A-Za-z]{1,7}).*$/
+                if (checkedAll.size <= 20 * 1024 * 1024) {
+                    let pattern = /^.*(?=.{8,})(?=.*\d{1,7})(?=.*[A-Za-z]{1,7}).*$/;
                     //必须是8位密码,且必须包含字符和数字
                     let key = prompt("请输入8位加密密码:");
                     if (key != prompt("请再次输入加密密码:")) {
@@ -751,7 +802,7 @@ function getFileSecurity() {
                         let pkname = prompt("请输入打包文件名称:");
                         let mode = $("encrypt-mode").value;
                         let js = {
-                            application: {url: "<a href='" + window.location.href.split("?")[0] + "'>" + __VERSION__ .name + "</a>", version:__VERSION__.version, help: __VERSION__.url},
+                            application: {link: "<a href='" + window.location.href.split("?")[0] + "'>" + __VERSION__ .name + "</a>", version:__VERSION__.version, help: __VERSION__.url},
                             mode: mode,
                             expiry: {},
                             files: [],
@@ -774,8 +825,10 @@ function getFileSecurity() {
                                             let deinf = {};
                                             if (key.length > 0) {
                                                 let expiryDate = {
-                                                    startDate: serverTime,
-                                                    validPeriod: $("encrypt-expiry-date").value
+                                                    server: server.server,
+                                                    startDate: server.time,
+                                                    validPeriod: $("encrypt-expiry-date").value,
+                                                    timestamp: new Date().format("yyyyMMddhhmmssS")
                                                 };
                                                 let infor = filesEncrypt(js, this.result, key, file.name, file.type, file.size, mode, JSON.stringify(expiryDate));
                                                 let endDate = new Date(expiryDate.startDate);
@@ -823,12 +876,12 @@ function getFileSecurity() {
                                                 sleep((file.size / 1024 / 1024 <= 1 ? 1 : file.size / 1024 / 1024) * 1000);
                                             }
                                             if (js.files.length == checkedAll.count) {
-                                                let blob = new Blob([s2ab(JSON.stringify(js))], {type: "application/octet-stream"});
-                                                openDownloadDialog(blob, (pkname.length > 0 ? pkname : "未命名") + ".encrypted");
+                                                let blob = new Blob([str2ab(getHTML((pkname.length > 0 ? pkname : "未命名"), js, JSON.stringify(js).hex_md5_hash()))], {type: "text/html"});
+                                                openDownloadDialog(blob, (pkname.length > 0 ? pkname : "未命名") + ".encrypted.html");
                                             }
                                         }
                                     } else
-                                        $(file.name).getElementsByClassName("file-comment")[0].innerText = "加密文件不能大于20MB.";
+                                        $(file.name).getElementsByClassName("file-comment")[0].innerText = "明文不能大于20MB.";
                                 } catch (e) {
                                     $(file.name).getElementsByClassName("file-comment")[0].innerText = e;
                                 }
@@ -837,11 +890,11 @@ function getFileSecurity() {
                     }
                 }
                 else {
-                    alert("打包文件累计不能大于10MB.");
+                    alert("明文累计不能大于20MB.");
                 }
             }
         } else {
-            alert("连接授时服务器失败.");
+            alert("连接授时服务器失败,不能执行文件加密操作.");
         }
     };
     tool.appendChild(encryptToPacket);
@@ -858,8 +911,8 @@ function getFileSecurity() {
         }
         tb[0].style.background = "var(--toolbar-button-hover-background-color)";
 
-        let serverTime = __XMLHTTP__.time;
-        if (serverTime != null) {
+        let server = {server: __XMLHTTP__.server, time: __XMLHTTP__.time, url: __XMLHTTP__.url};
+        if (server.time != null) {
             let files = $("source-encrypt-file").files;
             if (files.length > 0) {
                 let key = prompt("请输入解密密码:");
@@ -876,7 +929,26 @@ function getFileSecurity() {
                             reader.onload = function () {
                                 if (key.length > 0) {
                                     let deinfs = [];
-                                    let infors = fileDecrypt(file.name, this.result, key, serverTime);
+                                    let reg = new RegExp(/\<code>(.*)\<\/code>/, "g");
+                                    let codes = this.result.match(reg);
+                                    let infors = null;
+                                    if (codes != null) {
+                                        if (codes.length >= 2) {
+                                            let ciphertext = codes[0];
+                                            let hash = codes[1];
+                                            ciphertext = ciphertext.substring(ciphertext.indexOf("<code>") + 6, ciphertext.indexOf("</code>"));
+                                            hash = hash.substring(hash.indexOf("<code>") + 6, hash.indexOf("</code>"));
+                                            if (ciphertext.hex_md5_hash() == hash)
+                                                infors = fileDecrypt(file.name, ciphertext, key, server);
+                                            else
+                                                $(file.name).getElementsByClassName("file-comment")[0].innerText = "密文校验失败,文件或被篡改";
+                                        } else {
+                                            $(file.name).getElementsByClassName("file-comment")[0].innerText = "该文档非加密文件";
+                                        }
+                                    } else {
+                                        infors = fileDecrypt(file.name, this.result, key, server);
+                                        //$(file.name).getElementsByClassName("file-comment")[0].innerText = "该文档非加密文件";
+                                    }
                                     for (let i = 0; i < infors.length; i++) {
                                         let deinf = {};
                                         let infor = infors[i];
@@ -928,7 +1000,7 @@ function getFileSecurity() {
                 }
             }
         } else {
-            alert("连接授时服务器失败.");
+            alert("连接授时服务器失败,不能执行文件解密操作.");
         }
     };
     tool.appendChild(decrypt);
