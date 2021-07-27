@@ -6,7 +6,7 @@ function getFileSecurity() {
         //用时间来控制延时,突破浏览器同时下载任务限制.
     }
 
-    function getHTML(title, data, hash) {
+    function getHTML(title, data, hash, time, validPeriod) {
         return "<!DOCTYPE html>\n" +
             "<html>\n" +
             "<head>\n" +
@@ -17,30 +17,40 @@ function getFileSecurity() {
             "is set for the encrypted document. If the period of validity is exceeded, the document cannot be decrypted; " +
             "In decryption, the time-service must be provided by the time-server used in encryption, not other time-servers " +
             "or local time; Double MD5 (plaintext and ciphertext) verification is used for the whole document and each node, " +
-            "Any editing or tampering will result in document invalidation;'>\n" +
+            "Any editing or tampering will result in document invalidation;The App Only encryption / decryption calculation is provided. " +
+            "Plaintext encryption within 20m is supported. The calculation runs in the local browser throughout the process. " +
+            "No files are uploaded and no parameters are recorded. It is applicable to confidential data or files that need " +
+            "to be circulated in the intranet for a short time; It is not recommended to use confidential documents that need " +
+            "to be kept for a long time because it cannot ensure a long-term and stable time-server with the same domain name'>\n" +
             "<meta name='author' content='杨凯'>\n" +
-            "<meta name='date' content='" + data.time +"'>\n" +
+            "<meta name='date' content='" + time + "'>\n" +
             "<style>\n" +
             "body{background-color: dimgrey;color: whitesmoke;font-family: Arial, Verdana}\n" +
-            "h2{margin: auto;width: 80%;text-align: left}\n" +
+            "h2{margin: auto;width: 80%;text-align: left;white-space: normal;word-break: break-all;word-wrap: break-word;}\n" +
             "div{margin: auto;padding-left: 5px;padding-right: 5px;;width: 80%;border: 1px solid coral;border-radius: 5px;overflow: hidden;height: 100%}\n" +
             "code{font-family: Verdana,Arial;font-size: 10px;width: 100%;white-space: normal;word-break: break-all;word-wrap: break-word;}\n" +
-            "h5{margin: auto;width: 80%;text-align: center}\n" +
+            "h6{margin: auto;width: 80%;text-align: center}\n" +
             "a{font-size: 80%;padding-left: 5px;padding-right: 5px;color: snow;background-color: sandybrown;outline-style: none;border-radius: 4px;}\n" +
             "span{font-size: 80%;padding-left: 5px;padding-right: 5px;color: snow;background-color: #00A7AA;outline-style: none;border-radius: 4px;}\n" +
             "</style>\n" +
             "</head>\n" +
             "<body>\n" +
-            "<h2>&emsp;&emsp;本文档是&emsp;<span>" + title + "</span>&emsp;的加密文件,请使用<span>" +
-            "Chrome</span>或<span>Edge</span>浏览器打开,使用" + data.application.link +
-            "可解密该文档;密码是包含数字和英文字母的8位字符串;一般情况下,加密文档设置了有效期,如果" +
-            "超出有效期,文档将不能解密;解密时,必须由加密时所采用的同域名服务器提供授时服务;文档整体" +
-            "和各节点采用双重(明文和密文)MD5验证,任何编辑或篡改都将导致文档失效.</h2>\n" +
+            "<h2>&emsp;&emsp;本文档是&ensp;<span>" + title + "</span>&ensp;的加密文件,请" +
+            "使用&ensp;<span>Chrome</span>&ensp;或&ensp;<span>Edge</span>&ensp;浏览器打开," +
+            "点击进入&ensp;" + data.application.link + "&ensp;可解密此文档;密码是包含数字" +
+            "和英文字母的8位字符串;一般情况下,加密文档设置了有效期,如果超出有效期,文档将不" +
+            "能解密;解密时必须由加密时所采用的同域名服务器提供授时服务;文档整体和各节点采" +
+            "用双重(明文和密文)MD5验证,任何编辑或篡改都将导致文档失效;解密后,此文档的信息" +
+            "安全责任同时移交,请务必遵守相关制度规定." +
+            "&ensp;" + data.application.link + "&ensp;仅提供加密和解密计算,全程本地运行,不" +
+            "上传,不留痕;适用于需短期在内网流转的涉密数据或文档;因暂不能提供长期稳定的授时服务" +
+            "器,对需长期保存的重要文档,不建议使用.</h2>" +
             "<div>\n" +
-            "<span>Ciphertext</span><code>" + JSON.stringify(data) + "</code>\n" +
+            "<span>密文</span><code>" + JSON.stringify(data) + "</code>\n" +
             "<span>Hash</span><code>" + hash + "</code>\n" +
+            "<span>创建时间</span><code>" + time + "</code><span>期限</span><code>" + validPeriod + "</code>\n" +
             "</div>\n" +
-            "<h5>技术支持: 杨凯&emsp;电话: (010)63603329&emsp;邮箱: <a href='mailto:yangkai.bj@ccb.com'>yangkai.bj@ccb.com</a>&emsp;创建时间: " + data.time + "</h5>\n" +
+            "<h6>技术支持: 杨凯&emsp;电话: (010)63603329&emsp;邮箱: <a href='mailto:yangkai.bj@ccb.com'>yangkai.bj@ccb.com</a></h6>\n" +
             "</body>\n" +
             "</html>";
     }
@@ -58,9 +68,9 @@ function getFileSecurity() {
             let hash1 = data.hex_md5_hash();
             data = data.Encrypt(key, mode);
             let title = str2ab(name).toString().Encrypt(key, mode);
-            expiryDate = str2ab(expiryDate).toString();
-            let expiryDateHash = expiryDate.hex_md5_hash();
-            expiryDate = expiryDate.Encrypt(key, mode);
+            let eDate = str2ab(JSON.stringify(expiryDate)).toString();
+            let eDateHash = eDate.hex_md5_hash();
+            eDate = eDate.Encrypt(key, mode);
             let file = {
                 title: {
                     name: title,
@@ -79,21 +89,21 @@ function getFileSecurity() {
                 }
             };
             js.expiry = {
-                date: expiryDate,
-                size: expiryDate.length,
+                date: eDate,
+                size: eDate.length,
                 hash: {
-                    source: expiryDateHash,
-                    target: expiryDate.hex_md5_hash()
+                    source: eDateHash,
+                    target: eDate.hex_md5_hash()
                 }
             };
             js.files.push(file);
             return {
                 name: name,
                 type: type,
-                size: getFileSizeString(size," B"),
+                size: getFileSizeString(size, " B"),
                 hash1: file.hash.source,
                 hash2: file.hash.target,
-                time: js.time,
+                time: expiryDate.startDate.format("yyyy-MM-dd hh:mm:ss"),
                 commit: true,
                 error: null
             };
@@ -101,41 +111,31 @@ function getFileSecurity() {
             return {
                 name: name,
                 type: type,
-                size: getFileSizeString(size," B"),
+                size: getFileSizeString(size, " B"),
                 hash1: null,
                 hash2: null,
-                time: js.time,
+                time: expiryDate.startDate.format("yyyy-MM-dd hh:mm:ss"),
                 commit: false,
                 error: e
             };
         }
     }
 
-    function fileEncrypt(data, key, name, type, size, mode, expiryDate) {
+    function fileEncrypt(js, data, key, name, type, size, mode, expiryDate) {
         try {
             let hash1 = data.hex_md5_hash();
             data = data.Encrypt(key, mode);
             let title = str2ab(name).toString().Encrypt(key, mode);
-            expiryDate = str2ab(expiryDate).toString();
-            let expiryDateHash = expiryDate.hex_md5_hash();
-            expiryDate = expiryDate.Encrypt(key, mode);
-            let js = {
-                application: {
-                    link: "<a href='" + window.location.href.split("?")[0] + "'>" + __VERSION__.name + "</a>",
-                    version: __VERSION__.version,
-                    help: __VERSION__.url
-                },
-                mode: mode,
-                expiry: {
-                    date: expiryDate,
-                    size: expiryDate.length,
-                    hash: {
-                        source: expiryDateHash,
-                        target: expiryDate.hex_md5_hash()
-                    }
-                },
-                files: [],
-                time: getNow(),
+            let eDate = str2ab(JSON.stringify(expiryDate)).toString();
+            let eDateHash = eDate.hex_md5_hash();
+            eDate = eDate.Encrypt(key, mode);
+            js.expiry = {
+                date: eDate,
+                size: eDate.length,
+                hash: {
+                    source: eDateHash,
+                    target: eDate.hex_md5_hash()
+                }
             };
             let jsfile = {
                 title:
@@ -154,7 +154,7 @@ function getFileSecurity() {
                 }
             };
             js.files.push(jsfile);
-            let blob = new Blob([str2ab(getHTML(name, js, JSON.stringify(js).hex_md5_hash()))], {type: "text/html"});
+            let blob = new Blob([str2ab(getHTML(name, js, JSON.stringify(js).hex_md5_hash(), expiryDate.startDate.format("yyyy-MM-dd hh:mm:ss"), (expiryDate.validPeriod == 0 ? "长期" : expiryDate.validPeriod + "天")))], {type: "text/html"});
             openDownloadDialog(blob, name.split(".")[0] + ".encrypted.html");
             sleep((jsfile.size / 1024 / 1024 <= 1 ? 1 : jsfile.size / 1024 / 1024) * 1000);
             return {
@@ -163,7 +163,7 @@ function getFileSecurity() {
                 size: getFileSizeString(jsfile.size, " B"),
                 hash1: jsfile.hash.source,
                 hash2: jsfile.hash.target,
-                time: js.time,
+                time: expiryDate.startDate.format("yyyy-MM-dd hh:mm:ss"),
                 commit: true,
                 error: null
             };
@@ -172,8 +172,11 @@ function getFileSecurity() {
                 name: name,
                 type: type,
                 size: getFileSizeString(size, " B"),
+                hash1: null,
+                hash2: null,
+                time: expiryDate.startDate.format("yyyy-MM-dd hh:mm:ss"),
                 commit: false,
-                error: e,
+                error: e
             };
         }
     }
@@ -194,7 +197,7 @@ function getFileSecurity() {
             if (expiry.date.toString().hex_md5_hash() == expiry.hash.target && str2ab(expiryDate).toString().hex_md5_hash() == expiry.hash.source) {
                 expiryDate = JSON.parse(expiryDate);
                 checked.server = (expiryDate.server == "undefined" ? null : expiryDate.server);
-                checked.validPeriod = Number(expiryDate.validPeriod);
+                checked.validPeriod = expiryDate.validPeriod;
                 checked.startDate = new Date(expiryDate.startDate);
                 checked.endDate = new Date(expiryDate.startDate);
                 checked.endDate.setDate(checked.endDate.getDate() + checked.validPeriod);
@@ -223,15 +226,7 @@ function getFileSecurity() {
 
     function fileDecrypt(filename, data, key, server) {
         let infors = [];
-        let infor = {
-            name: null,
-            type: null,
-            size: null,
-            hash1: null,
-            hash2: null,
-            commit: null,
-            error: null
-        };
+        let infor = {};
         try {
             let js = JSON.parse(data);
             let expiryDate = checkExpiryDate(js.expiry, key, js.mode, server);
@@ -694,16 +689,26 @@ function getFileSecurity() {
                                     };
                                     reader.onload = function () {
                                         let deinf = {};
+                                        let expiryDate = {
+                                            server: server.server,
+                                            startDate: server.time,
+                                            validPeriod: Number($("encrypt-expiry-date").value),
+                                            timestamp: new Date().format("yyyyMMddhhmmssS")
+                                        };
                                         if (key.length > 0 && key != null) {
-                                            let expiryDate = {
-                                                server: server.server,
-                                                startDate: server.time,
-                                                validPeriod: $("encrypt-expiry-date").value,
-                                                timestamp: new Date().format("yyyyMMddhhmmssS")
+                                            let js = {
+                                                application: {
+                                                    link: "<a href='" + window.location.href.split("?")[0] + "'>" + __VERSION__.name + "</a>",
+                                                    version: __VERSION__.version,
+                                                    help: __VERSION__.url
+                                                },
+                                                mode: mode,
+                                                expiry: {},
+                                                files: []
                                             };
-                                            let infor = fileEncrypt(this.result, key, file.name, file.type, file.size, mode, JSON.stringify(expiryDate));
+                                            let infor = fileEncrypt(js, this.result, key, file.name, file.type, file.size, mode, expiryDate);
                                             let endDate = new Date(expiryDate.startDate);
-                                            endDate.setDate(endDate.getDate() + Number(expiryDate.validPeriod));
+                                            endDate.setDate(endDate.getDate() + expiryDate.validPeriod);
                                             $(file.name).getElementsByClassName("file-expiryDate")[0].innerText = (expiryDate.validPeriod == 0 ? "长期" : endDate.format("yyyy-MM-dd"));
                                             for (let name in infor) {
                                                 let toname = "";
@@ -721,7 +726,7 @@ function getFileSecurity() {
                                                         deinf[toname] = {value: infor[name], textAlign: "right"};
                                                         break;
                                                     case "hash1":
-                                                        toname = "- 原文校验";
+                                                        toname = "原文校验";
                                                         deinf[toname] = {value: infor[name], textAlign: "left"};
                                                         break;
                                                     case "hash2":
@@ -734,7 +739,7 @@ function getFileSecurity() {
                                                         deinf[toname] = {value: infor[name], textAlign: "center"};
                                                         break;
                                                     case "error":
-                                                        toname = "- 错误信息";
+                                                        toname = "错误信息";
                                                         deinf[toname] = {value: infor[name], textAlign: "left"};
                                                         break;
                                                 }
@@ -805,8 +810,7 @@ function getFileSecurity() {
                             application: {link: "<a href='" + window.location.href.split("?")[0] + "'>" + __VERSION__ .name + "</a>", version:__VERSION__.version, help: __VERSION__.url},
                             mode: mode,
                             expiry: {},
-                            files: [],
-                            time: getNow()
+                            files: []
                         };
 
                         for (let i = 0; i < files.length; i++) {
@@ -823,16 +827,16 @@ function getFileSecurity() {
                                         reader.onload = function () {
                                             let deinfs = [];
                                             let deinf = {};
+                                            let expiryDate = {
+                                                server: server.server,
+                                                startDate: server.time,
+                                                validPeriod: Number($("encrypt-expiry-date").value),
+                                                timestamp: new Date().format("yyyyMMddhhmmssS")
+                                            };
                                             if (key.length > 0) {
-                                                let expiryDate = {
-                                                    server: server.server,
-                                                    startDate: server.time,
-                                                    validPeriod: $("encrypt-expiry-date").value,
-                                                    timestamp: new Date().format("yyyyMMddhhmmssS")
-                                                };
-                                                let infor = filesEncrypt(js, this.result, key, file.name, file.type, file.size, mode, JSON.stringify(expiryDate));
+                                                let infor = filesEncrypt(js, this.result, key, file.name, file.type, file.size, mode, expiryDate);
                                                 let endDate = new Date(expiryDate.startDate);
-                                                endDate.setDate(endDate.getDate() + Number(expiryDate.validPeriod));
+                                                endDate.setDate(endDate.getDate() + expiryDate.validPeriod);
                                                 $(file.name).getElementsByClassName("file-expiryDate")[0].innerText = (expiryDate.validPeriod == 0 ? "长期" : endDate.format("yyyy-MM-dd"));
                                                 for (let name in infor) {
                                                     let toname = "";
@@ -876,7 +880,9 @@ function getFileSecurity() {
                                                 sleep((file.size / 1024 / 1024 <= 1 ? 1 : file.size / 1024 / 1024) * 1000);
                                             }
                                             if (js.files.length == checkedAll.count) {
-                                                let blob = new Blob([str2ab(getHTML((pkname.length > 0 ? pkname : "未命名"), js, JSON.stringify(js).hex_md5_hash()))], {type: "text/html"});
+                                                let time = expiryDate.startDate.format("yyyy-MM-dd hh:mm:ss");
+                                                let validPeriod = (expiryDate.validPeriod == 0 ? "长期" : expiryDate.validPeriod + "天");
+                                                let blob = new Blob([str2ab(getHTML((pkname.length > 0 ? pkname : "未命名"), js, JSON.stringify(js).hex_md5_hash(), time, validPeriod))], {type: "text/html"});
                                                 openDownloadDialog(blob, (pkname.length > 0 ? pkname : "未命名") + ".encrypted.html");
                                             }
                                         }

@@ -1,7 +1,7 @@
 var __VERSION__ = {
     name: "Web DataView for SQLite Database of browser",
-    version: "2.4.8",
-    date: "2021/07/23",
+    version: "2.4.9",
+    date: "2021/07/27",
     comment: [
         "-- 2021/03/08",
         "优化算法和压缩代码.",
@@ -41,6 +41,8 @@ var __VERSION__ = {
         "增加外部数据读取模块.",
         "-- 2021/07/18",
         "调整部分组件加载方式.",
+        "-- 2021/07/27",
+        "优化文件加密/解密模块.",
     ],
     author: __SYS_LOGO_LINK__.author.decode(),
     url: __SYS_LOGO_LINK__.link.decode(),
@@ -253,7 +255,7 @@ var __XMLHTTP__ = {
                     xhr.onreadystatechange = function () {
                         try {
                             if (xhr.readyState == 4 && xhr.status == 404)
-                                viewMessage("验证 " + scripts[i].name + "(" + scripts[i].src + ")...fails.");
+                                viewMessage("验证 " + scripts[i].name + "(" + scripts[i].src + ")...fails.", true);
                             else if (xhr.readyState == 4 && xhr.status == 200) {
                                 let url = xhr.responseURL.split("?")[0];
                                 if (scripts[i].load == false) {
@@ -339,7 +341,7 @@ var __XMLHTTP__ = {
                     if (checked)
                         viewMessage("验证 " + scripts[i].name + "(" + scripts[i].src + ")" + "...OK.");
                     else
-                        viewMessage("验证 " + scripts[i].name + "(" + scripts[i].src + ")" + "...fails.");
+                        viewMessage("验证 " + scripts[i].name + "(" + scripts[i].src + ")" + "...fails.", true);
                 }
                 sleep(100);
             }
@@ -1855,65 +1857,71 @@ function viewDatabases(){
     //#######################################
     //初始化localStorage
     //#######################################
-    let storage = window.localStorage;
-    if (storage.getItem(__CONFIGS__.STORAGE.DATABASES) == null){
-        storage.setItem(__CONFIGS__.STORAGE.DATABASES,"[]")
-    }
-    let dbslist = $("sidebar-dbs");
-    dbslist.innerText = "";
-    let ul = document.createElement("ul");
-    ul.style.width = "80%";
-    ul.style.position = "relative";
-    dbslist.appendChild(ul);
-    __CONFIGS__.DATABASES = JSON.parse(storage.getItem(__CONFIGS__.STORAGE.DATABASES));
-    for (let i = 0; i < __CONFIGS__.DATABASES.length; i++){
-        if (__CONFIGS__.DATABASES[i].name != null) {
-            let li = document.createElement("li");
-            li.className = "database-list";
-            let a = document.createElement("a");
-            a.className = "list";
-            a.innerText = __CONFIGS__.DATABASES[i].name;
-            a.setAttribute("index", i);
-            a.id = __CONFIGS__.DATABASES[i].name;
-            a.onclick = function () {
-                let dbs = $("sidebar-dbs");
-                let l = dbs.getElementsByClassName("list");
-                for (let i=0; i<l.length; i++ ){
-                    l[i].style.fontWeight = "normal";
-                }
-                this.style.fontWeight = "bold";
-                viewTables(this.getAttribute("index"));
-                __CONFIGS__.CURRENT_TABLE.name = "";
-                __CONFIGS__.CURRENT_TABLE.sql = "";
-                __CONFIGS__.CURRENT_TABLE.structure = [];
-                __CONFIGS__.CURRENT_TABLE.type = "";
-                //显示库信息
-                $("ul-db-" + this.id).innerText = "";
-                if ($("ul-db-" + this.id).getAttribute("isOpen") == "false") {
-                    for(let key in __CONFIGS__.CURRENT_DATABASE.value) {
-                        let l = document.createElement("li");
-                        $("ul-db-" + this.id).appendChild(l);
-                        let inf = document.createElement("a");
-                        inf.className = "list";
-                        inf.innerText = key + ": " + __CONFIGS__.CURRENT_DATABASE.value[key];
-                        l.appendChild(inf);
-                    }
-                    $("ul-db-" + this.id).setAttribute("isOpen","true");
-                } else {
-                    $("ul-db-" + this.id).setAttribute("isOpen","false");
-                }
-            };
-            li.appendChild(a);
-            let dul = document.createElement("ul");
-            dul.id = "ul-db-" + __CONFIGS__.DATABASES[i].name;
-            dul.setAttribute("isOpen","false");
-            li.appendChild(dul);
-            ul.appendChild(li);
+    let message = "读取数据库列表...";
+    try {
+        let storage = window.localStorage;
+        if (storage.getItem(__CONFIGS__.STORAGE.DATABASES) == null) {
+            storage.setItem(__CONFIGS__.STORAGE.DATABASES, "[]")
         }
+        let dbslist = $("sidebar-dbs");
+        dbslist.innerText = "";
+        let ul = document.createElement("ul");
+        ul.style.width = "80%";
+        ul.style.position = "relative";
+        dbslist.appendChild(ul);
+        __CONFIGS__.DATABASES = JSON.parse(storage.getItem(__CONFIGS__.STORAGE.DATABASES));
+        for (let i = 0; i < __CONFIGS__.DATABASES.length; i++) {
+            if (__CONFIGS__.DATABASES[i].name != null) {
+                let li = document.createElement("li");
+                li.className = "database-list";
+                let a = document.createElement("a");
+                a.className = "list";
+                a.innerText = __CONFIGS__.DATABASES[i].name;
+                a.setAttribute("index", i);
+                a.id = __CONFIGS__.DATABASES[i].name;
+                a.onclick = function () {
+                    let dbs = $("sidebar-dbs");
+                    let l = dbs.getElementsByClassName("list");
+                    for (let i = 0; i < l.length; i++) {
+                        l[i].style.fontWeight = "normal";
+                    }
+                    this.style.fontWeight = "bold";
+                    viewTables(this.getAttribute("index"));
+                    __CONFIGS__.CURRENT_TABLE.name = "";
+                    __CONFIGS__.CURRENT_TABLE.sql = "";
+                    __CONFIGS__.CURRENT_TABLE.structure = [];
+                    __CONFIGS__.CURRENT_TABLE.type = "";
+                    //显示库信息
+                    $("ul-db-" + this.id).innerText = "";
+                    if ($("ul-db-" + this.id).getAttribute("isOpen") == "false") {
+                        for (let key in __CONFIGS__.CURRENT_DATABASE.value) {
+                            let l = document.createElement("li");
+                            $("ul-db-" + this.id).appendChild(l);
+                            let inf = document.createElement("a");
+                            inf.className = "list";
+                            inf.innerText = key + ": " + __CONFIGS__.CURRENT_DATABASE.value[key];
+                            l.appendChild(inf);
+                        }
+                        $("ul-db-" + this.id).setAttribute("isOpen", "true");
+                    } else {
+                        $("ul-db-" + this.id).setAttribute("isOpen", "false");
+                    }
+                };
+                li.appendChild(a);
+                let dul = document.createElement("ul");
+                dul.id = "ul-db-" + __CONFIGS__.DATABASES[i].name;
+                dul.setAttribute("isOpen", "false");
+                li.appendChild(dul);
+                ul.appendChild(li);
+            }
+        }
+        viewMessage(message + "OK.");
+    }catch (e) {
+        viewMessage(message + "fails.\n" + e, true);
     }
 }
 
-function viewMessage(msg){
+function viewMessage(msg, warning){
     let msgbox = $("messageBox");
     let dt = document.createElement("dt");
     dt.type = "dt";
@@ -1925,7 +1933,12 @@ function viewMessage(msg){
     let message = document.createElement("dd");
     message.type = "dd";
     message.className= "message";
-    message.innerText = msg;
+    if (typeof warning == "undefined" )
+        message.innerText = msg;
+    else if (warning)
+        message.innerHTML = "<span style='color:red'>" + msg + "</span>";
+    else
+        message.innerText = msg;
     dt.appendChild(message);
 
     //保留日志设置
@@ -2864,11 +2877,10 @@ function drawClock(data) {
 
 function initConfigs() {
     let checked = false;
-
-
     if (checkStorage()) {
         try {
             let message = "初始化系统参数";
+            viewMessage(__VERSION__.name + "\n版本代码:" + __VERSION__.version + "\n发布日期:" + __VERSION__.date);
             $("main-title").appendChild(__SYS_IMAGES__.getLogoImage(__SYS_IMAGES__.logo_echarts));
             $("main-version").innerText = __VERSION__.version;
             $("main-version").title = "发布日期: " + __VERSION__.date + "\n ● ...\n ● " + __VERSION__.comment.splice(__VERSION__.comment.length % 10 + (Math.floor(__VERSION__.comment.length / 10) - 1) * 10).join("\n ● ");
@@ -2927,11 +2939,10 @@ function initConfigs() {
 
             getQRCode($("page"), 90, 90, __VERSION__.url, __SYS_IMAGES__.echo);
             resize();
-            viewDatabases();
             viewMessage(message + "...OK.");
             checked = true;
         } catch (e) {
-            viewMessage(message + "...fails.");
+            viewMessage(message + "...fails.\n" + e, true);
             checked = false;
         }
     } else {
@@ -2942,1144 +2953,1151 @@ function initConfigs() {
 }
 
 function initMenus() {
-     let message = "初始化系统菜单";
+    let message = "初始化系统菜单";
     //#######################################
     //初始化数据库菜单
     //#######################################
-    let dbstools = $("sidebar-dbs-tools");
+    try {
+        let dbstools = $("sidebar-dbs-tools");
 
-    let crdb = document.createElement("div");
-    crdb.type = "div";
-    crdb.className = "button";
-    crdb.innerText = "新增";
-    crdb.id = "create-database";
-    crdb.appendChild(__SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.create_database));
-    let help_crdb = $("help-create-database");
-    crdb.onclick = help_crdb.onclick = function () {
-        let db = createDatabase();
-        setCenterPosition($("page"), db);
-    };
-    dbstools.appendChild(crdb);
-    setTooltip(crdb, "创建数<br>据库");
+        let crdb = document.createElement("div");
+        crdb.type = "div";
+        crdb.className = "button";
+        crdb.innerText = "新增";
+        crdb.id = "create-database";
+        crdb.appendChild(__SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.create_database));
+        let help_crdb = $("help-create-database");
+        crdb.onclick = help_crdb.onclick = function () {
+            let db = createDatabase();
+            setCenterPosition($("page"), db);
+        };
+        dbstools.appendChild(crdb);
+        setTooltip(crdb, "创建数<br>据库");
 
-    let rmdb = document.createElement("div");
-    rmdb.type = "div";
-    rmdb.className = "button";
-    rmdb.innerText = "删除";
-    rmdb.id = "delete-database";
-    rmdb.appendChild(__SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.drop_database));
-    rmdb.onclick = function () {
-        if (__CONFIGS__.CURRENT_DATABASE.connect == null) {
-            alert("请选择数据库.");
-            return;
-        }
-        let r = confirm("确定要删除数据库 " + __CONFIGS__.CURRENT_DATABASE.value.name + " 吗?");
-        if (r == true) {
-            if (checkStorage()) {
-                if (__CONFIGS__.CURRENT_DATABASE.value != null) {
-                    let storage = window.localStorage;
-                    let dbs = JSON.parse(storage.getItem(__CONFIGS__.STORAGE.DATABASES));
-                    let list = [];
-                    for (let i = 0; i < dbs.length; i++) {
-                        if (i != __CONFIGS__.CURRENT_DATABASE.index) {
-                            list.push(dbs[i]);
+        let rmdb = document.createElement("div");
+        rmdb.type = "div";
+        rmdb.className = "button";
+        rmdb.innerText = "删除";
+        rmdb.id = "delete-database";
+        rmdb.appendChild(__SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.drop_database));
+        rmdb.onclick = function () {
+            if (__CONFIGS__.CURRENT_DATABASE.connect == null) {
+                alert("请选择数据库.");
+                return;
+            }
+            let r = confirm("确定要删除数据库 " + __CONFIGS__.CURRENT_DATABASE.value.name + " 吗?");
+            if (r == true) {
+                if (checkStorage()) {
+                    if (__CONFIGS__.CURRENT_DATABASE.value != null) {
+                        let storage = window.localStorage;
+                        let dbs = JSON.parse(storage.getItem(__CONFIGS__.STORAGE.DATABASES));
+                        let list = [];
+                        for (let i = 0; i < dbs.length; i++) {
+                            if (i != __CONFIGS__.CURRENT_DATABASE.index) {
+                                list.push(dbs[i]);
+                            }
                         }
+                        storage.setItem(__CONFIGS__.STORAGE.DATABASES, JSON.stringify(list));
+                        viewDatabases();
+                        __CONFIGS__.CURRENT_DATABASE.index = 0;
+                        __CONFIGS__.CURRENT_DATABASE.value = null;
+                        __CONFIGS__.CURRENT_DATABASE.connect = null;
+                        __CONFIGS__.CURRENT_TABLE.name = "";
+                        __CONFIGS__.CURRENT_TABLE.sql = "";
+                        __CONFIGS__.CURRENT_TABLE.structure = [];
+                        __CONFIGS__.CURRENT_TABLE.type = "";
                     }
-                    storage.setItem(__CONFIGS__.STORAGE.DATABASES, JSON.stringify(list));
-                    viewDatabases();
-                    __CONFIGS__.CURRENT_DATABASE.index = 0;
-                    __CONFIGS__.CURRENT_DATABASE.value = null;
-                    __CONFIGS__.CURRENT_DATABASE.connect = null;
-                    __CONFIGS__.CURRENT_TABLE.name = "";
-                    __CONFIGS__.CURRENT_TABLE.sql = "";
-                    __CONFIGS__.CURRENT_TABLE.structure = [];
-                    __CONFIGS__.CURRENT_TABLE.type = "";
                 }
             }
-        }
-    };
-    dbstools.appendChild(rmdb);
-    setTooltip(rmdb, "删除<br>数据库");
+        };
+        dbstools.appendChild(rmdb);
+        setTooltip(rmdb, "删除<br>数据库");
 
-    let dbinfo = document.createElement("div");
-    dbinfo.type = "div";
-    dbinfo.className = "button";
-    dbinfo.id = "test-button";
-    dbinfo.innerText = "调试";
-    dbinfo.style.display = "none";
-    dbinfo.onclick = function () {
-        //##########################################
-        ajax();
-        //字符串可传输编码转化
-        // let a = "2021/00/02 12:12:100";
-        // console.log(a.toDatetime("yyyy-MM-dd hh:mm:ss"));
+        let dbinfo = document.createElement("div");
+        dbinfo.type = "div";
+        dbinfo.className = "button";
+        dbinfo.id = "test-button";
+        dbinfo.innerText = "调试";
+        dbinfo.style.display = "none";
+        dbinfo.onclick = function () {
+            //##########################################
+            //字符串可传输编码转化
+            // let a = "2021/00/02 12:12:100";
+            // console.log(a.toDatetime("yyyy-MM-dd hh:mm:ss"));
 
-        //##########################################
-        //字符串可传输编码转化
-        // let a = "yangkai.bj@ccb.com";
-        // console.log(a.encode());
-        //##########################################
-        //图片转base64代码
-        // let tb = getImageBase64Code();
-        // setCenterPosition($("page"), tb);
-        //##########################################
+            //##########################################
+            //字符串可传输编码转化
+            // let a = "yangkai.bj@ccb.com";
+            // console.log(a.encode());
+            //##########################################
+            //图片转base64代码
+            // let tb = getImageBase64Code();
+            // setCenterPosition($("page"), tb);
+            //##########################################
 
-        //存量脚本升级转换
-        // try {
-        //     let storage = window.localStorage;
-        //     let sqllist = {};
-        //     if (storage.getItem(__CONFIGS__.STORAGE.SCRIPTS) == null)
-        //         storage.setItem(__CONFIGS__.STORAGE.SCRIPTS, "{}");
-        //     else {
-        //         sqllist = JSON.parse(storage.getItem(__CONFIGS__.STORAGE.SCRIPTS));
-        //     }
-        //     for (let name in sqllist) {
-        //         let sql;
-        //         if (typeof sqllist[name] == "object") {
-        //             if (typeof sqllist[name].sql == "undefined" && typeof sqllist[name].time == "undefined") {
-        //                 sql = sqllist[name];
-        //                 sqllist[name] = {sql: sql, time: getNow()};
-        //             }
-        //         } else if (typeof sqllist[name] == "string") {
-        //             sql = sqllist[name].decode().str2binary();
-        //             sqllist[name] = {sql: sql, time: getNow()};
-        //         }
-        //     }
-        //     storage.setItem(__CONFIGS__.STORAGE.SCRIPTS, JSON.stringify(sqllist));
-        //     alert("脚本转换完成!")
-        // } catch (e) {
-        //     alert(e);
-        // }
-        //##########################################
-    };
-    dbstools.appendChild(dbinfo);
-    setTooltip(dbinfo, "脚本<br>转换");
+            //存量脚本升级转换
+            // try {
+            //     let storage = window.localStorage;
+            //     let sqllist = {};
+            //     if (storage.getItem(__CONFIGS__.STORAGE.SCRIPTS) == null)
+            //         storage.setItem(__CONFIGS__.STORAGE.SCRIPTS, "{}");
+            //     else {
+            //         sqllist = JSON.parse(storage.getItem(__CONFIGS__.STORAGE.SCRIPTS));
+            //     }
+            //     for (let name in sqllist) {
+            //         let sql;
+            //         if (typeof sqllist[name] == "object") {
+            //             if (typeof sqllist[name].sql == "undefined" && typeof sqllist[name].time == "undefined") {
+            //                 sql = sqllist[name];
+            //                 sqllist[name] = {sql: sql, time: getNow()};
+            //             }
+            //         } else if (typeof sqllist[name] == "string") {
+            //             sql = sqllist[name].decode().str2binary();
+            //             sqllist[name] = {sql: sql, time: getNow()};
+            //         }
+            //     }
+            //     storage.setItem(__CONFIGS__.STORAGE.SCRIPTS, JSON.stringify(sqllist));
+            //     alert("脚本转换完成!")
+            // } catch (e) {
+            //     alert(e);
+            // }
+            //##########################################
+        };
+        dbstools.appendChild(dbinfo);
+        setTooltip(dbinfo, "脚本<br>转换");
 
-    let about = document.createElement("div");
-    about.type = "div";
-    about.className = "button";
-    about.id = "about-and-help";
-    about.innerText = "帮助";
-    about.style.cssFloat = "right";
-    about.appendChild(__SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.help));
-    about.onclick = function () {
-        if ($("footer").style.display) {
-            if ($("footer").style.display == "block")
+        let about = document.createElement("div");
+        about.type = "div";
+        about.className = "button";
+        about.id = "about-and-help";
+        about.innerText = "帮助";
+        about.style.cssFloat = "right";
+        about.appendChild(__SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.help));
+        about.onclick = function () {
+            if ($("footer").style.display) {
+                if ($("footer").style.display == "block")
+                    $("footer").style.display = "none";
+                else
+                    $("footer").style.display = "block";
+            } else
                 $("footer").style.display = "none";
-            else
-                $("footer").style.display = "block";
-        } else
-            $("footer").style.display = "none";
-        setUserConfig("help", $("footer").style.display);
-        resize()
-    };
-    dbstools.appendChild(about);
-    setTooltip(about, "显示或关<br>闭帮助");
+            setUserConfig("help", $("footer").style.display);
+            resize()
+        };
+        dbstools.appendChild(about);
+        setTooltip(about, "显示或关<br>闭帮助");
 
 
-    //#######################################
-    //初始化数据表菜单
-    //#######################################
-    let tbstools = $("sidebar-tbs-tools");
-    tbstools.innerText = "";
-    let crtb = document.createElement("div");
-    crtb.type = "div";
-    crtb.className = "button";
-    crtb.id = "create-table";
-    crtb.innerText = "新增";
-    crtb.appendChild(__SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.create_table));
-    let help_crtb = $("help-create-table");
-    crtb.onclick = help_crtb.onclick = function () {
-        let tb = createTable(null);
-        setCenterPosition($("page"), tb);
-    };
-    tbstools.appendChild(crtb);
-    setTooltip(crtb, "创建<br>数据表");
+        //#######################################
+        //初始化数据表菜单
+        //#######################################
+        let tbstools = $("sidebar-tbs-tools");
+        tbstools.innerText = "";
+        let crtb = document.createElement("div");
+        crtb.type = "div";
+        crtb.className = "button";
+        crtb.id = "create-table";
+        crtb.innerText = "新增";
+        crtb.appendChild(__SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.create_table));
+        let help_crtb = $("help-create-table");
+        crtb.onclick = help_crtb.onclick = function () {
+            let tb = createTable(null);
+            setCenterPosition($("page"), tb);
+        };
+        tbstools.appendChild(crtb);
+        setTooltip(crtb, "创建<br>数据表");
 
-    let importtb = document.createElement("div");
-    importtb.type = "div";
-    importtb.className = "button";
-    importtb.innerText = "导入";
-    importtb.id = "import-to-table";
-    importtb.appendChild(__SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.import));
-    let help_importtb = $("help-import-data");
-    importtb.onclick = help_importtb.onclick = function () {
-        let im = getImportContent();
-        setCenterPosition($("page"), im);
-    };
-    tbstools.appendChild(importtb);
-    setTooltip(importtb, "导入<br>外部数据");
+        let importtb = document.createElement("div");
+        importtb.type = "div";
+        importtb.className = "button";
+        importtb.innerText = "导入";
+        importtb.id = "import-to-table";
+        importtb.appendChild(__SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.import));
+        let help_importtb = $("help-import-data");
+        importtb.onclick = help_importtb.onclick = function () {
+            let im = getImportContent();
+            setCenterPosition($("page"), im);
+        };
+        tbstools.appendChild(importtb);
+        setTooltip(importtb, "导入<br>外部数据");
 
-    let exConstr = document.createElement("div");
-    exConstr.type = "div";
-    exConstr.className = "button";
-    exConstr.innerText = "结构";
-    exConstr.id = "show-table-construct";
-    exConstr.appendChild(__SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.table_construct));
-    exConstr.onclick = function () {
-        let result = __CONFIGS__.CURRENT_TABLE.structure;
-        result["title"] = [__CONFIGS__.CURRENT_TABLE.name];
-        result["sql"] = __CONFIGS__.CURRENT_TABLE.sql;
-        result["parameter"] = null;
-        result["time"] = getNow();
-        __DATASET__.result.push(result);
-        __DATASET__.default.sheet = __DATASET__.result.length - 1;
-        viewDataset(__DATASET__.default.sheet, 0);
-        viewMessage(__CONFIGS__.CURRENT_TABLE.name + ":\n" + __CONFIGS__.CURRENT_TABLE.sql);
-    };
-    tbstools.appendChild(exConstr);
-    setTooltip(exConstr, "获取数据<br>表结构");
+        let exConstr = document.createElement("div");
+        exConstr.type = "div";
+        exConstr.className = "button";
+        exConstr.innerText = "结构";
+        exConstr.id = "show-table-construct";
+        exConstr.appendChild(__SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.table_construct));
+        exConstr.onclick = function () {
+            let result = __CONFIGS__.CURRENT_TABLE.structure;
+            result["title"] = [__CONFIGS__.CURRENT_TABLE.name];
+            result["sql"] = __CONFIGS__.CURRENT_TABLE.sql;
+            result["parameter"] = null;
+            result["time"] = getNow();
+            __DATASET__.result.push(result);
+            __DATASET__.default.sheet = __DATASET__.result.length - 1;
+            viewDataset(__DATASET__.default.sheet, 0);
+            viewMessage(__CONFIGS__.CURRENT_TABLE.name + ":\n" + __CONFIGS__.CURRENT_TABLE.sql);
+        };
+        tbstools.appendChild(exConstr);
+        setTooltip(exConstr, "获取数据<br>表结构");
 
-    let rmtb = document.createElement("div");
-    rmtb.type = "div";
-    rmtb.className = "button";
-    rmtb.innerText = "删除";
-    rmtb.id = "drop-table";
-    rmtb.appendChild(__SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.drop_table));
-    rmtb.onclick = function () {
-        let r = confirm("确定要删除数据表(视图) " + __CONFIGS__.CURRENT_TABLE.name + " 吗?");
-        if (r == true) {
-            if (checkStorage()) {
-                __CONFIGS__.CURRENT_DATABASE.connect.transaction(function (tx) {
-                    let sql = "drop " + __CONFIGS__.CURRENT_TABLE.type + " " + __CONFIGS__.CURRENT_TABLE.name;
-                    viewMessage(sql);
-                    tx.executeSql(sql, [],
-                        function (tx, results) {
-                            let aff = results.rowsAffected;
-                            let len = results.rows.length;
-                            if (aff > 0) {
-                                viewMessage(aff + " 条记录被修改.")
-                            }
-                            if (aff == 0 && len == 0) {
-                                viewMessage("数据库没有返回数据和消息.")
-                            }
-                            viewTables(__CONFIGS__.CURRENT_DATABASE.index);
-                            __CONFIGS__.CURRENT_TABLE.name = "";
-                            __CONFIGS__.CURRENT_TABLE.sql = "";
-                            __CONFIGS__.CURRENT_TABLE.structure = [];
-                            __CONFIGS__.CURRENT_TABLE.type = "";
-                        },
-                        function (tx, error) {
-                            viewMessage(error.message);
-                        });
-                });
+        let rmtb = document.createElement("div");
+        rmtb.type = "div";
+        rmtb.className = "button";
+        rmtb.innerText = "删除";
+        rmtb.id = "drop-table";
+        rmtb.appendChild(__SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.drop_table));
+        rmtb.onclick = function () {
+            let r = confirm("确定要删除数据表(视图) " + __CONFIGS__.CURRENT_TABLE.name + " 吗?");
+            if (r == true) {
+                if (checkStorage()) {
+                    __CONFIGS__.CURRENT_DATABASE.connect.transaction(function (tx) {
+                        let sql = "drop " + __CONFIGS__.CURRENT_TABLE.type + " " + __CONFIGS__.CURRENT_TABLE.name;
+                        viewMessage(sql);
+                        tx.executeSql(sql, [],
+                            function (tx, results) {
+                                let aff = results.rowsAffected;
+                                let len = results.rows.length;
+                                if (aff > 0) {
+                                    viewMessage(aff + " 条记录被修改.")
+                                }
+                                if (aff == 0 && len == 0) {
+                                    viewMessage("数据库没有返回数据和消息.")
+                                }
+                                viewTables(__CONFIGS__.CURRENT_DATABASE.index);
+                                __CONFIGS__.CURRENT_TABLE.name = "";
+                                __CONFIGS__.CURRENT_TABLE.sql = "";
+                                __CONFIGS__.CURRENT_TABLE.structure = [];
+                                __CONFIGS__.CURRENT_TABLE.type = "";
+                            },
+                            function (tx, error) {
+                                viewMessage(error.message);
+                            });
+                    });
+                }
             }
-        }
-    };
-    tbstools.appendChild(rmtb);
-    setTooltip(rmtb, "删除当前<br>数据表");
+        };
+        tbstools.appendChild(rmtb);
+        setTooltip(rmtb, "删除当前<br>数据表");
 
-    //#######################################
-    //初始化SQL菜单
-    //#######################################
-    let sqltools = $("sql-tools");
-    sqltools.ondblclick = function () {
-        __DATASET__.toFullScreen = requestFullScreen($("main"));
-    };
+        //#######################################
+        //初始化SQL菜单
+        //#######################################
+        let sqltools = $("sql-tools");
+        sqltools.ondblclick = function () {
+            __DATASET__.toFullScreen = requestFullScreen($("main"));
+        };
 
-    let newsql = document.createElement("div");
-    newsql.type = "div";
-    newsql.className = "button";
-    newsql.innerText = "新建";
-    newsql.id = "create-new-sql";
-    newsql.appendChild(__SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.create_sql));
-    let help_createsql = $("help-create-sql");
-    newsql.onclick = help_createsql.onclick = function () {
-        let openfile = $("openfile");
-        openfile.value = "";
-        __SQLEDITOR__.title = __ECHARTS__.configs.titleText.value = __ECHARTS__.configs.titleSubText.value = null;
-        __SQLEDITOR__.codeMirror.setValue("");
-        if (this.id == "help-create-sql") {
-            let sql = "/*脚本案例*/\r\n" +
-                "SELECT\r\n" +
-                "* \r\n" +
-                "/*字段列表*/\r\n" +
-                "FROM \r\n" +
-                "{数据表}\r\n" +
-                "ORDER BY 1";
-            __SQLEDITOR__.codeMirror.setValue(sql);
-        }
-
-    };
-    sqltools.appendChild(newsql);
-    setTooltip(newsql, "新建<br>脚本");
-
-    let input = document.createElement("input");
-    input.type = "file";
-    input.id = "openfile";
-    input.style.display = "none";
-    input.className = "openfile";
-    input.onchange = function () {
-        if (window.FileReader) {
-            try {
-                let file = this.files[0];
-                let reader = new FileReader();
-                reader.onload = function () {
-                    __SQLEDITOR__.codeMirror.setValue(this.result);
-                    __SQLEDITOR__.title = __ECHARTS__.configs.titleText.value = __ECHARTS__.configs.titleSubText.value = null;
-                };
-                reader.readAsText(file, __SQLEDITOR__.charset.options[__SQLEDITOR__.charset.value]);
-            } catch (e) {
-                alert("请选择需要导入的脚本文件.")
+        let newsql = document.createElement("div");
+        newsql.type = "div";
+        newsql.className = "button";
+        newsql.innerText = "新建";
+        newsql.id = "create-new-sql";
+        newsql.appendChild(__SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.create_sql));
+        let help_createsql = $("help-create-sql");
+        newsql.onclick = help_createsql.onclick = function () {
+            let openfile = $("openfile");
+            openfile.value = "";
+            __SQLEDITOR__.title = __ECHARTS__.configs.titleText.value = __ECHARTS__.configs.titleSubText.value = null;
+            __SQLEDITOR__.codeMirror.setValue("");
+            if (this.id == "help-create-sql") {
+                let sql = "/*脚本案例*/\r\n" +
+                    "SELECT\r\n" +
+                    "* \r\n" +
+                    "/*字段列表*/\r\n" +
+                    "FROM \r\n" +
+                    "{数据表}\r\n" +
+                    "ORDER BY 1";
+                __SQLEDITOR__.codeMirror.setValue(sql);
             }
-        } else {
-            showMessage("本应用适用于Chrome浏览器或IE10及以上版本。")
-        }
-    };
-    sqltools.appendChild(input);
 
-    let opensql = document.createElement("div");
-    opensql.type = "div";
-    opensql.className = "button";
-    opensql.innerText = "打开";
-    opensql.id = "open-sql";
-    opensql.appendChild(__SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.open_sql));
-    let help_opensql = $("help-open-sql");
-    opensql.onclick = help_opensql.onclick = function () {
-        let tb = storageSqlDialog("", __SQLEDITOR__);
-        setCenterPosition($("main"), tb)
-    };
-    sqltools.appendChild(opensql);
-    setTooltip(opensql, "打开<br>脚本");
+        };
+        sqltools.appendChild(newsql);
+        setTooltip(newsql, "新建<br>脚本");
 
-    let saveto = document.createElement("div");
-    saveto.type = "div";
-    saveto.className = "button";
-    saveto.innerText = "保存";
-    saveto.id = "sql-save-to";
-    saveto.appendChild(__SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.save_sql));
-    let help_savesql = $("help-save-sql");
-    saveto.onclick = help_savesql.onclick = function () {
-        if (__SQLEDITOR__.title == null) {
-            let sql = __SQLEDITOR__.codeMirror.getValue();
-            let tb = storageSqlDialog(sql, __SQLEDITOR__, "_TO_SAVE_");
-            setCenterPosition($("main"), tb)
-        } else {
-            let name = __SQLEDITOR__.title;
-            let res = confirm("您确定覆盖保存脚本 " + name + " 吗?");
-            if (res == true) {
-                let sql = __SQLEDITOR__.codeMirror.getValue();
-                if (name != "" && sql != "") {
-                    saveStorageSql(name, sql);
-                } else
-                    alert("脚本及脚本名称不能为空!");
-            }
-        }
-    };
-    sqltools.appendChild(saveto);
-    setTooltip(saveto, "保存<br>脚本");
-
-    let loadfile = document.createElement("div");
-    loadfile.type = "div";
-    loadfile.className = "button";
-    loadfile.innerText = "导入";
-    loadfile.id = "load-sql-file";
-    loadfile.appendChild(__SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.load_sql));
-    let help_loadsql = $("help-load-sql");
-    loadfile.onclick = help_loadsql.onclick = function () {
-        $("openfile").click();
-    };
-    sqltools.appendChild(loadfile);
-    setTooltip(loadfile, "导入<br>脚本");
-
-    let saveas = document.createElement("div");
-    saveas.type = "div";
-    saveas.className = "button";
-    saveas.innerText = "导出";
-    saveas.id = "sql-save-as";
-    saveas.appendChild(__SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.unload_sql));
-    let help_downloadsql = $("help-download-sql");
-    saveas.onclick = help_downloadsql.onclick = function () {
-        let title = __SQLEDITOR__.title != null ? __SQLEDITOR__.title.split("_")[0] : prompt("请输入文件名称:");
-        if (title != null && title.trim() != "") {
-            let blob = null;
-            switch (__SQLEDITOR__.options.mode) {
-                case "text/x-sqlite":
-                    blob = new Blob([str2ab(__SQLEDITOR__.codeMirror.getValue())], {type: "text/plain"});
-                    //application/octet-stream   扩展名:*
-                    openDownloadDialog(blob, title + ".sql");
-                    break;
-                case "text/javascript":
-                    blob = new Blob([str2ab(__SQLEDITOR__.codeMirror.getValue())], {type: "application/x-javascript"});
-                    openDownloadDialog(blob, title + ".js");
-                    break;
-            }
-        }
-    };
-    sqltools.appendChild(saveas);
-    setTooltip(saveas, "导出<br>脚本");
-
-    let execsql = document.createElement("div");
-    execsql.type = "div";
-    execsql.className = "button";
-    execsql.innerText = "提交";
-    execsql.id = "exec-sql";
-    execsql.appendChild(__SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.execute_sql));
-    let help_execsql = $("help-execute-sql");
-    execsql.onclick = help_execsql.onclick = function () {
-        if (checkStorage()) {
-            let selection = "";
-            if (__SQLEDITOR__.codeMirror.somethingSelected())
-                selection = __SQLEDITOR__.codeMirror.getSelection();
-            else
-                selection = __SQLEDITOR__.codeMirror.getValue();
-            let paramdialog = getParamDialog(__SQLEDITOR__.title, selection);
-            if (paramdialog != null) {
-                setCenterPosition($("main"), paramdialog)
+        let input = document.createElement("input");
+        input.type = "file";
+        input.id = "openfile";
+        input.style.display = "none";
+        input.className = "openfile";
+        input.onchange = function () {
+            if (window.FileReader) {
+                try {
+                    let file = this.files[0];
+                    let reader = new FileReader();
+                    reader.onload = function () {
+                        __SQLEDITOR__.codeMirror.setValue(this.result);
+                        __SQLEDITOR__.title = __ECHARTS__.configs.titleText.value = __ECHARTS__.configs.titleSubText.value = null;
+                    };
+                    reader.readAsText(file, __SQLEDITOR__.charset.options[__SQLEDITOR__.charset.value]);
+                } catch (e) {
+                    alert("请选择需要导入的脚本文件.")
+                }
             } else {
-                if (__SQLEDITOR__.title != null) {
-                    let title = __SQLEDITOR__.title.split("_");
-                    __ECHARTS__.configs.titleText.value = title[0];
-                    if (title.length > 1) {
-                        __ECHARTS__.configs.titleSubText.value = title[1];
+                showMessage("本应用适用于Chrome浏览器或IE10及以上版本。")
+            }
+        };
+        sqltools.appendChild(input);
+
+        let opensql = document.createElement("div");
+        opensql.type = "div";
+        opensql.className = "button";
+        opensql.innerText = "打开";
+        opensql.id = "open-sql";
+        opensql.appendChild(__SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.open_sql));
+        let help_opensql = $("help-open-sql");
+        opensql.onclick = help_opensql.onclick = function () {
+            let tb = storageSqlDialog("", __SQLEDITOR__);
+            setCenterPosition($("main"), tb)
+        };
+        sqltools.appendChild(opensql);
+        setTooltip(opensql, "打开<br>脚本");
+
+        let saveto = document.createElement("div");
+        saveto.type = "div";
+        saveto.className = "button";
+        saveto.innerText = "保存";
+        saveto.id = "sql-save-to";
+        saveto.appendChild(__SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.save_sql));
+        let help_savesql = $("help-save-sql");
+        saveto.onclick = help_savesql.onclick = function () {
+            if (__SQLEDITOR__.title == null) {
+                let sql = __SQLEDITOR__.codeMirror.getValue();
+                let tb = storageSqlDialog(sql, __SQLEDITOR__, "_TO_SAVE_");
+                setCenterPosition($("main"), tb)
+            } else {
+                let name = __SQLEDITOR__.title;
+                let res = confirm("您确定覆盖保存脚本 " + name + " 吗?");
+                if (res == true) {
+                    let sql = __SQLEDITOR__.codeMirror.getValue();
+                    if (name != "" && sql != "") {
+                        saveStorageSql(name, sql);
+                    } else
+                        alert("脚本及脚本名称不能为空!");
+                }
+            }
+        };
+        sqltools.appendChild(saveto);
+        setTooltip(saveto, "保存<br>脚本");
+
+        let loadfile = document.createElement("div");
+        loadfile.type = "div";
+        loadfile.className = "button";
+        loadfile.innerText = "导入";
+        loadfile.id = "load-sql-file";
+        loadfile.appendChild(__SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.load_sql));
+        let help_loadsql = $("help-load-sql");
+        loadfile.onclick = help_loadsql.onclick = function () {
+            $("openfile").click();
+        };
+        sqltools.appendChild(loadfile);
+        setTooltip(loadfile, "导入<br>脚本");
+
+        let saveas = document.createElement("div");
+        saveas.type = "div";
+        saveas.className = "button";
+        saveas.innerText = "导出";
+        saveas.id = "sql-save-as";
+        saveas.appendChild(__SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.unload_sql));
+        let help_downloadsql = $("help-download-sql");
+        saveas.onclick = help_downloadsql.onclick = function () {
+            let title = __SQLEDITOR__.title != null ? __SQLEDITOR__.title.split("_")[0] : prompt("请输入文件名称:");
+            if (title != null && title.trim() != "") {
+                let blob = null;
+                switch (__SQLEDITOR__.options.mode) {
+                    case "text/x-sqlite":
+                        blob = new Blob([str2ab(__SQLEDITOR__.codeMirror.getValue())], {type: "text/plain"});
+                        //application/octet-stream   扩展名:*
+                        openDownloadDialog(blob, title + ".sql");
+                        break;
+                    case "text/javascript":
+                        blob = new Blob([str2ab(__SQLEDITOR__.codeMirror.getValue())], {type: "application/x-javascript"});
+                        openDownloadDialog(blob, title + ".js");
+                        break;
+                }
+            }
+        };
+        sqltools.appendChild(saveas);
+        setTooltip(saveas, "导出<br>脚本");
+
+        let execsql = document.createElement("div");
+        execsql.type = "div";
+        execsql.className = "button";
+        execsql.innerText = "提交";
+        execsql.id = "exec-sql";
+        execsql.appendChild(__SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.execute_sql));
+        let help_execsql = $("help-execute-sql");
+        execsql.onclick = help_execsql.onclick = function () {
+            if (checkStorage()) {
+                let selection = "";
+                if (__SQLEDITOR__.codeMirror.somethingSelected())
+                    selection = __SQLEDITOR__.codeMirror.getSelection();
+                else
+                    selection = __SQLEDITOR__.codeMirror.getValue();
+                let paramdialog = getParamDialog(__SQLEDITOR__.title, selection);
+                if (paramdialog != null) {
+                    setCenterPosition($("main"), paramdialog)
+                } else {
+                    if (__SQLEDITOR__.title != null) {
+                        let title = __SQLEDITOR__.title.split("_");
+                        __ECHARTS__.configs.titleText.value = title[0];
+                        if (title.length > 1) {
+                            __ECHARTS__.configs.titleSubText.value = title[1];
+                        } else {
+                            __ECHARTS__.configs.titleSubText.value = "";
+                        }
+                    }
+                    if (__SQLEDITOR__.options.mode == "text/x-sqlite")
+                        execute();
+                    if (__SQLEDITOR__.options.mode == "text/javascript")
+                        executeFunction()
+                }
+            }
+        };
+        sqltools.appendChild(execsql);
+        setTooltip(execsql, "执行脚本<br>获取数据");
+
+        let datasetSource = document.createElement("select");
+        datasetSource.type = "select";
+        datasetSource.id = "set-dataset-source";
+        datasetSource.style.cssFloat = "left";
+        for (m in __SQLEDITOR__.modes) {
+            datasetSource.options.add(new Option(m, __SQLEDITOR__.modes[m]));
+        }
+        try {
+            let mode = getUserConfig("editermode");
+            if (mode != null) {
+                __SQLEDITOR__.options.mode = datasetSource.value = mode;
+            } else
+                datasetSource.selectedIndex = 0;
+        } catch (e) {
+            console.log(e);
+        }
+        datasetSource.onchange = function () {
+            __SQLEDITOR__.options.mode = datasetSource.value = this.value;
+            __SQLEDITOR__.codeMirror.setOption("mode", this.value);
+            setUserConfig("editermode", this.value);
+        };
+        sqltools.appendChild(datasetSource);
+        setTooltip(datasetSource, "编辑器<br>模式");
+
+        let tofull = document.createElement("div");
+        sqltools.appendChild(tofull);
+        tofull.className = "charButton";
+        tofull.innerText = "❏";
+        tofull.style.cssFloat = "right";
+        tofull.id = "set-editer-to-full";
+        tofull.onclick = function () {
+            __SQLEDITOR__.codeMirror.setOption("fullScreen", !__SQLEDITOR__.codeMirror.getOption("fullScreen"));
+        };
+        setTooltip(tofull, "全屏<br>编辑");
+
+        let editorCharset = document.createElement("select");
+        editorCharset.type = "select";
+        editorCharset.id = "set-editer-chartset";
+        for (let i = 0; i < __SQLEDITOR__.charset.options.length; i++) {
+            editorCharset.options.add(new Option(__SQLEDITOR__.charset.options[i], i));
+        }
+        try {
+            let charset = getUserConfig("editercharset");
+            if (charset != null) {
+                __SQLEDITOR__.charset.value = editorCharset.selectedIndex = charset;
+            } else
+                editorCharset.selectedIndex = 0;
+        } catch (e) {
+            console.log(e);
+        }
+        editorCharset.onchange = function () {
+            __SQLEDITOR__.charset.value = this.value;
+            setUserConfig("editercharset", this.value);
+        };
+        sqltools.appendChild(editorCharset);
+        setTooltip(editorCharset, "导入脚本<br>字符编码");
+
+        //#######################################
+        //必须先行实体化编辑器,否则不能预埋参数
+        //#######################################
+        $("sqlediter").style.width = (getAbsolutePosition($("sqlContainer")).width - 2) + "px";
+        __SQLEDITOR__.init($("sqlediter"));
+
+        let setFontSize = document.createElement("select");
+        setFontSize.type = "select";
+        setFontSize.id = "set-editer-font-size";
+        for (let size in __SQLEDITOR__.fontSize.options) {
+            setFontSize.options.add(new Option(size, __SQLEDITOR__.fontSize.options[size]));
+        }
+        setFontSize.style.cssFloat = "right";
+        setFontSize.selectedIndex = __SQLEDITOR__.fontSize.default;
+        try {
+            let fontsize = getUserConfig("editerfontsize");
+            if (fontsize != null) {
+                setFontSize.value = getUserConfig("editerfontsize");
+                let editor = document.getElementsByClassName("CodeMirror")[0];
+                editor.style.fontSize = setFontSize.value
+            } else
+                setFontSize.selectedIndex = 0;
+        } catch (e) {
+            console.log(e);
+        }
+        setFontSize.onchange = function () {
+            let editor = document.getElementsByClassName("CodeMirror")[0];
+            editor.style.fontSize = this.value;
+            setUserConfig("editerfontsize", this.value);
+        };
+        sqltools.appendChild(setFontSize);
+        setTooltip(setFontSize, "编辑器<br>字号");
+
+        let editorThemes = document.createElement("select");
+        editorThemes.type = "select";
+        editorThemes.id = "set-editer-theme";
+        for (let theme in __SQLEDITOR__.themes) {
+            editorThemes.options.add(new Option(theme));
+        }
+        try {
+            let themename = getUserConfig("editerthemes");
+            if (themename != null) {
+                editorThemes.value = themename;
+                let theme = __SQLEDITOR__.themes[themename];
+                $("sqlediterTheme").setAttribute("href", theme.href);
+                __SQLEDITOR__.codeMirror.setOption("theme", theme.name);
+            } else
+                editorThemes.selectedIndex = 0;
+        } catch (e) {
+            console.log(e);
+        }
+        editorThemes.onchange = function () {
+            let theme = __SQLEDITOR__.themes[this.value];
+            $("sqlediterTheme").setAttribute("href", theme.href);
+            __SQLEDITOR__.codeMirror.setOption("theme", theme.name);
+            setUserConfig("editerthemes", this.value);
+        };
+        sqltools.appendChild(editorThemes);
+        setTooltip(editorThemes, "编辑器<br>主题");
+
+        //#######################################
+        //初始化消息菜单
+        //#######################################
+        let detailtools = $("detail-tools");
+
+        let toDisplay = document.createElement("div");
+        toDisplay.type = "div";
+        toDisplay.className = "charButton";
+        toDisplay.innerHTML = "&#187";//"»";
+        toDisplay.id = "display-log";
+        toDisplay.onclick = function () {
+            if ($("detail").style.display != "none") {
+                $("detail").style.display = "none";
+                setUserConfig("displayLogs", "none");
+                resize();
+                $("page").onmousemove = function () {
+                    let active = 3;
+                    if (event.x > getAbsolutePosition($("page")).width - active) {
+                        $("detail").style.display = "block";
+                        setUserConfig("displayLogs", "block");
+                        $("page").onmousemove = null;
+                    }
+                    resize();
+                };
+            }
+        };
+        detailtools.appendChild(toDisplay);
+        setTooltip(toDisplay, "隐藏<br>日志");
+
+        let clean = document.createElement("div");
+        clean.type = "div";
+        clean.className = "button";
+        clean.innerText = "清空";
+        clean.id = "clean-log";
+        clean.appendChild(__SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.clear_logs));
+        clean.onclick = function () {
+            let msgbox = $("messageBox");
+            msgbox.innerHTML = "";
+        };
+        detailtools.appendChild(clean);
+        setTooltip(clean, "清除终<br>端日志");
+
+        let logs = document.createElement("select");
+        logs.type = "select";
+        logs.id = "log-records";
+        logs.options.add(new Option("1000条", 1000));
+        logs.options.add(new Option("5000条", 5000));
+        logs.options.add(new Option("10000条", 10000));
+        logs.options.add(new Option("全部", 0));
+        try {
+            let re = getUserConfig("pagelogs");
+            if (re != null)
+                logs.value = getUserConfig("pagelogs");
+            else
+                logs.selectedIndex = 0;
+        } catch (e) {
+            console.log(e);
+        }
+        logs.onchange = function () {
+            __CONFIGS__.MAXLOGS = this.value;
+            setUserConfig("pagelogs", this.value);
+            let msgbox = $("messageBox");
+            if (__CONFIGS__.MAXLOGS > 0) {
+                while (msgbox.getElementsByClassName("dt").length > __CONFIGS__.MAXLOGS) {
+                    msgbox.removeChild(msgbox.getElementsByClassName("dt")[msgbox.getElementsByClassName("dt").length - 1])
+                }
+            }
+        };
+        detailtools.appendChild(logs);
+        setTooltip(logs, "保留日志<br>记录数");
+
+        //#######################################
+        //初始化数据菜单
+        //#######################################
+        let datatools = $("data-tools");
+        datatools.ondblclick = function () {
+            __DATASET__.toFullScreen = requestFullScreen($("main"));
+        };
+
+        let dataReader = document.createElement("div");
+        datatools.appendChild(dataReader);
+        dataReader.type = "div";
+        dataReader.className = "charButton";
+        dataReader.innerText = "⚘";
+        dataReader.style.cssFloat = "left";
+        dataReader.id = "data-reader";
+        dataReader.onclick = function () {
+            let reader = getDataReaderContent();
+            setCenterPosition($("main"), reader);
+
+        };
+        setTooltip(dataReader, "读取外<br>部数据");
+
+        let datatran = document.createElement("div");
+        datatools.appendChild(datatran);
+        datatran.className = "charButton";
+        datatran.innerHTML = "&#9735";//"☇"
+        datatran.id = "dataset-transpose";
+        let help_datasettranspose = $("help-dataset-transpose");
+        datatran.onclick = help_datasettranspose.onclick = function () {
+            if (__DATASET__.result.length > 0) {
+                datasetTranspose(__DATASET__.default.sheet);
+                viewDataset(__DATASET__.default.sheet, 0);
+            }
+        };
+        setTooltip(datatran, "转置<br>数据");
+
+        let dataslice = document.createElement("div");
+        datatools.appendChild(dataslice);
+        dataslice.className = "charButton";
+        dataslice.innerHTML = "&#9839";//"♯";
+        dataslice.id = "dataset-slice";
+        let help_datasetslice = $("help-dataset-slice");
+        dataslice.onclick = help_datasetslice.onclick = function () {
+            if (__DATASET__.result.length > 0) {
+                let dataslice = getDataSlice();
+                setCenterPosition($("main"), dataslice);
+            }
+        };
+        setTooltip(dataslice, "数据<br>切片");
+
+        let subtotal = document.createElement("div");
+        datatools.appendChild(subtotal);
+        subtotal.type = "div";
+        subtotal.className = "charButton";
+        subtotal.innerHTML = "&#931";//"Σ";
+        subtotal.id = "dataset-subtotal";
+        let help_datasetsubtotal = $("help-dataset-subtotal");
+        subtotal.onclick = help_datasetsubtotal.onclick = function () {
+            if (__DATASET__.result.length > 0) {
+                let subtotal = getSubtotal();
+                setCenterPosition($("main"), subtotal);
+            }
+        };
+        setTooltip(subtotal, "分类<br>计算");
+
+        let download = document.createElement("div");
+        datatools.appendChild(download);
+        download.type = "div";
+        download.className = "charButton";
+        download.innerHTML = "&#8675";//"⇣";
+        download.id = "dataset-download";
+        let help_datasetdownload = $("help-dataset-download");
+        download.onclick = help_datasetdownload.onclick = function () {
+            function removingRedundant(sheetNames) {
+                //sheet名称重复处理.
+                for (let i = 0; i < sheetNames.length; i++) {
+                    let x = 0;
+                    for (let t = i + 1; t < sheetNames.length; t++) {
+                        if (sheetNames[t] === sheetNames[i]) {
+                            x += 1;
+                            sheetNames[t] += "(" + x + ")";
+                        }
+                    }
+                }
+                return sheetNames;
+            }
+
+            function fixFileName(str) {
+                //文件名称合法性修正。
+                let sts = ['\\', '/', ':', '*', '?', '"', '<', '>', '|'];
+                for (let i = 0; i < sts.length; i++) {
+                    str.replaceAll(sts[i], "");
+                }
+                return str;
+            }
+
+            if (__DATASET__.result.length > 0) {
+                let sheets = [];
+                let sheetNames = [];
+                let comment = [
+                    ['Application:', __VERSION__.name],
+                    ['Version:', __VERSION__.version + " (" + __VERSION__.date + ")"],
+                    ['Creation time:', getNow()],
+                    ['Get help from:', __VERSION__.url],
+                ];
+                if (__DATASET__.configs.reportDownload.value == "current") {
+                    let dataset = __DATASET__.result[__DATASET__.default.sheet];
+                    comment.push([dataset.type + ":", dataset.sql]);
+                    let aoa = [];
+                    let columns = dataset["columns"].reduce(function (tmp, column) {
+                        tmp.push(column.name);
+                        return tmp;
+                    }, []);
+                    aoa.push(columns);
+                    for (let i = 0; i < dataset["data"].length; i++) {
+                        let r = dataset["data"][i];
+                        let row = [];
+                        for (let c = 0; c < columns.length; c++) {
+                            row.push(r[columns[c]].value);
+                        }
+                        aoa.push(row);
+                    }
+                    sheets.push(aoa);
+                    let sheetname = typeof dataset.title == "undefined" ? "Current" :
+                        (dataset.title.length == 0 ? "Current" :
+                            (dataset.title[dataset.title.length - 1] == "" ? "Current" : dataset.title[dataset.title.length - 1]));
+                    sheetNames.push(sheetname);
+                    sheets.push(comment);
+                    sheetNames.push("Comment");
+                    let title = dataset.title.length > 0 ? dataset.title[0] : prompt("请输入文件名称:");
+                    if (title.trim() != "")
+                        openDownloadDialog(workbook2blob(sheets, removingRedundant(sheetNames)), title + ".xlsx");
+                } else if (__DATASET__.configs.reportDownload.value == "all-single") {
+                    if (__DATASET__.result.length <= 255) {
+                        let res = true;
+                        if (__DATASET__.result.length > 3)
+                            res = confirm("您确定下载 " + __DATASET__.result.length + " 个工作表吗?");
+                        if (res == true) {
+                            for (let d = 0; d < __DATASET__.result.length; d++) {
+                                let dataset = __DATASET__.result[d];
+                                comment.push([dataset.type + ":", dataset.sql]);
+                                let aoa = [];
+                                let columns = dataset["columns"].reduce(function (tmp, column) {
+                                    tmp.push(column.name);
+                                    return tmp;
+                                }, []);
+                                aoa.push(columns);
+                                for (let i = 0; i < dataset["data"].length; i++) {
+                                    let r = dataset["data"][i];
+                                    let row = [];
+                                    for (let c = 0; c < columns.length; c++) {
+                                        row.push(r[columns[c]].value);
+                                    }
+                                    aoa.push(row);
+                                }
+                                sheets.push(aoa);
+                                let sheetname = typeof dataset.title == "undefined" ? "Sheet" + (d + 1) :
+                                    (dataset.title.length == 0 ? "Sheet" + (d + 1) :
+                                        (dataset.title[dataset.title.length - 1] == "" ? "Sheet" + (d + 1) : fixFileName(dataset.title[dataset.title.length - 1])));
+                                sheetNames.push(sheetname);
+                            }
+                            sheets.push(comment);
+                            sheetNames.push("Comment");
+                            let title = prompt("请输入文件名称:");
+                            if (title != null && title.trim() != "")
+                                openDownloadDialog(workbook2blob(sheets, removingRedundant(sheetNames)), fixFileName(title) + ".xlsx");
+                        }
+                    } else
+                        alert("一个工作簿最多允许有255个数据表!");
+                } else if (__DATASET__.configs.reportDownload.value == "all-multi") {
+                    if (__DATASET__.result.length <= 255) {
+                        let res = true;
+                        if (__DATASET__.result.length > 3)
+                            res = confirm("您确定下载 " + __DATASET__.result.length + " 个工作簿吗?");
+                        if (res == true) {
+                            for (let d = 0; d < __DATASET__.result.length; d++) {
+                                sheets = [];
+                                sheetNames = [];
+                                let dataset = __DATASET__.result[d];
+                                comment = [
+                                    ['Application:', __VERSION__.name],
+                                    ['Version:', __VERSION__.version + " (" + __VERSION__.date + ")"],
+                                    ['Creation time:', getNow()],
+                                    ['Get help from:', __VERSION__.url],
+                                    [dataset.type + ":", dataset.sql]
+                                ];
+                                let aoa = [];
+                                let columns = dataset["columns"].reduce(function (tmp, column) {
+                                    tmp.push(column.name);
+                                    return tmp;
+                                }, []);
+                                aoa.push(columns);
+                                for (let i = 0; i < dataset["data"].length; i++) {
+                                    let r = dataset["data"][i];
+                                    let row = [];
+                                    for (let c = 0; c < columns.length; c++) {
+                                        row.push(r[columns[c]].value);
+                                    }
+                                    aoa.push(row);
+                                }
+                                sheets.push(aoa);
+                                let sheetname = typeof dataset.title == "undefined" ? "Sheet" + (d + 1) :
+                                    (dataset.title.length == 0 ? "Sheet" + (d + 1) :
+                                        (dataset.title[dataset.title.length - 1] == "" ? "Sheet" + (d + 1) : fixFileName(dataset.title[dataset.title.length - 1])));
+                                sheetNames.push(sheetname);
+                                sheets.push(comment);
+                                sheetNames.push("Comment");
+                                openDownloadDialog(workbook2blob(sheets, removingRedundant(sheetNames)), sheetname + ".xlsx");
+                                if (d < (__DATASET__.result.length - 1)) {
+                                    let delay = (aoa.length * columns.length) >= 10000 ? (aoa.length * columns.length / 10000) : 1;
+                                    sleep(__DATASET__.configs.reportDownloadDelay.value * delay);
+                                }
+                            }
+                        }
+                    } else
+                        alert("同时下载的工作簿个数不允许超过255个!");
+                }
+            }
+        };
+        setTooltip(download, "下载<br>数据集");
+
+        let remove = document.createElement("div");
+        datatools.appendChild(remove);
+        remove.type = "div";
+        remove.className = "charButton";
+        remove.innerHTML = "&#10007";//"✗";
+        remove.id = "dataset-remove";
+        let help_datasetremove = $("help-dataset-remove");
+        remove.onclick = help_datasetremove.onclick = function () {
+            if (__DATASET__.result.length > 0) {
+                __DATASET__.result.splice(__DATASET__.default.sheet, 1);
+                if (__DATASET__.default.sheet >= __DATASET__.result.length)
+                    __DATASET__.default.sheet = __DATASET__.result.length - 1;
+
+                if (__DATASET__.result.length > 0) {
+                    if (__DATASET__.default.tab >= __DATASET__.result.length)
+                        __DATASET__.default.tab -= 10;
+                    viewDataset(__DATASET__.default.sheet, 0);
+                } else {
+                    $("tableContainer").innerText = "";
+                    __DATASET__.default.tab = 0;
+                    setDataPageTools(0);
+                }
+            }
+        };
+        setTooltip(remove, "删除<br>数据集");
+
+        let removeall = document.createElement("div");
+        datatools.appendChild(removeall);
+        removeall.type = "div";
+        removeall.className = "charButton";
+        removeall.innerHTML = "&#9850";//"♻";
+        removeall.id = "dataset-removeall";
+        removeall.onclick = function () {
+            if (__DATASET__.result.length > 0) {
+                __DATASET__.result = [];
+                __DATASET__.default.tab = 0;
+                $("tableContainer").innerText = "";
+                setDataPageTools(0);
+            }
+        };
+        setTooltip(removeall, "删除所有<br>数据集");
+
+        let fileSecurity = document.createElement("div");
+        datatools.appendChild(fileSecurity);
+        fileSecurity.type = "div";
+        fileSecurity.className = "charButton";
+        fileSecurity.innerText = "☍";
+        fileSecurity.onclick = $("file-security").onclick = function () {
+            setCenterPosition($("main"), getFileSecurity());
+        };
+        setTooltip(fileSecurity, "文件加密<br>解密");
+
+        let datasetSetting = document.createElement("div");
+        datatools.appendChild(datasetSetting);
+        datasetSetting.type = "div";
+        datasetSetting.className = "charButton";
+        datasetSetting.innerText = "┅";
+        datasetSetting.id = "dataset-setting";
+        datasetSetting.onclick = function () {
+            let configs = __DATASET__.getDatasetConfigs($("tableContainer"));
+            setCenterPosition($("main"), configs);
+
+        };
+        setTooltip(datasetSetting, "报表<br>设置");
+
+        let analysis = document.createElement("div");
+        analysis.style.display = "none";
+        datatools.appendChild(analysis);
+        analysis.className = "button";
+        analysis.innerText = "Analysis";
+        analysis.style.cssFloat = "left";
+        analysis.id = "Analysis";
+        analysis.onclick = function () {
+            let dataset = __DATASET__.result[__DATASET__.default.sheet];
+            let columns = [];
+            let data = [];
+            for (let i = 0; i < dataset["columns"].length; i++) {
+                columns.push(dataset["columns"][i].name);
+            }
+            for (let i = 0; i < dataset["data"].length; i++) {
+                let r = dataset["data"][i];
+                let row = [];
+                for (let c = 0; c < columns.length; c++) {
+                    row.push(r[columns[c]].value);
+                }
+                data.push(row);
+            }
+            let storage = window.localStorage;
+            storage.setItem(__CONFIGS__.STORAGE.DATASET, JSON.stringify({
+                "columns": columns,
+                "data": data,
+                "title": "Web SQLite DataView",
+                "sub": "Developer: Yangkai"
+            }));
+            window.open("analysis.html");
+        };
+        setTooltip(analysis, "Analysis");
+
+        let toMultiEcharts = document.createElement("div");
+        datatools.appendChild(toMultiEcharts);
+        toMultiEcharts.className = "charButton";
+        toMultiEcharts.innerText = "☶";
+        toMultiEcharts.style.cssFloat = "right";
+        toMultiEcharts.id = "dataset-to-multi-echarts";
+        toMultiEcharts.onclick = $("help-dataset-to-multi-echarts").onclick = function () {
+            $("page").appendChild(getMultiEcharts());
+        };
+        toMultiEcharts.ondragenter = function (event) {
+            if (event.target.id == "dataset-to-multi-echarts") {
+                event.target.style.border = "1px dotted red";
+            }
+        };
+        toMultiEcharts.ondragover = function (event) {
+            if (event.target.id == "dataset-to-multi-echarts") {
+                event.preventDefault();
+            }
+        };
+        toMultiEcharts.ondrop = function (event) {
+            if (event.target.id == "dataset-to-multi-echarts") {
+                event.target.style.border = "0px dotted var(--main-border-color)";
+                let id = event.dataTransfer.getData("Text");
+                __ECHARTS__.sets.add(id);
+            }
+        };
+        toMultiEcharts.ondragleave = function (event) {
+            if (event.target.id == "dataset-to-multi-echarts") {
+                event.target.style.border = "1px dotted var(--main-border-color)";
+            }
+        };
+        setTooltip(toMultiEcharts, "视图<br>组合");
+
+        let toecharts = document.createElement("div");
+        datatools.appendChild(toecharts);
+        toecharts.className = "charButton";
+        toecharts.innerText = "❏";
+        toecharts.style.cssFloat = "right";
+        toecharts.id = "dataset-to-echarts";
+        toecharts.onclick = function () {
+            try {
+                let mecharts = document.createElement("div");
+                mecharts.className = "echarts";
+                mecharts.id = "echarts-full-screen";
+                mecharts.style.width = (getAbsolutePosition($("page")).width + 10) + "px";
+                mecharts.style.height = (getAbsolutePosition($("page")).height + 25) + "px";
+                mecharts.style.top = "0px";
+                mecharts.style.left = "0px";
+                window.addEventListener("keydown", function (e) {
+                    //keypress无法获取Esc键值,keydown和keyup可以.
+                    let keycode = e.which || e.keyCode;
+                    if (keycode == 27) {
+                        if ($("echarts-full-screen") != null) {
+                            try {
+                                echarts.getInstanceByDom($("echarts-full-screen")).dispose();
+                            } catch (e) {
+                            }
+                            $("echarts-full-screen").parentElement.removeChild($("echarts-full-screen"));
+                        }
+                    }
+                });
+                let echart = getEcharts(
+                    mecharts,
+                    (getAbsolutePosition($("page")).width + 5) + "px",
+                    (getAbsolutePosition($("page")).height + 20) + "px",
+                    __DATASET__.result[__DATASET__.default.sheet],
+                    __ECHARTS__.configs);
+                setDragNook(mecharts, echart.getAttribute("_echarts_instance_"));
+                $("page").appendChild(mecharts);
+            } catch (e) {
+                console.log(e);
+            }
+        };
+        setTooltip(toecharts, "显示<br>大视图");
+
+        let toconfigs = document.createElement("div");
+        datatools.appendChild(toconfigs);
+        toconfigs.className = "charButton";
+        toconfigs.innerText = "┅";
+        toconfigs.style.cssFloat = "right";
+        toconfigs.id = "dataset-to-configs";
+        let help_echartsConfigs = $("help-select-echarts-configs");
+        toconfigs.onclick = help_echartsConfigs.onclick = function () {
+            let configs = __ECHARTS__.getEchartsConfigs($("tableContainer"));
+            setCenterPosition($("main"), configs);
+        };
+        setTooltip(toconfigs, "更多图<br>形参数");
+
+        let echartsThemes = document.createElement("select");
+        echartsThemes.className = "select";
+        echartsThemes.type = "select";
+        echartsThemes.id = "dataset-select-echarts-theme";
+        let help_echartsThemes = $("help-select-echarts-themes");
+        for (let i = 0; i < __ECHARTS__.configs.echartsTheme.options.length; i++) {
+            let option = __ECHARTS__.configs.echartsTheme.options[i];
+            echartsThemes.options.add(new Option(option.innerText, option.value));
+            help_echartsThemes.options.add(new Option(option.innerText, option.value));
+        }
+        echartsThemes.value = help_echartsThemes.value = __ECHARTS__.configs.echartsTheme.value;
+        echartsThemes.onchange = help_echartsThemes.onchange = function () {
+            try {
+                __ECHARTS__.configs.echartsTheme.value = this.value;
+                let config = {};
+                for (let key in __ECHARTS__.configs) {
+                    config[key] = __ECHARTS__.configs[key].value;
+                }
+                setUserConfig("echartsconfig", JSON.stringify(config));
+
+                let container = $("tableContainer");
+                try {
+                    container.removeAttribute("_echarts_instance_");
+                    echarts.getInstanceByDom(container).dispose();
+                } catch (e) {
+                }
+                let _width = (getAbsolutePosition(container).width * 1) + "px";
+                let _height = (getAbsolutePosition(container).height * 1) + "px";
+                container.innerHTML = "";
+                let echart = getEcharts(
+                    container,
+                    _width,
+                    _height,
+                    __DATASET__.result[__DATASET__.default.sheet],
+                    __ECHARTS__.configs);
+                setDragNook(container, echart.getAttribute("_echarts_instance_"));
+            } catch (e) {
+                console.log(e);
+            }
+        };
+        datatools.appendChild(echartsThemes);
+        setTooltip(echartsThemes, "视图<br>主题");
+
+        let echartsType = document.createElement("select");
+        echartsType.type = "select";
+        echartsType.id = "dataset-select-echarts-type";
+        let help_echartsType = $("help-select-echarts-type");
+        for (let i = 0; i < __ECHARTS__.configs.echartsType.options.length; i++) {
+            let option = __ECHARTS__.configs.echartsType.options[i];
+            echartsType.options.add(new Option(option.innerText, option.value));
+            help_echartsType.options.add(new Option(option.innerText, option.value));
+        }
+        echartsType.value = help_echartsType.value = __ECHARTS__.configs.echartsType.value;
+        echartsType.onchange = help_echartsType.onchange = function () {
+            try {
+                __ECHARTS__.configs.echartsType.value = this.value;
+                let config = {};
+                for (let key in __ECHARTS__.configs) {
+                    config[key] = __ECHARTS__.configs[key].value;
+                }
+                setUserConfig("echartsconfig", JSON.stringify(config));
+
+                let container = $("tableContainer");
+                try {
+                    container.removeAttribute("_echarts_instance_");
+                    echarts.getInstanceByDom(container).dispose();
+                } catch (e) {
+                }
+                let _width = (getAbsolutePosition(container).width * 1) + "px";
+                let _height = (getAbsolutePosition(container).height * 1) + "px";
+                container.innerHTML = "";
+                let echart = getEcharts(
+                    container,
+                    _width,
+                    _height,
+                    __DATASET__.result[__DATASET__.default.sheet],
+                    __ECHARTS__.configs);
+                setDragNook(container, echart.getAttribute("_echarts_instance_"));
+            } catch (e) {
+                console.log(e);
+            }
+        };
+        datatools.appendChild(echartsType);
+        setTooltip(echartsType, "视图<br>类型");
+
+        let echarts = document.createElement("div");
+        datatools.appendChild(echarts);
+        echarts.className = "button";
+        echarts.innerText = "视图";
+        echarts.style.cssFloat = "right";
+        echarts.id = "dataset-to-charts";
+        echarts.appendChild(__SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.echarts));
+        let help_echarts = $("help-dataset-echarts");
+        echarts.onclick = help_echarts.onclick = function () {
+            try {
+                let container = $("tableContainer");
+                try {
+                    container.removeAttribute("_echarts_instance_");
+                    echarts.getInstanceByDom(container).dispose();
+                } catch (e) {
+                }
+                let dataset = __DATASET__.result[__DATASET__.default.sheet];
+                if (dataset.title.length != 0) {
+                    __ECHARTS__.configs.titleText.value = dataset.title[0];
+                    if (dataset.title.length > 1) {
+                        __ECHARTS__.configs.titleSubText.value = dataset.title.slice(1).join(" ");
                     } else {
                         __ECHARTS__.configs.titleSubText.value = "";
                     }
                 }
-                if (__SQLEDITOR__.options.mode == "text/x-sqlite")
-                    execute();
-                if (__SQLEDITOR__.options.mode == "text/javascript")
-                    executeFunction()
-            }
-        }
-    };
-    sqltools.appendChild(execsql);
-    setTooltip(execsql, "执行脚本<br>获取数据");
 
-    let datasetSource = document.createElement("select");
-    datasetSource.type = "select";
-    datasetSource.id = "set-dataset-source";
-    datasetSource.style.cssFloat = "left";
-    for (m in __SQLEDITOR__.modes) {
-        datasetSource.options.add(new Option(m, __SQLEDITOR__.modes[m]));
-    }
-    try {
-        let mode = getUserConfig("editermode");
-        if (mode != null) {
-            __SQLEDITOR__.options.mode = datasetSource.value = mode;
-        } else
-            datasetSource.selectedIndex = 0;
-    } catch (e) {
-        console.log(e);
-    }
-    datasetSource.onchange = function () {
-        __SQLEDITOR__.options.mode = datasetSource.value = this.value;
-        __SQLEDITOR__.codeMirror.setOption("mode", this.value);
-        setUserConfig("editermode", this.value);
-    };
-    sqltools.appendChild(datasetSource);
-    setTooltip(datasetSource, "编辑器<br>模式");
-
-    let tofull = document.createElement("div");
-    sqltools.appendChild(tofull);
-    tofull.className = "charButton";
-    tofull.innerText = "❏";
-    tofull.style.cssFloat = "right";
-    tofull.id = "set-editer-to-full";
-    tofull.onclick = function () {
-        __SQLEDITOR__.codeMirror.setOption("fullScreen", !__SQLEDITOR__.codeMirror.getOption("fullScreen"));
-    };
-    setTooltip(tofull, "全屏<br>编辑");
-
-    let editorCharset = document.createElement("select");
-    editorCharset.type = "select";
-    editorCharset.id = "set-editer-chartset";
-    for (let i = 0; i < __SQLEDITOR__.charset.options.length; i++) {
-        editorCharset.options.add(new Option(__SQLEDITOR__.charset.options[i], i));
-    }
-    try {
-        let charset = getUserConfig("editercharset");
-        if (charset != null) {
-            __SQLEDITOR__.charset.value = editorCharset.selectedIndex = charset;
-        } else
-            editorCharset.selectedIndex = 0;
-    } catch (e) {
-        console.log(e);
-    }
-    editorCharset.onchange = function () {
-        __SQLEDITOR__.charset.value = this.value;
-        setUserConfig("editercharset", this.value);
-    };
-    sqltools.appendChild(editorCharset);
-    setTooltip(editorCharset, "导入脚本<br>字符编码");
-
-    //#######################################
-    //必须先行实体化编辑器,否则不能预埋参数
-    //#######################################
-    $("sqlediter").style.width = (getAbsolutePosition($("sqlContainer")).width - 2) + "px";
-    __SQLEDITOR__.init($("sqlediter"));
-
-    let setFontSize = document.createElement("select");
-    setFontSize.type = "select";
-    setFontSize.id = "set-editer-font-size";
-    for (let size in __SQLEDITOR__.fontSize.options) {
-        setFontSize.options.add(new Option(size, __SQLEDITOR__.fontSize.options[size]));
-    }
-    setFontSize.style.cssFloat = "right";
-    setFontSize.selectedIndex = __SQLEDITOR__.fontSize.default;
-    try {
-        let fontsize = getUserConfig("editerfontsize");
-        if (fontsize != null) {
-            setFontSize.value = getUserConfig("editerfontsize");
-            let editor = document.getElementsByClassName("CodeMirror")[0];
-            editor.style.fontSize = setFontSize.value
-        } else
-            setFontSize.selectedIndex = 0;
-    } catch (e) {
-        console.log(e);
-    }
-    setFontSize.onchange = function () {
-        let editor = document.getElementsByClassName("CodeMirror")[0];
-        editor.style.fontSize = this.value;
-        setUserConfig("editerfontsize", this.value);
-    };
-    sqltools.appendChild(setFontSize);
-    setTooltip(setFontSize, "编辑器<br>字号");
-
-    let editorThemes = document.createElement("select");
-    editorThemes.type = "select";
-    editorThemes.id = "set-editer-theme";
-    for (let theme in __SQLEDITOR__.themes) {
-        editorThemes.options.add(new Option(theme));
-    }
-    try {
-        let themename = getUserConfig("editerthemes");
-        if (themename != null) {
-            editorThemes.value = themename;
-            let theme = __SQLEDITOR__.themes[themename];
-            $("sqlediterTheme").setAttribute("href", theme.href);
-            __SQLEDITOR__.codeMirror.setOption("theme", theme.name);
-        } else
-            editorThemes.selectedIndex = 0;
-    } catch (e) {
-        console.log(e);
-    }
-    editorThemes.onchange = function () {
-        let theme = __SQLEDITOR__.themes[this.value];
-        $("sqlediterTheme").setAttribute("href", theme.href);
-        __SQLEDITOR__.codeMirror.setOption("theme", theme.name);
-        setUserConfig("editerthemes", this.value);
-    };
-    sqltools.appendChild(editorThemes);
-    setTooltip(editorThemes, "编辑器<br>主题");
-
-    //#######################################
-    //初始化消息菜单
-    //#######################################
-    let detailtools = $("detail-tools");
-
-    let toDisplay = document.createElement("div");
-    toDisplay.type = "div";
-    toDisplay.className = "charButton";
-    toDisplay.innerHTML = "&#187";//"»";
-    toDisplay.id = "display-log";
-    toDisplay.onclick = function () {
-        if ($("detail").style.display != "none") {
-            $("detail").style.display = "none";
-            setUserConfig("displayLogs", "none");
-            resize();
-            $("page").onmousemove = function () {
-                let active = 3;
-                if (event.x > getAbsolutePosition($("page")).width - active) {
-                    $("detail").style.display = "block";
-                    setUserConfig("displayLogs", "block");
-                    $("page").onmousemove = null;
-                }
-                resize();
-            };
-        }
-    };
-    detailtools.appendChild(toDisplay);
-    setTooltip(toDisplay, "隐藏<br>日志");
-
-    let clean = document.createElement("div");
-    clean.type = "div";
-    clean.className = "button";
-    clean.innerText = "清空";
-    clean.id = "clean-log";
-    clean.appendChild(__SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.clear_logs));
-    clean.onclick = function () {
-        let msgbox = $("messageBox");
-        msgbox.innerHTML = "";
-    };
-    detailtools.appendChild(clean);
-    setTooltip(clean, "清除终<br>端日志");
-
-    let logs = document.createElement("select");
-    logs.type = "select";
-    logs.id = "log-records";
-    logs.options.add(new Option("1000条", 1000));
-    logs.options.add(new Option("5000条", 5000));
-    logs.options.add(new Option("10000条", 10000));
-    logs.options.add(new Option("全部", 0));
-    try {
-        let re = getUserConfig("pagelogs");
-        if (re != null)
-            logs.value = getUserConfig("pagelogs");
-        else
-            logs.selectedIndex = 0;
-    } catch (e) {
-        console.log(e);
-    }
-    logs.onchange = function () {
-        __CONFIGS__.MAXLOGS = this.value;
-        setUserConfig("pagelogs", this.value);
-        let msgbox = $("messageBox");
-        if (__CONFIGS__.MAXLOGS > 0) {
-            while (msgbox.getElementsByClassName("dt").length > __CONFIGS__.MAXLOGS) {
-                msgbox.removeChild(msgbox.getElementsByClassName("dt")[msgbox.getElementsByClassName("dt").length - 1])
-            }
-        }
-    };
-    detailtools.appendChild(logs);
-    setTooltip(logs, "保留日志<br>记录数");
-
-    //#######################################
-    //初始化数据菜单
-    //#######################################
-    let datatools = $("data-tools");
-    datatools.ondblclick = function () {
-        __DATASET__.toFullScreen = requestFullScreen($("main"));
-    };
-
-    let dataReader = document.createElement("div");
-    datatools.appendChild(dataReader);
-    dataReader.type = "div";
-    dataReader.className = "charButton";
-    dataReader.innerText = "⚘";
-    dataReader.style.cssFloat = "left";
-    dataReader.id = "data-reader";
-    dataReader.onclick = function () {
-        let reader = getDataReaderContent();
-        setCenterPosition($("main"), reader);
-
-    };
-    setTooltip(dataReader, "读取外<br>部数据");
-
-    let datatran = document.createElement("div");
-    datatools.appendChild(datatran);
-    datatran.className = "charButton";
-    datatran.innerHTML = "&#9735";//"☇"
-    datatran.id = "dataset-transpose";
-    let help_datasettranspose = $("help-dataset-transpose");
-    datatran.onclick = help_datasettranspose.onclick = function () {
-        if (__DATASET__.result.length > 0) {
-            datasetTranspose(__DATASET__.default.sheet);
-            viewDataset(__DATASET__.default.sheet, 0);
-        }
-    };
-    setTooltip(datatran, "转置<br>数据");
-
-    let dataslice = document.createElement("div");
-    datatools.appendChild(dataslice);
-    dataslice.className = "charButton";
-    dataslice.innerHTML = "&#9839";//"♯";
-    dataslice.id = "dataset-slice";
-    let help_datasetslice = $("help-dataset-slice");
-    dataslice.onclick = help_datasetslice.onclick = function () {
-        if (__DATASET__.result.length > 0) {
-            let dataslice = getDataSlice();
-            setCenterPosition($("main"), dataslice);
-        }
-    };
-    setTooltip(dataslice, "数据<br>切片");
-
-    let subtotal = document.createElement("div");
-    datatools.appendChild(subtotal);
-    subtotal.type = "div";
-    subtotal.className = "charButton";
-    subtotal.innerHTML = "&#931";//"Σ";
-    subtotal.id = "dataset-subtotal";
-    let help_datasetsubtotal = $("help-dataset-subtotal");
-    subtotal.onclick = help_datasetsubtotal.onclick = function () {
-        if (__DATASET__.result.length > 0) {
-            let subtotal = getSubtotal();
-            setCenterPosition($("main"), subtotal);
-        }
-    };
-    setTooltip(subtotal, "分类<br>计算");
-
-    let download = document.createElement("div");
-    datatools.appendChild(download);
-    download.type = "div";
-    download.className = "charButton";
-    download.innerHTML = "&#8675";//"⇣";
-    download.id = "dataset-download";
-    let help_datasetdownload = $("help-dataset-download");
-    download.onclick = help_datasetdownload.onclick = function () {
-        function removingRedundant(sheetNames) {
-            //sheet名称重复处理.
-            for (let i = 0; i < sheetNames.length; i++) {
-                let x = 0;
-                for (let t = i + 1; t < sheetNames.length; t++) {
-                    if (sheetNames[t] === sheetNames[i]) {
-                        x += 1;
-                        sheetNames[t] += "(" + x + ")";
-                    }
-                }
-            }
-            return sheetNames;
-        }
-
-        function fixFileName(str) {
-            //文件名称合法性修正。
-            let sts = ['\\', '/', ':', '*', '?', '"', '<', '>', '|'];
-            for (let i = 0; i < sts.length; i++) {
-                str.replaceAll(sts[i], "");
-            }
-            return str;
-        }
-
-        if (__DATASET__.result.length > 0) {
-            let sheets = [];
-            let sheetNames = [];
-            let comment = [
-                ['Application:', __VERSION__.name],
-                ['Version:', __VERSION__.version + " (" + __VERSION__.date + ")"],
-                ['Creation time:', getNow()],
-                ['Get help from:', __VERSION__.url],
-            ];
-            if (__DATASET__.configs.reportDownload.value == "current") {
-                let dataset = __DATASET__.result[__DATASET__.default.sheet];
-                comment.push([dataset.type + ":", dataset.sql]);
-                let aoa = [];
-                let columns = dataset["columns"].reduce(function (tmp, column) {
-                    tmp.push(column.name);
-                    return tmp;
-                }, []);
-                aoa.push(columns);
-                for (let i = 0; i < dataset["data"].length; i++) {
-                    let r = dataset["data"][i];
-                    let row = [];
-                    for (let c = 0; c < columns.length; c++) {
-                        row.push(r[columns[c]].value);
-                    }
-                    aoa.push(row);
-                }
-                sheets.push(aoa);
-                let sheetname = typeof dataset.title == "undefined" ? "Current" :
-                    (dataset.title.length == 0 ? "Current" :
-                        (dataset.title[dataset.title.length - 1] == "" ? "Current" : dataset.title[dataset.title.length - 1]));
-                sheetNames.push(sheetname);
-                sheets.push(comment);
-                sheetNames.push("Comment");
-                let title = dataset.title.length > 0 ? dataset.title[0] : prompt("请输入文件名称:");
-                if (title.trim() != "")
-                    openDownloadDialog(workbook2blob(sheets, removingRedundant(sheetNames)), title + ".xlsx");
-            } else if (__DATASET__.configs.reportDownload.value == "all-single") {
-                if (__DATASET__.result.length <= 255) {
-                    let res = true;
-                    if (__DATASET__.result.length > 3)
-                        res = confirm("您确定下载 " + __DATASET__.result.length + " 个工作表吗?");
-                    if (res == true) {
-                        for (let d = 0; d < __DATASET__.result.length; d++) {
-                            let dataset = __DATASET__.result[d];
-                            comment.push([dataset.type + ":", dataset.sql]);
-                            let aoa = [];
-                            let columns = dataset["columns"].reduce(function (tmp, column) {
-                                tmp.push(column.name);
-                                return tmp;
-                            }, []);
-                            aoa.push(columns);
-                            for (let i = 0; i < dataset["data"].length; i++) {
-                                let r = dataset["data"][i];
-                                let row = [];
-                                for (let c = 0; c < columns.length; c++) {
-                                    row.push(r[columns[c]].value);
-                                }
-                                aoa.push(row);
-                            }
-                            sheets.push(aoa);
-                            let sheetname = typeof dataset.title == "undefined" ? "Sheet" + (d + 1) :
-                                (dataset.title.length == 0 ? "Sheet" + (d + 1) :
-                                    (dataset.title[dataset.title.length - 1] == "" ? "Sheet" + (d + 1) : fixFileName(dataset.title[dataset.title.length - 1])));
-                            sheetNames.push(sheetname);
-                        }
-                        sheets.push(comment);
-                        sheetNames.push("Comment");
-                        let title = prompt("请输入文件名称:");
-                        if (title != null && title.trim() != "")
-                            openDownloadDialog(workbook2blob(sheets, removingRedundant(sheetNames)), fixFileName(title) + ".xlsx");
-                    }
-                } else
-                    alert("一个工作簿最多允许有255个数据表!");
-            } else if (__DATASET__.configs.reportDownload.value == "all-multi") {
-                if (__DATASET__.result.length <= 255) {
-                    let res = true;
-                    if (__DATASET__.result.length > 3)
-                        res = confirm("您确定下载 " + __DATASET__.result.length + " 个工作簿吗?");
-                    if (res == true) {
-                        for (let d = 0; d < __DATASET__.result.length; d++) {
-                            sheets = [];
-                            sheetNames = [];
-                            let dataset = __DATASET__.result[d];
-                            comment = [
-                                ['Application:', __VERSION__.name],
-                                ['Version:', __VERSION__.version + " (" + __VERSION__.date + ")"],
-                                ['Creation time:', getNow()],
-                                ['Get help from:', __VERSION__.url],
-                                [dataset.type + ":", dataset.sql]
-                            ];
-                            let aoa = [];
-                            let columns = dataset["columns"].reduce(function (tmp, column) {
-                                tmp.push(column.name);
-                                return tmp;
-                            }, []);
-                            aoa.push(columns);
-                            for (let i = 0; i < dataset["data"].length; i++) {
-                                let r = dataset["data"][i];
-                                let row = [];
-                                for (let c = 0; c < columns.length; c++) {
-                                    row.push(r[columns[c]].value);
-                                }
-                                aoa.push(row);
-                            }
-                            sheets.push(aoa);
-                            let sheetname = typeof dataset.title == "undefined" ? "Sheet" + (d + 1) :
-                                (dataset.title.length == 0 ? "Sheet" + (d + 1) :
-                                    (dataset.title[dataset.title.length - 1] == "" ? "Sheet" + (d + 1) : fixFileName(dataset.title[dataset.title.length - 1])));
-                            sheetNames.push(sheetname);
-                            sheets.push(comment);
-                            sheetNames.push("Comment");
-                            openDownloadDialog(workbook2blob(sheets, removingRedundant(sheetNames)), sheetname + ".xlsx");
-                            if (d < (__DATASET__.result.length - 1)) {
-                                let delay = (aoa.length * columns.length) >= 10000 ? (aoa.length * columns.length / 10000) : 1;
-                                sleep(__DATASET__.configs.reportDownloadDelay.value * delay);
-                            }
-                        }
-                    }
-                } else
-                    alert("同时下载的工作簿个数不允许超过255个!");
-            }
-        }
-    };
-    setTooltip(download, "下载<br>数据集");
-
-    let remove = document.createElement("div");
-    datatools.appendChild(remove);
-    remove.type = "div";
-    remove.className = "charButton";
-    remove.innerHTML = "&#10007";//"✗";
-    remove.id = "dataset-remove";
-    let help_datasetremove = $("help-dataset-remove");
-    remove.onclick = help_datasetremove.onclick = function () {
-        if (__DATASET__.result.length > 0) {
-            __DATASET__.result.splice(__DATASET__.default.sheet, 1);
-            if (__DATASET__.default.sheet >= __DATASET__.result.length)
-                __DATASET__.default.sheet = __DATASET__.result.length - 1;
-
-            if (__DATASET__.result.length > 0) {
-                if (__DATASET__.default.tab >= __DATASET__.result.length)
-                    __DATASET__.default.tab -= 10;
-                viewDataset(__DATASET__.default.sheet, 0);
-            } else {
-                $("tableContainer").innerText = "";
-                __DATASET__.default.tab = 0;
-                setDataPageTools(0);
-            }
-        }
-    };
-    setTooltip(remove, "删除<br>数据集");
-
-    let removeall = document.createElement("div");
-    datatools.appendChild(removeall);
-    removeall.type = "div";
-    removeall.className = "charButton";
-    removeall.innerHTML = "&#9850";//"♻";
-    removeall.id = "dataset-removeall";
-    removeall.onclick = function () {
-        if (__DATASET__.result.length > 0) {
-            __DATASET__.result = [];
-            __DATASET__.default.tab = 0;
-            $("tableContainer").innerText = "";
-            setDataPageTools(0);
-        }
-    };
-    setTooltip(removeall, "删除所有<br>数据集");
-
-    let fileSecurity = document.createElement("div");
-    datatools.appendChild(fileSecurity);
-    fileSecurity.type = "div";
-    fileSecurity.className = "charButton";
-    fileSecurity.innerText = "☍";
-    fileSecurity.onclick = $("file-security").onclick = function () {
-        setCenterPosition($("main"), getFileSecurity());
-    };
-    setTooltip(fileSecurity, "文件加密<br>解密");
-
-    let datasetSetting = document.createElement("div");
-    datatools.appendChild(datasetSetting);
-    datasetSetting.type = "div";
-    datasetSetting.className = "charButton";
-    datasetSetting.innerText = "┅";
-    datasetSetting.id = "dataset-setting";
-    datasetSetting.onclick = function () {
-        let configs = __DATASET__.getDatasetConfigs($("tableContainer"));
-        setCenterPosition($("main"), configs);
-
-    };
-    setTooltip(datasetSetting, "报表<br>设置");
-
-    let analysis = document.createElement("div");
-    analysis.style.display = "none";
-    datatools.appendChild(analysis);
-    analysis.className = "button";
-    analysis.innerText = "Analysis";
-    analysis.style.cssFloat = "left";
-    analysis.id = "Analysis";
-    analysis.onclick = function () {
-        let dataset = __DATASET__.result[__DATASET__.default.sheet];
-        let columns = [];
-        let data = [];
-        for (let i = 0; i < dataset["columns"].length; i++) {
-            columns.push(dataset["columns"][i].name);
-        }
-        for (let i = 0; i < dataset["data"].length; i++) {
-            let r = dataset["data"][i];
-            let row = [];
-            for (let c = 0; c < columns.length; c++) {
-                row.push(r[columns[c]].value);
-            }
-            data.push(row);
-        }
-        let storage = window.localStorage;
-        storage.setItem(__CONFIGS__.STORAGE.DATASET, JSON.stringify({
-            "columns": columns,
-            "data": data,
-            "title": "Web SQLite DataView",
-            "sub": "Developer: Yangkai"
-        }));
-        window.open("analysis.html");
-    };
-    setTooltip(analysis, "Analysis");
-
-    let toMultiEcharts = document.createElement("div");
-    datatools.appendChild(toMultiEcharts);
-    toMultiEcharts.className = "charButton";
-    toMultiEcharts.innerText = "☶";
-    toMultiEcharts.style.cssFloat = "right";
-    toMultiEcharts.id = "dataset-to-multi-echarts";
-    toMultiEcharts.onclick = $("help-dataset-to-multi-echarts").onclick = function () {
-        $("page").appendChild(getMultiEcharts());
-    };
-    toMultiEcharts.ondragenter = function (event) {
-        if (event.target.id == "dataset-to-multi-echarts") {
-            event.target.style.border = "1px dotted red";
-        }
-    };
-    toMultiEcharts.ondragover = function (event) {
-        if (event.target.id == "dataset-to-multi-echarts") {
-            event.preventDefault();
-        }
-    };
-    toMultiEcharts.ondrop = function (event) {
-        if (event.target.id == "dataset-to-multi-echarts") {
-            event.target.style.border = "0px dotted var(--main-border-color)";
-            let id = event.dataTransfer.getData("Text");
-            __ECHARTS__.sets.add(id);
-        }
-    };
-    toMultiEcharts.ondragleave = function (event) {
-        if (event.target.id == "dataset-to-multi-echarts") {
-            event.target.style.border = "1px dotted var(--main-border-color)";
-        }
-    };
-    setTooltip(toMultiEcharts, "视图<br>组合");
-
-    let toecharts = document.createElement("div");
-    datatools.appendChild(toecharts);
-    toecharts.className = "charButton";
-    toecharts.innerText = "❏";
-    toecharts.style.cssFloat = "right";
-    toecharts.id = "dataset-to-echarts";
-    toecharts.onclick = function () {
-        try {
-            let mecharts = document.createElement("div");
-            mecharts.className = "echarts";
-            mecharts.id = "echarts-full-screen";
-            mecharts.style.width = (getAbsolutePosition($("page")).width + 10) + "px";
-            mecharts.style.height = (getAbsolutePosition($("page")).height + 25) + "px";
-            mecharts.style.top = "0px";
-            mecharts.style.left = "0px";
-            window.addEventListener("keydown", function (e) {
-                //keypress无法获取Esc键值,keydown和keyup可以.
-                let keycode = e.which || e.keyCode;
-                if (keycode == 27) {
-                    if ($("echarts-full-screen") != null) {
-                        try {
-                            echarts.getInstanceByDom($("echarts-full-screen")).dispose();
-                        } catch (e) {
-                        }
-                        $("echarts-full-screen").parentElement.removeChild($("echarts-full-screen"));
-                    }
-                }
-            });
-            let echart = getEcharts(
-                mecharts,
-                (getAbsolutePosition($("page")).width + 5) + "px",
-                (getAbsolutePosition($("page")).height + 20) + "px",
-                __DATASET__.result[__DATASET__.default.sheet],
-                __ECHARTS__.configs);
-            setDragNook(mecharts, echart.getAttribute("_echarts_instance_"));
-            $("page").appendChild(mecharts);
-        } catch (e) {
-            console.log(e);
-        }
-    };
-    setTooltip(toecharts, "显示<br>大视图");
-
-    let toconfigs = document.createElement("div");
-    datatools.appendChild(toconfigs);
-    toconfigs.className = "charButton";
-    toconfigs.innerText = "┅";
-    toconfigs.style.cssFloat = "right";
-    toconfigs.id = "dataset-to-configs";
-    let help_echartsConfigs = $("help-select-echarts-configs");
-    toconfigs.onclick = help_echartsConfigs.onclick = function () {
-        let configs = __ECHARTS__.getEchartsConfigs($("tableContainer"));
-        setCenterPosition($("main"), configs);
-    };
-    setTooltip(toconfigs, "更多图<br>形参数");
-
-    let echartsThemes = document.createElement("select");
-    echartsThemes.className = "select";
-    echartsThemes.type = "select";
-    echartsThemes.id = "dataset-select-echarts-theme";
-    let help_echartsThemes = $("help-select-echarts-themes");
-    for (let i = 0; i < __ECHARTS__.configs.echartsTheme.options.length; i++) {
-        let option = __ECHARTS__.configs.echartsTheme.options[i];
-        echartsThemes.options.add(new Option(option.innerText, option.value));
-        help_echartsThemes.options.add(new Option(option.innerText, option.value));
-    }
-    echartsThemes.value = help_echartsThemes.value = __ECHARTS__.configs.echartsTheme.value;
-    echartsThemes.onchange = help_echartsThemes.onchange = function () {
-        try {
-            __ECHARTS__.configs.echartsTheme.value = this.value;
-            let config = {};
-            for (let key in __ECHARTS__.configs) {
-                config[key] = __ECHARTS__.configs[key].value;
-            }
-            setUserConfig("echartsconfig", JSON.stringify(config));
-
-            let container = $("tableContainer");
-            try {
-                container.removeAttribute("_echarts_instance_");
-                echarts.getInstanceByDom(container).dispose();
+                let _width = (getAbsolutePosition(container).width * 1) + "px";
+                let _height = (getAbsolutePosition(container).height * 1) + "px";
+                container.innerHTML = "";
+                let echart = getEcharts(
+                    container,
+                    _width,
+                    _height,
+                    dataset,
+                    __ECHARTS__.configs);
+                setDragNook(container, echart.getAttribute("_echarts_instance_"));
             } catch (e) {
+                console.log(e);
             }
-            let _width = (getAbsolutePosition(container).width * 1) + "px";
-            let _height = (getAbsolutePosition(container).height * 1) + "px";
-            container.innerHTML = "";
-            let echart = getEcharts(
-                container,
-                _width,
-                _height,
-                __DATASET__.result[__DATASET__.default.sheet],
-                __ECHARTS__.configs);
-            setDragNook(container, echart.getAttribute("_echarts_instance_"));
-        } catch (e) {
-            console.log(e);
-        }
-    };
-    datatools.appendChild(echartsThemes);
-    setTooltip(echartsThemes, "视图<br>主题");
+        };
+        setTooltip(echarts, "绘制<br>视图");
 
-    let echartsType = document.createElement("select");
-    echartsType.type = "select";
-    echartsType.id = "dataset-select-echarts-type";
-    let help_echartsType = $("help-select-echarts-type");
-    for (let i = 0; i < __ECHARTS__.configs.echartsType.options.length; i++) {
-        let option = __ECHARTS__.configs.echartsType.options[i];
-        echartsType.options.add(new Option(option.innerText, option.value));
-        help_echartsType.options.add(new Option(option.innerText, option.value));
+        //其他工具
+        $("image-base64").onclick = function () {
+            setCenterPosition($("page"), getImageBase64Code());
+        };
+        viewMessage(message + "...OK.");
+    } catch (e) {
+        viewMessage(message + "...fails.\n" + e, true);
     }
-    echartsType.value = help_echartsType.value = __ECHARTS__.configs.echartsType.value;
-    echartsType.onchange = help_echartsType.onchange = function () {
-        try {
-            __ECHARTS__.configs.echartsType.value = this.value;
-            let config = {};
-            for (let key in __ECHARTS__.configs) {
-                config[key] = __ECHARTS__.configs[key].value;
-            }
-            setUserConfig("echartsconfig", JSON.stringify(config));
-
-            let container = $("tableContainer");
-            try {
-                container.removeAttribute("_echarts_instance_");
-                echarts.getInstanceByDom(container).dispose();
-            } catch (e) {
-            }
-            let _width = (getAbsolutePosition(container).width * 1) + "px";
-            let _height = (getAbsolutePosition(container).height * 1) + "px";
-            container.innerHTML = "";
-            let echart = getEcharts(
-                container,
-                _width,
-                _height,
-                __DATASET__.result[__DATASET__.default.sheet],
-                __ECHARTS__.configs);
-            setDragNook(container, echart.getAttribute("_echarts_instance_"));
-        } catch (e) {
-            console.log(e);
-        }
-    };
-    datatools.appendChild(echartsType);
-    setTooltip(echartsType, "视图<br>类型");
-
-    let echarts = document.createElement("div");
-    datatools.appendChild(echarts);
-    echarts.className = "button";
-    echarts.innerText = "视图";
-    echarts.style.cssFloat = "right";
-    echarts.id = "dataset-to-charts";
-    echarts.appendChild(__SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.echarts));
-    let help_echarts = $("help-dataset-echarts");
-    echarts.onclick = help_echarts.onclick = function () {
-        try {
-            let container = $("tableContainer");
-            try {
-                container.removeAttribute("_echarts_instance_");
-                echarts.getInstanceByDom(container).dispose();
-            } catch (e) {
-            }
-            let dataset = __DATASET__.result[__DATASET__.default.sheet];
-            if (dataset.title.length != 0) {
-                __ECHARTS__.configs.titleText.value = dataset.title[0];
-                if (dataset.title.length > 1) {
-                    __ECHARTS__.configs.titleSubText.value = dataset.title.slice(1).join(" ");
-                } else {
-                    __ECHARTS__.configs.titleSubText.value = "";
-                }
-            }
-
-            let _width = (getAbsolutePosition(container).width * 1) + "px";
-            let _height = (getAbsolutePosition(container).height * 1) + "px";
-            container.innerHTML = "";
-            let echart = getEcharts(
-                container,
-                _width,
-                _height,
-                dataset,
-                __ECHARTS__.configs);
-            setDragNook(container, echart.getAttribute("_echarts_instance_"));
-        } catch (e) {
-            console.log(e);
-        }
-    };
-    setTooltip(echarts, "绘制<br>视图");
-
-    //其他工具
-    $("image-base64").onclick = function () {
-        setCenterPosition($("page"), getImageBase64Code());
-    };
-
-    viewMessage(message + "...OK.")
 }
 
 function init() {
     if (initConfigs()) {
+        sleep(100);
         initMenus();
+        sleep(100);
         setPageThemes();
+        sleep(100);
+        viewDatabases();
+        sleep(100);
         setDataPageTools(0);
         window.onresize = function () {
             resize();
@@ -5298,37 +5316,43 @@ function setTooltip(parent, text) {
 }
 
 function setPageThemes() {
-    let themes = $("help-select-user-themes");
-    themes.options.add(new Option("默认", "themes/default.css"));
-    themes.options.add(new Option("黑色", "themes/black.css"));
-    themes.options.add(new Option("粉色", "themes/pink.css"));
-    themes.options.add(new Option("墨绿", "themes/blackish-green.css"));
-    themes.options.add(new Option("蓝色", "themes/blue.css"));
+    let message = "设置应用页面主题...";
     try {
-        let theme = getUserConfig("pagethemes");
-        if (theme != null)
-            themes.value = getUserConfig("pagethemes");
-        else
-            themes.selectedIndex = 0;
-    } catch (e) {
-        console.log(e);
-    }
-    themes.onchange = function () {
-        setUserConfig("pagethemes", this.value);
-        $("themes").setAttribute("href", getUserConfig("pagethemes"));
-        //同步编辑主题
-        $("set-editer-theme").value = this.options[this.selectedIndex].innerText;
-        let theme = __SQLEDITOR__.themes[$("set-editer-theme").value];
-        $("sqlediterTheme").setAttribute("href", theme.href);
-        __SQLEDITOR__.codeMirror.setOption("theme", theme.name);
-        setUserConfig("editerthemes", $("set-editer-theme").value);
-    };
+        let themes = $("help-select-user-themes");
+        themes.options.add(new Option("默认", "themes/default.css"));
+        themes.options.add(new Option("黑色", "themes/black.css"));
+        themes.options.add(new Option("粉色", "themes/pink.css"));
+        themes.options.add(new Option("墨绿", "themes/blackish-green.css"));
+        themes.options.add(new Option("蓝色", "themes/blue.css"));
+        try {
+            let theme = getUserConfig("pagethemes");
+            if (theme != null)
+                themes.value = getUserConfig("pagethemes");
+            else
+                themes.selectedIndex = 0;
+        } catch (e) {
+            console.log(e);
+        }
+        themes.onchange = function () {
+            setUserConfig("pagethemes", this.value);
+            $("themes").setAttribute("href", getUserConfig("pagethemes"));
+            //同步编辑主题
+            $("set-editer-theme").value = this.options[this.selectedIndex].innerText;
+            let theme = __SQLEDITOR__.themes[$("set-editer-theme").value];
+            $("sqlediterTheme").setAttribute("href", theme.href);
+            __SQLEDITOR__.codeMirror.setOption("theme", theme.name);
+            setUserConfig("editerthemes", $("set-editer-theme").value);
+        };
 
-    let mapconfig = $("help-local-map-config");
-    let localmap = $("help-local-map");
-    mapconfig.onclick = localmap.onclick = function () {
-        let config = geoCoordMap.getMapConfig();
-        setCenterPosition($("page"),config);
+        let mapconfig = $("help-local-map-config");
+        let localmap = $("help-local-map");
+        mapconfig.onclick = localmap.onclick = function () {
+            let config = geoCoordMap.getMapConfig();
+            setCenterPosition($("page"), config);
+        }
+        viewMessage(message + "OK.");
+    }catch (e) {
+        viewMessage(message + "fails.\n" + e, true);
     }
 }
 
