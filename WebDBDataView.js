@@ -1,7 +1,7 @@
 var __VERSION__ = {
     name: "Web DataView for SQLite Database of browser",
-    version: "2.4.9",
-    date: "2021/07/27",
+    version: "2.5.0",
+    date: "2021/07/29",
     comment: [
         "-- 2021/03/08",
         "优化算法和压缩代码.",
@@ -43,12 +43,117 @@ var __VERSION__ = {
         "调整部分组件加载方式.",
         "-- 2021/07/27",
         "优化文件加密/解密模块.",
+        "-- 2021/07/29",
+        "优化日志模块.",
     ],
     author: __SYS_LOGO_LINK__.author.decode(),
     url: __SYS_LOGO_LINK__.link.decode(),
     tel: __SYS_LOGO_LINK__.tel.decode(),
     email: __SYS_LOGO_LINK__.email.decode()
 };
+
+var __LOGS__ = {
+    days: 7,
+    data: {},
+    init: function () {
+        let logs = getUserConfig("UserLogs");
+        if (typeof logs != "undefined")
+            __LOGS__.data = JSON.parse(logs);
+        //############################
+        //默认保留7天的日志
+        //############################
+        let list = [];
+        for(let date in __LOGS__.data){
+            list.push(date);
+        }
+        list.sort(function(a,b){return (new Date(a)) - (new Date(b))});
+        if (list.length > __LOGS__.days) {
+            let retain = list.slice(list.length - __LOGS__.days, list.length);
+            let tmp = {};
+            for (let i = 0; i < retain.length; i++) {
+                tmp[retain[i]] = __LOGS__.data[retain[i]];
+            }
+            __LOGS__.data = tmp;
+        }
+    },
+
+    saveas: function(date) {
+        let sheets = [];
+        let sheetNames = [];
+        let comment = [
+            ['Application:', __VERSION__.name],
+            ['Version:', __VERSION__.version + " (" + __VERSION__.date + ")"],
+            ['Creation time:', getNow()],
+            ['Get help from:', __VERSION__.url],
+        ];
+        let aoa = [];
+        let columns = ["日期", "时间", "日志", "警告"];
+        aoa.push(columns);
+        try {
+            let logs = __LOGS__.data[date];
+            for (let i = 0; i < logs.length; i++) {
+                let log = logs[i];
+                let row = [date];
+                row.push(log.time);
+                row.push(log.message.decode());
+                row.push(log.warning);
+                aoa.push(row);
+            }
+        }catch (e) {
+        }
+        sheets.push(aoa);
+        let sheetname = date;
+        sheetNames.push(sheetname);
+        sheets.push(comment);
+        sheetNames.push("Comment");
+        openDownloadDialog(workbook2blob(sheets, sheetNames), "UserLogs(" + date + ").xlsx");
+    },
+
+    add: function (log) {
+        let date = log.time.format("yyyy-MM-dd");
+        log.time = log.time.format("hh:mm:ss S");
+        log.message = log.message.encode();
+        if (typeof __LOGS__.data[date] == "undefined")
+            __LOGS__.data[date] = [];
+        __LOGS__.data[date].push(log);
+        setUserConfig("UserLogs", JSON.stringify(__LOGS__.data));
+    },
+
+    viewMessage: function (msg, warning) {
+        let log = {
+            time: new Date(),
+            message: msg,
+            warning: typeof warning == "undefined" ? false : warning
+        };
+
+        let msgbox = $("messageBox");
+        let dt = document.createElement("dt");
+        dt.type = "dt";
+        dt.className = "dt";
+        dt.innerText = log.time.format("yyyy-MM-dd hh:mm:ss S");
+        let first = msgbox.firstChild;
+        msgbox.insertBefore(dt, first);
+
+        let message = document.createElement("dd");
+        message.type = "dd";
+        message.className = "message";
+        if (warning)
+            message.innerHTML = "<span style='color:red'>" + log.message + "</span>";
+        else
+            message.innerText = log.message;
+        dt.appendChild(message);
+
+        __LOGS__.add(log);
+
+        //保留日志设置
+        if (__CONFIGS__.MAXLOGS > 0) {
+            let dts = msgbox.getElementsByClassName("dt");
+            if (dts.length > __CONFIGS__.MAXLOGS) {
+                msgbox.removeChild(dts[dts.length - 1]);
+            }
+        }
+    }
+}
 
 var __XMLHTTP__ = {
     server: null,
@@ -255,12 +360,12 @@ var __XMLHTTP__ = {
                     xhr.onreadystatechange = function () {
                         try {
                             if (xhr.readyState == 4 && xhr.status == 404)
-                                viewMessage("验证 " + scripts[i].name + "(" + scripts[i].src + ")...fails.", true);
+                                __LOGS__.viewMessage("验证 " + scripts[i].name + "(" + scripts[i].src + ")...fails.", true);
                             else if (xhr.readyState == 4 && xhr.status == 200) {
                                 let url = xhr.responseURL.split("?")[0];
                                 if (scripts[i].load == false) {
                                     url = url.split("/");
-                                    viewMessage("验证 " + scripts[i].name + "(" + url[url.length - 1] + ")" + "...OK.");
+                                    __LOGS__.viewMessage("验证 " + scripts[i].name + "(" + url[url.length - 1] + ")" + "...OK.");
                                 } else {
                                     switch (scripts[i].element) {
                                         case "script":
@@ -270,7 +375,7 @@ var __XMLHTTP__ = {
                                             script.src = xhr.responseURL.split("?")[0];
                                             document.head.appendChild(script);
                                             url = url.split("/");
-                                            viewMessage("加载 " + scripts[i].name + "(" + url[url.length - 1] + ")" + "...OK.");
+                                            __LOGS__.viewMessage("加载 " + scripts[i].name + "(" + url[url.length - 1] + ")" + "...OK.");
                                             break;
                                         case "link":
                                             let link = document.createElement(scripts[i].element);
@@ -280,7 +385,7 @@ var __XMLHTTP__ = {
                                             link.href = xhr.responseURL.split("?")[0];
                                             document.head.appendChild(link);
                                             url = url.split("/");
-                                            viewMessage("加载 " + scripts[i].name + "(" + url[url.length - 1] + ")" + "...OK.");
+                                            __LOGS__.viewMessage("加载 " + scripts[i].name + "(" + url[url.length - 1] + ")" + "...OK.");
                                             break;
                                     }
                                 }
@@ -303,7 +408,7 @@ var __XMLHTTP__ = {
                             script.id = "onload-" + scripts[i].element + "-" + i;
                             script.src = scripts[i].src;
                             document.head.appendChild(script);
-                            viewMessage("加载 " + scripts[i].name + "(" + scripts[i].src + ")" + "...OK.");
+                            __LOGS__.viewMessage("加载 " + scripts[i].name + "(" + scripts[i].src + ")" + "...OK.");
                             break;
                         case "link":
                             let link = document.createElement(scripts[i].element);
@@ -312,7 +417,7 @@ var __XMLHTTP__ = {
                             link.rel = "stylesheet";
                             link.href = scripts[i].src;
                             document.head.appendChild(link);
-                            viewMessage("加载 " + scripts[i].name + "(" + scripts[i].src + ")" + "...OK.");
+                            __LOGS__.viewMessage("加载 " + scripts[i].name + "(" + scripts[i].src + ")" + "...OK.");
                             break;
                     }
                 } else {
@@ -339,9 +444,9 @@ var __XMLHTTP__ = {
                             break;
                     }
                     if (checked)
-                        viewMessage("验证 " + scripts[i].name + "(" + scripts[i].src + ")" + "...OK.");
+                        __LOGS__.viewMessage("验证 " + scripts[i].name + "(" + scripts[i].src + ")" + "...OK.");
                     else
-                        viewMessage("验证 " + scripts[i].name + "(" + scripts[i].src + ")" + "...fails.", true);
+                        __LOGS__.viewMessage("验证 " + scripts[i].name + "(" + scripts[i].src + ")" + "...fails.", true);
                 }
                 sleep(100);
             }
@@ -435,7 +540,7 @@ var __CONFIGS__ = {
                              for (let key in value) {
                                  msg += key + ": " + JSON.stringify(value[key]) + ";\n";
                              }
-                             viewMessage(msg);
+                             __LOGS__.viewMessage(msg);
                          };
                      }
 
@@ -840,9 +945,9 @@ var __CONFIGS__ = {
                  marker.innerHTML = "●";
                  return marker;
              }
-             viewMessage(messasge + "...OK.");
+             __LOGS__.viewMessage(messasge + "...OK.");
          } catch (e) {
-             viewMessage(messasge + "...fails.");
+             __LOGS__.viewMessage(messasge + "...fails.");
          }
      }
  };
@@ -1005,7 +1110,7 @@ function importData() {
                             values += ",?";
                         }
                         __IMPORT__.SourceFile.sql = sql = sql.replace("{VALUES}", values);
-                        viewMessage(sql);
+                        __LOGS__.viewMessage(sql);
                     } else if (data.length >= __CONFIGS__.CURRENT_TABLE.structure.data.length) {
                         let row = data.slice(0, __CONFIGS__.CURRENT_TABLE.structure.data.length);
                         tx.executeSql(sql, row, function (tx, results) {
@@ -1026,7 +1131,7 @@ function importData() {
                                         __IMPORT__.SourceFile.error.push(packet);
                                         viewPacket(packet);
                                         scrollto();
-                                        viewMessage("Imported : " + __IMPORT__.SourceFile.imported + " / " + __IMPORT__.SourceFile.count + "(" + pre + "%)")
+                                        __LOGS__.viewMessage("Imported : " + __IMPORT__.SourceFile.imported + " / " + __IMPORT__.SourceFile.count + "(" + pre + "%)")
                                     }
                                 }
                             },
@@ -1045,7 +1150,7 @@ function importData() {
                                 __IMPORT__.SourceFile.error.push(packet);
                                 viewPacket(packet);
                                 scrollto();
-                                viewMessage("Imported : " + __IMPORT__.SourceFile.imported + " / " + __IMPORT__.SourceFile.count + "(" + pre + "%),\n" + error.message)
+                                __LOGS__.viewMessage("Imported : " + __IMPORT__.SourceFile.imported + " / " + __IMPORT__.SourceFile.count + "(" + pre + "%),\n" + error.message)
                             });
                     } else {
                         __IMPORT__.SourceFile.count += 1;
@@ -1062,7 +1167,7 @@ function importData() {
                         __IMPORT__.SourceFile.error.push(packet);
                         viewPacket(packet);
                         scrollto();
-                        viewMessage("Imported : " + __IMPORT__.SourceFile.imported + " / " + __IMPORT__.SourceFile.count + "(" + pre + "%),\n" + "数据解析后长度小于数据库结构.")
+                        __LOGS__.viewMessage("Imported : " + __IMPORT__.SourceFile.imported + " / " + __IMPORT__.SourceFile.count + "(" + pre + "%),\n" + "数据解析后长度小于数据库结构.")
                     }
                 } catch (e) {
                     __IMPORT__.SourceFile.count += 1;
@@ -1079,7 +1184,7 @@ function importData() {
                     __IMPORT__.SourceFile.error.push(packet);
                     viewPacket(packet);
                     scrollto();
-                    viewMessage("Imported : " + __IMPORT__.SourceFile.imported + " / " + __IMPORT__.SourceFile.count + "(" + pre + "%),\n" + e)
+                    __LOGS__.viewMessage("Imported : " + __IMPORT__.SourceFile.imported + " / " + __IMPORT__.SourceFile.count + "(" + pre + "%),\n" + e)
                 }
             }
             //由于tx.executeSql异步执行，连续事务执行时间不可预计，不能添加事后统计，只能事中统计.
@@ -1454,21 +1559,21 @@ function createTable(structure) {
                 let title = $("table-Title");
                 if (title.value != "") {
                     let sql = getCreateTableSql(title.value, stru);
-                    viewMessage(sql);
+                    __LOGS__.viewMessage(sql);
                     tx.executeSql(sql, [],
                         function (tx, results) {
                             let aff = results.rowsAffected;
                             let len = results.rows.length;
                             if (aff > 0) {
-                                viewMessage(aff + " 条记录被修改.")
+                                __LOGS__.viewMessage(aff + " 条记录被修改.")
                             }
                             if (aff == 0 && len == 0) {
-                                viewMessage("数据库没有返回数据和消息.")
+                                __LOGS__.viewMessage("数据库没有返回数据和消息.")
                             }
                             viewTables(__CONFIGS__.CURRENT_DATABASE.index);
                         },
                         function (tx, error) {
-                            viewMessage(error.message);
+                            __LOGS__.viewMessage(error.message);
                         });
                 }
                 else
@@ -1915,38 +2020,9 @@ function viewDatabases(){
                 ul.appendChild(li);
             }
         }
-        viewMessage(message + "OK.");
+        __LOGS__.viewMessage(message + "OK.");
     }catch (e) {
-        viewMessage(message + "fails.\n" + e, true);
-    }
-}
-
-function viewMessage(msg, warning){
-    let msgbox = $("messageBox");
-    let dt = document.createElement("dt");
-    dt.type = "dt";
-    dt.className = "dt";
-    dt.innerText = getNow();
-    let first = msgbox.firstChild;
-    msgbox.insertBefore(dt, first);
-
-    let message = document.createElement("dd");
-    message.type = "dd";
-    message.className= "message";
-    if (typeof warning == "undefined" )
-        message.innerText = msg;
-    else if (warning)
-        message.innerHTML = "<span style='color:red'>" + msg + "</span>";
-    else
-        message.innerText = msg;
-    dt.appendChild(message);
-
-    //保留日志设置
-    if (__CONFIGS__.MAXLOGS > 0) {
-        let dts = msgbox.getElementsByClassName("dt");
-        if (dts.length > __CONFIGS__.MAXLOGS) {
-            msgbox.removeChild(dts[dts.length - 1]);
-        }
+        __LOGS__.viewMessage(message + "fails.\n" + e, true);
     }
 }
 
@@ -2001,12 +2077,12 @@ function viewTables(index) {
                             __CONFIGS__.CURRENT_DATABASE.connect.transaction(function (tx) {
                                 let sql = "select sql from sqlite_master where type in ('table','view') and name='" + __CONFIGS__.CURRENT_TABLE.name + "'";
                                 //仅获取表结构，忽略视图.
-                                viewMessage(sql);
+                                __LOGS__.viewMessage(sql);
                                 tx.executeSql(sql, [],
                                     function (tx, results) {
                                         let len = results.rows.length;
                                         if (len > 0) {
-                                            viewMessage("数据库返回 " + len + " 条记录.");
+                                            __LOGS__.viewMessage("数据库返回 " + len + " 条记录.");
                                             __CONFIGS__.CURRENT_TABLE.sql = results.rows.item(0).sql;
                                             if (__CONFIGS__.CURRENT_TABLE.type == "table")
                                                 __CONFIGS__.CURRENT_TABLE.structure = getTableStructure(results.rows.item(0).sql);
@@ -2045,7 +2121,7 @@ function viewTables(index) {
                                         }
                                     },
                                     function (tx, err) {
-                                        viewMessage(err.message);
+                                        __LOGS__.viewMessage(err.message);
                                         __CONFIGS__.CURRENT_TABLE.sql = "";
                                         __CONFIGS__.CURRENT_TABLE.structure = {"columns": [], "data": []};
                                         __CONFIGS__.CURRENT_TABLE.type = "";
@@ -2069,7 +2145,7 @@ function viewTables(index) {
                 __CONFIGS__.TABLES = tables;
             },
             function (tx, err) {
-                viewMessage(err.message);
+                __LOGS__.viewMessage(err.message);
             });
     });
 }
@@ -2382,7 +2458,7 @@ function execute() {
                 title = [];
             let sqls = [];
             if (selection.trim() != "") {
-                viewMessage(selection);
+                __LOGS__.viewMessage(selection);
                 sqls = selection.split(";");
 
                 for (let s = 0; s < sqls.length; s++) {
@@ -2394,7 +2470,7 @@ function execute() {
                             let aff = results.rowsAffected;
                             let len = results.rows.length;
                             if (len > 0) {
-                                viewMessage("数据库返回 " + len + " 条记录.");
+                                __LOGS__.viewMessage("数据库返回 " + len + " 条记录.");
                                 //##################################
                                 //取表头
                                 //##################################
@@ -2481,14 +2557,14 @@ function execute() {
                                 }
                             }
                             if (aff > 0) {
-                                viewMessage(aff + " 条记录被修改.")
+                                __LOGS__.viewMessage(aff + " 条记录被修改.")
                             }
                             if (aff == 0 && len == 0) {
-                                viewMessage("数据库没有返回数据和消息.")
+                                __LOGS__.viewMessage("数据库没有返回数据和消息.")
                             }
                         },
                         function (tx, err) {
-                            viewMessage(err.message);
+                            __LOGS__.viewMessage(err.message);
                         });
                 }
             }
@@ -2541,7 +2617,7 @@ function executeFunction() {
     let funs = [];
     if (selection.trim() != "") {
         funs = selection.split(";");
-        viewMessage(selection);
+        __LOGS__.viewMessage(selection);
 
         let data = [];
         let xRange = __ECHARTS__.configs.mathFunctionXRange.value.toArray([-100, 100], ",");
@@ -2558,7 +2634,7 @@ function executeFunction() {
                         row.push(null);
                 } catch (e) {
                     row.push(f);
-                    viewMessage(e + "\n" + funs[s].toString() + " -> " + f);
+                    __LOGS__.viewMessage(e + "\n" + funs[s].toString() + " -> " + f);
                 }
             }
             data.push(row);
@@ -2878,9 +2954,10 @@ function drawClock(data) {
 function initConfigs() {
     let checked = false;
     if (checkStorage()) {
+        let message = "初始化系统参数";
         try {
-            let message = "初始化系统参数";
-            viewMessage(__VERSION__.name + "\n版本代码:" + __VERSION__.version + "\n发布日期:" + __VERSION__.date);
+            __LOGS__.init();
+            __LOGS__.viewMessage(__VERSION__.name + "\n版本代码:" + __VERSION__.version + "\n发布日期:" + __VERSION__.date);
             $("main-title").appendChild(__SYS_IMAGES__.getLogoImage(__SYS_IMAGES__.logo_echarts));
             $("main-version").innerText = __VERSION__.version;
             $("main-version").title = "发布日期: " + __VERSION__.date + "\n ● ...\n ● " + __VERSION__.comment.splice(__VERSION__.comment.length % 10 + (Math.floor(__VERSION__.comment.length / 10) - 1) * 10).join("\n ● ");
@@ -2939,10 +3016,10 @@ function initConfigs() {
 
             getQRCode($("page"), 90, 90, __VERSION__.url, __SYS_IMAGES__.echo);
             resize();
-            viewMessage(message + "...OK.");
+            __LOGS__.viewMessage(message + "...OK.");
             checked = true;
         } catch (e) {
-            viewMessage(message + "...fails.\n" + e, true);
+            __LOGS__.viewMessage(message + "...fails.\n" + e, true);
             checked = false;
         }
     } else {
@@ -3136,7 +3213,7 @@ function initMenus() {
             __DATASET__.result.push(result);
             __DATASET__.default.sheet = __DATASET__.result.length - 1;
             viewDataset(__DATASET__.default.sheet, 0);
-            viewMessage(__CONFIGS__.CURRENT_TABLE.name + ":\n" + __CONFIGS__.CURRENT_TABLE.sql);
+            __LOGS__.viewMessage(__CONFIGS__.CURRENT_TABLE.name + ":\n" + __CONFIGS__.CURRENT_TABLE.sql);
         };
         tbstools.appendChild(exConstr);
         setTooltip(exConstr, "获取数据<br>表结构");
@@ -3153,16 +3230,16 @@ function initMenus() {
                 if (checkStorage()) {
                     __CONFIGS__.CURRENT_DATABASE.connect.transaction(function (tx) {
                         let sql = "drop " + __CONFIGS__.CURRENT_TABLE.type + " " + __CONFIGS__.CURRENT_TABLE.name;
-                        viewMessage(sql);
+                        __LOGS__.viewMessage(sql);
                         tx.executeSql(sql, [],
                             function (tx, results) {
                                 let aff = results.rowsAffected;
                                 let len = results.rows.length;
                                 if (aff > 0) {
-                                    viewMessage(aff + " 条记录被修改.")
+                                    __LOGS__.viewMessage(aff + " 条记录被修改.")
                                 }
                                 if (aff == 0 && len == 0) {
-                                    viewMessage("数据库没有返回数据和消息.")
+                                    __LOGS__.viewMessage("数据库没有返回数据和消息.")
                                 }
                                 viewTables(__CONFIGS__.CURRENT_DATABASE.index);
                                 __CONFIGS__.CURRENT_TABLE.name = "";
@@ -3171,7 +3248,7 @@ function initMenus() {
                                 __CONFIGS__.CURRENT_TABLE.type = "";
                             },
                             function (tx, error) {
-                                viewMessage(error.message);
+                                __LOGS__.viewMessage(error.message);
                             });
                     });
                 }
@@ -3543,7 +3620,25 @@ function initMenus() {
             }
         };
         detailtools.appendChild(logs);
-        setTooltip(logs, "保留日志<br>记录数");
+        setTooltip(logs, "显示日志<br>记录数");
+
+        let savelogs = document.createElement("select");
+        savelogs .type = "select";
+        savelogs .id = "save-logs";
+        let list = [];
+        for(let date in __LOGS__.data){
+            list.push(date);
+        }
+        list.sort(function(a,b){return (new Date(b)) - (new Date(a))});
+        //倒序排序
+        for(let i=0;i<list.length;i++){
+            savelogs .options.add(new Option(list[i], list[i]));
+        }
+        savelogs.onchange = function () {
+            __LOGS__.saveas(this.value);
+        };
+        detailtools.appendChild(savelogs);
+        setTooltip(savelogs, "查阅<br>日志");
 
         //#######################################
         //初始化数据菜单
@@ -4083,9 +4178,9 @@ function initMenus() {
         $("image-base64").onclick = function () {
             setCenterPosition($("page"), getImageBase64Code());
         };
-        viewMessage(message + "...OK.");
+        __LOGS__.viewMessage(message + "...OK.");
     } catch (e) {
-        viewMessage(message + "...fails.\n" + e, true);
+        __LOGS__.viewMessage(message + "...fails.\n" + e, true);
     }
 }
 
@@ -5350,9 +5445,9 @@ function setPageThemes() {
             let config = geoCoordMap.getMapConfig();
             setCenterPosition($("page"), config);
         }
-        viewMessage(message + "OK.");
+        __LOGS__.viewMessage(message + "OK.");
     }catch (e) {
-        viewMessage(message + "fails.\n" + e, true);
+        __LOGS__.viewMessage(message + "fails.\n" + e, true);
     }
 }
 

@@ -21,19 +21,64 @@ function sortAsc(data) {
                     if (dt != null && _data[d] == null){
                         let tmp = _data[d];
                         _data[d] = dt;
-                        dt = tmp
+                        dt = tmp;
                     }
                 } else if (dt.toString().isNumber() && _data[d].toString().isNumber()) {
                     if (dt < _data[d]) {
                         let tmp = _data[d];
                         _data[d] = dt;
-                        dt = tmp
+                        dt = tmp;
+                    }
+                } else if (dt.toString().isDatetime() && _data[d].toString().isDatetime()){
+                    if ((new Date(dt)) < (new Date(_data[d]))) {
+                        let tmp = _data[d];
+                        _data[d] = dt;
+                        dt = tmp;
                     }
                 } else {
                     if (dt.toString().localeCompare(_data[d].toString()) < 0) {
                         let tmp = _data[d];
                         _data[d] = dt;
-                        dt = tmp
+                        dt = tmp;
+                    }
+                }
+            }
+            _data.push(dt);
+        }
+    }
+    return _data;
+}
+
+function sortDesc(data) {
+    let _data = [];
+    if (data.length>0) {
+        for (let i = 0; i < data.length; i++) {
+            let dt = data[i];
+            for (let d = 0; d < _data.length; d++) {
+                if (dt == null || _data[d] == null){
+                    if (dt != null && _data[d] == null){
+                        let tmp = _data[d];
+                        _data[d] = dt;
+                        dt = tmp;
+                    }
+                } else if (dt.toString().isNumber() && _data[d].toString().isNumber()) {
+                    if (dt > _data[d]) {
+                        let tmp = _data[d];
+                        _data[d] = dt;
+                        dt = tmp;
+                    }
+                } else if (dt.toString().isDatetime() && _data[d].toString().isDatetime()){
+                    console.log([dt,_data[d]]);
+                    if ((new Date(dt)) > (new Date(_data[d]))) {
+                        let tmp = _data[d];
+                        _data[d] = dt;
+                        dt = tmp;
+                    }
+                } else {
+                    if (dt.toString().localeCompare(_data[d].toString()) >= 0) {
+                        let tmp = _data[d];
+                        _data[d] = dt;
+                        dt = tmp;
                     }
                 }
             }
