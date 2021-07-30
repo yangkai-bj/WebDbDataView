@@ -1,7 +1,7 @@
 var __VERSION__ = {
     name: "Web DataView for SQLite Database of browser",
-    version: "2.5.0",
-    date: "2021/07/29",
+    version: "2.5.1",
+    date: "2021/07/30",
     comment: [
         "-- 2021/03/08",
         "优化算法和压缩代码.",
@@ -106,7 +106,7 @@ var __LOGS__ = {
         sheetNames.push(sheetname);
         sheets.push(comment);
         sheetNames.push("Comment");
-        openDownloadDialog(workbook2blob(sheets, sheetNames), "UserLogs(" + date + ").xlsx");
+        openDownloadDialog(workbook2blob(sheets, sheetNames), __VERSION__.name.replaceAll(" ","_") + "_logs_" + date + ".xlsx");
     },
 
     add: function (log) {
@@ -117,6 +117,72 @@ var __LOGS__ = {
             __LOGS__.data[date] = [];
         __LOGS__.data[date].push(log);
         setUserConfig("UserLogs", JSON.stringify(__LOGS__.data));
+    },
+
+    viewError: function(error) {
+        let names = {
+            EvalError: "eval的使用与定义不一致",
+            RangeError: "数值越界",
+            ReferenceError: "非法或不能识别的引用数值",
+            SyntaxError: "发生语法解析错误",
+            TypeError: "操作数类型错误",
+            URIError: "URI处理函数使用不当"
+        };
+        __LOGS__.viewMessage(error.stack, true);
+
+        let container = document.createElement("div");
+        container.id = container.className = "error-dialog";
+
+        let title = document.createElement("div");
+        title.className = "container-title";
+        let span = document.createElement("span");
+        span.className = span.id = "error-title";
+        span.innerHTML = "● " + (names[error.name] != "undefined"? names[error.name]: "其他未知错误");
+        title.appendChild(span);
+        let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
+        close.className = "container-close";
+        title.appendChild(close);
+        container.appendChild(title);
+
+        let hr = document.createElement("hr");
+        container.appendChild(hr);
+
+        let detail = document.createElement("div");
+        detail.className = "detail";
+        container.appendChild(detail);
+        let code = document.createElement("code");
+        code.className = "stack";
+        code.innerHTML = error.stack.toString()
+            .replace(error.name, "<span class='name'>" + error.name + "</span>")
+            .replace(error.message, "<span class='message'>" + error.message + "</span>")
+            .split("\n").join("<br> ● ") + "<hr>" + getUserConfig("CopyRight");
+        detail.appendChild(code);
+
+        let br = document.createElement("hr");
+        br.className = "br";
+        container.appendChild(br);
+
+        let tool = document.createElement("div");
+        container.appendChild(tool);
+        tool.className = "groupbar";
+
+        let confirm = document.createElement("div");
+        confirm.className = "button";
+        confirm.innerText = "确定";
+        confirm.onclick = close.onclick = function () {
+            $("error-dialog").parentNode.removeChild($("error-dialog"));
+        };
+        tool.appendChild(confirm);
+
+        let help = document.createElement("div");
+        help.className = "button";
+        help.innerText = "帮助";
+        help.onclick = function () {
+            window.open(__VERSION__.url);
+        };
+        tool.appendChild(help);
+        setDialogDrag(title);
+        setCenterPosition($("main"), container);
     },
 
     viewMessage: function (msg, warning) {
@@ -1942,7 +2008,7 @@ function getUserConfig(key) {
         let configs = JSON.parse(storage.getItem(__CONFIGS__.STORAGE.CONFIGS));
         return configs[key];
     }catch (e) {
-        console.log(e);
+        __LOGS__.viewError(e);
         return null;
     }
 }
@@ -1954,7 +2020,7 @@ function setUserConfig(key,value) {
         configs[key] = value;
         storage.setItem(__CONFIGS__.STORAGE.CONFIGS, JSON.stringify(configs));
     }catch (e) {
-        console.log(e);
+        __LOGS__.viewError(e);
     }
 }
 
@@ -2264,7 +2330,7 @@ function datasetTranspose(index) {
         __DATASET__.result[index].data = dataset.data;
         __DATASET__.result[index].columns = dataset.columns;
     } catch (e) {
-        console.log(e);
+        __LOGS__.viewError(e);
     }
 }
 
@@ -3097,6 +3163,15 @@ function initMenus() {
         dbinfo.innerText = "调试";
         dbinfo.style.display = "none";
         dbinfo.onclick = function () {
+
+            function test() {
+                try {
+                   console.log(a[1]);
+                } catch (e) {
+                    __LOGS__.viewError(e);
+                }
+            }
+            test();
             //##########################################
             //字符串可传输编码转化
             // let a = "2021/00/02 12:12:100";
@@ -3448,7 +3523,7 @@ function initMenus() {
             } else
                 datasetSource.selectedIndex = 0;
         } catch (e) {
-            console.log(e);
+            __LOGS__.viewError(e);
         }
         datasetSource.onchange = function () {
             __SQLEDITOR__.options.mode = datasetSource.value = this.value;
@@ -3482,7 +3557,7 @@ function initMenus() {
             } else
                 editorCharset.selectedIndex = 0;
         } catch (e) {
-            console.log(e);
+            __LOGS__.viewError(e);
         }
         editorCharset.onchange = function () {
             __SQLEDITOR__.charset.value = this.value;
@@ -3514,7 +3589,7 @@ function initMenus() {
             } else
                 setFontSize.selectedIndex = 0;
         } catch (e) {
-            console.log(e);
+            __LOGS__.viewError(e);
         }
         setFontSize.onchange = function () {
             let editor = document.getElementsByClassName("CodeMirror")[0];
@@ -3540,7 +3615,7 @@ function initMenus() {
             } else
                 editorThemes.selectedIndex = 0;
         } catch (e) {
-            console.log(e);
+            __LOGS__.viewError(e);
         }
         editorThemes.onchange = function () {
             let theme = __SQLEDITOR__.themes[this.value];
@@ -3607,7 +3682,7 @@ function initMenus() {
             else
                 logs.selectedIndex = 0;
         } catch (e) {
-            console.log(e);
+            __LOGS__.viewError(e);
         }
         logs.onchange = function () {
             __CONFIGS__.MAXLOGS = this.value;
@@ -4029,7 +4104,7 @@ function initMenus() {
                 setDragNook(mecharts, echart.getAttribute("_echarts_instance_"));
                 $("page").appendChild(mecharts);
             } catch (e) {
-                console.log(e);
+                __LOGS__.viewError(e);
             }
         };
         setTooltip(toecharts, "显示<br>大视图");
@@ -4084,7 +4159,7 @@ function initMenus() {
                     __ECHARTS__.configs);
                 setDragNook(container, echart.getAttribute("_echarts_instance_"));
             } catch (e) {
-                console.log(e);
+                __LOGS__.viewError(e);
             }
         };
         datatools.appendChild(echartsThemes);
@@ -4126,7 +4201,7 @@ function initMenus() {
                     __ECHARTS__.configs);
                 setDragNook(container, echart.getAttribute("_echarts_instance_"));
             } catch (e) {
-                console.log(e);
+                __LOGS__.viewError(e);
             }
         };
         datatools.appendChild(echartsType);
@@ -4169,7 +4244,7 @@ function initMenus() {
                     __ECHARTS__.configs);
                 setDragNook(container, echart.getAttribute("_echarts_instance_"));
             } catch (e) {
-                console.log(e);
+                __LOGS__.viewError(e);
             }
         };
         setTooltip(echarts, "绘制<br>视图");
@@ -4258,7 +4333,7 @@ function getQRCode(parent,width,height,text,logoImage) {
             correctLevel: QRCode.CorrectLevel.H
         });
     } catch (e) {
-        console.log(e);
+        __LOGS__.viewError(e);
     }
 }
 
@@ -5426,7 +5501,7 @@ function setPageThemes() {
             else
                 themes.selectedIndex = 0;
         } catch (e) {
-            console.log(e);
+            __LOGS__.viewError(e);
         }
         themes.onchange = function () {
             setUserConfig("pagethemes", this.value);
@@ -5495,8 +5570,8 @@ function setEchartDrag(ec) {
                         history.configs);
                     setDragNook(e, e.getAttribute("_echarts_instance_"));
                     setEchartDrag(this);
-                } catch (err) {
-                    console.log(err);
+                } catch (e) {
+                    __LOGS__.viewError(e);
                 }
             } else {
                 setMultiEchartsView(this, id);
@@ -5754,7 +5829,7 @@ function getMultiEcharts() {
         });
         return multiEcharts;
     } catch (e) {
-        console.log(e);
+        __LOGS__.viewError(e);
     }
 }
 
@@ -5797,8 +5872,8 @@ function setDragNook(parent, id) {
                             history.configs);
                         setDragNook(e, e.getAttribute("_echarts_instance_"));
                         setEchartDrag(parent);
-                    } catch (err) {
-                        console.log(err);
+                    } catch (e) {
+                        __LOGS__.viewError(e);
                     }
                 } else {
                     setMultiEchartsView(parent, id);

@@ -816,7 +816,6 @@ String.prototype.isDatetime = function () {
         if (b.length == 3 && c.length == 3) {
             try {
                 let d = new Date(Number(b[0]), Number(b[1]) - 1, Number(b[2]), Number(c[0]), Number(c[1]), Number(c[2]));
-                console.log(d.format("yyyy-MM-dd hh:mm:ss"));
                 if (d.toString() == "Invalid Date")
                     return false;
                 else

@@ -17,7 +17,7 @@ function getStorageSql(key) {
         return sql;
     } catch (e) {
         return null;
-        console.log(e);
+        __LOGS__.viewError(e);
     }
 }
 
@@ -33,7 +33,7 @@ function saveStorageSql(key, sql) {
         sqllist[key] = {sql:sql.str2binary(),time:getNow()};
         storage.setItem(__CONFIGS__.STORAGE.SCRIPTS, JSON.stringify(sqllist));
     } catch (e) {
-        console.log(e);
+        __LOGS__.viewError(e);
     }
 }
 

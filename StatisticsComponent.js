@@ -68,7 +68,6 @@ function sortDesc(data) {
                         dt = tmp;
                     }
                 } else if (dt.toString().isDatetime() && _data[d].toString().isDatetime()){
-                    console.log([dt,_data[d]]);
                     if ((new Date(dt)) > (new Date(_data[d]))) {
                         let tmp = _data[d];
                         _data[d] = dt;
