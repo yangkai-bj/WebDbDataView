@@ -1,7 +1,7 @@
 var __VERSION__ = {
     name: "Web DataView for SQLite Database of browser",
-    version: "2.5.1",
-    date: "2021/07/30",
+    version: "2.5.3",
+    date: "2021/08/03",
     comment: [
         "-- 2021/03/08",
         "优化算法和压缩代码.",
@@ -126,7 +126,8 @@ var __LOGS__ = {
             ReferenceError: "非法或不能识别的引用数值",
             SyntaxError: "发生语法解析错误",
             TypeError: "操作数类型错误",
-            URIError: "URI处理函数使用不当"
+            URIError: "URI处理函数使用不当",
+            QuotaExceededError: "超出存储限额"
         };
         __LOGS__.viewMessage(error.stack, true);
 
@@ -137,7 +138,7 @@ var __LOGS__ = {
         title.className = "container-title";
         let span = document.createElement("span");
         span.className = span.id = "error-title";
-        span.innerHTML = "● " + (names[error.name] != "undefined"? names[error.name]: "其他未知错误");
+        span.innerHTML = "● " + (typeof names[error.name] != "undefined"? names[error.name]: "其他未定义错误");
         title.appendChild(span);
         let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
         close.className = "container-close";
@@ -947,7 +948,8 @@ var __CONFIGS__ = {
          矩阵: {name: "the-matrix", href: "codemirror/theme/the-matrix.css"},
          锐利: {name: "yonce", href: "codemirror/theme/yonce.css"},
          黄昏: {name: "zenburn", href: "codemirror/theme/zenburn.css"},
-         黯然: {name: "eclipse", href: "codemirror/theme/eclipse.css"}
+         黯然: {name: "eclipse", href: "codemirror/theme/eclipse.css"},
+         透明: {name: "transparent", href: "codemirror/theme/transparent.css"}
      },
      fontSize: {
          options: {
@@ -3024,6 +3026,19 @@ function initConfigs() {
         try {
             __LOGS__.init();
             __LOGS__.viewMessage(__VERSION__.name + "\n版本代码:" + __VERSION__.version + "\n发布日期:" + __VERSION__.date);
+
+            let img = getUserConfig("BackgroundImage");
+            if (img != null) {
+                try {
+                    img = JSON.parse(img);
+                    document.body.style.backgroundImage = img.image;
+                    document.body.style.backgroundRepeat = img.repeat;
+                    document.body.style.backgroundSize = img.size;
+                    document.body.style.backgroundAttachment = img.attachment;
+                } catch (e) {
+                }
+            }
+
             $("main-title").appendChild(__SYS_IMAGES__.getLogoImage(__SYS_IMAGES__.logo_echarts));
             $("main-version").innerText = __VERSION__.version;
             $("main-version").title = "发布日期: " + __VERSION__.date + "\n ● ...\n ● " + __VERSION__.comment.splice(__VERSION__.comment.length % 10 + (Math.floor(__VERSION__.comment.length / 10) - 1) * 10).join("\n ● ");
@@ -4739,8 +4754,10 @@ function getParamDialog(titles, sql) {
         let span = document.createElement("span");
         span.className = span.id = "sql-param-title";
         span.innerHTML = (titles == null ? "●" : "● " + titles.split("_")[0]);
-        if (titles.split("_").length > 1)
-            span.title = titles.split("_").join("\n● ");
+        if (titles != null) {
+            if (titles.split("_").length > 1)
+                span.title = titles.split("_").join("\n● ");
+        }
         title.appendChild(span);
         let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
         close.className = "container-close";
@@ -5302,7 +5319,11 @@ function getColumnMenu(colid) {
 
 function getFormat(colid) {
     let columns = __DATASET__.result[__DATASET__.default.sheet].columns;
-    let style = __DATASET__.result[__DATASET__.default.sheet].data[0][columns[Number(colid)].name].style;
+    let style = {};
+    try {
+        style = __DATASET__.result[__DATASET__.default.sheet].data[0][columns[Number(colid)].name].style;
+    }catch (e) {
+    }
 
     let container = document.createElement("div");
     container.id = "table-data-format";
@@ -5512,6 +5533,18 @@ function setPageThemes() {
             $("sqlediterTheme").setAttribute("href", theme.href);
             __SQLEDITOR__.codeMirror.setOption("theme", theme.name);
             setUserConfig("editerthemes", $("set-editer-theme").value);
+
+            let img = {
+                 image: "var(--main-background-image)",
+                 repeat: "var(--main-background-image-repeat)",
+                 size: "var(--main-background-image-size)",
+                 attachment: "var(--main-background-image-attachment)"
+             };
+             setUserConfig("BackgroundImage", JSON.stringify(img));
+             document.body.style.backgroundImage = img.image;
+             document.body.style.backgroundRepeat = img.repeat;
+             document.body.style.backgroundSize = img.size;
+             document.body.style.backgroundAttachment = img.attachment;
         };
 
         let mapconfig = $("help-local-map-config");
@@ -6101,3 +6134,278 @@ function setDataPageTools(index) {
     }
     main.appendChild(toup);
 }
+
+function getImageBase64Code() {
+    function handler(event) {
+        event.clipboardData.setData('text/plain', $("source-image-file-code").value);
+        event.preventDefault();
+        alert("代码已复制到粘贴板.");
+    }
+
+    document.addEventListener('copy', handler);   // 增加copy监听
+
+    let container = document.createElement("div");
+    container.id = "image-base64-code";
+    container.className = "table-data-format";
+    container.style.width = "600px";
+    let title = document.createElement("div");
+    title.className = "container-title";
+    let span = document.createElement("span");
+    span.innerHTML = "● 设置背景";
+    title.appendChild(span);
+    let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
+    close.className = "container-close";
+    title.appendChild(close);
+    container.appendChild(title);
+
+    let hr = document.createElement("hr");
+    container.appendChild(hr);
+
+    let tabtools = document.createElement("div");
+    tabtools.className = "tabToolbar";
+    tabtools.id = "imageTabToolbar";
+    let b = document.createElement("a");
+    b.className = "tabButton";
+    b.innerHTML = "图片";
+    b.onclick = function () {
+        $("image-container").style.display = "block";
+        $("source-image-file-code").style.display = "none";
+        let tb = this.parentNode.getElementsByClassName("tabButton");
+        for (let i = 0; i < tb.length; i++) {
+            tb[i].style.background = "var(--toolbar-background-color)";
+        }
+        this.style.background = "var(--toolbar-button-hover-background-color)";
+    };
+    tabtools.appendChild(b);
+    b = document.createElement("a");
+    b.className = "tabButton";
+    b.innerHTML = "代码";
+    b.onclick = function () {
+        $("image-container").style.display = "none";
+        $("source-image-file-code").style.display = "block";
+        let tb = this.parentNode.getElementsByClassName("tabButton");
+        for (let i = 0; i < tb.length; i++) {
+            tb[i].style.background = "var(--toolbar-background-color)";
+        }
+        this.style.background = "var(--toolbar-button-hover-background-color)";
+    };
+    tabtools.appendChild(b);
+    container.appendChild(tabtools);
+
+    let source = document.createElement("input");
+    source.type = "file";
+    source.id = "source-image-file";
+    source.style.display = "none";
+    source.onchange = function () {
+        if (this.files.length > 0) {
+            let file = this.files[0];
+            if (!/image\/\w+/.test(file.type)) {
+                alert("请选择图片文件！");
+                return false;
+            }
+            let reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = function (e) {
+                $("image-container").innerHTML = "";
+                let image = document.createElement("img");
+                image.id = "source-image-file-image";
+                image.type = "img";
+                image.src = $("source-image-file-code").value = this.result;
+                image.style.display = "none";
+                image.onload = function () {
+                    this.alt = this.title = $("source-image-file").files[0].name + "\nwidth:" + this.width + "\nheight:" + this.height;
+                    this.setAttribute("_width_", this.width);
+                    this.setAttribute("_height_", this.height);
+
+                    function getSize(w, h, width, height) {
+                        if (width > w || height > h) {
+                            if (width > w) {
+                                height = height / (width / w);
+                                width = w;
+                            }
+                            if (height > h) {
+                                width = width / (height / h);
+                                height = h;
+                            }
+                        }
+                        return [width, height];
+                    }
+
+                    let parent = getAbsolutePosition($("image-container"));
+                    let size = getSize(parent.width, parent.height, this.width, this.height);
+                    this.width = size[0];
+                    this.height = size[1];
+                    this.style.margin = "auto";
+                    this.style.display = "block";
+                    this.style.padding = (parent.height - size[1]) / 2 + "px 0";
+                };
+                $("image-container").appendChild(image);
+            };
+        } else
+            $("image-container").innerHTML = "";
+    };
+    container.appendChild(source);
+
+    let filecontainer = document.createElement("div");
+    filecontainer.className = "tabToolbar-content-container";
+    filecontainer.id = "image-container";
+    filecontainer.style.width = "100%";
+    filecontainer.style.height = "370.8px";
+    container.appendChild(filecontainer);
+
+    let imagecode = document.createElement("textarea");
+    imagecode.id = "source-image-file-code";
+    imagecode.style.cssText = "width: 100%;\n" +
+        "height: 370.8px;\n" +
+        "resize: none;" +
+        "display: none;" +
+        "font-size: 90%;\n";
+    imagecode.type = "textarea";
+    container.appendChild(imagecode);
+
+    let br = document.createElement("hr");
+    br.className = "br";
+    container.appendChild(br);
+
+    let tool = document.createElement("div");
+    tool.className = "groupbar";
+    container.appendChild(tool);
+
+    let show = document.createElement("div");
+    show.className = "button";
+    show.innerText = "打开";
+    show.onclick = function () {
+        $("image-container").style.display = "block";
+        $("source-image-file-code").style.display = "none";
+
+        let tb = $("imageTabToolbar").getElementsByClassName("tabButton");
+        for (let i = 0; i < tb.length; i++) {
+            tb[i].style.background = "var(--toolbar-background-color)";
+        }
+        tb[0].style.background = "var(--toolbar-button-hover-background-color)";
+
+        $("source-image-file").click();
+    };
+    tool.appendChild(show);
+
+    let toimage = document.createElement("div");
+    toimage.className = "button";
+    toimage.id = "toimage";
+    toimage.innerText = "解析";
+    toimage.onclick = close.onclick = function () {
+        $("image-container").innerHTML = "";
+        let image = document.createElement("img");
+        image.id = "source-image-file-image";
+        image.type = "img";
+        image.src = $("source-image-file-code").value;
+        image.style.display = "none";
+        image.onload = function () {
+            this.alt = this.title = "width:" + this.width + "\nheight:" + this.height;
+            this.setAttribute("_width_", this.width);
+            this.setAttribute("_height_", this.height);
+
+            function getSize(w, h, width, height) {
+                if (width > w || height > h) {
+                    if (width > w) {
+                        height = height / (width / w);
+                        width = w;
+                    }
+                    if (height > h) {
+                        width = width / (height / h);
+                        height = h;
+                    }
+                }
+                return [width, height];
+            }
+
+            let parent = getAbsolutePosition($("image-container"));
+            let size = getSize(parent.width, parent.height, this.width, this.height);
+            this.width = size[0];
+            this.height = size[1];
+            this.style.margin = "auto";
+            this.style.display = "block";
+            this.style.padding = (parent.height - size[1]) / 2 + "px 0";
+        };
+        $("image-container").appendChild(image);
+        $("image-container").style.display = "block";
+        $("source-image-file-code").style.display = "none";
+
+        let tb = $("imageTabToolbar").getElementsByClassName("tabButton");
+        for (let i = 0; i < tb.length; i++) {
+            tb[i].style.background = "var(--toolbar-background-color)";
+        }
+        tb[0].style.background = "var(--toolbar-button-hover-background-color)";
+    };
+    tool.appendChild(toimage);
+
+    let copyto = document.createElement("div");
+    copyto.className = "button";
+    copyto.id = "copyto";
+    copyto.innerText = "复制";
+    copyto.onclick = close.onclick = function () {
+        document.execCommand('copy');   // 执行copy命令触发监听
+    };
+    tool.appendChild(copyto);
+
+    let setBackgroundImage = document.createElement("div");
+    setBackgroundImage.className = "button";
+    setBackgroundImage.id = "copyto";
+    setBackgroundImage.innerText = "设置背景";
+    setBackgroundImage.onclick = close.onclick = function () {
+        if ($("source-image-file-code").value.length !=0) {
+            let img = {
+                image: "url(" + $("source-image-file-code").value + ")",
+                repeat: "var(--main-background-image-repeat)",
+                size: "var(--main-background-image-size)",
+                attachment: "var(--main-background-image-attachment)"
+            };
+            let image = $("source-image-file-image");
+            let w = Number(image.getAttribute("_width_"));
+            let h = Number(image.getAttribute("_height_"));
+            if (w / screen.availWidth > 0.8 && h / screen.availHeight > 0.8) {
+                img.repeat = "no-repeat";
+                img.size = "100% 100%";
+                img.attachment = "fixed";
+            } else if (w / screen.availWidth > 0.8) {
+                img.repeat = "repeat";
+                img.size = "100% auto";
+                img.attachment = "scroll";
+            } else if (h / screen.availHeight > 0.8) {
+                img.repeat = "repeat";
+                img.size = "auto 100%";
+                img.attachment = "scroll";
+            } else {
+                img.repeat = "repeat";
+                img.size = "auto";
+                img.attachment = "scroll";
+            }
+
+            setUserConfig("BackgroundImage", JSON.stringify(img));
+            document.body.style.backgroundImage = img.image;
+            document.body.style.backgroundRepeat = img.repeat;
+            document.body.style.backgroundSize = img.size;
+            document.body.style.backgroundAttachment = img.attachment;
+
+            document.body.style.backgroundImage = img;
+            let theme = __SQLEDITOR__.themes["透明"];
+            $("sqlediterTheme").setAttribute("href", theme.href);
+            __SQLEDITOR__.codeMirror.setOption("theme", theme.name);
+            setUserConfig("editerthemes", "透明");
+        }
+    };
+    tool.appendChild(setBackgroundImage);
+
+    let cancel = document.createElement("div");
+    cancel.className = "button";
+    cancel.innerText = "退出";
+    cancel.onclick = close.onclick = function () {
+        document.removeEventListener('copy', handler);   // 移除copy监听，不产生影响
+        $("image-base64-code").parentNode.removeChild($("image-base64-code"));
+    };
+    tool.appendChild(cancel);
+
+    setDialogDrag(title);
+
+    return container;
+}
+

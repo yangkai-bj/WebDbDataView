@@ -1,9 +1,11 @@
 body{
     background-color: var(--main-background-color);
     background-image: var(--main-background-image);
+    background-repeat: var(--main-background-image-repeat);
+    background-size: var(--main-background-image-size);
+    background-attachment: var(--main-background-image-attachment);
     font-family: var(--main-font-family);
-    font-size:var(--main-font-size);
-
+    font-size: var(--main-font-size);
 }
 
 body ::-webkit-scrollbar {
