@@ -14,8 +14,9 @@
 
     /*CSS3 IE10以下不支持*/
     /*主背景图片,default:url(background.jpg)*/
-    --main-background-image-size:100px 100px;
-    --main-background-repeat:repeat;
+    --main-background-image-size: auto;
+    --main-background-image-repeat: repeat;
+    --main-background-image-attachment: scroll;
 
     --toolbar-background-color: #C71585;
     /*工具条背景颜色default:#A52A2A*/
