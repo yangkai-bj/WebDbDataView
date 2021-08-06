@@ -212,6 +212,10 @@ img.title_close_button:hover{
     color:var(--detail-message-color);
 }
 
+.detail .message:hover {
+    color: var(--detail-message-hover-color);
+}
+
 .toolbar {
     background-color: var(--toolbar-background-color);
     color: var(--toolbar-color);

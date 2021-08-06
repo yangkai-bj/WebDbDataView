@@ -1,7 +1,7 @@
 var __VERSION__ = {
     name: "Web DataView for SQLite Database of browser",
-    version: "2.5.3",
-    date: "2021/08/03",
+    version: "2.5.4",
+    date: "2021/08/06",
     comment: [
         "-- 2021/03/08",
         "优化算法和压缩代码.",
@@ -45,6 +45,8 @@ var __VERSION__ = {
         "优化文件加密/解密模块.",
         "-- 2021/07/29",
         "优化日志模块.",
+        "-- 2021/08/06",
+        "Echarts 5.1.2.",
     ],
     author: __SYS_LOGO_LINK__.author.decode(),
     url: __SYS_LOGO_LINK__.link.decode(),
@@ -6376,7 +6378,7 @@ function getImageBase64Code() {
                 img.attachment = "scroll";
             } else {
                 img.repeat = "repeat";
-                img.size = "auto";
+                img.size = "auto auto";
                 img.attachment = "scroll";
             }
 
@@ -6386,11 +6388,12 @@ function getImageBase64Code() {
             document.body.style.backgroundSize = img.size;
             document.body.style.backgroundAttachment = img.attachment;
 
-            document.body.style.backgroundImage = img;
-            let theme = __SQLEDITOR__.themes["透明"];
+            let name =  "透明";
+            $("set-editer-theme").value = name;
+            let theme = __SQLEDITOR__.themes[name];
             $("sqlediterTheme").setAttribute("href", theme.href);
             __SQLEDITOR__.codeMirror.setOption("theme", theme.name);
-            setUserConfig("editerthemes", "透明");
+            setUserConfig("editerthemes", name);
         }
     };
     tool.appendChild(setBackgroundImage);

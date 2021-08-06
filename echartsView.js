@@ -106,149 +106,159 @@ function getBackgroundColor(configs) {
 }
 
 function getEcharts(container, width, height, dataset, configs) {
-    $("copyright").innerHTML = getUserConfig("CopyRight");
-    if (echarts.version >= "5.0.2") {
-        switch (configs.echartsType.value) {
-            case "Bar":
-                return getBar(container, width, height, dataset, configs);
-                break;
-            case "Polar":
-                return getPolar(container, width, height, dataset, configs);
-                break;
-            case "Line":
-                return getLine(container, width, height, dataset, configs);
-                break;
-            case "Line3D":
-                return getLine3D(container, width, height, dataset, configs);
-                break;
-            case "BarAndLine":
-                return getBarAndLine(container, width, height, dataset, configs);
-                break;
-            case "AreaStyle":
-                return getAreaStyle(container, width, height, dataset, configs);
-                break;
-            case "TransversBar":
-                return getTransversBar(container, width, height, dataset, configs);
-                break;
-            case "Pie":
-                return getPie(container, width, height, dataset, configs);
-                break;
-            case "Ring":
-                return getRing(container, width, height, dataset, configs);
-                break;
-            case "Rose":
-                return getRose(container, width, height, dataset, configs);
-                break;
-            case "Gauge":
-                return getCategoryLineForGauge(container, width, height, dataset, configs);
-                break;
-            case "Radar":
-                return getRadar(container, width, height, dataset, configs);
-                break;
-            case "Regression":
-                return getRegression(container, width, height, dataset, configs);
-                break;
-            case "Relation":
-                return getRelation(container, width, height, dataset, configs);
-                break;
-            case "Tree":
-                return getTree(container, width, height, dataset, configs);
-                break;
-            case "WebkitDep":
-                return getWebkitDep(container, width, height, dataset, configs);
-                break;
-            case "Scatter":
-                return getScatter(container, width, height, dataset, configs);
-                break;
-            case "Funnel":
-                return getFunnel(container, width, height, dataset, configs);
-                break;
-            case "WordCloud":
-                return getWordCloud(container, width, height, dataset, configs);
-                break;
-            case "Liqiud":
-                return getCategoryLineForLiqiud(container, width, height, dataset, configs);
-                break;
-            case "Calendar":
-                return getCalendar(container, width, height, dataset, configs);
-                break;
-            case "GeoOfChina":
-                //return getGeoOfChina(container, width, height, dataset,configs);
-                return getCategoryLineForGeoOfChina(container, width, height, dataset, configs);
-                break;
-            case "GeoOfLocal":
-                //return getGeoOfLocal(container, width, height, dataset,configs);
-                return getCategoryLineForGeoOfLocal(container, width, height, dataset, configs);
-                break;
-            case "Bar3D":
-                return getBar3D(container, width, height, dataset, configs);
-                break;
-            case "Scatter3D":
-                return getScatter3D(container, width, height, dataset, configs);
-                break;
-            case "Pie3D":
-                return getPie3D(container, width, height, dataset, configs);
-                break;
-            case "CategoryLine":
-                return getCategoryLine(container, width, height, dataset, configs);
-                break;
-            case "FunctionLine":
-                return getFunctionLine(container, width, height, dataset, configs);
-                break;
-            case "GeoMigrateLinesOfChinaCity":
-                return getGeoMigrateLinesOfChinaCity(container, width, height, dataset, configs);
-                break;
-            case "ScrollingScreen":
-                return getScrollingScreen(container, width, height, dataset, configs);
-                break;
-            case "WalkingLantern":
-                return getWalkingLantern(container, width, height, dataset, configs);
-                break;
-            case "WindowShades":
-                return getWindowShades(container, width, height, dataset, configs);
-                break;
-            case "Surface":
-                return getSurface(container, width, height, dataset, configs);
-                break;
-            case "Boxplot":
-                return getBoxplot(container, width, height, dataset, configs);
-                break;
-            case "Clock":
-                return getClock(container, width, height, dataset, configs);
-                break;
-            case "Candlestick":
-                return getCandlestick(container, width, height, dataset, configs);
-                break;
-            case "Banners":
-                return getBanners(container, width, height, dataset, configs);
-                break;
-            case "Sunburst":
-                return getSunburst(container, width, height, dataset, configs);
-                break;
-            case "Treemap":
-                return getTreemap(container, width, height, dataset, configs);
-                break;
-            case "ParallelAxis":
-                return getParallelAxis(container, width, height, dataset, configs);
-                break;
-            case "Sankey":
-                return getSankey(container, width, height, dataset, configs);
-                break;
-            case "ThemeRiver":
-                return getThemeRiver(container, width, height, dataset, configs);
-                break;
-            case "SingeAxis":
-                return getSingeAxis(container, width, height, dataset, configs);
-                break;
-            case "DatasetImage":
-                return getDatasetImage(container, width, height, dataset, configs);
-                break;
-            case "MathFunciton":
-                return getFunctionLine(container, width, height, dataset, configs);
-                break;
+    try {
+        $("copyright").innerHTML = getUserConfig("CopyRight");
+        if (echarts.version >= "5.0.2") {
+            switch (configs.echartsType.value) {
+                case "Bar":
+                    return getBar(container, width, height, dataset, configs);
+                    break;
+                case "Polar":
+                    return getPolar(container, width, height, dataset, configs);
+                    break;
+                case "Line":
+                    return getLine(container, width, height, dataset, configs);
+                    break;
+                case "Line3D":
+                    return getLine3D(container, width, height, dataset, configs);
+                    break;
+                case "BarAndLine":
+                    return getBarAndLine(container, width, height, dataset, configs);
+                    break;
+                case "AreaStyle":
+                    return getAreaStyle(container, width, height, dataset, configs);
+                    break;
+                case "TransversBar":
+                    return getTransversBar(container, width, height, dataset, configs);
+                    break;
+                case "Pie":
+                    return getPie(container, width, height, dataset, configs);
+                    break;
+                case "Ring":
+                    return getRing(container, width, height, dataset, configs);
+                    break;
+                case "Rose":
+                    return getRose(container, width, height, dataset, configs);
+                    break;
+                case "Gauge":
+                    return getCategoryLineForGauge(container, width, height, dataset, configs);
+                    break;
+                case "Radar":
+                    return getRadar(container, width, height, dataset, configs);
+                    break;
+                case "Regression":
+                    return getRegression(container, width, height, dataset, configs);
+                    break;
+                case "Relation":
+                    return getRelation(container, width, height, dataset, configs);
+                    break;
+                case "Tree":
+                    return getTree(container, width, height, dataset, configs);
+                    break;
+                case "WebkitDep":
+                    return getWebkitDep(container, width, height, dataset, configs);
+                    break;
+                case "Scatter":
+                    return getScatter(container, width, height, dataset, configs);
+                    break;
+                case "Funnel":
+                    return getFunnel(container, width, height, dataset, configs);
+                    break;
+                case "WordCloud":
+                    return getWordCloud(container, width, height, dataset, configs);
+                    break;
+                case "Liqiud":
+                    return getCategoryLineForLiqiud(container, width, height, dataset, configs);
+                    break;
+                case "Calendar":
+                    return getCalendar(container, width, height, dataset, configs);
+                    break;
+                case "GeoOfChina":
+                    //return getGeoOfChina(container, width, height, dataset,configs);
+                    return getCategoryLineForGeoOfChina(container, width, height, dataset, configs);
+                    break;
+                case "GeoOfLocal":
+                    //return getGeoOfLocal(container, width, height, dataset,configs);
+                    return getCategoryLineForGeoOfLocal(container, width, height, dataset, configs);
+                    break;
+                case "Bar3D":
+                    return getBar3D(container, width, height, dataset, configs);
+                    break;
+                case "Scatter3D":
+                    return getScatter3D(container, width, height, dataset, configs);
+                    break;
+                case "Pie3D":
+                    return getPie3D(container, width, height, dataset, configs);
+                    break;
+                case "CategoryLine":
+                    return getCategoryLine(container, width, height, dataset, configs);
+                    break;
+                case "FunctionLine":
+                    return getFunctionLine(container, width, height, dataset, configs);
+                    break;
+                case "GeoMigrateLinesOfChinaCity":
+                    return getGeoMigrateLinesOfChinaCity(container, width, height, dataset, configs);
+                    break;
+                case "ScrollingScreen":
+                    return getScrollingScreen(container, width, height, dataset, configs);
+                    break;
+                case "WalkingLantern":
+                    return getWalkingLantern(container, width, height, dataset, configs);
+                    break;
+                case "WindowShades":
+                    return getWindowShades(container, width, height, dataset, configs);
+                    break;
+                case "Surface":
+                    return getSurface(container, width, height, dataset, configs);
+                    break;
+                case "Boxplot":
+                    return getBoxplot(container, width, height, dataset, configs);
+                    break;
+                case "Clock":
+                    return getClock(container, width, height, dataset, configs);
+                    break;
+                case "Candlestick":
+                    return getCandlestick(container, width, height, dataset, configs);
+                    break;
+                case "Banners":
+                    return getBanners(container, width, height, dataset, configs);
+                    break;
+                case "Sunburst":
+                    return getSunburst(container, width, height, dataset, configs);
+                    break;
+                case "Treemap":
+                    return getTreemap(container, width, height, dataset, configs);
+                    break;
+                case "ParallelAxis":
+                    return getParallelAxis(container, width, height, dataset, configs);
+                    break;
+                case "Sankey":
+                    return getSankey(container, width, height, dataset, configs);
+                    break;
+                case "ThemeRiver":
+                    return getThemeRiver(container, width, height, dataset, configs);
+                    break;
+                case "SingeAxis":
+                    return getSingeAxis(container, width, height, dataset, configs);
+                    break;
+                case "DatasetImage":
+                    return getDatasetImage(container, width, height, dataset, configs);
+                    break;
+                case "MathFunciton":
+                    return getFunctionLine(container, width, height, dataset, configs);
+                    break;
+                case "BarRacing":
+                    return getBarRacing(container, width, height, dataset, configs);
+                    break;
+                case "TransversBarRacing":
+                    return getTransversBarRacing(container, width, height, dataset, configs);
+                    break;
+            }
+        } else {
+            alert("本模块支持Echarts5.0.2及以上版本,您目前使用的版本是" + echarts.version + ".");
         }
-    } else {
-         alert("本模块支持Echarts5.0.2及以上版本,您目前使用的版本是" + echarts.version + ".");
+    }catch (e) {
+        __LOGS__.viewError(e)
     }
 }
 
@@ -369,9 +379,11 @@ var __ECHARTS__ = {
             value: "Bar",
             options: [
                 new Option("柱状图", "Bar"),
+                new Option("动态柱状图", "BarRacing"),
                 new Option("线型图", "Line"),
                 new Option("柱状&线型", "BarAndLine"),
                 new Option("条形图", "TransversBar"),
+                new Option("动态条形图", "TransversBarRacing"),
                 new Option("面积图", "AreaStyle"),
                 new Option("饼图", "Pie"),
                 new Option("圆环图", "Ring"),
@@ -693,6 +705,26 @@ var __ECHARTS__ = {
             type: "select"
         },
         barLabelRotate: {name: "标签旋转度数", value: 0, type: "input"},
+        barTimeout: {name: "动态延时(毫秒)", value: 3000, type: "input"},
+        barRealtimeSort: {
+            name: "动态排序",
+            value: "true",
+            options: [new Option("是", "true"), new Option("否", "false")],
+            type: "select"
+        },
+        barValueAnimation: {
+            name: "动态标签",
+            value: "true",
+            options: [new Option("是", "true"), new Option("否", "false")],
+            type: "select"
+        },
+        barMax: {name: "动态显示", value: 10, type: "input"},
+        barLoop: {
+            name: "循环",
+            value: "false",
+            options: [new Option("是", "true"), new Option("否", "false")],
+            type: "select"
+        },
 
         hr_line: {name: "线形图", value: "", type: "hr"},
         lineStyleWidth: {name: "线条宽度", value: 2, type: "input"},
@@ -1382,7 +1414,7 @@ var __ECHARTS__ = {
         },
         animationThreshold: {name: "启动动画阈值(毫秒)", value: 2000, type: "input"},
         animationEasing: {
-            name: "初始动画",
+            name: "初始动画名称",
             value: "linear",
             options: [new Option("线性", "linear"), new Option("二次方", "quadratic"), new Option("三次方", "cubic"), new Option("四次方", "quartic"), new Option("五次方", "quintic"),
                 new Option("正弦曲线", "sinusoidal"), new Option("指数", "exponential"), new Option("圆形", "circular"), new Option("弹力", "elastic"),
@@ -1392,7 +1424,7 @@ var __ECHARTS__ = {
         animationDuration: {name: "初始动画时长(毫秒)", value: 1000, type: "input"},
         animationDelay: {name: "初始动画延时(毫秒)", value: 10, type: "input"},
         animationEasingUpdate: {
-            name: "更新动画",
+            name: "更新动画名称",
             value: "linear",
             options: [new Option("线性", "linear"), new Option("二次方", "quadratic"), new Option("三次方", "cubic"), new Option("四次方", "quartic"), new Option("五次方", "quintic"),
                 new Option("正弦曲线", "sinusoidal"), new Option("指数", "exponential"), new Option("圆形", "circular"), new Option("弹力", "elastic"),
@@ -1401,7 +1433,12 @@ var __ECHARTS__ = {
         },
         animationDurationUpdate: {name: "更新动画时长(毫秒)", value: 1000, type: "input"},
         animationDelayUpdate: {name: "更新动画延时(毫秒)", value: 10, type: "input"},
-        animationFunctionType: {name: "动画附加", value: "In", options: ["In", "Out", "InOut"], type: "select"},
+        animationFunctionType: {
+            name: "波动方式",
+            value: "In",
+            options: [new Option("向下波动", "In"), new Option("向上波动", "Out"), new Option("上下浮动", "InOut")],
+            type: "select"
+        },
     },
 
     getEchartsConfigs: function (parent) {
@@ -2105,7 +2142,7 @@ var geoCoordMap = {
             } else
                 localmap.selectedIndex = 0;
         } catch (e) {
-            console.log(e);
+            __LOGS__.viewError(e);
         }
         localmap.onclick = function() {
             let tb = this.parentNode.getElementsByClassName("tabButton");
@@ -2348,7 +2385,7 @@ var geoCoordMap = {
                             $("city-coord-table").removeChild(trs[i]);
                         }
                     } catch (e) {
-                        console.log(e);
+                        __LOGS__.viewError(e);
                     }
                 }
             }
@@ -2360,10 +2397,9 @@ var geoCoordMap = {
                         if (check.checked == true) {
                             delete geoCoordMap.Custom[check.getAttribute("value")];
                             $("custom-coord-table").removeChild(trs[i]);
-                            console.log(geoCoordMap.Custom);
                         }
                     } catch (e) {
-                        console.log(e);
+                        __LOGS__.viewError(e);
                     }
                 }
             }
@@ -5402,8 +5438,6 @@ function getScatter(container, width, height, dataset, configs) {
         myRegression.points.sort(function (a, b) {
             return a[0] - b[0];
         });
-        //console.log(serie.data);
-        //console.log(myRegression.parameter);
         columns_add.push(type + "(" + column + ")");
         let data = appendData(myRegression.points, myRegression.parameter, regressionType[type]);
         let regline = {
@@ -6021,7 +6055,7 @@ function getGeoOfLocal(container, width, height, dataset, configs) {
                 Regions[features[i].properties.name] = features[i].properties.cp;
             }
         } catch (e) {
-            console.log(e);
+            __LOGS__.viewError(e);
         }
         return Regions;
     };
@@ -7984,7 +8018,7 @@ function getCategoryLineForGeoOfLocal(container, width, height, dataset, configs
                 Regions[features[i].properties.name] = features[i].properties.cp;
             }
         } catch (e) {
-            console.log(e);
+            __LOGS__.viewError(e);
         }
         return Regions;
     };
@@ -11063,6 +11097,266 @@ function getDatasetImage(container, width, height, dataset, configs) {
         myChart.hideLoading();
         myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
+
+    __ECHARTS__.addHistory(container, configs, dataset, width, height);
+    return container;
+}
+
+function getTransversBarRacing(container, width, height, dataset, configs) {
+    if (container == null) {
+        container = document.createElement("div");
+        container.className = "echarts-container";
+        container.id = "echarts-container";
+        container.style.width = width;
+        container.style.height = height;
+    }
+
+    let myChart = echarts.init(container, configs.echartsTheme.value, {
+        locale: configs.local.value,
+        renderer: configs.renderer.value
+    });
+    myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
+
+    let columns = dataset["columns"].reduce(function (tmp, column) {
+        tmp.push(column.name);
+        return tmp;
+    }, []);
+    let data = [];
+    let index = 0;
+    for (let i = 0; i < dataset["data"].length; i++) {
+        let r = dataset["data"][i];
+        let tmp = [];
+        for (let c = 0; c < columns.length; c++) {
+            tmp.push(r[columns[c]].value);
+        }
+        data.push(tmp);
+    }
+
+    let option = {
+        aria: getAria(configs),
+        backgroundColor: getBackgroundColor(configs),
+        grid: getGrid(configs),
+        brush: getBrush(configs),
+        toolbox: getToolbox(configs, container, dataset, true),
+        title: getTitle(configs),
+        legend: getLegend(configs, columns.slice(1, columns.length)),
+        tooltip: getTooltip(configs, "axis", null),
+        xAxis: {
+            max: 'dataMax',
+        },
+        yAxis: {
+            type: 'category',
+            data: columns.slice(1),
+            inverse: true,
+            animationDuration: 300,
+            animationDurationUpdate: 300,
+            max: Number(configs.barMax.value) - 1 // only the largest 3 bars will be displayed
+        },
+        dataZoom: [
+            getDataZoomXAxis(configs, 0, "inside", 0, 100),
+            getDataZoomXAxis(configs, 0, "slider", 0, 100),
+            getDataZoomYAxis(configs, 0, "inside", 0, 100, myChart.getWidth()),
+            getDataZoomYAxis(configs, 0, "slider", 0, 100, myChart.getWidth())
+        ],
+        series: [{
+            name: data[index][0],
+            realtimeSort: configs.barRealtimeSort.value.toBoolean(),
+            type: 'bar',
+            data: data[index].slice(1),
+            label: {
+                show: configs.barLabelDisplay.value.toBoolean(),
+                //align: "center",
+                //verticalAlign: "middle",
+                position: configs.barLabelPosition.value,
+                precision: 1,
+                distance: 15,
+                rotate: configs.barLabelRotate.value,
+                valueAnimation: configs.barValueAnimation.value.toBoolean(),
+                formatter: "{value|{c}}",
+                rich: {
+                    value: {
+                        color: configs.labelBarTextColor.value,
+                        fontSize: configs.labelBarFontSize.value,
+                    }
+                }
+            },
+            itemStyle: {
+                borderRadius: Number(configs.barItemStyleBorderRadius.value),
+            },
+        }],
+        animationDuration: 0,
+        animationDurationUpdate: Number(configs.barTimeout.value),
+        animationEasing: 'linear',
+        animationEasingUpdate: 'linear',
+        graphic: {
+            elements: [{
+                type: 'text',
+                right: 180,
+                bottom: 60,
+                style: {
+                    text: data[index][0],
+                    font: 'bolder 60px monospace',
+                    fill: 'gray'
+                },
+                z: 100
+            }].concat(getWaterGraphic(__SYS_LOGO_LINK__))
+        }
+    };
+
+    function run() {
+        if (index == data.length)
+            if (configs.barLoop.value.toBoolean())
+                index = 0;
+            else
+                return;
+        else
+            index++;
+        option.series[0].name = option.graphic.elements[0].style.text = data[index][0];
+        option.series[0].data = data[index].slice(1);
+        myChart.setOption(option);
+    }
+
+    setTimeout(() => {
+        myChart.hideLoading();
+        myChart.setOption(option);
+    }, Number(configs.loadingTimes.value) * 1000);
+
+    setTimeout(function () {
+        run();
+    }, 0);
+    setInterval(function () {
+        run();
+    }, Number(configs.barTimeout.value));
+
+    __ECHARTS__.addHistory(container, configs, dataset, width, height);
+    return container;
+}
+
+function getBarRacing(container, width, height, dataset, configs) {
+    if (container == null) {
+        container = document.createElement("div");
+        container.className = "echarts-container";
+        container.id = "echarts-container";
+        container.style.width = width;
+        container.style.height = height;
+    }
+
+    let myChart = echarts.init(container, configs.echartsTheme.value, {
+        locale: configs.local.value,
+        renderer: configs.renderer.value
+    });
+    myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
+
+    let columns = dataset["columns"].reduce(function (tmp, column) {
+        tmp.push(column.name);
+        return tmp;
+    }, []);
+    let data = [];
+    let index = 0;
+    for (let i = 0; i < dataset["data"].length; i++) {
+        let r = dataset["data"][i];
+        let tmp = [];
+        for (let c = 0; c < columns.length; c++) {
+            tmp.push(r[columns[c]].value);
+        }
+        data.push(tmp);
+    }
+
+    let option = {
+        aria: getAria(configs),
+        backgroundColor: getBackgroundColor(configs),
+        grid: getGrid(configs),
+        brush: getBrush(configs),
+        toolbox: getToolbox(configs, container, dataset, true),
+        title: getTitle(configs),
+        legend: getLegend(configs, columns.slice(1, columns.length)),
+        tooltip: getTooltip(configs, "axis", null),
+        yAxis: {
+            max: 'dataMax',
+        },
+        xAxis: {
+            type: 'category',
+            data: columns.slice(1),
+            inverse: false,
+            animationDuration: 300,
+            animationDurationUpdate: 300,
+            max: Number(configs.barMax.value) - 1 // only the largest 3 bars will be displayed
+        },
+        dataZoom: [
+            getDataZoomXAxis(configs, 0, "inside", 0, 100),
+            getDataZoomXAxis(configs, 0, "slider", 0, 100),
+            getDataZoomYAxis(configs, 0, "inside", 0, 100, myChart.getWidth()),
+            getDataZoomYAxis(configs, 0, "slider", 0, 100, myChart.getWidth())
+        ],
+        series: [{
+            name: data[index][0],
+            realtimeSort: configs.barRealtimeSort.value.toBoolean(),
+            type: 'bar',
+            data: data[index].slice(1),
+            label: {
+                show: configs.barLabelDisplay.value.toBoolean(),
+                // align: "center",
+                // verticalAlign: "middle",
+                position: configs.barLabelPosition.value,
+                precision: 1,
+                distance: 15,
+                rotate: configs.barLabelRotate.value,
+                valueAnimation: configs.barValueAnimation.value.toBoolean(),
+                formatter: "{value|{c}}",
+                rich: {
+                    value: {
+                        color: configs.labelBarTextColor.value,
+                        fontSize: configs.labelBarFontSize.value,
+                    }
+                }
+            },
+            itemStyle: {
+                borderRadius: Number(configs.barItemStyleBorderRadius.value),
+            },
+        }],
+        animationDuration: 0,
+        animationDurationUpdate: Number(configs.barTimeout.value),
+        animationEasing: 'linear',
+        animationEasingUpdate: 'linear',
+        graphic: {
+            elements: [{
+                type: 'text',
+                right: 180,
+                bottom: 60,
+                style: {
+                    text: data[index][0],
+                    font: 'bolder 60px monospace',
+                    fill: 'gray'
+                },
+                z: 100
+            }].concat(getWaterGraphic(__SYS_LOGO_LINK__))
+        }
+    };
+
+    function run() {
+        if (index == data.length)
+            if (configs.barLoop.value.toBoolean())
+                index = 0;
+            else
+                return;
+        else
+            index++;
+        option.series[0].name = option.graphic.elements[0].style.text = data[index][0];
+        option.series[0].data = data[index].slice(1);
+        myChart.setOption(option);
+    }
+
+    setTimeout(() => {
+        myChart.hideLoading();
+        myChart.setOption(option);
+    }, Number(configs.loadingTimes.value) * 1000);
+
+    setTimeout(function () {
+        run();
+    }, 0);
+    setInterval(function () {
+        run();
+    }, Number(configs.barTimeout.value));
 
     __ECHARTS__.addHistory(container, configs, dataset, width, height);
     return container;
