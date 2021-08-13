@@ -1,7 +1,7 @@
 var __VERSION__ = {
     name: "Web DataView for SQLite Database of browser",
-    version: "2.5.4",
-    date: "2021/08/06",
+    version: "2.5.5",
+    date: "2021/08/12",
     comment: [
         "-- 2021/03/08",
         "优化算法和压缩代码.",
@@ -47,6 +47,8 @@ var __VERSION__ = {
         "优化日志模块.",
         "-- 2021/08/06",
         "Echarts 5.1.2.",
+        "-- 2021/08/12",
+        "增加固定报表.",
     ],
     author: __SYS_LOGO_LINK__.author.decode(),
     url: __SYS_LOGO_LINK__.link.decode(),
@@ -304,6 +306,8 @@ var __XMLHTTP__ = {
                 element: "script",
                 load: false
             },
+            {name: "脚本管理组件", src: "StorageSQLDialog.js", type: "text/javascript", element: "script", load: false},
+            {name: "脚本管理组件", src: "StorageSQLDialog.css", type: "text/css", element: "link", load: false},
             {name: "Echarts", src: "echartsThemes.js", type: "text/javascript", element: "script", load: false},
             {name: "Echarts", src: "echartsView.js", type: "text/javascript", element: "script", load: false},
             {name: "二维码组件", src: "qrcode/qrcode.js", type: "text/javascript", element: "script", load: false},
@@ -381,9 +385,7 @@ var __XMLHTTP__ = {
             {name: "codemirror", src: "codemirror/dialog.css", type: "text/css", element: "link", load: false},
             {name: "Excel组件", src: "sheetjs/xlsx.full.min.js", type: "text/javascript", element: "script", load: true},
             {name: "常用统计函数", src: "StatisticsComponent.js", type: "text/javascript", element: "script", load: true},
-            {name: "脚本管理组件", src: "StorageSQLDialog.js", type: "text/javascript", element: "script", load: true},
-            {name: "脚本管理组件", src: "StorageSQLDialog.css", type: "text/css", element: "link", load: true},
-            {name: "文件加密组件", src: "FileSecurityComponent.js", type: "text/javascript", element: "script", load: true},
+            {name: "文件加密组件", src: "FileSecurityComponent.js", type: "text/javascript", element: "script", load: false},
             {name: "数据读取组件", src: "DataReaderComponent.js", type: "text/javascript", element: "script", load: true},
             {
                 name: "Echarts",
@@ -462,7 +464,29 @@ var __XMLHTTP__ = {
                         } catch (e) {
                         }
                     };
-                    xhr.send();
+                    xhr.onload = function(){
+
+                    };
+                    xhr.onerror = function (e) {
+                        if (scripts[i].load)
+                            __LOGS__.viewMessage("加载 " + scripts[i].name + "(" + scripts[i].src + ")..." + e, true);
+                        else
+                            __LOGS__.viewMessage("验证 " + scripts[i].name + "(" + scripts[i].src + ")..." + e, true);
+                    };
+                    xhr.onabort = function () {
+                         if (scripts[i].load)
+                            __LOGS__.viewMessage("加载 " + scripts[i].name + "(" + scripts[i].src + ")...中止.", true);
+                        else
+                            __LOGS__.viewMessage("验证 " + scripts[i].name + "(" + scripts[i].src + ")...中止.", true);
+                    };
+                    xhr.ontimeout = function () {
+                        if (scripts[i].load)
+                            __LOGS__.viewMessage("加载 " + scripts[i].name + "(" + scripts[i].src + ")...超时.", true);
+                        else
+                            __LOGS__.viewMessage("验证 " + scripts[i].name + "(" + scripts[i].src + ")...超时.", true);
+                    };
+
+                    xhr.send(null);
                 }
                 sleep(100);
             }
@@ -3365,7 +3389,7 @@ function initMenus() {
         newsql.appendChild(__SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.create_sql));
         let help_createsql = $("help-create-sql");
         newsql.onclick = help_createsql.onclick = function () {
-            let openfile = $("openfile");
+            let openfile = $("open-sql-file");
             openfile.value = "";
             __SQLEDITOR__.title = __ECHARTS__.configs.titleText.value = __ECHARTS__.configs.titleSubText.value = null;
             __SQLEDITOR__.codeMirror.setValue("");
@@ -3386,7 +3410,7 @@ function initMenus() {
 
         let input = document.createElement("input");
         input.type = "file";
-        input.id = "openfile";
+        input.id = "open-sql-file";
         input.style.display = "none";
         input.className = "openfile";
         input.onchange = function () {
@@ -3739,6 +3763,95 @@ function initMenus() {
         datatools.ondblclick = function () {
             __DATASET__.toFullScreen = requestFullScreen($("main"));
         };
+
+        input = document.createElement("input");
+        input.type = "file";
+        input.id = "open-echarts-file";
+        input.style.display = "none";
+        input.className = "openfile";
+        input.onchange = function () {
+            if (window.FileReader) {
+                try {
+                    let file = this.files[0];
+                    let reader = new FileReader();
+                    reader.readAsBinaryString(file);
+                    reader.onloadstart = function () {
+
+                    };
+                    reader.onload = function () {
+                        let reg = new RegExp(/\<code>(.*)\<\/code>/, "g");
+                        let codes = this.result.match(reg);
+                        if (codes != null) {
+                            if (codes.length >= 3) {
+                                let ciphertext = codes[0];
+                                let hash = codes[1];
+                                let length = codes[2];
+                                ciphertext = ciphertext.substring(ciphertext.indexOf("<code>") + 6, ciphertext.indexOf("</code>"));
+                                hash = hash.substring(hash.indexOf("<code>") + 6, hash.indexOf("</code>"));
+                                length = Number(length.substring(length.indexOf("<code>") + 6, length.indexOf("</code>")));
+                                if (ciphertext.hex_md5_hash() == hash) {
+                                    ciphertext = ciphertext.decode();
+                                    if (ciphertext.length > length)
+                                        ciphertext = ciphertext.slice(0, length);
+                                    try {
+                                        let report = JSON.parse(ciphertext);
+                                        let container = $("tableContainer");
+                                        try {
+                                            container.removeAttribute("_echarts_instance_");
+                                            echarts.getInstanceByDom(container).dispose();
+                                        } catch (e) {
+                                        }
+                                        __DATASET__.result.push(report.dataset);
+                                        __DATASET__.default.sheet = __DATASET__.result.length - 1;
+                                        $("open-sql-file").value = "";
+                                        $("dataset-select-echarts-theme").value = __ECHARTS__.configs.echartsTheme.value = report.configs.echartsTheme.value;
+                                        $("dataset-select-echarts-type").value = __ECHARTS__.configs.echartsType.value = report.configs.echartsType.value;
+                                        __SQLEDITOR__.title = __ECHARTS__.configs.titleText.value = __ECHARTS__.configs.titleSubText.value = report.dataset.title[0];
+                                        __SQLEDITOR__.codeMirror.setValue(report.dataset.sql);
+                                        viewDataset(__DATASET__.default.sheet, 0);
+                                        let _width = (getAbsolutePosition(container).width * 1) + "px";
+                                        let _height = (getAbsolutePosition(container).height * 1) + "px";
+                                        container.innerHTML = "";
+                                        let echart = getEcharts(
+                                            container,
+                                            _width,
+                                            _height,
+                                            __DATASET__.result[__DATASET__.default.sheet],
+                                            report.configs);
+                                        setDragNook(container, echart.getAttribute("_echarts_instance_"));
+                                        $("open-echarts-file").value = "";
+                                        __LOGS__.viewMessage("读取 " + file.name + " ...OK.");
+                                    } catch (e) {
+                                        __LOGS__.viewError(e);
+                                    }
+                                } else
+                                   __LOGS__.viewMessage(file.name  + " ...校验失败,文件或被篡改.", true);
+                            } else {
+                                __LOGS__.viewMessage(file.name  + " ...格式错误.", true);
+                            }
+                        } else {
+                            __LOGS__.viewMessage(file.name + " ...格式错误.", true);
+                        }
+                    }
+                } catch (e) {
+                    __LOGS__.viewError(e);
+                }
+            } else {
+                showMessage("本应用适用于Chrome或Edge浏览器。")
+            }
+        };
+        datatools.appendChild(input);
+
+        let openEchartsFile = document.createElement("div");
+        datatools.appendChild(openEchartsFile);
+        openEchartsFile.type = "div";
+        openEchartsFile.className = "charButton";
+        openEchartsFile.innerText = "✓";
+        openEchartsFile.style.cssFloat = "left";
+        openEchartsFile.onclick = function () {
+            $("open-echarts-file").click();
+        };
+        setTooltip(openEchartsFile, "打开<br>报表");
 
         let dataReader = document.createElement("div");
         datatools.appendChild(dataReader);

@@ -552,6 +552,13 @@ var __ECHARTS__ = {
             type: "select"
         },
 
+        toolboxSaveAsConfig: {
+            name: "导出报表",
+            value: "true",
+            options: [new Option("是", "true"), new Option("否", "false")],
+            type: "select"
+        },
+
         hr_tooltip: {name: "提示组件", value: "", type: "hr"},
         tooltipDisplay: {
             name: "是否显示",
@@ -2694,6 +2701,130 @@ function getMultiScreen(configs, container) {
     } : {};
 }
 
+function getSaveAsConfig(configs, container) {
+    return configs.toolboxSaveAsConfig.value.toBoolean() ? {
+        show: configs.toolboxSaveAsConfig.value.toBoolean(),
+        title: '导出报表',
+        icon: __SYS_IMAGES_PATH__.saveas,
+        onclick: function () {
+            function getTd(item, column) {
+                let floatFormat = "#,##0.";
+                for (let i = 0; i < Number(__DATASET__.configs.reportScale.value); i++) {
+                    floatFormat += "0";
+                }
+                let text = "";
+                let style = "";
+                try {
+                    if (item.value != null) {
+                        if (item.type == "number") {
+                            let f = item.format;
+                            if ((item.value + '').indexOf('.') !== -1) {
+                                f = floatFormat;
+                                item.value = Math.round(item.value * Math.pow(10, Number(__DATASET__.configs.reportScale.value))) / Math.pow(10, Number(__DATASET__.configs.reportScale.value));
+                            } else {
+                                if (column["format"] !== "undefined") {
+                                    if (item.format != column.format)
+                                        f = column.format;
+                                }
+                            }
+                            text = item.value.format(f);
+                        } else if (item.type == "date" || item.type == "datetime")
+                            text = new Date(item.value).format(item.format);
+                        else
+                            text = item.value;
+                    }
+                    for (let key in item.style) {
+                        style += key + ": " + item.style[key] + ";";
+                    }
+                } catch (e) {
+                }
+                return "<td style='" + style + "'>" + text + "</td>\n";
+            }
+
+            function getTable(columns, data) {
+                let table = "<table>";
+                let cols = [];
+                let tr = "<tr>";
+                for (let i = 0; i < columns.length; i++) {
+                    cols.push(columns[i].name);
+                    tr += "<th>" + columns[i].name + "</th>\n";
+                }
+                tr += "</tr>\n";
+                table += tr;
+                for (let t = 0; t < data.length; t++) {
+                    let row = data[t];
+                    if (t % 2 == 1)
+                        tr = "<tr class='alt-line'>";
+                    else
+                        tr = "<tr>";
+                    for (let i = 0; i < cols.length; i++) {
+                        tr += getTd(row[cols[i]], columns[i]);
+                    }
+                    tr += "</tr>";
+                    table += tr;
+                }
+                table += "</table>\n";
+                return table;
+            };
+            let id = container.getAttribute("_echarts_instance_");
+            let echart = JSON.parse(__ECHARTS__.history[id]);
+            let title = echart.dataset.title;
+            let link = "<a href='" + window.location.href.split("?")[0] + "'>" + __VERSION__.name + "</a>"
+            let table = getTable(echart.dataset.columns, echart.dataset.data);
+            echart = JSON.stringify(echart);
+            let length = echart.length;
+            echart = echart.encode();
+            let time = getNow();
+            let html = "<!DOCTYPE html>\n" +
+                "<html>\n" +
+                "<head>\n" +
+                "<meta charset='utf-8'>\n" +
+                "<title>" + title[0] + "</title>\n" +
+                "<meta name='description' content='这是关于 " + __VERSION__.name + " 的固定报表'>\n" +
+                "<meta name='author' content='杨凯'>\n" +
+                "<meta name='date' content='" + time + "'>\n" +
+                "<style>\n" +
+                "body{background-color: dimgrey;color: whitesmoke;font-family: Arial, Verdana}\n" +
+                "h1{margin: auto;width: 80%;text-align: left;white-space: normal;word-break: break-all;word-wrap: break-word;}\n" +
+                "h4{margin: auto;width: 80%;text-align: left;white-space: normal;word-break: break-all;word-wrap: break-word;}\n" +
+                "h5{margin: auto;width: 80%;text-align: left;white-space: normal;word-break: break-all;word-wrap: break-word;}\n" +
+                "div{margin: auto;padding-left: 5px;padding-right: 5px;;width: 80%;border: 1px solid coral;border-radius: 5px;overflow: hidden;height: 100%}\n" +
+                "code{font-family: Verdana,Arial;font-size: 10px;width: 100%;white-space: normal;word-break: break-all;word-wrap: break-word;display:none}\n" +
+                "h6{margin: auto;width: 80%;text-align: center}\n" +
+                "a{font-size: 80%;padding-left: 5px;padding-right: 5px;color: snow;background-color: sandybrown;outline-style: none;border-radius: 4px;}\n" +
+                "span{font-size: 80%;padding-left: 5px;padding-right: 5px;color: snow;background-color: #00A7AA;outline-style: none;border-radius: 4px;}\n" +
+                "table {font-size: 80%;margin: 1px;line-height:12px;border-collapse:collapse;cursor: pointer;position:relative;min-width: 50%;max-width: 200%;" +
+                "border:2px solid #ADD8E6;border-radius: 5px;background-color: transparent;}\n" +
+                "th{margin: 0px;border: 1px solid #ADD8E6;padding: 3px 3px 2px 3px;white-space: nowrap;word-break: keep-all;overflow: hidden;" +
+                "text-overflow: ellipsis;-o-text-overflow: ellipsis;font-weight: bolder;text-align: center;background-color: #008080;color: #DCDCDC;border-bottom: 1px solid #ADD8E6;}\n" +
+                "tr{height: 25px;color:slategray;background-color:lightskyblue;}\n" +
+                "tr:hover{background-color:sandybrown;}\n" +
+                "tr.alt-line{color:slategray;background-color:#E0FFFF;}\n" +
+                "tr.alt-line:hover{background-color:sandybrown;}\n" +
+                "td{margin: 2px;border:1px solid #ADD8E6;padding:3px 3px 2px 3px;white-space: nowrap; word-break: keep-all;" +
+                "overflow: hidden;text-overflow: ellipsis;-o-text-overflow: ellipsis;}\n" +
+                "</style>\n" +
+                "</head>\n" +
+                "<body>\n" +
+                "<h1>" + title[0] + "</h1>\n" +
+                "<h4>" + (title.length > 1 ? title.slice(1, title.length).join("&emsp;") : "") + "</h4>\n" +
+                "<h5>如需要查看此报表的数据视图和脚本等信息，请进入 " + link + " 系统并打开此报表.</h5>\n" +
+                "<div>\n" +
+                table +
+                "<code>" + echart + "</code>\n" +
+                "<code>" + echart.hex_md5_hash() + "</code>\n" +
+                "<code>" + length + "</code>\n" +
+                "</div>\n" +
+                "<h6>技术支持: 杨凯&emsp;电话: (010)63603329&emsp;邮箱: <a href='mailto:yangkai.bj@ccb.com'>yangkai.bj@ccb.com</a>&emsp;创建时间:" + time + "</h6>\n" +
+                "</body>\n" +
+                "</html>";
+            let blob = new Blob([str2ab(html)], {type: "text/html"});
+            openDownloadDialog(blob, title[0] + ".report.html");
+        }
+    } : {};
+}
+
+
 function getXAxis(configs, type, data, name) {
     return {
         name: typeof name != "undefined"? name: null,
@@ -3003,6 +3134,7 @@ function getToolbox(configs, container, dataset, magic) {
                 type: ["line", "bar", "stack", "tiled"]
             } : {},
             myMultiScreen: getMultiScreen(configs, container),
+            mySaveAsConfig: getSaveAsConfig(configs, container),
         },
         top: configs.toolbox_top.value,
         left: configs.toolbox_left.value,
