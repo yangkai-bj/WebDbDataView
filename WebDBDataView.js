@@ -1,7 +1,7 @@
 var __VERSION__ = {
     name: "Web DataView for SQLite Database of browser",
     version: "2.5.5",
-    date: "2021/08/12",
+    date: "2021/08/15",
     comment: [
         "-- 2021/03/08",
         "优化算法和压缩代码.",
