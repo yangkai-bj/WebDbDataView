@@ -763,6 +763,7 @@ var __CONFIGS__ = {
          reportPageSize: {
              name: "每页", value: 100,
              options: [
+                 new Option("25行", 25),
                  new Option("50行", 50),
                  new Option("100行", 100),
                  new Option("200行", 200),
@@ -4760,7 +4761,7 @@ function getSubtotal(colid) {
         }
         if (merge) {
             let title = __DATASET__.result[__DATASET__.default.sheet].title;
-            title.push("SUBTOTAL");
+            //title.push("SUBTOTAL");
             __DATASET__.result.push({
                 columns: columns,
                 data: data,
@@ -4974,8 +4975,8 @@ function getDataSlice() {
         let type = __DATASET__.result[setid].type;
         if (groupvalue != null)
             title.push(groupvalue);
-        else
-            title.push("result of data slicing");
+        //else
+        //    title.push("result of data slicing");
         let parameter = __DATASET__.result[setid].parameter;
         let col_tmp = [];
         let id = 0;
@@ -5358,7 +5359,7 @@ function getDataFilter(colid) {
                 }
             }
         }
-        title.push("result of Data filter");
+        //title.push("result of Data filter");
         __DATASET__.result.push({
             title: title,
             sql: sql,

@@ -2707,30 +2707,9 @@ function getSaveAsConfig(configs, container, myChart) {
         title: '导出报表',
         icon: __SYS_IMAGES_PATH__.saveas,
         onclick: function () {
-            function getScript(configs) {
-                let dataset = {columns: null, data: null, configs: configs};
-                return [
-                    "<script>\n" +
-                    "var dataset = JSON.parse('" + JSON.stringify(dataset) + "');\n" +
-                    "</script>",
-                    "<script>\n" +
-                    "function init(){\n" +
-                    "let codes = document.getElementsByClassName('CODE')[0].getElementsByTagName('code');\n" +
-                    "let ciphertext = codes[0].innerText;\n" +
-                    "let hash = codes[1].innerText;\n" +
-                    "let length = Number(codes[2].innerText);\n" +
-                    "if (ciphertext.length > length){\n" +
-                    "ciphertext = ciphertext.slice(0, length);\n" +
-                    "}\n" +
-                    "let echart = JSON.parse(ciphertext);\n" +
-                    "dataset.columns = echart.dataset.columns;\n" +
-                    "dataset.data = echart.dataset.data;\n" +
-                    "viewDataset(0);\n" +
-                    "}\n" +
-                    "</script>",
-
-                    "<script>\n" +
-                    "function selectTab(id){" +
+            function getScript() {
+                return "<script>\n" +
+                    "function selectType(id){" +
                     "let names = ['ECHART','TABLES','SCRIPT','CONFIGS'];" +
                     "for (let i=0;i<names.length;i++){" +
                     "let tab = document.getElementById(names[i]);" +
@@ -2744,294 +2723,25 @@ function getSaveAsConfig(configs, container, myChart) {
                     "}" +
                     "}\n" +
                     "}\n" +
-                    "</script>",
-
-                    "<script>\n" +
-                    "Number.prototype.format = function(pattern) {\n" +
-                    "let num = this;\n" +
-                    "let is = false;\n" +
-                    "if (num < 0)\n" +
-                    "is = true;\n" +
-                    "num = Math.abs(num);\n" +
-                    "let strarr = num ? num.toString().split('.') : ['0'];\n" +
-                    "let fmtarr = pattern ? pattern.split('.') : [''];\n" +
-                    "let retstr = '';\n" +
-                    "// 整数部分\n" +
-                    "let str = strarr[0];\n" +
-                    "let fmt = fmtarr[0];\n" +
-                    "let i = str.length - 1;\n" +
-                    "let comma = false;\n" +
-                    "for (let f = fmt.length - 1; f >= 0; f--) {\n" +
-                    "switch (fmt.substr(f, 1)) {\n" +
-                    "case '#':\n" +
-                    "if (i >= 0) retstr = str.substr(i--, 1) + retstr;\n" +
-                    "break;\n" +
-                    "case '0':\n" +
-                    "if (i >= 0) retstr = str.substr(i--, 1) + retstr;\n" +
-                    "else retstr = '0' + retstr;\n" +
-                    "break;\n" +
-                    "case ',':\n" +
-                    "comma = true;\n" +
-                    "retstr = ',' + retstr;\n" +
-                    "break;\n" +
-                    "}\n" +
-                    "}\n" +
-                    "if (i >= 0) {\n" +
-                    "if (comma) {\n" +
-                    "let l = str.length;\n" +
-                    "for (; i >= 0; i--) {\n" +
-                    "retstr = str.substr(i, 1) + retstr;\n" +
-                    "if (i > 0 && ((l - i) % 3) == 0) retstr = ',' + retstr;\n" +
-                    "}\n" +
-                    "}\n" +
-                    "else retstr = str.substr(0, i + 1) + retstr;\n" +
-                    "}\n" +
-                    "retstr = retstr + '.';\n" +
-                    "// 处理小数部分\n" +
-                    "str = strarr.length > 1 ? strarr[1] : '';\n" +
-                    "fmt = fmtarr.length > 1 ? fmtarr[1] : '';\n" +
-                    "i = 0;\n" +
-                    "for (let f = 0; f < fmt.length; f++) {\n" +
-                    "switch (fmt.substr(f, 1)) {\n" +
-                    "case '#':\n" +
-                    "if (i < str.length) retstr += str.substr(i++, 1);\n" +
-                    "break;\n" +
-                    "case '0':\n" +
-                    "if (i < str.length) retstr += str.substr(i++, 1);\n" +
-                    "else retstr += '0';\n" +
-                    "break;\n" +
-                    "}\n" +
-                    "}\n" +
-                    "return is ? '-' + retstr.replace(/^,+/, '').replace(/\\.$/, '') : retstr.replace(/^,+/, '').replace(/\\.$/, '');\n" +
-                    "};\n" +
-                    "</script>",
-
-                    "<script>\n" +
-                    "Date.prototype.format = function(fmt) {\n" +
-                    "let o = {\n" +
-                    "'M+': this.getMonth() + 1, //月份\n" +
-                    "'d+': this.getDate(), //日\n" +
-                    "'h+': this.getHours(),//小时\n" +
-                    "'m+': this.getMinutes(),  //分\n" +
-                    "'s+': this.getSeconds(),  //秒\n" +
-                    "'q+': Math.floor((this.getMonth() + 3) / 3),  //季度\n" +
-                    "'S': this.getMilliseconds()  //毫秒\n" +
-                    "};\n" +
-                    "if (/(y+)/.test(fmt))\n" +
-                    "fmt = fmt.replace(RegExp.$1, (this.getFullYear() + '').substr(4 - RegExp.$1.length));\n" +
-                    "for (let k in o)\n" +
-                    "if (new RegExp('(' + k + ')').test(fmt))\n" +
-                    "fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (('00' + o[k]).substr(('' + o[k]).length)));\n" +
-                    "return fmt;\n" +
-                    "};\n" +
-                    "</script>",
-
-                    "<script>\n" +
-                    "function selectPageGroup(div, index, pageindex, pages){\n" +
-                    "div.innerHTML = ''\n" +
-                    "if (index>0){\n" +
-                    "let span = document.createElement('span');\n" +
-                    "span.className = 'page-tab';\n" +
-                    "span.id = index-1;\n" +
-                    "span.innerText = '•••';\n" +
-                    "span.onclick = function(){\n" +
-                    "selectPageGroup(div, Number(this.id),pageindex, pages);\n" +
-                    "}\n" +
-                    "div.appendChild(span);\n" +
-                    "}\n" +
-                    "for (let i=index*10;i<pages&&i<(index+1)*10;i++){\n" +
-                    "let span = document.createElement('span');\n" +
-                    "span.className = 'page-tab';\n" +
-                    "span.id = i;\n" +
-                    "span.innerText = (i+1);\n" +
-                    "if (pageindex == i)\n" +
-                    "span.style.backgroundColor = '#008080';\n" +
-                    "span.onclick = function(){\n" +
-                    "viewDataset(Number(this.id));\n" +
-                    "}\n" +
-                    "div.appendChild(span);\n" +
-                    "}\n" +
-                    "if ((index+1)*10<pages){\n" +
-                    "let span = document.createElement('span');\n" +
-                    "span.className = 'page-tab';\n" +
-                    "span.id = index+1;\n" +
-                    "span.innerText = '•••';\n" +
-                    "span.onclick = function(){\n" +
-                    "selectPageGroup(div, Number(this.id),pageindex, pages);\n" +
-                    "}\n" +
-                    "div.appendChild(span);\n" +
-                    "}\n" +
-                    "}\n" +
-                    "</script>",
-                    "<script>\n" +
-                    "function viewDataset(pageindex) {\n" +
-                    "let columns = dataset.columns;\n" +
-                    "let data = dataset.data;\n" +
-                    "let configs = dataset.configs;\n" +
-                    "let pagesize = Number(configs.reportPageSize.value);\n" +
-                    "let pages = (data.length%pagesize==0?Math.floor(data.length/pagesize):Math.floor(data.length/pagesize) + 1);\n" +
-                    "let table = document.createElement('table');\n" +
-                    "table.className = table.id = 'table';\n" +
-                    "if (configs.reportFontFamily.value != 'default')\n" +
-                    "table.style.fontFamily = configs.reportFontFamily.value;\n" +
-                    "if (configs.reportFontWeight.value != 'default')\n" +
-                    "table.style.fontWeight = configs.reportFontWeight.value;\n" +
-                    "if (configs.reportFontStyle.value != 'default')\n" +
-                    "table.style.fontStyle = configs.reportFontStyle.value;\n" +
-                    "\n" +
-                    "let tr = document.createElement('tr');\n" +
-                    "if (configs.reportRowHeight.value != 'default')\n" +
-                    "tr.style.height = configs.reportRowHeight.value;\n" +
-                    "table.appendChild(tr);\n" +
-                    "\n" +
-                    "for (let c = 0; c < columns.length; c++) {\n" +
-                    "let th = document.createElement('th');\n" +
-                    "th.innerText = columns[c].name;\n" +
-                    "th.style.textAlign = columns[c].style.textAlign;\n" +
-                    "switch (columns[c].order) {\n" +
-                    "case '':\n" +
-                    "th.title = '● ' + columns[c].name;\n" +
-                    "break;\n" +
-                    "case 'asc':\n" +
-                    "th.title = '▲ ' + columns[c].name;\n" +
-                    "break;\n" +
-                    "case 'desc':\n" +
-                    "th.title = '▼ ' + columns[c].name;\n" +
-                    "break;\n" +
-                    "}\n" +
-                    "th.setAttribute('colid', c);\n" +
-                    "th.onclick = function () {\n" +
-                    "orderDatasetBy(this.getAttribute('colid'));\n" +
-                    "viewDataset(0);\n" +
-                    "};\n" +
-                    "tr.appendChild(th);\n" +
-                    "}\n" +
-                    "\n" +
-                    "let floatFormat = '#,##0.';\n" +
-                    "for (let i = 0; i < Number(configs.reportScale.value); i++) {\n" +
-                    "floatFormat += '0';\n" +
-                    "}\n" +
-                    "\n" +
-                    "for (let i = pageindex * pagesize; i < data.length && i < (pageindex+1)* pagesize; i++) {\n" +
-                    "let tr = document.createElement('tr');\n" +
-                    "tr.type = 'tr';\n" +
-                    "if (configs.reportRowHeight.value != 'default')\n" +
-                    "tr.style.height =configs.reportRowHeight.value;\n" +
-                    "tr.id = i;\n" +
-                    "if (i % 2 > 0) {\n" +
-                    "tr.className = 'alt-line';\n" +
-                    "//单数行\n" +
-                    "}\n" +
-                    "table.appendChild(tr);\n" +
-                    "let row = data[i];\n" +
-                    "for (let c = 0; c < columns.length; c++) {\n" +
-                    "let item = row[columns[c].name];\n" +
-                    "let td = document.createElement('td');\n" +
-                    "try {\n" +
-                    "if (item.value != null) {\n" +
-                    "if (item.type == 'number') {\n" +
-                    "let f = item.format;\n" +
-                    "if ((item.value + '').indexOf('.') !== -1) {\n" +
-                    "f = floatFormat;\n" +
-                    "item.value = Math.round(item.value * Math.pow(10,Number(configs.reportScale.value))) / Math.pow(10,Number(configs.reportScale.value));\n" +
-                    "} else {\n" +
-                    "if (columns[c]['format'] !== 'undefined') {\n" +
-                    "if (item.format != columns[c].format)\n" +
-                    "f = columns[c].format;\n" +
-                    "}\n" +
-                    "}\n" +
-                    "td.innerText = item.value.format(f);\n" +
-                    "item.format = columns[c]['format'] = f;\n" +
-                    "} else if (item.type == 'date' || item.type == 'datetime')\n" +
-                    "td.innerText = new Date(item.value).format(item.format);\n" +
-                    "else\n" +
-                    "td.innerText = item.value;\n" +
-                    "} else\n" +
-                    "td.innerText = '';\n" +
-                    "let style = '';\n" +
-                    "for (let key in item.style) {\n" +
-                    "style += key + ': ' + item.style[key] + ';';\n" +
-                    "}\n" +
-                    "td.style.cssText = style;\n" +
-                    "} catch (e) {\n" +
-                    "td.innerText = row[columns[c].name].value;\n" +
-                    "}\n" +
-                    "tr.appendChild(td);\n" +
-                    "}\n" +
-                    "}\n" +
-                    "let container = document.getElementsByClassName('TABLES')[0];\n" +
-                    "container.innerHTML='';\n" +
-                    "container.appendChild(table);\n" +
-                    "let div = document.createElement('div');\n" +
-                    "div.className = 'PAGES';\n" +
-                    "let groupindex = Math.floor(pageindex/10);\n" +
-                    "container.appendChild(div);\n" +
-                    "selectPageGroup(div, groupindex,pageindex,pages);\n" +
-                    "}\n" +
-                    "</script>",
-                    "<script>\n" +
-                    "function orderDatasetBy(colid) {\n" +
-                    "function exchange(r1, r2) {\n" +
-                    "for (col in r1) {\n" +
-                    "for (attr in r1[col]) {\n" +
-                    "if (attr != 'rowid' && attr != 'colid') {\n" +
-                    "let tmp = r1[col][attr];\n" +
-                    "r1[col][attr] = r2[col][attr];\n" +
-                    "r2[col][attr] = tmp;\n" +
-                    "}\n" +
-                    "}\n" +
-                    "}\n" +
-                    "}\n" +
-                    "\n" +
-                    "let columns = dataset.columns;\n" +
-                    "let data = dataset.data;\n" +
-                    "switch (columns[colid].order) {\n" +
-                    "case '':\n" +
-                    "columns[colid].order = 'asc';\n" +
-                    "break;\n" +
-                    "case 'asc':\n" +
-                    "columns[colid].order = 'desc';\n" +
-                    "break;\n" +
-                    "case 'desc':\n" +
-                    "columns[colid].order = 'asc';\n" +
-                    "break;\n" +
-                    "}\n" +
-                    "for (let i = 0; i < data.length; i++) {\n" +
-                    "for (let x = 0; x < i; x++) {\n" +
-                    "switch (columns[colid].order) {\n" +
-                    "case 'asc':\n" +
-                    "if (data[i][columns[colid].name].type == 'number') {\n" +
-                    "if (data[i][columns[colid].name].value < data[x][columns[colid].name].value) {\n" +
-                    "exchange(data[i], data[x]);\n" +
-                    "}\n" +
-                    "} else if (data[i][columns[colid].name].type == 'object') {\n" +
-                    "exchange(data[i], data[x]);\n" +
-                    "} else {\n" +
-                    "if (data[i][columns[colid].name].value.localeCompare(data[x][columns[colid].name].value) < 0) {\n" +
-                    "exchange(data[i], data[x]);\n" +
-                    "}\n" +
-                    "}\n" +
-                    "break;\n" +
-                    "case 'desc':\n" +
-                    "if (data[i][columns[colid].name].type == 'number') {\n" +
-                    "if (data[i][columns[colid].name].value > data[x][columns[colid].name].value) {\n" +
-                    "exchange(data[i], data[x]);\n" +
-                    "}\n" +
-                    "} else if (data[i][columns[colid].name].type == 'object') {\n" +
-                    "exchange(data[i], data[x]);\n" +
-                    "} else {\n" +
-                    "if (data[i][columns[colid].name].value.localeCompare(data[x][columns[colid].name].value) > 0) {\n" +
-                    "exchange(data[i], data[x]);\n" +
-                    "}\n" +
-                    "}\n" +
-                    "break;\n" +
-                    "}\n" +
-                    "}\n" +
-                    "}\n" +
-                    "return dataset;\n" +
-                    "}\n" +
+                    "function selectTable(id){" +
+                    "let tabs = document.getElementsByClassName('page-tab');" +
+                    "for(let i=0;i<tabs.length;i++){" +
+                    "if (tabs[i].id == id){" +
+                    "tabs[i].style.backgroundColor = '#008080';" +
+                    "} else {" +
+                    "tabs[i].style.backgroundColor = 'transparent';" +
+                    "}" +
+                    "}" +
+                    "let tables = document.getElementsByClassName('dataset');" +
+                    "for(let i=0;i<tables.length;i++){" +
+                    "if (tables[i].id == id){" +
+                    "tables[i].style.display = 'block';" +
+                    "} else {" +
+                    "tables[i].style.display = 'none';" +
+                    "}" +
+                    "}" +
+                    "}" +
                     "</script>"
-                ].join("\n");
             }
 
             function getTd(item, column) {
@@ -3067,6 +2777,41 @@ function getSaveAsConfig(configs, container, myChart) {
                 }
                 return "<td style='" + style + "'>" + text + "</td>\n";
             }
+
+            function getTable(columns, data, configs) {
+                let tables = [];
+                let tabs = [];
+                let size = Number(configs.reportPageSize.value);
+                let pages = (data.length % size > 0 ? Math.floor(data.length / size) + 1 : Math.floor(data.length / size));
+                for (let p = 0; p < pages; p++) {
+                    let table = "<table class = 'dataset' style = 'display:" + (p == 0 ? "block" : "none") + "' id ='table-" + p + "'>";
+                    let cols = [];
+                    let tr = "<tr>";
+                    for (let i = 0; i < columns.length; i++) {
+                        cols.push(columns[i].name);
+                        tr += "<th>" + columns[i].name + "</th>\n";
+                    }
+                    tr += "</tr>\n";
+                    table += tr;
+                    for (let t = p * size; t < data.length && t < (p + 1) * size; t++) {
+                        let row = data[t];
+                        if (t % 2 == 1)
+                            tr = "<tr class='alt-line'>";
+                        else
+                            tr = "<tr>";
+                        for (let i = 0; i < cols.length; i++) {
+                            tr += getTd(row[cols[i]], columns[i]);
+                        }
+                        tr += "</tr>";
+                        table += tr;
+                    }
+                    table += "</table>\n";
+                    tables.push(table);
+                    tabs.push("<span class = 'page-tab' id='table-" + p + "' onclick = 'selectTable(this.id)'>" + (p + 1) + "</span>")
+                }
+                return {tables: tables, tabs: tabs}
+            };
+
             function getConfigs(configs) {
                 let html = "<dl>";
                 for (let name in configs) {
@@ -3082,9 +2827,8 @@ function getSaveAsConfig(configs, container, myChart) {
             let id = container.getAttribute("_echarts_instance_");
             let echart = JSON.parse(__ECHARTS__.history[id]);
             let title = echart.dataset.title;
-            let link = "<a title='点击进入系统,选择「打开报表」可查看动态视图.' href='" + window.location.href.split("?")[0] + "'>" + __VERSION__.name + "</a>";
-            let columns = echart.dataset.columns;
-            let data = echart.dataset.data;
+            let link = "<a href='" + window.location.href.split("?")[0] + "'>" + __VERSION__.name + "</a>";
+            let table = getTable(echart.dataset.columns, echart.dataset.data, __DATASET__.configs);
             let sql = echart.dataset.sql;
             let configs = echart.configs;
             echart = JSON.stringify(echart);
@@ -3116,12 +2860,13 @@ function getSaveAsConfig(configs, container, myChart) {
                 "code{font-family: Verdana,Arial;font-size: 10px;width: 100%;white-space: normal;word-break: break-all;word-wrap: break-word;display:none}\n" +
                 "code.sql{font-family: Verdana,Arial;font-size: 10px;width: 100%;white-space: normal;word-break: break-all;word-wrap: break-word;display:block}\n" +
                 "h6{margin: auto;width: 80%;text-align: center}\n" +
-                "a{font-size: 80%;padding-left: 5px;padding-right: 5px;color: snow;background-color: sandybrown;outline-style: none;border-radius: 4px}\n" +
+                "a{font-size: 80%;padding-left: 5px;padding-right: 5px;color: snow;background-color: sandybrown;outline-style: none;border-radius: 4px;}\n" +
                 "span.tabButton-selected{cursor: pointer;font-size: 80%;padding-left: 5px;padding-right: 5px;color: snow;background-color: #00A7AA;outline-style: none;border-top-left-radius: 4px;border-top-right-radius: 4px;border: 1px solid coral;border-bottom-width: 0px;}\n" +
                 "span.tabButton-unselected{cursor: pointer;font-size: 80%;padding-left: 5px;padding-right: 5px;color: snow;outline-style: none;border-top-left-radius: 4px;border-top-right-radius: 4px;border: 1px solid gray;border-bottom-width: 0px;}\n" +
+                "span.tabButton-other{text-align: right;font-size: 80%;padding-left: 5px;padding-right: 5px;color: snow;outline-style: none;float:right;border-bottom-width: 0px;}\n" +
                 "dt{cursor: pointer;font-size: 80%;padding-left: 5px;padding-right: 5px;color: snow;outline-style: none;border-radius: 4px}\n" +
                 "dd{cursor: pointer;font-size: 80%;padding-left: 5px;padding-right: 5px;color: snow;outline-style: none;border-radius: 4px}\n" +
-                "span.configs-name{cursor: pointer;font-size: 80%;padding-left: 5px;padding-right: 5px;color: snow;background-color: sandybrown;outline-style: none;border-radius: 4px;border: 1px solid gray;}\n" +
+                "span.configs-name{cursor: pointer;font-size: 80%;padding-left: 5px;padding-right: 5px;color: snow;background-color: coral;outline-style: none;border-radius: 4px;border: 1px solid gray;}\n" +
                 "span.configs-value{cursor: pointer;font-size: 80%;padding-left: 5px;padding-right: 5px;color: snow;background-color: #00A7AA;outline-style: none;border-radius: 4px;border: 1px solid gray;}\n" +
                 "image{margin: auto;width: 80%;text-align: center}\n" +
                 "table{font-size: 80%;margin: 1px;line-height:12px;border-collapse:collapse;cursor: pointer;position:relative;min-width: 50%;max-width: 200%;border-radius: 5px;background-color: transparent;}\n" +
@@ -3136,22 +2881,24 @@ function getSaveAsConfig(configs, container, myChart) {
                 "span.page-tab{float:left;cursor: pointer;width: 50px;font-size: 60%;text-align: center;color:#DCDCDC;border-right:1px solid gray;border-bottom-left-radius: 6px;border-bottom-right-radius: 36px;}" +
                 "span.page-tab:hover{color: #DCDCDC;background-color: sandybrown;}\n" +
                 "</style>\n" +
-                getScript(__DATASET__.configs) +
+                getScript() +
                 "</head>\n" +
-                "<body onload='init()'>\n" +
+                "<body>\n" +
                 "<h1>" + title[0] + "</h1>\n" +
                 "<h4>" + (title.length > 1 ? title.slice(1, title.length).join("&emsp;") : "") + "</h4>\n" +
                 "<div class='TAB'>\n" +
-                "<span class='tabButton-selected' id='ECHART' onclick='selectTab(this.id)'>静态视图</span>\n" +
-                "<span class='tabButton-unselected' id='TABLES' onclick='selectTab(this.id)'>数据报表</span>\n" +
-                "<span class='tabButton-unselected' id='SCRIPT' onclick='selectTab(this.id)'>数据脚本</span>\n" +
-                "<span class='tabButton-unselected' id='CONFIGS' onclick='selectTab(this.id)'>视图参数</span>\n" +
-                link +
+                "<span class='tabButton-selected' id='ECHART' onclick='selectType(this.id)'>静态视图</span>\n" +
+                "<span class='tabButton-unselected' id='TABLES' onclick='selectType(this.id)'>数据报表</span>\n" +
+                "<span class='tabButton-unselected' id='SCRIPT' onclick='selectType(this.id)'>数据脚本</span>\n" +
+                "<span class='tabButton-unselected' id='CONFIGS' onclick='selectType(this.id)'>视图参数</span>\n" +
+                "<span class='tabButton-other'>请使用<a>Chrome</a>或<a>Edge</a>浏览器打开本报表,如需要查看动态视图，请进入 " + link + " 系统并打开报表.</span>\n" +
                 "</div>\n" +
                 "<div class='ECHART'>\n" +
                 "<image src = '" + myChart.getDataURL({excludeComponents: ['toolbox']}) + "' width='100%' height='" + myChart.height + "'></image>" +
                 "</div>\n" +
                 "<div class='TABLES'>\n" +
+                table.tables.join("\n") +
+                "<div class='PAGES'>" + table.tabs.join("&emsp;") + "</div>\n" +
                 "</div>\n" +
                 "<div class='CONFIGS'>\n" +
                 getConfigs(configs) +
@@ -3162,7 +2909,7 @@ function getSaveAsConfig(configs, container, myChart) {
                 "<code>" + echart.hex_md5_hash() + "</code>\n" +
                 "<code>" + length + "</code>\n" +
                 "</div>\n" +
-                "<h6>适用于<a>Chrome</a>或<a>Edge</a>浏览器&emsp;技术支持: 杨凯&emsp;电话: (010)63603329&emsp;邮箱: <a href='mailto:yangkai.bj@ccb.com'>yangkai.bj@ccb.com</a>&emsp;创建时间:" + time + "</h6>\n" +
+                "<h6>技术支持: 杨凯&emsp;电话: (010)63603329&emsp;邮箱: <a href='mailto:yangkai.bj@ccb.com'>yangkai.bj@ccb.com</a>&emsp;创建时间:" + time + "</h6>\n" +
                 "</body>\n" +
                 "</html>";
             let blob = new Blob([str2ab(html)], {type: "text/html"});
