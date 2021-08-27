@@ -712,6 +712,7 @@ var __ECHARTS__ = {
             type: "select"
         },
         barLabelRotate: {name: "标签旋转度数", value: 0, type: "input"},
+        barStackTimes: {name: "堆叠分组", value: 1, type: "input"},
         barTimeout: {name: "动态延时(毫秒)", value: 3000, type: "input"},
         barRealtimeSort: {
             name: "动态排序",
@@ -2707,29 +2708,56 @@ function getSaveAsConfig(configs, container, myChart) {
         title: '导出报表',
         icon: __SYS_IMAGES_PATH__.saveas,
         onclick: function () {
-            function getScript(configs) {
-                let dataset = {columns: null, data: null, configs: configs};
+            function getScript() {
                 return [
-                    "<script>\n" +
-                    "var dataset = JSON.parse('" + JSON.stringify(dataset) + "');\n" +
+                    "<script type='text/javascript'>\n" +
+                    "var dataset = {columns: null, data: null,configs: null};\n" +
                     "</script>",
-                    "<script>\n" +
+
+                    "<script type='text/javascript'>\n" +
+                    "function getConfigs(container, configs) {\n" +
+                    "let dl = document.createElement('dl');\n" +
+                    "container.appendChild(dl);\n" +
+                    "for (let name in configs) {\n" +
+                    "if (configs[name].type == 'hr') {\n" +
+                    "let dt = document.createElement('dt');\n" +
+                    "dt.innerText = configs[name].name;\n" +
+                    "dl.appendChild(dt);\n" +
+                    "} else {\n" +
+                    "let dd = document.createElement('dd');\n" +
+                    "dl.appendChild(dd);\n" +
+                    "let configsname = document.createElement('span');\n" +
+                    "configsname.className='configs-name';\n" +
+                    "configsname.innerText = configs[name].name;\n" +
+                    "let configsvalue = document.createElement('span');\n" +
+                    "configsvalue.className='configs-value';\n" +
+                    "configsvalue.innerText = configs[name].value;\n" +
+                    "dd.appendChild(configsname);\n" +
+                    "dd.appendChild(configsvalue);\n" +
+                    "}\n" +
+                    "}\n" +
+                    "}" +
+                    "</script>",
+
+                    "<script type='text/javascript'>\n" +
                     "function init(){\n" +
                     "let codes = document.getElementsByClassName('CODE')[0].getElementsByTagName('code');\n" +
-                    "let ciphertext = codes[0].innerText;\n" +
+                    "let report = codes[0].innerText;\n" +
                     "let hash = codes[1].innerText;\n" +
                     "let length = Number(codes[2].innerText);\n" +
-                    "if (ciphertext.length > length){\n" +
-                    "ciphertext = ciphertext.slice(0, length);\n" +
-                    "}\n" +
-                    "let echart = JSON.parse(ciphertext);\n" +
-                    "dataset.columns = echart.dataset.columns;\n" +
-                    "dataset.data = echart.dataset.data;\n" +
+                    "let configs = JSON.parse(codes[3].innerText);\n" +
+                    "report = JSON.parse(report);\n" +
+                    "dataset.columns = report.dataset.columns;\n" +
+                    "dataset.data = report.dataset.data;\n" +
+                    "dataset.configs = configs;\n" +
+                    "document.getElementsByClassName('SCRIPT')[0].getElementsByTagName('code')[0].innerText = report.dataset.sql;\n" +
+                    "getConfigs(document.getElementsByClassName('CONFIGS')[0], report.configs);\n" +
+                    "getConfigs(document.getElementsByClassName('CONFIGS')[0], dataset.configs);\n" +
                     "viewDataset(0);\n" +
                     "}\n" +
                     "</script>",
 
-                    "<script>\n" +
+                    "<script type='text/javascript'>\n" +
                     "function selectTab(id){" +
                     "let names = ['ECHART','TABLES','SCRIPT','CONFIGS'];" +
                     "for (let i=0;i<names.length;i++){" +
@@ -2741,12 +2769,12 @@ function getSaveAsConfig(configs, container, myChart) {
                     "} else {" +
                     "tab.className = 'tabButton-unselected';" +
                     "div.style.display = 'none';" +
-                    "}" +
+                    "}\n" +
                     "}\n" +
                     "}\n" +
                     "</script>",
 
-                    "<script>\n" +
+                    "<script type='text/javascript'>\n" +
                     "Number.prototype.format = function(pattern) {\n" +
                     "let num = this;\n" +
                     "let is = false;\n" +
@@ -2806,7 +2834,7 @@ function getSaveAsConfig(configs, container, myChart) {
                     "};\n" +
                     "</script>",
 
-                    "<script>\n" +
+                    "<script type='text/javascript'>\n" +
                     "Date.prototype.format = function(fmt) {\n" +
                     "let o = {\n" +
                     "'M+': this.getMonth() + 1, //月份\n" +
@@ -2826,9 +2854,17 @@ function getSaveAsConfig(configs, container, myChart) {
                     "};\n" +
                     "</script>",
 
-                    "<script>\n" +
+                    "<script type='text/javascript'>\n" +
                     "function selectPageGroup(div, index, pageindex, pages){\n" +
                     "div.innerHTML = ''\n" +
+                    "let transpose = document.createElement('span');\n" +
+                    "transpose.className = 'page-button';\n" +
+                    "transpose.innerText = 'T';\n" +
+                    "transpose.title = '报表转置';\n" +
+                    "transpose.onclick = function(){\n" +
+                    "datasetTranspose();\n" +
+                    "}\n" +
+                    "div.appendChild(transpose);\n" +
                     "if (index>0){\n" +
                     "let span = document.createElement('span');\n" +
                     "span.className = 'page-tab';\n" +
@@ -2863,7 +2899,8 @@ function getSaveAsConfig(configs, container, myChart) {
                     "}\n" +
                     "}\n" +
                     "</script>",
-                    "<script>\n" +
+
+                    "<script type='text/javascript'>\n" +
                     "function viewDataset(pageindex) {\n" +
                     "let columns = dataset.columns;\n" +
                     "let data = dataset.data;\n" +
@@ -2906,12 +2943,10 @@ function getSaveAsConfig(configs, container, myChart) {
                     "};\n" +
                     "tr.appendChild(th);\n" +
                     "}\n" +
-                    "\n" +
                     "let floatFormat = '#,##0.';\n" +
                     "for (let i = 0; i < Number(configs.reportScale.value); i++) {\n" +
                     "floatFormat += '0';\n" +
                     "}\n" +
-                    "\n" +
                     "for (let i = pageindex * pagesize; i < data.length && i < (pageindex+1)* pagesize; i++) {\n" +
                     "let tr = document.createElement('tr');\n" +
                     "tr.type = 'tr';\n" +
@@ -2969,7 +3004,8 @@ function getSaveAsConfig(configs, container, myChart) {
                     "selectPageGroup(div, groupindex,pageindex,pages);\n" +
                     "}\n" +
                     "</script>",
-                    "<script>\n" +
+
+                    "<script type='text/javascript'>\n" +
                     "function orderDatasetBy(colid) {\n" +
                     "function exchange(r1, r2) {\n" +
                     "for (col in r1) {\n" +
@@ -2982,7 +3018,6 @@ function getSaveAsConfig(configs, container, myChart) {
                     "}\n" +
                     "}\n" +
                     "}\n" +
-                    "\n" +
                     "let columns = dataset.columns;\n" +
                     "let data = dataset.data;\n" +
                     "switch (columns[colid].order) {\n" +
@@ -3030,66 +3065,74 @@ function getSaveAsConfig(configs, container, myChart) {
                     "}\n" +
                     "return dataset;\n" +
                     "}\n" +
-                    "</script>"
+                    "</script>",
+
+                    "<script type='text/javascript'>\n" +
+                    "function datasetTranspose(){\n" +
+                    "try {\n" +
+                    "let columns = dataset.columns;\n" +
+                    "let data = dataset.data;\n" +
+                    "let settmp = {columns: [], data: []};\n" +
+                    "let col = {\n" +
+                    "id: 0,\n" +
+                    "name: columns[0].name,\n" +
+                    "order: '',\n" +
+                    "type: 'string',\n" +
+                    "style: columns[0].style\n" +
+                    "};\n" +
+                    "settmp.columns.push(col);\n" +
+                    "for (let i = 0; i < data.length; i++) {\n" +
+                    "let row = data[i];\n" +
+                    "col = {\n" +
+                    "id: i + 1,\n" +
+                    "name: row[columns[0].name].value,\n" +
+                    "order: '',\n" +
+                    "type: row[columns[0].name].type,\n" +
+                    "style: row[columns[0].name].style\n" +
+                    "};\n" +
+                    "settmp.columns.push(col);\n" +
+                    "}\n" +
+                    "\n" +
+                    "for (let c = 1; c < columns.length; c++) {\n" +
+                    "let nr = {};\n" +
+                    "nr[columns[0].name] = {\n" +
+                    "rowid: c - 1,\n" +
+                    "colid: 0,\n" +
+                    "value: columns[c].name,\n" +
+                    "type: 'string',\n" +
+                    "style: columns[c].style\n" +
+                    "};\n" +
+                    "for (let i = 0; i < data.length; i++) {\n" +
+                    "let row = data[i];\n" +
+                    "nr[row[columns[0].name].value] = {\n" +
+                    "rowid: c - 1,\n" +
+                    "colid: i + 1,\n" +
+                    "value: row[columns[c].name].value,\n" +
+                    "type: row[columns[c].name].type,\n" +
+                    "style: row[columns[c].name].style\n" +
+                    "};\n" +
+                    "}\n" +
+                    "settmp.data.push(nr);\n" +
+                    "}\n" +
+                    "dataset.data = settmp.data;\n" +
+                    "dataset.columns = settmp.columns;\n" +
+                    "viewDataset(0);\n" +
+                    "} catch (e) {\n" +
+                    "console.log(e);\n" +
+                    "}\n" +
+                    "}" +
+                    "</script>",
                 ].join("\n");
             }
 
-            function getTd(item, column) {
-                let floatFormat = "#,##0.";
-                for (let i = 0; i < Number(__DATASET__.configs.reportScale.value); i++) {
-                    floatFormat += "0";
-                }
-                let text = "";
-                let style = "";
-                try {
-                    if (item.value != null) {
-                        if (item.type == "number") {
-                            let f = item.format;
-                            if ((item.value + '').indexOf('.') !== -1) {
-                                f = floatFormat;
-                                item.value = Math.round(item.value * Math.pow(10, Number(__DATASET__.configs.reportScale.value))) / Math.pow(10, Number(__DATASET__.configs.reportScale.value));
-                            } else {
-                                if (column["format"] !== "undefined") {
-                                    if (item.format != column.format)
-                                        f = column.format;
-                                }
-                            }
-                            text = item.value.format(f);
-                        } else if (item.type == "date" || item.type == "datetime")
-                            text = new Date(item.value).format(item.format);
-                        else
-                            text = item.value;
-                    }
-                    for (let key in item.style) {
-                        style += key + ": " + item.style[key] + ";";
-                    }
-                } catch (e) {
-                }
-                return "<td style='" + style + "'>" + text + "</td>\n";
-            }
-            function getConfigs(configs) {
-                let html = "<dl>";
-                for (let name in configs) {
-                    if (configs[name].type == "hr") {
-                        html += "<dt>" + configs[name].name + "</dt>";
-                    } else
-                        html += "<dd><span class='configs-name'>" + configs[name].name + "</span>:<span class='configs-value'>" + configs[name].value + "</span></dd>";
-                }
-                html += "</dl>\n";
-                return html;
-            }
-
             let id = container.getAttribute("_echarts_instance_");
-            let echart = JSON.parse(__ECHARTS__.history[id]);
-            let title = echart.dataset.title;
-            let link = "<a title='点击进入系统,选择「打开报表」可查看动态视图.' href='" + window.location.href.split("?")[0] + "'>" + __VERSION__.name + "</a>";
-            let columns = echart.dataset.columns;
-            let data = echart.dataset.data;
-            let sql = echart.dataset.sql;
-            let configs = echart.configs;
-            echart = JSON.stringify(echart);
-            let length = echart.length;
-            echart = echart.encode();
+            let report = JSON.parse(__ECHARTS__.history[id]);
+            let title = report.dataset.title;
+            let link = "<a title='进入系统,使用「打开报表」功能打开此文档,可查看动态视图.' href='" + window.location.href.split("?")[0] + "'>" + __VERSION__.name + "</a>";
+            report = JSON.stringify(report);
+            let length = report.length;
+            report = report.encode();
+            let configs = JSON.stringify(__DATASET__.configs).encode();
             let time = getNow();
             let html = "<!DOCTYPE html>\n" +
                 "<html>\n" +
@@ -3102,23 +3145,30 @@ function getSaveAsConfig(configs, container, myChart) {
                 "<meta name='date' content='" + time + "'>\n" +
                 "<style>\n" +
                 "body{background-color: dimgrey;color: whitesmoke;font-family: Arial, Verdana}\n" +
+                "body ::-webkit-scrollbar {width: 5px;height: 4px;background: transparent;}\n" +
+                "body ::-webkit-scrollbar-thumb {" +
+                "border-radius: 3px;background-color: grey;" +
+                "background-image: -webkit-linear-gradient(45deg,rgba(255, 255, 255, 0.2) 25%,transparent 25%,transparent 50%,rgba(255, 255, 255, 0.2) 50%,rgba(255, 255, 255, 0.2) 75%,transparent 75%,transparent);\n" +
+                "}\n" +
+                "body ::-webkit-scrollbar-track {box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);background: transparent;border-radius: 3px;}\n" +
                 "h1{margin: auto;width: 80%;text-align: left;white-space: normal;word-break: break-all;word-wrap: break-word;}\n" +
                 "h4{margin: auto;width: 80%;text-align: left;white-space: normal;word-break: break-all;word-wrap: break-word;}\n" +
                 "h5{margin: auto;width: 80%;text-align: right;white-space: normal;word-break: break-all;word-wrap: break-word;}\n" +
                 "div.TAB{margin: auto;padding-left: 5px;padding-right: 5px;width: 80%;overflow: hidden;height: 100%}\n" +
                 "div.ECHART{margin: auto;padding-left: 5px;padding-right: 5px;width: 80%;border: 1px solid coral;border-radius: 5px;overflow: hidden;height: 100%}\n" +
-                "div.TABLES{margin: auto;padding-left: 5px;padding-right: 5px;width: 80%;border: 1px solid coral;border-radius: 5px;overflow: hidden;height: 100%;display: none}\n" +
+                "div.TABLES{margin: auto;padding-left: 5px;padding-right: 5px;width: 80%;height: 80%;border: 1px solid coral;border-radius: 5px;overflow: scroll;height: 100%;display: none}\n" +
                 "div.SCRIPT{margin: auto;padding-left: 5px;padding-right: 5px;width: 80%;border: 1px solid coral;border-radius: 5px;overflow: hidden;height: 100%;display: none}\n" +
                 "div.CONFIGS{margin: auto;padding-left: 5px;padding-right: 5px;width: 80%;border: 1px solid coral;border-radius: 5px;" +
                 "overflow: hidden;height: 100%;display: none;-webkit-column-count: 3;column-count: 3;column-fill: auto;}\n" +
-                "div.PAGES{border-top:1px solid gray;}\n" +
+                "div.PAGES{border-top:2px solid gray;}\n" +
                 "div.CODE{margin: auto;padding-left: 5px;padding-right: 5px;width: 80%;border: 1px solid coral;border-radius: 5px;overflow: hidden;height: 100%;display: none}\n" +
                 "code{font-family: Verdana,Arial;font-size: 10px;width: 100%;white-space: normal;word-break: break-all;word-wrap: break-word;display:none}\n" +
                 "code.sql{font-family: Verdana,Arial;font-size: 10px;width: 100%;white-space: normal;word-break: break-all;word-wrap: break-word;display:block}\n" +
                 "h6{margin: auto;width: 80%;text-align: center}\n" +
-                "a{font-size: 80%;padding-left: 5px;padding-right: 5px;color: snow;background-color: sandybrown;outline-style: none;border-radius: 4px}\n" +
+                "a{font-size: 80%;padding-left: 5px;padding-right: 5px;color: snow;background-color: sandybrown;outline-style: none;border-radius: 4px;text-decoration:none;}\n" +
                 "span.tabButton-selected{cursor: pointer;font-size: 80%;padding-left: 5px;padding-right: 5px;color: snow;background-color: #00A7AA;outline-style: none;border-top-left-radius: 4px;border-top-right-radius: 4px;border: 1px solid coral;border-bottom-width: 0px;}\n" +
                 "span.tabButton-unselected{cursor: pointer;font-size: 80%;padding-left: 5px;padding-right: 5px;color: snow;outline-style: none;border-top-left-radius: 4px;border-top-right-radius: 4px;border: 1px solid gray;border-bottom-width: 0px;}\n" +
+                "span.tabButton-unselected:hover{background-color: sandybrown}\n" +
                 "dt{cursor: pointer;font-size: 80%;padding-left: 5px;padding-right: 5px;color: snow;outline-style: none;border-radius: 4px}\n" +
                 "dd{cursor: pointer;font-size: 80%;padding-left: 5px;padding-right: 5px;color: snow;outline-style: none;border-radius: 4px}\n" +
                 "span.configs-name{cursor: pointer;font-size: 80%;padding-left: 5px;padding-right: 5px;color: snow;background-color: sandybrown;outline-style: none;border-radius: 4px;border: 1px solid gray;}\n" +
@@ -3135,8 +3185,10 @@ function getSaveAsConfig(configs, container, myChart) {
                 "overflow: hidden;text-overflow: ellipsis;-o-text-overflow: ellipsis;}\n" +
                 "span.page-tab{float:left;cursor: pointer;width: 50px;font-size: 60%;text-align: center;color:#DCDCDC;border-right:1px solid gray;border-bottom-left-radius: 6px;border-bottom-right-radius: 36px;}" +
                 "span.page-tab:hover{color: #DCDCDC;background-color: sandybrown;}\n" +
+                "span.page-button{float:left;cursor: pointer;width: 50px;font-size: 60%;text-align: center;color:#DCDCDC;border-left:1px solid gray;border-bottom-right-radius: 6px;border-bottom-left-radius: 36px;}" +
+                "span.page-button:hover{color: #DCDCDC;background-color: sandybrown;}\n" +
                 "</style>\n" +
-                getScript(__DATASET__.configs) +
+                getScript() +
                 "</head>\n" +
                 "<body onload='init()'>\n" +
                 "<h1>" + title[0] + "</h1>\n" +
@@ -3154,15 +3206,15 @@ function getSaveAsConfig(configs, container, myChart) {
                 "<div class='TABLES'>\n" +
                 "</div>\n" +
                 "<div class='CONFIGS'>\n" +
-                getConfigs(configs) +
                 "</div>\n" +
-                "<div class='SCRIPT'><code class='sql'>" + sql.replaceAll("\n", "<br>") + "</code></div>\n" +
+                "<div class='SCRIPT'><code class='sql'></code></div>\n" +
                 "<div class='CODE'>\n" +
-                "<code>" + echart + "</code>\n" +
-                "<code>" + echart.hex_md5_hash() + "</code>\n" +
+                "<code>" + report + "</code>\n" +
+                "<code>" + report.hex_md5_hash() + "</code>\n" +
                 "<code>" + length + "</code>\n" +
+                "<code>" + configs + "</code>\n" +
                 "</div>\n" +
-                "<h6>适用于<a>Chrome</a>或<a>Edge</a>浏览器&emsp;技术支持: 杨凯&emsp;电话: (010)63603329&emsp;邮箱: <a href='mailto:yangkai.bj@ccb.com'>yangkai.bj@ccb.com</a>&emsp;创建时间:" + time + "</h6>\n" +
+                "<h6>适用于<a href = 'https://www.google.cn/chrome/index.html' target='_blank'>Google Chrome</a>或<a href = 'https://www.microsoft.com/zh-cn/edge?form=MY01BV&OCID=MY01BV&r=1' target='_blank'>Microsoft Edge</a>浏览器&emsp;技术支持: 杨凯&emsp;电话: (010)63603329&emsp;邮箱: <a href='mailto:yangkai.bj@ccb.com'>yangkai.bj@ccb.com</a>&emsp;创建时间:" + time + "</h6>\n" +
                 "</body>\n" +
                 "</html>";
             let blob = new Blob([str2ab(html)], {type: "text/html"});
@@ -3686,6 +3738,8 @@ function getBar(container, width, height, dataset, configs) {
     }, []);
     let xAxis = [];
     let yAxis_series = [];
+    let stacktime = Number(configs.barStackTimes.value);
+    let stack = null;
     for (let c = 0; c < columns.length; c++) {
         if (c == 0) {
             xAxis = dataset["data"].reduce(function (tmp, row) {
@@ -3693,9 +3747,13 @@ function getBar(container, width, height, dataset, configs) {
                 return tmp;
             }, []);
         } else {
+            if (stacktime > 1 && c%stacktime == 1) {
+                stack = columns[c];
+            }
             let series = {
                 name: columns[c],
                 type: "bar",
+                stack: stack,
                 data: [],
                 label: {
                     show: configs.barLabelDisplay.value.toBoolean(),
@@ -3764,7 +3822,6 @@ function getBar(container, width, height, dataset, configs) {
         graphic: getWaterGraphic(__SYS_LOGO_LINK__),
         series: yAxis_series,
     };
-
     setTimeout(() => {
         myChart.hideLoading();
         myChart.setOption(option);
@@ -3796,6 +3853,8 @@ function getTransversBar(container, width, height, dataset, configs) {
     }, []);
     let xAxis = [];
     let yAxis_series = [];
+    let stacktime = Number(configs.barStackTimes.value);
+    let stack = null;
     for (let c = 0; c < columns.length; c++) {
         if (c == 0) {
             for (let i = 0; i < dataset["data"].length; i++) {
@@ -3803,9 +3862,13 @@ function getTransversBar(container, width, height, dataset, configs) {
                 xAxis.push(r[columns[c]].value);
             }
         } else {
+            if (stacktime > 1 && c%stacktime == 1) {
+                stack = columns[c];
+            }
             let series = {
                 name: columns[c],
                 type: "bar",
+                stack: stack,
                 data: [],
                 itemStyle: {
                     borderRadius: Number(configs.barItemStyleBorderRadius.value),

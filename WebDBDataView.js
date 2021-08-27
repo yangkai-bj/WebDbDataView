@@ -1,7 +1,7 @@
 var __VERSION__ = {
     name: "Web DataView for SQLite Database of browser",
     version: "2.5.5",
-    date: "2021/08/15",
+    date: "2021/08/21",
     comment: [
         "-- 2021/03/08",
         "优化算法和压缩代码.",
@@ -385,7 +385,7 @@ var __XMLHTTP__ = {
             {name: "codemirror", src: "codemirror/dialog.css", type: "text/css", element: "link", load: false},
             {name: "Excel组件", src: "sheetjs/xlsx.full.min.js", type: "text/javascript", element: "script", load: true},
             {name: "常用统计函数", src: "StatisticsComponent.js", type: "text/javascript", element: "script", load: true},
-            {name: "文件加密组件", src: "FileSecurityComponent.js", type: "text/javascript", element: "script", load: false},
+            {name: "文件加密组件", src: "FileSecurityComponent.js", type: "text/javascript", element: "script", load: true},
             {name: "数据读取组件", src: "DataReaderComponent.js", type: "text/javascript", element: "script", load: true},
             {
                 name: "Echarts",
@@ -2367,7 +2367,7 @@ function viewDataset(index, pageindex) {
     if (__DATASET__.result.length > 0) {
         __DATASET__.default.sheet = index;
         __DATASET__.pages.total = Math.ceil(__DATASET__.result[__DATASET__.default.sheet].data.length / Number(__DATASET__.configs.reportPageSize.value));
-        __DATASET__.default.tab = __DATASET__.default.sheet - __DATASET__.default.sheet % 10;
+        __DATASET__.default.tab = Math.floor(__DATASET__.default.sheet/10);
         if (typeof  pageindex != "undefined")
             __DATASET__.pages.default = pageindex;
         setDataPageTools(index);
@@ -4081,8 +4081,6 @@ function initMenus() {
                     __DATASET__.default.sheet = __DATASET__.result.length - 1;
 
                 if (__DATASET__.result.length > 0) {
-                    if (__DATASET__.default.tab >= __DATASET__.result.length)
-                        __DATASET__.default.tab -= 10;
                     viewDataset(__DATASET__.default.sheet, 0);
                 } else {
                     $("tableContainer").innerText = "";
@@ -6152,20 +6150,19 @@ function setDataPageTools(index) {
     let main = document.getElementById("data-page-tools");
     main.innerHTML = "";
 
-    let backward = document.createElement("span");
-    backward.className = "dataset-tab-toolbar";
-    backward.id = "data-page-tools-backward";
-    backward.innerHTML = "&#171";//"«";
-    main.appendChild(backward);
-    backward.onclick = function () {
-        if (__DATASET__.default.tab >= 10) {
-            __DATASET__.default.tab -= 10;
+    if (__DATASET__.default.tab > 0) {
+        let backward = document.createElement("span");
+        backward.className = "data-page-tools-tab";
+        backward.id = "data-page-tools-backward";
+        backward.innerHTML = "•••";
+        main.appendChild(backward);
+        backward.onclick = function () {
+            __DATASET__.default.tab -= 1;
             setDataPageTools(__DATASET__.default.sheet);
-        }
-    };
+        };
+    }
 
-    let co = 0;
-    for (let i = __DATASET__.default.tab; i < __DATASET__.result.length; i++) {
+    for (let i = __DATASET__.default.tab*10; i < __DATASET__.result.length && i < (__DATASET__.default.tab+1)*10; i++) {
         let tab = document.createElement("span");
         tab.className = "data-page-tools-tab";
         tab.innerHTML = i + 1;
@@ -6174,8 +6171,7 @@ function setDataPageTools(index) {
             tab.style.background = "var(--tab-selected-backgroud-color)";
             tab.style.color = "var(--tab-selected-color)";
         }
-        tab.title = "● " + __DATASET__.result[i].title.join("\n- ");
-        co += 1;
+        tab.title = "●" + __DATASET__.result[i].title.join("\n- ");
         tab.onclick = function () {
             let index = Number(this.getAttribute("index"));
             __DATASET__.default.sheet = index;
@@ -6183,25 +6179,23 @@ function setDataPageTools(index) {
             viewDataset(index, 0);
         }
         main.appendChild(tab);
-        if (co == 10)
-            break;
     }
-    let forward = document.createElement("span");
-    forward.className = "dataset-tab-toolbar";
-    forward.id = "data-page-tools-forward";
-    forward.innerHTML = "&#187";//"»";
-    main.appendChild(forward);
-    forward.onclick = function () {
-        if (__DATASET__.result.length - __DATASET__.default.tab > 10) {
-            __DATASET__.default.tab += 10;
+    if ((__DATASET__.default.tab+1)*10 < __DATASET__.result.length) {
+        let forward = document.createElement("span");
+        forward.className = "data-page-tools-tab";
+        forward.id = "data-page-tools-forward";
+        forward.innerHTML = "•••";
+        main.appendChild(forward);
+        forward.onclick = function () {
+            __DATASET__.default.tab += 1;
             setDataPageTools(__DATASET__.default.sheet);
         }
     }
 
     let todown = document.createElement("span");
-    todown.className = "dataset-page-toolbar";
-    todown.id = "data-page-tools-todown";
-    todown.innerHTML = "&#187";//"»";
+    todown.className = "data-page-tools-page";
+    todown.id = "todown";
+    todown.innerHTML = "›";//"»";
     todown.onclick = function() {
         let label = $("data-page-tools-current");
         if (__DATASET__.result.length > 0) {
@@ -6229,13 +6223,13 @@ function setDataPageTools(index) {
         } else {
             curr.innerHTML = " ● ";
         }
-    }
+    };
     main.appendChild(curr);
 
     let toup = document.createElement("span");
-    toup.className = "dataset-page-toolbar";
-    toup.id = "data-page-tools-toup";
-    toup.innerHTML = "&#171";//"«";
+    toup.className = "data-page-tools-page";
+    toup.id = "toup";
+    toup.innerHTML = "‹";//"«";
     toup.onclick = function() {
         let label = $("data-page-tools-current");
         if (__DATASET__.result.length > 0) {
@@ -6250,6 +6244,7 @@ function setDataPageTools(index) {
     }
     main.appendChild(toup);
 }
+
 
 function getImageBase64Code() {
     function handler(event) {

@@ -241,8 +241,8 @@ img.title_close_button:hover{
 }
 
 .pageTabBar {
-    background-color: var(--toolbar-background-color);
-    color: var(--toolbar-color);
+    background-color: transparent;
+    color:var(--toolbar-background-color);
     width: 100%;
     height: 18px;
     line-height: 18px;
@@ -254,25 +254,7 @@ img.title_close_button:hover{
     overflow: hidden;
     border-radius: 0px;
     font-size: 135%;
-    opacity: 0.3;
-    transition: opacity 2s;
-    -webkit-animation: content-show 2s 1; /*infinite; /* Chrome, Safari, Opera */
-    animation: content-show 2s 1; /*infinite;*/
-}
-
-.pageTabBar:hover {
-    opacity: 1;
-}
-
-.pageTabBar .dataset-tab-toolbar {
-    float: left;
-    cursor: pointer;
-    width: 50px;
-    text-align: center;
-}
-
-.pageTabBar .dataset-tab-toolbar:hover {
-    background-color: var(--toolbar-button-hover-background-color);
+    /*border-top:1px solid var(--tab-border-color);*/
 }
 
 .pageTabBar #data-page-tools-current{
@@ -283,14 +265,24 @@ img.title_close_button:hover{
     text-align: center;
 }
 
-.pageTabBar .dataset-page-toolbar{
+.pageTabBar .data-page-tools-page{
     float: right;
     cursor: pointer;
     width: 50px;
     text-align: center;
+    border-right:1px solid var(--toolbar-background-color);
+    border-bottom-left-radius: 6px;
+    border-bottom-right-radius: 36px;
 }
 
-.pageTabBar .dataset-page-toolbar:hover {
+.pageTabBar #toup{
+    border-right:0px solid var(--toolbar-background-color);
+    border-left:1px solid var(--toolbar-background-color);
+    border-bottom-right-radius: 6px;
+    border-bottom-left-radius: 36px;
+}
+
+.pageTabBar .data-page-tools-page:hover {
     background-color: var(--toolbar-button-hover-background-color);
 }
 
@@ -300,8 +292,8 @@ img.title_close_button:hover{
     width: 50px;
     font-size: 60%;
     text-align: center;
-    color:var(--tab-color);
-    border-right:1px solid var(--tab-border-color);
+    color:var(--toolbar-background-color);
+    border-right:1px solid var(--toolbar-background-color);
     border-bottom-left-radius: 6px;
     border-bottom-right-radius: 36px;
     -webkit-animation: content-show 1s 1;
@@ -310,8 +302,8 @@ img.title_close_button:hover{
 
 .pageTabBar .data-page-tools-tab:hover{
     color: var(--tab-selected-color);
-    border-right:1px solid var(--tab-border-color);
-    background-color: var(--tab-hover-color);
+    border-right:1px solid var(--toolbar-background-color);
+    background-color: var(--toolbar-background-color);
 }
 
 .databases{
