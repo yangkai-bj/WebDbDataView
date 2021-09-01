@@ -2711,7 +2711,52 @@ function getSaveAsConfig(configs, container, myChart) {
             function getScript() {
                 return [
                     "<script type='text/javascript'>\n" +
-                    "var dataset = {columns: null, data: null,configs: null};\n" +
+                    "var dataset = {title: null, columns: null, data: null,configs: null};\n" +
+                    "</script>",
+
+                    "<script type='text/javascript'>\n" +
+                    "function str2ab(str) {\n" +
+                    "let codes = [];\n" +
+                    "for (let i = 0; i != str.length; ++i) {\n" +
+                    "let code = str.charCodeAt(i);\n" +
+                    "if (0x00 <= code && code <= 0x7f) {\n" +
+                    "codes.push(code);\n" +
+                    "} else if (0x80 <= code && code <= 0x7ff) {\n" +
+                    "codes.push((192 | (31 & (code >> 6))));\n" +
+                    "codes.push((128 | (63 & code)))\n" +
+                    "} else if ((0x800 <= code && code <= 0xd7ff)\n" +
+                    "|| (0xe000 <= code && code <= 0xffff)) {\n" +
+                    "codes.push((224 | (15 & (code >> 12))));\n" +
+                    "codes.push((128 | (63 & (code >> 6))));\n" +
+                    "codes.push((128 | (63 & code)))\n" +
+                    "}\n" +
+                    "}\n" +
+                    "let buf = new ArrayBuffer(codes.length);\n" +
+                    "let result = new Uint8Array(buf);\n" +
+                    "for (let i = 0; i < codes.length; i++) {\n" +
+                    "result[i] = codes[i] & 0xff;\n" +
+                    "}\n" +
+                    "return result;\n" +
+                    "}" +
+                    "</script>",
+
+                    "<script type='text/javascript'>\n" +
+                    "function openDownloadDialog(url, saveName) {\n" +
+                    "if (typeof url == 'object' && url instanceof Blob) {\n" +
+                    "url = URL.createObjectURL(url);\n" +
+                    "}\n" +
+                    "let aLink = document.createElement('a');\n" +
+                    "aLink.href = url;\n" +
+                    "aLink.download = saveName || '';\n" +
+                    "let event;\n" +
+                    "if (window.MouseEvent) {\n" +
+                    "event = new MouseEvent('click');\n" +
+                    "} else {\n" +
+                    "event = document.createEvent('MouseEvents');\n" +
+                    "event.initMouseEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);\n" +
+                    "}\n" +
+                    "aLink.dispatchEvent(event);\n" +
+                    "}" +
                     "</script>",
 
                     "<script type='text/javascript'>\n" +
@@ -2747,6 +2792,7 @@ function getSaveAsConfig(configs, container, myChart) {
                     "let length = Number(codes[2].innerText);\n" +
                     "let configs = JSON.parse(codes[3].innerText);\n" +
                     "report = JSON.parse(report);\n" +
+                    "dataset.title = report.dataset.title;\n" +
                     "dataset.columns = report.dataset.columns;\n" +
                     "dataset.data = report.dataset.data;\n" +
                     "dataset.configs = configs;\n" +
@@ -2784,7 +2830,6 @@ function getSaveAsConfig(configs, container, myChart) {
                     "let strarr = num ? num.toString().split('.') : ['0'];\n" +
                     "let fmtarr = pattern ? pattern.split('.') : [''];\n" +
                     "let retstr = '';\n" +
-                    "// 整数部分\n" +
                     "let str = strarr[0];\n" +
                     "let fmt = fmtarr[0];\n" +
                     "let i = str.length - 1;\n" +
@@ -2815,7 +2860,6 @@ function getSaveAsConfig(configs, container, myChart) {
                     "else retstr = str.substr(0, i + 1) + retstr;\n" +
                     "}\n" +
                     "retstr = retstr + '.';\n" +
-                    "// 处理小数部分\n" +
                     "str = strarr.length > 1 ? strarr[1] : '';\n" +
                     "fmt = fmtarr.length > 1 ? fmtarr[1] : '';\n" +
                     "i = 0;\n" +
@@ -2837,13 +2881,13 @@ function getSaveAsConfig(configs, container, myChart) {
                     "<script type='text/javascript'>\n" +
                     "Date.prototype.format = function(fmt) {\n" +
                     "let o = {\n" +
-                    "'M+': this.getMonth() + 1, //月份\n" +
-                    "'d+': this.getDate(), //日\n" +
-                    "'h+': this.getHours(),//小时\n" +
-                    "'m+': this.getMinutes(),  //分\n" +
-                    "'s+': this.getSeconds(),  //秒\n" +
-                    "'q+': Math.floor((this.getMonth() + 3) / 3),  //季度\n" +
-                    "'S': this.getMilliseconds()  //毫秒\n" +
+                    "'M+': this.getMonth() + 1,\n" +
+                    "'d+': this.getDate(),\n" +
+                    "'h+': this.getHours(),\n" +
+                    "'m+': this.getMinutes(),\n" +
+                    "'s+': this.getSeconds(),\n" +
+                    "'q+': Math.floor((this.getMonth() + 3) / 3),\n" +
+                    "'S': this.getMilliseconds()\n" +
                     "};\n" +
                     "if (/(y+)/.test(fmt))\n" +
                     "fmt = fmt.replace(RegExp.$1, (this.getFullYear() + '').substr(4 - RegExp.$1.length));\n" +
@@ -2865,6 +2909,15 @@ function getSaveAsConfig(configs, container, myChart) {
                     "datasetTranspose();\n" +
                     "}\n" +
                     "div.appendChild(transpose);\n" +
+                    "let xml = document.createElement('span');\n" +
+                    "xml.className = 'page-tab';\n" +
+                    "xml.style.cssFloat = 'right';\n" +
+                    "xml.innerText = '⇣';\n" +
+                    "xml.title = '导出XML';\n" +
+                    "xml.onclick = function(){\n" +
+                    "getXML(dataset.title, dataset.columns, dataset.data);\n" +
+                    "}\n" +
+                    "div.appendChild(xml);\n" +
                     "if (index>0){\n" +
                     "let span = document.createElement('span');\n" +
                     "span.className = 'page-tab';\n" +
@@ -2955,7 +3008,6 @@ function getSaveAsConfig(configs, container, myChart) {
                     "tr.id = i;\n" +
                     "if (i % 2 > 0) {\n" +
                     "tr.className = 'alt-line';\n" +
-                    "//单数行\n" +
                     "}\n" +
                     "table.appendChild(tr);\n" +
                     "let row = data[i];\n" +
@@ -3117,6 +3169,59 @@ function getSaveAsConfig(configs, container, myChart) {
                     "dataset.data = settmp.data;\n" +
                     "dataset.columns = settmp.columns;\n" +
                     "viewDataset(0);\n" +
+                    "} catch (e) {\n" +
+                    "console.log(e);\n" +
+                    "}\n" +
+                    "}" +
+                    "</script>",
+                    "<script type='text/javascript'>\n" +
+                    "function getXML(title, columns, dataset){\n" +
+                    "try{\n" +
+                    "let xml = '<?xml version=\"1.0\"?>" +
+                    "<?mso-application progid=\"Excel.Sheet\"?>" +
+                    "<Workbook xmlns=\"urn:schemas-microsoft-com:office:spreadsheet\"" +
+                    " xmlns:o=\"urn:schemas-microsoft-com:office:office\"" +
+                    " xmlns:x=\"urn:schemas-microsoft-com:office:excel\"" +
+                    " xmlns:ss=\"urn:schemas-microsoft-com:office:spreadsheet\"" +
+                    " xmlns:html=\"http://www.w3.org/TR/REC-html40\">" +
+                    "<DocumentProperties xmlns=\"urn:schemas-microsoft-com:office:office\">" +
+                    "<Author>杨凯</Author>" +
+                    "<LastAuthor></LastAuthor>" +
+                    "<Created>' + new Date() + '</Created>" +
+                    "<Version>1.0.0</Version>" +
+                    "</DocumentProperties>" +
+                    "<Styles>" +
+                    "<Style ss:ID=\"Default\" ss:Name=\"Normal\">" +
+                    "<Alignment ss:Vertical=\"Center\"/>" +
+                    "<Borders/>" +
+                    "<Font ss:FontName=\"宋体\" x:CharSet=\"134\" ss:Size=\"11\" ss:Color=\"#000000\"/>" +
+                    "<Interior/>" +
+                    "<NumberFormat ss:Format=\"#,##0.00_ \"/>" +
+                    "<Protection/>" +
+                    "</Style>" +
+                    "</Styles>';\n" +
+                    "xml += '<Worksheet ss:Name=\"' + title[title.length-1] + '\"><Table ss:ExpandedColumnCount=\"' + columns.length + '\" ss:ExpandedRowCount=\"' + (dataset.length + 1) + '\">';\n" +
+                    "let r = '<Row>';\n" +
+                    "for(let c=0;c<columns.length;c++){\n" +
+                    "let ce= '<Cell><Data ss:Type=\"String\">'+ columns[c].name + '</Data></Cell>';\n" +
+                    "r+=ce;\n" +
+                    "}\n" +
+                    "r += '</Row>';\n" +
+                    "xml +=r;\n" +
+                    "for(let i=0;i<dataset.length;i++){\n" +
+                    "let row = dataset[i];\n" +
+                    "r= '<Row>';\n" +
+                    "for(let c=0;c<columns.length;c++){\n" +
+                    "let cell = row[columns[c].name];\n" +
+                    "let ce = '<Cell><Data ss:Type=\"' + (cell.type=='number'?'Number':'String') + '\">'+ cell.value + '</Data></Cell>';\n" +
+                    "r += ce;\n" +
+                    "}\n" +
+                    "r += '</Row>';\n" +
+                    "xml += r;\n" +
+                    "}\n" +
+                    "xml += '</Table></Worksheet></Workbook>';\n" +
+                    "let blob = new Blob([str2ab(xml)], {type: 'text/xml'});\n" +
+                    "openDownloadDialog(blob, title[0] + '.report.xml');" +
                     "} catch (e) {\n" +
                     "console.log(e);\n" +
                     "}\n" +

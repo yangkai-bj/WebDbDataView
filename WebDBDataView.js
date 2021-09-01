@@ -1,7 +1,7 @@
 var __VERSION__ = {
     name: "Web DataView for SQLite Database of browser",
     version: "2.5.5",
-    date: "2021/08/21",
+    date: "2021/08/31",
     comment: [
         "-- 2021/03/08",
         "优化算法和压缩代码.",
@@ -67,10 +67,12 @@ var __LOGS__ = {
         //默认保留7天的日志
         //############################
         let list = [];
-        for(let date in __LOGS__.data){
+        for (let date in __LOGS__.data) {
             list.push(date);
         }
-        list.sort(function(a,b){return (new Date(a)) - (new Date(b))});
+        list.sort(function (a, b) {
+            return (new Date(a)) - (new Date(b))
+        });
         if (list.length > __LOGS__.days) {
             let retain = list.slice(list.length - __LOGS__.days, list.length);
             let tmp = {};
@@ -6460,49 +6462,54 @@ function getImageBase64Code() {
 
     let setBackgroundImage = document.createElement("div");
     setBackgroundImage.className = "button";
-    setBackgroundImage.id = "copyto";
+    setBackgroundImage.id = "toBackgroundImage";
     setBackgroundImage.innerText = "设置背景";
-    setBackgroundImage.onclick = close.onclick = function () {
-        if ($("source-image-file-code").value.length !=0) {
-            let img = {
-                image: "url(" + $("source-image-file-code").value + ")",
-                repeat: "var(--main-background-image-repeat)",
-                size: "var(--main-background-image-size)",
-                attachment: "var(--main-background-image-attachment)"
-            };
-            let image = $("source-image-file-image");
-            let w = Number(image.getAttribute("_width_"));
-            let h = Number(image.getAttribute("_height_"));
-            if (w / screen.availWidth > 0.8 && h / screen.availHeight > 0.8) {
-                img.repeat = "no-repeat";
-                img.size = "100% 100%";
-                img.attachment = "fixed";
-            } else if (w / screen.availWidth > 0.8) {
-                img.repeat = "repeat";
-                img.size = "100% auto";
-                img.attachment = "scroll";
-            } else if (h / screen.availHeight > 0.8) {
-                img.repeat = "repeat";
-                img.size = "auto 100%";
-                img.attachment = "scroll";
-            } else {
-                img.repeat = "repeat";
-                img.size = "auto auto";
-                img.attachment = "scroll";
+    setBackgroundImage.onclick = function () {
+        let file = $("source-image-file").files[0];
+        if (file.size <= 0.5 * 1024 * 1024) {
+            if ($("source-image-file-code").value.length != 0) {
+                let img = {
+                    image: "url(" + $("source-image-file-code").value + ")",
+                    repeat: "var(--main-background-image-repeat)",
+                    size: "var(--main-background-image-size)",
+                    attachment: "var(--main-background-image-attachment)"
+                };
+                let image = $("source-image-file-image");
+                let w = Number(image.getAttribute("_width_"));
+                let h = Number(image.getAttribute("_height_"));
+                if (w / screen.availWidth > 0.8 && h / screen.availHeight > 0.8) {
+                    img.repeat = "no-repeat";
+                    img.size = "100% 100%";
+                    img.attachment = "fixed";
+                } else if (w / screen.availWidth > 0.8) {
+                    img.repeat = "repeat";
+                    img.size = "100% auto";
+                    img.attachment = "scroll";
+                } else if (h / screen.availHeight > 0.8) {
+                    img.repeat = "repeat";
+                    img.size = "auto 100%";
+                    img.attachment = "scroll";
+                } else {
+                    img.repeat = "repeat";
+                    img.size = "auto auto";
+                    img.attachment = "scroll";
+                }
+
+                setUserConfig("BackgroundImage", JSON.stringify(img));
+                document.body.style.backgroundImage = img.image;
+                document.body.style.backgroundRepeat = img.repeat;
+                document.body.style.backgroundSize = img.size;
+                document.body.style.backgroundAttachment = img.attachment;
+
+                let name = "透明";
+                $("set-editer-theme").value = name;
+                let theme = __SQLEDITOR__.themes[name];
+                $("sqlediterTheme").setAttribute("href", theme.href);
+                __SQLEDITOR__.codeMirror.setOption("theme", theme.name);
+                setUserConfig("editerthemes", name);
             }
-
-            setUserConfig("BackgroundImage", JSON.stringify(img));
-            document.body.style.backgroundImage = img.image;
-            document.body.style.backgroundRepeat = img.repeat;
-            document.body.style.backgroundSize = img.size;
-            document.body.style.backgroundAttachment = img.attachment;
-
-            let name =  "透明";
-            $("set-editer-theme").value = name;
-            let theme = __SQLEDITOR__.themes[name];
-            $("sqlediterTheme").setAttribute("href", theme.href);
-            __SQLEDITOR__.codeMirror.setOption("theme", theme.name);
-            setUserConfig("editerthemes", name);
+        } else {
+            alert("背景图片文件(" + Math.round(file.size / 1024 / 1024 * 100) / 100 + "MB)不能大于 0.5MB.")
         }
     };
     tool.appendChild(setBackgroundImage);
