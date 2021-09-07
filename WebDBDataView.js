@@ -1,7 +1,7 @@
 var __VERSION__ = {
     name: "Web DataView for SQLite Database of browser",
     version: "2.5.5",
-    date: "2021/08/31",
+    date: "2021/09/07",
     comment: [
         "-- 2021/03/08",
         "优化算法和压缩代码.",
@@ -3484,7 +3484,7 @@ function initMenus() {
         loadfile.appendChild(__SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.load_sql));
         let help_loadsql = $("help-load-sql");
         loadfile.onclick = help_loadsql.onclick = function () {
-            $("openfile").click();
+            $("open-sql-file").click();
         };
         sqltools.appendChild(loadfile);
         setTooltip(loadfile, "导入<br>脚本");
@@ -3851,7 +3851,7 @@ function initMenus() {
         openEchartsFile.className = "charButton";
         openEchartsFile.innerText = "✓";
         openEchartsFile.style.cssFloat = "left";
-        openEchartsFile.onclick = function () {
+        openEchartsFile.onclick = $("open-html-report").onclick = function () {
             $("open-echarts-file").click();
         };
         setTooltip(openEchartsFile, "打开<br>报表");
@@ -3863,10 +3863,9 @@ function initMenus() {
         dataReader.innerText = "⚘";
         dataReader.style.cssFloat = "left";
         dataReader.id = "data-reader";
-        dataReader.onclick = function () {
+        dataReader.onclick = $("read-xls-file").onclick = function () {
             let reader = getDataReaderContent();
             setCenterPosition($("main"), reader);
-
         };
         setTooltip(dataReader, "读取外<br>部数据");
 

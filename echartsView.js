@@ -2711,7 +2711,7 @@ function getSaveAsConfig(configs, container, myChart) {
             function getScript() {
                 return [
                     "<script type='text/javascript'>\n" +
-                    "var dataset = {title: null, columns: null, data: null,configs: null};\n" +
+                    "var dataset = {title: null, columns: null, data: null, configs: null};\n" +
                     "</script>",
 
                     "<script type='text/javascript'>\n" +
@@ -2786,7 +2786,7 @@ function getSaveAsConfig(configs, container, myChart) {
 
                     "<script type='text/javascript'>\n" +
                     "function init(){\n" +
-                    "let codes = document.getElementsByClassName('CODE')[0].getElementsByTagName('code');\n" +
+                    "let codes = document.getElementsByClassName('CODES')[0].getElementsByTagName('code');\n" +
                     "let report = codes[0].innerText;\n" +
                     "let hash = codes[1].innerText;\n" +
                     "let length = Number(codes[2].innerText);\n" +
@@ -2804,17 +2804,17 @@ function getSaveAsConfig(configs, container, myChart) {
                     "</script>",
 
                     "<script type='text/javascript'>\n" +
-                    "function selectTab(id){" +
-                    "let names = ['ECHART','TABLES','SCRIPT','CONFIGS'];" +
-                    "for (let i=0;i<names.length;i++){" +
-                    "let tab = document.getElementById(names[i]);" +
-                    "let div = document.getElementsByClassName(names[i])[0];" +
-                    "if (names[i] == id){" +
-                    "tab.className = 'tabButton-selected';" +
-                    "div.style.display = 'block';" +
-                    "} else {" +
-                    "tab.className = 'tabButton-unselected';" +
-                    "div.style.display = 'none';" +
+                    "function selectTab(id){\n" +
+                    "let names = ['ECHART','TABLE','SCRIPT','CONFIGS'];\n" +
+                    "for (let i=0;i<names.length;i++){\n" +
+                    "let tab = document.getElementById(names[i]);\n" +
+                    "let div = document.getElementsByClassName(names[i])[0];\n" +
+                    "if (names[i] == id){\n" +
+                    "tab.className = 'tabButton-selected';\n" +
+                    "div.style.display = 'block';\n" +
+                    "} else {\n" +
+                    "tab.className = 'tabButton-unselected';\n" +
+                    "div.style.display = 'none';\n" +
                     "}\n" +
                     "}\n" +
                     "}\n" +
@@ -2976,19 +2976,19 @@ function getSaveAsConfig(configs, container, myChart) {
                     "\n" +
                     "for (let c = 0; c < columns.length; c++) {\n" +
                     "let th = document.createElement('th');\n" +
-                    "th.innerText = columns[c].name;\n" +
                     "th.style.textAlign = columns[c].style.textAlign;\n" +
                     "switch (columns[c].order) {\n" +
                     "case '':\n" +
-                    "th.title = '● ' + columns[c].name;\n" +
+                    "th.innerText = '● ' + columns[c].name;\n" +
                     "break;\n" +
                     "case 'asc':\n" +
-                    "th.title = '▲ ' + columns[c].name;\n" +
+                    "th.innerText = '▲ ' + columns[c].name;\n" +
                     "break;\n" +
                     "case 'desc':\n" +
-                    "th.title = '▼ ' + columns[c].name;\n" +
+                    "th.innerText = '▼ ' + columns[c].name;\n" +
                     "break;\n" +
                     "}\n" +
+                    "th.title = columns[c].name;\n" +
                     "th.setAttribute('colid', c);\n" +
                     "th.onclick = function () {\n" +
                     "orderDatasetBy(this.getAttribute('colid'));\n" +
@@ -3046,7 +3046,7 @@ function getSaveAsConfig(configs, container, myChart) {
                     "tr.appendChild(td);\n" +
                     "}\n" +
                     "}\n" +
-                    "let container = document.getElementsByClassName('TABLES')[0];\n" +
+                    "let container = document.getElementsByClassName('TABLE')[0];\n" +
                     "container.innerHTML='';\n" +
                     "container.appendChild(table);\n" +
                     "let div = document.createElement('div');\n" +
@@ -3174,6 +3174,7 @@ function getSaveAsConfig(configs, container, myChart) {
                     "}\n" +
                     "}" +
                     "</script>",
+
                     "<script type='text/javascript'>\n" +
                     "function getXML(title, columns, dataset){\n" +
                     "try{\n" +
@@ -3202,16 +3203,16 @@ function getSaveAsConfig(configs, container, myChart) {
                     "</Styles>';\n" +
                     "xml += '<Worksheet ss:Name=\"' + title[title.length-1] + '\"><Table ss:ExpandedColumnCount=\"' + columns.length + '\" ss:ExpandedRowCount=\"' + (dataset.length + 1) + '\">';\n" +
                     "let r = '<Row>';\n" +
-                    "for(let c=0;c<columns.length;c++){\n" +
-                    "let ce= '<Cell><Data ss:Type=\"String\">'+ columns[c].name + '</Data></Cell>';\n" +
-                    "r+=ce;\n" +
+                    "for(let c = 0;c < columns.length; c++){\n" +
+                    "let ce = '<Cell><Data ss:Type=\"String\">'+ columns[c].name + '</Data></Cell>';\n" +
+                    "r += ce;\n" +
                     "}\n" +
                     "r += '</Row>';\n" +
-                    "xml +=r;\n" +
-                    "for(let i=0;i<dataset.length;i++){\n" +
+                    "xml += r;\n" +
+                    "for(let i = 0;i < dataset.length; i++){\n" +
                     "let row = dataset[i];\n" +
-                    "r= '<Row>';\n" +
-                    "for(let c=0;c<columns.length;c++){\n" +
+                    "r = '<Row>';\n" +
+                    "for(let c = 0;c < columns.length; c++){\n" +
                     "let cell = row[columns[c].name];\n" +
                     "let ce = '<Cell><Data ss:Type=\"' + (cell.type=='number'?'Number':'String') + '\">'+ cell.value + '</Data></Cell>';\n" +
                     "r += ce;\n" +
@@ -3221,7 +3222,7 @@ function getSaveAsConfig(configs, container, myChart) {
                     "}\n" +
                     "xml += '</Table></Worksheet></Workbook>';\n" +
                     "let blob = new Blob([str2ab(xml)], {type: 'text/xml'});\n" +
-                    "openDownloadDialog(blob, title[0] + '.report.xml');" +
+                    "openDownloadDialog(blob, title[0] + '.report.xml');\n" +
                     "} catch (e) {\n" +
                     "console.log(e);\n" +
                     "}\n" +
@@ -3259,14 +3260,14 @@ function getSaveAsConfig(configs, container, myChart) {
                 "h1{margin: auto;width: 80%;text-align: left;white-space: normal;word-break: break-all;word-wrap: break-word;}\n" +
                 "h4{margin: auto;width: 80%;text-align: left;white-space: normal;word-break: break-all;word-wrap: break-word;}\n" +
                 "h5{margin: auto;width: 80%;text-align: right;white-space: normal;word-break: break-all;word-wrap: break-word;}\n" +
-                "div.TAB{margin: auto;padding-left: 5px;padding-right: 5px;width: 80%;overflow: hidden;height: 100%}\n" +
+                "div.TABS{margin: auto;padding-left: 5px;padding-right: 5px;width: 80%;overflow: hidden;height: 100%}\n" +
                 "div.ECHART{margin: auto;padding-left: 5px;padding-right: 5px;width: 80%;border: 1px solid coral;border-radius: 5px;overflow: hidden;height: 100%}\n" +
-                "div.TABLES{margin: auto;padding-left: 5px;padding-right: 5px;width: 80%;height: 80%;border: 1px solid coral;border-radius: 5px;overflow: scroll;height: 100%;display: none}\n" +
+                "div.TABLE{margin: auto;padding-left: 5px;padding-right: 5px;width: 80%;height: 80%;border: 1px solid coral;border-radius: 5px;overflow: scroll;height: 100%;display: none}\n" +
                 "div.SCRIPT{margin: auto;padding-left: 5px;padding-right: 5px;width: 80%;border: 1px solid coral;border-radius: 5px;overflow: hidden;height: 100%;display: none}\n" +
                 "div.CONFIGS{margin: auto;padding-left: 5px;padding-right: 5px;width: 80%;border: 1px solid coral;border-radius: 5px;" +
-                "overflow: hidden;height: 100%;display: none;-webkit-column-count: 3;column-count: 3;column-fill: auto;}\n" +
+                "overflow: hidden;height: 100%;display: none;-webkit-column-count: 4;column-count: 4;column-fill: auto;}\n" +
                 "div.PAGES{border-top:2px solid gray;}\n" +
-                "div.CODE{margin: auto;padding-left: 5px;padding-right: 5px;width: 80%;border: 1px solid coral;border-radius: 5px;overflow: hidden;height: 100%;display: none}\n" +
+                "div.CODES{margin: auto;padding-left: 5px;padding-right: 5px;width: 80%;border: 1px solid coral;border-radius: 5px;overflow: hidden;height: 100%;display: none}\n" +
                 "code{font-family: Verdana,Arial;font-size: 10px;width: 100%;white-space: normal;word-break: break-all;word-wrap: break-word;display:none}\n" +
                 "code.sql{font-family: Verdana,Arial;font-size: 10px;width: 100%;white-space: normal;word-break: break-all;word-wrap: break-word;display:block}\n" +
                 "h6{margin: auto;width: 80%;text-align: center}\n" +
@@ -3279,15 +3280,17 @@ function getSaveAsConfig(configs, container, myChart) {
                 "span.configs-name{cursor: pointer;font-size: 80%;padding-left: 5px;padding-right: 5px;color: snow;background-color: sandybrown;outline-style: none;border-radius: 4px;border: 1px solid gray;}\n" +
                 "span.configs-value{cursor: pointer;font-size: 80%;padding-left: 5px;padding-right: 5px;color: snow;background-color: #00A7AA;outline-style: none;border-radius: 4px;border: 1px solid gray;}\n" +
                 "image{margin: auto;width: 80%;text-align: center}\n" +
-                "table{font-size: 80%;margin: 1px;line-height:12px;border-collapse:collapse;cursor: pointer;position:relative;min-width: 50%;max-width: 200%;border-radius: 5px;background-color: transparent;}\n" +
-                "th{margin: 0px;border: 1px solid #ADD8E6;padding: 3px 3px 2px 3px;white-space: nowrap;word-break: keep-all;overflow: hidden;" +
-                "text-overflow: ellipsis;-o-text-overflow: ellipsis;font-weight: bolder;text-align: center;background-color: #008080;color: #DCDCDC;border-bottom: 1px solid #ADD8E6;}\n" +
-                "tr{height: 25px;color:slategray;background-color:lightskyblue;}\n" +
-                "tr:hover{background-color:sandybrown;}\n" +
-                "tr.alt-line{color:slategray;background-color:#E0FFFF;}\n" +
-                "tr.alt-line:hover{background-color:sandybrown;}\n" +
-                "td{margin: 2px;border:1px solid #ADD8E6;padding:3px 3px 2px 3px;white-space: nowrap; word-break: keep-all;" +
+                "table{font-size: 80%;margin: 1px;line-height:12px;border-collapse:collapse;cursor: pointer;position:relative;min-width: 33%;border-radius: 5px;background-color: transparent;}\n" +
+                "th{margin: 0px;border: 1px solid gray;padding: 3px 3px 2px 3px;white-space: nowrap;word-break: keep-all;overflow: hidden;" +
+                "text-overflow: ellipsis;-o-text-overflow: ellipsis;font-weight: bolder;text-align: center;background-color: #00A7AA;color: #DCDCDC;border-bottom: 2px solid gray;}\n" +
+                "th:hover{background-color: #008080;}\n" +
+                "tr{height: 25px;color:slategray;background-color:darkgray;}\n" +
+                "tr:hover{background-color:rosybrown;}\n" +
+                "tr.alt-line{color:slategray;background-color:lightgray;}\n" +
+                "tr.alt-line:hover{background-color:rosybrown;}\n" +
+                "td{margin: 2px;border:1px solid gray;padding:3px 3px 2px 3px;white-space: nowrap; word-break: keep-all;" +
                 "overflow: hidden;text-overflow: ellipsis;-o-text-overflow: ellipsis;}\n" +
+                "td:hover{border-bottom:2px solid #00A7AA}\n" +
                 "span.page-tab{float:left;cursor: pointer;width: 50px;font-size: 60%;text-align: center;color:#DCDCDC;border-right:1px solid gray;border-bottom-left-radius: 6px;border-bottom-right-radius: 36px;}" +
                 "span.page-tab:hover{color: #DCDCDC;background-color: sandybrown;}\n" +
                 "span.page-button{float:left;cursor: pointer;width: 50px;font-size: 60%;text-align: center;color:#DCDCDC;border-left:1px solid gray;border-bottom-right-radius: 6px;border-bottom-left-radius: 36px;}" +
@@ -3298,9 +3301,9 @@ function getSaveAsConfig(configs, container, myChart) {
                 "<body onload='init()'>\n" +
                 "<h1>" + title[0] + "</h1>\n" +
                 "<h4>" + (title.length > 1 ? title.slice(1, title.length).join("&emsp;") : "") + "</h4>\n" +
-                "<div class='TAB'>\n" +
+                "<div class='TABS'>\n" +
                 "<span class='tabButton-selected' id='ECHART' onclick='selectTab(this.id)'>静态视图</span>\n" +
-                "<span class='tabButton-unselected' id='TABLES' onclick='selectTab(this.id)'>数据报表</span>\n" +
+                "<span class='tabButton-unselected' id='TABLE' onclick='selectTab(this.id)'>数据报表</span>\n" +
                 "<span class='tabButton-unselected' id='SCRIPT' onclick='selectTab(this.id)'>数据脚本</span>\n" +
                 "<span class='tabButton-unselected' id='CONFIGS' onclick='selectTab(this.id)'>视图参数</span>\n" +
                 link +
@@ -3308,12 +3311,12 @@ function getSaveAsConfig(configs, container, myChart) {
                 "<div class='ECHART'>\n" +
                 "<image src = '" + myChart.getDataURL({excludeComponents: ['toolbox']}) + "' width='100%' height='" + myChart.height + "'></image>" +
                 "</div>\n" +
-                "<div class='TABLES'>\n" +
+                "<div class='TABLE'>\n" +
                 "</div>\n" +
                 "<div class='CONFIGS'>\n" +
                 "</div>\n" +
                 "<div class='SCRIPT'><code class='sql'></code></div>\n" +
-                "<div class='CODE'>\n" +
+                "<div class='CODES'>\n" +
                 "<code>" + report + "</code>\n" +
                 "<code>" + report.hex_md5_hash() + "</code>\n" +
                 "<code>" + length + "</code>\n" +
