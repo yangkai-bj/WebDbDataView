@@ -1,3 +1,4 @@
+
 function getStorageSql(key) {
     try {
         let storage = window.localStorage;
@@ -7,17 +8,10 @@ function getStorageSql(key) {
         else {
             sqllist = JSON.parse(storage.getItem(__CONFIGS__.STORAGE.SCRIPTS));
         }
-        let str = sqllist[key].sql.binary2str();
-        let sql = '';
-        //处理字符串数组的结束符\0
-        for (let i = 0 ; i < str.length ; i ++) {
-            if (str.charCodeAt(i) != 0)
-                sql += str.charAt(i);
-        }
-        return sql;
+        return sqllist[key].sql.decode();
     } catch (e) {
-        return null;
         __LOGS__.viewError(e);
+        return null;
     }
 }
 
@@ -30,7 +24,7 @@ function saveStorageSql(key, sql) {
         else {
             sqllist = JSON.parse(storage.getItem(__CONFIGS__.STORAGE.SCRIPTS));
         }
-        sqllist[key] = {sql:sql.str2binary(),time:getNow()};
+        sqllist[key] = {sql: sql.encode(), time: getNow()};
         storage.setItem(__CONFIGS__.STORAGE.SCRIPTS, JSON.stringify(sqllist));
     } catch (e) {
         __LOGS__.viewError(e);
@@ -137,8 +131,7 @@ function storageSqlDialog(sql, editer, type){
     open.onclick = function(){
         editer.title = $("sql-Manager-Content-name").value;
         __LOGS__.viewMessage("Open " + __SQLEDITOR__.options.mode + " : " + editer.title);
-        let sql = $("sql-Manager-Content-sql").value;
-        editer.codeMirror.setValue(sql);
+        editer.codeMirror.setValue($("sql-Manager-Content-sql").value);
         $("sql-Manager-Content").parentNode.removeChild($("sql-Manager-Content"));
     };
     tool.appendChild(open);
@@ -268,7 +261,7 @@ function storageSqlDialog(sql, editer, type){
                             }
                         } else {
                             alert("文件名称:" + file.name + "\n"
-                                + "文件大小:" + file.size + " bytes\n"
+                                + "文件大小:" + file.size + " Bytes\n"
                                 + "文件类型:" + file.type + "\n"
                                 + "数据来源:" + js.appName + "\n"
                                 + "校验代码:" + hash + "\n"
@@ -277,7 +270,7 @@ function storageSqlDialog(sql, editer, type){
                         }
                     }catch (e) {
                         alert("文件名称:" + file.name + "\n"
-                            + "文件大小:" + file.size + " bytes\n"
+                            + "文件大小:" + file.size + " Bytes\n"
                             + "文件类型:" + file.type + "\n\n"
                             + "该文件不是标准化的备份文件,请重新选择!")
                     }
@@ -324,7 +317,7 @@ function getSQLList(table){
     let check = document.createElement("input");
     check.type = "checkbox";
     check.className = "sqls-checkall";
-    check.style.width = "18px";
+    check.style.width = "35px";
     check.onclick = function(){
         let sqls = $("sql-Manager-Content-table").getElementsByClassName("check");
         for (let i=0;i<sqls.length;i++){
@@ -337,7 +330,7 @@ function getSQLList(table){
     tr.appendChild(th);
     th = document.createElement("th");
     th.className= "th";
-    th.style.width = "50px";
+    th.style.width = "40px";
     th.innerText = "序号";
     tr.appendChild(th);
     th = document.createElement("th");
@@ -383,7 +376,7 @@ function getSQLList(table){
         let check = document.createElement("input");
         check.type = "checkbox";
         check.className = "check";
-        check.style.width = "40px";
+        check.style.width = "35px";
         td.appendChild(check);
         tr.appendChild(td);
 

@@ -1,7 +1,7 @@
 var __VERSION__ = {
     name: "Web DataView for SQLite Database of browser",
-    version: "2.5.5",
-    date: "2021/09/07",
+    version: "2.5.6",
+    date: "2021/09/13",
     comment: [
         "-- 2021/03/08",
         "优化算法和压缩代码.",
@@ -53,7 +53,7 @@ var __VERSION__ = {
     author: __SYS_LOGO_LINK__.author.decode(),
     url: __SYS_LOGO_LINK__.link.decode(),
     tel: __SYS_LOGO_LINK__.tel.decode(),
-    email: __SYS_LOGO_LINK__.email.decode()
+    email: __SYS_LOGO_LINK__.email.decode(),
 };
 
 var __LOGS__ = {
@@ -235,14 +235,16 @@ var __XMLHTTP__ = {
         try {
             if (window.XMLHttpRequest) {
                 xhr = new window.XMLHttpRequest();
-            } else { // ie
-                xhr = new ActiveObject("Microsoft.XMLHTTP");
             }
+            // else { // ie
+            //     xhr = new ActiveObject("Microsoft.XMLHTTP");
+            // }
         } catch (e) {
         }
         return xhr;
     },
     time: null,
+    updatetime: null,
     abstract: null,
     elements: {},
     checking: {
@@ -250,19 +252,32 @@ var __XMLHTTP__ = {
     },
     hook: function (dom, timeout) {
         __XMLHTTP__.elements[dom.id] = dom;
+
         function startTime() {
-            dom.innerHTML = (__XMLHTTP__.time == null ? "" : __XMLHTTP__.time.format("yyyy-MM-dd hh:mm:ss"));
+            dom.innerHTML = "时间:" + (__XMLHTTP__.time == null ? "" : __XMLHTTP__.time.format("yyyy-MM-dd hh:mm")) + " 频率:" + Math.floor(timeout / 1000) + "秒";
             dom.title = "授时服务:\n" +
                 (__XMLHTTP__.server == null ? "" : __XMLHTTP__.server) + "\n" +
                 (__XMLHTTP__.abstract == null ? "" : __XMLHTTP__.abstract);
+
             if (typeof __XMLHTTP__.elements[dom.id] != "undefined") {
-                setTimeout(function () {
-                    startTime();
-                }, timeout);
+                if (__XMLHTTP__.time != null && __XMLHTTP__.updatetime != null) {
+                    if (new Date() - __XMLHTTP__.updatetime < timeout) {
+                        setTimeout(function () {
+                            startTime();
+                        }, timeout);
+                    } else {
+                        setTimeout(function () {
+                            startTime();
+                        }, 1000);
+                    }
+                } else {
+                    setTimeout(function () {
+                        startTime();
+                    }, 1000);
+                }
             }
             __XMLHTTP__.getResponse();
         }
-
         startTime();
     },
     unhook: function (dom) {
@@ -282,12 +297,15 @@ var __XMLHTTP__ = {
                         __XMLHTTP__.server = xhr.responseURL.split("/").slice(0, 3).join("/");
                         __XMLHTTP__.abstract = xhr.getResponseHeader("Server");
                         __XMLHTTP__.time = new Date(xhr.getResponseHeader("Date"));
+                        __XMLHTTP__.localtime = new Date();
                     } else if (xhr.status == 404) {
                         __XMLHTTP__.server = null;
                         __XMLHTTP__.abstract = null;
                         __XMLHTTP__.time = null;
+                        __XMLHTTP__.localtime = null;
                     }
                 } catch (e) {
+                    console.log("__XMLHTTP__getResponse:" + e);
                 }
             };
             xhr.send();
@@ -583,13 +601,6 @@ var __CONFIGS__ = {
          progress: null
      },
      SelectedDataSet: {value: -1, name: "数据集", type: "select", options: []},
- };
-
- var __DATABASE__ = {
-     Name: {value: "", name: "库名称", type: "text"},
-     Version: {value: 1.0, name: "版本号", type: "text"},
-     Description: {value: "", name: "库描述", type: "text"},
-     Size: {value: "1024*1024*1024", name: "库容量", type: "text"}
  };
 
  var __COLUMN__ = {
@@ -1747,6 +1758,12 @@ function  getCreateTableSql(title, stru) {
 }
 
 function createDatabase(){
+    let __DATABASE__ = {
+        Name: {value: "", name: "库名称", type: "text"},
+        Version: {value: 1.0, name: "版本号", type: "text"},
+        Description: {value: "", name: "库描述", type: "text"},
+        Size: {value: "1024*1024*1024", name: "库容量", type: "text"}
+    };
     let container = document.createElement("div");
     container.type = "div";
     container.className = "create-database-Content";
@@ -1798,7 +1815,12 @@ function createDatabase(){
     b.onclick = function(){
         if (checkStorage()) {
             if (__DATABASE__.Name.value.trim() != "") {
-                let db = {"name": __DATABASE__.Name.value,"version" : __DATABASE__.Version.value, "description": __DATABASE__.Description.value, "size": __DATABASE__.Size.value};
+                let db = {
+                    name: __DATABASE__.Name.value,
+                    version: __DATABASE__.Version.value,
+                    description: __DATABASE__.Description.value,
+                    size: __DATABASE__.Size.value
+                };
                 let storage = window.localStorage;
                 let dbs = JSON.parse(storage.getItem(__CONFIGS__.STORAGE.DATABASES));
                 let index = -1;
@@ -2056,9 +2078,6 @@ function setUserConfig(key,value) {
 }
 
 function viewDatabases(){
-    //#######################################
-    //初始化localStorage
-    //#######################################
     let message = "读取数据库列表...";
     try {
         let storage = window.localStorage;
@@ -3785,17 +3804,13 @@ function initMenus() {
                         let reg = new RegExp(/\<code>(.*)\<\/code>/, "g");
                         let codes = this.result.match(reg);
                         if (codes != null) {
-                            if (codes.length >= 3) {
+                            if (codes.length >= 4) {
                                 let ciphertext = codes[0];
                                 let hash = codes[1];
-                                let length = codes[2];
                                 ciphertext = ciphertext.substring(ciphertext.indexOf("<code>") + 6, ciphertext.indexOf("</code>"));
                                 hash = hash.substring(hash.indexOf("<code>") + 6, hash.indexOf("</code>"));
-                                length = Number(length.substring(length.indexOf("<code>") + 6, length.indexOf("</code>")));
                                 if (ciphertext.hex_md5_hash() == hash) {
                                     ciphertext = ciphertext.decode();
-                                    if (ciphertext.length > length)
-                                        ciphertext = ciphertext.slice(0, length);
                                     try {
                                         let report = JSON.parse(ciphertext);
                                         let container = $("tableContainer");

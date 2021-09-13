@@ -852,7 +852,7 @@ String.prototype.replaceAll = function(search, replacement) {
             target = target.replace(search, replacement);
         }
     }catch (e) {
-        console.log(e);
+        __LOGS__.viewError(e);
     }
     return target;
 };
@@ -1018,13 +1018,13 @@ String.prototype.decode = function() {
     let str = this.toString();
     let decodeStr = "";
     if (str == "")
-        return decodeStr ;
-　　let toParse = str.split(";");
-　　for (let i=0;i<toParse.length;i++) {
-　　　　let s = toParse[i];
-　　　　decodeStr += String.fromCharCode(parseInt(s.substring(2)))
-　　}
-　　return decodeStr;
+        return decodeStr;
+    let toParse = str.split(";");
+    for (let i = 0; i < toParse.length - 1; i++) {
+        let s = toParse[i];
+        decodeStr += String.fromCharCode(parseInt(s.substring(2)))
+    }
+    return decodeStr;
 }
 
 Number.prototype.format = function(pattern) {
@@ -1205,7 +1205,7 @@ function getFileSizeString(size, unit) {
 
 function getFileUrlByBase64(dataurl) {
     let arr = dataurl.split(',');
-    let mime = arr[0].match(/:(.*?);/)[1]
+    let mime = arr[0].match(/:(.*?);/)[1];
     let bstr = atob(arr[1]);
     let n = bstr.length;
     let u8arr = new Uint8Array(n);

@@ -207,6 +207,7 @@ img.title_close_button:hover{
     font-size: 70%;
     color: var(--detail-dt-color);
     margin-left: 10px;
+    white-space: normal;word-break: break-all;word-wrap: break-word;
 }
 
 .detail .message {
@@ -500,6 +501,8 @@ img.title_close_button:hover{
 .database-list li {
     list-style-type: disc;
     list-style-image: none;
+    white-space: normal;word-break: break-all;word-wrap: break-word;
+    font-size: 80%;
 }
 
 .table-list {
@@ -509,6 +512,7 @@ img.title_close_button:hover{
 .table-list li {
     list-style-type: circle;
     list-style-image: var(--column-list-image);
+    font-size: 80%;
 }
 
 .table-list .column-name {

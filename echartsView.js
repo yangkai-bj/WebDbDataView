@@ -2789,8 +2789,7 @@ function getSaveAsConfig(configs, container, myChart) {
                     "let codes = document.getElementsByClassName('CODES')[0].getElementsByTagName('code');\n" +
                     "let report = codes[0].innerText;\n" +
                     "let hash = codes[1].innerText;\n" +
-                    "let length = Number(codes[2].innerText);\n" +
-                    "let configs = JSON.parse(codes[3].innerText);\n" +
+                    "let configs = JSON.parse(codes[2].innerText);\n" +
                     "report = JSON.parse(report);\n" +
                     "dataset.title = report.dataset.title;\n" +
                     "dataset.columns = report.dataset.columns;\n" +
@@ -3236,7 +3235,6 @@ function getSaveAsConfig(configs, container, myChart) {
             let title = report.dataset.title;
             let link = "<a title='进入系统,使用「打开报表」功能打开此文档,可查看动态视图.' href='" + window.location.href.split("?")[0] + "'>" + __VERSION__.name + "</a>";
             report = JSON.stringify(report);
-            let length = report.length;
             report = report.encode();
             let configs = JSON.stringify(__DATASET__.configs).encode();
             let time = getNow();
@@ -3248,7 +3246,7 @@ function getSaveAsConfig(configs, container, myChart) {
                 "<meta name='renderer' content='webkit'>\n" +
                 "<meta name='description' content='这是关于 " + __VERSION__.name + " 的固定报表'>\n" +
                 "<meta name='author' content='杨凯'>\n" +
-                "<meta name='date' content='" + time + "'>\n" +
+                "<meta name='create-time' content='" + time + "'>\n" +
                 "<style>\n" +
                 "body{background-color: dimgrey;color: whitesmoke;font-family: Arial, Verdana}\n" +
                 "body ::-webkit-scrollbar {width: 5px;height: 4px;background: transparent;}\n" +
@@ -3319,8 +3317,8 @@ function getSaveAsConfig(configs, container, myChart) {
                 "<div class='CODES'>\n" +
                 "<code>" + report + "</code>\n" +
                 "<code>" + report.hex_md5_hash() + "</code>\n" +
-                "<code>" + length + "</code>\n" +
                 "<code>" + configs + "</code>\n" +
+                "<code>" + configs.hex_md5_hash() + "</code>\n" +
                 "</div>\n" +
                 "<h6>适用于<a href = 'https://www.google.cn/chrome/index.html' target='_blank'>Google Chrome</a>或<a href = 'https://www.microsoft.com/zh-cn/edge?form=MY01BV&OCID=MY01BV&r=1' target='_blank'>Microsoft Edge</a>浏览器&emsp;技术支持: 杨凯&emsp;电话: (010)63603329&emsp;邮箱: <a href='mailto:yangkai.bj@ccb.com'>yangkai.bj@ccb.com</a>&emsp;创建时间:" + time + "</h6>\n" +
                 "</body>\n" +

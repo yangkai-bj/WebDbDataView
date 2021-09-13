@@ -36,7 +36,7 @@ function getFileSecurity() {
             "</head>\n" +
             "<body>\n" +
             "<h2>&emsp;&emsp;本文档是&ensp;<span>" + title + "</span>&ensp;的加密文件,请" +
-            "使用&ensp;<span>Chrome</span>&ensp;或&ensp;<span>Edge</span>&ensp;浏览器打开," +
+            "使用&ensp;<span>Google Chrome</span>&ensp;或&ensp;<span>Microsoft Edge</span>&ensp;浏览器打开," +
             "点击进入&ensp;" + data.application.link + "&ensp;可解密此文档;密码是包含数字" +
             "和英文字母的8位字符串;一般情况下,加密文档设置了有效期,如果超出有效期,文档将不" +
             "能解密;解密时必须由加密时所采用的同域名服务器提供授时服务;文档整体和各节点采" +
@@ -602,7 +602,7 @@ function getFileSecurity() {
     span.className = "http-server-datetime";
     span.id = "http-server-datetime-" + new Date().format("yyyyMMddhhmmssS");
     span.style.cssFloat = "left";
-    __XMLHTTP__.hook(span, 1000);
+    __XMLHTTP__.hook(span, 60000);
     d.appendChild(span);
 
     let expirydate = document.createElement("select");

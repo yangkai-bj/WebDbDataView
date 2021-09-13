@@ -94,7 +94,7 @@ function getCount(data) {
 function getCountNumber(data) {
     let count = 0;
     for(let i=0;i<data.length;i++) {
-        if (data[i].toString().isNumber())
+        if (data[i] != null && data[i].toString().isNumber())
             count += 1;
     }
     return count;
@@ -103,12 +103,12 @@ function getCountNumber(data) {
 function getMin(data) {
     let min = data[0];
     for(let i=1;i<data.length;i++) {
-        if (data[i].toString().isNumber() && min.toString().isNumber()) {
+        if (data[i] != null && min != null &&data[i].toString().isNumber() && min.toString().isNumber()) {
             if (min > data[i]) {
                 min = data[i];
             }
         } else {
-            if (min.toString().localeCompare(data[i].toString()) > 0) {
+            if (data[i] != null && min != null && min.toString().localeCompare(data[i].toString()) > 0) {
                 min = data[i];
             }
         }
@@ -119,12 +119,12 @@ function getMin(data) {
 function getMax(data) {
     let max = data[0];
     for(let i=1;i<data.length;i++) {
-        if (data[i].toString().isNumber() && max.toString().isNumber()) {
+        if (data[i] != null && max != null && data[i].toString().isNumber()  && max.toString().isNumber()) {
             if (max < data[i]) {
                 max = data[i];
             }
         } else {
-            if (max.toString().localeCompare(data[i].toString()) < 0) {
+            if (data[i] != null && data[i] != null && max.toString().localeCompare(data[i].toString()) < 0) {
                 max = data[i];
             }
         }
@@ -186,7 +186,7 @@ function getIQR(data){
 function getSum(data) {
     let sum = 0;
     for(let i=0;i<data.length;i++) {
-        if (data[i].toString().isNumber()) {
+        if (data[i] != null && data[i].toString().isNumber()) {
             sum += Number(data[i]);
         }
     }
@@ -197,7 +197,7 @@ function getAverage(data) {
     let sum = 0;
     let count = 0;
     for(let i=0;i<data.length;i++) {
-        if (data[i].toString().isNumber()) {
+        if (data[i] != null && data[i].toString().isNumber()) {
             sum += Number(data[i]);
             count += 1;
         }
@@ -216,7 +216,7 @@ function getVariance(data){
         let sum = 0;
         let count = 0;
         for (let i = 0; i < data.length; i++) {
-            if (data[i].toString().isNumber()) {
+            if (data[i] != null && data[i].toString().isNumber()) {
                 sum += Math.pow((Number(data[i]) - avg), 2);
                 count += 1;
             }
