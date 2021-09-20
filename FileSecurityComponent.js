@@ -601,7 +601,6 @@ function getFileSecurity() {
     span = document.createElement("span");
     span.className = "http-server-datetime";
     span.id = "http-server-datetime-" + new Date().format("yyyyMMddhhmmssS");
-    span.style.cssFloat = "left";
     __XMLHTTP__.hook(span, 60000);
     d.appendChild(span);
 

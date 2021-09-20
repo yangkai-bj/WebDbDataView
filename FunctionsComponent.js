@@ -1203,6 +1203,44 @@ function getFileSizeString(size, unit) {
     }
 }
 
+function getTimesLengthString(timelength, unit) {
+    if (unit == "毫秒") {
+        if (timelength < 1000) {
+            return Math.round(timelength * 100) / 100 + unit;
+        } else {
+            unit = "秒";
+            return getTimesLengthString(timelength / 1000, unit);
+        }
+    }
+    else if (unit == "秒") {
+        if (timelength < 60) {
+            return Math.round(timelength * 60) / 60 + unit;
+        } else {
+            unit = "分钟";
+            return getTimesLengthString(timelength / 60, unit);
+        }
+    }
+    else if (unit == "分钟") {
+        if (timelength < 60) {
+            return Math.round(timelength * 60) / 60 + unit;
+        } else {
+            unit = "小时";
+            return getTimesLengthString(timelength / 60, unit);
+        }
+    }
+    else if (unit == "小时") {
+        if (timelength < 24) {
+            return Math.round(timelength * 24) / 24 + unit;
+        } else {
+            unit = "天";
+            return getTimesLengthString(timelength / 24, unit);
+        }
+    }
+    else if (unit == "天") {
+        return Math.round(timelength * 24) / 24 + unit;
+    }
+}
+
 function getFileUrlByBase64(dataurl) {
     let arr = dataurl.split(',');
     let mime = arr[0].match(/:(.*?);/)[1];

@@ -207,7 +207,7 @@ img.title_close_button:hover{
     font-size: 70%;
     color: var(--detail-dt-color);
     margin-left: 10px;
-    white-space: normal;word-break: break-all;word-wrap: break-word;
+    /*white-space: normal;word-break: break-all;word-wrap: break-word;*/
 }
 
 .detail .message {
@@ -480,46 +480,75 @@ img.title_close_button:hover{
     box-shadow: 2px 2px 3px #aaaaaa;
 }
 
-.list {
-    color:var(--list-color);
-    height: 100%;
-    margin: 0px;
-    cursor: pointer;
-    -webkit-animation: content-show 2s 1;
-    animation: content-show 2s 1;
-
-}
-
-.list:hover {
-    color:var(--list-hover-color);
-}
-
 .database-list {
     list-style-type: disc;
     list-style-image: var(--database-list-image);
 }
+
 .database-list li {
     list-style-type: disc;
     list-style-image: none;
-    white-space: normal;word-break: break-all;word-wrap: break-word;
-    font-size: 80%;
+    font-size: 90%;
+}
+
+.database-list .list {
+    width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    word-break: keep-all;
+    text-overflow: ellipsis;
+    -o-text-overflow: ellipsis;
+    color:var(--list-color);
+    margin: auto;
+    cursor: pointer;
+    -webkit-animation: content-show 2s 1;
+    animation: content-show 2s 1;
+}
+
+.database-list .list:hover {
+    color: var(--list-hover-color);
+    font-weight: bolder;
 }
 
 .table-list {
     list-style-type: disc;
     list-style-image: var(--table-list-image);
 }
+
+.table-list .table-name {
+    width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    word-break: keep-all;
+    text-overflow: ellipsis;
+    -o-text-overflow: ellipsis;
+    color:var(--list-color);
+    margin: auto;
+    cursor: pointer;
+    -webkit-animation: content-show 2s 1;
+    animation: content-show 2s 1;
+}
+
+.table-list .table-name:hover {
+    color: var(--list-hover-color);
+    font-weight: bolder;
+}
+
 .table-list li {
     list-style-type: circle;
     list-style-image: var(--column-list-image);
-    font-size: 80%;
+    font-size: 90%;
 }
 
 .table-list .column-name {
+    float: left;
+    width: 60%;
     overflow: hidden;
+    white-space: nowrap;
+    word-break: keep-all;
+    text-overflow: ellipsis;
+    -o-text-overflow: ellipsis;
     color:var(--list-color);
-    height: 100%;
-    margin: 0px;
     cursor: pointer;
     -webkit-animation: content-show 2s 1;
     animation: content-show 2s 1;
@@ -527,13 +556,17 @@ img.title_close_button:hover{
 
 .table-list .column-name:hover {
     color:var(--list-hover-color);
+    font-weight: bold;
 }
 
 .table-list .column-type {
+    width: 40%;
     overflow: hidden;
-    float: right;
+    white-space: nowrap;
+    word-break: keep-all;
+    text-overflow: ellipsis;
+    -o-text-overflow: ellipsis;
     cursor: pointer;
-    font-size: 50%;
     text-align: left;
     color: var(--list-color);
     -webkit-animation: content-show 2s 1;
@@ -542,6 +575,7 @@ img.title_close_button:hover{
 
 .table-list .column-type:hover {
     color:var(--list-hover-color);
+    font-weight: bolder;
 }
 
 .sqlContainer{
@@ -690,6 +724,7 @@ img.title_close_button:hover{
 
 .footer {
     margin:auto;
+    margin-top: 6px;
     padding: 0px;
     border-bottom:1px solid var(--main-border-color);
     border-right:1px solid var(--main-border-color);
@@ -1625,4 +1660,10 @@ textarea:hover {
 textarea:enabled {
     outline-style: none;
     border:1px solid var(--main-border-color);
+}
+
+.http-server-datetime {
+    cursor: pointer;
+    float: left;
+    color: var(--toolbar-background-color);
 }

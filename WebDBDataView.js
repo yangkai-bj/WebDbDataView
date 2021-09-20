@@ -1,7 +1,7 @@
 var __VERSION__ = {
     name: "Web DataView for SQLite Database of browser",
-    version: "2.5.6",
-    date: "2021/09/13",
+    version: "2.5.7",
+    date: "2021/09/18",
     comment: [
         "-- 2021/03/08",
         "优化算法和压缩代码.",
@@ -49,6 +49,8 @@ var __VERSION__ = {
         "Echarts 5.1.2.",
         "-- 2021/08/12",
         "增加固定报表.",
+        "-- 2021/09/18",
+        "Echarts 5.2.0.",
     ],
     author: __SYS_LOGO_LINK__.author.decode(),
     url: __SYS_LOGO_LINK__.link.decode(),
@@ -240,6 +242,7 @@ var __XMLHTTP__ = {
             //     xhr = new ActiveObject("Microsoft.XMLHTTP");
             // }
         } catch (e) {
+            console.log("__XMLHTTP__.request:" + e);
         }
         return xhr;
     },
@@ -254,12 +257,13 @@ var __XMLHTTP__ = {
         __XMLHTTP__.elements[dom.id] = dom;
 
         function startTime() {
-            dom.innerHTML = "时间:" + (__XMLHTTP__.time == null ? "" : __XMLHTTP__.time.format("yyyy-MM-dd hh:mm")) + " 频率:" + Math.floor(timeout / 1000) + "秒";
+            dom.innerHTML = "时间:" + (__XMLHTTP__.time == null ? "" : __XMLHTTP__.time.format("yyyy-MM-dd hh:mm")) + " 更新频率:" + getTimesLengthString(timeout, "毫秒");
             dom.title = "授时服务:\n" +
                 (__XMLHTTP__.server == null ? "" : __XMLHTTP__.server) + "\n" +
                 (__XMLHTTP__.abstract == null ? "" : __XMLHTTP__.abstract);
 
             if (typeof __XMLHTTP__.elements[dom.id] != "undefined") {
+                __XMLHTTP__.getResponse();
                 if (__XMLHTTP__.time != null && __XMLHTTP__.updatetime != null) {
                     if (new Date() - __XMLHTTP__.updatetime < timeout) {
                         setTimeout(function () {
@@ -276,7 +280,6 @@ var __XMLHTTP__ = {
                     }, 1000);
                 }
             }
-            __XMLHTTP__.getResponse();
         }
         startTime();
     },
@@ -305,7 +308,7 @@ var __XMLHTTP__ = {
                         __XMLHTTP__.localtime = null;
                     }
                 } catch (e) {
-                    console.log("__XMLHTTP__getResponse:" + e);
+                    console.log("__XMLHTTP__.getResponse:" + e);
                 }
             };
             xhr.send();
@@ -321,7 +324,7 @@ var __XMLHTTP__ = {
             {name: "公共函数", src: "FunctionsComponent.js", type: "text/javascript", element: "script", load: false},
             {
                 name: "Echarts",
-                src: "echarts/v5.1/echarts.min.js",
+                src: "echarts/v5.2/echarts.min.js",
                 type: "text/javascript",
                 element: "script",
                 load: false
@@ -409,26 +412,26 @@ var __XMLHTTP__ = {
             {name: "数据读取组件", src: "DataReaderComponent.js", type: "text/javascript", element: "script", load: true},
             {
                 name: "Echarts",
-                src: "echarts/v5.1/echarts-gl.min.js",
+                src: "echarts/v5.2/echarts-gl.min.js",
                 type: "text/javascript",
                 element: "script",
                 load: true
             },
             {
                 name: "Echarts",
-                src: "echarts/v5.1/echarts-wordcloud.min.js",
+                src: "echarts/v5.2/echarts-wordcloud.min.js",
                 type: "text/javascript",
                 element: "script",
                 load: true
             },
             {
                 name: "Echarts",
-                src: "echarts/v5.1/echarts-liquidfill.min.js",
+                src: "echarts/v5.2/echarts-liquidfill.min.js",
                 type: "text/javascript",
                 element: "script",
                 load: true
             },
-            {name: "回归函数组件", src: "echarts/v5.1/ecStat.js", type: "text/javascript", element: "script", load: true},
+            {name: "回归函数组件", src: "echarts/v5.2/ecStat.js", type: "text/javascript", element: "script", load: true},
             {name: "世界地图组件", src: "echarts/map/world.js", type: "text/javascript", element: "script", load: true},
             {
                 name: "中国地图组件",
@@ -482,6 +485,7 @@ var __XMLHTTP__ = {
                                 }
                             }
                         } catch (e) {
+                            console.log("__XMLHTTP__.certificate:" + e);
                         }
                     };
                     xhr.onload = function(){
@@ -2061,10 +2065,11 @@ function getUserConfig(key) {
         let configs = JSON.parse(storage.getItem(__CONFIGS__.STORAGE.CONFIGS));
         return configs[key];
     }catch (e) {
-        __LOGS__.viewError(e);
+        __LOGS__.viewError("getUserConfig:" + e);
         return null;
     }
 }
+
 
 function setUserConfig(key,value) {
     try {
@@ -2118,7 +2123,7 @@ function viewDatabases(){
                         for (let key in __CONFIGS__.CURRENT_DATABASE.value) {
                             let l = document.createElement("li");
                             $("ul-db-" + this.id).appendChild(l);
-                            let inf = document.createElement("a");
+                            let inf = document.createElement("div");
                             inf.className = "list";
                             inf.innerText = key + ": " + __CONFIGS__.CURRENT_DATABASE.value[key];
                             l.appendChild(inf);
@@ -2167,9 +2172,9 @@ function viewTables(index) {
                     if (results.rows.item(i).tablename != "__WebKitDatabaseInfoTable__" && results.rows.item(i).tablename != "") {
                         let li = document.createElement("li");
                         li.className = "table-list";
-                        let a = document.createElement("a");
+                        let a = document.createElement("div");
                         li.appendChild(a);
-                        a.className = "list";
+                        a.className = "table-name";
                         hintOptions.tables[results.rows.item(i).tablename] = [];
                         __SQLEDITOR__.codeMirror.setOption("hintOptions", hintOptions);
                         a.innerText = results.rows.item(i).tablename;
@@ -2211,19 +2216,19 @@ function viewTables(index) {
                                                 for (let m = 0; m < __CONFIGS__.CURRENT_TABLE.structure.data.length; m++) {
                                                     let l = document.createElement("li");
                                                     $("ul-tb-" + __CONFIGS__.CURRENT_TABLE.name).appendChild(l);
-                                                    let col = document.createElement("span");
+                                                    let col = document.createElement("div");
                                                     col.className = "column-name";
                                                     col.id = __CONFIGS__.CURRENT_TABLE.name + "." + __CONFIGS__.CURRENT_TABLE.structure.data[m]["Name"].value;
                                                     columns.push(__CONFIGS__.CURRENT_TABLE.structure.data[m]["Name"].value);
-                                                    col.innerText = __CONFIGS__.CURRENT_TABLE.structure.data[m]["Name"].value;
+                                                    col.innerText = col.title = __CONFIGS__.CURRENT_TABLE.structure.data[m]["Name"].value;
                                                     col.draggable = "true";
                                                     col.ondragstart = function (event) {
                                                         event.dataTransfer.setData("Text", event.target.id);
                                                     };
                                                     l.appendChild(col);
-                                                    let typ = document.createElement("span");
+                                                    let typ = document.createElement("div");
                                                     typ.className = "column-type";
-                                                    typ.innerText = __CONFIGS__.CURRENT_TABLE.structure.data[m]["Type"].value;
+                                                    typ.innerText = typ.title = __CONFIGS__.CURRENT_TABLE.structure.data[m]["Type"].value;
                                                     l.appendChild(typ);
                                                 }
                                                 let hintOptions = __SQLEDITOR__.codeMirror.getOption("hintOptions");
@@ -2245,7 +2250,7 @@ function viewTables(index) {
                             });
 
                             let tbs = $("sidebar-tbs");
-                            let l = tbs.getElementsByClassName("list");
+                            let l = tbs.getElementsByClassName("table-name");
                             for (let i = 0; i < l.length; i++) {
                                 l[i].style.fontWeight = "normal";
                             }
@@ -4220,34 +4225,36 @@ function initMenus() {
         toecharts.id = "dataset-to-echarts";
         toecharts.onclick = function () {
             try {
-                let mecharts = document.createElement("div");
-                mecharts.className = "echarts";
-                mecharts.id = "echarts-full-screen";
-                mecharts.style.width = (getAbsolutePosition($("page")).width + 10) + "px";
-                mecharts.style.height = (getAbsolutePosition($("page")).height + 25) + "px";
-                mecharts.style.top = "0px";
-                mecharts.style.left = "0px";
-                window.addEventListener("keydown", function (e) {
-                    //keypress无法获取Esc键值,keydown和keyup可以.
-                    let keycode = e.which || e.keyCode;
-                    if (keycode == 27) {
-                        if ($("echarts-full-screen") != null) {
-                            try {
-                                echarts.getInstanceByDom($("echarts-full-screen")).dispose();
-                            } catch (e) {
+                if (__DATASET__.result.length > 0) {
+                    let mecharts = document.createElement("div");
+                    mecharts.className = "echarts";
+                    mecharts.id = "echarts-full-screen";
+                    mecharts.style.width = (getAbsolutePosition($("page")).width + 10) + "px";
+                    mecharts.style.height = (getAbsolutePosition($("page")).height + 25) + "px";
+                    mecharts.style.top = "0px";
+                    mecharts.style.left = "0px";
+                    window.addEventListener("keydown", function (e) {
+                        //keypress无法获取Esc键值,keydown和keyup可以.
+                        let keycode = e.which || e.keyCode;
+                        if (keycode == 27) {
+                            if ($("echarts-full-screen") != null) {
+                                try {
+                                    echarts.getInstanceByDom($("echarts-full-screen")).dispose();
+                                } catch (e) {
+                                }
+                                $("echarts-full-screen").parentElement.removeChild($("echarts-full-screen"));
                             }
-                            $("echarts-full-screen").parentElement.removeChild($("echarts-full-screen"));
                         }
-                    }
-                });
-                let echart = getEcharts(
-                    mecharts,
-                    (getAbsolutePosition($("page")).width + 5) + "px",
-                    (getAbsolutePosition($("page")).height + 20) + "px",
-                    __DATASET__.result[__DATASET__.default.sheet],
-                    __ECHARTS__.configs);
-                setDragNook(mecharts, echart.getAttribute("_echarts_instance_"));
-                $("page").appendChild(mecharts);
+                    });
+                    let echart = getEcharts(
+                        mecharts,
+                        (getAbsolutePosition($("page")).width + 5) + "px",
+                        (getAbsolutePosition($("page")).height + 20) + "px",
+                        __DATASET__.result[__DATASET__.default.sheet],
+                        __ECHARTS__.configs);
+                    setDragNook(mecharts, echart.getAttribute("_echarts_instance_"));
+                    $("page").appendChild(mecharts);
+                }
             } catch (e) {
                 __LOGS__.viewError(e);
             }
@@ -4287,22 +4294,24 @@ function initMenus() {
                 }
                 setUserConfig("echartsconfig", JSON.stringify(config));
 
-                let container = $("tableContainer");
-                try {
-                    container.removeAttribute("_echarts_instance_");
-                    echarts.getInstanceByDom(container).dispose();
-                } catch (e) {
+                if (__DATASET__.result.length > 0) {
+                    let container = $("tableContainer");
+                    try {
+                        container.removeAttribute("_echarts_instance_");
+                        echarts.getInstanceByDom(container).dispose();
+                    } catch (e) {
+                    }
+                    let _width = (getAbsolutePosition(container).width * 1) + "px";
+                    let _height = (getAbsolutePosition(container).height * 1) + "px";
+                    container.innerHTML = "";
+                    let echart = getEcharts(
+                        container,
+                        _width,
+                        _height,
+                        __DATASET__.result[__DATASET__.default.sheet],
+                        __ECHARTS__.configs);
+                    setDragNook(container, echart.getAttribute("_echarts_instance_"));
                 }
-                let _width = (getAbsolutePosition(container).width * 1) + "px";
-                let _height = (getAbsolutePosition(container).height * 1) + "px";
-                container.innerHTML = "";
-                let echart = getEcharts(
-                    container,
-                    _width,
-                    _height,
-                    __DATASET__.result[__DATASET__.default.sheet],
-                    __ECHARTS__.configs);
-                setDragNook(container, echart.getAttribute("_echarts_instance_"));
             } catch (e) {
                 __LOGS__.viewError(e);
             }
@@ -4328,23 +4337,24 @@ function initMenus() {
                     config[key] = __ECHARTS__.configs[key].value;
                 }
                 setUserConfig("echartsconfig", JSON.stringify(config));
-
-                let container = $("tableContainer");
-                try {
-                    container.removeAttribute("_echarts_instance_");
-                    echarts.getInstanceByDom(container).dispose();
-                } catch (e) {
+                if (__DATASET__.result.length > 0) {
+                    let container = $("tableContainer");
+                    try {
+                        container.removeAttribute("_echarts_instance_");
+                        echarts.getInstanceByDom(container).dispose();
+                    } catch (e) {
+                    }
+                    let _width = (getAbsolutePosition(container).width * 1) + "px";
+                    let _height = (getAbsolutePosition(container).height * 1) + "px";
+                    container.innerHTML = "";
+                    let echart = getEcharts(
+                        container,
+                        _width,
+                        _height,
+                        __DATASET__.result[__DATASET__.default.sheet],
+                        __ECHARTS__.configs);
+                    setDragNook(container, echart.getAttribute("_echarts_instance_"));
                 }
-                let _width = (getAbsolutePosition(container).width * 1) + "px";
-                let _height = (getAbsolutePosition(container).height * 1) + "px";
-                container.innerHTML = "";
-                let echart = getEcharts(
-                    container,
-                    _width,
-                    _height,
-                    __DATASET__.result[__DATASET__.default.sheet],
-                    __ECHARTS__.configs);
-                setDragNook(container, echart.getAttribute("_echarts_instance_"));
             } catch (e) {
                 __LOGS__.viewError(e);
             }
@@ -4362,32 +4372,34 @@ function initMenus() {
         let help_echarts = $("help-dataset-echarts");
         echarts.onclick = help_echarts.onclick = function () {
             try {
-                let container = $("tableContainer");
-                try {
-                    container.removeAttribute("_echarts_instance_");
-                    echarts.getInstanceByDom(container).dispose();
-                } catch (e) {
-                }
-                let dataset = __DATASET__.result[__DATASET__.default.sheet];
-                if (dataset.title.length != 0) {
-                    __ECHARTS__.configs.titleText.value = dataset.title[0];
-                    if (dataset.title.length > 1) {
-                        __ECHARTS__.configs.titleSubText.value = dataset.title.slice(1).join(" ");
-                    } else {
-                        __ECHARTS__.configs.titleSubText.value = "";
+                if (__DATASET__.result.length > 0) {
+                    let container = $("tableContainer");
+                    try {
+                        container.removeAttribute("_echarts_instance_");
+                        echarts.getInstanceByDom(container).dispose();
+                    } catch (e) {
                     }
-                }
+                    let dataset = __DATASET__.result[__DATASET__.default.sheet];
+                    if (dataset.title.length != 0) {
+                        __ECHARTS__.configs.titleText.value = dataset.title[0];
+                        if (dataset.title.length > 1) {
+                            __ECHARTS__.configs.titleSubText.value = dataset.title.slice(1).join(" ");
+                        } else {
+                            __ECHARTS__.configs.titleSubText.value = "";
+                        }
+                    }
 
-                let _width = (getAbsolutePosition(container).width * 1) + "px";
-                let _height = (getAbsolutePosition(container).height * 1) + "px";
-                container.innerHTML = "";
-                let echart = getEcharts(
-                    container,
-                    _width,
-                    _height,
-                    dataset,
-                    __ECHARTS__.configs);
-                setDragNook(container, echart.getAttribute("_echarts_instance_"));
+                    let _width = (getAbsolutePosition(container).width * 1) + "px";
+                    let _height = (getAbsolutePosition(container).height * 1) + "px";
+                    container.innerHTML = "";
+                    let echart = getEcharts(
+                        container,
+                        _width,
+                        _height,
+                        dataset,
+                        __ECHARTS__.configs);
+                    setDragNook(container, echart.getAttribute("_echarts_instance_"));
+                }
             } catch (e) {
                 __LOGS__.viewError(e);
             }
@@ -4406,14 +4418,11 @@ function initMenus() {
 
 function init() {
     if (initConfigs()) {
-        sleep(100);
         initMenus();
-        sleep(100);
         setPageThemes();
-        sleep(100);
         viewDatabases();
-        sleep(100);
-        setDataPageTools(0);
+        setDataPageTools(0)
+
         window.onresize = function () {
             resize();
         };
@@ -4447,6 +4456,26 @@ function init() {
             appState("本地运行.", "Local file •••");
             if (__XMLHTTP__.checking.certificated == false)
                 __XMLHTTP__.certificate(false);
+        }
+
+        try {
+            let container = $("tableContainer");
+            let _width = (getAbsolutePosition(container).width * 1) + "px";
+            let _height = (getAbsolutePosition(container).height * 1) + "px";
+            container.innerHTML = "";
+            let configs = JSON.stringify(__ECHARTS__.configs);
+            configs = JSON.parse(configs);
+            //复制configs
+            configs.echartsType.value = "Clock";
+            configs.titleDisplay.value = "false";
+            let echart = getEcharts(
+                container,
+                _width,
+                _height,
+                null,
+                configs);
+        } catch (e) {
+            __LOGS__.viewError(e);
         }
     }
     //#########################body init end#######################################
