@@ -63,11 +63,13 @@ img.title_close_button:hover{
 
 #title{
     height: 50px;
+    cursor: pointer;
 }
 #main-title{
     color: var(--main-title-color);
     margin-bottom: 0px;
     height: 34px;
+    cursor: pointer;
 }
 #main-version{
     padding-left: 5px;
@@ -78,21 +80,25 @@ img.title_close_button:hover{
     background-color: sandybrown;
     outline-style: none;
     border-radius: 4px;
+    cursor: pointer;
 }
 #sub-title{
     color:var(--sub-title-color);
     margin-left: 15px;
     font-size: 50%;
+    cursor: pointer;
 }
 #link-title{
     margin-left:25px;
     margin-top: 0px;
     font-size: 25%;
     font-weight: bolder;
+    cursor: pointer;
 }
 #time{
     height: 50px;
     float: right;
+    cursor: pointer;
 }
 
 .error-dialog {
@@ -208,6 +214,19 @@ img.title_close_button:hover{
     color: var(--detail-dt-color);
     margin-left: 10px;
     /*white-space: normal;word-break: break-all;word-wrap: break-word;*/
+}
+
+.detail .copy {
+    margin: 5px;
+    padding-left: 5px;
+    padding-right: 5px;
+    outline-style: none;
+    border-radius: 4px;
+    color:sandybrown;
+    opacity: 0.5;
+}
+.detail .copy:hover {
+    opacity: 1;
 }
 
 .detail .message {

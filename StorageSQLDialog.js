@@ -172,36 +172,39 @@ function storageSqlDialog(sql, editer, type){
     let rename = document.createElement("div");
     rename.className = "button";
     rename.innerText = "重命名";
-    rename.onclick = function(){
+    rename.onclick = function() {
         let name = $("sql-Manager-Content-name");
-        let newname = prompt("请输入新的脚本名称:");
-        let storage = window.localStorage;
-        let sqllist = JSON.parse(storage.getItem(__CONFIGS__.STORAGE.SCRIPTS));
-        let exist = false;
-        for (sqlname in sqllist) {
-            if (sqlname == newname.trim()) {
-                exist = true;
-                break;
-            }
-        }
-        if (!exist) {
-            if (name.value != "" && newname.trim() != "") {
-                let tmp = {};
-                for (sqlname in sqllist) {
-                    if (sqlname == name.value) {
-                        tmp[newname] = sqllist[sqlname];
-                    } else {
-                        tmp[sqlname] = sqllist[sqlname];
-                    }
+        UI.prompt.show("输入", {"新的脚本名称": name.value}, document.body, function (args, values) {
+            let newname = values["新的脚本名称"];
+            let name = args["name"];
+            let storage = window.localStorage;
+            let sqllist = JSON.parse(storage.getItem(__CONFIGS__.STORAGE.SCRIPTS));
+            let exist = false;
+            for (sqlname in sqllist) {
+                if (sqlname == newname.trim()) {
+                    exist = true;
+                    break;
                 }
-                storage.setItem(__CONFIGS__.STORAGE.SCRIPTS, JSON.stringify(tmp));
-                getSQLList($("sql-Manager-Content-table"));
-                $("table-container").style.display = "block";
-                $("edit-container").style.display = "none";
-                name.value = newname;
             }
-        } else
-            alert("名称 " + newname + " 已经存在，请重新命名.")
+            if (!exist) {
+                if (name.value != "" && newname.trim() != "") {
+                    let tmp = {};
+                    for (sqlname in sqllist) {
+                        if (sqlname == name.value) {
+                            tmp[newname] = sqllist[sqlname];
+                        } else {
+                            tmp[sqlname] = sqllist[sqlname];
+                        }
+                    }
+                    storage.setItem(__CONFIGS__.STORAGE.SCRIPTS, JSON.stringify(tmp));
+                    getSQLList($("sql-Manager-Content-table"));
+                    $("table-container").style.display = "block";
+                    $("edit-container").style.display = "none";
+                    name.value = newname;
+                }
+            } else
+                UI.alert.show("提示", "名称 " + newname + " 已经存在，请重新命名.")
+        }, {name: name});
     };
     tool.appendChild(rename);
 
@@ -246,38 +249,38 @@ function storageSqlDialog(sql, editer, type){
                         let sqllist = js.backup;
                         let hash = js.hash;
                         if (JSON.stringify(sqllist).hex_md5_hash() === hash) {
-                            if (confirm("文件名称:" + file.name + "\n"
-                                + "文件大小:" + file.size + " bytes\n"
-                                + "文件类型:" + file.type + "\n"
-                                + "数据来源:" + js.appName + "\n"
-                                + "校验代码:" + hash + "\n"
-                                + "备份时间:" + ((typeof js.date) == "undefined"? file.lastModified.Format("yyyy-MM-dd hh:mm:ss.S"): js.date) + "\n\n"
-                                + "您确定使用上述备份文件覆盖当前存储的所有脚本吗?")) {
+                            UI.confirm.show("警告", "<span style='font-size:50%;'>文件名称:&emsp;" + file.name + "<br>"
+                                + "文件大小:&emsp;" + file.size + " bytes<br>"
+                                + "文件类型:&emsp;" + file.type + "<br>"
+                                + "数据来源:&emsp;" + js.appName + "<br>"
+                                + "校验代码:&emsp;" + hash + "<br>"
+                                + "备份时间:&emsp;" + ((typeof js.date) == "undefined" ? file.lastModified.Format("yyyy-MM-dd hh:mm:ss.S") : js.date) + "</span><br><br>"
+                                + "您确定使用上述备份文件覆盖当前存储的所有脚本吗?", document.body, function (args) {
                                 let storage = window.localStorage;
-                                storage.setItem(__CONFIGS__.STORAGE.SCRIPTS, JSON.stringify(sqllist));
+                                storage.setItem(__CONFIGS__.STORAGE.SCRIPTS, JSON.stringify(args.sqllist));
                                 getSQLList($("sql-Manager-Content-table"));
                                 $("table-container").style.display = "block";
                                 $("edit-container").style.display = "none";
-                            }
+                            }, {sqllist: sqllist});
                         } else {
-                            alert("文件名称:" + file.name + "\n"
-                                + "文件大小:" + file.size + " Bytes\n"
-                                + "文件类型:" + file.type + "\n"
-                                + "数据来源:" + js.appName + "\n"
-                                + "校验代码:" + hash + "\n"
-                                + "备份时间:" + ((typeof js.date) == "undefined"? file.lastModified.Format("yyyy-MM-dd hh:mm:ss.S"): js.date) + "\n\n"
+                            UI.alert.show("提示", "<span style='font-size:50%;'>文件名称:&emsp;" + file.name + "<br>"
+                                + "文件大小:&emsp;" + file.size + " Bytes<br>"
+                                + "文件类型:&emsp;" + file.type + "<br>"
+                                + "数据来源:&emsp;" + js.appName + "<br>"
+                                + "校验代码:&emsp;" + hash + "<br>"
+                                + "备份时间:&emsp;" + ((typeof js.date) == "undefined" ? file.lastModified.Format("yyyy-MM-dd hh:mm:ss.S") : js.date) + "</span><br><br>"
                                 + "备份文件校验错误!")
                         }
                     }catch (e) {
-                        alert("文件名称:" + file.name + "\n"
-                            + "文件大小:" + file.size + " Bytes\n"
-                            + "文件类型:" + file.type + "\n\n"
+                        UI.alert.show("提示","<span style='font-size:50%;'>文件名称:&emsp;" + file.name + "<br>"
+                            + "文件大小:&emsp;" + file.size + " Bytes<br>"
+                            + "文件类型:&emsp;" + file.type + "</span><br><br>"
                             + "该文件不是标准化的备份文件,请重新选择!")
                     }
                 };
                 reader.readAsText(file, __SQLEDITOR__.charset.options[__SQLEDITOR__.charset.value]);
             } catch (e) {
-                alert("请选择需要导入的文件.")
+                UI.alert.show("提示","请选择需要导入的文件.")
             }
         } else {
             showMessage("本应用适用于Chrome或Edge浏览器。")

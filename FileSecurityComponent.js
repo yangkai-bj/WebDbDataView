@@ -50,7 +50,7 @@ function getFileSecurity() {
             "<span>Hash</span><code>" + hash + "</code>\n" +
             "<span>创建时间</span><code>" + time + "</code><span>期限</span><code>" + validPeriod + "</code>\n" +
             "</div>\n" +
-            "<h6>技术支持: 杨凯&emsp;电话: (010)63603329&emsp;邮箱: <a href='mailto:yangkai.bj@ccb.com'>yangkai.bj@ccb.com</a></h6>\n" +
+            "<h6>适用于<a href = 'https://www.google.cn/chrome/index.html' target='_blank'>Google Chrome</a>或<a href = 'https://www.microsoft.com/zh-cn/edge?form=MY01BV&OCID=MY01BV&r=1' target='_blank'>Microsoft Edge</a>浏览器&emsp;技术支持: 杨凯&emsp;电话: (010)63603329&emsp;邮箱: <a href='mailto:yangkai.bj@ccb.com'>yangkai.bj@ccb.com</a></h6>\n" +
             "</body>\n" +
             "</html>";
     }
@@ -665,155 +665,22 @@ function getFileSecurity() {
         if (server.time != null) {
             let files = $("source-encrypt-file").files;
             if (files.length > 0) {
-                let pattern = /^.*(?=.{8,})(?=.*\d{1,7})(?=.*[A-Za-z]{1,7}).*$/
-                //必须是8位密码,且必须包含字符和数字
-                let key = prompt("请输入8位加密密码:");
-                if (key != prompt("请再次输入加密密码:")) {
-                    alert("两次密码输入不一致.");
-                } else if (pattern.test(key) == false) {
-                    alert("请输入8位密码,且必须包含英文字母和数字.");
-                } else {
-                    let mode = $("encrypt-mode").value;
-                    for (let i = 0; i < files.length; i++) {
-                        let file = files[i];
-                        let deinfs = [];
-                        if ($(file.name).getElementsByClassName("file-check")[0].checked == true && key.length > 0) {
-                            $(file.name).getElementsByClassName("file-comment")[0].innerText = "队列等候...";
-                            try {
-                                if (file.size <= 20 * 1024 * 1024) {
-                                    let reader = new FileReader();
-                                    reader.readAsBinaryString(file);
-                                    reader.onloadstart = function () {
-                                        $(file.name).getElementsByClassName("file-comment")[0].innerText = "正在加密...";
-                                    };
-                                    reader.onload = function () {
-                                        let deinf = {};
-                                        let expiryDate = {
-                                            server: server.server,
-                                            startDate: server.time,
-                                            validPeriod: Number($("encrypt-expiry-date").value),
-                                            timestamp: new Date().format("yyyyMMddhhmmssS")
-                                        };
-                                        if (key.length > 0 && key != null) {
-                                            let js = {
-                                                application: {
-                                                    link: "<a href='" + window.location.href.split("?")[0] + "'>" + __VERSION__.name + "</a>",
-                                                    version: __VERSION__.version,
-                                                    help: __VERSION__.url
-                                                },
-                                                mode: mode,
-                                                expiry: {},
-                                                files: []
-                                            };
-                                            let infor = fileEncrypt(js, this.result, key, file.name, file.type, file.size, mode, expiryDate);
-                                            let endDate = new Date(expiryDate.startDate);
-                                            endDate.setDate(endDate.getDate() + expiryDate.validPeriod);
-                                            $(file.name).getElementsByClassName("file-expiryDate")[0].innerText = (expiryDate.validPeriod == 0 ? "长期" : endDate.format("yyyy-MM-dd"));
-                                            for (let name in infor) {
-                                                let toname = "";
-                                                switch (name) {
-                                                    case "name":
-                                                        toname = "文件名称";
-                                                        deinf[toname] = {value: infor[name], textAlign: "left"};
-                                                        break;
-                                                    case "type":
-                                                        toname = "文件类型";
-                                                        deinf[toname] = {value: infor[name], textAlign: "left"};
-                                                        break;
-                                                    case "size":
-                                                        toname = "文件大小";
-                                                        deinf[toname] = {value: infor[name], textAlign: "right"};
-                                                        break;
-                                                    case "hash1":
-                                                        toname = "原文校验";
-                                                        deinf[toname] = {value: infor[name], textAlign: "left"};
-                                                        break;
-                                                    case "hash2":
-                                                        toname = "密文校验";
-                                                        deinf[toname] = {value: infor[name], textAlign: "left"};
-                                                        break;
-                                                    case "commit":
-                                                        toname = "执行情况";
-                                                        infor.commit = (infor.commit ? "加密成功" : "加密失败");
-                                                        deinf[toname] = {value: infor[name], textAlign: "center"};
-                                                        break;
-                                                    case "error":
-                                                        toname = "错误信息";
-                                                        deinf[toname] = {value: infor[name], textAlign: "left"};
-                                                        break;
-                                                }
-                                            }
-                                            deinfs.push(deinf);
-                                            $(file.name).getElementsByClassName("file-comment")[0].innerText = infor.commit;
-                                            $(file.name).getElementsByClassName("file-comment")[0].title = "点击获取详细信息";
-                                            $(file.name).getElementsByClassName("file-comment")[0].setAttribute("en-de-infors", JSON.stringify(deinfs));
-                                        } else
-                                            $(file.name).getElementsByClassName("file-comment")[0].innerText = "请输入8位加密密码!";
-                                    }
-                                } else
-                                    $(file.name).getElementsByClassName("file-comment")[0].innerText = "明文不能大于20MB.";
-                            } catch (e) {
-                                $(file.name).getElementsByClassName("file-comment")[0].innerText = e;
-                            }
-                            sleep(1000);
-                        }
-                    }
-                }
-            }
-        } else {
-            alert("连接授时服务器失败,不能执行文件加密操作.");
-        }
-    };
-    tool.appendChild(encrypt);
-
-    let encryptToPacket = document.createElement("div");
-    encryptToPacket.className = "button";
-    encryptToPacket.innerText = "打包加密";
-    encryptToPacket.onclick = function () {
-        $("table-container").style.display = "block";
-        $("infor-container").style.display = "none";
-        let tb = $("file-encrypt-decrypt").getElementsByClassName("tabButton");
-        for(let i =0;i<tb.length;i++){
-            tb[i].style.background = "var(--toolbar-background-color)";
-        }
-        tb[0].style.background = "var(--toolbar-button-hover-background-color)";
-
-        let server = {server: __XMLHTTP__.server, time: __XMLHTTP__.time, url: __XMLHTTP__.url};
-        if (server.time != null) {
-            let files = $("source-encrypt-file").files;
-            if (files.length > 0) {
-                let checkedAll = {
-                    count: 0,
-                    size: 0
-                };
-                for (let i = 0; i < files.length; i++) {
-                    let file = files[i];
-                    let fc = $(file.name).getElementsByClassName("file-check")[0];
-                    if (fc.checked == true) {
-                        checkedAll.count++;
-                        checkedAll.size += files[i].size;
-                    }
-                }
-                if (checkedAll.size <= 20 * 1024 * 1024) {
-                    let pattern = /^.*(?=.{8,})(?=.*\d{1,7})(?=.*[A-Za-z]{1,7}).*$/;
+                UI.password.show("文件加密", {
+                    "加密密码": "请输入8位密码,且必须包含英文字母和数字.",
+                    "再次输入": ""
+                }, document.body, function (args, values) {
+                    let pattern = /^.*(?=.{8,})(?=.*\d{1,7})(?=.*[A-Za-z]{1,7}).*$/
                     //必须是8位密码,且必须包含字符和数字
-                    let key = prompt("请输入8位加密密码:");
-                    if (key != prompt("请再次输入加密密码:")) {
-                        alert("两次密码输入不一致.");
+                    let key = values["加密密码"];
+                    if (key != values["再次输入"]) {
+                        UI.alert.show("提示", "两次密码输入不一致.");
                     } else if (pattern.test(key) == false) {
-                        alert("请输入8位密码,且必须包含英文字母和数字.");
+                        UI.alert.show("提示", "请输入8位密码,且必须包含英文字母和数字.");
                     } else {
-                        let pkname = prompt("请输入打包文件名称:");
                         let mode = $("encrypt-mode").value;
-                        let js = {
-                            application: {link: "<a href='" + window.location.href.split("?")[0] + "'>" + __VERSION__ .name + "</a>", version:__VERSION__.version, help: __VERSION__.url},
-                            mode: mode,
-                            expiry: {},
-                            files: []
-                        };
-
                         for (let i = 0; i < files.length; i++) {
                             let file = files[i];
+                            let deinfs = [];
                             if ($(file.name).getElementsByClassName("file-check")[0].checked == true && key.length > 0) {
                                 $(file.name).getElementsByClassName("file-comment")[0].innerText = "队列等候...";
                                 try {
@@ -821,10 +688,9 @@ function getFileSecurity() {
                                         let reader = new FileReader();
                                         reader.readAsBinaryString(file);
                                         reader.onloadstart = function () {
-                                            $(file.name).getElementsByClassName("file-comment")[0].innerText = "正在加密....";
+                                            $(file.name).getElementsByClassName("file-comment")[0].innerText = "正在加密...";
                                         };
                                         reader.onload = function () {
-                                            let deinfs = [];
                                             let deinf = {};
                                             let expiryDate = {
                                                 server: server.server,
@@ -832,8 +698,18 @@ function getFileSecurity() {
                                                 validPeriod: Number($("encrypt-expiry-date").value),
                                                 timestamp: new Date().format("yyyyMMddhhmmssS")
                                             };
-                                            if (key.length > 0) {
-                                                let infor = filesEncrypt(js, this.result, key, file.name, file.type, file.size, mode, expiryDate);
+                                            if (key.length > 0 && key != null) {
+                                                let js = {
+                                                    application: {
+                                                        link: "<a href='" + window.location.href.split("?")[0] + "'>" + __VERSION__.name + "</a>",
+                                                        version: __VERSION__.version,
+                                                        help: __VERSION__.url
+                                                    },
+                                                    mode: mode,
+                                                    expiry: {},
+                                                    files: []
+                                                };
+                                                let infor = fileEncrypt(js, this.result, key, file.name, file.type, file.size, mode, expiryDate);
                                                 let endDate = new Date(expiryDate.startDate);
                                                 endDate.setDate(endDate.getDate() + expiryDate.validPeriod);
                                                 $(file.name).getElementsByClassName("file-expiryDate")[0].innerText = (expiryDate.validPeriod == 0 ? "长期" : endDate.format("yyyy-MM-dd"));
@@ -872,34 +748,199 @@ function getFileSecurity() {
                                                     }
                                                 }
                                                 deinfs.push(deinf);
-
                                                 $(file.name).getElementsByClassName("file-comment")[0].innerText = infor.commit;
                                                 $(file.name).getElementsByClassName("file-comment")[0].title = "点击获取详细信息";
                                                 $(file.name).getElementsByClassName("file-comment")[0].setAttribute("en-de-infors", JSON.stringify(deinfs));
-                                                sleep((file.size / 1024 / 1024 <= 1 ? 1 : file.size / 1024 / 1024) * 1000);
-                                            }
-                                            if (js.files.length == checkedAll.count) {
-                                                let time = expiryDate.startDate.format("yyyy-MM-dd hh:mm:ss");
-                                                let validPeriod = (expiryDate.validPeriod == 0 ? "长期" : expiryDate.validPeriod + "天");
-                                                let blob = new Blob([str2ab(getHTML((pkname.length > 0 ? pkname : "未命名"), js, JSON.stringify(js).hex_md5_hash(), time, validPeriod))], {type: "text/html"});
-                                                openDownloadDialog(blob, (pkname.length > 0 ? pkname : "未命名") + ".encrypted.html");
-                                            }
+                                            } else
+                                                $(file.name).getElementsByClassName("file-comment")[0].innerText = "请输入8位加密密码!";
                                         }
                                     } else
                                         $(file.name).getElementsByClassName("file-comment")[0].innerText = "明文不能大于20MB.";
                                 } catch (e) {
                                     $(file.name).getElementsByClassName("file-comment")[0].innerText = e;
                                 }
+                                sleep(1000);
                             }
                         }
                     }
+                }, {});
+            }
+        } else {
+            UI.alert.show("提示","连接授时服务器失败,不能执行文件加密操作.");
+        }
+    };
+    tool.appendChild(encrypt);
+
+    let encryptToPacket = document.createElement("div");
+    encryptToPacket.className = "button";
+    encryptToPacket.innerText = "打包加密";
+    encryptToPacket.onclick = function () {
+        $("table-container").style.display = "block";
+        $("infor-container").style.display = "none";
+        let tb = $("file-encrypt-decrypt").getElementsByClassName("tabButton");
+        for (let i = 0; i < tb.length; i++) {
+            tb[i].style.background = "var(--toolbar-background-color)";
+        }
+        tb[0].style.background = "var(--toolbar-button-hover-background-color)";
+
+        let server = {server: __XMLHTTP__.server, time: __XMLHTTP__.time, url: __XMLHTTP__.url};
+        if (server.time != null) {
+            let files = $("source-encrypt-file").files;
+            if (files.length > 0) {
+                let checkedAll = {
+                    count: 0,
+                    size: 0
+                };
+                for (let i = 0; i < files.length; i++) {
+                    let file = files[i];
+                    let fc = $(file.name).getElementsByClassName("file-check")[0];
+                    if (fc.checked == true) {
+                        checkedAll.count++;
+                        checkedAll.size += files[i].size;
+                    }
+                }
+                if (checkedAll.size <= 20 * 1024 * 1024) {
+                    UI.password.show("文件加密", {
+                        "加密密码": "请输入8位密码,且必须包含英文字母和数字.",
+                        "再次输入": ""
+                    }, document.body, function (args, values) {
+                        let pattern = /^.*(?=.{8,})(?=.*\d{1,7})(?=.*[A-Za-z]{1,7}).*$/;
+                        //必须是8位密码,且必须包含字符和数字
+                        let key = values["加密密码"];
+                        if (key !== values["再次输入"]) {
+                            UI.alert.show("提示", "两次密码输入不一致.");
+                        } else if (pattern.test(key) == false) {
+                            UI.alert.show("提示", "请输入8位密码,且必须包含英文字母和数字.");
+                        } else {
+                            UI.prompt.show("输入", {"打包文件名称": ""}, document.body, function (args, values) {
+                                let pkname = values["打包文件名称"];
+                                let mode = args["mode"];
+                                let js = args["js"];
+                                let files = args["files"];
+                                for (let i = 0; i < files.length; i++) {
+                                    let file = files[i];
+                                    if ($(file.name).getElementsByClassName("file-check")[0].checked == true && key.length > 0) {
+                                        $(file.name).getElementsByClassName("file-comment")[0].innerText = "队列等候...";
+                                        try {
+                                            if (file.size <= 20 * 1024 * 1024) {
+                                                let reader = new FileReader();
+                                                reader.readAsBinaryString(file);
+                                                reader.onloadstart = function () {
+                                                    $(file.name).getElementsByClassName("file-comment")[0].innerText = "正在加密....";
+                                                };
+                                                reader.onload = function () {
+                                                    let deinfs = [];
+                                                    let deinf = {};
+                                                    let expiryDate = {
+                                                        server: server.server,
+                                                        startDate: server.time,
+                                                        validPeriod: Number($("encrypt-expiry-date").value),
+                                                        timestamp: new Date().format("yyyyMMddhhmmssS")
+                                                    };
+                                                    if (key.length > 0) {
+                                                        let infor = filesEncrypt(js, this.result, key, file.name, file.type, file.size, mode, expiryDate);
+                                                        let endDate = new Date(expiryDate.startDate);
+                                                        endDate.setDate(endDate.getDate() + expiryDate.validPeriod);
+                                                        $(file.name).getElementsByClassName("file-expiryDate")[0].innerText = (expiryDate.validPeriod == 0 ? "长期" : endDate.format("yyyy-MM-dd"));
+                                                        for (let name in infor) {
+                                                            let toname = "";
+                                                            switch (name) {
+                                                                case "name":
+                                                                    toname = "文件名称";
+                                                                    deinf[toname] = {
+                                                                        value: infor[name],
+                                                                        textAlign: "left"
+                                                                    };
+                                                                    break;
+                                                                case "type":
+                                                                    toname = "文件类型";
+                                                                    deinf[toname] = {
+                                                                        value: infor[name],
+                                                                        textAlign: "left"
+                                                                    };
+                                                                    break;
+                                                                case "size":
+                                                                    toname = "文件大小";
+                                                                    deinf[toname] = {
+                                                                        value: infor[name],
+                                                                        textAlign: "right"
+                                                                    };
+                                                                    break;
+                                                                case "hash1":
+                                                                    toname = "原文校验";
+                                                                    deinf[toname] = {
+                                                                        value: infor[name],
+                                                                        textAlign: "left"
+                                                                    };
+                                                                    break;
+                                                                case "hash2":
+                                                                    toname = "密文校验";
+                                                                    deinf[toname] = {
+                                                                        value: infor[name],
+                                                                        textAlign: "left"
+                                                                    };
+                                                                    break;
+                                                                case "commit":
+                                                                    toname = "执行情况";
+                                                                    infor.commit = (infor.commit ? "加密成功" : "加密失败");
+                                                                    deinf[toname] = {
+                                                                        value: infor[name],
+                                                                        textAlign: "center"
+                                                                    };
+                                                                    break;
+                                                                case "error":
+                                                                    toname = "错误信息";
+                                                                    deinf[toname] = {
+                                                                        value: infor[name],
+                                                                        textAlign: "left"
+                                                                    };
+                                                                    break;
+                                                            }
+                                                        }
+                                                        deinfs.push(deinf);
+
+                                                        $(file.name).getElementsByClassName("file-comment")[0].innerText = infor.commit;
+                                                        $(file.name).getElementsByClassName("file-comment")[0].title = "点击获取详细信息";
+                                                        $(file.name).getElementsByClassName("file-comment")[0].setAttribute("en-de-infors", JSON.stringify(deinfs));
+                                                        sleep((file.size / 1024 / 1024 <= 1 ? 1 : file.size / 1024 / 1024) * 1000);
+                                                    }
+                                                    if (js.files.length == checkedAll.count) {
+                                                        let time = expiryDate.startDate.format("yyyy-MM-dd hh:mm:ss");
+                                                        let validPeriod = (expiryDate.validPeriod == 0 ? "长期" : expiryDate.validPeriod + "天");
+                                                        let blob = new Blob([str2ab(getHTML((pkname.length > 0 ? pkname : "未命名"), js, JSON.stringify(js).hex_md5_hash(), time, validPeriod))], {type: "text/html"});
+                                                        openDownloadDialog(blob, (pkname.length > 0 ? pkname : "未命名") + ".encrypted.html");
+                                                    }
+                                                }
+                                            } else
+                                                $(file.name).getElementsByClassName("file-comment")[0].innerText = "明文不能大于20MB.";
+                                        } catch (e) {
+                                            $(file.name).getElementsByClassName("file-comment")[0].innerText = e;
+                                        }
+                                    }
+                                }
+                            }, {
+                                mode: $("encrypt-mode").value,
+                                js: {
+                                    application: {
+                                        link: "<a href='" + window.location.href.split("?")[0] + "'>" + __VERSION__.name + "</a>",
+                                        version: __VERSION__.version,
+                                        help: __VERSION__.url
+                                    },
+                                    mode: $("encrypt-mode").value,
+                                    expiry: {},
+                                    files: []
+                                },
+                                files: files
+                            });
+                        }
+                    }, {});
                 }
                 else {
-                    alert("明文累计不能大于20MB.");
+                    UI.alert.show("提示", "明文累计不能大于20MB.");
                 }
             }
         } else {
-            alert("连接授时服务器失败,不能执行文件加密操作.");
+            UI.alert.show("提示", "连接授时服务器失败,不能执行文件加密操作.");
         }
     };
     tool.appendChild(encryptToPacket);
@@ -920,92 +961,94 @@ function getFileSecurity() {
         if (server.time != null) {
             let files = $("source-encrypt-file").files;
             if (files.length > 0) {
-                let key = prompt("请输入解密密码:");
-                for (let i = 0; i < files.length; i++) {
-                    let file = files[i];
-                    if ($(file.name).getElementsByClassName("file-check")[0].checked == true && key.length > 0) {
-                        $(file.name).getElementsByClassName("file-comment")[0].innerText = "队列等候...";
-                        try {
-                            let reader = new FileReader();
-                            reader.readAsBinaryString(file);
-                            reader.onloadstart = function () {
-                                $(file.name).getElementsByClassName("file-comment")[0].innerText = "正在解密...";
-                            };
-                            reader.onload = function () {
-                                if (key.length > 0) {
-                                    let deinfs = [];
-                                    let reg = new RegExp(/\<code>(.*)\<\/code>/, "g");
-                                    let codes = this.result.match(reg);
-                                    let infors = null;
-                                    if (codes != null) {
-                                        if (codes.length >= 2) {
-                                            let ciphertext = codes[0];
-                                            let hash = codes[1];
-                                            ciphertext = ciphertext.substring(ciphertext.indexOf("<code>") + 6, ciphertext.indexOf("</code>"));
-                                            hash = hash.substring(hash.indexOf("<code>") + 6, hash.indexOf("</code>"));
-                                            if (ciphertext.hex_md5_hash() == hash)
-                                                infors = fileDecrypt(file.name, ciphertext, key, server);
-                                            else
-                                                $(file.name).getElementsByClassName("file-comment")[0].innerText = "密文校验失败,文件或被篡改";
-                                        } else {
-                                            $(file.name).getElementsByClassName("file-comment")[0].innerText = "该文档非加密文件";
-                                        }
-                                    } else {
-                                        infors = fileDecrypt(file.name, this.result, key, server);
-                                        //$(file.name).getElementsByClassName("file-comment")[0].innerText = "该文档非加密文件";
-                                    }
-                                    for (let i = 0; i < infors.length; i++) {
-                                        let deinf = {};
-                                        let infor = infors[i];
-                                        for (let name in infor) {
-                                            let toname = "";
-                                            switch (name) {
-                                                case "name":
-                                                    toname = "文件名称";
-                                                    deinf[toname] = {value: infor[name], textAlign: "left"};
-                                                    break;
-                                                case "type":
-                                                    toname = "文件类型";
-                                                    deinf[toname] = {value: infor[name], textAlign: "left"};
-                                                    break;
-                                                case "size":
-                                                    toname = "文件大小";
-                                                    deinf[toname] = {value: infor[name], textAlign: "right"};
-                                                    break;
-                                                case "hash1":
-                                                    toname = "原文校验";
-                                                    deinf[toname] = {value: infor[name], textAlign: "left"};
-                                                    break;
-                                                case "hash2":
-                                                    toname = "密文校验";
-                                                    deinf[toname] = {value: infor[name], textAlign: "left"};
-                                                    break;
-                                                case "commit":
-                                                    toname = "执行情况";
-                                                    infor.commit = (infor.commit ? "解密成功" : "解密失败");
-                                                    deinf[toname] = {value: infor[name], textAlign: "center"};
-                                                    break;
-                                                case "error":
-                                                    toname = "错误信息";
-                                                    deinf[toname] = {value: infor[name], textAlign: "left"};
-                                                    break;
+                UI.password.show("文件解密", {"解密密码": "请输入8位密码,且必须包含英文字母和数字."}, document.body, function (args, values) {
+                    let key = values["解密密码"];
+                    for (let i = 0; i < files.length; i++) {
+                        let file = files[i];
+                        if ($(file.name).getElementsByClassName("file-check")[0].checked == true && key.length > 0) {
+                            $(file.name).getElementsByClassName("file-comment")[0].innerText = "队列等候...";
+                            try {
+                                let reader = new FileReader();
+                                reader.readAsBinaryString(file);
+                                reader.onloadstart = function () {
+                                    $(file.name).getElementsByClassName("file-comment")[0].innerText = "正在解密...";
+                                };
+                                reader.onload = function () {
+                                    if (key.length > 0) {
+                                        let deinfs = [];
+                                        let reg = new RegExp(/\<code>(.*)\<\/code>/, "g");
+                                        let codes = this.result.match(reg);
+                                        let infors = null;
+                                        if (codes != null) {
+                                            if (codes.length >= 2) {
+                                                let ciphertext = codes[0];
+                                                let hash = codes[1];
+                                                ciphertext = ciphertext.substring(ciphertext.indexOf("<code>") + 6, ciphertext.indexOf("</code>"));
+                                                hash = hash.substring(hash.indexOf("<code>") + 6, hash.indexOf("</code>"));
+                                                if (ciphertext.hex_md5_hash() == hash)
+                                                    infors = fileDecrypt(file.name, ciphertext, key, server);
+                                                else
+                                                    $(file.name).getElementsByClassName("file-comment")[0].innerText = "密文校验失败,文件或被篡改";
+                                            } else {
+                                                $(file.name).getElementsByClassName("file-comment")[0].innerText = "该文档非加密文件";
                                             }
+                                        } else {
+                                            infors = fileDecrypt(file.name, this.result, key, server);
+                                            //$(file.name).getElementsByClassName("file-comment")[0].innerText = "该文档非加密文件";
                                         }
-                                        deinfs.push(deinf);
-                                    }
-                                    $(file.name).getElementsByClassName("file-comment")[0].title = ($(file.name).getElementsByClassName("file-comment")[0].innerText + "\n点击获取详细信息");
-                                    $(file.name).getElementsByClassName("file-comment")[0].setAttribute("en-de-infors", JSON.stringify(deinfs));
-                                } else
-                                    $(file.name).getElementsByClassName("file-comment")[0].innerText = "请输入解密密码";
+                                        for (let i = 0; i < infors.length; i++) {
+                                            let deinf = {};
+                                            let infor = infors[i];
+                                            for (let name in infor) {
+                                                let toname = "";
+                                                switch (name) {
+                                                    case "name":
+                                                        toname = "文件名称";
+                                                        deinf[toname] = {value: infor[name], textAlign: "left"};
+                                                        break;
+                                                    case "type":
+                                                        toname = "文件类型";
+                                                        deinf[toname] = {value: infor[name], textAlign: "left"};
+                                                        break;
+                                                    case "size":
+                                                        toname = "文件大小";
+                                                        deinf[toname] = {value: infor[name], textAlign: "right"};
+                                                        break;
+                                                    case "hash1":
+                                                        toname = "原文校验";
+                                                        deinf[toname] = {value: infor[name], textAlign: "left"};
+                                                        break;
+                                                    case "hash2":
+                                                        toname = "密文校验";
+                                                        deinf[toname] = {value: infor[name], textAlign: "left"};
+                                                        break;
+                                                    case "commit":
+                                                        toname = "执行情况";
+                                                        infor.commit = (infor.commit ? "解密成功" : "解密失败");
+                                                        deinf[toname] = {value: infor[name], textAlign: "center"};
+                                                        break;
+                                                    case "error":
+                                                        toname = "错误信息";
+                                                        deinf[toname] = {value: infor[name], textAlign: "left"};
+                                                        break;
+                                                }
+                                            }
+                                            deinfs.push(deinf);
+                                        }
+                                        $(file.name).getElementsByClassName("file-comment")[0].title = ($(file.name).getElementsByClassName("file-comment")[0].innerText + "\n点击获取详细信息");
+                                        $(file.name).getElementsByClassName("file-comment")[0].setAttribute("en-de-infors", JSON.stringify(deinfs));
+                                    } else
+                                        $(file.name).getElementsByClassName("file-comment")[0].innerText = "请输入解密密码";
+                                }
+                            } catch (e) {
+                                $(file.name).getElementsByClassName("file-comment")[0].innerText = e;
                             }
-                        } catch (e) {
-                            $(file.name).getElementsByClassName("file-comment")[0].innerText = e;
                         }
                     }
-                }
+                }, {});
             }
         } else {
-            alert("连接授时服务器失败,不能执行文件解密操作.");
+            UI.alert.show("提示","连接授时服务器失败,不能执行文件解密操作.");
         }
     };
     tool.appendChild(decrypt);

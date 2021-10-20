@@ -283,7 +283,7 @@ var DES3 = {
 var NORMAL = {
     encrypt: function(pwd, str) {
         if (pwd == null || pwd.length <= 0) {
-            alert("Please enter a password with which to encrypt the message.");
+            UI.alert.show("提示","Please enter a password with which to encrypt the message.");
             return null;
         }
         let prand = "";
@@ -295,7 +295,7 @@ var NORMAL = {
         let incr = Math.ceil(pwd.length / 2);
         let modu = Math.pow(2, 31) - 1;
         if (mult < 2) {
-            alert("Algorithm cannot find a suitable hash. Please choose a different password. \nPossible considerations are to choose a more complex or longer password.");
+            UI.alert.show("提示","Algorithm cannot find a suitable hash. Please choose a different password. \nPossible considerations are to choose a more complex or longer password.");
             return null;
         }
         let salt = Math.round(Math.random() * 1000000000) % 100000000;
@@ -321,11 +321,11 @@ var NORMAL = {
 
     decrypt: function(pwd, str) {
         if (str == null || str.length < 8) {
-            alert("A salt value could not be extracted from the encrypted message because it's length is too short. The message cannot be decrypted.");
+            UI.alert.show("提示","A salt value could not be extracted from the encrypted message because it's length is too short. The message cannot be decrypted.");
             return;
         }
         if (pwd == null || pwd.length <= 0) {
-            alert("Please enter a password with which to decrypt the message.");
+            UI.alert.show("提示","Please enter a password with which to decrypt the message.");
             return;
         }
         let prand = "";
@@ -576,6 +576,19 @@ Array.prototype.binary2str = function (chrsz){
         str += String.fromCharCode((this[i >> 5] >>> (i % 32)) & mask);
     return str;
 
+}
+
+Array.prototype.getMap = function(ids){
+    let data = [];
+    for(let i = 0;i<this.length;i++){
+        let source = this[i];
+        let tmp = [];
+        for (let index = 0;index<ids.length;index++){
+            tmp.push(source[ids[index]]);
+        }
+        data.push(tmp);
+    }
+    return data;
 }
 
 function str2ab(str) {
@@ -1257,17 +1270,16 @@ function getFileUrlByBase64(dataurl) {
 
 function requestFullScreen(element) {
     //全屏显示,
-    if (__DATASET__.toFullScreen){
-        if (document.cancelFullScreen) {
-            document.cancelFullScreen();
+    if (__CONFIGS__.fullScreen.value){
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
         } else if (document.mozCancelFullScreen) {
             document.mozCancelFullScreen();
         } else if (document.webkitCancelFullScreen) {
             document.webkitCancelFullScreen();
-        } else if (document.msExitFullscreen) {
-            document.msExitFullscreen();
         }
-        return false;
+        __CONFIGS__.fullScreen.element = null;
+        __CONFIGS__.fullScreen.value = false;
     } else {
         if (element.requestFullscreen){
             element.requestFullscreen();
@@ -1280,10 +1292,7 @@ function requestFullScreen(element) {
         else if (element.webkitRequestFullScreen) {
             element.webkitRequestFullScreen();
         }
-        //IE11
-        else if (element.msRequestFullscreen) {
-            element.msRequestFullscreen();
-        }
-        return true;
+        __CONFIGS__.fullScreen.element = element;
+        __CONFIGS__.fullScreen.value = true;
     }
 }

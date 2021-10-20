@@ -1,7 +1,7 @@
-var __VERSION__ = {
+const __VERSION__ = {
     name: "Web DataView for SQLite Database of browser",
-    version: "2.5.7",
-    date: "2021/09/18",
+    version: "2.6.2",
+    date: "2021/10/20",
     comment: [
         "-- 2021/03/08",
         "优化算法和压缩代码.",
@@ -49,13 +49,462 @@ var __VERSION__ = {
         "Echarts 5.1.2.",
         "-- 2021/08/12",
         "增加固定报表.",
-        "-- 2021/09/18",
-        "Echarts 5.2.0.",
+        "-- 2021/09/22",
+        "Echarts 5.2.1.",
+        "-- 2021/10/08",
+        "优化EchartsView.",
+        "-- 2021/10/15",
+        "导出XML报表.",
+        "-- 2021/10/18",
+        "增加UI组件.",
     ],
     author: __SYS_LOGO_LINK__.author.decode(),
     url: __SYS_LOGO_LINK__.link.decode(),
     tel: __SYS_LOGO_LINK__.tel.decode(),
-    email: __SYS_LOGO_LINK__.email.decode(),
+    email: __SYS_LOGO_LINK__.email.decode()
+};
+
+var UI = {
+    alert: {
+        title: null,
+        message: null,
+        show: function (title, message, parent) {
+            this.title = title;
+            this.message = message;
+            let container = document.createElement("div");
+            container.id = container.className = "ui_alert";
+            container.style.cssText = "position:fixed;left:0px;top:0px;width:100%;height:100%;background：rgba(0,0,0,0.5);z-index:9999";
+            if (__CONFIGS__.fullScreen.value) {
+                parent = __CONFIGS__.fullScreen.element;
+            } else if (typeof parent === "undefined") {
+                parent = document.body;
+            }
+            parent.appendChild(container);
+            let content = document.createElement("div");
+            content.style.cssText = "margin: 0;position: absolute;top: 50%;left: 50%;" +
+                "-ms-transform: translate(-50%, -50%);transform: translate(-50%, -50%);" +
+                "width:400px;background-color:white;" +
+                "border: 2px solid var(--main-border-color);border-radius: 5px;padding:10px";
+            container.appendChild(content);
+            let t = document.createElement("div");
+            t.style.cssText = "color: var(--toolbar-color);" +
+                "background-color: var(--toolbar-background-color);" +
+                "cursor: pointer;" +
+                "border-bottom: 1px solid var(--main-border-color);" +
+                "border-radius: 10px;";
+            let span = document.createElement("span");
+            span.innerHTML = this.title;
+            span.style.cssText = "padding:10px;";
+            t.appendChild(span);
+            content.appendChild(t);
+            let br = document.createElement("hr");
+            br.style.cssText = "height:1px;" +
+                "border-width:0;" +
+                "color:gray;" +
+                "background-color:#00A7AA;" +
+                "width: 100%;";
+            content.appendChild(br);
+            let item = document.createElement("div");
+            item.style.cssText = "width:100%;";
+            let image = document.createElement("img");
+            image.src = __SYS_IMAGES__.logo_mysql.image;
+            image.size = "30% auto";
+            image.attachment = "fixed";
+            image.style.cssText = "width:30%;float: left;" +
+                "text-align: center;" +
+                "font-size: 90%;" +
+                "background-color: transparent;" +
+                "color: var(--main-title-color);";
+            item.appendChild(image);
+            let msg = document.createElement("span");
+            msg.style.cssText = "cursor: pointer;" +
+                "width:70%;" +
+                "float: left;" +
+                "white-space: auto;"+
+                "text-overflow: ellipsis;" +
+                "-o-text-overflow: ellipsis;" +
+                "color: var(--main-title-color);" +
+                "line-height: 1.1;" +
+                "display: inline-block;" +
+                "vertical-align: middle;" +
+                "text-align: left;" +
+                "font-size: 100%;" +
+                "background-color: transparent;" +
+                "color: var(--main-title-color);" +
+                "min-height: 100px;";
+            msg.innerHTML = message;
+            item.appendChild(msg);
+            content.appendChild(item);
+
+            br = document.createElement("hr");
+            br.style.cssText = "height:1px;\n" +
+                "border-width:0;\n" +
+                "color:gray;\n" +
+                "background-color:#00A7AA;\n" +
+                "width: 100%;";
+            content.appendChild(br);
+
+            let tools = document.createElement("div");
+            tools.style.width = "90%";
+            content.appendChild(tools);
+            let button = document.createElement("button");
+            button.innerText = "确定";
+            button.style.cssFloat = "right";
+            button.onclick = function () {
+                parent.removeChild($("ui_alert"));
+            };
+            tools.appendChild(button);
+        },
+    },
+    confirm:{
+        title: null,
+        message: null,
+        show: function (title, message, parent = document.body, callback, args) {
+            //callback:回调函数,
+            //args:回调函数参数,根据实际需要可以不传递\可以是单一参数\可以是数组\可以是对象.
+            this.title = title;
+            this.message = message;
+            let container = document.createElement("div");
+            container.id = container.className = "ui_confirm";
+            container.style.cssText = "position:fixed;left:0px;top:0px;width:100%;height:100%;background：rgba(0,0,0,0.5);z-index:9999";
+            if (__CONFIGS__.fullScreen.value) {
+                parent = __CONFIGS__.fullScreen.element;
+            } else if (typeof parent === "undefined") {
+                parent = document.body;
+            }
+            parent.appendChild(container);
+            let content = document.createElement("div");
+            content.style.cssText = "margin: 0;position: absolute;top: 50%;left: 50%;" +
+                "-ms-transform: translate(-50%, -50%);transform: translate(-50%, -50%);" +
+                "width:400px;background-color:white;opacity:1.5;" +
+                "border: 2px solid var(--main-border-color);border-radius: 5px;padding:10px";
+            container.appendChild(content);
+            let t = document.createElement("div");
+            t.style.cssText = "color: var(--toolbar-color);" +
+                "background-color: var(--toolbar-background-color);" +
+                "cursor: pointer;" +
+                "border-bottom: 1px solid var(--main-border-color);" +
+                "border-radius: 10px;";
+            let span = document.createElement("span");
+            span.innerHTML = this.title;
+            span.style.cssText = "padding:10px;";
+            t.appendChild(span);
+            content.appendChild(t);
+            let br = document.createElement("hr");
+            br.style.cssText = "height:1px;" +
+                "border-width:0;" +
+                "color:gray;" +
+                "background-color:#00A7AA;" +
+                "width: 100%;";
+            content.appendChild(br);
+            let item = document.createElement("div");
+            item.style.cssText = "width:100%;";
+            let image = document.createElement("img");
+            image.src = __SYS_IMAGES__.logo_mysql.image;
+            image.size = "30% auto";
+            image.attachment = "fixed";
+            image.style.cssText = "width:30%;float: left;" +
+                "text-align: center;" +
+                "font-size: 90%;" +
+                "background-color: transparent;" +
+                "color: var(--main-title-color);";
+            item.appendChild(image);
+            let msg = document.createElement("span");
+            msg.style.cssText = "cursor: pointer;" +
+                "width:70%;" +
+                "float: left;" +
+                "white-space: auto;"+
+                "text-overflow: ellipsis;" +
+                "-o-text-overflow: ellipsis;" +
+                "color: var(--main-title-color);" +
+                "line-height: 1.1;" +
+                "display: inline-block;" +
+                "vertical-align: middle;" +
+                "text-align: left;" +
+                "font-size: 100%;" +
+                "background-color: transparent;" +
+                "color: var(--main-title-color);" +
+               "min-height: 100px;";
+            msg.innerHTML = message;
+            item.appendChild(msg);
+            content.appendChild(item);
+
+            br = document.createElement("hr");
+            br.style.cssText = "height:1px;\n" +
+                "border-width:0;\n" +
+                "color:gray;\n" +
+                "background-color:#00A7AA;\n" +
+                "width: 100%;";
+            content.appendChild(br);
+
+            let tools = document.createElement("div");
+            tools.style.width = "90%";
+            content.appendChild(tools);
+
+            let button = document.createElement("button");
+            button.innerText = "取消";
+            button.style.cssText = "float: right;margin-left:10px";
+            button.onclick = function () {
+                parent.removeChild($("ui_confirm"));
+            };
+            tools.appendChild(button);
+
+            button = document.createElement("button");
+            button.innerText = "确定";
+            button.style.cssText = "float: right;margin-left:10px";
+            button.onclick = function () {
+                parent.removeChild($("ui_confirm"));
+                if (typeof callback == "function") {
+                    if (typeof args !== "undefined")
+                        callback(args);
+                    else
+                        callback();
+                }
+            };
+            tools.appendChild(button);
+        },
+    },
+    prompt: {
+        title: null,
+        items: {},
+        show: function (title, items, parent, callback, args) {
+            this.title = title;
+            this.items = items;
+            let container = document.createElement("div");
+            container.id = container.className = "ui_prompt";
+            container.style.cssText = "position:fixed;left:0px;top:0px;width:100%;height:100%;background：rgba(0,0,0,0.5);z-index:9999";
+            if (__CONFIGS__.fullScreen.value) {
+                parent = __CONFIGS__.fullScreen.element;
+            } else if (typeof parent === "undefined") {
+                parent = document.body;
+            }
+            parent.appendChild(container);
+            let content = document.createElement("div");
+            content.style.cssText = "margin: 0;position: absolute;top: 50%;left: 50%;" +
+                "-ms-transform: translate(-50%, -50%);transform: translate(-50%, -50%);" +
+                "width:400px;background-color:white;" +
+                "border: 2px solid var(--main-border-color);border-radius: 5px;padding:10px";
+            container.appendChild(content);
+            let t = document.createElement("div");
+            t.style.cssText = "color: var(--toolbar-color);" +
+                "background-color: var(--toolbar-background-color);" +
+                "cursor: pointer;" +
+                "border-bottom: 1px solid var(--main-border-color);" +
+                "border-radius: 10px;";
+            let span = document.createElement("span");
+            span.innerHTML = this.title;
+            span.style.cssText = "padding:10px;";
+            t.appendChild(span);
+            content.appendChild(t);
+            let br = document.createElement("hr");
+            br.style.cssText = "height:1px;\n" +
+                "border-width:0;\n" +
+                "color:gray;\n" +
+                "background-color:#00A7AA;\n" +
+                "width: 100%;";
+            content.appendChild(br);
+            let itemcontent = document.createElement("div");
+            itemcontent.style.cssText = "min-height: 100px;width:100%;";
+            content.appendChild(itemcontent);
+            for (let key in this.items) {
+                let it = items[key];
+                let item = document.createElement("div");
+                item.style.cssText = "width:100%;" +
+                    "min-height: 23px;" +
+                    "vertical-align: middle;";
+                span = document.createElement("span");
+                span.style.cssText = "width:20%;" +
+                    "text-align: left;float: left;" +
+                    "overflow: hidden;" +
+                    "white-space: nowrap;" +
+                    "word-break: keep-all;" +
+                    "text-overflow: ellipsis;" +
+                    "-o-text-overflow: ellipsis;" +
+                    "font-size: 100%;" +
+                    "height:100%;" +
+                    "background-color: transparent;" +
+                    "color: var(--main-title-color);" +
+                    "cursor: pointer;";
+                span.title = key;
+                span.innerText = key + " : ";
+                item.appendChild(span);
+                let input = document.createElement("input");
+                input.className = "ui_prompt_value";
+                input.id = "ui_prompt_value_" + key;
+                input.style.cssText = "width:80%;" +
+                    "height:100%;" +
+                    "float: right;" +
+                    "font-size: 100%;" +
+                    "padding: 0px;" +
+                    "margin: 0px;" +
+                    "background-color: transparent;" +
+                    "color: var(--toolbar-background-color);" +
+                    "outline-style: none;" +
+                    "border:0px;" +
+                    "border-bottom:1px solid var(--main-border-color);";
+                input.value = it;
+                item.appendChild(input);
+                itemcontent.appendChild(item);
+            }
+            br = document.createElement("hr");
+            br.style.cssText = "height:1px;\n" +
+                "border-width:0;\n" +
+                "color:gray;\n" +
+                "background-color:#00A7AA;\n" +
+                "width: 100%;";
+            content.appendChild(br);
+
+            let tools = document.createElement("div");
+            tools.style.width = "90%";
+            content.appendChild(tools);
+
+            let button = document.createElement("button");
+            button.innerText = "取消";
+            button.style.cssText = "float: right;margin-left:10px";
+            button.onclick = function () {
+                parent.removeChild($("ui_prompt"));
+            };
+            tools.appendChild(button);
+
+            button = document.createElement("button");
+            button.innerText = "确定";
+            button.style.cssText = "float: right;margin-left:10px";
+            button.onclick = function () {
+                for (let key in UI.prompt.items) {
+                    UI.prompt.items[key] = document.getElementById("ui_prompt_value_" + key).value;
+                }
+                if (typeof callback == "function") {
+                    if (typeof args == "undefined")
+                        callback(UI.prompt.items);
+                    else
+                        callback(args, UI.prompt.items);
+                }
+                parent.removeChild($("ui_prompt"));
+            };
+            tools.appendChild(button);
+        },
+    },
+    password: {
+        title: null,
+        items: {},
+        show: function (title, items, parent, callback, args) {
+            this.title = title;
+            this.items = items;
+            let container = document.createElement("div");
+            container.id = container.className = "ui_password";
+            container.style.cssText = "position:fixed;left:0px;top:0px;width:100%;height:100%;background：rgba(0,0,0,0.5);z-index:9999";
+            if (__CONFIGS__.fullScreen.value) {
+                parent = __CONFIGS__.fullScreen.element;
+            } else if (typeof parent === "undefined") {
+                parent = document.body;
+            }
+            parent.appendChild(container);
+            let content = document.createElement("div");
+            content.style.cssText = "margin: 0;position: absolute;top: 50%;left: 50%;" +
+                "-ms-transform: translate(-50%, -50%);transform: translate(-50%, -50%);" +
+                "width:400px;background-color:white;" +
+                "border: 2px solid var(--main-border-color);border-radius: 5px;padding:10px";
+            container.appendChild(content);
+            let t = document.createElement("div");
+            t.style.cssText = "color: var(--toolbar-color);" +
+                "background-color: var(--toolbar-background-color);" +
+                "cursor: pointer;" +
+                "border-bottom: 1px solid var(--main-border-color);" +
+                "border-radius: 10px;";
+            let span = document.createElement("span");
+            span.innerHTML = this.title;
+            span.style.cssText = "padding:10px;";
+            t.appendChild(span);
+            content.appendChild(t);
+            let br = document.createElement("hr");
+            br.style.cssText = "height:1px;\n" +
+                "border-width:0;\n" +
+                "color:gray;\n" +
+                "background-color:#00A7AA;\n" +
+                "width: 100%;";
+            content.appendChild(br);
+            let itemcontent = document.createElement("div");
+            itemcontent.style.cssText = "min-height: 100px;width:100%;";
+            content.appendChild(itemcontent);
+            for (let key in this.items) {
+                let placeholder = items[key];
+                let item = document.createElement("div");
+                item.style.cssText = "width:100%;" +
+                    "min-height: 23px;" +
+                    "vertical-align: middle;";
+                span = document.createElement("span");
+                span.style.cssText = "width:20%;" +
+                    "text-align: left;float: left;" +
+                    "overflow: hidden;" +
+                    "white-space: nowrap;" +
+                    "word-break: keep-all;" +
+                    "text-overflow: ellipsis;" +
+                    "-o-text-overflow: ellipsis;" +
+                    "font-size: 100%;" +
+                    "height:100%;" +
+                    "background-color: transparent;" +
+                    "color: var(--main-title-color);" +
+                    "cursor: pointer;";
+                span.title = key;
+                span.innerText = key + " : ";
+                item.appendChild(span);
+                let input = document.createElement("input");
+                input.type = "password";
+                input.className = "ui_password_value";
+                input.id = "ui_password_value_" + key;
+                input.style.cssText = "width:80%;" +
+                    "height:100%;" +
+                    "float: right;" +
+                    "font-size: 100%;" +
+                    "padding: 0px;" +
+                    "margin: 0px;" +
+                    "background-color: transparent;" +
+                    "color: var(--toolbar-background-color);" +
+                    "outline-style: none;" +
+                    "border:0px;" +
+                    "border-bottom:1px solid var(--main-border-color);";
+                input.placeholder = placeholder;
+                item.appendChild(input);
+                itemcontent.appendChild(item);
+            }
+            br = document.createElement("hr");
+            br.style.cssText = "height:1px;\n" +
+                "border-width:0;\n" +
+                "color:gray;\n" +
+                "background-color:#00A7AA;\n" +
+                "width: 100%;";
+            content.appendChild(br);
+
+            let tools = document.createElement("div");
+            tools.style.width = "90%";
+            content.appendChild(tools);
+
+            let button = document.createElement("button");
+            button.innerText = "取消";
+            button.style.cssText = "float: right;margin-left:10px";
+            button.onclick = function () {
+                parent.removeChild($("ui_password"));
+            };
+            tools.appendChild(button);
+
+            button = document.createElement("button");
+            button.innerText = "确定";
+            button.style.cssText = "float: right;margin-left:10px";
+            button.onclick = function () {
+                for (let key in UI.password.items) {
+                    UI.password.items[key] = document.getElementById("ui_password_value_" + key).value;
+                }
+                if (typeof callback == "function") {
+                    if (typeof args == "undefined")
+                        callback(UI.password.items);
+                    else
+                        callback(args, UI.password.items);
+                }
+                parent.removeChild($("ui_password"));
+            };
+            tools.appendChild(button);
+        },
+    },
 };
 
 var __LOGS__ = {
@@ -82,6 +531,14 @@ var __LOGS__ = {
                 tmp[retain[i]] = __LOGS__.data[retain[i]];
             }
             __LOGS__.data = tmp;
+        }
+        setUserConfig("UserLogs", JSON.stringify(__LOGS__.data));
+    },
+
+    delete: function(date){
+        if (typeof __LOGS__.data[date] != "undefined") {
+            delete __LOGS__.data[date];
+            setUserConfig("UserLogs", JSON.stringify(__LOGS__.data));
         }
     },
 
@@ -205,17 +662,28 @@ var __LOGS__ = {
         let dt = document.createElement("dt");
         dt.type = "dt";
         dt.className = "dt";
-        dt.innerText = log.time.format("yyyy-MM-dd hh:mm:ss S");
+        dt.id = dt.innerText = log.time.format("yyyy-MM-dd hh:mm:ss S");
+        let tocopy = document.createElement("span");
+        tocopy.innerHTML= "⇢";
+        tocopy.className = "copy";
+        tocopy.title = "复制";
+        tocopy.onclick = function(){
+            let target = this.parentNode.getElementsByClassName("message")[0];
+            setClipboardListener(target);
+            document.execCommand("copy");
+            UI.alert.show("提示","日志内容已复制到粘贴板.");
+        };
+        dt.appendChild(tocopy);
+
         let first = msgbox.firstChild;
         msgbox.insertBefore(dt, first);
 
         let message = document.createElement("dd");
         message.type = "dd";
         message.className = "message";
+        message.innerText = log.message;
         if (warning)
-            message.innerHTML = "<span style='color:red'>" + log.message + "</span>";
-        else
-            message.innerText = log.message;
+            message.style.color = "red";
         dt.appendChild(message);
 
         __LOGS__.add(log);
@@ -315,6 +783,7 @@ var __XMLHTTP__ = {
         }
     },
     certificate: function (byServer) {
+        let echartsPath = "echarts/V5.2.1";
         let title = document.title;
         let scripts = [
             {name: "主程序", src: "WebDBDataView.js", type: "text/javascript", element: "script", load: false},
@@ -324,7 +793,7 @@ var __XMLHTTP__ = {
             {name: "公共函数", src: "FunctionsComponent.js", type: "text/javascript", element: "script", load: false},
             {
                 name: "Echarts",
-                src: "echarts/v5.2/echarts.min.js",
+                src: echartsPath + "/echarts.min.js",
                 type: "text/javascript",
                 element: "script",
                 load: false
@@ -408,30 +877,30 @@ var __XMLHTTP__ = {
             {name: "codemirror", src: "codemirror/dialog.css", type: "text/css", element: "link", load: false},
             {name: "Excel组件", src: "sheetjs/xlsx.full.min.js", type: "text/javascript", element: "script", load: true},
             {name: "常用统计函数", src: "StatisticsComponent.js", type: "text/javascript", element: "script", load: true},
-            {name: "文件加密组件", src: "FileSecurityComponent.js", type: "text/javascript", element: "script", load: true},
+            {name: "文件加密组件", src: "FileSecurityComponent.js", type: "text/javascript", element: "script", load: false},
             {name: "数据读取组件", src: "DataReaderComponent.js", type: "text/javascript", element: "script", load: true},
             {
                 name: "Echarts",
-                src: "echarts/v5.2/echarts-gl.min.js",
+                src: echartsPath + "/echarts-gl.min.js",
                 type: "text/javascript",
                 element: "script",
                 load: true
             },
             {
                 name: "Echarts",
-                src: "echarts/v5.2/echarts-wordcloud.min.js",
+                src: echartsPath + "/echarts-wordcloud.min.js",
                 type: "text/javascript",
                 element: "script",
                 load: true
             },
             {
                 name: "Echarts",
-                src: "echarts/v5.2/echarts-liquidfill.min.js",
+                src: echartsPath + "/echarts-liquidfill.min.js",
                 type: "text/javascript",
                 element: "script",
                 load: true
             },
-            {name: "回归函数组件", src: "echarts/v5.2/ecStat.js", type: "text/javascript", element: "script", load: true},
+            {name: "回归函数组件", src: echartsPath + "/ecStat.js", type: "text/javascript", element: "script", load: true},
             {name: "世界地图组件", src: "echarts/map/world.js", type: "text/javascript", element: "script", load: true},
             {
                 name: "中国地图组件",
@@ -584,7 +1053,8 @@ var __CONFIGS__ = {
     CURRENT_DATABASE: {index: 0, value: null, connect: null},
     TABLES: [],
     CURRENT_TABLE: {name: "", sql: "", structure: {}, type: ""},
-    MAXLOGS: 1000
+    MAXLOGS: 1000,
+    fullScreen: {element: null, value: false},
 };
 
  var __IMPORT__ = {
@@ -625,7 +1095,6 @@ var __CONFIGS__ = {
      column_default: {value: null, name: "默认值", type: "input", width: "50px"},
  };
  var __DATASET__ = {
-     toFullScreen: false,
      result: [
          //{eventid:null, title:[],sql: null,columns:[],data:[],parameter:null,time:null, type:null}
      ],
@@ -792,6 +1261,12 @@ var __CONFIGS__ = {
              type: "select"
          },
          hr_download: {name: "下载设置", value: "", type: "hr"},
+         reportType: {
+             name: "文件类型",
+             value: "xlsx",
+             options: [new Option("Excel", "xlsx"), new Option("XML", "xml")],
+             type: "select"
+         },
          reportDownload: {
              name: "下载方式",
              value: "current",
@@ -946,14 +1421,13 @@ var __CONFIGS__ = {
         b.className = "button";
         b.innerHTML = "重置";
         b.onclick = close.onclick = function () {
-            let r = confirm("您确定要重置全部报表参数吗?");
-            if (r) {
+            UI.confirm.show("注意", "您确定要重置全部报表参数吗?", document.body, function () {
                 setUserConfig("datasetConfig", JSON.stringify({}));
                 let m = $("dataset-configs-Content");
                 m.parentNode.removeChild(m);
-                alert("所有参数已恢复为系统初始值,系统将重新载入页面...");
+                UI.alert.show("提示", "所有参数已恢复为系统初始值,系统将重新载入页面...");
                 location.reload();
-            }
+            });
         };
         c.appendChild(b);
 
@@ -1301,7 +1775,7 @@ function importData() {
             }
             //由于tx.executeSql异步执行，连续事务执行时间不可预计，不能添加事后统计，只能事中统计.
         } catch (e) {
-            alert(e);
+            UI.alert.show("提示",e);
         }
     });
 }
@@ -1638,7 +2112,7 @@ function createTable(structure) {
                 }
             }
         } else {
-            alert("至少保留一个字段.");
+            UI.alert.show("提示","至少保留一个字段.");
         }
     };
     tool.appendChild(del);
@@ -1648,7 +2122,7 @@ function createTable(structure) {
     b.innerHTML = "创建";
     b.onclick = function () {
         if (__CONFIGS__.CURRENT_DATABASE.connect == null) {
-            alert("请选择数据库.");
+            UI.alert.show("提示","请选择数据库.");
             return;
         }
         if (checkStorage()) {
@@ -1689,7 +2163,7 @@ function createTable(structure) {
                         });
                 }
                 else
-                    alert("请输入数据表名称.");
+                    UI.alert.show("提示","请输入数据表名称.");
             });
         }
     };
@@ -1828,7 +2302,7 @@ function createDatabase(){
                 let storage = window.localStorage;
                 let dbs = JSON.parse(storage.getItem(__CONFIGS__.STORAGE.DATABASES));
                 let index = -1;
-                for (let i=0;i<dbs.length;i++){
+                for (let i = 0; i < dbs.length; i++) {
                     if (dbs[i].name == __DATABASE__.Name.value) {
                         index = i;
                         break;
@@ -1837,16 +2311,16 @@ function createDatabase(){
                 if (index == -1)
                     dbs.push(db);
                 else {
-                    let isOver = confirm("数据库 " + __DATABASE__.Name.value + " 已经存在,是否修改相关信息?");
-                    if (isOver)
-                        dbs[index] = db;
+                    UI.confirm.show("注意", "数据库 " + __DATABASE__.Name.value + " 已经存在,是否修改相关信息?", document.body, function (args) {
+                        args.dbs[args.index] = args.db;
+                    }, {dbs: dbs, index: index, db: db});
                 }
                 storage.setItem(__CONFIGS__.STORAGE.DATABASES, JSON.stringify(dbs));
                 viewDatabases();
-                let container =$("create-database-Content");
+                let container = $("create-database-Content");
                 container.parentNode.removeChild(container);
             } else
-                alert("请输入数据库名称.");
+                UI.alert.show("提示", "请输入数据库名称.");
         }
     };
     tool.appendChild(b);
@@ -1946,7 +2420,7 @@ function getImportContent() {
                                 return;
                             }
                         } catch (e) {
-                            alert("请选择需要导入的文件.")
+                            UI.alert.show("提示","请选择需要导入的文件.")
                         }
                         $("progress-container").innerText = "";
                     } else {
@@ -1977,20 +2451,19 @@ function getImportContent() {
     b.id = "import-button";
     b.innerHTML = "导入";
     b.onclick = function(){
-        if (__CONFIGS__.CURRENT_TABLE.name == "" || __CONFIGS__.CURRENT_TABLE.type == "view"){
-            let conf = confirm("您没有选择数据表，是否要根据数据结构创建一个名称为 " + __IMPORT__.SourceFile.value.split(".")[0] + " 的新表?");
-            if (conf) {
+        if (__CONFIGS__.CURRENT_TABLE.name == "" || __CONFIGS__.CURRENT_TABLE.type == "view") {
+            UI.confirm.show("注意", "您没有选择数据表，是否要根据数据结构创建一个名称为 " + __IMPORT__.SourceFile.value.split(".")[0] + " 的新表?", document.body, function () {
                 let title = __IMPORT__.SourceFile.value.split(".")[0];
                 let tb = createTable({"title": title, "stru": getStructFromData()});
-                setCenterPosition($("page"),tb);
+                setCenterPosition($("page"), tb);
                 $("import-configs-content").parentNode.removeChild($("import-configs-content"));
-            }
+            });
         } else {
             $("progress-container").appendChild(getImportProgress());
             if ($("SelectedDataSet").length > 0) {
                 importData();
             } else
-                alert("请选择需要导入的文件及数据集合.");
+                UI.alert.show("提示","请选择需要导入的文件及数据集合.");
             //let container =$("import-configs-content");
             //container.parentNode.removeChild(m);
         }
@@ -2691,7 +3164,7 @@ function execute() {
             }
         });
     } else {
-        alert("请选择数据库!");
+        UI.alert.show("提示","请选择数据库!");
     }
 }
 
@@ -2997,7 +3470,20 @@ function appState(title, message) {
 }
 
 function drawClock(data) {
-     $("time").title = data;
+    function getH24(data) {
+        let index = 0;
+        let date = new Date(data.toString().split("\n")[0]);
+        for (let i = 0; i < __SYS_IMAGES__.h24.length; i++) {
+            let h = __SYS_IMAGES__.h24[i];
+            if (date.format("MM/dd").localeCompare(h.date[0]) <= 0) {
+                index = i;
+                break;
+            }
+        }
+        return index == 0 ? 23 : (index - 1);
+    }
+
+    $("time").title = data;
     let times = data.toString().split("\n")[1].split(":");
     $("time").width = 50;
     $("time").height = 50;
@@ -3011,7 +3497,7 @@ function drawClock(data) {
     hours = hours > 12 ? hours - 12 : hours;
     let hour = hours + minutes / 60;
     let minute = minutes + seconds / 60;
-    ctx.drawImage(__SYS_IMAGES__.getLogoImage(__SYS_IMAGES__.h24[minutes % 24], 50, 50), 0, 0, 50, 50);
+    ctx.drawImage(__SYS_IMAGES__.getLogoImage(__SYS_IMAGES__.h24[getH24(data)], 50, 50), 0, 0, 50, 50);
     ctx.save();
 
     ctx.translate($("time").width / 2, $("time").height / 2);
@@ -3093,6 +3579,9 @@ function initConfigs() {
             }
 
             $("main-title").appendChild(__SYS_IMAGES__.getLogoImage(__SYS_IMAGES__.logo_echarts));
+            $("main-title").ondblclick = function () {
+                requestFullScreen(document.body);
+            };
             $("main-version").innerText = __VERSION__.version;
             $("main-version").title = "发布日期: " + __VERSION__.date + "\n ● ...\n ● " + __VERSION__.comment.splice(__VERSION__.comment.length % 10 + (Math.floor(__VERSION__.comment.length / 10) - 1) * 10).join("\n ● ");
             let copyright = __VERSION__.author + " ☎ " + __VERSION__.tel + " ✉ <a href='mailto:" + __VERSION__.email + "'>" + __VERSION__.email + "</a>";
@@ -3112,6 +3601,9 @@ function initConfigs() {
                 };
             }
             $("themes").setAttribute("href", getUserConfig("pagethemes") == null ? "themes/default.css" : getUserConfig("pagethemes"));
+
+            getQRCode($("page"), 90, 90, __VERSION__.url, __SYS_IMAGES__.echo);
+            resize();
 
             let config = getUserConfig("echartsconfig");
             if (config != null) {
@@ -3148,8 +3640,6 @@ function initConfigs() {
                 geoCoordMap.Custom = coord;
             }
 
-            getQRCode($("page"), 90, 90, __VERSION__.url, __SYS_IMAGES__.echo);
-            resize();
             __LOGS__.viewMessage(message + "...OK.");
             checked = true;
         } catch (e) {
@@ -3157,7 +3647,7 @@ function initConfigs() {
             checked = false;
         }
     } else {
-        alert("当前浏览器不支持Local Storage,建议使用Chrome或Edge浏览器.");
+        UI.alert.show("提示","当前浏览器不支持Local Storage,建议使用Chrome或Edge浏览器.");
         checked = false;
     }
     return checked;
@@ -3193,11 +3683,10 @@ function initMenus() {
         rmdb.appendChild(__SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.drop_database));
         rmdb.onclick = function () {
             if (__CONFIGS__.CURRENT_DATABASE.connect == null) {
-                alert("请选择数据库.");
+                UI.alert.show("提示", "请选择数据库.");
                 return;
             }
-            let r = confirm("确定要删除数据库 " + __CONFIGS__.CURRENT_DATABASE.value.name + " 吗?");
-            if (r == true) {
+            UI.confirm.show("注意", "确定要删除数据库 " + __CONFIGS__.CURRENT_DATABASE.value.name + " 吗?", document.body, function () {
                 if (checkStorage()) {
                     if (__CONFIGS__.CURRENT_DATABASE.value != null) {
                         let storage = window.localStorage;
@@ -3219,7 +3708,7 @@ function initMenus() {
                         __CONFIGS__.CURRENT_TABLE.type = "";
                     }
                 }
-            }
+            });
         };
         dbstools.appendChild(rmdb);
         setTooltip(rmdb, "删除<br>数据库");
@@ -3277,9 +3766,9 @@ function initMenus() {
             //         }
             //     }
             //     storage.setItem(__CONFIGS__.STORAGE.SCRIPTS, JSON.stringify(sqllist));
-            //     alert("脚本转换完成!")
+            //     UI.alert.show("提示","脚本转换完成!")
             // } catch (e) {
-            //     alert(e);
+            //     UI.alert.show("提示",e);
             // }
             //##########################################
         };
@@ -3368,8 +3857,7 @@ function initMenus() {
         rmtb.id = "drop-table";
         rmtb.appendChild(__SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.drop_table));
         rmtb.onclick = function () {
-            let r = confirm("确定要删除数据表(视图) " + __CONFIGS__.CURRENT_TABLE.name + " 吗?");
-            if (r == true) {
+            UI.confirm.show("注意", "确定要删除数据表(视图) " + __CONFIGS__.CURRENT_TABLE.name + " 吗?", document.body, function () {
                 if (checkStorage()) {
                     __CONFIGS__.CURRENT_DATABASE.connect.transaction(function (tx) {
                         let sql = "drop " + __CONFIGS__.CURRENT_TABLE.type + " " + __CONFIGS__.CURRENT_TABLE.name;
@@ -3395,7 +3883,7 @@ function initMenus() {
                             });
                     });
                 }
-            }
+            });
         };
         tbstools.appendChild(rmtb);
         setTooltip(rmtb, "删除当前<br>数据表");
@@ -3405,7 +3893,7 @@ function initMenus() {
         //#######################################
         let sqltools = $("sql-tools");
         sqltools.ondblclick = function () {
-            __DATASET__.toFullScreen = requestFullScreen($("main"));
+            requestFullScreen($("main"));
         };
 
         let newsql = document.createElement("div");
@@ -3451,7 +3939,7 @@ function initMenus() {
                     };
                     reader.readAsText(file, __SQLEDITOR__.charset.options[__SQLEDITOR__.charset.value]);
                 } catch (e) {
-                    alert("请选择需要导入的脚本文件.")
+                    UI.alert.show("提示","请选择需要导入的脚本文件.")
                 }
             } else {
                 showMessage("本应用适用于Chrome浏览器或IE10及以上版本。")
@@ -3487,14 +3975,13 @@ function initMenus() {
                 setCenterPosition($("main"), tb)
             } else {
                 let name = __SQLEDITOR__.title;
-                let res = confirm("您确定覆盖保存脚本 " + name + " 吗?");
-                if (res == true) {
-                    let sql = __SQLEDITOR__.codeMirror.getValue();
-                    if (name != "" && sql != "") {
-                        saveStorageSql(name, sql);
+                let sql = __SQLEDITOR__.codeMirror.getValue();
+                UI.confirm("注意", "您确定覆盖保存脚本 " + name + " 吗?", document.body, function (args) {
+                    if (args.name != "" && args.sql != "") {
+                        saveStorageSql(args.name, args.sql);
                     } else
-                        alert("脚本及脚本名称不能为空!");
-                }
+                        UI.alert.show("提示", "脚本及脚本名称不能为空!");
+                }, {name: name, sql: sql});
             }
         };
         sqltools.appendChild(saveto);
@@ -3521,21 +4008,23 @@ function initMenus() {
         saveas.appendChild(__SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.unload_sql));
         let help_downloadsql = $("help-download-sql");
         saveas.onclick = help_downloadsql.onclick = function () {
-            let title = __SQLEDITOR__.title != null ? __SQLEDITOR__.title.split("_")[0] : prompt("请输入文件名称:");
-            if (title != null && title.trim() != "") {
-                let blob = null;
-                switch (__SQLEDITOR__.options.mode) {
-                    case "text/x-sqlite":
-                        blob = new Blob([str2ab(__SQLEDITOR__.codeMirror.getValue())], {type: "text/plain"});
-                        //application/octet-stream   扩展名:*
-                        openDownloadDialog(blob, title + ".sql");
-                        break;
-                    case "text/javascript":
-                        blob = new Blob([str2ab(__SQLEDITOR__.codeMirror.getValue())], {type: "application/x-javascript"});
-                        openDownloadDialog(blob, title + ".js");
-                        break;
+            UI.prompt.show("输入", {"文件名称": __SQLEDITOR__.title != null ? __SQLEDITOR__.title.split("_")[0] : ""}, document.body, function (args, values) {
+                let title = values["文件名称"];
+                if (title != null && title.trim() != "") {
+                    let blob = null;
+                    switch (__SQLEDITOR__.options.mode) {
+                        case "text/x-mysql":
+                            blob = new Blob([str2ab(__SQLEDITOR__.codeMirror.getValue())], {type: "text/plain"});
+                            //application/octet-stream   扩展名:*
+                            openDownloadDialog(blob, title + ".sql");
+                            break;
+                        case "text/javascript":
+                            blob = new Blob([str2ab(__SQLEDITOR__.codeMirror.getValue())], {type: "application/x-javascript"});
+                            openDownloadDialog(blob, title + ".js");
+                            break;
+                    }
                 }
-            }
+            }, {});
         };
         sqltools.appendChild(saveas);
         setTooltip(saveas, "导出<br>脚本");
@@ -3698,6 +4187,9 @@ function initMenus() {
         //初始化消息菜单
         //#######################################
         let detailtools = $("detail-tools");
+        detailtools.ondblclick = function () {
+            requestFullScreen($("detail"));
+        };
 
         let toDisplay = document.createElement("div");
         toDisplay.type = "div";
@@ -3727,8 +4219,8 @@ function initMenus() {
         clean.type = "div";
         clean.className = "button";
         clean.innerText = "清空";
-        clean.id = "clean-log";
-        clean.appendChild(__SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.clear_logs));
+        clean.id = "logs-clear";
+        // clean.appendChild(__SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.clear_logs));
         clean.onclick = function () {
             let msgbox = $("messageBox");
             msgbox.innerHTML = "";
@@ -3736,12 +4228,58 @@ function initMenus() {
         detailtools.appendChild(clean);
         setTooltip(clean, "清除终<br>端日志");
 
-        let logs = document.createElement("select");
+        let savelogs = document.createElement("div");
+        savelogs.type = "div";
+        savelogs.className = "button";
+        savelogs.id = "save-logs";
+        savelogs.innerHTML = "&#8675";
+        savelogs.style.cssFloat = "right";
+        savelogs.onclick = function () {
+            let selectlogs = document.getElementById("select-logs");
+            let date = selectlogs.value;
+            __LOGS__.saveas(date);
+            UI.confirm.show("注意", "日志(" + date + ")已下载到本地,是否从系统删除?", document.body, function (args) {
+                __LOGS__.delete(args.date);
+                selectlogs.innerHTML = "";
+                let list = [];
+                for (let date in __LOGS__.data) {
+                    list.push(date);
+                }
+                list.sort(function (a, b) {
+                    return (new Date(b)) - (new Date(a))
+                });
+                //倒序排序
+                for (let i = 0; i < list.length; i++) {
+                    selectlogs.options.add(new Option(list[i], list[i]));
+                }
+            }, {date: date});
+        };
+        detailtools.appendChild(savelogs);
+        setTooltip(savelogs, "下载<br>日志");
+
+        let selectlogs = document.createElement("select");
+        selectlogs .type = "select";
+        selectlogs .id = "select-logs";
+        selectlogs.style.cssFloat = "right";
+        let list = [];
+        for(let date in __LOGS__.data){
+            list.push(date);
+        }
+        list.sort(function(a,b){return (new Date(b)) - (new Date(a))});
+        //倒序排序
+        for(let i=0;i<list.length;i++){
+            selectlogs .options.add(new Option(list[i], list[i]));
+        }
+        detailtools.appendChild(selectlogs);
+        setTooltip(selectlogs, "日志<br>列表");
+
+         let logs = document.createElement("select");
         logs.type = "select";
-        logs.id = "log-records";
-        logs.options.add(new Option("1000条", 1000));
-        logs.options.add(new Option("5000条", 5000));
-        logs.options.add(new Option("10000条", 10000));
+        logs.id = "logs-records";
+        logs.style.cssFloat = "right";
+        logs.options.add(new Option("1千条", 1000));
+        logs.options.add(new Option("5千条", 5000));
+        logs.options.add(new Option("1万条", 10000));
         logs.options.add(new Option("全部", 0));
         try {
             let re = getUserConfig("pagelogs");
@@ -3765,30 +4303,12 @@ function initMenus() {
         detailtools.appendChild(logs);
         setTooltip(logs, "显示日志<br>记录数");
 
-        let savelogs = document.createElement("select");
-        savelogs .type = "select";
-        savelogs .id = "save-logs";
-        let list = [];
-        for(let date in __LOGS__.data){
-            list.push(date);
-        }
-        list.sort(function(a,b){return (new Date(b)) - (new Date(a))});
-        //倒序排序
-        for(let i=0;i<list.length;i++){
-            savelogs .options.add(new Option(list[i], list[i]));
-        }
-        savelogs.onchange = function () {
-            __LOGS__.saveas(this.value);
-        };
-        detailtools.appendChild(savelogs);
-        setTooltip(savelogs, "查阅<br>日志");
-
         //#######################################
         //初始化数据菜单
         //#######################################
         let datatools = $("data-tools");
         datatools.ondblclick = function () {
-            __DATASET__.toFullScreen = requestFullScreen($("main"));
+            requestFullScreen($("main"));
         };
 
         input = document.createElement("input");
@@ -3939,7 +4459,7 @@ function initMenus() {
         download.innerHTML = "&#8675";//"⇣";
         download.id = "dataset-download";
         let help_datasetdownload = $("help-dataset-download");
-        download.onclick = help_datasetdownload.onclick = function () {
+         download.onclick = help_datasetdownload.onclick = function () {
             function removingRedundant(sheetNames) {
                 //sheet名称重复处理.
                 for (let i = 0; i < sheetNames.length; i++) {
@@ -3956,9 +4476,9 @@ function initMenus() {
 
             function fixFileName(str) {
                 //文件名称合法性修正。
-                let sts = ['\\', '/', ':', '*', '?', '"', '<', '>', '|'];
+                let sts = ['\\', '/', ':', '*', '?', '"', '<', '>', '[', ']', '|'];
                 for (let i = 0; i < sts.length; i++) {
-                    str.replaceAll(sts[i], "");
+                    str = str.replaceAll(sts[i], "#");
                 }
                 return str;
             }
@@ -3973,116 +4493,160 @@ function initMenus() {
                     ['Get help from:', __VERSION__.url],
                 ];
                 if (__DATASET__.configs.reportDownload.value == "current") {
-                    let dataset = __DATASET__.result[__DATASET__.default.sheet];
-                    comment.push([dataset.type + ":", dataset.sql]);
-                    let aoa = [];
-                    let columns = dataset["columns"].reduce(function (tmp, column) {
-                        tmp.push(column.name);
-                        return tmp;
-                    }, []);
-                    aoa.push(columns);
-                    for (let i = 0; i < dataset["data"].length; i++) {
-                        let r = dataset["data"][i];
-                        let row = [];
-                        for (let c = 0; c < columns.length; c++) {
-                            row.push(r[columns[c]].value);
-                        }
-                        aoa.push(row);
-                    }
-                    sheets.push(aoa);
-                    let sheetname = typeof dataset.title == "undefined" ? "Current" :
-                        (dataset.title.length == 0 ? "Current" :
-                            (dataset.title[dataset.title.length - 1] == "" ? "Current" : dataset.title[dataset.title.length - 1]));
-                    sheetNames.push(sheetname);
-                    sheets.push(comment);
-                    sheetNames.push("Comment");
-                    let title = dataset.title.length > 0 ? dataset.title[0] : prompt("请输入文件名称:");
-                    if (title.trim() != "")
-                        openDownloadDialog(workbook2blob(sheets, removingRedundant(sheetNames)), title + ".xlsx");
-                } else if (__DATASET__.configs.reportDownload.value == "all-single") {
-                    if (__DATASET__.result.length <= 255) {
-                        let res = true;
-                        if (__DATASET__.result.length > 3)
-                            res = confirm("您确定下载 " + __DATASET__.result.length + " 个工作表吗?");
-                        if (res == true) {
-                            for (let d = 0; d < __DATASET__.result.length; d++) {
-                                let dataset = __DATASET__.result[d];
-                                comment.push([dataset.type + ":", dataset.sql]);
-                                let aoa = [];
-                                let columns = dataset["columns"].reduce(function (tmp, column) {
-                                    tmp.push(column.name);
-                                    return tmp;
-                                }, []);
-                                aoa.push(columns);
-                                for (let i = 0; i < dataset["data"].length; i++) {
-                                    let r = dataset["data"][i];
-                                    let row = [];
-                                    for (let c = 0; c < columns.length; c++) {
-                                        row.push(r[columns[c]].value);
-                                    }
-                                    aoa.push(row);
+                    let dataset = null;
+                    let title = null;
+                    switch (__DATASET__.configs.reportType.value) {
+                        case "xlsx":
+                            dataset = __DATASET__.result[__DATASET__.default.sheet];
+                            comment.push([dataset.type + ":", dataset.sql]);
+                            let aoa = [];
+                            let columns = dataset["columns"].reduce(function (tmp, column) {
+                                tmp.push(column.name);
+                                return tmp;
+                            }, []);
+                            aoa.push(columns);
+                            for (let i = 0; i < dataset["data"].length; i++) {
+                                let r = dataset["data"][i];
+                                let row = [];
+                                for (let c = 0; c < columns.length; c++) {
+                                    row.push(r[columns[c]].value);
                                 }
-                                sheets.push(aoa);
-                                let sheetname = typeof dataset.title == "undefined" ? "Sheet" + (d + 1) :
-                                    (dataset.title.length == 0 ? "Sheet" + (d + 1) :
-                                        (dataset.title[dataset.title.length - 1] == "" ? "Sheet" + (d + 1) : fixFileName(dataset.title[dataset.title.length - 1])));
-                                sheetNames.push(sheetname);
+                                aoa.push(row);
                             }
+                            sheets.push(aoa);
+                            let sheetname = typeof dataset.title == "undefined" ? "Current" :
+                                (dataset.title.length == 0 ? "Current" :
+                                    (dataset.title[dataset.title.length - 1] == "" ? "Current" : dataset.title[dataset.title.length - 1]));
+                            sheetNames.push(fixFileName(sheetname));
                             sheets.push(comment);
                             sheetNames.push("Comment");
-                            let title = prompt("请输入文件名称:");
-                            if (title != null && title.trim() != "")
-                                openDownloadDialog(workbook2blob(sheets, removingRedundant(sheetNames)), fixFileName(title) + ".xlsx");
-                        }
+                            UI.prompt.show("输入", {"文件名称": dataset.title.length > 0 ? dataset.title[0] : ""}, document.body, function (args, values) {
+                                let title = fixFileName(values["文件名称"]);
+                                if (title.trim() != "")
+                                    openDownloadDialog(workbook2blob(args.sheets, args.sheetNames), title + ".xlsx");
+                            }, {sheets: sheets, sheetNames: removingRedundant(sheetNames)});
+                            break;
+                        case "xml":
+                            dataset = __DATASET__.result[__DATASET__.default.sheet];
+                            UI.prompt.show("输入", {"文件名称": dataset.title.length > 0 ? dataset.title[0] : ""}, document.body, function (args, values) {
+                                let title = fixFileName(values["文件名称"]);
+                                if (title.trim() != "")
+                                    getXMLFile(title, args.dataset);
+                            }, {dataset: [dataset]});
+                            break;
+                    }
+                } else if (__DATASET__.configs.reportDownload.value == "all-single") {
+                    if (__DATASET__.result.length <= 255) {
+                        if (__DATASET__.result.length > 0)
+                            UI.confirm.show("注意", "您确定下载 " + __DATASET__.result.length + " 个工作表吗?", document.body, function () {
+                                let title = null;
+                                switch (__DATASET__.configs.reportType.value) {
+                                    case "xlsx":
+                                        for (let d = 0; d < __DATASET__.result.length; d++) {
+                                            let dataset = __DATASET__.result[d];
+                                            comment.push([dataset.type + ":", dataset.sql]);
+                                            let aoa = [];
+                                            let columns = dataset["columns"].reduce(function (tmp, column) {
+                                                tmp.push(column.name);
+                                                return tmp;
+                                            }, []);
+                                            aoa.push(columns);
+                                            for (let i = 0; i < dataset["data"].length; i++) {
+                                                let r = dataset["data"][i];
+                                                let row = [];
+                                                for (let c = 0; c < columns.length; c++) {
+                                                    row.push(r[columns[c]].value);
+                                                }
+                                                aoa.push(row);
+                                            }
+                                            sheets.push(aoa);
+                                            let sheetname = typeof dataset.title == "undefined" ? "Sheet" + (d + 1) :
+                                                (dataset.title.length == 0 ? "Sheet" + (d + 1) :
+                                                    (dataset.title[dataset.title.length - 1] == "" ? "Sheet" + (d + 1) : fixFileName(dataset.title[dataset.title.length - 1])));
+                                            sheetNames.push(fixFileName(sheetname));
+                                        }
+                                        sheets.push(comment);
+                                        sheetNames.push("Comment");
+                                        UI.prompt.show("输入", {"文件名称": ""}, document.body, function (args, values) {
+                                            let title = fixFileName(values["文件名称"]);
+                                            if (title.trim() != "")
+                                                openDownloadDialog(workbook2blob(args.sheets, args.sheetNames), title + ".xlsx");
+                                        }, {sheets: sheets, sheetNames: removingRedundant(sheetNames)});
+                                        break;
+                                    case "xml":
+                                        UI.prompt.show("输入", {"文件名称": ""}, document.body, function (args, values) {
+                                            let title = fixFileName(values["文件名称"]);
+                                            if (title.trim() != "")
+                                                getXMLFile(title, args["dataset"]);
+                                        }, {dataset: __DATASET__.result});
+                                        break;
+                                }
+                            });
                     } else
-                        alert("一个工作簿最多允许有255个数据表!");
+                        UI.alert.show("提示","一个工作簿最多允许有255个数据表!");
                 } else if (__DATASET__.configs.reportDownload.value == "all-multi") {
                     if (__DATASET__.result.length <= 255) {
-                        let res = true;
-                        if (__DATASET__.result.length > 3)
-                            res = confirm("您确定下载 " + __DATASET__.result.length + " 个工作簿吗?");
-                        if (res == true) {
-                            for (let d = 0; d < __DATASET__.result.length; d++) {
-                                sheets = [];
-                                sheetNames = [];
-                                let dataset = __DATASET__.result[d];
-                                comment = [
-                                    ['Application:', __VERSION__.name],
-                                    ['Version:', __VERSION__.version + " (" + __VERSION__.date + ")"],
-                                    ['Creation time:', getNow()],
-                                    ['Get help from:', __VERSION__.url],
-                                    [dataset.type + ":", dataset.sql]
-                                ];
-                                let aoa = [];
-                                let columns = dataset["columns"].reduce(function (tmp, column) {
-                                    tmp.push(column.name);
-                                    return tmp;
-                                }, []);
-                                aoa.push(columns);
-                                for (let i = 0; i < dataset["data"].length; i++) {
-                                    let r = dataset["data"][i];
-                                    let row = [];
-                                    for (let c = 0; c < columns.length; c++) {
-                                        row.push(r[columns[c]].value);
-                                    }
-                                    aoa.push(row);
+                        if (__DATASET__.result.length > 0)
+                            UI.confirm.show("注意", "您确定下载 " + __DATASET__.result.length + " 个工作簿吗?", document.body, function () {
+                                let dataset = null;
+                                switch (__DATASET__.configs.reportType.value) {
+                                    case "xlsx":
+                                        for (let d = 0; d < __DATASET__.result.length; d++) {
+                                            sheets = [];
+                                            sheetNames = [];
+                                            dataset = __DATASET__.result[d];
+                                            comment = [
+                                                ['Application:', __VERSION__.name],
+                                                ['Version:', __VERSION__.version + " (" + __VERSION__.date + ")"],
+                                                ['Creation time:', getNow()],
+                                                ['Get help from:', __VERSION__.url],
+                                                [dataset.type + ":", dataset.sql]
+                                            ];
+                                            let aoa = [];
+                                            let columns = dataset["columns"].reduce(function (tmp, column) {
+                                                tmp.push(column.name);
+                                                return tmp;
+                                            }, []);
+                                            aoa.push(columns);
+                                            for (let i = 0; i < dataset["data"].length; i++) {
+                                                let r = dataset["data"][i];
+                                                let row = [];
+                                                for (let c = 0; c < columns.length; c++) {
+                                                    row.push(r[columns[c]].value);
+                                                }
+                                                aoa.push(row);
+                                            }
+                                            sheets.push(aoa);
+                                            let sheetname = typeof dataset.title == "undefined" ? "Sheet" + (d + 1) :
+                                                (dataset.title.length == 0 ? "Sheet" + (d + 1) :
+                                                    (dataset.title[dataset.title.length - 1] == "" ? "Sheet" + (d + 1) : fixFileName(dataset.title[dataset.title.length - 1])));
+                                            sheetNames.push(fixFileName(sheetname));
+                                            sheets.push(comment);
+                                            sheetNames.push("Comment");
+                                            openDownloadDialog(workbook2blob(sheets, removingRedundant(sheetNames)), fixFileName(sheetname) + ".xlsx");
+                                            if (d < (__DATASET__.result.length - 1)) {
+                                                let delay = (aoa.length * columns.length) >= 10000 ? (aoa.length * columns.length / 10000) : 1;
+                                                sleep(__DATASET__.configs.reportDownloadDelay.value * delay);
+                                            }
+                                        }
+                                        break;
+                                    case "xml":
+                                        for (let d = 0; d < __DATASET__.result.length; d++) {
+                                            dataset = __DATASET__.result[d];
+                                            let title = typeof dataset.title == "undefined" ? "Sheet" + (d + 1) :
+                                                (dataset.title.length == 0 ? "Sheet" + (d + 1) :
+                                                    (dataset.title[dataset.title.length - 1] == "" ? "Sheet" + (d + 1) : fixFileName(dataset.title[dataset.title.length - 1])));
+                                            getXMLFile(fixFileName(title), [dataset]);
+                                            if (d < (__DATASET__.result.length - 1)) {
+                                                let delay = (dataset["data"].length * dataset["columns"].length) >= 10000 ? (dataset["data"].length * dataset["columns"].length / 10000) : 1;
+                                                sleep(__DATASET__.configs.reportDownloadDelay.value * delay);
+                                            }
+                                        }
+                                        break;
                                 }
-                                sheets.push(aoa);
-                                let sheetname = typeof dataset.title == "undefined" ? "Sheet" + (d + 1) :
-                                    (dataset.title.length == 0 ? "Sheet" + (d + 1) :
-                                        (dataset.title[dataset.title.length - 1] == "" ? "Sheet" + (d + 1) : fixFileName(dataset.title[dataset.title.length - 1])));
-                                sheetNames.push(sheetname);
-                                sheets.push(comment);
-                                sheetNames.push("Comment");
-                                openDownloadDialog(workbook2blob(sheets, removingRedundant(sheetNames)), sheetname + ".xlsx");
-                                if (d < (__DATASET__.result.length - 1)) {
-                                    let delay = (aoa.length * columns.length) >= 10000 ? (aoa.length * columns.length / 10000) : 1;
-                                    sleep(__DATASET__.configs.reportDownloadDelay.value * delay);
-                                }
-                            }
-                        }
+                            });
                     } else
-                        alert("同时下载的工作簿个数不允许超过255个!");
+                        UI.alert.show("提示","同时下载的工作簿个数不允许超过255个!");
                 }
             }
         };
@@ -4468,6 +5032,8 @@ function init() {
             //复制configs
             configs.echartsType.value = "Clock";
             configs.titleDisplay.value = "false";
+            configs.renderer.value ="canvas";
+            configs.toolboxDisplay.value = "false";
             let echart = getEcharts(
                 container,
                 _width,
@@ -4759,7 +5325,7 @@ function getSubtotal(colid) {
                 }
             }
         } else {
-            alert("至少保留一个统计对象.");
+            UI.alert.show("提示","至少保留一个统计对象.");
         }
     };
     tool.appendChild(del);
@@ -5834,22 +6400,24 @@ function getLayoutslist(parent) {
     b.className = "button";
     b.innerHTML = "新增";
     b.onclick = function () {
-        let name = prompt("请输入布局名称:");
-        let ex = false;
-        if (name != null && name != "") {
-            for (n in __ECHARTS__.layouts) {
-                if (n == name) {
-                    ex = true;
-                    break;
+        UI.prompt.show("输入", {"布局名称": ""}, document.body, function (args, values) {
+            let name = values["布局名称"];
+            let ex = false;
+            if (name != "") {
+                for (let n in __ECHARTS__.layouts) {
+                    if (n == name) {
+                        ex = true;
+                        break;
+                    }
+                }
+                if (ex == true)
+                    UI.alert.show("提示", "名称 " + name + " 已经存在.");
+                else {
+                    __ECHARTS__.layouts[name] = {data: [[0, 0, 99, 99],], position: "absolute"};
+                    getLayoutslist($("multi-layouts-list"))
                 }
             }
-            if (ex == true)
-                alert("名称 " + name + " 已经存在.");
-            else {
-                __ECHARTS__.layouts[name] = {data: [[0, 0, 99, 99],], position: "absolute"};
-                getLayoutslist($("multi-layouts-list"))
-            }
-        }
+        }, {});
     };
     toolbar.appendChild(b);
     for (let name in __ECHARTS__.layouts) {
@@ -5872,9 +6440,9 @@ function getLayoutslist(parent) {
                 let name = this.getAttribute("id");
                 let value = $("multi-layouts-list-row-edit-" + name).value;
                 __ECHARTS__.layouts[name].data = JSON.parse(value);
-                alert("布局 " + name + " 修改成功.")
+                UI.alert.show("提示","布局 " + name + " 修改成功.")
             }catch (e) {
-                alert("布局格式输入错误，请检查！\r\n请遵循[左边距%,上边距%,宽度%,高度%]设置.")
+                UI.alert.show("提示","布局格式输入错误，请检查！\r\n请遵循[左边距%,上边距%,宽度%,高度%]设置.")
             }
         };
         title.appendChild(save);
@@ -6292,14 +6860,6 @@ function setDataPageTools(index) {
 
 
 function getImageBase64Code() {
-    function handler(event) {
-        event.clipboardData.setData('text/plain', $("source-image-file-code").value);
-        event.preventDefault();
-        alert("代码已复制到粘贴板.");
-    }
-
-    document.addEventListener('copy', handler);   // 增加copy监听
-
     let container = document.createElement("div");
     container.id = "image-base64-code";
     container.className = "table-data-format";
@@ -6356,7 +6916,7 @@ function getImageBase64Code() {
         if (this.files.length > 0) {
             let file = this.files[0];
             if (!/image\/\w+/.test(file.type)) {
-                alert("请选择图片文件！");
+                UI.alert.show("提示","请选择图片文件！");
                 return false;
             }
             let reader = new FileReader();
@@ -6499,7 +7059,9 @@ function getImageBase64Code() {
     copyto.id = "copyto";
     copyto.innerText = "复制";
     copyto.onclick = close.onclick = function () {
+        setClipboardListener($("source-image-file-code"));
         document.execCommand('copy');   // 执行copy命令触发监听
+        UI.alert.show("提示","已复制到粘贴板.");
     };
     tool.appendChild(copyto);
 
@@ -6552,7 +7114,7 @@ function getImageBase64Code() {
                 setUserConfig("editerthemes", name);
             }
         } else {
-            alert("背景图片文件(" + Math.round(file.size / 1024 / 1024 * 100) / 100 + "MB)不能大于 0.5MB.")
+            UI.alert.show("提示","背景图片文件(" + Math.round(file.size / 1024 / 1024 * 100) / 100 + "MB)不能大于 0.5MB.")
         }
     };
     tool.appendChild(setBackgroundImage);
@@ -6561,7 +7123,7 @@ function getImageBase64Code() {
     cancel.className = "button";
     cancel.innerText = "退出";
     cancel.onclick = close.onclick = function () {
-        document.removeEventListener('copy', handler);   // 移除copy监听，不产生影响
+        // document.removeEventListener('copy', handler);   // 移除copy监听，不产生影响
         $("image-base64-code").parentNode.removeChild($("image-base64-code"));
     };
     tool.appendChild(cancel);
@@ -6569,5 +7131,95 @@ function getImageBase64Code() {
     setDialogDrag(title);
 
     return container;
+}
+
+function  setClipboardListener(target) {
+    function handler(event) {
+        if (typeof target.value != "undefined")
+            event.clipboardData.setData("text/plain", target.value);
+        else
+            event.clipboardData.setData("text/plain", target.innerText);
+        event.preventDefault();
+    }
+    document.addEventListener("copy", handler);   // 增加copy监听
+}
+
+function getXMLFile(title, workbook) {
+    let sheetNames = [];
+    function removingRedundant(sheetName, index) {
+        sheetName = sheetName.split("*").join("#").split("?").join("#").split("[").join("#").split("]").join("#").split("\\").join("#").split("/").join("#");
+        let x = (typeof index === "undefined" ? 0 : index);
+        let name = (x == 0 ? sheetName : sheetName + "(" + x + ")");
+        let exist = false;
+        for (let i = 0; i < sheetNames.length; i++) {
+            if (sheetNames[i].toUpperCase() == name.toUpperCase()) {
+                exist = true;
+                x++;
+                break;
+            }
+        }
+        if (exist) {
+            removingRedundant(sheetName, x);
+        } else {
+            sheetNames.push(name);
+        }
+    }
+
+    try {
+        let xml = '<?xml version="1.0"?>' +
+            '<?mso-application progid="Excel.Sheet"?>' +
+            '<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"' +
+            ' xmlns:o="urn:schemas-microsoft-com:office:office"' +
+            ' xmlns:x="urn:schemas-microsoft-com:office:excel"' +
+            ' xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"' +
+            ' xmlns:html="http://www.w3.org/TR/REC-html40">' +
+            '<DocumentProperties xmlns="urn:schemas-microsoft-com:office:office">' +
+            '<Author>' + __VERSION__.name + '</Author>' +
+            '<LastAuthor></LastAuthor>' +
+            '<Created>' + new Date() + '</Created>' +
+            '<Version>1.0.0</Version>' +
+            '</DocumentProperties>' +
+            '<Styles>' +
+            '<Style ss:ID="Default" ss:Name="Normal">' +
+            '<Alignment ss:Vertical="Center"/>' +
+            '<Borders/>' +
+            '<Font ss:FontName="宋体" x:CharSet="134" ss:Size="11" ss:Color="#000000"/>' +
+            '<Interior/>' +
+            '<NumberFormat ss:Format="#,##0.00_ "/>' +
+            '<Protection/>' +
+            '</Style>' +
+            '</Styles>';
+        for (let index = 0; index < workbook.length; index++) {
+            let dataset = workbook[index];
+            removingRedundant(typeof dataset.title == "undefined" ? "Sheet" :
+                (dataset.title.length == 0 ? "Sheet" :
+                    (dataset.title[dataset.title.length - 1] == "" ? "Sheet" : dataset.title[dataset.title.length - 1])));
+            xml += '<Worksheet ss:Name="' + sheetNames[index] + '">\n' +
+                '<Table ss:ExpandedColumnCount="' + dataset["columns"].length + '" ss:ExpandedRowCount="' + dataset["data"].length + 1 + '">';
+            let cols = dataset["columns"].reduce(function (tmp, column) {
+                tmp += '<Cell><Data ss:Type="String">' + column.name + '</Data></Cell>';
+                return tmp;
+            }, '<Row>');
+            cols += '</Row>';
+            xml += cols;
+            for (let i = 0; i < dataset["data"].length; i++) {
+                let items = dataset["data"][i];
+                let row = '<Row>';
+                for (let c = 0; c < dataset["columns"].length; c++) {
+                    let item = items[dataset["columns"][c].name];
+                    let cell = '<Cell><Data ss:Type="' + (item.type == 'number' ? 'Number' : 'String') + '">' + item.value + '</Data></Cell>';
+                    row += cell;
+                }
+                row += '</Row>';
+                xml += row;
+            }
+            xml += '</Table>\n</Worksheet>';
+        }
+        xml += '</Workbook>';
+        let blob = new Blob([str2ab(xml)], {type: 'text/xml'});
+        openDownloadDialog(blob, title + '.xml')
+    } catch (e) {
+        __LOGS__.viewError(e);
+    }
 }
 
