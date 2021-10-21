@@ -1270,7 +1270,7 @@ function getFileUrlByBase64(dataurl) {
 
 function requestFullScreen(element) {
     //全屏显示,
-    if (__CONFIGS__.fullScreen.value){
+    if (document.fullscreen){
         if (document.exitFullscreen) {
             document.exitFullscreen();
         } else if (document.mozCancelFullScreen) {
@@ -1279,7 +1279,6 @@ function requestFullScreen(element) {
             document.webkitCancelFullScreen();
         }
         __CONFIGS__.fullScreen.element = null;
-        __CONFIGS__.fullScreen.value = false;
     } else {
         if (element.requestFullscreen){
             element.requestFullscreen();
@@ -1293,6 +1292,5 @@ function requestFullScreen(element) {
             element.webkitRequestFullScreen();
         }
         __CONFIGS__.fullScreen.element = element;
-        __CONFIGS__.fullScreen.value = true;
     }
 }

@@ -668,7 +668,7 @@ function getFileSecurity() {
                 UI.password.show("文件加密", {
                     "加密密码": "请输入8位密码,且必须包含英文字母和数字.",
                     "再次输入": ""
-                }, document.body, function (args, values) {
+                }, "auto", function (args, values) {
                     let pattern = /^.*(?=.{8,})(?=.*\d{1,7})(?=.*[A-Za-z]{1,7}).*$/
                     //必须是8位密码,且必须包含字符和数字
                     let key = values["加密密码"];
@@ -803,7 +803,7 @@ function getFileSecurity() {
                     UI.password.show("文件加密", {
                         "加密密码": "请输入8位密码,且必须包含英文字母和数字.",
                         "再次输入": ""
-                    }, document.body, function (args, values) {
+                    }, "auto", function (args, values) {
                         let pattern = /^.*(?=.{8,})(?=.*\d{1,7})(?=.*[A-Za-z]{1,7}).*$/;
                         //必须是8位密码,且必须包含字符和数字
                         let key = values["加密密码"];
@@ -812,7 +812,7 @@ function getFileSecurity() {
                         } else if (pattern.test(key) == false) {
                             UI.alert.show("提示", "请输入8位密码,且必须包含英文字母和数字.");
                         } else {
-                            UI.prompt.show("输入", {"打包文件名称": ""}, document.body, function (args, values) {
+                            UI.prompt.show("输入", {"打包文件名称": ""}, "auto", function (args, values) {
                                 let pkname = values["打包文件名称"];
                                 let mode = args["mode"];
                                 let js = args["js"];
@@ -961,7 +961,7 @@ function getFileSecurity() {
         if (server.time != null) {
             let files = $("source-encrypt-file").files;
             if (files.length > 0) {
-                UI.password.show("文件解密", {"解密密码": "请输入8位密码,且必须包含英文字母和数字."}, document.body, function (args, values) {
+                UI.password.show("文件解密", {"解密密码": "请输入8位密码,且必须包含英文字母和数字."}, "auto", function (args, values) {
                     let key = values["解密密码"];
                     for (let i = 0; i < files.length; i++) {
                         let file = files[i];

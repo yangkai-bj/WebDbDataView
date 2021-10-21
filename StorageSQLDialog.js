@@ -174,7 +174,7 @@ function storageSqlDialog(sql, editer, type){
     rename.innerText = "重命名";
     rename.onclick = function() {
         let name = $("sql-Manager-Content-name");
-        UI.prompt.show("输入", {"新的脚本名称": name.value}, document.body, function (args, values) {
+        UI.prompt.show("输入", {"新的脚本名称": name.value}, "auto", function (args, values) {
             let newname = values["新的脚本名称"];
             let name = args["name"];
             let storage = window.localStorage;
@@ -255,7 +255,7 @@ function storageSqlDialog(sql, editer, type){
                                 + "数据来源:&emsp;" + js.appName + "<br>"
                                 + "校验代码:&emsp;" + hash + "<br>"
                                 + "备份时间:&emsp;" + ((typeof js.date) == "undefined" ? file.lastModified.Format("yyyy-MM-dd hh:mm:ss.S") : js.date) + "</span><br><br>"
-                                + "您确定使用上述备份文件覆盖当前存储的所有脚本吗?", document.body, function (args) {
+                                + "您确定使用上述备份文件覆盖当前存储的所有脚本吗?", "auto", function (args) {
                                 let storage = window.localStorage;
                                 storage.setItem(__CONFIGS__.STORAGE.SCRIPTS, JSON.stringify(args.sqllist));
                                 getSQLList($("sql-Manager-Content-table"));

@@ -1,7 +1,7 @@
 const __VERSION__ = {
     name: "Web DataView for SQLite Database of browser",
-    version: "2.6.2",
-    date: "2021/10/20",
+    version: "2.6.3",
+    date: "2021/10/21",
     comment: [
         "-- 2021/03/08",
         "优化算法和压缩代码.",
@@ -74,10 +74,12 @@ var UI = {
             let container = document.createElement("div");
             container.id = container.className = "ui_alert";
             container.style.cssText = "position:fixed;left:0px;top:0px;width:100%;height:100%;background：rgba(0,0,0,0.5);z-index:9999";
-            if (__CONFIGS__.fullScreen.value) {
-                parent = __CONFIGS__.fullScreen.element;
-            } else if (typeof parent === "undefined") {
-                parent = document.body;
+            if (parent == "auto" || parent == null || typeof parent == "undefined") {
+                if (document.fullscreen && typeof __CONFIGS__.fullScreen.element == "object") {
+                    parent = __CONFIGS__.fullScreen.element;
+                } else {
+                    parent = document.body;
+                }
             }
             parent.appendChild(container);
             let content = document.createElement("div");
@@ -159,7 +161,7 @@ var UI = {
     confirm:{
         title: null,
         message: null,
-        show: function (title, message, parent = document.body, callback, args) {
+        show: function (title, message, parent, callback, args) {
             //callback:回调函数,
             //args:回调函数参数,根据实际需要可以不传递\可以是单一参数\可以是数组\可以是对象.
             this.title = title;
@@ -167,10 +169,12 @@ var UI = {
             let container = document.createElement("div");
             container.id = container.className = "ui_confirm";
             container.style.cssText = "position:fixed;left:0px;top:0px;width:100%;height:100%;background：rgba(0,0,0,0.5);z-index:9999";
-            if (__CONFIGS__.fullScreen.value) {
-                parent = __CONFIGS__.fullScreen.element;
-            } else if (typeof parent === "undefined") {
-                parent = document.body;
+            if (parent == "auto" || parent == null) {
+                if (document.fullscreen && typeof __CONFIGS__.fullScreen.element == "object") {
+                    parent = __CONFIGS__.fullScreen.element;
+                } else {
+                    parent = document.body;
+                }
             }
             parent.appendChild(container);
             let content = document.createElement("div");
@@ -273,10 +277,12 @@ var UI = {
             let container = document.createElement("div");
             container.id = container.className = "ui_prompt";
             container.style.cssText = "position:fixed;left:0px;top:0px;width:100%;height:100%;background：rgba(0,0,0,0.5);z-index:9999";
-            if (__CONFIGS__.fullScreen.value) {
-                parent = __CONFIGS__.fullScreen.element;
-            } else if (typeof parent === "undefined") {
-                parent = document.body;
+            if (parent == "auto" || parent == null) {
+                if (document.fullscreen && typeof __CONFIGS__.fullScreen.element == "object") {
+                    parent = __CONFIGS__.fullScreen.element;
+                } else {
+                    parent = document.body;
+                }
             }
             parent.appendChild(container);
             let content = document.createElement("div");
@@ -393,10 +399,12 @@ var UI = {
             let container = document.createElement("div");
             container.id = container.className = "ui_password";
             container.style.cssText = "position:fixed;left:0px;top:0px;width:100%;height:100%;background：rgba(0,0,0,0.5);z-index:9999";
-            if (__CONFIGS__.fullScreen.value) {
-                parent = __CONFIGS__.fullScreen.element;
-            } else if (typeof parent === "undefined") {
-                parent = document.body;
+            if (parent == "auto" || parent == null) {
+                if (document.fullscreen && typeof __CONFIGS__.fullScreen.element == "object") {
+                    parent = __CONFIGS__.fullScreen.element;
+                } else {
+                    parent = document.body;
+                }
             }
             parent.appendChild(container);
             let content = document.createElement("div");
@@ -1054,7 +1062,7 @@ var __CONFIGS__ = {
     TABLES: [],
     CURRENT_TABLE: {name: "", sql: "", structure: {}, type: ""},
     MAXLOGS: 1000,
-    fullScreen: {element: null, value: false},
+    fullScreen: {element: null},
 };
 
  var __IMPORT__ = {
@@ -1421,7 +1429,7 @@ var __CONFIGS__ = {
         b.className = "button";
         b.innerHTML = "重置";
         b.onclick = close.onclick = function () {
-            UI.confirm.show("注意", "您确定要重置全部报表参数吗?", document.body, function () {
+            UI.confirm.show("注意", "您确定要重置全部报表参数吗?", "auto", function () {
                 setUserConfig("datasetConfig", JSON.stringify({}));
                 let m = $("dataset-configs-Content");
                 m.parentNode.removeChild(m);
@@ -2311,7 +2319,7 @@ function createDatabase(){
                 if (index == -1)
                     dbs.push(db);
                 else {
-                    UI.confirm.show("注意", "数据库 " + __DATABASE__.Name.value + " 已经存在,是否修改相关信息?", document.body, function (args) {
+                    UI.confirm.show("注意", "数据库 " + __DATABASE__.Name.value + " 已经存在,是否修改相关信息?", "auto", function (args) {
                         args.dbs[args.index] = args.db;
                     }, {dbs: dbs, index: index, db: db});
                 }
@@ -2416,7 +2424,7 @@ function getImportContent() {
                             } else if (filetype.toUpperCase() == "XLS" || filetype.toUpperCase() == "XLSX") {
                                 readExcelFile(file);
                             } else {
-                                showMessage("仅适用于XLSX、XLS、TXT和CSV文件。");
+                                UI.alert.show("提示", "仅适用于XLSX、XLS、TXT和CSV文件。");
                                 return;
                             }
                         } catch (e) {
@@ -2424,7 +2432,7 @@ function getImportContent() {
                         }
                         $("progress-container").innerText = "";
                     } else {
-                        showMessage("本应用适用于Chrome或Edge浏览器。")
+                        UI.alert.show("提示", "本应用适用于Chrome或Edge浏览器。")
                     }
                 };
             }
@@ -2452,7 +2460,7 @@ function getImportContent() {
     b.innerHTML = "导入";
     b.onclick = function(){
         if (__CONFIGS__.CURRENT_TABLE.name == "" || __CONFIGS__.CURRENT_TABLE.type == "view") {
-            UI.confirm.show("注意", "您没有选择数据表，是否要根据数据结构创建一个名称为 " + __IMPORT__.SourceFile.value.split(".")[0] + " 的新表?", document.body, function () {
+            UI.confirm.show("注意", "您没有选择数据表，是否要根据数据结构创建一个名称为 " + __IMPORT__.SourceFile.value.split(".")[0] + " 的新表?", "auto", function () {
                 let title = __IMPORT__.SourceFile.value.split(".")[0];
                 let tb = createTable({"title": title, "stru": getStructFromData()});
                 setCenterPosition($("page"), tb);
@@ -3022,11 +3030,10 @@ function fillSqlParam(sql) {
     return sql;
 }
 
-function execute() {
+function execute(title) {
     if (__CONFIGS__.CURRENT_DATABASE.connect != null) {
         __CONFIGS__.CURRENT_DATABASE.connect.transaction(function (tx) {
             let selection = "";
-            let title = __SQLEDITOR__.title;
             if (__SQLEDITOR__.codeMirror.somethingSelected())
                 selection = __SQLEDITOR__.codeMirror.getSelection();
             else
@@ -3036,20 +3043,12 @@ function execute() {
             else {
                 for (let param in __SQLEDITOR__.parameter) {
                     selection = selection.replaceAll("{" + param.toString() + "}", __SQLEDITOR__.parameter[param].toString())
-                    if (title != null)
-                        title = title.replaceAll("{" + param.toString() + "}", __SQLEDITOR__.parameter[param].toString());
+                    title = title.replaceAll("{" + param.toString() + "}", __SQLEDITOR__.parameter[param].toString());
                 }
             }
-            if (title != null) {
-                title = title.split("_");
-                __ECHARTS__.configs.titleText.value = title[0];
-                if (title.length > 1) {
-                    __ECHARTS__.configs.titleSubText.value = title.slice(1).join(" ");
-                } else {
-                    __ECHARTS__.configs.titleSubText.value = "";
-                }
-            } else
-                title = [];
+
+            title = title.split("_");
+
             let sqls = [];
             if (selection.trim() != "") {
                 __LOGS__.viewMessage(selection);
@@ -3164,7 +3163,7 @@ function execute() {
             }
         });
     } else {
-        UI.alert.show("提示","请选择数据库!");
+        UI.alert.show("提示", "请选择数据库!");
     }
 }
 
@@ -3182,9 +3181,8 @@ function fixMathFunctionString(str) {
     return str;
 }
 
-function executeFunction() {
+function executeFunction(title) {
     let selection = "";
-    let title = __SQLEDITOR__.title;
     if (__SQLEDITOR__.codeMirror.somethingSelected())
         selection = __SQLEDITOR__.codeMirror.getSelection();
     else
@@ -3194,20 +3192,12 @@ function executeFunction() {
     else {
         for (let param in __SQLEDITOR__.parameter) {
             selection = selection.replaceAll("{" + param.toString() + "}", __SQLEDITOR__.parameter[param].toString())
-            if (title != null)
-                title = title.replaceAll("{" + param.toString() + "}", __SQLEDITOR__.parameter[param].toString());
+            title = title.replaceAll("{" + param.toString() + "}", __SQLEDITOR__.parameter[param].toString());
         }
     }
-    if (title != null) {
-        title = title.split("_");
-        __ECHARTS__.configs.titleText.value = title[0];
-        if (title.length > 1) {
-            __ECHARTS__.configs.titleSubText.value = title.slice(1).join(" ");
-        } else {
-            __ECHARTS__.configs.titleSubText.value = "";
-        }
-    } else
-        title = [];
+
+    title = title.split("_");
+
     let funs = [];
     if (selection.trim() != "") {
         funs = selection.split(";");
@@ -3686,7 +3676,7 @@ function initMenus() {
                 UI.alert.show("提示", "请选择数据库.");
                 return;
             }
-            UI.confirm.show("注意", "确定要删除数据库 " + __CONFIGS__.CURRENT_DATABASE.value.name + " 吗?", document.body, function () {
+            UI.confirm.show("注意", "确定要删除数据库 " + __CONFIGS__.CURRENT_DATABASE.value.name + " 吗?", "auto", function () {
                 if (checkStorage()) {
                     if (__CONFIGS__.CURRENT_DATABASE.value != null) {
                         let storage = window.localStorage;
@@ -3857,7 +3847,7 @@ function initMenus() {
         rmtb.id = "drop-table";
         rmtb.appendChild(__SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.drop_table));
         rmtb.onclick = function () {
-            UI.confirm.show("注意", "确定要删除数据表(视图) " + __CONFIGS__.CURRENT_TABLE.name + " 吗?", document.body, function () {
+            UI.confirm.show("注意", "确定要删除数据表(视图) " + __CONFIGS__.CURRENT_TABLE.name + " 吗?", "auto", function () {
                 if (checkStorage()) {
                     __CONFIGS__.CURRENT_DATABASE.connect.transaction(function (tx) {
                         let sql = "drop " + __CONFIGS__.CURRENT_TABLE.type + " " + __CONFIGS__.CURRENT_TABLE.name;
@@ -3906,7 +3896,7 @@ function initMenus() {
         newsql.onclick = help_createsql.onclick = function () {
             let openfile = $("open-sql-file");
             openfile.value = "";
-            __SQLEDITOR__.title = __ECHARTS__.configs.titleText.value = __ECHARTS__.configs.titleSubText.value = null;
+            __SQLEDITOR__.title = null;
             __SQLEDITOR__.codeMirror.setValue("");
             if (this.id == "help-create-sql") {
                 let sql = "/*脚本案例*/\r\n" +
@@ -3935,14 +3925,14 @@ function initMenus() {
                     let reader = new FileReader();
                     reader.onload = function () {
                         __SQLEDITOR__.codeMirror.setValue(this.result);
-                        __SQLEDITOR__.title = __ECHARTS__.configs.titleText.value = __ECHARTS__.configs.titleSubText.value = null;
+                        __SQLEDITOR__.title =  file.name.split(".")[0];
                     };
                     reader.readAsText(file, __SQLEDITOR__.charset.options[__SQLEDITOR__.charset.value]);
                 } catch (e) {
                     UI.alert.show("提示","请选择需要导入的脚本文件.")
                 }
             } else {
-                showMessage("本应用适用于Chrome浏览器或IE10及以上版本。")
+                UI.alert.show("提示", "本应用适用于Chrome浏览器或IE10及以上版本。")
             }
         };
         sqltools.appendChild(input);
@@ -3976,7 +3966,7 @@ function initMenus() {
             } else {
                 let name = __SQLEDITOR__.title;
                 let sql = __SQLEDITOR__.codeMirror.getValue();
-                UI.confirm("注意", "您确定覆盖保存脚本 " + name + " 吗?", document.body, function (args) {
+                UI.confirm.show("注意", "您确定覆盖保存脚本 " + name + " 吗?", "auto", function (args) {
                     if (args.name != "" && args.sql != "") {
                         saveStorageSql(args.name, args.sql);
                     } else
@@ -4008,12 +3998,12 @@ function initMenus() {
         saveas.appendChild(__SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.unload_sql));
         let help_downloadsql = $("help-download-sql");
         saveas.onclick = help_downloadsql.onclick = function () {
-            UI.prompt.show("输入", {"文件名称": __SQLEDITOR__.title != null ? __SQLEDITOR__.title.split("_")[0] : ""}, document.body, function (args, values) {
+            UI.prompt.show("输入", {"文件名称": __SQLEDITOR__.title != null ? __SQLEDITOR__.title.split("_")[0] : ""}, "auto", function (args, values) {
                 let title = values["文件名称"];
                 if (title != null && title.trim() != "") {
                     let blob = null;
                     switch (__SQLEDITOR__.options.mode) {
-                        case "text/x-mysql":
+                        case "text/x-sqlite":
                             blob = new Blob([str2ab(__SQLEDITOR__.codeMirror.getValue())], {type: "text/plain"});
                             //application/octet-stream   扩展名:*
                             openDownloadDialog(blob, title + ".sql");
@@ -4048,18 +4038,20 @@ function initMenus() {
                     setCenterPosition($("main"), paramdialog)
                 } else {
                     if (__SQLEDITOR__.title != null) {
-                        let title = __SQLEDITOR__.title.split("_");
-                        __ECHARTS__.configs.titleText.value = title[0];
-                        if (title.length > 1) {
-                            __ECHARTS__.configs.titleSubText.value = title[1];
-                        } else {
-                            __ECHARTS__.configs.titleSubText.value = "";
-                        }
+                        let title = __SQLEDITOR__.title;
+                        if (__SQLEDITOR__.options.mode == "text/x-sqlite")
+                            execute(title);
+                        if (__SQLEDITOR__.options.mode == "text/javascript")
+                            executeFunction(title)
+                    } else {
+                        UI.prompt.show("输入", {"集合名称": ""}, "auto", function (args, values) {
+                            let title = __SQLEDITOR__.title = values["集合名称"];
+                            if (__SQLEDITOR__.options.mode == "text/x-sqlite")
+                                execute(title);
+                            if (__SQLEDITOR__.options.mode == "text/javascript")
+                                executeFunction(title);
+                        }, {})
                     }
-                    if (__SQLEDITOR__.options.mode == "text/x-sqlite")
-                        execute();
-                    if (__SQLEDITOR__.options.mode == "text/javascript")
-                        executeFunction()
                 }
             }
         };
@@ -4070,7 +4062,7 @@ function initMenus() {
         datasetSource.type = "select";
         datasetSource.id = "set-dataset-source";
         datasetSource.style.cssFloat = "left";
-        for (m in __SQLEDITOR__.modes) {
+        for (let m in __SQLEDITOR__.modes) {
             datasetSource.options.add(new Option(m, __SQLEDITOR__.modes[m]));
         }
         try {
@@ -4217,8 +4209,8 @@ function initMenus() {
 
         let clean = document.createElement("div");
         clean.type = "div";
-        clean.className = "button";
-        clean.innerText = "清空";
+        clean.className = "charButton";
+        clean.innerHTML = "&#9850";
         clean.id = "logs-clear";
         // clean.appendChild(__SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.clear_logs));
         clean.onclick = function () {
@@ -4230,7 +4222,7 @@ function initMenus() {
 
         let savelogs = document.createElement("div");
         savelogs.type = "div";
-        savelogs.className = "button";
+        savelogs.className = "charButton";
         savelogs.id = "save-logs";
         savelogs.innerHTML = "&#8675";
         savelogs.style.cssFloat = "right";
@@ -4238,7 +4230,7 @@ function initMenus() {
             let selectlogs = document.getElementById("select-logs");
             let date = selectlogs.value;
             __LOGS__.saveas(date);
-            UI.confirm.show("注意", "日志(" + date + ")已下载到本地,是否从系统删除?", document.body, function (args) {
+            UI.confirm.show("注意", "日志(" + date + ")已下载到本地,是否从系统删除?", "auto", function (args) {
                 __LOGS__.delete(args.date);
                 selectlogs.innerHTML = "";
                 let list = [];
@@ -4349,7 +4341,7 @@ function initMenus() {
                                         $("open-sql-file").value = "";
                                         $("dataset-select-echarts-theme").value = __ECHARTS__.configs.echartsTheme.value = report.configs.echartsTheme.value;
                                         $("dataset-select-echarts-type").value = __ECHARTS__.configs.echartsType.value = report.configs.echartsType.value;
-                                        __SQLEDITOR__.title = __ECHARTS__.configs.titleText.value = __ECHARTS__.configs.titleSubText.value = report.dataset.title[0];
+                                        __SQLEDITOR__.title = report.dataset.title.join("_");
                                         __SQLEDITOR__.codeMirror.setValue(report.dataset.sql);
                                         viewDataset(__DATASET__.default.sheet, 0);
                                         let _width = (getAbsolutePosition(container).width * 1) + "px";
@@ -4380,7 +4372,7 @@ function initMenus() {
                     __LOGS__.viewError(e);
                 }
             } else {
-                showMessage("本应用适用于Chrome或Edge浏览器。")
+                UI.alert.show("提示", "本应用适用于Chrome或Edge浏览器。")
             }
         };
         datatools.appendChild(input);
@@ -4514,13 +4506,11 @@ function initMenus() {
                                 aoa.push(row);
                             }
                             sheets.push(aoa);
-                            let sheetname = typeof dataset.title == "undefined" ? "Current" :
-                                (dataset.title.length == 0 ? "Current" :
-                                    (dataset.title[dataset.title.length - 1] == "" ? "Current" : dataset.title[dataset.title.length - 1]));
+                            let sheetname = dataset.title[dataset.title.length - 1];
                             sheetNames.push(fixFileName(sheetname));
                             sheets.push(comment);
                             sheetNames.push("Comment");
-                            UI.prompt.show("输入", {"文件名称": dataset.title.length > 0 ? dataset.title[0] : ""}, document.body, function (args, values) {
+                            UI.prompt.show("输入", {"文件名称": dataset.title.join("_")}, "auto", function (args, values) {
                                 let title = fixFileName(values["文件名称"]);
                                 if (title.trim() != "")
                                     openDownloadDialog(workbook2blob(args.sheets, args.sheetNames), title + ".xlsx");
@@ -4528,7 +4518,7 @@ function initMenus() {
                             break;
                         case "xml":
                             dataset = __DATASET__.result[__DATASET__.default.sheet];
-                            UI.prompt.show("输入", {"文件名称": dataset.title.length > 0 ? dataset.title[0] : ""}, document.body, function (args, values) {
+                            UI.prompt.show("输入", {"文件名称": dataset.title.join("_")}, "auto", function (args, values) {
                                 let title = fixFileName(values["文件名称"]);
                                 if (title.trim() != "")
                                     getXMLFile(title, args.dataset);
@@ -4538,7 +4528,7 @@ function initMenus() {
                 } else if (__DATASET__.configs.reportDownload.value == "all-single") {
                     if (__DATASET__.result.length <= 255) {
                         if (__DATASET__.result.length > 0)
-                            UI.confirm.show("注意", "您确定下载 " + __DATASET__.result.length + " 个工作表吗?", document.body, function () {
+                            UI.confirm.show("注意", "您确定下载 " + __DATASET__.result.length + " 个工作表吗?", "auto", function () {
                                 let title = null;
                                 switch (__DATASET__.configs.reportType.value) {
                                     case "xlsx":
@@ -4560,21 +4550,19 @@ function initMenus() {
                                                 aoa.push(row);
                                             }
                                             sheets.push(aoa);
-                                            let sheetname = typeof dataset.title == "undefined" ? "Sheet" + (d + 1) :
-                                                (dataset.title.length == 0 ? "Sheet" + (d + 1) :
-                                                    (dataset.title[dataset.title.length - 1] == "" ? "Sheet" + (d + 1) : fixFileName(dataset.title[dataset.title.length - 1])));
-                                            sheetNames.push(fixFileName(sheetname));
+                                            let sheetname = fixFileName(dataset.title[dataset.title.length - 1]);
+                                            sheetNames.push(sheetname);
                                         }
                                         sheets.push(comment);
                                         sheetNames.push("Comment");
-                                        UI.prompt.show("输入", {"文件名称": ""}, document.body, function (args, values) {
+                                        UI.prompt.show("输入", {"文件名称": ""}, "auto", function (args, values) {
                                             let title = fixFileName(values["文件名称"]);
                                             if (title.trim() != "")
                                                 openDownloadDialog(workbook2blob(args.sheets, args.sheetNames), title + ".xlsx");
                                         }, {sheets: sheets, sheetNames: removingRedundant(sheetNames)});
                                         break;
                                     case "xml":
-                                        UI.prompt.show("输入", {"文件名称": ""}, document.body, function (args, values) {
+                                        UI.prompt.show("输入", {"文件名称": ""}, "auto", function (args, values) {
                                             let title = fixFileName(values["文件名称"]);
                                             if (title.trim() != "")
                                                 getXMLFile(title, args["dataset"]);
@@ -4587,7 +4575,7 @@ function initMenus() {
                 } else if (__DATASET__.configs.reportDownload.value == "all-multi") {
                     if (__DATASET__.result.length <= 255) {
                         if (__DATASET__.result.length > 0)
-                            UI.confirm.show("注意", "您确定下载 " + __DATASET__.result.length + " 个工作簿吗?", document.body, function () {
+                            UI.confirm.show("注意", "您确定下载 " + __DATASET__.result.length + " 个工作簿吗?", "auto", function () {
                                 let dataset = null;
                                 switch (__DATASET__.configs.reportType.value) {
                                     case "xlsx":
@@ -4617,13 +4605,11 @@ function initMenus() {
                                                 aoa.push(row);
                                             }
                                             sheets.push(aoa);
-                                            let sheetname = typeof dataset.title == "undefined" ? "Sheet" + (d + 1) :
-                                                (dataset.title.length == 0 ? "Sheet" + (d + 1) :
-                                                    (dataset.title[dataset.title.length - 1] == "" ? "Sheet" + (d + 1) : fixFileName(dataset.title[dataset.title.length - 1])));
-                                            sheetNames.push(fixFileName(sheetname));
+                                            let sheetname = fixFileName(dataset.title[dataset.title.length - 1]);
+                                            sheetNames.push(sheetname);
                                             sheets.push(comment);
                                             sheetNames.push("Comment");
-                                            openDownloadDialog(workbook2blob(sheets, removingRedundant(sheetNames)), fixFileName(sheetname) + ".xlsx");
+                                            openDownloadDialog(workbook2blob(sheets, removingRedundant(sheetNames)), fixFileName(dataset.title.join("_")) + ".xlsx");
                                             if (d < (__DATASET__.result.length - 1)) {
                                                 let delay = (aoa.length * columns.length) >= 10000 ? (aoa.length * columns.length / 10000) : 1;
                                                 sleep(__DATASET__.configs.reportDownloadDelay.value * delay);
@@ -4633,10 +4619,8 @@ function initMenus() {
                                     case "xml":
                                         for (let d = 0; d < __DATASET__.result.length; d++) {
                                             dataset = __DATASET__.result[d];
-                                            let title = typeof dataset.title == "undefined" ? "Sheet" + (d + 1) :
-                                                (dataset.title.length == 0 ? "Sheet" + (d + 1) :
-                                                    (dataset.title[dataset.title.length - 1] == "" ? "Sheet" + (d + 1) : fixFileName(dataset.title[dataset.title.length - 1])));
-                                            getXMLFile(fixFileName(title), [dataset]);
+                                            let title = fixFileName(dataset.title.join("_"));
+                                            getXMLFile(title, [dataset]);
                                             if (d < (__DATASET__.result.length - 1)) {
                                                 let delay = (dataset["data"].length * dataset["columns"].length) >= 10000 ? (dataset["data"].length * dataset["columns"].length / 10000) : 1;
                                                 sleep(__DATASET__.configs.reportDownloadDelay.value * delay);
@@ -4944,15 +4928,6 @@ function initMenus() {
                     } catch (e) {
                     }
                     let dataset = __DATASET__.result[__DATASET__.default.sheet];
-                    if (dataset.title.length != 0) {
-                        __ECHARTS__.configs.titleText.value = dataset.title[0];
-                        if (dataset.title.length > 1) {
-                            __ECHARTS__.configs.titleSubText.value = dataset.title.slice(1).join(" ");
-                        } else {
-                            __ECHARTS__.configs.titleSubText.value = "";
-                        }
-                    }
-
                     let _width = (getAbsolutePosition(container).width * 1) + "px";
                     let _height = (getAbsolutePosition(container).height * 1) + "px";
                     container.innerHTML = "";
@@ -4980,12 +4955,43 @@ function initMenus() {
     }
 }
 
+function getEchartsClock() {
+    try {
+        if (__DATASET__.result.length == 0) {
+            try {
+                container.removeAttribute("_echarts_instance_");
+                echarts.getInstanceByDom(container).dispose();
+            } catch (e) {
+            }
+            let container = $("tableContainer");
+            let width = (getAbsolutePosition(container).width * 1) + "px";
+            let height = (getAbsolutePosition(container).height * 1) + "px";
+            let configs = JSON.stringify(__ECHARTS__.configs);
+            configs = JSON.parse(configs);
+            //复制configs
+            configs.echartsType.value = "Clock";
+            configs.titleDisplay.value = "false";
+            configs.renderer.value = "canvas";
+            configs.toolboxDisplay.value = "false";
+            let echart = getEcharts(
+                container,
+                width,
+                height,
+                null,
+                configs);
+        }
+    } catch (e) {
+        __LOGS__.viewError(e);
+    }
+}
+
 function init() {
     if (initConfigs()) {
         initMenus();
         setPageThemes();
         viewDatabases();
-        setDataPageTools(0)
+        setDataPageTools(0);
+        getEchartsClock();
 
         window.onresize = function () {
             resize();
@@ -5020,28 +5026,6 @@ function init() {
             appState("本地运行.", "Local file •••");
             if (__XMLHTTP__.checking.certificated == false)
                 __XMLHTTP__.certificate(false);
-        }
-
-        try {
-            let container = $("tableContainer");
-            let _width = (getAbsolutePosition(container).width * 1) + "px";
-            let _height = (getAbsolutePosition(container).height * 1) + "px";
-            container.innerHTML = "";
-            let configs = JSON.stringify(__ECHARTS__.configs);
-            configs = JSON.parse(configs);
-            //复制configs
-            configs.echartsType.value = "Clock";
-            configs.titleDisplay.value = "false";
-            configs.renderer.value ="canvas";
-            configs.toolboxDisplay.value = "false";
-            let echart = getEcharts(
-                container,
-                _width,
-                _height,
-                null,
-                configs);
-        } catch (e) {
-            __LOGS__.viewError(e);
         }
     }
     //#########################body init end#######################################
@@ -5531,10 +5515,21 @@ function getParamDialog(titles, sql) {
                     param[params[i].getAttribute("param")] = params[i].value;
             }
             __SQLEDITOR__.parameter = param;
-            if (__SQLEDITOR__.options.mode == "text/x-sqlite")
-                execute();
-            if (__SQLEDITOR__.options.mode == "text/javascript")
-                executeFunction();
+            if (__SQLEDITOR__.title != null) {
+                let title = __SQLEDITOR__.title;
+                if (__SQLEDITOR__.options.mode == "text/x-sqlite")
+                    execute(title);
+                if (__SQLEDITOR__.options.mode == "text/javascript")
+                    executeFunction(title)
+            } else {
+                UI.prompt.show("输入", {"集合名称": ""}, "auto", function (args, values) {
+                    let title = __SQLEDITOR__.title = values["集合名称"];
+                    if (__SQLEDITOR__.options.mode == "text/x-sqlite")
+                        execute(title);
+                    if (__SQLEDITOR__.options.mode == "text/javascript")
+                        executeFunction(title);
+                }, {})
+            }
             $("sql-param-dialog").parentNode.removeChild($("sql-param-dialog"));
         };
         tool.appendChild(confirm);
@@ -6400,7 +6395,7 @@ function getLayoutslist(parent) {
     b.className = "button";
     b.innerHTML = "新增";
     b.onclick = function () {
-        UI.prompt.show("输入", {"布局名称": ""}, document.body, function (args, values) {
+        UI.prompt.show("输入", {"布局名称": ""}, "auto", function (args, values) {
             let name = values["布局名称"];
             let ex = false;
             if (name != "") {
@@ -6487,7 +6482,7 @@ function getMultiEcharts() {
             let title = document.createElement("div");
             let text = document.createElement("span");
             title.appendChild(text);
-            text.innerHTML = history.configs.titleText.value != "" ? history.configs.titleText.value : history.id;
+            text.innerHTML = history.dataset.title[0];
             row.appendChild(title);
 
             let del = document.createElement("span");
@@ -7174,7 +7169,7 @@ function getXMLFile(title, workbook) {
             ' xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"' +
             ' xmlns:html="http://www.w3.org/TR/REC-html40">' +
             '<DocumentProperties xmlns="urn:schemas-microsoft-com:office:office">' +
-            '<Author>' + __VERSION__.name + '</Author>' +
+            '<Author>' + __VERSION__.name.split("<").join("&lt;").split(">").join("&gt;") + '</Author>' +
             '<LastAuthor></LastAuthor>' +
             '<Created>' + new Date() + '</Created>' +
             '<Version>1.0.0</Version>' +
@@ -7194,10 +7189,10 @@ function getXMLFile(title, workbook) {
             removingRedundant(typeof dataset.title == "undefined" ? "Sheet" :
                 (dataset.title.length == 0 ? "Sheet" :
                     (dataset.title[dataset.title.length - 1] == "" ? "Sheet" : dataset.title[dataset.title.length - 1])));
-            xml += '<Worksheet ss:Name="' + sheetNames[index] + '">\n' +
+            xml += '<Worksheet ss:Name="' + sheetNames[index].split("<").join("&lt;").split(">").join("&gt;") + '">\n' +
                 '<Table ss:ExpandedColumnCount="' + dataset["columns"].length + '" ss:ExpandedRowCount="' + dataset["data"].length + 1 + '">';
             let cols = dataset["columns"].reduce(function (tmp, column) {
-                tmp += '<Cell><Data ss:Type="String">' + column.name + '</Data></Cell>';
+                tmp += '<Cell><Data ss:Type="String">' + column.name.split("<").join("&lt;").split(">").join("&gt;") + '</Data></Cell>';
                 return tmp;
             }, '<Row>');
             cols += '</Row>';
@@ -7207,7 +7202,7 @@ function getXMLFile(title, workbook) {
                 let row = '<Row>';
                 for (let c = 0; c < dataset["columns"].length; c++) {
                     let item = items[dataset["columns"][c].name];
-                    let cell = '<Cell><Data ss:Type="' + (item.type == 'number' ? 'Number' : 'String') + '">' + item.value + '</Data></Cell>';
+                    let cell = '<Cell><Data ss:Type="' + (item.type == 'number' ? 'Number' : 'String') + '">' + (item.type == 'number' ? item.value : (typeof item.value !== "undefined" ? item.value.split("<").join("&lt;").split(">").join("&gt;") : "")) + '</Data></Cell>';
                     row += cell;
                 }
                 row += '</Row>';
@@ -7222,4 +7217,3 @@ function getXMLFile(title, workbook) {
         __LOGS__.viewError(e);
     }
 }
-

@@ -83,6 +83,7 @@ function getDataReaderContent() {
             rABS = false;
         }
     }
+
     __DATA_READER__.SourceFile.count = 0;
     __DATA_READER__.SourceFile.total = 0;
 
@@ -158,7 +159,7 @@ function getDataReaderContent() {
                                 return;
                             }
                         } catch (e) {
-                            alert("请选择需要读取的文件.")
+                            UI.alert.show("提示","请选择需要读取的文件.")
                         }
                     } else {
                         showMessage("本应用适用于Chrome或Edge浏览器。")
@@ -192,7 +193,7 @@ function getDataReaderContent() {
             $("progress-container").appendChild(getReadProgress());
             readData();
         } else
-            alert("请选择需要读取的文件及数据集合.");
+            UI.alert.show("提示","请选择需要读取的文件及数据集合.");
     };
     tool.appendChild(b);
 
@@ -353,6 +354,6 @@ function readData() {
             viewDataset(__DATASET__.result.length - 1, 0);
         }
     } catch (e) {
-        alert(e);
+        UI.alert.show("提示",e);
     }
 }

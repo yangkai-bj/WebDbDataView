@@ -741,11 +741,9 @@ var __ECHARTS__ = {
             options: [new Option("左边", "left"), new Option("居中", "center"), new Option("右边", "right")],
             type: "select"
         },
-        titleText: {name: "主标题名称", value: "", type: "input"},
         titleTextColor: {value: "auto", name: "主标题颜色", type: "color"},
         titleTextFontSize: {name: "主标题字号", value: 16, type: "input"},
         titleTextLink: {name: "主标题超链接", value: "", type: "input"},
-        titleSubText: {name: "副标题名称", value: "", type: "input"},
         titleSubTextColor: {value: "auto", name: "副标题颜色", type: "color"},
         titleSubTextFontSize: {name: "副标题字号", value: 12, type: "input"},
         titleSubTextLink: {name: "副标题超链接", value: "", type: "input"},
@@ -1778,20 +1776,6 @@ var __ECHARTS__ = {
                 }
             }
         }
-        //报表名称取编辑器文档名称
-        let sqltitle = __SQLEDITOR__.title;
-        if (sqltitle != null) {
-            for (let param in __SQLEDITOR__.parameter) {
-                sqltitle = sqltitle.replaceAll("{" + param.toString() + "}", __SQLEDITOR__.parameter[param].toString());
-            }
-            sqltitle = sqltitle.split("_");
-            __ECHARTS__.configs.titleText.value = sqltitle[0];
-            if (sqltitle.length > 1) {
-                __ECHARTS__.configs.titleSubText.value = sqltitle[1];
-            } else {
-                __ECHARTS__.configs.titleSubText.value = "";
-            }
-        }
 
         let container = document.createElement("div");
         container.type = "div";
@@ -1981,7 +1965,7 @@ var __ECHARTS__ = {
         b.className = "button";
         b.innerHTML = "重置";
         b.onclick = close.onclick = function () {
-            UI.confirm.show("注意", "您确定要重置全部图形参数吗?", document.body, function () {
+            UI.confirm.show("注意", "您确定要重置全部图形参数吗?", "auto", function () {
                 setUserConfig("echartsconfig", JSON.stringify({}));
                 let m = $("echarts-configs-Content");
                 m.parentNode.removeChild(m);
@@ -2770,7 +2754,7 @@ var geoCoordMap = {
         b.className = "button";
         b.innerHTML = "重置";
         b.onclick = close.onclick = function () {
-            UI.confirm.show("警告", "重置将删除您自行增加或修改的所有地图参数！\n您确定要继续重置吗?", document.body, function () {
+            UI.confirm.show("警告", "重置将删除您自行增加或修改的所有地图参数！\n您确定要继续重置吗?", "auto", function () {
                 setUserConfig("geoCoordMapCity", null);
                 setUserConfig("geoCoordMapCustom", null);
                 let m = $("local-map-config-Content");
@@ -2789,17 +2773,17 @@ var geoCoordMap = {
             let customchanged = Compare(JSON.parse(getUserConfig("geoCoordMapCustom") == null ? "{}" : getUserConfig("geoCoordMapCustom")), geoCoordMap.Custom);
             let localmapchanged = getUserConfig("localMap") == geoCoordMap.LocalMap;
             if (!citychanged) {
-                UI.confirm.show("注意", "国内城市地图数据已修改,您需要保存吗?", document.body, function (args) {
+                UI.confirm.show("注意", "国内城市地图数据已修改,您需要保存吗?", "auto", function (args) {
                     setUserConfig("geoCoordMapCity", JSON.stringify(args.city));
                 }, {city: geoCoordMap.City});
             }
             if (!customchanged) {
-                UI.confirm.show("注意", "自定义地图数据已修改,您需要保存吗?", document.body, function (args) {
+                UI.confirm.show("注意", "自定义地图数据已修改,您需要保存吗?", "auto", function (args) {
                     setUserConfig("geoCoordMapCustom", JSON.stringify(args.custom));
                 }, {custom: geoCoordMap.Custom});
             }
             if (!localmapchanged) {
-                UI.confirm.show("注意", "本地地图设置已修改,您需要保存吗?", document.body, function (args) {
+                UI.confirm.show("注意", "本地地图设置已修改,您需要保存吗?", "auto", function (args) {
                     setUserConfig("localMap", args.localmap);
                 }, {localmap: geoCoordMap.LocalMap});
             }
@@ -2813,7 +2797,7 @@ var geoCoordMap = {
     },
 
     addGeoCoord: function (table, coords) {
-        UI.prompt.show("输入", {"城市或地区名称": ""}, document.body, function (args, values) {
+        UI.prompt.show("输入", {"城市或地区名称": ""}, "auto", function (args, values) {
             let city = values["城市或地区名称"];
             let ex = false;
             for (coord in coords) {
@@ -2974,13 +2958,13 @@ function getAria(configs) {
     };
 }
 
-function getTitle(configs) {
+function getTitle(configs, title) {
     return {
         show: configs.titleDisplay.value.toBoolean(),
-        text: configs.titleText.value,
+        text: (typeof title[0] !== "undefined" ? title[0] : ""),
         link: configs.titleTextLink.value,
         target: "blank",
-        subtext: configs.titleSubText.value,
+        subtext: (typeof title[1] !== "undefined" ? title[1] : ""),
         sublink: configs.titleSubTextLink.value,
         subtarget: "blank",
         top: "top",
@@ -3112,7 +3096,7 @@ function getLineOption(configs, container, myChart, dataset) {
         grid: getGrid(configs),
         brush: getBrush(configs),
         toolbox: getToolbox(configs, container, dataset, myChart),
-        title: getTitle(configs),
+        title: getTitle(configs, dataset.title),
         tooltip: getTooltip(configs, "axis", null),
         legend: getLegend(configs, source.dimensions.slice(1, source.dimensions.length)),
         xAxis: getXAxis(configs, "category", source.getItems(source.dimensions[0])),
@@ -3201,7 +3185,7 @@ function getBarOption(configs, container, myChart, dataset) {
         grid: getGrid(configs),
         brush: getBrush(configs),
         toolbox: getToolbox(configs, container, dataset, myChart),
-        title: getTitle(configs),
+        title: getTitle(configs, dataset.title),
         legend: getLegend(configs, source.dimensions.slice(1, source.dimensions.length)),
         tooltip: getTooltip(configs, "axis", null),
         xAxis: getXAxis(configs, "category", source.getItems(source.dimensions[0])),
@@ -3636,7 +3620,7 @@ function getMultiGraphOption(configs, container, myChart, dataset) {
         grid: grids,
         brush: getBrush(configs),
         toolbox: getToolbox(configs, container, dataset, myChart),
-        title: getTitle(configs),
+        title: getTitle(configs, dataset.title),
         tooltip: getTooltip(configs, "item", function (param) {
             return [param.seriesName,
                 param.marker + "&ensp;" + param.name +
@@ -3849,7 +3833,7 @@ function getScatterOption(configs, container, myChart, dataset) {
     let option = {
         backgroundColor: getBackgroundColor(configs),
         grid: getGrid(configs),
-        title: getTitle(configs),
+        title: getTitle(configs, dataset.title),
         legend: getLegend(configs, source.dimensions.slice(1, source.dimensions.length).concat(columns_add)),
         toolbox: getToolbox(configs, container, dataset, myChart),
         tooltip: {
@@ -3964,7 +3948,7 @@ function getPieOption(configs, container, myChart, dataset) {
     let option = {
         aria: getAria(configs),
         backgroundColor: getBackgroundColor(configs),
-        title: getTitle(configs),
+        title: getTitle(configs, dataset.title),
         legend: getLegend(configs, source.dimensions.slice(1, source.dimensions.length)),
         toolbox: getToolbox(configs, container, dataset, myChart),
         tooltip: getTooltip(configs, "item", function (param) {
@@ -4083,7 +4067,7 @@ function getFunnelOption(configs, container, myChart, dataset) {
     let option = {
         aria: getAria(configs),
         backgroundColor: getBackgroundColor(configs),
-        title: getTitle(configs),
+        title: getTitle(configs, dataset.title),
         tooltip: {
             show: configs.tooltipDisplay.value.toBoolean(),
             trigger: "item",
@@ -4150,7 +4134,7 @@ function getPolarOption(configs, container, myChart, dataset) {
     let option = {
         aria: getAria(configs),
         backgroundColor: getBackgroundColor(configs),
-        title: getTitle(configs),
+        title: getTitle(configs, dataset.title),
         toolbox: getToolbox(configs, container, dataset, myChart),
         angleAxis: {
             axisLabel: {
@@ -4313,7 +4297,7 @@ function getTransversBarOption(configs, container, myChart, dataset) {
         grid: getGrid(configs),
         brush: getBrush(configs),
         toolbox: getToolbox(configs, container, dataset, myChart),
-        title: getTitle(configs),
+        title: getTitle(configs, dataset.title),
         tooltip: getTooltip(configs, "axis", null),
         legend: getLegend(configs, source.dimensions.slice(1, source.dimensions.length)),
         xAxis: getXAxis(configs, "value", null),
@@ -4507,7 +4491,7 @@ function getGeoOfChinaOption(configs, container, myChart, dataset) {
             aria: getAria(configs),
             backgroundColor: getBackgroundColor(configs),
             grid: getGrid(configs),
-            title: getTitle(configs),
+            title: getTitle(configs, dataset.title),
             timeline: getTimeline(configs, times),
             tooltip: {
                 show: configs.tooltipDisplay.value.toBoolean(),
@@ -4691,7 +4675,7 @@ function getGeoOfLocalOption(configs, container, myChart, dataset) {
                 containLabel: configs.gridContainLabel.value.toBoolean(),
                 backgroundColor: "transparent"
             },
-            title: getTitle(configs),
+            title: getTitle(configs, dataset.title),
             timeline: getTimeline(configs, times),
             tooltip: getTooltip(configs, "item", null),
             toolbox: getToolbox(configs, container, dataset, myChart),
@@ -5212,10 +5196,10 @@ function getSaveAsConfig(configs, container, myChart) {
                     "<Protection/>" +
                     "</Style>" +
                     "</Styles>';\n" +
-                    "xml += '<Worksheet ss:Name=\"' + title[title.length-1].split(\"*\").join(\"#\").split(\"?\").join(\"#\").split(\"[\").join(\"#\").split(\"]\").join(\"#\").split(\"\\\\\").join(\"#\").split(\"/\").join(\"#\") + '\"><Table ss:ExpandedColumnCount=\"' + columns.length + '\" ss:ExpandedRowCount=\"' + (dataset.length + 1) + '\">';\n" +
+                    "xml += '<Worksheet ss:Name=\"' + title[title.length-1].split(\"<\").join(\"&lt;\").split(\">\").join(\"&gt;\").split(\"*\").join(\"#\").split(\"?\").join(\"#\").split(\"[\").join(\"#\").split(\"]\").join(\"#\").split(\"\\\\\").join(\"#\").split(\"/\").join(\"#\") + '\"><Table ss:ExpandedColumnCount=\"' + columns.length + '\" ss:ExpandedRowCount=\"' + (dataset.length + 1) + '\">';\n" +
                     "let r = '<Row>';\n" +
                     "for(let c = 0;c < columns.length; c++){\n" +
-                    "let ce = '<Cell><Data ss:Type=\"String\">'+ columns[c].name + '</Data></Cell>';\n" +
+                    "let ce = '<Cell><Data ss:Type=\"String\">'+ columns[c].name.split(\"<\").join(\"&lt;\").split(\">\").join(\"&gt;\") + '</Data></Cell>';\n" +
                     "r += ce;\n" +
                     "}\n" +
                     "r += '</Row>';\n" +
@@ -5225,7 +5209,7 @@ function getSaveAsConfig(configs, container, myChart) {
                     "r = '<Row>';\n" +
                     "for(let c = 0;c < columns.length; c++){\n" +
                     "let cell = row[columns[c].name];\n" +
-                    "let ce = '<Cell><Data ss:Type=\"' + (cell.type=='number'?'Number':'String') + '\">'+ cell.value + '</Data></Cell>';\n" +
+                    "let ce = '<Cell><Data ss:Type=\"' + (cell.type=='number'?'Number':'String') + '\">'+ (cell.type=='number'?cell.value:(typeof cell.value !== 'undefined'?cell.value.split(\"<\").join(\"&lt;\").split(\">\").join(\"&gt;\"):'')) + '</Data></Cell>';\n" +
                     "r += ce;\n" +
                     "}\n" +
                     "r += '</Row>';\n" +
@@ -5235,7 +5219,7 @@ function getSaveAsConfig(configs, container, myChart) {
                     "let blob = new Blob([str2ab(xml)], {type: 'text/xml'});\n" +
                     "openDownloadDialog(blob, title[0] + '.report.xml');\n" +
                     "} catch (e) {\n" +
-                    "console.log(e);\n" +
+                    "alert(e);\n" +
                     "}\n" +
                     "}" +
                     "</script>",
@@ -6033,7 +6017,7 @@ function getBarAndLine(container, width, height, dataset, configs) {
         grid: getGrid(configs),
         brush: getBrush(configs),
         toolbox: getToolbox(configs, container, dataset, myChart),
-        title: getTitle(configs),
+        title: getTitle(configs, dataset.title),
         tooltip: getTooltip(configs, "axis", null),
         legend: getLegend(configs, source.dimensions.slice(1, source.dimensions.length)),
         xAxis: getXAxis(configs, "category", source.getItems(source.dimensions[0])),
@@ -6154,7 +6138,7 @@ function getAreaStyle(container, width, height, dataset, configs) {
         backgroundColor: getBackgroundColor(configs),
         brush: getBrush(configs),
         toolbox: getToolbox(configs, container, dataset, myChart),
-        title: getTitle(configs),
+        title: getTitle(configs, dataset.title),
         tooltip: getTooltip(configs, "axis", null),
         legend: getLegend(configs, source.dimensions.slice(1, source.dimensions.length)),
         xAxis: getXAxis(configs, "category", source.getItems(source.dimensions[0])),
@@ -6354,7 +6338,7 @@ function getPolarHeatmap(container, width, height, dataset, configs) {
             backgroundColor: "transparent"
         },
         backgroundColor: getBackgroundColor(configs),
-        title: getTitle(configs),
+        title: getTitle(configs, dataset.title),
         toolbox: getToolbox(configs, container, dataset, myChart),
         legend: getLegend(configs, null),
         polar: {},
@@ -6519,7 +6503,7 @@ function getRadar(container, width, height, dataset, configs) {
         aria: getAria(configs),
         backgroundColor: getBackgroundColor(configs),
         grid: getGrid(configs),
-        title: getTitle(configs),
+        title: getTitle(configs, dataset.title),
         legend: getLegend(configs, source.dimensions.slice(1, source.dimensions.length)),
         tooltip: getTooltip(configs, "item", null),
         toolbox: getToolbox(configs, container, dataset, myChart),
@@ -6769,7 +6753,7 @@ function getRegression(container, width, height, dataset, configs) {
         grid: getGrid(configs),
         brush: getBrush(configs),
         toolbox: getToolbox(configs, container, dataset, myChart),
-        title: getTitle(configs),
+        title: getTitle(configs, dataset.title),
         legend: getLegend(configs, source.dimensions.slice(1, source.dimensions.length).concat(columns_add)),
         tooltip: getTooltip(configs, "axis", null),
         xAxis: getXAxis(configs, "category", xAxis),
@@ -6906,7 +6890,7 @@ function getRelation(container, width, height, dataset, configs) {
         backgroundColor: getBackgroundColor(configs),
         grid: getGrid(configs),
         toolbox: getToolbox(configs, container, dataset, myChart),
-        title: getTitle(configs),
+        title: getTitle(configs, dataset.title),
         tooltip: getTooltip(configs, "item", function (params) {
             return params.marker + params.name;
         }),
@@ -7107,7 +7091,7 @@ function getTree(container, width, height, dataset, configs) {
         aria: getAria(configs),
         backgroundColor: getBackgroundColor(configs),
         grid: getGrid(configs),
-        title: getTitle(configs),
+        title: getTitle(configs, dataset.title),
         toolbox: getToolbox(configs, container, dataset, myChart),
         tooltip: {
             show: configs.tooltipDisplay.value.toBoolean(),
@@ -7211,7 +7195,7 @@ function getWebkitDep(container, width, height, dataset, configs) {
     let option = {
         backgroundColor: getBackgroundColor(configs),
         grid: getGrid(configs),
-        title: getTitle(configs),
+        title: getTitle(configs, dataset.title),
         legend: getLegend(configs, columns),
         toolbox: getToolbox(configs, container, dataset, myChart),
         series: [{
@@ -7407,7 +7391,7 @@ function getCalendar(container, width, height, dataset, configs) {
         aria: getAria(configs),
         backgroundColor: getBackgroundColor(configs),
         grid: getGrid(configs),
-        title: getTitle(configs),
+        title: getTitle(configs, dataset.title),
         tooltip: getTooltip(configs, "item", function (param) {
             let date = echarts.format.formatTime("yyyy-MM-dd", param.value[0]);
             return [param.seriesName, param.marker + "&ensp;" + date + ":<span style='display:inline-block;min-width:30px;text-align:right;font-weight:bold'>&ensp;" + param.value[1] + "</span>"].join("<br>");
@@ -7516,7 +7500,7 @@ function getGeoOfChina(container, width, height, dataset, configs) {
     let option = {
         backgroundColor: getBackgroundColor(configs),
         grid: getGrid(configs),
-        title: getTitle(configs),
+        title: getTitle(configs, dataset.title),
         toolbox: getToolbox(configs, container, dataset, myChart),
         tooltip: getTooltip(configs, "item", function (params) {
             return params.name + "<br>" + params.marker + params.seriesName + ":&emsp;<span style='display:inline-block;min-width:30px;text-align:right;font-weight:bold'>" + ((params["value"].length == 3) ? params.data["value"][2] : params.data["value"] + "</span>")
@@ -7736,7 +7720,7 @@ function getGeoOfLocal(container, width, height, dataset, configs) {
     let option = {
         backgroundColor: getBackgroundColor(configs),
         grid: getGrid(configs),
-        title: getTitle(configs),
+        title: getTitle(configs, dataset.title),
         toolbox: getToolbox(configs, container, dataset, myChart),
         tooltip: getTooltip(configs, "item", function (params) {
             return params.name + "<br>" + params.marker + params.seriesName + ":&emsp;<span style='display:inline-block;min-width:30px;text-align:right;font-weight:bold'>" + ((params["value"].length == 3) ? params.data["value"][2] : params.data["value"] + "</span>")
@@ -7954,7 +7938,7 @@ function getBar3D(container, width, height, dataset, configs) {
         aria: getAria(configs),
         backgroundColor: getBackgroundColor(configs),
         grid: getGrid(configs),
-        title: getTitle(configs),
+        title: getTitle(configs, dataset.title),
         legend: getLegend(configs, source.dimensions.slice(1, source.dimensions.length)),
         tooltip: getTooltip(configs, "item", function (params) {
             return rows[params.value[0]] + "<br>" + params.marker + columns[params.value[1] + 1] + ":&emsp;<span style='display:inline-block;min-width:30px;text-align:right;font-weight:bold'>" + params.value[2] + "</span>";
@@ -8106,7 +8090,7 @@ function getLine3D(container, width, height, dataset, configs) {
     let option = {
         backgroundColor: getBackgroundColor(configs),
         grid: getGrid(configs),
-        title: getTitle(configs),
+        title: getTitle(configs, dataset.title),
         legend: getLegend(configs, source.dimensions.slice(1, source.dimensions.length)),
         tooltip: getTooltip(configs, "item", function (params) {
             return rows[params.value[0]] + "<br>" + params.marker + columns[params.value[1] + 1] + ":&emsp;<span style='display:inline-block;min-width:30px;text-align:right;font-weight:bold'>" + params.value[2] + "</span>";
@@ -8285,7 +8269,7 @@ function getScatter3D(container, width, height, dataset, configs) {
     let option = {
         backgroundColor: getBackgroundColor(configs),
         grid: getGrid(configs),
-        title: getTitle(configs),
+        title: getTitle(configs, dataset.title),
         legend: getLegend(configs, source.dimensions.slice(1, source.dimensions.length)),
         tooltip: getTooltip(configs, "item", function (params) {
             return rows[params.value[0]] + "<br>" + params.marker + columns[params.value[1] + 1] + ":&emsp;<span style='display:inline-block;min-width:30px;text-align:right;font-weight:bold'>" + params.value[2] + "</span>";
@@ -8543,7 +8527,7 @@ function getCategoryLine(container, width, height, dataset, configs) {
             aria: getAria(configs),
             backgroundColor: getBackgroundColor(configs),
             grid: getGrid(configs),
-            title: getTitle(configs),
+            title: getTitle(configs, dataset.title),
             timeline: getTimeline(configs, times),
             tooltip: getTooltip(configs, "item", null),
             toolbox: getToolbox(configs, container, dataset, myChart),
@@ -8872,7 +8856,7 @@ function getGeoMigrateLinesOfChinaCity(container, width, height, dataset, config
             aria: getAria(configs),
             backgroundColor: getBackgroundColor(configs),
             grid: getGrid(configs),
-            title: getTitle(configs),
+            title: getTitle(configs, dataset.title),
             toolbox: getToolbox(configs, container, dataset, myChart),
             tooltip: getTooltip(configs, "axis", function (params) {
                 if (params.seriesType == "lines")
@@ -9105,7 +9089,7 @@ function getCategoryLineForGauge(container, width, height, dataset, configs) {
         baseOption: {
             aria: getAria(configs),
             backgroundColor: getBackgroundColor(configs),
-            title: getTitle(configs),
+            title: getTitle(configs, dataset.title),
             timeline: getTimeline(configs, times),
             tooltip: getTooltip(configs, "item", function (params) {
                 return [params.seriesName, params.marker + params.dimensionNames[0] + ":&emsp;<span style='display:inline-block;min-width:30px;text-align:right;font-weight:bold'>" + params.data.value + "</span>"].join("<br>");
@@ -9368,7 +9352,7 @@ function getCategoryLineForLiqiud(container, width, height, dataset, configs) {
         baseOption: {
             aria: getAria(configs),
             backgroundColor: getBackgroundColor(configs),
-            title: getTitle(configs),
+            title: getTitle(configs, dataset.title),
             timeline: getTimeline(configs, times),
             tooltip: {
                 show: configs.tooltipDisplay.value.toBoolean(),
@@ -9559,7 +9543,7 @@ function getScrollingScreen(container, width, height, dataset, configs) {
         aria: getAria(configs),
         grid: getGrid(configs),
         backgroundColor: getBackgroundColor(configs),
-        title: getTitle(configs),
+        title: getTitle(configs, dataset.title),
         toolbox: getToolbox(configs, container, dataset, myChart),
         graphic: scrollingScreenGraphic
     };
@@ -9688,7 +9672,7 @@ function getWalkingLantern(container, width, height, dataset, configs) {
         aria: getAria(configs),
         grid: getGrid(configs),
         backgroundColor: getBackgroundColor(configs),
-        title: getTitle(configs),
+        title: getTitle(configs, dataset.title),
         toolbox: getToolbox(configs, container, dataset, myChart),
     };
 
@@ -9871,7 +9855,7 @@ function getWindowShades(container, width, height, dataset, configs) {
         aria: getAria(configs),
         grid: getGrid(configs),
         backgroundColor: getBackgroundColor(configs),
-        title: getTitle(configs),
+        title: getTitle(configs, dataset.title),
         toolbox: getToolbox(configs, container, dataset, myChart),
     };
 
@@ -10001,7 +9985,7 @@ function getSurface(container, width, height, dataset, configs) {
     let ia = source.getMinMaxValue();
 
     let serie = {
-        name: configs.titleText.value,
+        name: (typeof dataset.title[0] !== "undefined" ? dataset.title[0] : ""),
         type: "surface",
         data: source.getPoints(),
     };
@@ -10012,7 +9996,7 @@ function getSurface(container, width, height, dataset, configs) {
         aria: getAria(configs),
         backgroundColor: getBackgroundColor(configs),
         grid: getGrid(configs),
-        title: getTitle(configs),
+        title: getTitle(configs, dataset.title),
         legend: getLegend(configs, source.dimensions.slice(1, source.dimensions.length)),
         tooltip: getTooltip(configs, "item", function (params) {
             return rows[params.value[0]] + "<br>" + params.marker + columns[params.value[1] + 1] + ":&emsp;<span style='display:inline-block;min-width:30px;text-align:right;font-weight:bold'>" + params.value[2] + "</span>";
@@ -10184,7 +10168,7 @@ function getBoxplot(container, width, height, dataset, configs) {
         aria: getAria(configs),
         backgroundColor: getBackgroundColor(configs),
         grid: getGrid(configs),
-        title: getTitle(configs),
+        title: getTitle(configs, dataset.title),
         legend: getLegend(configs, source.dimensions.slice(1, source.dimensions.length)),
         tooltip: getTooltip(configs, "item", null),
         toolbox: getToolbox(configs, container, dataset, myChart),
@@ -10313,7 +10297,7 @@ function getClock(container, width, height, dataset, configs) {
         aria: getAria(configs),
         backgroundColor: getBackgroundColor(configs),
         grid: getGrid(configs),
-        title: getTitle(configs),
+        title: getTitle(configs, []),
         toolbox: getToolbox(configs, container, dataset, myChart),
         graphic: getWaterGraphic(__SYS_LOGO_LINK__),
         series: [
@@ -10741,7 +10725,7 @@ function getCandlestick(container, width, height, dataset, configs) {
         },
         brush: getBrush(configs),
         toolbox: getToolbox(configs, container, dataset, myChart),
-        title: getTitle(configs),
+        title: getTitle(configs, dataset.title),
         legend: getLegend(configs, columns.slice(1, columns.length)),
 
         tooltip: getTooltip(configs, "axis", function (params) {
@@ -10832,7 +10816,7 @@ function getBanners(container, width, height, dataset, configs) {
     let option = {
         aria: getAria(configs),
         backgroundColor: getBackgroundColor(configs),
-        title: getTitle(configs),
+        title: getTitle(configs, dataset.title),
         toolbox: getToolbox(configs, container, dataset, myChart),
         graphic: [banners[index]].concat(getWaterGraphic(__SYS_LOGO_LINK__))
     };
@@ -10972,7 +10956,7 @@ function getWordCloud(container, width, height, dataset, configs) {
     let option = {
         backgroundColor: getLinearColor(0, 0, 0, 1, configs.backgroundColor.value.toArray(["transparent"],",")),
         grid: getGrid(configs),
-        title: getTitle(configs),
+        title: getTitle(configs, dataset.title),
         tooltip: getTooltip(configs, "item", function (param) {
             return [param.seriesName, param.marker + "&ensp;" + param.name + ":<span style='display:inline-block;min-width:30px;text-align:right;font-weight:bold'>&ensp;" + param.value + "</span>"].join("<br>");
         }),
@@ -11091,7 +11075,7 @@ function getSunburst(container, width, height, dataset, configs) {
         aria: getAria(configs),
         backgroundColor: getBackgroundColor(configs),
         grid: getGrid(configs),
-        title: getTitle(configs),
+        title: getTitle(configs, dataset.title),
         tooltip: getTooltip(configs, "item", function (param) {
             return [param.seriesName, param.marker + "&ensp;" + param.name + ":<span style='display:inline-block;min-width:30px;text-align:right;font-weight:bold'>&ensp;" + param.value + "</span>"].join("<br>");
         }),
@@ -11229,7 +11213,7 @@ function getTreemap(container, width, height, dataset, configs) {
             }
         ],
 
-        name: configs.titleText.value,
+        name: (typeof dataset.title[0] !== "undefined" ? dataset.title[0] : ""),
         data: datas,
         itemStyle: {
             borderRadius: Number(configs.treemapItemStyleBorderRadius.value),
@@ -11286,7 +11270,7 @@ function getTreemap(container, width, height, dataset, configs) {
         aria: getAria(configs),
         backgroundColor: getBackgroundColor(configs),
         grid: getGrid(configs),
-        title: getTitle(configs),
+        title: getTitle(configs, dataset.title),
         tooltip: getTooltip(configs, "item", function (param) {
             //暂不设置.需要思考
             //console.log(param);
@@ -11392,8 +11376,8 @@ function getParallelAxis(container, width, height, dataset, configs) {
     }
 
     let series = {
-        id: configs.titleText.value,
-        name: configs.titleText.value,
+        id: (typeof dataset.title[0] !== "undefined" ? dataset.title[0] : ""),
+        name: (typeof dataset.title[0] !== "undefined" ? dataset.title[0] : ""),
         type: 'parallel',
         smooth: configs.parallelSmooth.value.toBoolean(),
         data: data,
@@ -11403,7 +11387,7 @@ function getParallelAxis(container, width, height, dataset, configs) {
     let option = {
         backgroundColor: getBackgroundColor(configs),
         grid: getGrid(configs),
-        title: getTitle(configs),
+        title: getTitle(configs, dataset.title),
         tooltip: getTooltip(configs, "item", function (param) {
             let value = [param.marker + param.seriesName];
             for (let i = 0; i < param.value.length; i++) {
@@ -11508,7 +11492,7 @@ function getSankey(container, width, height, dataset, configs) {
         aria: getAria(configs),
         backgroundColor: getBackgroundColor(configs),
         grid: getGrid(configs),
-        title: getTitle(configs),
+        title: getTitle(configs, dataset.title),
         tooltip: getTooltip(configs, "item", function (param) {
             let value = [param.seriesName, param.marker + "&ensp;" + param.name + ":&ensp;" + param.value];
             return value.join("<br>");
@@ -11555,8 +11539,8 @@ function getThemeRiver(container, width, height, dataset, configs) {
     }
 
     let serie = {
-        id: configs.titleText.value,
-        name: configs.titleText.value,
+        id: (typeof dataset.title[0] !== "undefined" ? dataset.title[0] : ""),
+        name: (typeof dataset.title[0] !== "undefined" ? dataset.title[0] : ""),
         coordinateSystem: 'singleAxis',
         type: 'themeRiver',
         data: data,
@@ -11570,7 +11554,7 @@ function getThemeRiver(container, width, height, dataset, configs) {
         aria: getAria(configs),
         backgroundColor: getBackgroundColor(configs),
         grid: getGrid(configs),
-        title: getTitle(configs),
+        title: getTitle(configs, dataset.title),
         tooltip: getTooltip(configs, "axis", function (param) {
             let value = [param.seriesName, param.marker + "&ensp;" + param.value[2]];
             return value.join("<br>");
@@ -11974,7 +11958,7 @@ function getPie3D(container, width, height, dataset, configs) {
     let option = {
         aria: getAria(configs),
         backgroundColor: getBackgroundColor(configs),
-        title: getTitle(configs),
+        title: getTitle(configs, dataset.title),
         legend: getLegend(configs, legends),
         toolbox: getToolbox3D(configs, container, dataset, myChart),
         tooltip: getTooltip(configs, "item", function (params) {
@@ -12035,7 +12019,7 @@ function getSingeAxis(container, width, height, dataset, configs) {
         backgroundColor: getBackgroundColor(configs),
         grid: getGrid(configs),
         title: [
-            getTitle(configs)
+            getTitle(configs, dataset.title)
         ],
         brush: getBrush(configs),
         toolbox: getToolbox(configs, container, dataset, myChart),
@@ -12180,7 +12164,7 @@ function getFunctionLine(container, width, height, dataset, configs) {
         backgroundColor: getBackgroundColor(configs),
         grid: getGrid(configs),
         title: [
-            getTitle(configs)
+            getTitle(configs, dataset.title)
         ],
         brush: getBrush(configs),
         toolbox: getToolbox(configs, container, dataset,  myChart),
@@ -12303,7 +12287,7 @@ function getBarRacing(container, width, height, dataset, configs) {
         grid: getGrid(configs),
         brush: getBrush(configs),
         toolbox: getToolbox(configs, container, dataset, myChart),
-        title: getTitle(configs),
+        title: getTitle(configs, dataset.title),
         legend: getLegend(configs, source.dimensions.slice(1, source.dimensions.length)),
         tooltip: getTooltip(configs, "axis", null),
         yAxis: configs.barType.value == "vertical"?{
@@ -12498,7 +12482,7 @@ function getScrolling(container, width, height, dataset, configs) {
         grid: getGrid(configs),
         brush: getBrush(configs),
         toolbox: getToolbox(configs, container, dataset, myChart),
-        title: getTitle(configs),
+        title: getTitle(configs, dataset.title),
         //tooltip: getTooltip(configs, "axis", null),
         legend: getLegend(configs, source.dimensions.slice(1, source.dimensions.length)),
         xAxis: getXAxis(configs, "category", source.getItems(source.dimensions[0]).slice(start, start + max)),
@@ -12725,7 +12709,7 @@ function getDatasetImage(container, width, height, dataset, configs) {
         grid: grids,
         brush: getBrush(configs),
         toolbox: getToolbox(configs, container, dataset, myChart),
-        title: getTitle(configs),
+        title: getTitle(configs, dataset.title),
         tooltip: getTooltip(configs, "axis", null),
         legend: getLegend(configs, source.dimensions.slice(1, source.dimensions.length)),
         dataset: [
