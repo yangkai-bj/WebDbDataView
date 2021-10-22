@@ -1,6 +1,6 @@
 
 const __DATA_READER__ = {
-     Charset: {value: 1, name: "字符集", type: "select", options: ["GBK", "UTF-8"]},
+     Charset: {value: 0, name: "字符集", type: "select", options: ["GBK", "UTF-8"]},
      Separator: {value: ",", name: "分隔符", type: "select", options: [["逗号", ","], ["竖线", "|"], ["Tab", "\t"]]},
      SourceFile: {
          value: null,
@@ -21,7 +21,7 @@ function getReadProgress() {
     container.appendChild(v);
     v.id = "progress-value";
     __DATA_READER__.SourceFile.progress = setInterval(function () {
-        Timer()
+        Timer();
     }, 50);
 
     function Timer() {
@@ -155,14 +155,14 @@ function getDataReaderContent() {
                             } else if (filetype.toUpperCase() == "XLS" || filetype.toUpperCase() == "XLSX") {
                                 readExcelFile(file);
                             } else {
-                                showMessage("仅适用于XLSX、XLS、TXT和CSV文件。");
+                                UI.alert.show("提示", "仅适用于XLSX、XLS、TXT和CSV文件。");
                                 return;
                             }
                         } catch (e) {
-                            UI.alert.show("提示","请选择需要读取的文件.")
+                            UI.alert.show("提示", "请选择需要读取的文件.")
                         }
                     } else {
-                        showMessage("本应用适用于Chrome或Edge浏览器。")
+                        UI.alert.show("提示", "本应用适用于Chrome或Edge浏览器。")
                     }
                 };
             }
