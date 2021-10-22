@@ -341,8 +341,9 @@ function readData() {
             }
         }
         __DATASET__.result.push({
+            eventid: getEventIndex(),
             title: [__DATA_READER__.SourceFile.value.split(".")[0], sheetName],
-            sql: sheetName,
+            sql: __DATA_READER__.SourceFile.value + ":" + sheetName,
             type: __DATA_READER__.SourceFile.value.split(".")[1],
             parameter: [],
             columns: columns,
@@ -354,6 +355,6 @@ function readData() {
             viewDataset(__DATASET__.result.length - 1, 0);
         }
     } catch (e) {
-        UI.alert.show("提示",e);
+        UI.alert.show("注意", e);
     }
 }

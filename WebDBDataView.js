@@ -1067,7 +1067,7 @@ var __CONFIGS__ = {
 
  var __IMPORT__ = {
      Table: {value: "", name: "数据表", type: "view"},
-     Charset: {value: 1, name: "字符集", type: "select", options: ["GBK", "UTF-8"]},
+     Charset: {value: 0, name: "字符集", type: "select", options: ["GBK", "UTF-8"]},
      Separator: {value: ",", name: "分隔符", type: "select", options: [["逗号", ","], ["竖线", "|"], ["Tab", "\t"]]},
      SourceFile: {
          value: null,
@@ -1862,13 +1862,13 @@ function getStructFromData() {
     if (lines.length == 1)
         lines = __IMPORT__.SourceFile.data[__IMPORT__.SelectedDataSet.value].split("\n");
 
-    let start = structInspect(lines.slice(0,lines.length>1000?1000:lines.length),sep);
+    let start = structInspect(lines.slice(0, lines.length > 1000 ? 1000 : lines.length), sep);
     //检测样本为前1000条数据
     let columns = start.lines[0];
     let data = start.lines[1];
 
     let stru = [];
-    for (let i=0;i<columns.length;i++) {
+    for (let i = 0; i < columns.length; i++) {
         let col = {};
         for (let index in __COLUMN__) {
             switch (index) {
@@ -1901,7 +1901,7 @@ function getStructFromData() {
                     }
                     break;
                 case "scale":
-                     switch (col["type"]) {
+                    switch (col["type"]) {
                         case "float":
                             col[index] = 6;
                             break;
@@ -2525,13 +2525,13 @@ function getImportProgress() {
     return container;
 }
 
-function checkStorage(){
+function checkStorage() {
     try {
         if (typeof window.localStorage !== undefined)
             return true;
         else
             return false;
-    }catch (e) {
+    } catch (e) {
         return false;
     }
 }
@@ -2545,7 +2545,7 @@ function getUserConfig(key) {
         }
         let configs = JSON.parse(storage.getItem(__CONFIGS__.STORAGE.CONFIGS));
         return configs[key];
-    }catch (e) {
+    } catch (e) {
         __LOGS__.viewError("getUserConfig:" + e);
         return null;
     }
@@ -2558,12 +2558,12 @@ function setUserConfig(key,value) {
         let configs = JSON.parse(storage.getItem(__CONFIGS__.STORAGE.CONFIGS));
         configs[key] = value;
         storage.setItem(__CONFIGS__.STORAGE.CONFIGS, JSON.stringify(configs));
-    }catch (e) {
+    } catch (e) {
         __LOGS__.viewError(e);
     }
 }
 
-function viewDatabases(){
+function viewDatabases() {
     let message = "读取数据库列表...";
     try {
         let storage = window.localStorage;
@@ -2623,7 +2623,7 @@ function viewDatabases(){
             }
         }
         __LOGS__.viewMessage(message + "OK.");
-    }catch (e) {
+    } catch (e) {
         __LOGS__.viewMessage(message + "fails.\n" + e, true);
     }
 }
@@ -2816,7 +2816,6 @@ function orderDatasetBy(dataset, colid) {
 }
 
 function datasetTranspose(index) {
-    //数据转置
     try {
         let columns = __DATASET__.result[index].columns;
         let data = __DATASET__.result[index].data;
@@ -3136,6 +3135,7 @@ function execute(title) {
                                     data.push(row);
                                 }
                                 __DATASET__.result.push({
+                                    eventid: getEventIndex(),
                                     title: title,
                                     sql: sql,
                                     type: __SQLEDITOR__.options.mode,
@@ -3295,6 +3295,7 @@ function transferResultDataset(funs, dataset, title, parameter) {
     }
 
     return {
+        eventid: getEventIndex(),
         title: title,
         sql: funs.join(";\n"),
         type: __SQLEDITOR__.options.mode,
@@ -3407,7 +3408,13 @@ function getTableStructure(sql) {
             }
         }
     }
-    return {columns: columns, data: data, title: [], type: "text/x-sqlite"};
+    return {
+        eventid: getEventIndex(),
+        columns: columns,
+        data: data,
+        title: ["table structure"],
+        type: "text/x-sqlite"
+    };
 }
 
 function workbook2blob(sheets, sheetNames) {
@@ -3828,6 +3835,7 @@ function initMenus() {
         exConstr.appendChild(__SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.table_construct));
         exConstr.onclick = function () {
             let result = __CONFIGS__.CURRENT_TABLE.structure;
+            result["eventid"] = getEventIndex();
             result["title"] = [__CONFIGS__.CURRENT_TABLE.name];
             result["sql"] = __CONFIGS__.CURRENT_TABLE.sql;
             result["parameter"] = null;
@@ -5356,6 +5364,7 @@ function getSubtotal(colid) {
             let title = __DATASET__.result[__DATASET__.default.sheet].title;
             //title.push("SUBTOTAL");
             __DATASET__.result.push({
+                eventid: getEventIndex(),
                 columns: columns,
                 data: data,
                 title: title,
@@ -5622,6 +5631,7 @@ function getDataSlice() {
             }
         }
         __DATASET__.result.push({
+            eventid: getEventIndex(),
             title: title,
             sql: sql,
             type: type,
@@ -5965,6 +5975,7 @@ function getDataFilter(colid) {
         }
         //title.push("result of Data filter");
         __DATASET__.result.push({
+            eventid: getEventIndex(),
             title: title,
             sql: sql,
             type: type,

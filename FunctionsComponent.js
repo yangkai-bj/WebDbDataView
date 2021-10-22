@@ -1294,3 +1294,9 @@ function requestFullScreen(element) {
         __CONFIGS__.fullScreen.element = element;
     }
 }
+
+function getEventIndex(index) {
+    if (typeof index === "undefined")
+        index = Math.floor(Math.random() * 1000);
+    return new Date().format("yyyyMMddhhmmssS") + "-" + index;
+}
