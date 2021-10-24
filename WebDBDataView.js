@@ -64,457 +64,6 @@ const __VERSION__ = {
     email: __SYS_LOGO_LINK__.email.decode()
 };
 
-var UI = {
-    alert: {
-        title: null,
-        message: null,
-        show: function (title, message, parent) {
-            this.title = title;
-            this.message = message;
-            let container = document.createElement("div");
-            container.id = container.className = "ui_alert";
-            container.style.cssText = "position:fixed;left:0px;top:0px;width:100%;height:100%;background：rgba(0,0,0,0.5);z-index:9999";
-            if (parent == "auto" || parent == null || typeof parent == "undefined") {
-                if (document.fullscreen && typeof __CONFIGS__.fullScreen.element == "object") {
-                    parent = __CONFIGS__.fullScreen.element;
-                } else {
-                    parent = document.body;
-                }
-            }
-            parent.appendChild(container);
-            let content = document.createElement("div");
-            content.style.cssText = "margin: 0;position: absolute;top: 50%;left: 50%;" +
-                "-ms-transform: translate(-50%, -50%);transform: translate(-50%, -50%);" +
-                "width:400px;background-color:white;" +
-                "border: 2px solid var(--main-border-color);border-radius: 5px;padding:10px";
-            container.appendChild(content);
-            let t = document.createElement("div");
-            t.style.cssText = "color: var(--toolbar-color);" +
-                "background-color: var(--toolbar-background-color);" +
-                "cursor: pointer;" +
-                "border-bottom: 1px solid var(--main-border-color);" +
-                "border-radius: 10px;";
-            let span = document.createElement("span");
-            span.innerHTML = this.title;
-            span.style.cssText = "padding:10px;";
-            t.appendChild(span);
-            content.appendChild(t);
-            let br = document.createElement("hr");
-            br.style.cssText = "height:1px;" +
-                "border-width:0;" +
-                "color:gray;" +
-                "background-color:#00A7AA;" +
-                "width: 100%;";
-            content.appendChild(br);
-            let item = document.createElement("div");
-            item.style.cssText = "width:100%;";
-            let image = document.createElement("img");
-            image.src = __SYS_IMAGES__.logo_mysql.image;
-            image.size = "30% auto";
-            image.attachment = "fixed";
-            image.style.cssText = "width:30%;float: left;" +
-                "text-align: center;" +
-                "font-size: 90%;" +
-                "background-color: transparent;" +
-                "color: var(--main-title-color);";
-            item.appendChild(image);
-            let msg = document.createElement("span");
-            msg.style.cssText = "cursor: pointer;" +
-                "width:70%;" +
-                "float: left;" +
-                "white-space: auto;"+
-                "text-overflow: ellipsis;" +
-                "-o-text-overflow: ellipsis;" +
-                "color: var(--main-title-color);" +
-                "line-height: 1.1;" +
-                "display: inline-block;" +
-                "vertical-align: middle;" +
-                "text-align: left;" +
-                "font-size: 100%;" +
-                "background-color: transparent;" +
-                "color: var(--main-title-color);" +
-                "min-height: 100px;";
-            msg.innerHTML = message;
-            item.appendChild(msg);
-            content.appendChild(item);
-
-            br = document.createElement("hr");
-            br.style.cssText = "height:1px;\n" +
-                "border-width:0;\n" +
-                "color:gray;\n" +
-                "background-color:#00A7AA;\n" +
-                "width: 100%;";
-            content.appendChild(br);
-
-            let tools = document.createElement("div");
-            tools.style.width = "90%";
-            content.appendChild(tools);
-            let button = document.createElement("button");
-            button.innerText = "确定";
-            button.style.cssFloat = "right";
-            button.onclick = function () {
-                parent.removeChild($("ui_alert"));
-            };
-            tools.appendChild(button);
-        },
-    },
-    confirm:{
-        title: null,
-        message: null,
-        show: function (title, message, parent, callback, args) {
-            //callback:回调函数,
-            //args:回调函数参数,根据实际需要可以不传递\可以是单一参数\可以是数组\可以是对象.
-            this.title = title;
-            this.message = message;
-            let container = document.createElement("div");
-            container.id = container.className = "ui_confirm";
-            container.style.cssText = "position:fixed;left:0px;top:0px;width:100%;height:100%;background：rgba(0,0,0,0.5);z-index:9999";
-            if (parent == "auto" || parent == null) {
-                if (document.fullscreen && typeof __CONFIGS__.fullScreen.element == "object") {
-                    parent = __CONFIGS__.fullScreen.element;
-                } else {
-                    parent = document.body;
-                }
-            }
-            parent.appendChild(container);
-            let content = document.createElement("div");
-            content.style.cssText = "margin: 0;position: absolute;top: 50%;left: 50%;" +
-                "-ms-transform: translate(-50%, -50%);transform: translate(-50%, -50%);" +
-                "width:400px;background-color:white;opacity:1.5;" +
-                "border: 2px solid var(--main-border-color);border-radius: 5px;padding:10px";
-            container.appendChild(content);
-            let t = document.createElement("div");
-            t.style.cssText = "color: var(--toolbar-color);" +
-                "background-color: var(--toolbar-background-color);" +
-                "cursor: pointer;" +
-                "border-bottom: 1px solid var(--main-border-color);" +
-                "border-radius: 10px;";
-            let span = document.createElement("span");
-            span.innerHTML = this.title;
-            span.style.cssText = "padding:10px;";
-            t.appendChild(span);
-            content.appendChild(t);
-            let br = document.createElement("hr");
-            br.style.cssText = "height:1px;" +
-                "border-width:0;" +
-                "color:gray;" +
-                "background-color:#00A7AA;" +
-                "width: 100%;";
-            content.appendChild(br);
-            let item = document.createElement("div");
-            item.style.cssText = "width:100%;";
-            let image = document.createElement("img");
-            image.src = __SYS_IMAGES__.logo_mysql.image;
-            image.size = "30% auto";
-            image.attachment = "fixed";
-            image.style.cssText = "width:30%;float: left;" +
-                "text-align: center;" +
-                "font-size: 90%;" +
-                "background-color: transparent;" +
-                "color: var(--main-title-color);";
-            item.appendChild(image);
-            let msg = document.createElement("span");
-            msg.style.cssText = "cursor: pointer;" +
-                "width:70%;" +
-                "float: left;" +
-                "white-space: auto;"+
-                "text-overflow: ellipsis;" +
-                "-o-text-overflow: ellipsis;" +
-                "color: var(--main-title-color);" +
-                "line-height: 1.1;" +
-                "display: inline-block;" +
-                "vertical-align: middle;" +
-                "text-align: left;" +
-                "font-size: 100%;" +
-                "background-color: transparent;" +
-                "color: var(--main-title-color);" +
-               "min-height: 100px;";
-            msg.innerHTML = message;
-            item.appendChild(msg);
-            content.appendChild(item);
-
-            br = document.createElement("hr");
-            br.style.cssText = "height:1px;\n" +
-                "border-width:0;\n" +
-                "color:gray;\n" +
-                "background-color:#00A7AA;\n" +
-                "width: 100%;";
-            content.appendChild(br);
-
-            let tools = document.createElement("div");
-            tools.style.width = "90%";
-            content.appendChild(tools);
-
-            let button = document.createElement("button");
-            button.innerText = "取消";
-            button.style.cssText = "float: right;margin-left:10px";
-            button.onclick = function () {
-                parent.removeChild($("ui_confirm"));
-            };
-            tools.appendChild(button);
-
-            button = document.createElement("button");
-            button.innerText = "确定";
-            button.style.cssText = "float: right;margin-left:10px";
-            button.onclick = function () {
-                parent.removeChild($("ui_confirm"));
-                if (typeof callback == "function") {
-                    if (typeof args !== "undefined")
-                        callback(args);
-                    else
-                        callback();
-                }
-            };
-            tools.appendChild(button);
-        },
-    },
-    prompt: {
-        title: null,
-        items: {},
-        show: function (title, items, parent, callback, args) {
-            this.title = title;
-            this.items = items;
-            let container = document.createElement("div");
-            container.id = container.className = "ui_prompt";
-            container.style.cssText = "position:fixed;left:0px;top:0px;width:100%;height:100%;background：rgba(0,0,0,0.5);z-index:9999";
-            if (parent == "auto" || parent == null) {
-                if (document.fullscreen && typeof __CONFIGS__.fullScreen.element == "object") {
-                    parent = __CONFIGS__.fullScreen.element;
-                } else {
-                    parent = document.body;
-                }
-            }
-            parent.appendChild(container);
-            let content = document.createElement("div");
-            content.style.cssText = "margin: 0;position: absolute;top: 50%;left: 50%;" +
-                "-ms-transform: translate(-50%, -50%);transform: translate(-50%, -50%);" +
-                "width:400px;background-color:white;" +
-                "border: 2px solid var(--main-border-color);border-radius: 5px;padding:10px";
-            container.appendChild(content);
-            let t = document.createElement("div");
-            t.style.cssText = "color: var(--toolbar-color);" +
-                "background-color: var(--toolbar-background-color);" +
-                "cursor: pointer;" +
-                "border-bottom: 1px solid var(--main-border-color);" +
-                "border-radius: 10px;";
-            let span = document.createElement("span");
-            span.innerHTML = this.title;
-            span.style.cssText = "padding:10px;";
-            t.appendChild(span);
-            content.appendChild(t);
-            let br = document.createElement("hr");
-            br.style.cssText = "height:1px;\n" +
-                "border-width:0;\n" +
-                "color:gray;\n" +
-                "background-color:#00A7AA;\n" +
-                "width: 100%;";
-            content.appendChild(br);
-            let itemcontent = document.createElement("div");
-            itemcontent.style.cssText = "min-height: 100px;width:100%;";
-            content.appendChild(itemcontent);
-            for (let key in this.items) {
-                let it = items[key];
-                let item = document.createElement("div");
-                item.style.cssText = "width:100%;" +
-                    "min-height: 23px;" +
-                    "vertical-align: middle;";
-                span = document.createElement("span");
-                span.style.cssText = "width:20%;" +
-                    "text-align: left;float: left;" +
-                    "overflow: hidden;" +
-                    "white-space: nowrap;" +
-                    "word-break: keep-all;" +
-                    "text-overflow: ellipsis;" +
-                    "-o-text-overflow: ellipsis;" +
-                    "font-size: 100%;" +
-                    "height:100%;" +
-                    "background-color: transparent;" +
-                    "color: var(--main-title-color);" +
-                    "cursor: pointer;";
-                span.title = key;
-                span.innerText = key + " : ";
-                item.appendChild(span);
-                let input = document.createElement("input");
-                input.className = "ui_prompt_value";
-                input.id = "ui_prompt_value_" + key;
-                input.style.cssText = "width:80%;" +
-                    "height:100%;" +
-                    "float: right;" +
-                    "font-size: 100%;" +
-                    "padding: 0px;" +
-                    "margin: 0px;" +
-                    "background-color: transparent;" +
-                    "color: var(--toolbar-background-color);" +
-                    "outline-style: none;" +
-                    "border:0px;" +
-                    "border-bottom:1px solid var(--main-border-color);";
-                input.value = it;
-                item.appendChild(input);
-                itemcontent.appendChild(item);
-            }
-            br = document.createElement("hr");
-            br.style.cssText = "height:1px;\n" +
-                "border-width:0;\n" +
-                "color:gray;\n" +
-                "background-color:#00A7AA;\n" +
-                "width: 100%;";
-            content.appendChild(br);
-
-            let tools = document.createElement("div");
-            tools.style.width = "90%";
-            content.appendChild(tools);
-
-            let button = document.createElement("button");
-            button.innerText = "取消";
-            button.style.cssText = "float: right;margin-left:10px";
-            button.onclick = function () {
-                parent.removeChild($("ui_prompt"));
-            };
-            tools.appendChild(button);
-
-            button = document.createElement("button");
-            button.innerText = "确定";
-            button.style.cssText = "float: right;margin-left:10px";
-            button.onclick = function () {
-                for (let key in UI.prompt.items) {
-                    UI.prompt.items[key] = document.getElementById("ui_prompt_value_" + key).value;
-                }
-                if (typeof callback == "function") {
-                    if (typeof args == "undefined")
-                        callback(UI.prompt.items);
-                    else
-                        callback(args, UI.prompt.items);
-                }
-                parent.removeChild($("ui_prompt"));
-            };
-            tools.appendChild(button);
-        },
-    },
-    password: {
-        title: null,
-        items: {},
-        show: function (title, items, parent, callback, args) {
-            this.title = title;
-            this.items = items;
-            let container = document.createElement("div");
-            container.id = container.className = "ui_password";
-            container.style.cssText = "position:fixed;left:0px;top:0px;width:100%;height:100%;background：rgba(0,0,0,0.5);z-index:9999";
-            if (parent == "auto" || parent == null) {
-                if (document.fullscreen && typeof __CONFIGS__.fullScreen.element == "object") {
-                    parent = __CONFIGS__.fullScreen.element;
-                } else {
-                    parent = document.body;
-                }
-            }
-            parent.appendChild(container);
-            let content = document.createElement("div");
-            content.style.cssText = "margin: 0;position: absolute;top: 50%;left: 50%;" +
-                "-ms-transform: translate(-50%, -50%);transform: translate(-50%, -50%);" +
-                "width:400px;background-color:white;" +
-                "border: 2px solid var(--main-border-color);border-radius: 5px;padding:10px";
-            container.appendChild(content);
-            let t = document.createElement("div");
-            t.style.cssText = "color: var(--toolbar-color);" +
-                "background-color: var(--toolbar-background-color);" +
-                "cursor: pointer;" +
-                "border-bottom: 1px solid var(--main-border-color);" +
-                "border-radius: 10px;";
-            let span = document.createElement("span");
-            span.innerHTML = this.title;
-            span.style.cssText = "padding:10px;";
-            t.appendChild(span);
-            content.appendChild(t);
-            let br = document.createElement("hr");
-            br.style.cssText = "height:1px;\n" +
-                "border-width:0;\n" +
-                "color:gray;\n" +
-                "background-color:#00A7AA;\n" +
-                "width: 100%;";
-            content.appendChild(br);
-            let itemcontent = document.createElement("div");
-            itemcontent.style.cssText = "min-height: 100px;width:100%;";
-            content.appendChild(itemcontent);
-            for (let key in this.items) {
-                let placeholder = items[key];
-                let item = document.createElement("div");
-                item.style.cssText = "width:100%;" +
-                    "min-height: 23px;" +
-                    "vertical-align: middle;";
-                span = document.createElement("span");
-                span.style.cssText = "width:20%;" +
-                    "text-align: left;float: left;" +
-                    "overflow: hidden;" +
-                    "white-space: nowrap;" +
-                    "word-break: keep-all;" +
-                    "text-overflow: ellipsis;" +
-                    "-o-text-overflow: ellipsis;" +
-                    "font-size: 100%;" +
-                    "height:100%;" +
-                    "background-color: transparent;" +
-                    "color: var(--main-title-color);" +
-                    "cursor: pointer;";
-                span.title = key;
-                span.innerText = key + " : ";
-                item.appendChild(span);
-                let input = document.createElement("input");
-                input.type = "password";
-                input.className = "ui_password_value";
-                input.id = "ui_password_value_" + key;
-                input.style.cssText = "width:80%;" +
-                    "height:100%;" +
-                    "float: right;" +
-                    "font-size: 100%;" +
-                    "padding: 0px;" +
-                    "margin: 0px;" +
-                    "background-color: transparent;" +
-                    "color: var(--toolbar-background-color);" +
-                    "outline-style: none;" +
-                    "border:0px;" +
-                    "border-bottom:1px solid var(--main-border-color);";
-                input.placeholder = placeholder;
-                item.appendChild(input);
-                itemcontent.appendChild(item);
-            }
-            br = document.createElement("hr");
-            br.style.cssText = "height:1px;\n" +
-                "border-width:0;\n" +
-                "color:gray;\n" +
-                "background-color:#00A7AA;\n" +
-                "width: 100%;";
-            content.appendChild(br);
-
-            let tools = document.createElement("div");
-            tools.style.width = "90%";
-            content.appendChild(tools);
-
-            let button = document.createElement("button");
-            button.innerText = "取消";
-            button.style.cssText = "float: right;margin-left:10px";
-            button.onclick = function () {
-                parent.removeChild($("ui_password"));
-            };
-            tools.appendChild(button);
-
-            button = document.createElement("button");
-            button.innerText = "确定";
-            button.style.cssText = "float: right;margin-left:10px";
-            button.onclick = function () {
-                for (let key in UI.password.items) {
-                    UI.password.items[key] = document.getElementById("ui_password_value_" + key).value;
-                }
-                if (typeof callback == "function") {
-                    if (typeof args == "undefined")
-                        callback(UI.password.items);
-                    else
-                        callback(args, UI.password.items);
-                }
-                parent.removeChild($("ui_password"));
-            };
-            tools.appendChild(button);
-        },
-    },
-};
-
 var __LOGS__ = {
     days: 7,
     data: {},
@@ -797,6 +346,7 @@ var __XMLHTTP__ = {
             {name: "主程序", src: "WebDBDataView.js", type: "text/javascript", element: "script", load: false},
             {name: "主程序", src: "themes/default.css", type: "text/css", element: "link", load: false},
             {name: "主程序", src: "WebDBDataView.css", type: "text/css", element: "link", load: false},
+            {name: "主程序", src: "UI.js", type: "text/javascript", element: "script", load: false},
             {name: "资料库", src: "themes/images.js", type: "text/javascript", element: "script", load: false},
             {name: "公共函数", src: "FunctionsComponent.js", type: "text/javascript", element: "script", load: false},
             {
@@ -4273,34 +3823,38 @@ function initMenus() {
         detailtools.appendChild(selectlogs);
         setTooltip(selectlogs, "日志<br>列表");
 
-         let logs = document.createElement("select");
-        logs.type = "select";
+        let logs = document.createElement("div");
         logs.id = "logs-records";
+        logs.className = "charButton";
+        logs.innerHTML = "≢";
+        logs.style.cursor = "pointer";
         logs.style.cssFloat = "right";
-        logs.options.add(new Option("1千条", 1000));
-        logs.options.add(new Option("5千条", 5000));
-        logs.options.add(new Option("1万条", 10000));
-        logs.options.add(new Option("全部", 0));
-        try {
-            let re = getUserConfig("pagelogs");
-            if (re != null)
-                logs.value = getUserConfig("pagelogs");
-            else
-                logs.selectedIndex = 0;
-        } catch (e) {
-            __LOGS__.viewError(e);
-        }
-        logs.onchange = function () {
-            __CONFIGS__.MAXLOGS = this.value;
-            setUserConfig("pagelogs", this.value);
-            let msgbox = $("messageBox");
-            if (__CONFIGS__.MAXLOGS > 0) {
-                while (msgbox.getElementsByClassName("dt").length > __CONFIGS__.MAXLOGS) {
-                    msgbox.removeChild(msgbox.getElementsByClassName("dt")[msgbox.getElementsByClassName("dt").length - 1])
+        let logItems = {
+            "50条": {value: 10, checked: Number(getUserConfig("pagelogs")) == 10 ? "true" : false},
+            "100条": {value: 100, checked: Number(getUserConfig("pagelogs")) == 100 ? "true" : false},
+            "1000条": {title: 1000, checked: Number(getUserConfig("pagelogs")) == 1000 ? "true" : false},
+            "5000条": {title: 5000, checked: Number(getUserConfig("pagelogs")) == 5000 ? "true" : false},
+            "10000条": {title: 10000, checked: Number(getUserConfig("pagelogs")) == 10000 ? "true" : false},
+        };
+        __CONFIGS__.MAXLOGS = Number(getUserConfig("pagelogs"));
+        logs.onclick = function () {
+            UI.choise.show("设置显示日志最大记录数", logItems, "radio", "auto", function (args, values) {
+                for (let key in values) {
+                    if (values[key].checked) {
+                        __CONFIGS__.MAXLOGS = values[key].value;
+                        setUserConfig("pagelogs", values[key].value);
+                        let msgbox = $("messageBox");
+                        if (__CONFIGS__.MAXLOGS > 0) {
+                            while (msgbox.getElementsByClassName("dt").length > __CONFIGS__.MAXLOGS) {
+                                msgbox.removeChild(msgbox.getElementsByClassName("dt")[msgbox.getElementsByClassName("dt").length - 1])
+                            }
+                        }
+                    }
                 }
-            }
+            }, {});
         };
         detailtools.appendChild(logs);
+
         setTooltip(logs, "显示日志<br>记录数");
 
         //#######################################
@@ -4681,8 +4235,14 @@ function initMenus() {
                 $("tableContainer").innerText = "";
                 setDataPageTools(0);
             }
+            let histories = Object.keys(__ECHARTS__.history).length;
+            if (histories > 0) {
+                UI.confirm.show("提示", "是否需要删除缓存视图数据:<dl><li>历史视图( " + histories + "项 )</li><li>组合视图( " + __ECHARTS__.sets.data.length + "项 )</li></dl>", "auto", function (args) {
+                    __ECHARTS__.clearHistory();
+                }, {});
+            }
         };
-        setTooltip(removeall, "删除所有<br>数据集");
+        setTooltip(removeall, "删除缓存<br>视图数据");
 
         let fileSecurity = document.createElement("div");
         datatools.appendChild(fileSecurity);
@@ -4920,11 +4480,10 @@ function initMenus() {
 
         let echarts = document.createElement("div");
         datatools.appendChild(echarts);
-        echarts.className = "button";
-        echarts.innerText = "视图";
+        echarts.className = "charButton";
+        echarts.innerText = "❖";
         echarts.style.cssFloat = "right";
         echarts.id = "dataset-to-charts";
-        echarts.appendChild(__SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.echarts));
         let help_echarts = $("help-dataset-echarts");
         echarts.onclick = help_echarts.onclick = function () {
             try {
@@ -6221,19 +5780,37 @@ function getFormat(colid) {
 
 function setTooltip(parent, text) {
     parent.onmouseenter = function () {
-        let tip = document.createElement("span");
-        tip.className = "tooltip";
-        tip.id = "tooltip-" + parent.id;
-        tip.innerHTML = text;
-        let posi = getAbsolutePosition(parent);
-        tip.style.top = (posi.top - 42) + "px";
-        tip.style.left = posi.left + "px";
-        tip.style.width = posi.width + "px";
-        tip.style.height = (posi.height - 5) + "px";
-        $("page").appendChild(tip);
+        if (parent.className == "charButton") {
+            if (typeof $("tooltip-" + parent.id) !== "undefined") {
+                let tip = document.createElement("span");
+                tip.className = "tooltip-charButton";
+                tip.id = "tooltip-" + parent.id;
+                tip.innerHTML = text;
+                let posi = getAbsolutePosition(parent);
+                tip.style.top = (posi.top - 40)+ "px";
+                tip.style.left = (posi.left - 18) + "px";
+                tip.style.width = posi.width * 2 + "px";
+                tip.style.height = (posi.height - 8) + "px";
+                $("page").appendChild(tip);
+            }
+        } else {
+            if (typeof $("tooltip-" + parent.id) !== "undefined") {
+                let tip = document.createElement("span");
+                tip.className = "tooltip-button";
+                tip.id = "tooltip-" + parent.id;
+                tip.innerHTML = text;
+                let posi = getAbsolutePosition(parent);
+                tip.style.top = (posi.top - 42) + "px";
+                tip.style.left = posi.left + "px";
+                tip.style.width = (typeof width == "undefined" ? posi.width : width) + "px";
+                tip.style.height = (posi.height - 5) + "px";
+                $("page").appendChild(tip);
+            }
+        }
     };
     parent.onmouseleave = function () {
-        $("page").removeChild($("tooltip-" + parent.id))
+        if (typeof $("tooltip-" + parent.id) !== "undefined")
+            $("page").removeChild($("tooltip-" + parent.id))
     }
 }
 

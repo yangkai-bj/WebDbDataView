@@ -363,7 +363,7 @@ img.title_close_button:hover{
 
 .toolbar .charButton{
     height: 100%;
-    width: 60px;
+    width: 36px;
     text-align: center;
     font-size: 140%;
     line-height: 36px;
@@ -371,9 +371,8 @@ img.title_close_button:hover{
     cursor: pointer;
     float:left;
     position: relative;
-    border-bottom-right-radius: 15px;
-    border-top-left-radius: 15px;
-    border-top-right-radius: 5px;
+    border:1px solid var(--toolbar-background-color);
+    border-radius: 18px;
 }
 
 .toolbar .charButton:hover{
@@ -441,7 +440,7 @@ img.title_close_button:hover{
     background-color: var(--toolbar-button-hover-background-color);
 }
 
-.tooltip {
+.tooltip-button {
     display: block;
     position: fixed;
     line-height: 14px;
@@ -456,6 +455,21 @@ img.title_close_button:hover{
     border-bottom-left-radius: 15px;
     border-top-right-radius: 15px;
     border-bottom-right-radius: 5px;
+}
+
+.tooltip-charButton {
+    display: block;
+    position: fixed;
+    line-height: 14px;
+    background-color: var(--toolbar-button-hover-background-color);
+    color: var(--toolbar-button-tooltip-color);
+    text-align: center;
+    padding: 5px 0;
+    z-index: 10000;
+    font-size: 6px;
+    -webkit-animation: content-show 2s 1;/*infinite; /* Chrome, Safari, Opera */
+    animation: content-show 2s 1;/*infinite;*/
+    border-radius: 5px;
 }
 
 .groupbar {

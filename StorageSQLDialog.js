@@ -249,13 +249,13 @@ function storageSqlDialog(sql, editer, type){
                         let sqllist = js.backup;
                         let hash = js.hash;
                         if (JSON.stringify(sqllist).hex_md5_hash() === hash) {
-                            UI.confirm.show("警告", "<span style='font-size:50%;'>文件名称:&emsp;" + file.name + "<br>"
-                                + "文件大小:&emsp;" + file.size + " bytes<br>"
-                                + "文件类型:&emsp;" + file.type + "<br>"
-                                + "数据来源:&emsp;" + js.appName + "<br>"
-                                + "校验代码:&emsp;" + hash + "<br>"
-                                + "备份时间:&emsp;" + ((typeof js.date) == "undefined" ? file.lastModified.Format("yyyy-MM-dd hh:mm:ss.S") : js.date) + "</span><br><br>"
-                                + "您确定使用上述备份文件覆盖当前存储的所有脚本吗?", "auto", function (args) {
+                            UI.confirm.show("警告", "您确定使用备份文件覆盖当前存储的所有脚本吗?<span style='font-size:5px;'><dl>"
+                                + "<li>文件名称:&emsp;" + file.name + "</li>"
+                                + "<li>文件大小:&emsp;" + file.size + " bytes</li>"
+                                + "<li>文件类型:&emsp;" + file.type + "</li>"
+                                + "<li>数据来源:&emsp;" + js.appName + "</li>"
+                                + "<li>校验代码:&emsp;" + hash + "</li>"
+                                + "<li>备份时间:&emsp;" + ((typeof js.date) == "undefined" ? file.lastModified.Format("yyyy-MM-dd hh:mm:ss.S") : js.date) + "</li></dl></span>", "auto", function (args) {
                                 let storage = window.localStorage;
                                 storage.setItem(__CONFIGS__.STORAGE.SCRIPTS, JSON.stringify(args.sqllist));
                                 getSQLList($("sql-Manager-Content-table"));
@@ -263,19 +263,19 @@ function storageSqlDialog(sql, editer, type){
                                 $("edit-container").style.display = "none";
                             }, {sqllist: sqllist});
                         } else {
-                            UI.alert.show("提示", "<span style='font-size:50%;'>文件名称:&emsp;" + file.name + "<br>"
-                                + "文件大小:&emsp;" + file.size + " Bytes<br>"
-                                + "文件类型:&emsp;" + file.type + "<br>"
-                                + "数据来源:&emsp;" + js.appName + "<br>"
-                                + "校验代码:&emsp;" + hash + "<br>"
-                                + "备份时间:&emsp;" + ((typeof js.date) == "undefined" ? file.lastModified.Format("yyyy-MM-dd hh:mm:ss.S") : js.date) + "</span><br><br>"
-                                + "备份文件校验错误!")
+                            UI.alert.show("提示", "备份文件校验错误!<span style='font-size:50%;'><dl>"
+                                + "<li>文件名称:&emsp;" + file.name + "</li>"
+                                + "<li>文件大小:&emsp;" + file.size + " Bytes</li>"
+                                + "<li>文件类型:&emsp;" + file.type + "</li>"
+                                + "<li>数据来源:&emsp;" + js.appName + "</li>"
+                                + "<li>校验代码:&emsp;" + hash + "</li>"
+                                + "<li>备份时间:&emsp;" + ((typeof js.date) == "undefined" ? file.lastModified.Format("yyyy-MM-dd hh:mm:ss.S") : js.date) + "</li></dl></span>")
                         }
-                    }catch (e) {
-                        UI.alert.show("提示","<span style='font-size:50%;'>文件名称:&emsp;" + file.name + "<br>"
-                            + "文件大小:&emsp;" + file.size + " Bytes<br>"
-                            + "文件类型:&emsp;" + file.type + "</span><br><br>"
-                            + "该文件不是标准化的备份文件,请重新选择!")
+                    } catch (e) {
+                        UI.alert.show("提示", "该文件不是标准化的备份文件,请重新选择!<span style='font-size:50%;'><dl>"
+                            + "<li>文件名称:&emsp;" + file.name + "</li>"
+                            + "<li>文件大小:&emsp;" + file.size + " Bytes</li>"
+                            + "<li>文件类型:&emsp;" + file.type + "</li><dl></span>")
                     }
                 };
                 reader.readAsText(file, __SQLEDITOR__.charset.options[__SQLEDITOR__.charset.value]);
@@ -283,7 +283,7 @@ function storageSqlDialog(sql, editer, type){
                 UI.alert.show("提示","请选择需要导入的文件.")
             }
         } else {
-            showMessage("本应用适用于Chrome或Edge浏览器。")
+            UI.alert.show("注意","本应用适用于Chrome或Edge浏览器。")
         }
     };
     tool.appendChild(input);

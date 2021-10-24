@@ -377,6 +377,10 @@ var __ECHARTS__ = {
             height: height,
         });
     },
+    clearHistory: function() {
+        this.history = {};
+        this.sets.data = [];
+    },
     sets: {
         data: [],
         add: function (id) {

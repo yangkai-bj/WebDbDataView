@@ -162,7 +162,7 @@ function getDataReaderContent() {
                             UI.alert.show("提示", "请选择需要读取的文件.")
                         }
                     } else {
-                        UI.alert.show("提示", "本应用适用于Chrome或Edge浏览器。")
+                        UI.alert.show("注意", "本应用适用于Chrome或Edge浏览器。")
                     }
                 };
             }
