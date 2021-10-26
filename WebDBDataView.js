@@ -1,7 +1,7 @@
 const __VERSION__ = {
     name: "Web DataView for SQLite Database of browser",
-    version: "2.6.3",
-    date: "2021/10/21",
+    version: "2.6.4",
+    date: "2021/10/25",
     comment: [
         "-- 2021/03/08",
         "优化算法和压缩代码.",
@@ -850,7 +850,6 @@ var __CONFIGS__ = {
         }
 
         let container = document.createElement("div");
-        container.type = "div";
         container.className = "dataset-configs-Content";
         container.id = "dataset-configs-Content";
 
@@ -1480,7 +1479,6 @@ function getStructFromData() {
 
 function createTable(structure) {
     let container = document.createElement("div");
-    container.type = "div";
     container.className = "create-table-Content";
     container.id = "create-table-Content";
 
@@ -1801,7 +1799,6 @@ function createDatabase(){
         Size: {value: "1024*1024*1024", name: "库容量", type: "text"}
     };
     let container = document.createElement("div");
-    container.type = "div";
     container.className = "create-database-Content";
     container.id = "create-database-Content";
 
@@ -1901,7 +1898,6 @@ function getImportContent() {
      __IMPORT__.SourceFile.total = 0;
 
     let container = document.createElement("div");
-    container.type = "div";
     container.className = container.id = "import-configs-content";
     let title = document.createElement("div");
     title.className = "container-title";
@@ -3209,7 +3205,6 @@ function initMenus() {
         let dbstools = $("sidebar-dbs-tools");
 
         let crdb = document.createElement("div");
-        crdb.type = "div";
         crdb.className = "button";
         crdb.innerText = "新增";
         crdb.id = "create-database";
@@ -3223,7 +3218,6 @@ function initMenus() {
         setTooltip(crdb, "创建数<br>据库");
 
         let rmdb = document.createElement("div");
-        rmdb.type = "div";
         rmdb.className = "button";
         rmdb.innerText = "删除";
         rmdb.id = "delete-database";
@@ -3261,7 +3255,6 @@ function initMenus() {
         setTooltip(rmdb, "删除<br>数据库");
 
         let dbinfo = document.createElement("div");
-        dbinfo.type = "div";
         dbinfo.className = "button";
         dbinfo.id = "test-button";
         dbinfo.innerText = "调试";
@@ -3323,12 +3316,10 @@ function initMenus() {
         setTooltip(dbinfo, "脚本<br>转换");
 
         let about = document.createElement("div");
-        about.type = "div";
-        about.className = "button";
+        about.className = "charButton";
+        about.innerHTML = "☂";
         about.id = "about-and-help";
-        about.innerText = "帮助";
         about.style.cssFloat = "right";
-        about.appendChild(__SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.help));
         about.onclick = function () {
             if ($("footer").style.display) {
                 if ($("footer").style.display == "block")
@@ -3350,7 +3341,6 @@ function initMenus() {
         let tbstools = $("sidebar-tbs-tools");
         tbstools.innerText = "";
         let crtb = document.createElement("div");
-        crtb.type = "div";
         crtb.className = "button";
         crtb.id = "create-table";
         crtb.innerText = "新增";
@@ -3364,7 +3354,6 @@ function initMenus() {
         setTooltip(crtb, "创建<br>数据表");
 
         let importtb = document.createElement("div");
-        importtb.type = "div";
         importtb.className = "button";
         importtb.innerText = "导入";
         importtb.id = "import-to-table";
@@ -3378,7 +3367,6 @@ function initMenus() {
         setTooltip(importtb, "导入<br>外部数据");
 
         let exConstr = document.createElement("div");
-        exConstr.type = "div";
         exConstr.className = "button";
         exConstr.innerText = "结构";
         exConstr.id = "show-table-construct";
@@ -3399,7 +3387,6 @@ function initMenus() {
         setTooltip(exConstr, "获取数据<br>表结构");
 
         let rmtb = document.createElement("div");
-        rmtb.type = "div";
         rmtb.className = "button";
         rmtb.innerText = "删除";
         rmtb.id = "drop-table";
@@ -3445,7 +3432,6 @@ function initMenus() {
         };
 
         let newsql = document.createElement("div");
-        newsql.type = "div";
         newsql.className = "button";
         newsql.innerText = "新建";
         newsql.id = "create-new-sql";
@@ -3454,7 +3440,7 @@ function initMenus() {
         newsql.onclick = help_createsql.onclick = function () {
             let openfile = $("open-sql-file");
             openfile.value = "";
-            __SQLEDITOR__.title = null;
+            __SQLEDITOR__.title = null; $("execute-sql").getElementsByTagName("img")[0].title = "";
             __SQLEDITOR__.codeMirror.setValue("");
             if (this.id == "help-create-sql") {
                 let sql = "/*脚本案例*/\r\n" +
@@ -3483,7 +3469,7 @@ function initMenus() {
                     let reader = new FileReader();
                     reader.onload = function () {
                         __SQLEDITOR__.codeMirror.setValue(this.result);
-                        __SQLEDITOR__.title =  file.name.split(".")[0];
+                        __SQLEDITOR__.title =  $("execute-sql").getElementsByTagName("img")[0].title = file.name.split(".")[0];
                     };
                     reader.readAsText(file, __SQLEDITOR__.charset.options[__SQLEDITOR__.charset.value]);
                 } catch (e) {
@@ -3496,7 +3482,6 @@ function initMenus() {
         sqltools.appendChild(input);
 
         let opensql = document.createElement("div");
-        opensql.type = "div";
         opensql.className = "button";
         opensql.innerText = "打开";
         opensql.id = "open-sql";
@@ -3510,7 +3495,6 @@ function initMenus() {
         setTooltip(opensql, "打开<br>脚本");
 
         let saveto = document.createElement("div");
-        saveto.type = "div";
         saveto.className = "button";
         saveto.innerText = "保存";
         saveto.id = "sql-save-to";
@@ -3536,7 +3520,6 @@ function initMenus() {
         setTooltip(saveto, "保存<br>脚本");
 
         let loadfile = document.createElement("div");
-        loadfile.type = "div";
         loadfile.className = "button";
         loadfile.innerText = "导入";
         loadfile.id = "load-sql-file";
@@ -3549,7 +3532,6 @@ function initMenus() {
         setTooltip(loadfile, "导入<br>脚本");
 
         let saveas = document.createElement("div");
-        saveas.type = "div";
         saveas.className = "button";
         saveas.innerText = "导出";
         saveas.id = "sql-save-as";
@@ -3578,10 +3560,9 @@ function initMenus() {
         setTooltip(saveas, "导出<br>脚本");
 
         let execsql = document.createElement("div");
-        execsql.type = "div";
         execsql.className = "button";
         execsql.innerText = "提交";
-        execsql.id = "exec-sql";
+        execsql.id = "execute-sql";
         execsql.appendChild(__SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.execute_sql));
         let help_execsql = $("help-execute-sql");
         execsql.onclick = help_execsql.onclick = function () {
@@ -3603,7 +3584,7 @@ function initMenus() {
                             executeFunction(title)
                     } else {
                         UI.prompt.show("输入", {"集合名称": ""}, "auto", function (args, values) {
-                            let title = __SQLEDITOR__.title = values["集合名称"];
+                            let title = __SQLEDITOR__.title = $("execute-sql").getElementsByTagName("img")[0].title = values["集合名称"];
                             if (__SQLEDITOR__.options.mode == "text/x-sqlite")
                                 execute(title);
                             if (__SQLEDITOR__.options.mode == "text/javascript")
@@ -3742,9 +3723,8 @@ function initMenus() {
         };
 
         let toDisplay = document.createElement("div");
-        toDisplay.type = "div";
         toDisplay.className = "charButton";
-        toDisplay.innerHTML = "&#187";//"»";
+        toDisplay.innerHTML = "∼";//"»";
         toDisplay.id = "display-log";
         toDisplay.onclick = function () {
             if ($("detail").style.display != "none") {
@@ -3766,7 +3746,6 @@ function initMenus() {
         setTooltip(toDisplay, "隐藏<br>日志");
 
         let clean = document.createElement("div");
-        clean.type = "div";
         clean.className = "charButton";
         clean.innerHTML = "&#9850";
         clean.id = "logs-clear";
@@ -3779,49 +3758,37 @@ function initMenus() {
         setTooltip(clean, "清除终<br>端日志");
 
         let savelogs = document.createElement("div");
-        savelogs.type = "div";
         savelogs.className = "charButton";
         savelogs.id = "save-logs";
         savelogs.innerHTML = "&#8675";
         savelogs.style.cssFloat = "right";
         savelogs.onclick = function () {
-            let selectlogs = document.getElementById("select-logs");
-            let date = selectlogs.value;
-            __LOGS__.saveas(date);
-            UI.confirm.show("注意", "日志(" + date + ")已下载到本地,是否从系统删除?", "auto", function (args) {
-                __LOGS__.delete(args.date);
-                selectlogs.innerHTML = "";
-                let list = [];
-                for (let date in __LOGS__.data) {
-                    list.push(date);
+            let logslist = {};
+            for (let d in __LOGS__.data) {
+                logslist[d] = {value: d, checked: false};
+            }
+            UI.choise.show("请选择需要下载的日志", logslist, "checkbox", "auto", function (args, values) {
+                let count = 0;
+                for (let d in values) {
+                    if (values[d].checked) {
+                        let date = values[d].value;
+                        __LOGS__.saveas(date);
+                        sleep(1000)
+                        count++;
+                    }
                 }
-                list.sort(function (a, b) {
-                    return (new Date(b)) - (new Date(a))
-                });
-                //倒序排序
-                for (let i = 0; i < list.length; i++) {
-                    selectlogs.options.add(new Option(list[i], list[i]));
+                if (count > 0) {
+                    UI.confirm.show("注意", "日志 " + count + " 已下载到本地,是否从系统删除?", "auto", function (args) {
+                        for (let d in args) {
+                            if (args[d].checked)
+                                __LOGS__.delete(args[d].value);
+                        }
+                    }, values);
                 }
-            }, {date: date});
+            }, {});
         };
         detailtools.appendChild(savelogs);
         setTooltip(savelogs, "下载<br>日志");
-
-        let selectlogs = document.createElement("select");
-        selectlogs .type = "select";
-        selectlogs .id = "select-logs";
-        selectlogs.style.cssFloat = "right";
-        let list = [];
-        for(let date in __LOGS__.data){
-            list.push(date);
-        }
-        list.sort(function(a,b){return (new Date(b)) - (new Date(a))});
-        //倒序排序
-        for(let i=0;i<list.length;i++){
-            selectlogs .options.add(new Option(list[i], list[i]));
-        }
-        detailtools.appendChild(selectlogs);
-        setTooltip(selectlogs, "日志<br>列表");
 
         let logs = document.createElement("div");
         logs.id = "logs-records";
@@ -3903,7 +3870,7 @@ function initMenus() {
                                         $("open-sql-file").value = "";
                                         $("dataset-select-echarts-theme").value = __ECHARTS__.configs.echartsTheme.value = report.configs.echartsTheme.value;
                                         $("dataset-select-echarts-type").value = __ECHARTS__.configs.echartsType.value = report.configs.echartsType.value;
-                                        __SQLEDITOR__.title = report.dataset.title.join("_");
+                                        __SQLEDITOR__.title = $("execute-sql").getElementsByTagName("img")[0].title = report.dataset.title.join("_");
                                         __SQLEDITOR__.codeMirror.setValue(report.dataset.sql);
                                         viewDataset(__DATASET__.default.sheet, 0);
                                         let _width = (getAbsolutePosition(container).width * 1) + "px";
@@ -3941,7 +3908,6 @@ function initMenus() {
 
         let openEchartsFile = document.createElement("div");
         datatools.appendChild(openEchartsFile);
-        openEchartsFile.type = "div";
         openEchartsFile.className = "charButton";
         openEchartsFile.innerText = "✓";
         openEchartsFile.style.cssFloat = "left";
@@ -3952,7 +3918,6 @@ function initMenus() {
 
         let dataReader = document.createElement("div");
         datatools.appendChild(dataReader);
-        dataReader.type = "div";
         dataReader.className = "charButton";
         dataReader.innerText = "⚘";
         dataReader.style.cssFloat = "left";
@@ -3993,7 +3958,6 @@ function initMenus() {
 
         let subtotal = document.createElement("div");
         datatools.appendChild(subtotal);
-        subtotal.type = "div";
         subtotal.className = "charButton";
         subtotal.innerHTML = "&#931";//"Σ";
         subtotal.id = "dataset-subtotal";
@@ -4008,29 +3972,34 @@ function initMenus() {
 
         let download = document.createElement("div");
         datatools.appendChild(download);
-        download.type = "div";
         download.className = "charButton";
         download.innerHTML = "&#8675";//"⇣";
         download.id = "dataset-download";
         let help_datasetdownload = $("help-dataset-download");
-         download.onclick = help_datasetdownload.onclick = function () {
-            function removingRedundant(sheetNames) {
-                //sheet名称重复处理.
-                for (let i = 0; i < sheetNames.length; i++) {
-                    let x = 0;
-                    for (let t = i + 1; t < sheetNames.length; t++) {
-                        if (sheetNames[t] === sheetNames[i]) {
-                            x += 1;
-                            sheetNames[t] += "(" + x + ")";
-                        }
+        download.onclick = help_datasetdownload.onclick = function () {
+            function removingRedundant(names, sheetName, index) {
+                sheetName = fixFileName(sheetName);
+                let x = (typeof index === "undefined" ? 0 : index);
+                let name = (x == 0 ? sheetName : sheetName + "(" + x + ")");
+                let exist = false;
+                for (let i = 0; i < names.length; i++) {
+                    if (names[i].toUpperCase() == name.toUpperCase()) {
+                        exist = true;
+                        x++;
+                        break;
                     }
                 }
-                return sheetNames;
+                if (exist) {
+                    return removingRedundant(names, sheetName, x);
+                } else {
+                    names.push(name);
+                    return names
+                }
             }
 
             function fixFileName(str) {
                 //文件名称合法性修正。
-                let sts = ['\\', '/', ':', '*', '?', '"', '<', '>', '[', ']', '|'];
+                let sts = ['\\', '\/', ':', '*', '?', '"', '<', '>', '[', ']', '|'];
                 for (let i = 0; i < sts.length; i++) {
                     str = str.replaceAll(sts[i], "#");
                 }
@@ -4068,15 +4037,15 @@ function initMenus() {
                                 aoa.push(row);
                             }
                             sheets.push(aoa);
-                            let sheetname = dataset.title[dataset.title.length - 1];
-                            sheetNames.push(fixFileName(sheetname));
+                            sheetNames = removingRedundant(sheetNames,dataset.title[dataset.title.length - 1]);
                             sheets.push(comment);
-                            sheetNames.push("Comment");
+                            sheetNames = removingRedundant(sheetNames,"Comment");
                             UI.prompt.show("输入", {"文件名称": dataset.title.join("_")}, "auto", function (args, values) {
                                 let title = fixFileName(values["文件名称"]);
-                                if (title.trim() != "")
+                                if (title.trim() != "") {
                                     openDownloadDialog(workbook2blob(args.sheets, args.sheetNames), title + ".xlsx");
-                            }, {sheets: sheets, sheetNames: removingRedundant(sheetNames)});
+                                }
+                            }, {sheets: sheets, sheetNames: sheetNames});
                             break;
                         case "xml":
                             dataset = __DATASET__.result[__DATASET__.default.sheet];
@@ -4112,16 +4081,16 @@ function initMenus() {
                                                 aoa.push(row);
                                             }
                                             sheets.push(aoa);
-                                            let sheetname = fixFileName(dataset.title[dataset.title.length - 1]);
-                                            sheetNames.push(sheetname);
+                                            sheetNames = removingRedundant(sheetNames,dataset.title[dataset.title.length - 1]);
                                         }
                                         sheets.push(comment);
-                                        sheetNames.push("Comment");
+                                        sheetNames = removingRedundant(sheetNames,"Comment");
                                         UI.prompt.show("输入", {"文件名称": ""}, "auto", function (args, values) {
                                             let title = fixFileName(values["文件名称"]);
-                                            if (title.trim() != "")
+                                            if (title.trim() != "") {
                                                 openDownloadDialog(workbook2blob(args.sheets, args.sheetNames), title + ".xlsx");
-                                        }, {sheets: sheets, sheetNames: removingRedundant(sheetNames)});
+                                            }
+                                        }, {sheets: sheets, sheetNames: sheetNames});
                                         break;
                                     case "xml":
                                         UI.prompt.show("输入", {"文件名称": ""}, "auto", function (args, values) {
@@ -4133,7 +4102,7 @@ function initMenus() {
                                 }
                             });
                     } else
-                        UI.alert.show("提示","一个工作簿最多允许有255个数据表!");
+                        UI.alert.show("提示", "一个工作簿最多允许有255个数据表!");
                 } else if (__DATASET__.configs.reportDownload.value == "all-multi") {
                     if (__DATASET__.result.length <= 255) {
                         if (__DATASET__.result.length > 0)
@@ -4167,11 +4136,10 @@ function initMenus() {
                                                 aoa.push(row);
                                             }
                                             sheets.push(aoa);
-                                            let sheetname = fixFileName(dataset.title[dataset.title.length - 1]);
-                                            sheetNames.push(sheetname);
+                                            sheetNames = removingRedundant(sheetNames, dataset.title[dataset.title.length - 1]);
                                             sheets.push(comment);
-                                            sheetNames.push("Comment");
-                                            openDownloadDialog(workbook2blob(sheets, removingRedundant(sheetNames)), fixFileName(dataset.title.join("_")) + ".xlsx");
+                                            sheetNames = removingRedundant(sheetNames, "Comment");
+                                            openDownloadDialog(workbook2blob(sheets, sheetNames), fixFileName(dataset.title.join("_")) + ".xlsx");
                                             if (d < (__DATASET__.result.length - 1)) {
                                                 let delay = (aoa.length * columns.length) >= 10000 ? (aoa.length * columns.length / 10000) : 1;
                                                 sleep(__DATASET__.configs.reportDownloadDelay.value * delay);
@@ -4192,7 +4160,7 @@ function initMenus() {
                                 }
                             });
                     } else
-                        UI.alert.show("提示","同时下载的工作簿个数不允许超过255个!");
+                        UI.alert.show("提示", "同时下载的工作簿个数不允许超过255个!");
                 }
             }
         };
@@ -4200,7 +4168,6 @@ function initMenus() {
 
         let remove = document.createElement("div");
         datatools.appendChild(remove);
-        remove.type = "div";
         remove.className = "charButton";
         remove.innerHTML = "&#10007";//"✗";
         remove.id = "dataset-remove";
@@ -4224,7 +4191,6 @@ function initMenus() {
 
         let removeall = document.createElement("div");
         datatools.appendChild(removeall);
-        removeall.type = "div";
         removeall.className = "charButton";
         removeall.innerHTML = "&#9850";//"♻";
         removeall.id = "dataset-removeall";
@@ -4246,7 +4212,6 @@ function initMenus() {
 
         let fileSecurity = document.createElement("div");
         datatools.appendChild(fileSecurity);
-        fileSecurity.type = "div";
         fileSecurity.className = "charButton";
         fileSecurity.innerText = "☍";
         fileSecurity.onclick = $("file-security").onclick = function () {
@@ -4256,7 +4221,6 @@ function initMenus() {
 
         let datasetSetting = document.createElement("div");
         datatools.appendChild(datasetSetting);
-        datasetSetting.type = "div";
         datasetSetting.className = "charButton";
         datasetSetting.innerText = "┅";
         datasetSetting.id = "dataset-setting";
@@ -5091,7 +5055,7 @@ function getParamDialog(titles, sql) {
                     executeFunction(title)
             } else {
                 UI.prompt.show("输入", {"集合名称": ""}, "auto", function (args, values) {
-                    let title = __SQLEDITOR__.title = values["集合名称"];
+                    let title = __SQLEDITOR__.title = $("execute-sql").getElementsByTagName("img")[0].title = values["集合名称"];
                     if (__SQLEDITOR__.options.mode == "text/x-sqlite")
                         execute(title);
                     if (__SQLEDITOR__.options.mode == "text/javascript")
@@ -6728,27 +6692,28 @@ function  setClipboardListener(target) {
 }
 
 function getXMLFile(title, workbook) {
-    let sheetNames = [];
-    function removingRedundant(sheetName, index) {
-        sheetName = sheetName.split("*").join("#").split("?").join("#").split("[").join("#").split("]").join("#").split("\\").join("#").split("/").join("#");
+    function removingRedundant(names, sheetName, index) {
+        sheetName = sheetName.split("*").join("#").split("?").join("#").split("[").join("#").split("]").join("#").split("\\").join("#").split("\/").join("#");
         let x = (typeof index === "undefined" ? 0 : index);
         let name = (x == 0 ? sheetName : sheetName + "(" + x + ")");
         let exist = false;
-        for (let i = 0; i < sheetNames.length; i++) {
-            if (sheetNames[i].toUpperCase() == name.toUpperCase()) {
+        for (let i = 0; i < names.length; i++) {
+            if (names[i].toUpperCase() == name.toUpperCase()) {
                 exist = true;
                 x++;
                 break;
             }
         }
         if (exist) {
-            removingRedundant(sheetName, x);
+            return removingRedundant(names, sheetName, x);
         } else {
-            sheetNames.push(name);
+            names.push(name);
+            return names
         }
     }
 
     try {
+        let sheetNames = [];
         let xml = '<?xml version="1.0"?>' +
             '<?mso-application progid="Excel.Sheet"?>' +
             '<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"' +
@@ -6774,9 +6739,7 @@ function getXMLFile(title, workbook) {
             '</Styles>';
         for (let index = 0; index < workbook.length; index++) {
             let dataset = workbook[index];
-            removingRedundant(typeof dataset.title == "undefined" ? "Sheet" :
-                (dataset.title.length == 0 ? "Sheet" :
-                    (dataset.title[dataset.title.length - 1] == "" ? "Sheet" : dataset.title[dataset.title.length - 1])));
+            sheetNames = removingRedundant(sheetNames, dataset.title[dataset.title.length - 1]);
             xml += '<Worksheet ss:Name="' + sheetNames[index].split("<").join("&lt;").split(">").join("&gt;") + '">\n' +
                 '<Table ss:ExpandedColumnCount="' + dataset["columns"].length + '" ss:ExpandedRowCount="' + dataset["data"].length + 1 + '">';
             let cols = dataset["columns"].reduce(function (tmp, column) {

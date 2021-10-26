@@ -246,9 +246,6 @@ function getEcharts(container, width, height, dataset, configs) {
                 case "Radar":
                     return getRadar(container, width, height, dataset, configs);
                     break;
-                case "Regression":
-                    return getRegression(container, width, height, dataset, configs);
-                    break;
                 case "Relation":
                     return getRelation(container, width, height, dataset, configs);
                     break;
@@ -488,7 +485,6 @@ var __ECHARTS__ = {
                 new Option("柱状图", "Bar"),
                 new Option("条形图", "TransversBar"),
                 new Option("线型图", "Line"),
-                new Option("线性回归", "Regression"),
                 new Option("盒须图", "Boxplot"),
                 new Option("柱状&线型", "BarAndLine"),
                 new Option("面积图", "AreaStyle"),
@@ -846,6 +842,20 @@ var __ECHARTS__ = {
             type: "select"
         },
 
+        hr_clock: {name: "时钟", value: "", type: "hr"},
+        clockRadius: {name: "表盘半径", value: "75%", type: "input"},
+        clockCenter: {name: "表盘位置", value: '["50%","50%"]', type: "input"},
+        clockFontSize: {
+            name: "字号",
+            value: "16",
+            type: "input"
+        },
+        clockAxisLabelDistance: {
+            name: "标签位置",
+            value: "15",
+            type: "input"
+        },
+
         hr_bar: {name: "柱状图", value: "", type: "hr"},
         barColorby: {
             name: "配色方式",
@@ -877,6 +887,13 @@ var __ECHARTS__ = {
         },
         barLabelRotate: {name: "标签旋转度数", value: 0, type: "input"},
         barStackTimes: {name: "堆叠分组", value: 1, type: "input"},
+
+        barRegLineDisplay: {
+            name: "显示回归曲线",
+            value: "false",
+            options: [new Option("是", "true"), new Option("否", "false")],
+            type: "select"
+        },
 
         hr_line: {name: "线形图", value: "", type: "hr"},
         lineColorby: {
@@ -961,6 +978,12 @@ var __ECHARTS__ = {
             options: [new Option("是", "true"), new Option("否", "false")],
             type: "select"
         },
+        lineRegLineDisplay: {
+            name: "显示回归曲线",
+            value: "false",
+            options: [new Option("是", "true"), new Option("否", "false")],
+            type: "select"
+        },
 
         hr_AreaStyle: {name: "面积图", value: "", type: "hr"},
         areaStyleColorby: {
@@ -979,6 +1002,41 @@ var __ECHARTS__ = {
             name: "启用渐变颜色",
             value: "false",
             options: [new Option("否", "false"), new Option("是", "true")],
+            type: "select"
+        },
+
+        hr_scatter: {name: "散点图", value: "", type: "hr"},
+        scatterColorby: {
+            name: "配色方式",
+            value: "series",
+            options: [new Option("序列", "series"), new Option("数据", "data")],
+            type: "select"
+        },
+        scatterLabelDisplay: {
+            name: "显示标签",
+            value: "false",
+            options: [new Option("是", "true"), new Option("否", "false")],
+            type: "select"
+        },
+        scatterLabelTextColor: {name: "标签颜色", value: "auto", type: "color"},
+        scatterLabelFontSize: {name: "标签字号", value: 12, type: "input"},
+        scatterType: {
+            name: "节点类型",
+            value: "scatter",
+            options: [new Option("静态散点", "scatter"), new Option("效应散点", "effectScatter")],
+            type: "select"
+        },
+        scatterSymbolSize: {name: "节点大小", value: "[6,18]", type: "input"},
+        scatterSymbolShape: {
+            name: "节点形状",
+            value: "circle",
+            options: [new Option("圆形", "circle"), new Option("四边形", "rect"), new Option("圆角四边形", "roundRect"), new Option("三角形", "triangle"), new Option("菱形", "diamond"), new Option("图钉", "pin"), new Option("箭头", "arrow"), new Option("不设置", "none")],
+            type: "select"
+        },
+        scatterRegLineDisplay: {
+            name: "显示回归曲线",
+            value: "false",
+            options: [new Option("是", "true"), new Option("否", "false")],
             type: "select"
         },
 
@@ -1051,53 +1109,35 @@ var __ECHARTS__ = {
             type: "select"
         },
 
-        hr_polar: {name: "极坐标", value: "", type: "hr"},
-        polarColorby: {
+        hr_funnel: {name: "漏斗图", value: "", type: "hr"},
+        funelColorby: {
             name: "配色方式",
             value: "series",
             options: [new Option("序列", "series"), new Option("数据", "data")],
             type: "select"
         },
-        polarType: {
-            name: "图形类别",
-            value: "line",
-            options: [new Option("柱状图", "bar"), new Option("线型图", "line"), new Option("面积图", "area"), new Option("热力图", "heatmap")],
+        funnelAlign: {
+            name: "对齐方式",
+            value: "auto",
+            options: [new Option("自动", "auto"), new Option("左对齐", "left"), new Option("右对齐", "right"), new Option("居中", "center")],
             type: "select"
         },
-        polarStackTimes: {
-            name: "堆叠分组", value: 1, type: "input"
-        },
-        polarRoundCap: {
-            name: "圆角",
-            value: "false",
-            options: [new Option("否", "false"), new Option("是", "true")],
+        funnelSort: {
+            name: "排序",
+            value: "none",
+            options: [new Option("原始", "none"), new Option("顺序", "ascending"), new Option("倒序", "descending")],
             type: "select"
         },
-        polarShowLabel: {
-            name: "显示标签",
-            value: "false",
-            options: [new Option("否", "false"), new Option("是", "true")],
-            type: "select"
-        },
-        polarLabelPosition: {
+        funnelGap: {name: "间距", value: 2, type: "input"},
+        funnelMinSize: {name: "最小比例", value: "5%", type: "input"},
+        funnelLabelFontSize: {name: "标签字号", value: 12, type: "input"},
+        funnelLabelTextColor: {name: "标签颜色", value: "auto", type: "color"},
+        funnelLabelPosition: {
             name: "标签位置",
-            value: "top",
-            options: [new Option("外头部", "start"), new Option("内头部", "insideStart"), new Option("中间", "middle"), new Option("内尾部", "insideEnd"),
-                new Option("外尾部", "end")],
+            value: "inside",
+            options: [new Option("居中", "inside"), new Option("居左", "left"), new Option("居右", "right")],
             type: "select"
         },
-
-        hr_regression: {name: "回归参数", value: "", type: "hr"},
-        regressionType: {name: "回归类型", value: "直线", options: ["直线", "指数", "对数", "多项式"], type: "select"},
-        regressionPolynomialOrder: {name: "多项式阶数", value: 2, type: "input"},
-        regressionForwardPeroids: {name: "前推周期", value: 0, type: "input"},
-        regressionExpressionDisplay: {
-            name: "显示表达式",
-            value: "false",
-            options: [new Option("是", "true"), new Option("否", "false")],
-            type: "select"
-        },
-        regressionExpressionColor: {name: "表达式颜色", value: "auto", type: "color"},
 
         hr_dynamicBar: {name: "基础动态图", value: "", type: "hr"},
         barType: {
@@ -1159,6 +1199,52 @@ var __ECHARTS__ = {
         },
         multiGraphGroup: {name: "序列分组", value: 2, type: "input"},
 
+        hr_gauge: {name: "仪表盘", value: "", type: "hr"},
+        gaugeAxisLabelFontSize: {name: "刻度字号", value: 10, type: "input"},
+        gaugeAxisLabelDistance: {name: "刻度位置", value: 15, type: "input"},
+        gaugeTitleFontSize: {name: "标题字号", value: 14, type: "input"},
+        gaugeTitleColor: {value: "auto", name: "标题颜色", type: "color"},
+        gaugeLabelFontSize: {name: "数据字号", value: 18, type: "input"},
+        gaugeAxisLineWidth: {name: "圆轴宽度", value: 10, type: "input"},
+        gaugeStartAngle: {name: "起始角度", value: 225, type: "input"},
+        gaugeEndAngle: {name: "结束角度", value: -45, type: "input"},
+
+        hr_polar: {name: "极坐标", value: "", type: "hr"},
+        polarColorby: {
+            name: "配色方式",
+            value: "series",
+            options: [new Option("序列", "series"), new Option("数据", "data")],
+            type: "select"
+        },
+        polarType: {
+            name: "图形类别",
+            value: "line",
+            options: [new Option("柱状图", "bar"), new Option("线型图", "line"), new Option("面积图", "area"), new Option("热力图", "heatmap")],
+            type: "select"
+        },
+        polarStackTimes: {
+            name: "堆叠分组", value: 1, type: "input"
+        },
+        polarRoundCap: {
+            name: "圆角",
+            value: "false",
+            options: [new Option("否", "false"), new Option("是", "true")],
+            type: "select"
+        },
+        polarShowLabel: {
+            name: "显示标签",
+            value: "false",
+            options: [new Option("否", "false"), new Option("是", "true")],
+            type: "select"
+        },
+        polarLabelPosition: {
+            name: "标签位置",
+            value: "top",
+            options: [new Option("外头部", "start"), new Option("内头部", "insideStart"), new Option("中间", "middle"), new Option("内尾部", "insideEnd"),
+                new Option("外尾部", "end")],
+            type: "select"
+        },
+
         hr_radar: {name: "雷达图", value: "", type: "hr"},
         radarShape: {
             name: "形状",
@@ -1184,65 +1270,6 @@ var __ECHARTS__ = {
             name: "同基比较",
             value: "false",
             options: [new Option("是", "true"), new Option("否", "false")],
-            type: "select"
-        },
-
-        hr_scatter: {name: "散点图", value: "", type: "hr"},
-        scatterColorby: {
-            name: "配色方式",
-            value: "series",
-            options: [new Option("序列", "series"), new Option("数据", "data")],
-            type: "select"
-        },
-        scatterLabelDisplay: {
-            name: "显示标签",
-            value: "false",
-            options: [new Option("是", "true"), new Option("否", "false")],
-            type: "select"
-        },
-        scatterLabelTextColor: {name: "标签颜色", value: "auto", type: "color"},
-        scatterLabelFontSize: {name: "标签字号", value: 12, type: "input"},
-        scatterType: {
-            name: "节点类型",
-            value: "scatter",
-            options: [new Option("静态散点", "scatter"), new Option("效应散点", "effectScatter")],
-            type: "select"
-        },
-        scatterSymbolSize: {name: "节点大小", value: "[6,18]", type: "input"},
-        scatterSymbolShape: {
-            name: "节点形状",
-            value: "circle",
-            options: [new Option("圆形", "circle"), new Option("四边形", "rect"), new Option("圆角四边形", "roundRect"), new Option("三角形", "triangle"), new Option("菱形", "diamond"), new Option("图钉", "pin"), new Option("箭头", "arrow"), new Option("不设置", "none")],
-            type: "select"
-        },
-
-        hr_funnel: {name: "漏斗图", value: "", type: "hr"},
-        funelColorby: {
-            name: "配色方式",
-            value: "series",
-            options: [new Option("序列", "series"), new Option("数据", "data")],
-            type: "select"
-        },
-        funnelAlign: {
-            name: "对齐方式",
-            value: "auto",
-            options: [new Option("自动", "auto"), new Option("左对齐", "left"), new Option("右对齐", "right"), new Option("居中", "center")],
-            type: "select"
-        },
-        funnelSort: {
-            name: "排序",
-            value: "none",
-            options: [new Option("原始", "none"), new Option("顺序", "ascending"), new Option("倒序", "descending")],
-            type: "select"
-        },
-        funnelGap: {name: "间距", value: 2, type: "input"},
-        funnelMinSize: {name: "最小比例", value: "5%", type: "input"},
-        funnelLabelFontSize: {name: "标签字号", value: 12, type: "input"},
-        funnelLabelTextColor: {name: "标签颜色", value: "auto", type: "color"},
-        funnelLabelPosition: {
-            name: "标签位置",
-            value: "inside",
-            options: [new Option("居中", "inside"), new Option("居左", "left"), new Option("居右", "right")],
             type: "select"
         },
 
@@ -1283,30 +1310,6 @@ var __ECHARTS__ = {
             type: "select"
         },
         liqiudOpacity: {name: "透明度", value: 0.6, type: "input"},
-
-        hr_gauge: {name: "仪表盘", value: "", type: "hr"},
-        gaugeAxisLabelFontSize: {name: "刻度字号", value: 10, type: "input"},
-        gaugeAxisLabelDistance: {name: "刻度位置", value: 15, type: "input"},
-        gaugeTitleFontSize: {name: "标题字号", value: 14, type: "input"},
-        gaugeTitleColor: {value: "auto", name: "标题颜色", type: "color"},
-        gaugeLabelFontSize: {name: "数据字号", value: 18, type: "input"},
-        gaugeAxisLineWidth: {name: "圆轴宽度", value: 10, type: "input"},
-        gaugeStartAngle: {name: "起始角度", value: 225, type: "input"},
-        gaugeEndAngle: {name: "结束角度", value: -45, type: "input"},
-
-        hr_clock: {name: "时钟", value: "", type: "hr"},
-        clockRadius: {name: "表盘半径", value: "75%", type: "input"},
-        clockCenter: {name: "表盘位置", value: '["50%","50%"]', type: "input"},
-        clockFontSize: {
-            name: "字号",
-            value: "16",
-            type: "input"
-        },
-        clockAxisLabelDistance: {
-            name: "标签位置",
-            value: "15",
-            type: "input"
-        },
 
         hr_sunburst: {name: "旭日图", value: "", type: "hr"},
         sunburstRadius: {name: "内/外半径", value: '["15%", "90%"]', type: "input"},
@@ -1679,6 +1682,18 @@ var __ECHARTS__ = {
             value: "[-100, 100]",
             type: "input"
         },
+
+        hr_regression: {name: "回归参数", value: "", type: "hr"},
+        regressionType: {name: "回归类型", value: "直线", options: ["直线", "指数", "对数", "多项式"], type: "select"},
+        regressionPolynomialOrder: {name: "多项式阶数", value: 2, type: "input"},
+        regressionForwardPeroids: {name: "前推周期", value: 0, type: "input"},
+        regressionExpressionDisplay: {
+            name: "显示表达式",
+            value: "false",
+            options: [new Option("是", "true"), new Option("否", "false")],
+            type: "select"
+        },
+        regressionExpressionColor: {name: "表达式颜色", value: "auto", type: "color"},
 
         hr_dataZoom: {name: "数据缩放", value: "", type: "hr"},
         dataZoomBarDisplay: {
@@ -3034,6 +3049,8 @@ function getLineOption(configs, container, myChart, dataset) {
     if (typeof myChart.IntervalId !== "undefined")
         clearInterval(myChart.IntervalId);
     let source = getSource(dataset);
+    let legend = source.dimensions.slice(1, source.dimensions.length);
+    let xAxis = source.getItems(source.dimensions[0]);
     let series = [];
     for (let c = 1; c < source.dimensions.length; c++) {
         let serie = {
@@ -3093,6 +3110,19 @@ function getLineOption(configs, container, myChart, dataset) {
 
         setSeriesAnimation(serie, configs, c);
         series.push(serie);
+        if (configs.lineRegLineDisplay.value.toBoolean()) {
+            let regLine = getRegLine(configs, source.dimensions[c], source.getPoints(source.dimensions[c]).getMap([0, 2]));
+            series.push(regLine.serie);
+            legend.push(regLine.name);
+            if (xAxis.length < regLine.serie.data.length) {
+                for (let x = xAxis.length; x < regLine.serie.data.length; x++) {
+                    xAxis.push({
+                        name: "P" + regLine.serie.data[x][0],
+                        value: "P" + regLine.serie.data[x][0]
+                    });
+                }
+            }
+        }
     }
 
     let option = {
@@ -3102,8 +3132,8 @@ function getLineOption(configs, container, myChart, dataset) {
         toolbox: getToolbox(configs, container, dataset, myChart),
         title: getTitle(configs, dataset.title),
         tooltip: getTooltip(configs, "axis", null),
-        legend: getLegend(configs, source.dimensions.slice(1, source.dimensions.length)),
-        xAxis: getXAxis(configs, "category", source.getItems(source.dimensions[0])),
+        legend: getLegend(configs, legend),
+        xAxis: getXAxis(configs, "category", xAxis),
         yAxis: getYAxis(configs, "value", null, "left"),
         dataZoom: [
             getDataZoomXAxis(configs, 0, "inside", 0, 100),
@@ -3132,6 +3162,8 @@ function getBarOption(configs, container, myChart, dataset) {
     if (typeof myChart.IntervalId !== "undefined")
         clearInterval(myChart.IntervalId);
     let source = getSource(dataset);
+    let legend = source.dimensions.slice(1, source.dimensions.length);
+    let xAxis = source.getItems(source.dimensions[0]);
     let series = [];
     let stacktime = Number(configs.barStackTimes.value);
     let stack = null;
@@ -3181,6 +3213,19 @@ function getBarOption(configs, container, myChart, dataset) {
         };
         setSeriesAnimation(serie, configs, c);
         series.push(serie);
+        if (configs.barRegLineDisplay.value.toBoolean()) {
+            let regLine = getRegLine(configs, source.dimensions[c], source.getPoints(source.dimensions[c]).getMap([0, 2]));
+            series.push(regLine.serie);
+            legend.push(regLine.name);
+            if (xAxis.length < regLine.serie.data.length) {
+                for (let x = xAxis.length; x < regLine.serie.data.length; x++) {
+                    xAxis.push({
+                        name: "P" + regLine.serie.data[x][0],
+                        value: "P" + regLine.serie.data[x][0]
+                    });
+                }
+            }
+        }
     }
 
     let option = {
@@ -3190,9 +3235,9 @@ function getBarOption(configs, container, myChart, dataset) {
         brush: getBrush(configs),
         toolbox: getToolbox(configs, container, dataset, myChart),
         title: getTitle(configs, dataset.title),
-        legend: getLegend(configs, source.dimensions.slice(1, source.dimensions.length)),
+        legend: getLegend(configs, legend),
         tooltip: getTooltip(configs, "axis", null),
-        xAxis: getXAxis(configs, "category", source.getItems(source.dimensions[0])),
+        xAxis: getXAxis(configs, "category", xAxis),
         yAxis: getYAxis(configs, "value", null, "left"),
         dataZoom: [
             getDataZoomXAxis(configs, 0, "inside", 0, 100),
@@ -3240,6 +3285,8 @@ function getMultiGraphOption(configs, container, myChart, dataset) {
     let cols = configs.multiGraphGroup.value;
     let source = getSource(dataset);
     let lines = Math.ceil((source.dimensions.length - 1) / cols);
+
+    let legend = source.dimensions.slice(1, source.dimensions.length);
 
     function getGrids(source, types, cols, layout) {
         let grids = [];
@@ -3321,6 +3368,7 @@ function getMultiGraphOption(configs, container, myChart, dataset) {
     }
 
     let axis = getAxis(source, types, grids);
+    console.log(axis);
 
     function getSeries(source, types, grids) {
         let series = [];
@@ -3521,6 +3569,18 @@ function getMultiGraphOption(configs, container, myChart, dataset) {
                         markLine: getMarkLine(configs),
                         markArea: {},
                     };
+                    if (configs.lineRegLineDisplay.value.toBoolean()) {
+                        let regLine = getRegLine(configs, source.dimensions[i + 1], source.getPoints(source.dimensions[i + 1]).getMap([0, 2]));
+                        regLine.serie["xAxisIndex"] = i;
+                        regLine.serie["yAxisIndex"] = i;
+                        series.push(regLine.serie);
+                        legend.push(regLine.name);
+                        if (axis.xAxis[i].data.length < regLine.serie.data.length) {
+                            for (let x = axis.xAxis[i].data.length; x < regLine.serie.data.length; x++) {
+                                axis.xAxis[i].data.push({name: "P" + regLine.serie.data[x][0], value: "P" + regLine.serie.data[x][0]});
+                            }
+                        }
+                    }
                     break;
                 case "bar":
                     serie = {
@@ -3560,6 +3620,18 @@ function getMultiGraphOption(configs, container, myChart, dataset) {
                             }
                         },
                     };
+                    if (configs.barRegLineDisplay.value.toBoolean()) {
+                        let regLine = getRegLine(configs, source.dimensions[i + 1], source.getPoints(source.dimensions[i + 1]).getMap([0, 2]));
+                        regLine.serie["xAxisIndex"] = i;
+                        regLine.serie["yAxisIndex"] = i;
+                        series.push(regLine.serie);
+                        legend.push(regLine.name);
+                        if (axis.xAxis[i].data.length < regLine.serie.data.length) {
+                            for (let x = axis.xAxis[i].data.length; x < regLine.serie.data.length; x++) {
+                                axis.xAxis[i].data.push({name: "P" + regLine.serie.data[x][0], value: "P" + regLine.serie.data[x][0]});
+                            }
+                        }
+                    }
                     break;
                 case "scatter":
                     serie = {
@@ -3611,6 +3683,18 @@ function getMultiGraphOption(configs, container, myChart, dataset) {
                             shadowOffsetY: 0,
                         },
                     };
+                    if (configs.scatterRegLineDisplay.value.toBoolean()) {
+                        let regLine = getRegLine(configs, source.dimensions[i + 1], source.getPoints(source.dimensions[i + 1]).getMap([0, 2]));
+                        regLine.serie["xAxisIndex"] = i;
+                        regLine.serie["yAxisIndex"] = i;
+                        series.push(regLine.serie);
+                        legend.push(regLine.name);
+                        if (axis.xAxis[i].data.length < regLine.serie.data.length) {
+                            for (let x = axis.xAxis[i].data.length; x < regLine.serie.data.length; x++) {
+                                axis.xAxis[i].data.push({name: "P" + regLine.serie.data[x][0], value: "P" + regLine.serie.data[x][0]});
+                            }
+                        }
+                    }
                     break;
             }
             setSeriesAnimation(serie, configs, -1);
@@ -3631,7 +3715,7 @@ function getMultiGraphOption(configs, container, myChart, dataset) {
                 ":<span style='display:inline-block;min-width:30px;text-align:right;font-weight:bold'>&ensp;" +
                 param.value + (param.seriesType == "pie" ? ("&ensp;(&ensp;" + param.percent + "%&ensp;)") : "") + "</span>"].join("<br>");
         }),
-        legend: getLegend(configs, source.dimensions.slice(1, source.dimensions.length)),
+        legend: getLegend(configs, legend),
         xAxis: axis.xAxis,
         yAxis: axis.yAxis,
         series: getSeries(source, types, grids),
@@ -3640,98 +3724,11 @@ function getMultiGraphOption(configs, container, myChart, dataset) {
     return option;
 }
 
-function getScatterOption(configs, container, myChart, dataset) {
-    if (typeof myChart.IntervalId !== "undefined")
-        clearInterval(myChart.IntervalId);
-    let source = getSource(dataset);
+function getRegLine(configs, column, source) {
     let regressionType = {"直线": "linear", "指数": "exponential", "对数": "logarithmic", "多项式": "polynomial"};
-    let xAxis = source.getItems(source.dimensions[0]);
-    let series = [];
-    let columns_add = [];
-    let selectType = configs.regressionType.value;
+    let type = configs.regressionType.value;
     let forwardPeroids = Number(configs.regressionForwardPeroids.value);
-    let regressionPolynomialOrder = Number(configs.regressionPolynomialOrder.value);
-
-    function init() {
-        for (let c = 1; c < source.dimensions.length; c++) {
-            let ia = source.getMinMaxValue(source.dimensions[c]);
-            let serie = {
-                id: source.dimensions[c],
-                name: source.dimensions[c],
-                type: configs.scatterType.value,
-                colorBy: configs.scatterColorby.value,
-                data: source.getPoints(source.dimensions[c]).getMap([0,2]),
-                // data: echarts.util.map(source.getPoints(source.dimensions[c]),function (item) {
-                //     return {
-                //         value: [item[0], item[2]],
-                //     }
-                // }),
-                // data:source.getPoints(source.dimensions[c]).map(function (item) {
-                //     return {
-                //         value: [item[0], item[2]],
-                //     }
-                // }),
-                label: {
-                    show: configs.scatterLabelDisplay.value.toBoolean(),
-                    align: "center",
-                    position: "top",
-                    verticalAlign: "middle",
-                    distance: 15,
-                    formatter: "{value|{c}}",
-                    rich: {
-                        value: {
-                            color: configs.scatterLabelTextColor.value,
-                            fontSize: configs.scatterLabelFontSize.value,
-                        }
-                    }
-                },
-                emphasis: {
-                    label: {
-                        show: true,
-                        rich: {
-                            value: {
-                                fontWeight: "bold",
-                            }
-                        }
-                    }
-                },
-                symbol: configs.scatterSymbolShape.value,
-                symbolSize: function (data) {
-                    let size = configs.scatterSymbolSize.value.toArray([6, 18], ",");
-                    if (size[0] > size[1]) {
-                        let tmp = size[1];
-                        size[1] = size[0];
-                        size[0] = tmp;
-                    }
-                    return (size[0] == size[1] || ia.max == ia.min) ? size[0] : (data[1] - ia.min) * (size[1] - size[0]) / (ia.max - ia.min) + size[0];
-                },
-                itemStyle: {
-                    opacity: 0.8,
-                    shadowBlur: 5,
-                    shadowOffsetX: 0,
-                    shadowOffsetY: 0,
-                },
-            };
-            setSeriesAnimation(serie, configs, c);
-
-            for (let regression in regressionType) {
-                if (regression == selectType) {
-                    getRegLine(source.dimensions[c], serie, selectType, regressionPolynomialOrder);
-                    break;
-                }
-            }
-            series.push(serie);
-        }
-    }
-
-    function checkxAxis(result) {
-        //计算X轴标示与初始是否一致,如不一致则添加
-        if (xAxis.length < result.length) {
-            for (let i = xAxis.length; i < result.length; i++) {
-                xAxis.push("P" + result[i][0]);
-            }
-        }
-    }
+    let order = Number(configs.regressionPolynomialOrder.value);
 
     function washData(source) {
         //对非数值型数据进行清洗
@@ -3788,57 +3785,144 @@ function getScatterOption(configs, container, myChart, dataset) {
         }
 
         let result = data.slice().concat(data_add);
-        checkxAxis(result);
         return result;
     }
 
-    function getRegLine(column, serie, type, order) {
-        let myRegression = ecStat.regression(regressionType[type], washData(serie.data), order);
-        myRegression.points.sort(function (a, b) {
-            return a[0] - b[0];
-        });
+    let name = column + "(" + type + ")";
+    let myRegression = ecStat.regression(regressionType[type], washData(source), order);
+    myRegression.points.sort(function (a, b) {
+        return a[0] - b[0];
+    });
 
-        columns_add.push(column + "(" + type + ")");
-        let data = appendData(myRegression.points, myRegression.parameter, regressionType[type]);
-        let regline = {
-            id: column + "(" + type + ")",
-            name: column + "(" + type + ")",
-            type: "line",
-            smooth: configs.lineSmooth.value.toBoolean(),
-            showSymbol: false,
-            symbol: configs.lineSymbol.value,
-            symbolSize: configs.lineSymbolSize.value,
-            data: data,
-            lineStyle: {
-                type: "dotted",     //"solid/dashed/dotted"
+    let data = appendData(myRegression.points, myRegression.parameter, regressionType[type]);
+    let regline = {
+        id: name,
+        name: name,
+        type: "line",
+        smooth: configs.lineSmooth.value.toBoolean(),
+        showSymbol: false,
+        symbol: configs.lineSymbol.value,
+        symbolSize: configs.lineSymbolSize.value,
+        data: data,
+        lineStyle: {
+            type: "dotted",     //"solid/dashed/dotted"
+        },
+        markPoint: {
+            itemStyle: {
+                color: "transparent"
             },
-            markPoint: {
-                itemStyle: {
-                    color: "transparent"
-                },
-                label: {
-                    show: configs.regressionExpressionDisplay.value.toBoolean(),
-                    position: "left",
-                    formatter: myRegression.expression.replaceAll("+ -", " - "),
-                    color: configs.regressionExpressionColor.value,
-                    fontSize: configs.lineLabelFontSize.value,
-                },
-                data: [{
-                    coord: data[data.length - 1]
-                }],
+            label: {
+                show: configs.regressionExpressionDisplay.value.toBoolean(),
+                position: "left",
+                formatter: myRegression.expression.replaceAll("+ -", " - "),
+                color: configs.regressionExpressionColor.value,
+                fontSize: configs.lineLabelFontSize.value,
             },
-        };
-        setSeriesAnimation(regline, configs, 0);
-        series.push(regline);
+            data: [{
+                coord: data[data.length - 1]
+            }],
+        },
+    };
+    setSeriesAnimation(regline, configs, 0);
+    return {serie: regline, name: name};
+}
+
+function getScatterOption(configs, container, myChart, dataset) {
+    if (typeof myChart.IntervalId !== "undefined")
+        clearInterval(myChart.IntervalId);
+    let source = getSource(dataset);
+    let xAxis = source.getItems(source.dimensions[0]);
+    let legend = source.dimensions.slice(1, source.dimensions.length);
+    let series = [];
+
+    function checkxAxis(data) {
+        //计算X轴标示与初始是否一致,如不一致则添加
+        if (xAxis.length < data.length) {
+            for (let i = xAxis.length; i < data.length; i++) {
+                xAxis.push("P" + data[i][0]);
+            }
+        }
     }
 
-    init();
+    for (let c = 1; c < source.dimensions.length; c++) {
+        let ia = source.getMinMaxValue(source.dimensions[c]);
+        let serie = {
+            id: source.dimensions[c],
+            name: source.dimensions[c],
+            type: configs.scatterType.value,
+            colorBy: configs.scatterColorby.value,
+            data: source.getPoints(source.dimensions[c]).getMap([0, 2]),
+            // data: echarts.util.map(source.getPoints(source.dimensions[c]),function (item) {
+            //     return {
+            //         value: [item[0], item[2]],
+            //     }
+            // }),
+            // data:source.getPoints(source.dimensions[c]).map(function (item) {
+            //     return {
+            //         value: [item[0], item[2]],
+            //     }
+            // }),
+            label: {
+                show: configs.scatterLabelDisplay.value.toBoolean(),
+                align: "center",
+                position: "top",
+                verticalAlign: "middle",
+                distance: 15,
+                formatter: function (param) {
+                    return param.value[1];
+                },
+                rich: {
+                    value: {
+                        color: configs.scatterLabelTextColor.value,
+                        fontSize: configs.scatterLabelFontSize.value,
+                    }
+                }
+            },
+            emphasis: {
+                label: {
+                    show: true,
+                    formatter: function (param) {
+                        return param.value[1];
+                    },
+                    rich: {
+                        value: {
+                            fontWeight: "bold",
+                        }
+                    }
+                }
+            },
+            symbol: configs.scatterSymbolShape.value,
+            symbolSize: function (data) {
+                let size = configs.scatterSymbolSize.value.toArray([6, 18], ",");
+                if (size[0] > size[1]) {
+                    let tmp = size[1];
+                    size[1] = size[0];
+                    size[0] = tmp;
+                }
+                return (size[0] == size[1] || ia.max == ia.min) ? size[0] : (data[1] - ia.min) * (size[1] - size[0]) / (ia.max - ia.min) + size[0];
+            },
+            itemStyle: {
+                opacity: 0.8,
+                shadowBlur: 5,
+                shadowOffsetX: 0,
+                shadowOffsetY: 0,
+            },
+        };
+        setSeriesAnimation(serie, configs, c);
+        series.push(serie);
+        if (configs.scatterRegLineDisplay.value.toBoolean()) {
+            let regLine = getRegLine(configs, source.dimensions[c], serie.data);
+            series.push(regLine.serie);
+            legend.push(regLine.name);
+            checkxAxis(regLine.serie.data);
+        }
+    }
 
     let option = {
         backgroundColor: getBackgroundColor(configs),
         grid: getGrid(configs),
         title: getTitle(configs, dataset.title),
-        legend: getLegend(configs, source.dimensions.slice(1, source.dimensions.length).concat(columns_add)),
+        legend: getLegend(configs, legend),
         toolbox: getToolbox(configs, container, dataset, myChart),
         tooltip: {
             show: configs.tooltipDisplay.value.toBoolean(),
@@ -6551,223 +6635,6 @@ function getRadar(container, width, height, dataset, configs) {
                 interval: 1
             },
         },
-        series: series,
-        graphic: getWaterGraphic(__SYS_LOGO_LINK__),
-    };
-    setTimeout(() => {
-        myChart.hideLoading();
-        myChart.setOption(option);
-    }, Number(configs.loadingTimes.value) * 1000);
-
-    __ECHARTS__.addHistory(container, configs, dataset, width, height);
-    return container;
-}
-
-function getRegression(container, width, height, dataset, configs) {
-    if (container == null) {
-        container = document.createElement("div");
-        container.className = "echarts-container";
-        container.id = "echarts-container";
-        container.style.width = width;
-        container.style.height = height;
-    }
-
-    let myChart = echarts.init(container, configs.echartsTheme.value, {
-        locale: configs.local.value,
-        renderer: configs.renderer.value
-    });
-    myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
-
-    let regressionType = {"直线": "linear", "指数": "exponential", "对数": "logarithmic", "多项式": "polynomial"};
-    let source = getSource(dataset);
-    let columns_add = [];
-    let xAxis = source.getItems(source.dimensions[0]);
-    let series = [];
-
-    let selectType = configs.regressionType.value;
-    let forwardPeroids = Number(configs.regressionForwardPeroids.value);
-    let regressionPolynomialOrder = Number(configs.regressionPolynomialOrder.value);
-
-    function init() {
-        for (let c = 1; c < source.dimensions.length; c++) {
-            let serie = {
-                id: source.dimensions[c],
-                name: source.dimensions[c],
-                type: "line",
-                lineStyle: {
-                    width: Number(configs.lineStyleWidth.value),
-                },
-                label: {
-                    show: configs.lineLabelDisplay.value.toBoolean(),
-                    align: "center",
-                    verticalAlign: "middle",
-                    position: "top",
-                    distance: 15,
-                    formatter: "{value|{c}}",
-                    rotate: configs.lineLabelRotate.value,
-                    rich: {
-                        value: {
-                            color: configs.lineLabelTextColor.value,
-                            fontSize: configs.lineLabelFontSize.value,
-                        }
-                    }
-                },
-                emphasis: {
-                    label: {
-                        show: configs.lineEmphasisLabelDisplay.value.toBoolean(),
-                        position: "bottom",
-                        rotate: 0,
-                        fontSize: configs.lineLabelFontSize.value,
-                    }
-                },
-                smooth: configs.lineSmooth.value.toBoolean(),
-                symbol: configs.lineSymbol.value,
-                symbolSize: configs.lineSymbolSize.value,
-                data: source.getPoints(source.dimensions[c]).getMap([0,2]),
-                // data: source.getPoints(source.dimensions[c]).map(function (item) {
-                //     return {
-                //         value: [item[0], item[2]],
-                //     }
-                // }),
-            };
-
-            setSeriesAnimation(serie, configs, c);
-            series.push(serie);
-            for (let regression in regressionType) {
-                if (regression == selectType) {
-                    getRegLine(source.dimensions[c], serie, selectType, regressionPolynomialOrder);
-                    break;
-                }
-            }
-        }
-    }
-
-    function getRegLine(column, serie, type, order) {
-        let myRegression = ecStat.regression(regressionType[type], washData(serie.data), order);
-        myRegression.points.sort(function (a, b) {
-            return a[0] - b[0];
-        });
-
-        columns_add.push(column + "(" + type + ")");
-        let data = appendData(myRegression.points, myRegression.parameter, regressionType[type]);
-        let regline = {
-            id: column + "(" + type + ")",
-            name: column + "(" + type + ")",
-            type: "line",
-            smooth: configs.lineSmooth.value.toBoolean(),
-            showSymbol: false,
-            symbol: configs.lineSymbol.value,
-            symbolSize: configs.lineSymbolSize.value,
-            data: data,
-            lineStyle: {
-                type: "dotted",     //"solid/dashed/dotted"
-            },
-            markPoint: {
-                itemStyle: {
-                    color: "transparent"
-                },
-                label: {
-                    show: configs.regressionExpressionDisplay.value.toBoolean(),
-                    position: "left",
-                    formatter: myRegression.expression.replaceAll("+ -", " - "),
-                    color: configs.regressionExpressionColor.value,
-                    fontSize: configs.lineLabelFontSize.value,
-                },
-                data: [{
-                    coord: data[data.length - 1]
-                }],
-            },
-        };
-        setSeriesAnimation(regline, configs, 0);
-        series.push(regline);
-    }
-
-    function checkxAxis(result) {
-        //计算X轴标示与初始是否一致,如不一致则添加
-        if (xAxis.length < result.length) {
-            for (let i = xAxis.length; i < result.length; i++) {
-                xAxis.push("P" + result[i][0]);
-            }
-        }
-    }
-
-    function appendData(data, parameter, type) {
-        let period = 1;
-        let max = data.length - 1;
-        //let period = (data[data.length - 1][0] - data[0][0]) / (data.length - 1);
-        //let max = data[data.length - 1][0];
-        let data_add = [];
-        let i = 1;
-        switch (type) {
-            case "linear":  //直线
-                while (i <= forwardPeroids) {
-                    let x = max + i * period;
-                    data_add.push([x, parameter.gradient * x + parameter.intercept]);
-                    i += 1;
-                }
-                break;
-            case "exponential": //指数
-                while (i <= forwardPeroids) {
-                    let x = max + i * period;
-                    data_add.push([x, parameter.coefficient * Math.pow(Math.E, x * parameter.index)]);
-                    i += 1;
-                }
-                break;
-            case "logarithmic"://对数
-                while (i <= forwardPeroids) {
-                    let x = max + i * period;
-                    data_add.push([x, parameter.gradient * Math.log(x) + parameter.intercept]);
-                    i += 1;
-                }
-                break;
-            case "polynomial"://多项式
-                while (i <= forwardPeroids) {
-                    let value = 0;
-                    let x = max + i * period;
-                    for (let s = 0; s < parameter.length; s++) {
-                        value += parameter[s] * Math.pow(x, s);
-                    }
-                    data_add.push([x, value]);
-                    i += 1;
-                }
-                break;
-        }
-
-        let result = data.slice().concat(data_add);
-        checkxAxis(result);
-        return result;
-    }
-
-    function washData(source) {
-        //对非数值型数据进行清洗
-        let target = [];
-        for (let i = 0; i < source.length; i++) {
-            let row = source[i];
-            if (row[1] != "" && row[1] != null && !isNaN(Number(row[1]))) {
-                target.push(row);
-            }
-        }
-        return target;
-    }
-
-    init();
-
-    let option = {
-        backgroundColor: getBackgroundColor(configs),
-        grid: getGrid(configs),
-        brush: getBrush(configs),
-        toolbox: getToolbox(configs, container, dataset, myChart),
-        title: getTitle(configs, dataset.title),
-        legend: getLegend(configs, source.dimensions.slice(1, source.dimensions.length).concat(columns_add)),
-        tooltip: getTooltip(configs, "axis", null),
-        xAxis: getXAxis(configs, "category", xAxis),
-        yAxis: getYAxis(configs, "value", null, "left"),
-        dataZoom: [
-            getDataZoomXAxis(configs, 0, "inside", 0, 100),
-            getDataZoomXAxis(configs, 0, "slider", 0, 100),
-            getDataZoomYAxis(configs, 0, "inside", 0, 100, myChart.getWidth()),
-            getDataZoomYAxis(configs, 0, "slider", 0, 100, myChart.getWidth())
-        ],
         series: series,
         graphic: getWaterGraphic(__SYS_LOGO_LINK__),
     };

@@ -129,7 +129,7 @@ function storageSqlDialog(sql, editer, type){
     open.className = "button";
     open.innerText = "打开";
     open.onclick = function(){
-        editer.title = $("sql-Manager-Content-name").value;
+        editer.title = $("execute-sql").getElementsByTagName("img")[0].title = $("sql-Manager-Content-name").value;
         __LOGS__.viewMessage("Open " + __SQLEDITOR__.options.mode + " : " + editer.title);
         editer.codeMirror.setValue($("sql-Manager-Content-sql").value);
         $("sql-Manager-Content").parentNode.removeChild($("sql-Manager-Content"));
