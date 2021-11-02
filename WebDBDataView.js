@@ -1,7 +1,7 @@
 const __VERSION__ = {
     name: "Web DataView for SQLite Database of browser",
-    version: "2.6.4",
-    date: "2021/10/25",
+    version: "3.0.0",
+    date: "2021/11/02",
     comment: [
         "-- 2021/03/08",
         "优化算法和压缩代码.",
@@ -33,7 +33,7 @@ const __VERSION__ = {
         "-- 2021/06/01",
         "增加公共函数模块.",
         "增加脚本备份文件完整性校验.",
-         "-- 2021/06/07",
+        "-- 2021/06/07",
         "修改脚本存储方式.",
         "-- 2021/06/11",
         "增加文件加密/解密模块.",
@@ -59,9 +59,11 @@ const __VERSION__ = {
         "增加UI组件.",
     ],
     author: __SYS_LOGO_LINK__.author.decode(),
-    url: __SYS_LOGO_LINK__.link.decode(),
+    url: __SYS_LOGO_LINK__.link.getee.decode(),
     tel: __SYS_LOGO_LINK__.tel.decode(),
-    email: __SYS_LOGO_LINK__.email.decode()
+    email: __SYS_LOGO_LINK__.email.decode(),
+    logo: __SYS_LOGO_LINK__.image,
+    notes: ""
 };
 
 var __LOGS__ = {
@@ -141,7 +143,7 @@ var __LOGS__ = {
         setUserConfig("UserLogs", JSON.stringify(__LOGS__.data));
     },
 
-    viewError: function(error) {
+    viewError: function(parent, error) {
         let names = {
             EvalError: "eval的使用与定义不一致",
             RangeError: "数值越界",
@@ -154,46 +156,64 @@ var __LOGS__ = {
         __LOGS__.viewMessage(error.stack, true);
 
         let container = document.createElement("div");
-        container.id = container.className = "error-dialog";
+        container.id = "ui_error";
+        container.className = "ui-container-background";
+
+        if (parent === "auto" || parent == null || typeof parent == "undefined") {
+            if (document.fullscreen && typeof __CONFIGS__.fullScreen.element == "object") {
+                parent = __CONFIGS__.fullScreen.element;
+            } else {
+                parent = document.body;
+            }
+        }
+        parent.appendChild(container);
+
+        let content = document.createElement("div");
+        content.id = "error-dialog";
+        content.className = "ui-container-body";
+        container.appendChild(content);
 
         let title = document.createElement("div");
-        title.className = "container-title";
+        title.className = "ui-container-title";
         let span = document.createElement("span");
         span.className = span.id = "error-title";
-        span.innerHTML = "● " + (typeof names[error.name] != "undefined"? names[error.name]: "其他未定义错误");
+
+        span.innerHTML = "● " + (typeof names[error.name] !== "undefined" ? names[error.name] : "其他未定义错误");
         title.appendChild(span);
         let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
-        close.className = "container-close";
+        close.className = "ui-container-close";
         title.appendChild(close);
-        container.appendChild(title);
+        content.appendChild(title);
 
         let hr = document.createElement("hr");
-        container.appendChild(hr);
+        hr.className = "ui-container-hr";
+        content.appendChild(hr);
 
         let detail = document.createElement("div");
-        detail.className = "detail";
-        container.appendChild(detail);
+        detail.className = "ui-container-scroll-div";
+        content.appendChild(detail);
         let code = document.createElement("code");
         code.className = "stack";
         code.innerHTML = error.stack.toString()
             .replace(error.name, "<span class='name'>" + error.name + "</span>")
             .replace(error.message, "<span class='message'>" + error.message + "</span>")
-            .split("\n").join("<br> ● ") + "<hr>" + getUserConfig("CopyRight");
+            .split("\n").join("<br> ● ") + "<hr>" + getUserConfig("CopyRight") + "<br>" +
+            "<a href =" + __VERSION__.url + " target = '_blank'>" + __VERSION__.url + "</a>";
         detail.appendChild(code);
 
-        let br = document.createElement("hr");
-        br.className = "br";
-        container.appendChild(br);
+        hr = document.createElement("hr");
+        hr.className = "ui-container-hr";
+        content.appendChild(hr);
 
         let tool = document.createElement("div");
-        container.appendChild(tool);
+        content.appendChild(tool);
         tool.className = "groupbar";
 
         let confirm = document.createElement("div");
         confirm.className = "button";
         confirm.innerText = "确定";
         confirm.onclick = close.onclick = function () {
-            $("error-dialog").parentNode.removeChild($("error-dialog"));
+            parent.removeChild($("ui_error"));
         };
         tool.appendChild(confirm);
 
@@ -205,7 +225,6 @@ var __LOGS__ = {
         };
         tool.appendChild(help);
         setDialogDrag(title);
-        setCenterPosition($("main"), container);
     },
 
     viewMessage: function (msg, warning) {
@@ -346,7 +365,7 @@ var __XMLHTTP__ = {
             {name: "主程序", src: "WebDBDataView.js", type: "text/javascript", element: "script", load: false},
             {name: "主程序", src: "themes/default.css", type: "text/css", element: "link", load: false},
             {name: "主程序", src: "WebDBDataView.css", type: "text/css", element: "link", load: false},
-            {name: "主程序", src: "UI.js", type: "text/javascript", element: "script", load: false},
+            {name: "主程序", src: "UI-A.js", type: "text/javascript", element: "script", load: false},
             {name: "资料库", src: "themes/images.js", type: "text/javascript", element: "script", load: false},
             {name: "公共函数", src: "FunctionsComponent.js", type: "text/javascript", element: "script", load: false},
             {
@@ -356,8 +375,6 @@ var __XMLHTTP__ = {
                 element: "script",
                 load: false
             },
-            {name: "脚本管理组件", src: "StorageSQLDialog.js", type: "text/javascript", element: "script", load: false},
-            {name: "脚本管理组件", src: "StorageSQLDialog.css", type: "text/css", element: "link", load: false},
             {name: "Echarts", src: "echartsThemes.js", type: "text/javascript", element: "script", load: false},
             {name: "Echarts", src: "echartsView.js", type: "text/javascript", element: "script", load: false},
             {name: "二维码组件", src: "qrcode/qrcode.js", type: "text/javascript", element: "script", load: false},
@@ -615,43 +632,6 @@ var __CONFIGS__ = {
     fullScreen: {element: null},
 };
 
- var __IMPORT__ = {
-     Table: {value: "", name: "数据表", type: "view"},
-     Charset: {value: 0, name: "字符集", type: "select", options: ["GBK", "UTF-8"]},
-     Separator: {value: ",", name: "分隔符", type: "select", options: [["逗号", ","], ["竖线", "|"], ["Tab", "\t"]]},
-     SourceFile: {
-         value: null,
-         name: "源文件",
-         type: "file",
-         data: [],
-         total: 0,
-         count: 0,
-         imported: 0,
-         failed: 0,
-         sql: null,
-         error: [],
-         progress: null
-     },
-     SelectedDataSet: {value: -1, name: "数据集", type: "select", options: []},
- };
-
- var __COLUMN__ = {
-     check: {value: false, name: "选择", type: "checkbox", width: "50px"},
-     name: {value: "", name: "名称", type: "input", width: "100px"},
-     type: {
-         value: 0,
-         name: "类型",
-         type: "select",
-         options: ["integer", "varchar", "nvarchar", "decimal", "float", "date", "datetime", "boolean", "blob"],
-         width: "75px"
-     },
-     length: {value: 0, name: "长度", type: "input", width: "25px"},
-     scale: {value: 0, name: "小数位数", type: "input", width: "50px"},
-     allowNull: {value: "Y", name: "允许空值", type: "select", options: ["Y", "N"], width: "50px"},
-     index: {value: false, name: "索引", type: "checkbox", width: "50px"},
-     auto_increment: {value: false, name: "自增", type: "checkbox", width: "50px"},
-     column_default: {value: null, name: "默认值", type: "input", width: "50px"},
- };
  var __DATASET__ = {
      result: [
          //{eventid:null, title:[],sql: null,columns:[],data:[],parameter:null,time:null, type:null}
@@ -837,170 +817,208 @@ var __CONFIGS__ = {
              type: "input"
          },
      },
-     getDatasetConfigs: function (parent) {
-        let config = getUserConfig("datasetConfig");
-        if (config != null) {
-            config = JSON.parse(config);
-            for (key in config) {
-                try {
-                    __DATASET__.configs[key].value = config[key];
-                } catch (e) {
-                }
-            }
-        }
+     setDatasetConfigs: function (parent, callback) {
+         let config = getUserConfig("datasetConfig");
+         if (config != null) {
+             config = JSON.parse(config);
+             for (key in config) {
+                 try {
+                     __DATASET__.configs[key].value = config[key];
+                 } catch (e) {
+                 }
+             }
+         }
 
-        let container = document.createElement("div");
-        container.className = "dataset-configs-Content";
-        container.id = "dataset-configs-Content";
+         if (parent == "auto" || parent == null) {
+             if (document.fullscreen && typeof __CONFIGS__.fullScreen.element == "object") {
+                 parent = __CONFIGS__.fullScreen.element;
+             } else {
+                 parent = document.body;
+             }
+         }
 
-        let title = document.createElement("div");
-        title.className = "container-title";
-        let span = document.createElement("span");
-        span.innerHTML = "● 报表设置 ";
-        title.appendChild(span);
-        let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
-        close.className = "container-close";
-        title.appendChild(close);
-        container.appendChild(title);
+         let container = document.createElement("div");
+         container.id = "ui_datasetConfigs";
+         container.className = "ui-container-background";
+         parent.appendChild(container);
 
-        let hr = document.createElement("hr");
-        container.appendChild(hr);
+         let content = document.createElement("div");
+         content.className = "ui-container-body";
+         content.id = "dataset-configs-Content";
+         container.appendChild(content);
 
-        let itemcontainer = document.createElement("div");
-        itemcontainer.id = itemcontainer.className = "dataset-configs-container";
-        container.appendChild(itemcontainer);
+         let title = document.createElement("div");
+         title.className = "ui-container-title";
+         let span = document.createElement("span");
+         span.innerHTML = "● 报表设置 ";
+         title.appendChild(span);
+         let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
+         close.className = "ui-container-close";
+         title.appendChild(close);
+         content.appendChild(title);
 
-        for (let name in __DATASET__.configs) {
-            d = document.createElement("div");
-            d.className = "dataset-configs-item";
-            itemcontainer.appendChild(d);
-            let s = document.createElement("span");
-            s.className = "dataset-config-name";
-            s.innerHTML = __DATASET__.configs[name].name + ":";
-            d.appendChild(s);
-            if (__DATASET__.configs[name].type == "input") {
-                let input = document.createElement("input");
-                input.style.cssFloat = "right";
-                input.id = name;
-                input.type = "input";
-                input.className = "dataset-configs-editinput";
-                input.value = __DATASET__.configs[name].value;
-                input.onchange = function () {
-                    __DATASET__.configs[this.id].value = this.value;
-                };
-                if (typeof __DATASET__.configs[name].title != "undefined")
-                    input.title = __DATASET__.configs[name].title;
-                else
-                    input.title = __DATASET__.configs[name].name;
-                d.appendChild(input);
-            } else if (__DATASET__.configs[name].type == "select") {
-                let input = document.createElement("select");
-                input.style.cssFloat = "right";
-                input.id = name;
-                input.type = "select";
-                input.className = "dataset-configs-editinput";
-                for (let i = 0; i < __DATASET__.configs[name].options.length; i++) {
-                    if (typeof __DATASET__.configs[name].options[i] === "object")
-                        input.options.add(__DATASET__.configs[name].options[i]);
-                    else
-                        input.options.add(new Option(__DATASET__.configs[name].options[i]));
-                }
-                input.value = __DATASET__.configs[name].value;
-                input.onchange = function () {
-                    __DATASET__.configs[this.id].value = this.value;
-                };
-                if (typeof __DATASET__.configs[name].title != "undefined")
-                    input.title = __DATASET__.configs[name].title;
-                else
-                    input.title = __DATASET__.configs[name].name;
-                d.appendChild(input);
-            } else if (__DATASET__.configs[name].type == "color") {
-                let input = document.createElement("input");
-                input.style.cssFloat = "right";
-                input.id = name;
-                input.type = "color";
-                input.className = "dataset-configs-editinput";
-                input.value = __DATASET__.configs[name].value;
-                input.onchange = function () {
-                    __DATASET__.configs[this.id].value = this.value;
-                };
-                if (typeof __DATASET__.configs[name].title != "undefined")
-                    input.title = __DATASET__.configs[name].title;
-                else
-                    input.title = __DATASET__.configs[name].name;
-                d.appendChild(input);
-            } else if (__DATASET__.configs[name].type == "hr") {
-                s.innerHTML = "[ " + __DATASET__.configs[name].name + " ]";
-                s.style.color = "var(--main-title-color)";
-                let c = document.createElement("div");
-                c.style.width = "70%";
-                c.style.cssFloat = "right";
-                d.appendChild(c);
-                d.id = name;
-                let h = document.createElement("hr");
-                h.style.marginTop = "10px";
-                c.appendChild(h)
-                //d.innerHTML = "";
-                //d.appendChild(h);
-            }
-        }
+         let hr = document.createElement("hr");
+         hr.className = "ui-container-hr";
+         content.appendChild(hr);
 
-        let br = document.createElement("hr");
-        br.className = "br";
-        container.appendChild(br);
+         let itemcontainer = document.createElement("div");
+         itemcontainer.id = itemcontainer.className = "ui-container-scroll-div";
+         content.appendChild(itemcontainer);
 
-        let c = document.createElement("div");
-        c.className = "groupbar";
-        container.appendChild(c);
+         for (let name in __DATASET__.configs) {
+             let item = document.createElement("div");
+             item.className = "ui-container-item";
+             itemcontainer.appendChild(item);
+             let span = document.createElement("span");
+             span.className = "ui-container-item-name";
+             span.innerHTML = __DATASET__.configs[name].name + ":";
+             item.appendChild(span);
+             if (__DATASET__.configs[name].type == "input") {
+                 let input = document.createElement("input");
+                 input.style.cssFloat = "right";
+                 input.id = name;
+                 input.type = "input";
+                 input.className = "ui-container-item-input";
+                 input.value = __DATASET__.configs[name].value;
+                 input.onchange = function () {
+                     __DATASET__.configs[this.id].value = this.value;
+                 };
+                 if (typeof __DATASET__.configs[name].title != "undefined")
+                     input.title = __DATASET__.configs[name].title;
+                 else
+                     input.title = __DATASET__.configs[name].name;
+                 item.appendChild(input);
+             } else if (__DATASET__.configs[name].type == "select") {
+                 let input = document.createElement("select");
+                 input.style.cssFloat = "right";
+                 input.id = name;
+                 input.type = "select";
+                 input.className = "ui-container-item-input";
+                 for (let i = 0; i < __DATASET__.configs[name].options.length; i++) {
+                     if (typeof __DATASET__.configs[name].options[i] === "object")
+                         input.options.add(__DATASET__.configs[name].options[i]);
+                     else
+                         input.options.add(new Option(__DATASET__.configs[name].options[i]));
+                 }
+                 input.value = __DATASET__.configs[name].value;
+                 input.onchange = function () {
+                     __DATASET__.configs[this.id].value = this.value;
+                 };
+                 if (typeof __DATASET__.configs[name].title != "undefined")
+                     input.title = __DATASET__.configs[name].title;
+                 else
+                     input.title = __DATASET__.configs[name].name;
+                 item.appendChild(input);
+             } else if (__DATASET__.configs[name].type == "color") {
+                 let input = document.createElement("input");
+                 input.style.cssFloat = "right";
+                 input.id = name;
+                 input.type = "color";
+                 input.className = "ui-container-item-input";
+                 input.value = __DATASET__.configs[name].value;
+                 input.onchange = function () {
+                     __DATASET__.configs[this.id].value = this.value;
+                 };
+                 if (typeof __DATASET__.configs[name].title != "undefined")
+                     input.title = __DATASET__.configs[name].title;
+                 else
+                     input.title = __DATASET__.configs[name].name;
+                 item.appendChild(input);
+             } else if (__DATASET__.configs[name].type == "hr") {
+                 span.innerHTML = "[ " + __DATASET__.configs[name].name + " ]";
+                 span.style.fontWeight = "bolder";
+                 span.style.color = "var(--main-title-color)";
+                 let c = document.createElement("div");
+                 c.style.width = "70%";
+                 c.style.cssFloat = "right";
+                 item.appendChild(c);
+                 item.id = name;
+                 let h = document.createElement("hr");
+                 h.style.marginTop = "10px";
+                 c.appendChild(h)
+                 //d.innerHTML = "";
+                 //d.appendChild(h);
+             }
+         }
 
-        let b = document.createElement("a");
-        b.className = "button";
-        b.innerHTML = "确定";
-        b.onclick = function () {
-            let configs = $("dataset-configs-container").getElementsByClassName("dataset-configs-editinput");
-            let config = {};
-            for (let i = 0; i < configs.length; i++) {
-                __DATASET__.configs[configs[i].id].value = configs[i].value;
-                config[configs[i].id] = configs[i].value;
-            }
-            setUserConfig("datasetConfig", JSON.stringify(config));
+         hr = document.createElement("hr");
+         hr.className = "ui-container-hr";
+         content.appendChild(hr);
 
-            if (__DATASET__.result.length > 0) {
-                viewDataset(__DATASET__.default.sheet, __DATASET__.pages.default);
-            }
+         let c = document.createElement("div");
+         c.className = "groupbar";
+         content.appendChild(c);
 
-            let m = $("dataset-configs-Content");
-            m.parentNode.removeChild(m);
-        };
-        c.appendChild(b);
+         let b = document.createElement("a");
+         b.className = "button";
+         b.innerHTML = "确定";
+         b.onclick = function () {
+             let configs = $("ui_datasetConfigs").getElementsByClassName("ui-container-item-input");
+             let config = {};
+             for (let i = 0; i < configs.length; i++) {
+                 __DATASET__.configs[configs[i].id].value = configs[i].value;
+                 config[configs[i].id] = configs[i].value;
+             }
+             setUserConfig("datasetConfig", JSON.stringify(config));
+             callback();
+             parent.removeChild($("ui_datasetConfigs"));
+         };
+         c.appendChild(b);
 
-        b = document.createElement("a");
-        b.className = "button";
-        b.innerHTML = "重置";
-        b.onclick = close.onclick = function () {
-            UI.confirm.show("注意", "您确定要重置全部报表参数吗?", "auto", function () {
-                setUserConfig("datasetConfig", JSON.stringify({}));
-                let m = $("dataset-configs-Content");
-                m.parentNode.removeChild(m);
-                UI.alert.show("提示", "所有参数已恢复为系统初始值,系统将重新载入页面...");
-                location.reload();
-            });
-        };
-        c.appendChild(b);
+         b = document.createElement("a");
+         b.className = "button";
+         b.innerHTML = "重置";
+         b.onclick = close.onclick = function () {
+             UI.confirm.show("注意", "您确定要重置全部报表参数吗?", "auto", function () {
+                 setUserConfig("datasetConfig", JSON.stringify({}));
+                 parent.removeChild($("ui_datasetConfigs"));
+                 UI.alert.show("提示", "所有参数已恢复为系统初始值,系统将重新载入页面...");
+                 location.reload();
+             });
+         };
+         c.appendChild(b);
 
-        b = document.createElement("a");
-        b.className = "button";
-        b.innerHTML = "退出";
-        b.onclick = close.onclick = function () {
-            let m = $("dataset-configs-Content");
-            m.parentNode.removeChild(m);
-        };
-        c.appendChild(b);
+         b = document.createElement("a");
+         b.className = "button";
+         b.innerHTML = "退出";
+         b.onclick = close.onclick = function () {
+             parent.removeChild($("ui_datasetConfigs"));
+         };
+         c.appendChild(b);
 
-        setDialogDrag(title);
-
-        return container;
-    }
+         setDialogDrag(title);
+     },
+     getResultIndex: function(eventid) {
+         let index = null;
+         for (let i = 0; i < __DATASET__.result.length; i++) {
+             if (__DATASET__.result[i].eventid == eventid) {
+                 index = i;
+                 break;
+             }
+         }
+         return index;
+     },
+     getResult: function(eventid) {
+         let result = null;
+         for (let i = 0; i < __DATASET__.result.length; i++) {
+             if (__DATASET__.result[i].eventid == eventid) {
+                 result = __DATASET__.result[i];
+                 break;
+             }
+         }
+         return result;
+     },
+     removeResult: function(eventid) {
+         let result = false;
+         for (let i = 0; i < __DATASET__.result.length; i++) {
+             if (__DATASET__.result[i].eventid == eventid) {
+                 __DATASET__.result.splice(i, 1);
+                 result = true;
+                 break;
+             }
+         }
+         return result;
+     }
  };
 
  var __SQLEDITOR__ = {
@@ -1144,198 +1162,7 @@ function transferData(structure,row) {
     return _row;
 }
 
-function importData() {
-    //#######################################
-    //默认行分隔符:\r\n
-    //数据分隔符:支持|,\t
-    //#######################################
 
-    function getByteLength(val) {
-        let len = 0;
-        for (let i = 0; i < val.length; i++) {
-            //（unicode:汉字的编码大于255）
-            if (val.charCodeAt(i) < 0 || val.charCodeAt(i) > 255)
-                len = len + 2;
-            else
-                len = len + 1;
-        }
-        return len;
-    }
-
-    function getSubString(val, start, length) {
-        let value = "";
-        let len = 0;
-        for (let i = 0; i < val.length; i++) {
-            if (i >= start) {
-                if (val.charCodeAt(i) < 0 || val.charCodeAt(i) > 255)
-                    len = len + 2;
-                else
-                    len = len + 1;
-                value += val.charAt(i);
-            }
-            if (len == length)
-                break;
-        }
-        return value;
-    }
-
-    function viewPacket(packet) {
-        let container = $("progress-detail");
-        let item = document.createElement("div");
-        item.className = "progress-detail-item";
-        item.id = "progress-detail-item-" + packet.index;
-        container.appendChild(item);
-        let first = container.firstChild;
-        container.insertBefore(item, first);
-
-        let d_index = document.createElement("span");
-        d_index.className = "progress-detail-item-index";
-        d_index.innerText = packet.index;
-        d_index.setAttribute("index", packet.index);
-        d_index.title = packet.sql;
-        item.appendChild(d_index);
-        let d_size = document.createElement("span");
-        d_size.className = "progress-detail-item-size";
-        d_size.innerHTML = Math.round(getByteLength(packet.data.toString()) * 100 / 1024) / 100 + "Kb";
-        d_size.title = packet.data.toString();
-        item.appendChild(d_size);
-        let d_error = document.createElement("span");
-        d_error.className = "progress-detail-item-error";
-        d_error.innerHTML = (packet.error == null ? "&ensp;" : getSubString(packet.error, 0, 30) + "...");
-        d_error.title = packet.error;
-        item.appendChild(d_error);
-        return item;
-    }
-
-    function scrollto() {
-        let items = $("progress-detail").getElementsByClassName("progress-detail-item");
-        items[items.length - 1].scrollIntoView({
-            behavior: "smooth",
-            block: "start",
-            inline: "nearest"
-        });
-    }
-
-    __CONFIGS__.CURRENT_DATABASE.connect.transaction(function (tx) {
-        try {
-            let sep = __IMPORT__.Separator.value;
-            let lines = __IMPORT__.SourceFile.data[__IMPORT__.SelectedDataSet.value].split("\r\n");
-            if (lines.length == 1)
-                lines = __IMPORT__.SourceFile.data[__IMPORT__.SelectedDataSet.value].split("\n");
-            let table = __CONFIGS__.CURRENT_TABLE.name;
-            __IMPORT__.SourceFile.total = lines.length - 1;
-            //不含表头
-            __IMPORT__.SourceFile.count = 0;
-            __IMPORT__.SourceFile.imported = 0;
-            __IMPORT__.SourceFile.failed = 0;
-            __IMPORT__.SourceFile.error = [];
-            __IMPORT__.SourceFile.row = null;
-            let pres = {
-                10: false,
-                20: false,
-                30: false,
-                40: false,
-                50: false,
-                60: false,
-                70: false,
-                80: false,
-                90: false,
-                100: false
-            };
-            let sql = "insert into " + table + " values ({VALUES})";
-            //不要加字段列表，否则仅能导入两列数据.
-            for (let i = 0; i < lines.length; i++) {
-                let data = transferData(__CONFIGS__.CURRENT_TABLE.structure, lines[i].trim().split(sep));
-                try {
-                    if (i == 0) {
-                        let values = "?";
-                        for (let c = 1; c < data.length; c++) {
-                            values += ",?";
-                        }
-                        __IMPORT__.SourceFile.sql = sql = sql.replace("{VALUES}", values);
-                        __LOGS__.viewMessage(sql);
-                    } else if (data.length >= __CONFIGS__.CURRENT_TABLE.structure.data.length) {
-                        let row = data.slice(0, __CONFIGS__.CURRENT_TABLE.structure.data.length);
-                        tx.executeSql(sql, row, function (tx, results) {
-                                __IMPORT__.SourceFile.count += 1;
-                                __IMPORT__.SourceFile.imported += results.rowsAffected;
-                                let pre = Math.floor(__IMPORT__.SourceFile.count * 100 / __IMPORT__.SourceFile.total);
-                                if (typeof pres[pre] !== "undefined") {
-                                    if ((pre % 10 == 0 && pres[pre] == false) || __IMPORT__.SourceFile.count == __IMPORT__.SourceFile.total) {
-                                        pres[pre] = true;
-                                        let packet = {
-                                            index: __IMPORT__.SourceFile.count,
-                                            sql: __IMPORT__.SourceFile.sql,
-                                            data: row,
-                                            error: __IMPORT__.SourceFile.imported + " / " + __IMPORT__.SourceFile.count + "(" + pre + "%)",
-                                            beginTime: null,
-                                            endTime: getNow()
-                                        };
-                                        __IMPORT__.SourceFile.error.push(packet);
-                                        viewPacket(packet);
-                                        scrollto();
-                                        __LOGS__.viewMessage("Imported : " + __IMPORT__.SourceFile.imported + " / " + __IMPORT__.SourceFile.count + "(" + pre + "%)")
-                                    }
-                                }
-                            },
-                            function (tx, error) {
-                                __IMPORT__.SourceFile.count += 1;
-                                __IMPORT__.SourceFile.failed += 1;
-                                let pre = Math.floor(__IMPORT__.SourceFile.count * 100 / __IMPORT__.SourceFile.total);
-                                let packet = {
-                                    index: __IMPORT__.SourceFile.count,
-                                    sql: __IMPORT__.SourceFile.sql,
-                                    data: row,
-                                    error: __IMPORT__.SourceFile.imported + " / " + __IMPORT__.SourceFile.count + "(" + pre + "%),\n" + error.message,
-                                    beginTime: null,
-                                    endTime: getNow()
-                                };
-                                __IMPORT__.SourceFile.error.push(packet);
-                                viewPacket(packet);
-                                scrollto();
-                                __LOGS__.viewMessage("Imported : " + __IMPORT__.SourceFile.imported + " / " + __IMPORT__.SourceFile.count + "(" + pre + "%),\n" + error.message)
-                            });
-                    } else {
-                        __IMPORT__.SourceFile.count += 1;
-                        __IMPORT__.SourceFile.failed += 1;
-                        let pre = Math.floor(__IMPORT__.SourceFile.count * 100 / __IMPORT__.SourceFile.total);
-                        let packet = {
-                            index: __IMPORT__.SourceFile.count,
-                            sql: __IMPORT__.SourceFile.sql,
-                            data: data,
-                            error: __IMPORT__.SourceFile.imported + " / " + __IMPORT__.SourceFile.count + "(" + pre + "%),\n" + "数据解析后长度小于数据库结构.",
-                            beginTime: null,
-                            endTime: getNow()
-                        };
-                        __IMPORT__.SourceFile.error.push(packet);
-                        viewPacket(packet);
-                        scrollto();
-                        __LOGS__.viewMessage("Imported : " + __IMPORT__.SourceFile.imported + " / " + __IMPORT__.SourceFile.count + "(" + pre + "%),\n" + "数据解析后长度小于数据库结构.")
-                    }
-                } catch (e) {
-                    __IMPORT__.SourceFile.count += 1;
-                    __IMPORT__.SourceFile.failed += 1;
-                    let pre = Math.floor(__IMPORT__.SourceFile.count * 100 / __IMPORT__.SourceFile.total);
-                    let packet = {
-                        index: __IMPORT__.SourceFile.count,
-                        sql: __IMPORT__.SourceFile.sql,
-                        data: data,
-                        error: __IMPORT__.SourceFile.imported + " / " + __IMPORT__.SourceFile.count + "(" + pre + "%)" + e,
-                        beginTime: null,
-                        endTime: getNow()
-                    };
-                    __IMPORT__.SourceFile.error.push(packet);
-                    viewPacket(packet);
-                    scrollto();
-                    __LOGS__.viewMessage("Imported : " + __IMPORT__.SourceFile.imported + " / " + __IMPORT__.SourceFile.count + "(" + pre + "%),\n" + e)
-                }
-            }
-            //由于tx.executeSql异步执行，连续事务执行时间不可预计，不能添加事后统计，只能事中统计.
-        } catch (e) {
-            UI.alert.show("提示",e);
-        }
-    });
-}
 
 function getAbsolutePosition(obj)
 //获取控件绝对位置
@@ -1353,722 +1180,6 @@ function getAbsolutePosition(obj)
     position.left = w;
     position.top = h;
     return position;
-}
-
-function structInspect(data,sep){
-    // 数据结构检测
-    // 获取可导入数据
-    // 即数据分割后相同宽度最多的行.
-    let addup = [];
-
-    function washData(d){
-        let row = [];
-        for(let i=0;i<d.length;i++){
-            if (d[i].trim() != "" && d[i] != null)
-                row.push(d[i]);
-        }
-        return row;
-    }
-
-    function addUp(row, id){
-        let index = null;
-        for (let i=0;i<addup.length;i++){
-            if (addup[i].columns == row.length) {
-                index = i;
-                break;
-            }
-        }
-        if (index == null)
-            addup.push({columns:row.length,start:id,count:1,lines:[row]});
-        else {
-            addup[index].count += 1;
-            addup[index].lines.push(row);
-        }
-    }
-
-    function getStart(){
-        let index = 0;
-        let max = 0;
-        for(let i=0;i<addup.length;i++){
-            if (addup[i].count > max){
-                index = i;
-                max = addup[i].count;
-            }
-        }
-        return addup[index];
-    }
-
-    for (let i =0;i<data.length;i++){
-        addUp(washData(data[i].trim().split(sep)),i);
-    }
-
-    return getStart();
-}
-
-function getStructFromData() {
-    let sep = __IMPORT__.Separator.value;
-    let lines = __IMPORT__.SourceFile.data[__IMPORT__.SelectedDataSet.value].split("\r\n");
-    if (lines.length == 1)
-        lines = __IMPORT__.SourceFile.data[__IMPORT__.SelectedDataSet.value].split("\n");
-
-    let start = structInspect(lines.slice(0, lines.length > 1000 ? 1000 : lines.length), sep);
-    //检测样本为前1000条数据
-    let columns = start.lines[0];
-    let data = start.lines[1];
-
-    let stru = [];
-    for (let i = 0; i < columns.length; i++) {
-        let col = {};
-        for (let index in __COLUMN__) {
-            switch (index) {
-                case "check":
-                    col[index] = true;
-                    break;
-                case "name":
-                    col[index] = columns[i];
-                    break;
-                case "type":
-                    col[index] = data[i].toString().getStringDataType();
-                    break;
-                case "length":
-                    switch (col["type"]) {
-                        case "int":
-                            col[index] = 6;
-                            break;
-                        case "date":
-                            col[index] = 10;
-                            break;
-                        case "datetime":
-                            col[index] = 25;
-                            break;
-                        case "float":
-                            col[index] = 19;
-                            break;
-                        default:
-                            col[index] = 125;
-
-                    }
-                    break;
-                case "scale":
-                    switch (col["type"]) {
-                        case "float":
-                            col[index] = 6;
-                            break;
-                        default:
-                            col[index] = 0;
-                    }
-                    break;
-                case "allowNull":
-                    col[index] = "Y";
-                    break;
-                case "index":
-                    col[index] = false;
-                    break;
-                case "auto_increment":
-                    col[index] = false;
-                    break;
-                case "column_default":
-                    col[index] = null;
-                    break;
-            }
-        }
-        stru.push(col);
-    }
-    return stru;
-}
-
-function createTable(structure) {
-    let container = document.createElement("div");
-    container.className = "create-table-Content";
-    container.id = "create-table-Content";
-
-    let title = document.createElement("div");
-    title.className = "container-title";
-    let span = document.createElement("span");
-    span.innerHTML = "● 创建数据表 ";
-    title.appendChild(span);
-    let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
-    close.className = "container-close";
-    title.appendChild(close);
-    container.appendChild(title);
-
-    let hr = document.createElement("hr");
-    container.appendChild(hr);
-
-    let tableTitle = document.createElement("input");
-    tableTitle.id = "table-Title";
-    tableTitle.placeholder = "请输入数据表名称.";
-    if (structure != null)
-        tableTitle.value = structure["title"];
-    tableTitle.style.width = "99.2%";
-    container.appendChild(tableTitle);
-
-    let tablecontainer = document.createElement("div");
-    tablecontainer.className = "table-container";
-    container.appendChild(tablecontainer);
-
-    let tb = document.createElement("table");
-    tablecontainer.appendChild(tb);
-    tb.className = "table";
-    tb.style.width = "100%";
-    tb.id = "table-Content";
-    let tr = document.createElement("tr");
-    tb.appendChild(tr);
-    for (let index in __COLUMN__) {
-        let th = document.createElement("th");
-        tr.appendChild(th);
-        if (index != "check")
-            th.innerText = __COLUMN__[index].name;
-        else {
-            let check = document.createElement("input");
-            check.type = "checkbox";
-            check.className = "columns-checkall";
-            check.style.width = "18px";
-            check.onclick = function () {
-                let columns = $("table-Content").getElementsByClassName("check");
-                for (let i = 0; i < columns.length; i++) {
-                    columns[i].checked = this.checked;
-                    this.checked ? columns[i].setAttribute("checked", "checked") : columns[i].removeAttribute("checked");
-                }
-            };
-            th.style.textAlign = "center";
-            th.appendChild(check);
-        }
-    }
-    let cols = 3;
-    if (structure != null)
-        cols = structure["stru"].length;
-
-    for (let rows = 0; rows < cols; rows++) {
-        tr = document.createElement("tr");
-        if (rows % 2 > 0) {
-            tr.className = "alt-line";
-            //单数行
-        }
-        tb.appendChild(tr);
-        for (let index in __COLUMN__) {
-            let td = document.createElement("td");
-            tr.appendChild(td);
-            let attri;
-            if (__COLUMN__[index].type == "select") {
-                attri = document.createElement("select");
-                attri.className = index;
-                attri.type = __COLUMN__[index].type;
-                for (let i = 0; i < __COLUMN__[index].options.length; i++) {
-                    attri.options.add(new Option(__COLUMN__[index].options[i], __COLUMN__[index].options[i]));
-                }
-                if (structure != null)
-                    for (let s = 0; s < attri.options.length; s++) {
-                        if (attri.options[s].value == structure["stru"][rows][index]) {
-                            attri.selectedIndex = s;
-                            break;
-                        }
-                    }
-            } else {
-                attri = document.createElement("input");
-                attri.className = index;
-                attri.type = __COLUMN__[index].type;
-
-                if (attri.type == "checkbox") {
-                    if (structure == null) {
-                        if (__COLUMN__[index].value == true) {
-                            attri.setAttribute("checked", "checked");
-                        }
-                    } else if (structure["stru"][rows][index] == true) {
-                        attri.setAttribute("checked", "checked");
-                    }
-                    attri.onclick = function () {
-                        if (this.checked == false) {
-                            this.removeAttribute("checked");
-                        } else {
-                            this.setAttribute("checked", "checked");
-                        }
-                    }
-                } else {
-                    if (structure == null)
-                        attri.value = __COLUMN__[index].value;
-                    else
-                        attri.value = structure["stru"][rows][index];
-                }
-            }
-            attri.style.width = __COLUMN__[index].width;
-            td.appendChild(attri);
-        }
-    }
-
-    let br = document.createElement("hr");
-    br.className = "br";
-    container.appendChild(br);
-
-    let tool = document.createElement("div");
-    tool.className = "groupbar";
-    tool.style.cssFloat = "left";
-    container.appendChild(tool);
-
-    let add = document.createElement("a");
-    add.className = "button";
-    add.innerHTML = "增加";
-    add.setAttribute("tb", tb.id);
-    add.onclick = function () {
-        let table = $("table-Content");
-        let tr = document.createElement("tr");
-        if ((table.getElementsByTagName("tr").length-1) % 2 > 0) {
-            tr.className = "alt-line";
-            //单数行
-        }
-        table.appendChild(tr);
-        for (let index in __COLUMN__) {
-            let td = document.createElement("td");
-            tr.appendChild(td);
-            let attri;
-            if (__COLUMN__[index].type == "select") {
-                attri = document.createElement("select");
-                attri.className = index;
-                attri.type = __COLUMN__[index].type;
-                for (let i = 0; i < __COLUMN__[index].options.length; i++) {
-                    attri.options.add(new Option(__COLUMN__[index].options[i], __COLUMN__[index].options[i]));
-                }
-            } else {
-                attri = document.createElement("input");
-                attri.className = index;
-                attri.type = __COLUMN__[index].type;
-
-                if (attri.type == "checkbox") {
-                    if (__COLUMN__[index].value == true) {
-                        attri.setAttribute("checked", "checked");
-                    }
-                    attri.onclick = function () {
-                        if (this.checked == false) {
-                            this.removeAttribute("checked");
-                        } else {
-                            this.setAttribute("checked", "checked");
-                        }
-                    }
-                } else {
-                    attri.value = __COLUMN__[index].value;
-                }
-            }
-            attri.style.width = __COLUMN__[index].width;
-            td.appendChild(attri);
-        }
-    };
-    tool.appendChild(add);
-
-    let del = document.createElement("a");
-    del.className = "button";
-    del.innerHTML = "删除";
-    del.onclick = function () {
-        let table = $("table-Content");
-        let columns = table.getElementsByTagName("tr");
-        if (columns.length > 2) {
-            for (let i = columns.length - 1; i > 1; i--) {
-                let checks = columns[i].getElementsByClassName("check");
-                if (checks[0].checked == true) {
-                    table.removeChild(columns[i]);
-                }
-            }
-        } else {
-            UI.alert.show("提示","至少保留一个字段.");
-        }
-    };
-    tool.appendChild(del);
-
-    let b = document.createElement("a");
-    b.className = "button";
-    b.innerHTML = "创建";
-    b.onclick = function () {
-        if (__CONFIGS__.CURRENT_DATABASE.connect == null) {
-            UI.alert.show("提示","请选择数据库.");
-            return;
-        }
-        if (checkStorage()) {
-            __CONFIGS__.CURRENT_DATABASE.connect.transaction(function (tx) {
-                let table = $("table-Content");
-                let rows = table.getElementsByTagName("tr");
-                let stru = [];
-                for (let i = 1; i < rows.length; i++) {
-                    let col = {};
-                    for (let index in __COLUMN__) {
-                        let column = rows[i].getElementsByClassName(index)[0];
-                        if (column.type == "checkbox") {
-                            col[index] = column.checked;
-                        } else {
-                            col[index] = column.value;
-                        }
-                    }
-                    stru.push(col);
-                }
-                let title = $("table-Title");
-                if (title.value != "") {
-                    let sql = getCreateTableSql(title.value, stru);
-                    __LOGS__.viewMessage(sql);
-                    tx.executeSql(sql, [],
-                        function (tx, results) {
-                            let aff = results.rowsAffected;
-                            let len = results.rows.length;
-                            if (aff > 0) {
-                                __LOGS__.viewMessage(aff + " 条记录被修改.")
-                            }
-                            if (aff == 0 && len == 0) {
-                                __LOGS__.viewMessage("数据库没有返回数据和消息.")
-                            }
-                            viewTables(__CONFIGS__.CURRENT_DATABASE.index);
-                        },
-                        function (tx, error) {
-                            __LOGS__.viewMessage(error.message);
-                        });
-                }
-                else
-                    UI.alert.show("提示","请输入数据表名称.");
-            });
-        }
-    };
-    tool.appendChild(b);
-
-    b = document.createElement("a");
-    b.className = "button";
-    b.innerHTML = "退出";
-    b.onclick = close.onclick = function () {
-        let container = $("create-table-Content");
-        container.parentNode.removeChild(container);
-    };
-    tool.appendChild(b);
-
-    setDialogDrag(title);
-
-    return container;
-}
-
-function  getCreateTableSql(title, stru) {
-    //根据选项生成建表SQL
-    let cols = " (";
-    let key = "";
-    let key_count = 0;
-    let auto_increment = null;
-    for (let i=0;i<stru.length;i++) {
-        if (stru[i].index == true) {
-            key += stru[i].name + ",";
-            key_count += 1;
-            if (auto_increment == null && stru[i].auto_increment  && stru[i].type == "integer")
-                auto_increment = stru[i].name;
-        }
-    }
-
-    for (let i=0;i<stru.length;i++) {
-        if (stru[i].check == true && stru[i].name != "") {
-            cols += stru[i].name + " " + stru[i].type;
-            if (stru[i].type =="decimal" || stru[i].type == "float"){
-                cols +="(" + stru[i].length + "," + stru[i].scale + ")";
-            }
-            if (stru[i].type =="nvarchar" || stru[i].type == "varchar"){
-                cols +="(" + stru[i].length + ")";
-            }
-            if (stru[i].allowNull == "N" || stru[i].index == true || (stru[i].column_default != null && stru[i].column_default.trim() != "")){
-                cols += " NOT NULL";
-            } else {
-                cols += " NULL";
-            }
-            if (key_count == 1 && stru[i].index == true ){
-                cols += " PRIMARY KEY";
-                if (stru[i].name == auto_increment){
-                    cols += " autoincrement,";
-                } else {
-                    cols += ",";
-                }
-            }else if(stru[i].column_default != null && stru[i].column_default.trim() != "") {
-                cols += " DEFAULT " + stru[i].column_default + ",";
-            } else {
-                cols += ",";
-            }
-        }
-    }
-    let sql = "CREATE TABLE " + title + cols.substring(0,cols.length-1);
-    if (key_count > 1){
-        sql += ",PRIMARY KEY (" + key.substring(0, key.lastIndexOf(",")) + "))"
-    } else{
-        sql += ")"
-    }
-    return sql;
-}
-
-function createDatabase(){
-    let __DATABASE__ = {
-        Name: {value: "", name: "库名称", type: "text"},
-        Version: {value: 1.0, name: "版本号", type: "text"},
-        Description: {value: "", name: "库描述", type: "text"},
-        Size: {value: "1024*1024*1024", name: "库容量", type: "text"}
-    };
-    let container = document.createElement("div");
-    container.className = "create-database-Content";
-    container.id = "create-database-Content";
-
-    let title = document.createElement("div");
-    title.className = "container-title";
-    let span = document.createElement("span");
-    span.innerHTML = "● 创建数据库 ";
-    title.appendChild(span);
-    let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
-    close.className = "container-close";
-    title.appendChild(close);
-    container.appendChild(title);
-
-    let hr = document.createElement("hr");
-    container.appendChild(hr);
-
-    for (let name in __DATABASE__) {
-        let d = document.createElement("div");
-        container.appendChild(d);
-        let s = document.createElement("span");
-        s.innerHTML = __DATABASE__[name].name + ":";
-        d.appendChild(s);
-        if (__DATABASE__[name].type == "text"){
-            let input = document.createElement("input");
-            input.id = name;
-            input.type = "text";
-            input.value = __DATABASE__[name].value;
-            input.onchange = function(){
-                __DATABASE__[this.id].value = this.value;
-            };
-            d.appendChild(input);
-        }
-    }
-
-    let br = document.createElement("hr");
-    br.className = "br";
-    container.appendChild(br);
-
-    let tool = document.createElement("div");
-    tool.className = "groupbar";
-    tool.style.cssFloat= "left";
-    container.appendChild(tool);
-
-    let b = document.createElement("a");
-    b.className = "button";
-    b.innerHTML = "创建";
-    b.onclick = function(){
-        if (checkStorage()) {
-            if (__DATABASE__.Name.value.trim() != "") {
-                let db = {
-                    name: __DATABASE__.Name.value,
-                    version: __DATABASE__.Version.value,
-                    description: __DATABASE__.Description.value,
-                    size: __DATABASE__.Size.value
-                };
-                let storage = window.localStorage;
-                let dbs = JSON.parse(storage.getItem(__CONFIGS__.STORAGE.DATABASES));
-                let index = -1;
-                for (let i = 0; i < dbs.length; i++) {
-                    if (dbs[i].name == __DATABASE__.Name.value) {
-                        index = i;
-                        break;
-                    }
-                }
-                if (index == -1)
-                    dbs.push(db);
-                else {
-                    UI.confirm.show("注意", "数据库 " + __DATABASE__.Name.value + " 已经存在,是否修改相关信息?", "auto", function (args) {
-                        args.dbs[args.index] = args.db;
-                    }, {dbs: dbs, index: index, db: db});
-                }
-                storage.setItem(__CONFIGS__.STORAGE.DATABASES, JSON.stringify(dbs));
-                viewDatabases();
-                let container = $("create-database-Content");
-                container.parentNode.removeChild(container);
-            } else
-                UI.alert.show("提示", "请输入数据库名称.");
-        }
-    };
-    tool.appendChild(b);
-    b = document.createElement("a");
-    b.className = "button";
-    b.innerHTML = "退出";
-    b.onclick = close.onclick = function(){
-        let container=$("create-database-Content");
-        container.parentNode.removeChild(container);
-    };
-    tool.appendChild(b);
-
-    setDialogDrag(title);
-
-    return container;
-}
-
-function getImportContent() {
-     __IMPORT__.SourceFile.count = 0;
-     __IMPORT__.SourceFile.total = 0;
-
-    let container = document.createElement("div");
-    container.className = container.id = "import-configs-content";
-    let title = document.createElement("div");
-    title.className = "container-title";
-    let span = document.createElement("span");
-    span.innerHTML = "● 导入数据";
-    title.appendChild(span);
-    let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
-    close.className = "container-close";
-    title.appendChild(close);
-    container.appendChild(title);
-
-    let hr = document.createElement("hr");
-    container.appendChild(hr);
-
-    for (let name in __IMPORT__) {
-        let item = document.createElement("div");
-        item.className = "import-configs-item";
-        container.appendChild(item);
-        let itemname = document.createElement("span");
-        itemname.className = "import-configs-name";
-        itemname.innerHTML = __IMPORT__[name].name + " : ";
-        item.appendChild(itemname);
-        let itemvalue = null;
-        if (name == "Table") {
-            itemvalue = document.createElement("input");
-            itemvalue.className = "import-configs-value";
-            itemvalue.id = name;
-            itemvalue.readOnly = true;
-            itemvalue.value = __CONFIGS__.CURRENT_TABLE.name;
-        } else if (name == "Charset" || name == "Separator" || name == "SelectedDataSet") {
-            itemvalue = document.createElement("select");
-            itemvalue.className = "import-configs-value";
-            itemvalue.id = name;
-            for (let i = 0; i < __IMPORT__[name].options.length; i++) {
-                if (isArray(__IMPORT__[name].options[i]))
-                    itemvalue.options.add(new Option(__IMPORT__[name].options[i][0], __IMPORT__[name].options[i][1]));
-                else
-                    itemvalue.options.add(new Option(__IMPORT__[name].options[i], i));
-            }
-            itemvalue.value = __IMPORT__[name].value;
-            itemvalue.onchange = function () {
-                __IMPORT__[this.id].value = this.value;
-            };
-        } else if (name == "SourceFile") {
-            itemvalue = document.createElement("input");
-            itemvalue.className = "import-configs-value";
-            itemvalue.id = name;
-            itemvalue.type = __IMPORT__[name].type;
-            if (itemvalue.type == "file") {
-                itemvalue.accept = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,text/plain,.csv";
-                itemvalue.onchange = function () {
-                    if (window.FileReader) {
-                        try {
-                            let file = this.files[0];
-                            let filetype = file.name.split(".")[1];
-                            __IMPORT__.SourceFile.value = file.name;
-                            __IMPORT__.SourceFile.data = [];
-                            let selectDataSet = $("SelectedDataSet");
-                            for (let i = selectDataSet.length - 1; i >= 0; i--) {
-                                selectDataSet.remove(i);
-                            }
-                            if (filetype.toUpperCase() == "TXT" || filetype.toUpperCase() == "CSV") {
-                                let reader = new FileReader();
-                                reader.onload = function () {
-                                    __IMPORT__.SourceFile.data.push(this.result);
-                                    selectDataSet.options.add(new Option("默认", 0));
-                                    __IMPORT__.SelectedDataSet.value = selectDataSet.selectedIndex = 0;
-                                };
-                                reader.readAsText(file, __IMPORT__.Charset.options[__IMPORT__.Charset.value]);
-                            } else if (filetype.toUpperCase() == "XLS" || filetype.toUpperCase() == "XLSX") {
-                                readExcelFile(file);
-                            } else {
-                                UI.alert.show("提示", "仅适用于XLSX、XLS、TXT和CSV文件。");
-                                return;
-                            }
-                        } catch (e) {
-                            UI.alert.show("提示","请选择需要导入的文件.")
-                        }
-                        $("progress-container").innerText = "";
-                    } else {
-                        UI.alert.show("提示", "本应用适用于Chrome或Edge浏览器。")
-                    }
-                };
-            }
-        }
-        item.appendChild(itemvalue);
-    }
-
-    let progress = document.createElement("div");
-    progress.id = "progress-container";
-    container.appendChild(progress);
-
-    let br = document.createElement("hr");
-    br.className = "br";
-    container.appendChild(br);
-
-    let tool = document.createElement("div");
-    tool.className = "groupbar";
-    tool.style.cssFloat= "left";
-    tool.style.width = "100%";
-    container.appendChild(tool);
-
-    let b = document.createElement("a");
-    b.className = "button";
-    b.id = "import-button";
-    b.innerHTML = "导入";
-    b.onclick = function(){
-        if (__CONFIGS__.CURRENT_TABLE.name == "" || __CONFIGS__.CURRENT_TABLE.type == "view") {
-            UI.confirm.show("注意", "您没有选择数据表，是否要根据数据结构创建一个名称为 " + __IMPORT__.SourceFile.value.split(".")[0] + " 的新表?", "auto", function () {
-                let title = __IMPORT__.SourceFile.value.split(".")[0];
-                let tb = createTable({"title": title, "stru": getStructFromData()});
-                setCenterPosition($("page"), tb);
-                $("import-configs-content").parentNode.removeChild($("import-configs-content"));
-            });
-        } else {
-            $("progress-container").appendChild(getImportProgress());
-            if ($("SelectedDataSet").length > 0) {
-                importData();
-            } else
-                UI.alert.show("提示","请选择需要导入的文件及数据集合.");
-            //let container =$("import-configs-content");
-            //container.parentNode.removeChild(m);
-        }
-    };
-    tool.appendChild(b);
-
-    b = document.createElement("a");
-    b.className = "button";
-    b.innerHTML = "退出";
-    b.onclick = close.onclick = function(){
-        let container =$("import-configs-content");
-        container.parentNode.removeChild(container);
-    };
-    tool.appendChild(b);
-
-    setDialogDrag(title);
-
-    return container;
-}
-
-function getImportProgress() {
-    let container = document.createElement("div");
-    container.id = "progress";
-    let v = document.createElement("div");
-    container.appendChild(v);
-    v.id = "progress-value";
-    let detail = document.createElement("div");
-    detail.id = "progress-detail";
-    container.appendChild(detail);
-
-    __IMPORT__.SourceFile.progress = setInterval(function () {
-        Timer()
-    }, 50);
-
-    function Timer() {
-        try {
-            let value = __IMPORT__.SourceFile.count / __IMPORT__.SourceFile.total;
-            let v = $("progress-value");
-            v.style.width = (value * 100) + "%";
-            v.innerText = __IMPORT__.SourceFile.count + " / " + __IMPORT__.SourceFile.total;
-            if (value == 1)
-                Stop(__IMPORT__.SourceFile.progress);
-        } catch (e) {
-        }
-    }
-
-    function Stop(progress) {
-        clearInterval(progress);
-    }
-
-    return container;
 }
 
 function checkStorage() {
@@ -3121,10 +2232,16 @@ function initConfigs() {
                 }
             }
 
-            $("main-title").appendChild(__SYS_IMAGES__.getLogoImage(__SYS_IMAGES__.logo_echarts));
+             $("main-title").appendChild(__SYS_IMAGES__.getLogoImage(__VERSION__.logo));
             $("main-title").ondblclick = function () {
                 requestFullScreen(document.body);
             };
+
+            let helpurl = document.getElementsByClassName("help-url");
+            for(let i=0;i<helpurl.length;i++){
+                helpurl[i].herf = helpurl[i].innerHTML = __VERSION__.url;
+            }
+
             $("main-version").innerText = __VERSION__.version;
             $("main-version").title = "发布日期: " + __VERSION__.date + "\n ● ...\n ● " + __VERSION__.comment.splice(__VERSION__.comment.length % 10 + (Math.floor(__VERSION__.comment.length / 10) - 1) * 10).join("\n ● ");
             let copyright = __VERSION__.author + " ☎ " + __VERSION__.tel + " ✉ <a href='mailto:" + __VERSION__.email + "'>" + __VERSION__.email + "</a>";
@@ -3186,7 +2303,7 @@ function initConfigs() {
             __LOGS__.viewMessage(message + "...OK.");
             checked = true;
         } catch (e) {
-            __LOGS__.viewMessage(message + "...fails.\n" + e, true);
+            __LOGS__.viewMessage(message + "...fails<br>Error:" + e, true);
             checked = false;
         }
     } else {
@@ -3211,8 +2328,7 @@ function initMenus() {
         crdb.appendChild(__SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.create_database));
         let help_crdb = $("help-create-database");
         crdb.onclick = help_crdb.onclick = function () {
-            let db = createDatabase();
-            setCenterPosition($("page"), db);
+            SQLite.createDatabase("auto");
         };
         dbstools.appendChild(crdb);
         setTooltip(crdb, "创建数<br>据库");
@@ -3260,15 +2376,6 @@ function initMenus() {
         dbinfo.innerText = "调试";
         dbinfo.style.display = "none";
         dbinfo.onclick = function () {
-
-            function test() {
-                try {
-                   console.log(a[1]);
-                } catch (e) {
-                    __LOGS__.viewError(e);
-                }
-            }
-            test();
             //##########################################
             //字符串可传输编码转化
             // let a = "2021/00/02 12:12:100";
@@ -3347,8 +2454,26 @@ function initMenus() {
         crtb.appendChild(__SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.create_table));
         let help_crtb = $("help-create-table");
         crtb.onclick = help_crtb.onclick = function () {
-            let tb = createTable(null);
-            setCenterPosition($("page"), tb);
+            SQLite.createTable("auto", null, function (values) {
+                let sql = values.sql;
+                __CONFIGS__.CURRENT_DATABASE.connect.transaction(function (tx) {
+                    tx.executeSql(sql, [],
+                        function (tx, results) {
+                            let aff = results.rowsAffected;
+                            let len = results.rows.length;
+                            if (aff > 0) {
+                                __LOGS__.viewMessage(aff + " 条记录被修改.")
+                            }
+                            if (aff == 0 && len == 0) {
+                                __LOGS__.viewMessage("数据库没有返回数据和消息.")
+                            }
+                            viewTables(__CONFIGS__.CURRENT_DATABASE.index);
+                        },
+                        function (tx, e) {
+                            __LOGS__.viewError(e);
+                        });
+                });
+            });
         };
         tbstools.appendChild(crtb);
         setTooltip(crtb, "创建<br>数据表");
@@ -3360,8 +2485,7 @@ function initMenus() {
         importtb.appendChild(__SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.import));
         let help_importtb = $("help-import-data");
         importtb.onclick = help_importtb.onclick = function () {
-            let im = getImportContent();
-            setCenterPosition($("page"), im);
+            SQLite.import.start("auto");
         };
         tbstools.appendChild(importtb);
         setTooltip(importtb, "导入<br>外部数据");
@@ -3440,7 +2564,7 @@ function initMenus() {
         newsql.onclick = help_createsql.onclick = function () {
             let openfile = $("open-sql-file");
             openfile.value = "";
-            __SQLEDITOR__.title = null; $("execute-sql").getElementsByTagName("img")[0].title = "";
+            __SQLEDITOR__.title = null; $("sql-title").innerText = "";
             __SQLEDITOR__.codeMirror.setValue("");
             if (this.id == "help-create-sql") {
                 let sql = "/*脚本案例*/\r\n" +
@@ -3469,7 +2593,7 @@ function initMenus() {
                     let reader = new FileReader();
                     reader.onload = function () {
                         __SQLEDITOR__.codeMirror.setValue(this.result);
-                        __SQLEDITOR__.title =  $("execute-sql").getElementsByTagName("img")[0].title = file.name.split(".")[0];
+                        __SQLEDITOR__.title =  $("sql-title").innerText = file.name.split(".")[0];
                     };
                     reader.readAsText(file, __SQLEDITOR__.charset.options[__SQLEDITOR__.charset.value]);
                 } catch (e) {
@@ -3488,8 +2612,11 @@ function initMenus() {
         opensql.appendChild(__SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.open_sql));
         let help_opensql = $("help-open-sql");
         opensql.onclick = help_opensql.onclick = function () {
-            let tb = storageSqlDialog("", __SQLEDITOR__);
-            setCenterPosition($("main"), tb)
+            UI.sqlManagerDialog.show("auto", function (args, values) {
+                __SQLEDITOR__.title = $("sql-title").innerText = values.title;
+                __LOGS__.viewMessage("Open " + __SQLEDITOR__.options.mode + " : " + __SQLEDITOR__.title);
+                __SQLEDITOR__.codeMirror.setValue(values.sql);
+            }, {type: "open"});
         };
         sqltools.appendChild(opensql);
         setTooltip(opensql, "打开<br>脚本");
@@ -3502,18 +2629,20 @@ function initMenus() {
         let help_savesql = $("help-save-sql");
         saveto.onclick = help_savesql.onclick = function () {
             if (__SQLEDITOR__.title == null) {
-                let sql = __SQLEDITOR__.codeMirror.getValue();
-                let tb = storageSqlDialog(sql, __SQLEDITOR__, "_TO_SAVE_");
-                setCenterPosition($("main"), tb)
+                UI.sqlManagerDialog.show("auto", function (args, values) {
+                    __SQLEDITOR__.title = $("sql-title").innerText = values.title;
+                    __LOGS__.viewMessage("Save " + __SQLEDITOR__.options.mode + " : " + __SQLEDITOR__.title);
+                }, {type: "save", sql: __SQLEDITOR__.codeMirror.getValue()});
             } else {
-                let name = __SQLEDITOR__.title;
+                let title = __SQLEDITOR__.title;
                 let sql = __SQLEDITOR__.codeMirror.getValue();
-                UI.confirm.show("注意", "您确定覆盖保存脚本 " + name + " 吗?", "auto", function (args) {
-                    if (args.name != "" && args.sql != "") {
-                        saveStorageSql(args.name, args.sql);
+                UI.confirm.show("注意", "您确定覆盖保存脚本 " + title + " 吗?", "auto", function (args) {
+                    if (args.title != "" && args.sql != "") {
+                        saveStorageSql(args.title, args.sql);
+                        __LOGS__.viewMessage("Save " + __SQLEDITOR__.options.mode + " : " + __SQLEDITOR__.title);
                     } else
                         UI.alert.show("提示", "脚本及脚本名称不能为空!");
-                }, {name: name, sql: sql});
+                }, {title: title, sql: sql});
             }
         };
         sqltools.appendChild(saveto);
@@ -3559,6 +2688,18 @@ function initMenus() {
         sqltools.appendChild(saveas);
         setTooltip(saveas, "导出<br>脚本");
 
+        let backup = document.createElement("div");
+        backup.className = "button";
+        backup.innerText = "备份";
+        backup.id = "backup-sql-to-file";
+        backup.onclick = function() {
+            UI.sqlManagerDialog.show("auto", function (args, values) {
+
+            }, {type: "backup"});
+        }
+        sqltools.appendChild(backup);
+        setTooltip(backup, "脚本<br>备份");
+
         let execsql = document.createElement("div");
         execsql.className = "button";
         execsql.innerText = "提交";
@@ -3566,15 +2707,43 @@ function initMenus() {
         execsql.appendChild(__SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.execute_sql));
         let help_execsql = $("help-execute-sql");
         execsql.onclick = help_execsql.onclick = function () {
-            if (checkStorage()) {
+             if (checkStorage()) {
                 let selection = "";
                 if (__SQLEDITOR__.codeMirror.somethingSelected())
                     selection = __SQLEDITOR__.codeMirror.getSelection();
                 else
                     selection = __SQLEDITOR__.codeMirror.getValue();
-                let paramdialog = getParamDialog(__SQLEDITOR__.title, selection);
-                if (paramdialog != null) {
-                    setCenterPosition($("main"), paramdialog)
+                let reg = new RegExp(/\{[\[\]\:\,\;\-\"\'a-zA-Z0-9\u4e00-\u9fa5]+\}/, "g");
+                let params = selection.match(reg);
+                if (params != null) {
+                    //参数去重
+                    let temp = {};
+                    for (let i = 0; i < params.length; i++) {
+                        let key = params[i].substring(params[i].indexOf("{") + 1, params[i].indexOf("}"));
+                        temp[key] = typeof __SQLEDITOR__.parameter[key] !== "undefined" ? __SQLEDITOR__.parameter[key] : "";
+                    }
+                    params = temp;
+                    UI.prompt.show("输入脚本参数", params, "auto", function (args, values) {
+                        for(let key in values) {
+                            __SQLEDITOR__.parameter[key] = values[key];
+                        }
+                        if (__SQLEDITOR__.title != null) {
+                            let title = __SQLEDITOR__.title;
+                            if (__SQLEDITOR__.options.mode == "text/x-sqlite")
+                                execute(title);
+                            if (__SQLEDITOR__.options.mode == "text/javascript")
+                                executeFunction(title)
+                        } else {
+                            UI.prompt.show("输入", {"集合名称": ""}, "auto", function (args, values) {
+                                let title = __SQLEDITOR__.title = $("sql-title").innerText = values["集合名称"];
+                                if (__SQLEDITOR__.options.mode == "text/x-sqlite")
+                                    execute(title);
+                                if (__SQLEDITOR__.options.mode == "text/javascript")
+                                    executeFunction(title);
+                            }, {})
+                        }
+
+                    }, {});
                 } else {
                     if (__SQLEDITOR__.title != null) {
                         let title = __SQLEDITOR__.title;
@@ -3584,7 +2753,7 @@ function initMenus() {
                             executeFunction(title)
                     } else {
                         UI.prompt.show("输入", {"集合名称": ""}, "auto", function (args, values) {
-                            let title = __SQLEDITOR__.title = $("execute-sql").getElementsByTagName("img")[0].title = values["集合名称"];
+                            let title = __SQLEDITOR__.title = values["集合名称"];
                             if (__SQLEDITOR__.options.mode == "text/x-sqlite")
                                 execute(title);
                             if (__SQLEDITOR__.options.mode == "text/javascript")
@@ -3597,29 +2766,10 @@ function initMenus() {
         sqltools.appendChild(execsql);
         setTooltip(execsql, "执行脚本<br>获取数据");
 
-        let datasetSource = document.createElement("select");
-        datasetSource.type = "select";
-        datasetSource.id = "set-dataset-source";
-        datasetSource.style.cssFloat = "left";
-        for (let m in __SQLEDITOR__.modes) {
-            datasetSource.options.add(new Option(m, __SQLEDITOR__.modes[m]));
-        }
-        try {
-            let mode = getUserConfig("editermode");
-            if (mode != null) {
-                __SQLEDITOR__.options.mode = datasetSource.value = mode;
-            } else
-                datasetSource.selectedIndex = 0;
-        } catch (e) {
-            __LOGS__.viewError(e);
-        }
-        datasetSource.onchange = function () {
-            __SQLEDITOR__.options.mode = datasetSource.value = this.value;
-            __SQLEDITOR__.codeMirror.setOption("mode", this.value);
-            setUserConfig("editermode", this.value);
-        };
-        sqltools.appendChild(datasetSource);
-        setTooltip(datasetSource, "编辑器<br>模式");
+        let sqltitle = document.createElement("div");
+        sqltitle.id = "sql-title";
+        sqltitle.style.cssFloat = "left";
+        sqltools.appendChild(sqltitle);
 
         let tofull = document.createElement("div");
         sqltools.appendChild(tofull);
@@ -3713,6 +2863,30 @@ function initMenus() {
         };
         sqltools.appendChild(editorThemes);
         setTooltip(editorThemes, "编辑器<br>主题");
+
+        let datasetSource = document.createElement("select");
+        datasetSource.type = "select";
+        datasetSource.id = "set-dataset-source";
+        datasetSource.style.cssFloat = "right";
+        for (let m in __SQLEDITOR__.modes) {
+            datasetSource.options.add(new Option(m, __SQLEDITOR__.modes[m]));
+        }
+        try {
+            let mode = getUserConfig("editermode");
+            if (mode != null) {
+                __SQLEDITOR__.options.mode = datasetSource.value = mode;
+            } else
+                datasetSource.selectedIndex = 0;
+        } catch (e) {
+            __LOGS__.viewError(e);
+        }
+        datasetSource.onchange = function () {
+            __SQLEDITOR__.options.mode = datasetSource.value = this.value;
+            __SQLEDITOR__.codeMirror.setOption("mode", this.value);
+            setUserConfig("editermode", this.value);
+        };
+        sqltools.appendChild(datasetSource);
+        setTooltip(datasetSource, "编辑器<br>模式");
 
         //#######################################
         //初始化消息菜单
@@ -3870,7 +3044,7 @@ function initMenus() {
                                         $("open-sql-file").value = "";
                                         $("dataset-select-echarts-theme").value = __ECHARTS__.configs.echartsTheme.value = report.configs.echartsTheme.value;
                                         $("dataset-select-echarts-type").value = __ECHARTS__.configs.echartsType.value = report.configs.echartsType.value;
-                                        __SQLEDITOR__.title = $("execute-sql").getElementsByTagName("img")[0].title = report.dataset.title.join("_");
+                                        __SQLEDITOR__.title = $("sql-title").innerText = report.dataset.title.join("_");
                                         __SQLEDITOR__.codeMirror.setValue(report.dataset.sql);
                                         viewDataset(__DATASET__.default.sheet, 0);
                                         let _width = (getAbsolutePosition(container).width * 1) + "px";
@@ -3923,8 +3097,10 @@ function initMenus() {
         dataReader.style.cssFloat = "left";
         dataReader.id = "data-reader";
         dataReader.onclick = $("read-xls-file").onclick = function () {
-            let reader = getDataReaderContent();
-            setCenterPosition($("main"), reader);
+            getDataReader("auto", function (values) {
+                __DATASET__.result.push(values);
+                viewDataset(__DATASET__.result.length - 1, 0);
+            });
         };
         setTooltip(dataReader, "读取外<br>部数据");
 
@@ -3949,9 +3125,13 @@ function initMenus() {
         dataslice.id = "dataset-slice";
         let help_datasetslice = $("help-dataset-slice");
         dataslice.onclick = help_datasetslice.onclick = function () {
-            if (__DATASET__.result.length > 0) {
-                let dataslice = getDataSlice();
-                setCenterPosition($("main"), dataslice);
+             if (__DATASET__.result.length > 0) {
+                UI.getDataSlice("auto", function (values) {
+                    for (let i = 0; i < values.length; i++) {
+                        __DATASET__.result.push(values[i]);
+                    }
+                    viewDataset(__DATASET__.result.length - 1, 0);
+                })
             }
         };
         setTooltip(dataslice, "数据<br>切片");
@@ -3964,8 +3144,10 @@ function initMenus() {
         let help_datasetsubtotal = $("help-dataset-subtotal");
         subtotal.onclick = help_datasetsubtotal.onclick = function () {
             if (__DATASET__.result.length > 0) {
-                let subtotal = getSubtotal();
-                setCenterPosition($("main"), subtotal);
+                UI.getSubtotal("auto", null, function (values) {
+                    __DATASET__.result.push(values);
+                    viewDataset(__DATASET__.result.length - 1, 0);
+                });
             }
         };
         setTooltip(subtotal, "分类<br>计算");
@@ -4215,7 +3397,7 @@ function initMenus() {
         fileSecurity.className = "charButton";
         fileSecurity.innerText = "☍";
         fileSecurity.onclick = $("file-security").onclick = function () {
-            setCenterPosition($("main"), getFileSecurity());
+            getFileSecurity("auto");
         };
         setTooltip(fileSecurity, "文件加密<br>解密");
 
@@ -4225,9 +3407,11 @@ function initMenus() {
         datasetSetting.innerText = "┅";
         datasetSetting.id = "dataset-setting";
         datasetSetting.onclick = function () {
-            let configs = __DATASET__.getDatasetConfigs($("tableContainer"));
-            setCenterPosition($("main"), configs);
-
+            __DATASET__.setDatasetConfigs("auto", function() {
+                if (__DATASET__.result.length > 0) {
+                    viewDataset(__DATASET__.default.sheet, __DATASET__.pages.default);
+                }
+            });
         };
         setTooltip(datasetSetting, "报表<br>设置");
 
@@ -4349,8 +3533,30 @@ function initMenus() {
         toconfigs.id = "dataset-to-configs";
         let help_echartsConfigs = $("help-select-echarts-configs");
         toconfigs.onclick = help_echartsConfigs.onclick = function () {
-            let configs = __ECHARTS__.getEchartsConfigs($("tableContainer"));
-            setCenterPosition($("main"), configs);
+            __ECHARTS__.setEchartsConfigs("auto", function(configs) {
+                let container = $("tableContainer");
+                try {
+                    if (__DATASET__.result.length > 0) {
+                        try {
+                            container.removeAttribute("_echarts_instance_");
+                            echarts.getInstanceByDom(container).dispose();
+                        } catch (e) {
+                        }
+                        let _width = (getAbsolutePosition(container).width * 1) + "px";
+                        let _height = (getAbsolutePosition(container).height * 1) + "px";
+                        container.innerHTML = "";
+                        let echart = getEcharts(
+                            container,
+                            _width,
+                            _height,
+                            __DATASET__["result"][__DATASET__.default.sheet],
+                            configs);
+                        setDragNook(container, echart.getAttribute("_echarts_instance_"));
+                    }
+                } catch (e) {
+                    __LOGS__.viewError(e);
+                }
+            });
         };
         setTooltip(toconfigs, "更多图<br>形参数");
 
@@ -4478,7 +3684,7 @@ function initMenus() {
 
         //其他工具
         $("image-base64").onclick = function () {
-            setCenterPosition($("page"), getImageBase64Code());
+            getImageBase64Code("auto");
         };
         __LOGS__.viewMessage(message + "...OK.");
     } catch (e) {
@@ -4660,873 +3866,6 @@ function isScroll(el) {
     };
  }
 
-function readExcelFile(file) {
-    function getData(result, sep) {
-        let data = [];
-        let lines = result.split("\n");
-        for (let i = 0; i < lines.length; i++) {
-            data.push(lines[i].split(sep));
-        }
-        return data;
-    }
-
-    function fixData(data) {
-        //文件流转BinaryString
-        let tmp = "";
-        let l = 0;
-        let w = 10240;
-        for (; l < data.byteLength / w; ++l) tmp += String.fromCharCode.apply(null, new Uint8Array(data.slice(l * w, l * w + w)));
-        tmp += String.fromCharCode.apply(null, new Uint8Array(data.slice(l * w)));
-        return tmp;
-    }
-
-    let reader = new FileReader();
-    let rABS = true;
-    reader.onload = function (e) {
-        let data = e.target.result;
-        let workbook;
-        if (rABS) {
-            workbook = XLSX.read(data, {type: "binary"});
-        } else {
-            workbook = XLSX.read(btoa(fixData(data)), {type: "base64"});
-        }
-        let sheetNames = workbook.SheetNames;
-        let selectDataSet = $("SelectedDataSet");
-        for (let i = 0; i < sheetNames.length; i++) {
-            let worksheet = workbook.Sheets[sheetNames[i]];
-            let csv = XLSX.utils.sheet_to_csv(worksheet);
-            __IMPORT__.SourceFile.data.push(csv);
-            selectDataSet.options.add(new Option(sheetNames[i], i));
-            //return csv;
-        }
-        __IMPORT__.SelectedDataSet.value = selectDataSet.selectedIndex = 0;
-    };
-    try {
-        reader.readAsBinaryString(file);
-    } catch (e) {
-        reader.readAsArrayBuffer(file);
-        rABS = false;
-    }
-}
-
-function getSubtotal(colid) {
-    let dataset = __DATASET__.result[__DATASET__.default.sheet];
-    let columns = [];
-    for (let i = 0; i < dataset["columns"].length; i++) {
-        columns.push(dataset["columns"][i].name);
-    }
-
-    let container = document.createElement("div");
-    container.id = "subtotal-Content";
-    container.className = "subtotal-Content";
-    let title = document.createElement("div");
-    title.className = "container-title";
-    let span = document.createElement("span");
-    span.innerHTML = "● 分类计算";
-    title.appendChild(span);
-    let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
-    close.className = "container-close";
-    title.appendChild(close);
-    container.appendChild(title);
-
-    let hr = document.createElement("hr");
-    container.appendChild(hr);
-
-    let d = document.createElement("div");
-    container.appendChild(d);
-    d.style.height = "22px";
-    span = document.createElement("span");
-    span.innerHTML = "分类字段:";
-    d.appendChild(span);
-    let cols = document.createElement("select");
-    cols.type = "select";
-    cols.id = "subtotal_groupby";
-    cols.style.width = "80%";
-    cols.style.cssFloat = "right";
-    cols.options.add(new Option("全部", ""));
-    for (let c = 0; c < columns.length; c++) {
-        cols.options.add(new Option(columns[c], columns[c]));
-    }
-    if (typeof colid != "undefined") {
-        cols.selectedIndex = colid + 1;
-    }
-    d.appendChild(cols);
-
-    let tableContent = document.createElement("div");
-    tableContent.className = "scroll-Content";
-    container.appendChild(tableContent);
-
-    let table = document.createElement("table");
-    tableContent.appendChild(table);
-    table.id = "subtotal-dialog-table";
-    table.className = "table";
-    table.style.width = "100%";
-    table.style.tableLayout = "fixed";
-
-    table.innerText = "";
-    let tr = document.createElement("tr");
-    tr.className = "tr";
-    table.appendChild(tr);
-    let th = document.createElement("th");
-    th.className = "th";
-    th.style.width = "32px";
-    let check = document.createElement("input");
-    check.type = "checkbox";
-    check.className = "file-checkall";
-    check.style.width = "32px";
-    check.onclick = function () {
-        let columns = $("subtotal-dialog-table").getElementsByClassName("check");
-        for (let i = 0; i < columns.length; i++) {
-            columns[i].checked = this.checked;
-            this.checked ? columns[i].setAttribute("checked", "checked") : columns[i].removeAttribute("checked");
-        }
-    };
-    th.style.textAlign = "center";
-    th.appendChild(check);
-    tr.appendChild(th);
-    th = document.createElement("th");
-    th.className = "th";
-    th.innerText = "统计对象";
-    tr.appendChild(th);
-    th = document.createElement("th");
-    th.className = "th";
-    th.innerText = "统计方式";
-    tr.appendChild(th);
-
-    table.appendChild(addSubtotal(columns, 0));
-
-    d = document.createElement("div");
-    container.appendChild(d);
-    let merge = document.createElement("input");
-    merge.type = "checkbox";
-    merge.id = "subtotal_merge";
-    merge.style.marginTop = "4px";
-    merge.style.cssFloat = "left";
-    merge.style.width = "28px";
-    d.appendChild(merge);
-    span = document.createElement("span");
-    span.innerHTML = "合并结果";
-    span.style.cssFloat = "left";
-    d.appendChild(span);
-
-    let br = document.createElement("hr");
-    br.className = "br";
-    container.appendChild(br);
-
-    let tool = document.createElement("div");
-    tool.className = "groupbar";
-    container.appendChild(tool);
-
-    let add = document.createElement("div");
-    add.className = "button";
-    add.innerText = "增加";
-    add.onclick = function () {
-        let table = $("subtotal-dialog-table");
-        table.appendChild(addSubtotal(columns, table.getElementsByTagName("tr").length - 1));
-    };
-    tool.appendChild(add);
-
-    let del = document.createElement("div");
-    del.className = "button";
-    del.innerText = "删除";
-    del.onclick = function () {
-        let table = $("subtotal-dialog-table");
-        let columns = table.getElementsByTagName("tr");
-        if (columns.length > 2) {
-            for (let i = columns.length - 1; i > 1; i--) {
-                let checks = columns[i].getElementsByClassName("check");
-                if (checks[0].checked == true) {
-                    table.removeChild(columns[i]);
-                }
-            }
-        } else {
-            UI.alert.show("提示","至少保留一个统计对象.");
-        }
-    };
-    tool.appendChild(del);
-
-    let confirm = document.createElement("div");
-    confirm.className = "button";
-    confirm.innerText = "确定";
-    confirm.onclick = function () {
-        let merge = $("subtotal_merge").checked;
-        let column = $("subtotal_groupby").value;
-        let obj = document.getElementsByClassName("subtotal_object");
-        let typ = document.getElementsByClassName("subtotal_type");
-        let columns = [];
-        let data = [];
-        for (let i = 0; i < obj.length; i++) {
-            let target = obj[i].value;
-            if (merge) {
-                //横向合并集合
-                let result = subtotal(column, target, typ[i].value);
-                if (columns.length == 0) {
-                    columns = result["columns"];
-                    data = result["data"];
-                } else {
-                    let col = result["columns"][1];
-                    col.id = columns.length;
-                    columns.push(col);
-                    for (let x = 0; x < result["data"].length; x++) {
-                        let r = result["data"][x];
-                        for (let c = 0; c < data.length; c++) {
-                            let row = data[c];
-                            if (row[column == "" ? "全部" : column].value == r[column == "" ? "全部" : column].value) {
-                                let cell = r[col.name];
-                                cell.colid = col.id;
-                                row[col.name] = cell;
-                                break;
-                            }
-                        }
-                    }
-                }
-            } else
-                __DATASET__.result.push(subtotal(column, target, typ[i].value));
-        }
-        if (merge) {
-            let title = __DATASET__.result[__DATASET__.default.sheet].title;
-            //title.push("SUBTOTAL");
-            __DATASET__.result.push({
-                eventid: getEventIndex(),
-                columns: columns,
-                data: data,
-                title: title,
-                sql: __DATASET__.result[__DATASET__.default.sheet].sql,
-                type: __DATASET__.result[__DATASET__.default.sheet].type,
-                parameter: __DATASET__.result[__DATASET__.default.sheet].title.parameter,
-                time: getNow()
-            });
-        }
-        if (__DATASET__.result.length > 0) {
-            viewDataset(__DATASET__.result.length - 1, 0);
-        }
-
-        $("subtotal-Content").parentNode.removeChild($("subtotal-Content"));
-    };
-    tool.appendChild(confirm);
-
-    let cancel = document.createElement("div");
-    cancel.className = "button";
-    cancel.innerText = "退出";
-    cancel.onclick = close.onclick = function () {
-        $("subtotal-Content").parentNode.removeChild($("subtotal-Content"));
-    };
-    tool.appendChild(cancel);
-
-    setDialogDrag(title);
-
-    return container;
-}
-
-function addSubtotal(columns,i) {
-    let tr = document.createElement("tr");
-    if (i % 2 > 0) {
-        tr.className = "alt-line";
-        //单数行
-    }
-    tr.onclick = function () {
-        if (this.getElementsByClassName("check")[0].checked == true)
-            this.getElementsByClassName("check")[0].removeAttribute("checked");
-        else
-            this.getElementsByClassName("check")[0].setAttribute("checked", "checked");
-    };
-    let td = document.createElement("td");
-    let check = document.createElement("input");
-    check.type = "checkbox";
-    check.className = "check";
-    check.style.width = "32px";
-    td.appendChild(check);
-    tr.appendChild(td);
-
-    td = document.createElement("td");
-    td.style.width = "32px";
-    td.style.textAlign = "center";
-    let cols = document.createElement("select");
-    cols.type = "select";
-    cols.className = "subtotal_object";
-    for (let c = 0; c < columns.length; c++) {
-        cols.options.add(new Option(columns[c], columns[c]));
-    }
-    td.appendChild(cols);
-    tr.appendChild(td);
-
-    td = document.createElement("td");
-    let ways = document.createElement("select");
-    ways.type = "select";
-    ways.className = "subtotal_type";
-    let methods = [
-        {name:"计数",value:"COUNT"},
-        {name:"数字计数",value:"NUMCOUNT"},
-        {name:"求和",value:"SUM"},
-        {name:"最小值",value:"MIN"},
-        {name:"最大值",value:"MAX"},
-        {name:"算术平均",value:"AVERAGE"},
-        {name:"中位数",value:"MEDIAN"},
-        {name:"方差",value:"VARIANCE"},
-        {name:"标准差",value:"STDEV"},
-        {name:"标准误差",value:"STERR"},
-        {name:"全距",value:"RANGE"}
-        ];
-    for (let c = 0; c < methods.length; c++) {
-        ways.options.add(new Option(methods[c].name, methods[c].value));
-    }
-    tr.appendChild(td);
-    td.appendChild(ways);
-    return tr;
-}
-
-function getParamDialog(titles, sql) {
-    let reg = new RegExp(/\{[\[\]\:\,\;\-\"\'a-zA-Z0-9\u4e00-\u9fa5]+\}/, "g");
-    let params = sql.match(reg);
-    if (params != null) {
-        //参数去重
-        let temp = [];
-        for (let i = 0; i < params.length; i++) {
-            if (temp.indexOf(params[i]) === -1)
-                temp.push(params[i]);
-        }
-        params = temp.slice(0);
-
-        let container = document.createElement("div");
-        container.id = container.className = "sql-param-dialog";
-
-        let title = document.createElement("div");
-        title.className = "container-title";
-        let span = document.createElement("span");
-        span.className = span.id = "sql-param-title";
-        span.innerHTML = (titles == null ? "●" : "● " + titles.split("_")[0]);
-        if (titles != null) {
-            if (titles.split("_").length > 1)
-                span.title = titles.split("_").join("\n● ");
-        }
-        title.appendChild(span);
-        let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
-        close.className = "container-close";
-        title.appendChild(close);
-        container.appendChild(title);
-
-        let hr = document.createElement("hr");
-        container.appendChild(hr);
-
-        for (let i = 0; i < params.length; i++) {
-            let item = document.createElement("div");
-            item.className = "sql-param-dialog-item";
-            container.appendChild(item);
-
-            let param = params[i].toString().substring(params[i].indexOf("{") + 1, params[i].indexOf("}"));
-
-            let itemname = document.createElement("span");
-            itemname.className = "sql-param-dialog-name";
-            itemname.innerHTML = param + " : ";
-            item.appendChild(itemname);
-
-            let itemvalue = document.createElement("input");
-            itemvalue.className = "sql-param-dialog-value";
-            itemvalue.setAttribute("param", param);
-            if (typeof __SQLEDITOR__.parameter[param] != "undefined")
-                itemvalue.value = __SQLEDITOR__.parameter[param];
-            item.appendChild(itemvalue);
-        }
-
-        let br = document.createElement("hr");
-        br.className = "br";
-        container.appendChild(br);
-
-        let tool = document.createElement("div");
-        tool.className = "groupbar";
-        container.appendChild(tool);
-
-        let confirm = document.createElement("div");
-        confirm.className = "button";
-        confirm.innerText = "确定";
-        confirm.onclick = function () {
-            let param = {};
-            let params = document.getElementsByClassName("sql-param-dialog-value");
-            for (let i = 0; i < params.length; i++) {
-                if (params[i].value != null)
-                    param[params[i].getAttribute("param")] = params[i].value;
-            }
-            __SQLEDITOR__.parameter = param;
-            if (__SQLEDITOR__.title != null) {
-                let title = __SQLEDITOR__.title;
-                if (__SQLEDITOR__.options.mode == "text/x-sqlite")
-                    execute(title);
-                if (__SQLEDITOR__.options.mode == "text/javascript")
-                    executeFunction(title)
-            } else {
-                UI.prompt.show("输入", {"集合名称": ""}, "auto", function (args, values) {
-                    let title = __SQLEDITOR__.title = $("execute-sql").getElementsByTagName("img")[0].title = values["集合名称"];
-                    if (__SQLEDITOR__.options.mode == "text/x-sqlite")
-                        execute(title);
-                    if (__SQLEDITOR__.options.mode == "text/javascript")
-                        executeFunction(title);
-                }, {})
-            }
-            $("sql-param-dialog").parentNode.removeChild($("sql-param-dialog"));
-        };
-        tool.appendChild(confirm);
-
-        let cancel = document.createElement("div");
-        cancel.className = "button";
-        cancel.innerText = "退出";
-        cancel.onclick = close.onclick = function () {
-            $("sql-param-dialog").parentNode.removeChild($("sql-param-dialog"));
-        };
-        tool.appendChild(cancel);
-
-        setDialogDrag(title);
-
-        return container;
-    } else {
-        return null
-    }
-}
-
-function getDataSlice() {
-    function getGroups(setid, start, end, groupby) {
-        let data = __DATASET__.result[setid].data;
-        let groups = [];
-        for (let i = 0; i < data.length; i++) {
-            if (i >= start && i <= end) {
-                let row = data[i];
-                let ex = false;
-                for (let t = 0; t < groups.length; t++) {
-                    if (groups[t] === row[groupby].value) {
-                        ex = true;
-                        break;
-                    }
-                }
-                if (ex == false) {
-                    groups.push(row[groupby].value);
-                }
-            }
-        }
-        return groups;
-    }
-
-    function dataSlice(setid, cols, begin, end, groupby, groupvalue) {
-        let columns = __DATASET__.result[setid].columns;
-        let sql = __DATASET__.result[setid].sql;
-        let title = __DATASET__.result[setid].title.slice();
-        let type = __DATASET__.result[setid].type;
-        if (groupvalue != null)
-            title.push(groupvalue);
-        //else
-        //    title.push("result of data slicing");
-        let parameter = __DATASET__.result[setid].parameter;
-        let col_tmp = [];
-        let id = 0;
-        for (let i = 0; i < cols.length; i++) {
-            if (cols[i].checked == true) {
-                for (let c = 0; c < columns.length; c++) {
-                    if (cols[i].name == columns[c].name) {
-                        let col = columns[c];
-                        col.id = id;
-                        col_tmp.push(col);
-                        break;
-                    }
-                }
-                id++;
-            }
-        }
-        let rowid = 0;
-        let data = __DATASET__.result[setid].data;
-        let dataset = [];
-        for (let i = 0; i <= data.length; i++) {
-            let row = data[i];
-            if (i >= begin && i <= end) {
-                let r = {};
-                for (let c = 0; c < col_tmp.length; c++) {
-                    let cell = row[col_tmp[c].name];
-                    cell.rowid = rowid;
-                    cell.colid = col_tmp[c].id;
-                    r[col_tmp[c].name] = cell;
-                }
-                if (groupby == "none") {
-                    dataset.push(r);
-                    rowid++;
-                } else {
-                    if (row[groupby].value == groupvalue) {
-                        dataset.push(r);
-                        rowid++;
-                    }
-                }
-            }
-        }
-        __DATASET__.result.push({
-            eventid: getEventIndex(),
-            title: title,
-            sql: sql,
-            type: type,
-            parameter: parameter,
-            columns: col_tmp,
-            data: dataset,
-            time: getNow()
-        });
-    }
-
-    let container = document.createElement("div");
-    container.id = "data-slice-Content";
-    container.className = "data-slice-Content";
-    let title = document.createElement("div");
-    title.className = "container-title";
-    let span = document.createElement("span");
-    span.innerHTML = "● 数据切片";
-    title.appendChild(span);
-    let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
-    close.className = "container-close";
-    title.appendChild(close);
-    container.appendChild(title);
-
-    let hr = document.createElement("hr");
-    container.appendChild(hr);
-
-    let tableContent =document.createElement("div");
-    tableContent.className = "scroll-Content";
-    container.appendChild(tableContent);
-
-    let table = document.createElement("table");
-    tableContent.appendChild(table);
-    table.id = "data-slice-table";
-    table.className = "table";
-    table.style.width = "100%";
-    table.style.tableLayout = "fixed";
-
-    table.innerText = "";
-    let tr = document.createElement("tr");
-    tr.className = "tr";
-    table.appendChild(tr);
-    let th = document.createElement("th");
-    th.className = "th";
-    th.style.width = "32px";
-    let check = document.createElement("input");
-    check.type = "checkbox";
-    check.className = "file-checkall";
-    check.style.width = "18px";
-    check.onclick = function(){
-        let columns = $("data-slice-table").getElementsByClassName("data-slice-column-check");
-        for (let i=0;i<columns.length;i++){
-            columns[i].checked = this.checked;
-            this.checked?columns[i].setAttribute("checked", "checked"):columns[i].removeAttribute("checked");
-        }
-    };
-    th.style.textAlign = "center";
-    th.appendChild(check);
-    tr.appendChild(th);
-    th = document.createElement("th");
-    th.className = "th";
-    th.innerText = "切片字段";
-    tr.appendChild(th);
-    let columns = __DATASET__.result[__DATASET__.default.sheet].columns;
-    for (let i = 0; i < columns.length; i++) {
-        tr = document.createElement("tr");
-        if (i % 2 > 0) {
-            tr.className = "alt-line";
-            //单数行
-        }
-        table.appendChild(tr);
-
-        tr.onclick = function () {
-            if (this.getElementsByClassName("data-slice-column-check")[0].checked == true)
-                this.getElementsByClassName("data-slice-column-check")[0].removeAttribute("checked");
-            else
-                this.getElementsByClassName("data-slice-column-check")[0].setAttribute("checked", "checked");
-        };
-
-        let td = document.createElement("td");
-        let check = document.createElement("input");
-        check.type = "checkbox";
-        check.className = "data-slice-column-check";
-        check.style.width = "18px";
-        check.setAttribute("name", columns[i].name);
-        td.style.textAlign = "center";
-        td.appendChild(check);
-        tr.appendChild(td);
-
-        td = document.createElement("td");
-        td.style.width = "36px";
-        td.style.textAlign = "center";
-        td.innerText = columns[i].name;
-        tr.appendChild(td);
-    }
-
-    let d = document.createElement("div");
-    container.appendChild(d);
-    span = document.createElement("span");
-    span.innerText = "切片范围 : [";
-    d.appendChild(span);
-    let range_begin = document.createElement("input");
-    range_begin.id = "data-slice-range-begin";
-    range_begin.style.width = "50px";
-    range_begin.style.textAlign = "center";
-    range_begin.value = 1;
-    d.appendChild(range_begin);
-    span = document.createElement("span");
-    span.innerText = " - ";
-    d.appendChild(span);
-    let range_end = document.createElement("input");
-    range_end.id = "data-slice-range-end";
-    range_end.style.width = "50px";
-    range_end.style.textAlign = "center";
-    range_end.value = __DATASET__.result[__DATASET__.default.sheet].data.length;
-    d.appendChild(range_end);
-    span = document.createElement("span");
-    span.innerText = "] 分组 : ";
-    d.appendChild(span);
-    let groupBy = document.createElement("select");
-    groupBy.id = "data-slice-groupby";
-    groupBy.style.width = "100px";
-    groupBy.options.add(new Option("不分组", "none"));
-    for (let i = 0; i < columns.length; i++) {
-        groupBy.options.add(new Option(columns[i].name, columns[i].name));
-    }
-    d.appendChild(groupBy);
-
-    let br = document.createElement("hr");
-    br.className = "br";
-    container.appendChild(br);
-
-    let tool = document.createElement("div");
-    tool.className = "groupbar";
-    container.appendChild(tool);
-    let confirm = document.createElement("div");
-    confirm.className = "button";
-    confirm.innerText = "确定";
-    confirm.onclick = function () {
-        let cols = $("data-slice-table").getElementsByClassName("data-slice-column-check");
-        let begin = Number($("data-slice-range-begin").value) - 1;
-        let end = Number($("data-slice-range-end").value) - 1;
-        let groupby = $("data-slice-groupby").value;
-        let groups = [];
-        let setid = __DATASET__.default.sheet;
-        if (groupby != "none"){
-            groups = getGroups(setid, begin, end, groupby);
-        }
-        if (groups.length>0) {
-            for (let g = 0; g < groups.length; g++) {
-                dataSlice(setid, cols,begin,end, groupby ,groups[g]);
-            }
-        } else
-            dataSlice(setid, cols, begin, end, "none", null);
-
-        if (__DATASET__.result.length > 0) {
-            viewDataset(__DATASET__.result.length - 1, 0);
-        }
-        $("data-slice-Content").parentNode.removeChild($("data-slice-Content"));
-    };
-    tool.appendChild(confirm);
-
-    let cancel = document.createElement("div");
-    cancel.className = "button";
-    cancel.innerText = "退出";
-    cancel.onclick = close.onclick = function () {
-        $("data-slice-Content").parentNode.removeChild($("data-slice-Content"));
-    };
-    tool.appendChild(cancel);
-
-    setDialogDrag(title);
-
-    return container;
-}
-
-function getDataFilter(colid) {
-    let columns = __DATASET__.result[__DATASET__.default.sheet].columns;
-    let data = __DATASET__.result[__DATASET__.default.sheet].data;
-
-    let container = document.createElement("div");
-    container.id = "data-filter-Content";
-    container.className = "data-filter-Content";
-    let title = document.createElement("div");
-    title.className = "container-title";
-    let span = document.createElement("span");
-    span.innerHTML = "● 筛选字段 [ " + columns[Number(colid)].name + " ]";
-    title.appendChild(span);
-    let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
-    close.className = "container-close";
-    title.appendChild(close);
-    container.appendChild(title);
-
-    let hr = document.createElement("hr");
-    container.appendChild(hr);
-
-    let tableContent =document.createElement("div");
-    tableContent.className = "scroll-Content";
-    container.appendChild(tableContent);
-
-    let table = document.createElement("table");
-    tableContent.appendChild(table);
-    table.id = "data-filter-table";
-    table.className = "table";
-    table.style.width = "100%";
-    table.style.tableLayout = "fixed";
-
-    table.innerText = "";
-    let tr = document.createElement("tr");
-    tr.className = "tr";
-    table.appendChild(tr);
-    let th = document.createElement("th");
-    th.className = "th";
-    th.style.width = "32px";
-    let check = document.createElement("input");
-    check.type = "checkbox";
-    check.className = "file-checkall";
-    check.style.width = "18px";
-    check.onclick = function(){
-        let filters = $("data-filter-table").getElementsByClassName("data-filter-check");
-        for (let i=0;i<filters.length;i++){
-            filters[i].checked = this.checked;
-            this.checked?filters[i].setAttribute("checked", "checked"):filters[i].removeAttribute("checked");
-        }
-    };
-    th.style.textAlign = "center";
-    th.appendChild(check);
-    tr.appendChild(th);
-    th = document.createElement("th");
-    th.className = "th";
-    th.innerText = "筛选条件";
-    tr.appendChild(th);
-
-    let values = [];
-    for (let i = 0; i < data.length; i++) {
-        let row = data[i];
-        let value = row[columns[Number(colid)].name].value;
-        let is = false;
-        for(let v=0;v<values.length;v++){
-            if (value == values[v]) {
-                is = true;
-                break;
-            }
-        }
-        if (is == false)
-            values.push(value);
-    }
-
-    values = sortAsc(values);
-
-    for (let i = 0; i < values.length; i++) {
-        tr = document.createElement("tr");
-        if (i % 2 > 0) {
-            tr.className = "alt-line";
-            //单数行
-        }
-        table.appendChild(tr);
-
-        tr.onclick = function () {
-            if (this.getElementsByClassName("data-filter-check")[0].checked == true)
-                this.getElementsByClassName("data-filter-check")[0].removeAttribute("checked");
-            else
-                this.getElementsByClassName("data-filter-check")[0].setAttribute("checked", "checked");
-        };
-
-        let td = document.createElement("td");
-        let check = document.createElement("input");
-        check.type = "checkbox";
-        check.className = "data-filter-check";
-        check.style.width = "18px";
-        check.setAttribute("value", values[i]);
-        td.style.textAlign = "center";
-        td.appendChild(check);
-        tr.appendChild(td);
-
-        td = document.createElement("td");
-        td.style.width = "36px";
-        td.style.textAlign = "center";
-        td.innerText = values[i];
-        tr.appendChild(td);
-    }
-
-    let br = document.createElement("hr");
-    br.className = "br";
-    container.appendChild(br);
-
-    let tool = document.createElement("div");
-    tool.className = "groupbar";
-    container.appendChild(tool);
-
-    let checknone = document.createElement("div");
-    checknone.className = "button";
-    checknone.innerText = "反选";
-    checknone.onclick = function(){
-        let filters = $("data-filter-table").getElementsByClassName("data-filter-check");
-        for (let i=0;i<filters.length;i++){
-            if (filters[i].checked) {
-                filters[i].checked = false;
-                filters[i].removeAttribute("checked");
-            } else {
-                filters[i].checked = true;
-                filters[i].setAttribute("checked","checked");
-            }
-        }
-    };
-    tool.appendChild(checknone);
-
-    let confirm = document.createElement("div");
-    confirm.className = "button";
-    confirm.innerText = "确定";
-    confirm.onclick = function() {
-        let values = [];
-        let filters = $("data-filter-table").getElementsByClassName("data-filter-check");
-        for (let i=0;i<filters.length;i++){
-            if (filters[i].checked == true)
-                values.push(filters[i].getAttribute("value"))
-        }
-        let columns = __DATASET__.result[__DATASET__.default.sheet].columns;
-        let dataset = [];
-
-        let rowid = 0;
-        let data = __DATASET__.result[__DATASET__.default.sheet].data;
-        let title =  __DATASET__.result[__DATASET__.default.sheet].title;
-        let sql = __DATASET__.result[__DATASET__.default.sheet].sql;
-        let type = __DATASET__.result[__DATASET__.default.sheet].type;
-        let parameter = __DATASET__.result[__DATASET__.default.sheet].parameter;
-        let column = columns[Number(colid)].name;
-        for (let i=0; i<data.length;i++) {
-            let row = data[i];
-            for (let v=0;v<values.length;v++){
-                if (row[column].value == values[v]){
-                    let r ={};
-                    for(let col in row){
-                        let cell = row[col];
-                        cell.rowid = rowid;
-                        r[col] = cell;
-                    }
-                    dataset.push(r);
-                    rowid ++;
-                    break;
-                }
-            }
-        }
-        //title.push("result of Data filter");
-        __DATASET__.result.push({
-            eventid: getEventIndex(),
-            title: title,
-            sql: sql,
-            type: type,
-            parameter: parameter,
-            columns: columns,
-            data: dataset,
-            time: getNow()
-        });
-        if (__DATASET__.result.length > 0) {
-            viewDataset(__DATASET__.result.length - 1, 0);
-        }
-
-        $("data-filter-Content").parentNode.removeChild($("data-filter-Content"));
-    };
-    tool.appendChild(confirm);
-
-    let cancel = document.createElement("div");
-    cancel.className = "button";
-    cancel.innerText = "退出";
-    cancel.onclick = close.onclick = function () {
-        $("data-filter-Content").parentNode.removeChild($("data-filter-Content"));
-    };
-    tool.appendChild(cancel);
-
-    setDialogDrag(title);
-
-    return container;
-}
 
 function getColumnMenu(colid) {
     let ul = document.createElement("ul");
@@ -5569,177 +3908,6 @@ function getColumnMenu(colid) {
     ul.appendChild(li);
 
     return ul;
-}
-
-function getFormat(colid) {
-    let columns = __DATASET__.result[__DATASET__.default.sheet].columns;
-    let style = {};
-    try {
-        style = __DATASET__.result[__DATASET__.default.sheet].data[0][columns[Number(colid)].name].style;
-    }catch (e) {
-    }
-
-    let container = document.createElement("div");
-    container.id = "table-data-format";
-    container.className = "table-data-format";
-    let title = document.createElement("div");
-    title.className = "container-title";
-    let span = document.createElement("span");
-    span.innerHTML = "● 格式设置 [ " + columns[Number(colid)].name + " ]";
-    title.appendChild(span);
-    let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
-    close.className = "container-close";
-    title.appendChild(close);
-    container.appendChild(title);
-
-    let hr = document.createElement("hr");
-    container.appendChild(hr);
-
-    let items = document.createElement("div");
-    items.className = "scroll-Content";
-    container.appendChild(items);
-
-    let item = document.createElement("div");
-    item.className = "table-data-format-item";
-    items.appendChild(item);
-    let name = document.createElement("span");
-    name.innerText = "对齐 : ";
-    item.appendChild(name);
-    let param = document.createElement("select");
-    param.className = "format-set";
-    param.id = "text-align";
-    let methods = [
-        {name: "左对齐", value: "left"},
-        {name: "居中", value: "center"},
-        {name: "右对齐", value: "right"}
-    ];
-    for (let c = 0; c < methods.length; c++) {
-        param.options.add(new Option(methods[c].name, methods[c].value));
-    }
-    param.value = style[param.id];
-    item.appendChild(param);
-
-    item = document.createElement("div");
-    item.className = "table-data-format-item";
-    items.appendChild(item);
-    name = document.createElement("span");
-    name.innerText = "颜色 : ";
-    item.appendChild(name);
-    param = document.createElement("input");
-    param.className = "format-set";
-    param.id = "color";
-    param.type = "color";
-    param.value = style[param.id];
-    item.appendChild(param);
-    items.appendChild(item);
-
-    item = document.createElement("div");
-    item.className = "table-data-format-item";
-    items.appendChild(item);
-    name = document.createElement("span");
-    name.innerText = "字号 : ";
-    item.appendChild(name);
-    param = document.createElement("select");
-    param.className = "format-set";
-    param.id = "font-size";
-    methods = [
-        {name: "100%", value: "100%"},
-        {name: "110%", value: "110%"},
-        {name: "120%", value: "120%"},
-        {name: "130%", value: "130%"},
-        {name: "140%", value: "140%"},
-        {name: "150%", value: "150%"}
-    ];
-    for (let c = 0; c < methods.length; c++) {
-        param.options.add(new Option(methods[c].name, methods[c].value));
-    }
-    param.value = style[param.id];
-    item.appendChild(param);
-    items.appendChild(item);
-
-    item = document.createElement("div");
-    item.className = "table-data-format-item";
-    items.appendChild(item);
-    name = document.createElement("span");
-    name.innerText = "样式 : ";
-    item.appendChild(name);
-    param = document.createElement("select");
-    param.className = "format-set";
-    param.id = "font-style";
-    methods = [
-        {name: "正常", value: "normal"},
-        {name: "斜体", value: "italic"}
-    ];
-    for (let c = 0; c < methods.length; c++) {
-        param.options.add(new Option(methods[c].name, methods[c].value));
-    }
-    param.value = style[param.id];
-    item.appendChild(param);
-    items.appendChild(item);
-
-    item = document.createElement("div");
-    item.className = "table-data-format-item";
-    items.appendChild(item);
-    name = document.createElement("span");
-    name.innerText = "加粗 : ";
-    item.appendChild(name);
-    param = document.createElement("select");
-    param.className = "format-set";
-    param.id = "font-weight";
-    methods = [
-        {name: "normal", value: "normal"},
-        {name: "lighter", value: "lighter"},
-        {name: "bold", value: "bold"},
-        {name: "bolder", value: "bolder"}
-    ];
-    for (let c = 0; c < methods.length; c++) {
-        param.options.add(new Option(methods[c].name, methods[c].value));
-    }
-    param.value = style[param.id];
-    item.appendChild(param);
-    items.appendChild(item);
-
-    let br = document.createElement("hr");
-    br.className = "br";
-    container.appendChild(br);
-
-    let tool = document.createElement("div");
-    tool.className = "groupbar";
-    container.appendChild(tool);
-
-    let confirm = document.createElement("div");
-    confirm.className = "button";
-    confirm.innerText = "确定";
-    confirm.onclick = function() {
-        let param = $("table-data-format").getElementsByClassName("format-set");
-        let format = {};
-        for(let i=0;i<param.length;i++){
-            format[param[i].id] = param[i].value;
-        }
-        let data = __DATASET__.result[__DATASET__.default.sheet].data;
-        for(let i =0;i<data.length;i++){
-            let row = data[i]
-            for (let col in row){
-                if (row[col].colid == Number(colid))
-                    row[col].style = format;
-            }
-        }
-        viewDataset(__DATASET__.default.sheet);
-        $("table-data-format").parentNode.removeChild($("table-data-format"));
-    };
-    tool.appendChild(confirm);
-
-    let cancel = document.createElement("div");
-    cancel.className = "button";
-    cancel.innerText = "退出";
-    cancel.onclick = close.onclick = function () {
-        $("table-data-format").parentNode.removeChild($("table-data-format"));
-    };
-    tool.appendChild(cancel);
-
-    setDialogDrag(title);
-
-    return container;
 }
 
 function setTooltip(parent, text) {
@@ -5822,8 +3990,7 @@ function setPageThemes() {
         let mapconfig = $("help-local-map-config");
         let localmap = $("help-local-map");
         mapconfig.onclick = localmap.onclick = function () {
-            let config = geoCoordMap.getMapConfig();
-            setCenterPosition($("page"), config);
+            geoCoordMap.setMapConfig("auto");
         }
         __LOGS__.viewMessage(message + "OK.");
     }catch (e) {
@@ -6406,23 +4573,39 @@ function setDataPageTools(index) {
 }
 
 
-function getImageBase64Code() {
-    let container = document.createElement("div");
-    container.id = "image-base64-code";
-    container.className = "table-data-format";
-    container.style.width = "600px";
+function getImageBase64Code(parent) {
+    if (parent == "auto" || parent == null) {
+            if (document.fullscreen && typeof __CONFIGS__.fullScreen.element == "object") {
+                parent = __CONFIGS__.fullScreen.element;
+            } else {
+                parent = document.body;
+            }
+        }
+
+        let container = document.createElement("div");
+        container.id = "ui_imageBase";
+        container.className = "ui-container-background";
+        parent.appendChild(container);
+
+    let content = document.createElement("div");
+    content.id = "image-base64-code";
+    content.className = "ui-container-body";
+    content.style.width = "600px";
+    container.appendChild(content);
+
     let title = document.createElement("div");
-    title.className = "container-title";
+    title.className = "ui-container-title";
     let span = document.createElement("span");
     span.innerHTML = "● 设置背景";
     title.appendChild(span);
     let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
-    close.className = "container-close";
+    close.className = "ui-container-close";
     title.appendChild(close);
-    container.appendChild(title);
+    content.appendChild(title);
 
     let hr = document.createElement("hr");
-    container.appendChild(hr);
+        hr.className = "ui-container-hr";
+        content.appendChild(hr);
 
     let tabtools = document.createElement("div");
     tabtools.className = "tabToolbar";
@@ -6453,7 +4636,7 @@ function getImageBase64Code() {
         this.style.background = "var(--toolbar-button-hover-background-color)";
     };
     tabtools.appendChild(b);
-    container.appendChild(tabtools);
+    content.appendChild(tabtools);
 
     let source = document.createElement("input");
     source.type = "file";
@@ -6507,14 +4690,14 @@ function getImageBase64Code() {
         } else
             $("image-container").innerHTML = "";
     };
-    container.appendChild(source);
+    content.appendChild(source);
 
     let filecontainer = document.createElement("div");
     filecontainer.className = "tabToolbar-content-container";
     filecontainer.id = "image-container";
     filecontainer.style.width = "100%";
     filecontainer.style.height = "370.8px";
-    container.appendChild(filecontainer);
+    content.appendChild(filecontainer);
 
     let imagecode = document.createElement("textarea");
     imagecode.id = "source-image-file-code";
@@ -6524,15 +4707,15 @@ function getImageBase64Code() {
         "display: none;" +
         "font-size: 90%;\n";
     imagecode.type = "textarea";
-    container.appendChild(imagecode);
+    content.appendChild(imagecode);
 
     let br = document.createElement("hr");
     br.className = "br";
-    container.appendChild(br);
+    content.appendChild(br);
 
     let tool = document.createElement("div");
     tool.className = "groupbar";
-    container.appendChild(tool);
+    content.appendChild(tool);
 
     let show = document.createElement("div");
     show.className = "button";
@@ -6671,13 +4854,10 @@ function getImageBase64Code() {
     cancel.innerText = "退出";
     cancel.onclick = close.onclick = function () {
         // document.removeEventListener('copy', handler);   // 移除copy监听，不产生影响
-        $("image-base64-code").parentNode.removeChild($("image-base64-code"));
+        parent.removeChild($("ui_imageBase"));
     };
     tool.appendChild(cancel);
-
     setDialogDrag(title);
-
-    return container;
 }
 
 function  setClipboardListener(target) {

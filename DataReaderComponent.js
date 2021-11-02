@@ -16,10 +16,10 @@ const __DATA_READER__ = {
 
 function getReadProgress() {
     let container = document.createElement("div");
-    container.id = "progress";
+    container.id = "ui-progress";
     let v = document.createElement("div");
     container.appendChild(v);
-    v.id = "progress-value";
+    v.id = "ui-progress-value";
     __DATA_READER__.SourceFile.progress = setInterval(function () {
         Timer();
     }, 50);
@@ -27,7 +27,7 @@ function getReadProgress() {
     function Timer() {
         try {
             let value = __DATA_READER__.SourceFile.count / __DATA_READER__.SourceFile.total;
-            let v = $("progress-value");
+            let v = $("ui-progress-value");
             v.style.width = (value * 100) + "%";
             v.innerText = __DATA_READER__.SourceFile.count + " / " + __DATA_READER__.SourceFile.total;
             if (value == 1)
@@ -43,8 +43,8 @@ function getReadProgress() {
     return container;
 }
 
-function getDataReaderContent() {
-    function readExcelFile(file) {
+function getDataReader(parent, callback) {
+    function readExcelFile(file, sheets) {
         function fixData(data) {
             //文件流转BinaryString
             let tmp = "";
@@ -66,15 +66,14 @@ function getDataReaderContent() {
                 workbook = XLSX.read(btoa(fixData(data)), {type: "base64"});
             }
             let sheetNames = workbook.SheetNames;
-            let selectDataSet = $("Selected");
             for (let i = 0; i < sheetNames.length; i++) {
                 let worksheet = workbook.Sheets[sheetNames[i]];
                 let csv = XLSX.utils.sheet_to_csv(worksheet);
                 __DATA_READER__.SourceFile.data.push(csv);
-                selectDataSet.options.add(new Option(sheetNames[i], i));
+                sheets.options.add(new Option(sheetNames[i], i));
                 //return csv;
             }
-            __DATA_READER__.Selected.value = selectDataSet.selectedIndex = 0;
+            __DATA_READER__.Selected.value = sheets.selectedIndex = 0;
         };
         try {
             reader.readAsBinaryString(file);
@@ -87,34 +86,51 @@ function getDataReaderContent() {
     __DATA_READER__.SourceFile.count = 0;
     __DATA_READER__.SourceFile.total = 0;
 
+    if (parent == "auto" || parent == null) {
+        if (document.fullscreen && typeof __CONFIGS__.fullScreen.element == "object") {
+            parent = __CONFIGS__.fullScreen.element;
+        } else {
+            parent = document.body;
+        }
+    }
+
     let container = document.createElement("div");
-    container.type = "div";
-    container.className = container.id = "import-configs-content";
+    container.id = "ui_dataReader";
+    container.className = "ui-container-background";
+    parent.appendChild(container);
+
+    let content = document.createElement("div");
+    content.type = "div";
+    content.id = "import-configs-content";
+    content.className = "ui-container-body"
+    container.appendChild(content);
+
     let title = document.createElement("div");
-    title.className = "container-title";
+    title.className = "ui-container-title";
     let span = document.createElement("span");
     span.innerHTML = "● 读取外部数据";
     title.appendChild(span);
     let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
-    close.className = "container-close";
+    close.className = "ui-container-close";
     title.appendChild(close);
-    container.appendChild(title);
+    content.appendChild(title);
 
     let hr = document.createElement("hr");
-    container.appendChild(hr);
+    hr.className = "ui-container-hr";
+    content.appendChild(hr);
 
     for (let name in __DATA_READER__) {
         let item = document.createElement("div");
-        item.className = "import-configs-item";
-        container.appendChild(item);
+        item.className = "ui-container-item";
+        content.appendChild(item);
         let itemname = document.createElement("span");
-        itemname.className = "import-configs-name";
+        itemname.className = "ui-container-item-name";
         itemname.innerHTML = __DATA_READER__[name].name + " : ";
         item.appendChild(itemname);
         let itemvalue = null;
         if (name == "Charset" || name == "Separator" || name == "Selected") {
             itemvalue = document.createElement("select");
-            itemvalue.className = "import-configs-value";
+            itemvalue.className = "ui-container-item-select";
             itemvalue.id = name;
             for (let i = 0; i < __DATA_READER__[name].options.length; i++) {
                 if (isArray(__DATA_READER__[name].options[i]))
@@ -128,7 +144,7 @@ function getDataReaderContent() {
             };
         } else if (name == "SourceFile") {
             itemvalue = document.createElement("input");
-            itemvalue.className = "import-configs-value";
+            itemvalue.className = "ui-container-item-input";
             itemvalue.id = name;
             itemvalue.type = __DATA_READER__[name].type;
             if (itemvalue.type == "file") {
@@ -153,7 +169,7 @@ function getDataReaderContent() {
                                 };
                                 reader.readAsText(file, __DATA_READER__.Charset.options[__DATA_READER__.Charset.value]);
                             } else if (filetype.toUpperCase() == "XLS" || filetype.toUpperCase() == "XLSX") {
-                                readExcelFile(file);
+                                readExcelFile(file, selectDataSet);
                             } else {
                                 UI.alert.show("提示", "仅适用于XLSX、XLS、TXT和CSV文件。");
                                 return;
@@ -162,7 +178,7 @@ function getDataReaderContent() {
                             UI.alert.show("提示", "请选择需要读取的文件.")
                         }
                     } else {
-                        UI.alert.show("注意", "本应用适用于Chrome或Edge浏览器。")
+                        UI.alert.show("提示", "本应用适用于Chrome或Edge浏览器。")
                     }
                 };
             }
@@ -171,18 +187,18 @@ function getDataReaderContent() {
     }
 
     let progress = document.createElement("div");
-    progress.id = "progress-container";
-    container.appendChild(progress);
+    progress.id = "ui-progress-container";
+    content.appendChild(progress);
 
-    let br = document.createElement("hr");
-    br.className = "br";
-    container.appendChild(br);
+    hr = document.createElement("hr");
+    hr.className = "ui-container-hr";
+    content.appendChild(hr);
 
     let tool = document.createElement("div");
     tool.className = "groupbar";
     tool.style.cssFloat = "left";
     tool.style.width = "100%";
-    container.appendChild(tool);
+    content.appendChild(tool);
 
     let b = document.createElement("a");
     b.className = "button";
@@ -190,10 +206,10 @@ function getDataReaderContent() {
     b.innerHTML = "读取";
     b.onclick = function () {
         if ($("Selected").length > 0) {
-            $("progress-container").appendChild(getReadProgress());
-            readData();
+            $("ui-progress-container").appendChild(getReadProgress());
+            callback(readData());
         } else
-            UI.alert.show("提示","请选择需要读取的文件及数据集合.");
+            UI.alert.show("提示", "请选择需要读取的文件及数据集合.");
     };
     tool.appendChild(b);
 
@@ -201,14 +217,11 @@ function getDataReaderContent() {
     b.className = "button";
     b.innerHTML = "退出";
     b.onclick = close.onclick = function () {
-        let container = $("import-configs-content");
-        container.parentNode.removeChild(container);
+        parent.removeChild($("ui_dataReader"));
     };
     tool.appendChild(b);
 
     setDialogDrag(title);
-
-    return container;
 }
 
 function checkColumnName(columns, name, count) {
@@ -340,7 +353,7 @@ function readData() {
                 data.push(row);
             }
         }
-        __DATASET__.result.push({
+        return {
             eventid: getEventIndex(),
             title: [__DATA_READER__.SourceFile.value.split(".")[0], sheetName],
             sql: __DATA_READER__.SourceFile.value + ":" + sheetName,
@@ -349,12 +362,8 @@ function readData() {
             columns: columns,
             data: data,
             time: getNow()
-        });
-
-        if (__DATASET__.result.length > 0) {
-            viewDataset(__DATASET__.result.length - 1, 0);
-        }
+        };
     } catch (e) {
-        UI.alert.show("注意", e);
+        __LOGS__.viewError("auto", e);
     }
 }

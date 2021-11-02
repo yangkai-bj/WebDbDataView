@@ -1,5 +1,5 @@
 
-function getFileSecurity() {
+function getFileSecurity(parent) {
     function sleep(delay) {
         let endTime = new Date().getTime() + parseInt(delay);
         while (new Date().getTime() < endTime) ;
@@ -413,8 +413,8 @@ function getFileSecurity() {
             td.style.width = "36px";
             td.style.textAlign = "center";
             td.innerText = "";
-            td.onclick = function(){
-                if (this.getAttribute("de-infs")!="undefined") {
+            td.onclick = function () {
+                if (this.getAttribute("de-infs") != "undefined") {
                     let js = JSON.parse(this.getAttribute("en-de-infors"));
                     $("infor-container").innerHTML = "";
                     $("infor-container").appendChild(viewInfors(js));
@@ -516,24 +516,39 @@ function getFileSecurity() {
     }
 
     let container = document.createElement("div");
-    container.id = "file-encrypt-decrypt";
-    container.className = "table-data-format";
-    container.style.width = "600px";
+    container.id = "ui_fileSecurity";
+    container.className = "ui-container-background";
+    if (parent === "auto" || parent == null || typeof parent == "undefined") {
+        if (document.fullscreen && typeof __CONFIGS__.fullScreen.element == "object") {
+            parent = __CONFIGS__.fullScreen.element;
+        } else {
+            parent = document.body;
+        }
+    }
+    parent.appendChild(container);
+
+    let content = document.createElement("div");
+    content.id = "file-encrypt-decrypt";
+    content.className = "ui-container-body";
+    content.style.width = "600px";
+    container.appendChild(content);
+
     let title = document.createElement("div");
-    title.className = "container-title";
+    title.className = "ui-container-title";
     let span = document.createElement("span");
     span.innerHTML = "● 文件加密/解密";
     title.appendChild(span);
     let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
-    close.className = "container-close";
+    close.className = "ui-container-close";
     title.appendChild(close);
-    container.appendChild(title);
+    content.appendChild(title);
 
     let hr = document.createElement("hr");
-    container.appendChild(hr);
+    hr.className = "ui-container-hr";
+    content.appendChild(hr);
 
     let d = document.createElement("div");
-    container.appendChild(d);
+    content.appendChild(d);
     d.className = "tabToolbar";
     let b = document.createElement("a");
     b.className = "tabButton";
@@ -542,7 +557,7 @@ function getFileSecurity() {
         $("table-container").style.display = "block";
         $("infor-container").style.display = "none";
         let tb = this.parentNode.getElementsByClassName("tabButton");
-        for(let i =0;i<tb.length;i++){
+        for (let i = 0; i < tb.length; i++) {
             tb[i].style.background = "var(--toolbar-background-color)";
         }
         this.style.background = "var(--toolbar-button-hover-background-color)";
@@ -555,7 +570,7 @@ function getFileSecurity() {
         $("table-container").style.display = "none";
         $("infor-container").style.display = "block";
         let tb = this.parentNode.getElementsByClassName("tabButton");
-        for(let i =0;i<tb.length;i++){
+        for (let i = 0; i < tb.length; i++) {
             tb[i].style.background = "var(--toolbar-background-color)";
         }
         this.style.background = "var(--toolbar-button-hover-background-color)";
@@ -571,7 +586,7 @@ function getFileSecurity() {
     source.onchange = function () {
         viewFiles($("table-container"), this.files);
     };
-    container.appendChild(source);
+    content.appendChild(source);
 
     let tablecontainer = document.createElement("div");
     tablecontainer.className = "tabToolbar-content-container";
@@ -581,7 +596,7 @@ function getFileSecurity() {
         "overflow: scroll;\n" +
         "float: left;font-size:90%;";
     tablecontainer.type = "div";
-    container.appendChild(tablecontainer);
+    content.appendChild(tablecontainer);
     viewFiles(tablecontainer, source.files);
 
     let inforcontainer = document.createElement("div");
@@ -593,11 +608,11 @@ function getFileSecurity() {
         "display: none;\n" +
         "float: left;font-size:90%;";
     inforcontainer.type = "div";
-    container.appendChild(inforcontainer);
+    content.appendChild(inforcontainer);
     inforcontainer.appendChild(viewInfors([]));
 
     d = document.createElement("div");
-    container.appendChild(d);
+    content.appendChild(d);
     span = document.createElement("span");
     span.className = "http-server-datetime";
     span.id = "http-server-datetime-" + new Date().format("yyyyMMddhhmmssS");
@@ -626,13 +641,13 @@ function getFileSecurity() {
     enmode.title = "加密方式";
     d.appendChild(enmode);
 
-    // let br = document.createElement("hr");
-    // br.className = "br";
-    // container.appendChild(br);
+    hr = document.createElement("hr");
+    hr.className = "ui-container-hr";
+    content.appendChild(hr);
 
     let tool = document.createElement("div");
     tool.className = "groupbar";
-    container.appendChild(tool);
+    content.appendChild(tool);
 
     let openfiles = document.createElement("div");
     openfiles.className = "button";
@@ -642,7 +657,7 @@ function getFileSecurity() {
         $("table-container").style.display = "block";
         $("infor-container").style.display = "none";
         let tb = $("file-encrypt-decrypt").getElementsByClassName("tabButton");
-        for(let i =0;i<tb.length;i++){
+        for (let i = 0; i < tb.length; i++) {
             tb[i].style.background = "var(--toolbar-background-color)";
         }
         tb[0].style.background = "var(--toolbar-button-hover-background-color)";
@@ -766,7 +781,7 @@ function getFileSecurity() {
                 }, {});
             }
         } else {
-            UI.alert.show("提示","连接授时服务器失败,不能执行文件加密操作.");
+            UI.alert.show("提示", "连接授时服务器失败,不能执行文件加密操作.");
         }
     };
     tool.appendChild(encrypt);
@@ -952,7 +967,7 @@ function getFileSecurity() {
         $("table-container").style.display = "block";
         $("infor-container").style.display = "none";
         let tb = $("file-encrypt-decrypt").getElementsByClassName("tabButton");
-        for(let i =0;i<tb.length;i++){
+        for (let i = 0; i < tb.length; i++) {
             tb[i].style.background = "var(--toolbar-background-color)";
         }
         tb[0].style.background = "var(--toolbar-button-hover-background-color)";
@@ -1048,7 +1063,7 @@ function getFileSecurity() {
                 }, {});
             }
         } else {
-            UI.alert.show("提示","连接授时服务器失败,不能执行文件解密操作.");
+            UI.alert.show("提示", "连接授时服务器失败,不能执行文件解密操作.");
         }
     };
     tool.appendChild(decrypt);
@@ -1058,7 +1073,7 @@ function getFileSecurity() {
     cancel.innerText = "退出";
     cancel.onclick = close.onclick = function () {
         __XMLHTTP__.unhook(document.getElementsByClassName("http-server-datetime")[0]);
-        $("file-encrypt-decrypt").parentNode.removeChild($("file-encrypt-decrypt"));
+        parent.removeChild($("ui_fileSecurity"));
     };
     tool.appendChild(cancel);
 

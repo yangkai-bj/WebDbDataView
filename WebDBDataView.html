@@ -15,10 +15,7 @@
         <script type="text/javascript" src="qrcode/qrcode.js"></script>
         <script type="text/javascript" src="FunctionsComponent.js"></script>
         <script type="text/javascript" src="WebDBDataView.js"></script>
-        <script type="text/javascript" src="UI.js"></script>
-        <script type="text/javascript" src="StorageSQLDialog.js"></script>
-        <link rel="stylesheet" type="text/css" href="StorageSQLDialog.css">
-
+        <script type="text/javascript" src="UI-A.js"></script>
         <!--<script type="text/javascript" src="sheetjs/xlsx.full.min.js"></script>-->
         <!--<script type="text/javascript" src="StatisticsComponent.js"></script>-->
         <!--<script type="text/javascript" src="echarts/v5.2.1/echarts-gl.min.js"></script>-->
@@ -55,7 +52,7 @@
             <div class="header" id="header">
                 <div id="title">
                     <h1 id="main-title">Web DataView <span id = "main-version"></span><span id="sub-title">for SQLite Database of browser.</span><canvas id="time"></canvas></h1>
-                    <h6 id="link-title"><a href = 'https://gitee.com/yangkai-bj/WebDbDataView.git' target="_blank">https://gitee.com/yangkai-bj/WebDbDataView.git</a>.</h6>
+                    <h6 id="link-title"><a class = 'help-url' href = '' target="_blank"></a>.</h6>
                 </div>
             </div>
             <div class="MainContainer" id = "MainContainer">
@@ -95,7 +92,7 @@
             </div>
             <div class="footer" id="footer">
                 <dl>
-                    <li>系统采用<span>HTML5</span>和<span>JavaScript</span>技术开发，开发和测试环境使用<span>Google Chrome</span>和<span>Microsoft Edge</span>浏览器，如需了解项目更多技术细节或源代码，您可访问<span><a href = 'https://gitee.com/yangkai-bj/WebDbDataView.git' target="_blank">https://gitee.com/yangkai-bj/WebDbDataView.git</a></span>。</li>
+                    <li>系统采用<span>HTML5</span>和<span>JavaScript</span>技术开发，开发和测试环境使用<span>Google Chrome</span>和<span>Microsoft Edge</span>浏览器，如需了解项目更多技术细节或源代码，您可访问<span><a class = 'help-url' href = '' target="_blank"></a></span>。</li>
                     <li>首先，您可选择感兴趣的页面主题 <select id="help-select-user-themes"></select>和<span id="image-base64" class="clickable">背景</span>；其次，您需要<span id="help-create-database" class="clickable">创建数据库</span>、<span id="help-create-table" class="clickable">创建数据表</span>用于存储您的数据；当然，您也可以通过编辑脚本创建数据表和<span>数据视图</span>。</li>
                     <li>您可以通过编辑脚本向数据表增加数据，也可以<span id="help-import-data" class="clickable">导入外部数据</span>，支持文本文件(txt/csv)和Excel文件；如果您没有选择数据表直接导入数据，系统将通过<span>数据探针</span>技术协助您创建数据表。</li>
                     <li>如果已准备好基础数据，接下来您可以<span id="help-create-sql" class="clickable">新建脚本</span>定制您的报表，或者<span id="help-load-sql" class="clickable">导入</span>SQL文件，然后点击<span id="help-execute-sql" class="clickable">提交</span>获取数据报表；为增加脚本的复用性，您可以<span id="help-save-sql" class="clickable">保存脚本</span>或<span id="help-download-sql" class="clickable">导出脚本</span>。</li>
