@@ -2616,7 +2616,7 @@ function initMenus() {
                 __SQLEDITOR__.title = $("sql-title").innerText = values.title;
                 __LOGS__.viewMessage("Open " + __SQLEDITOR__.options.mode + " : " + __SQLEDITOR__.title);
                 __SQLEDITOR__.codeMirror.setValue(values.sql);
-            }, {type: "open"});
+            }, {type: UI.sqlManagerDialog.type.open});
         };
         sqltools.appendChild(opensql);
         setTooltip(opensql, "打开<br>脚本");
@@ -2632,7 +2632,7 @@ function initMenus() {
                 UI.sqlManagerDialog.show("auto", function (args, values) {
                     __SQLEDITOR__.title = $("sql-title").innerText = values.title;
                     __LOGS__.viewMessage("Save " + __SQLEDITOR__.options.mode + " : " + __SQLEDITOR__.title);
-                }, {type: "save", sql: __SQLEDITOR__.codeMirror.getValue()});
+                }, {type: UI.sqlManagerDialog.type.save, sql: __SQLEDITOR__.codeMirror.getValue()});
             } else {
                 let title = __SQLEDITOR__.title;
                 let sql = __SQLEDITOR__.codeMirror.getValue();
@@ -2695,7 +2695,7 @@ function initMenus() {
         backup.onclick = function() {
             UI.sqlManagerDialog.show("auto", function (args, values) {
 
-            }, {type: "backup"});
+            }, {type: UI.sqlManagerDialog.type.backup});
         }
         sqltools.appendChild(backup);
         setTooltip(backup, "脚本<br>备份");

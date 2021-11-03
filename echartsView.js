@@ -5,23 +5,50 @@ function getSource(dataset) {
         source: [],
         getValues: function (key) {
             let data = [];
-            for (let i = 0; i < this.source.length; i++) {
-                let row = this.source[i];
-                data.push([row[this.dimensions[0]], row[key]]);
+            if (typeof key !== "undefined") {
+                //格式:[[name,value],[name,value]...]
+                for (let i = 0; i < this.source.length; i++) {
+                    let row = this.source[i];
+                    data.push([row[this.dimensions[0]], row[key]]);
+                }
+            } else {
+                //格式:[[name,{key:value}],[name,{key:value}]...]
+                for (let i = 0; i < this.source.length; i++) {
+                    let row = this.source[i];
+                    let values = {};
+                    for (let c = 1; c < this.dimensions.length; c++) {
+                        values[this.dimensions[c]] = row[this.dimensions[c]];
+                    }
+                    data.push([row[this.dimensions[0]], values]);
+                }
             }
             return data;
         },
         getItems: function (key) {
             let data = [];
-            for (let i = 0; i < this.source.length; i++) {
-                let row = this.source[i];
-                data.push({name: row[this.dimensions[0]], value: row[key]});
+            if (typeof key !== "undefined") {
+                //格式:[{name:value,value:value},{name:value,value:value}...]
+                for (let i = 0; i < this.source.length; i++) {
+                    let row = this.source[i];
+                    data.push({name: row[this.dimensions[0]], value: row[key]});
+                }
+            } else {
+                //格式:[{name:value,value:{key:value}},{name:value,value:{key:value}}...]
+                for (let i = 0; i < this.source.length; i++) {
+                    let row = this.source[i];
+                    let values = {};
+                    for (let c = 1; c < this.dimensions.length; c++) {
+                        values[this.dimensions[c]] = row[this.dimensions[c]];
+                    }
+                    data.push({name: row[this.dimensions[0]], value: values});
+                }
             }
             return data;
         },
-        getArrays:function (key) {
+        getArrays: function (key) {
             let data = [];
             if (typeof key === "undefined") {
+                //格式:[[name,value,value...]]
                 for (let i = 0; i < this.source.length; i++) {
                     let row = this.source[i];
                     let array = [];
@@ -31,6 +58,7 @@ function getSource(dataset) {
                     data.push(array);
                 }
             } else {
+                //格式:[value,value,value...]
                 for (let i = 0; i < this.source.length; i++) {
                     let row = this.source[i];
                     data.push(row[key]);
@@ -38,26 +66,24 @@ function getSource(dataset) {
             }
             return data;
         },
-        getPoints: function(key) {
+        getPoints: function (key) {
             let data = [];
-            if (typeof key == "undefined") {
+            if (typeof key !== "undefined") {
+                //格式:[[rowid,value]...]
                 for (let i = 0; i < this.source.length; i++) {
-                    for (let c = 1; c < this.dimensions.length; c++) {
-                        let point = [];
-                        let row = this.source[i];
-                        point = [i, c - 1, row[this.dimensions[c]]];
-                        data.push(point);
-                    }
+                    let point = [];
+                    let row = this.source[i];
+                    point = [i, row[key]];
+                    data.push(point);
                 }
             } else {
+                //格式:[[rowid,colid,value]...]
                 for (let i = 0; i < this.source.length; i++) {
                     let point = [];
                     let row = this.source[i];
                     for (let c = 1; c < this.dimensions.length; c++) {
-                        if (this.dimensions[c] == key) {
-                            point = [i, c - 1, row[key]];
-                            data.push(point);
-                        }
+                        point = [i, c - 1, row[key]];
+                        data.push(point);
                     }
                 }
             }
@@ -1164,6 +1190,20 @@ var __ECHARTS__ = {
             name: "标签位置",
             value: "inside",
             options: [new Option("居中", "inside"), new Option("居左", "left"), new Option("居右", "right")],
+            type: "select"
+        },
+        funnelGroupWith: {name: "序列分组", value: 2, type: "input"},
+        funnelGrids: {
+            name: "布局方式", value: "auto",
+            options: [
+                new Option("自动", "auto"),
+                new Option("1 + 2", "[[10,10,80,40],[10,50,40,40],[50,50,40,40]]"),
+                new Option("1 + 3", "[[10,10,80,40],[10,50,26.67,40],[36.67,50,26.66,40],[63.33,50,26.67,40]]"),
+                new Option("2 + 1", "[[10,10,40,40],[50,10,40,40],[10,50,80,40]]"),
+                new Option("2 + 3", "[[10,10,40,40],[50,10,40,40],[10,50,26.67,40],[36.67,50,26.66,40],[63.33,50,26.67,40]]"),
+                new Option("3 + 1", "[[10,10,26.67,40],[36.67,10,26.67,40],[63.33,10,26.67,40],[10,50,80,40]]"),
+                new Option("3 + 2", "[[10,10,26.67,40],[36.67,10,26.67,40],[63.33,10,26.67,40],[10,50,40,40],[50,50,40,40]]")
+            ],
             type: "select"
         },
 
@@ -3026,8 +3066,8 @@ function getWaterGraphic(version) {
                     position: [90, 0],
                     style: {
                         image: version.logo.image,
-                        width: 36,
-                        height: 30.55,
+                        width: version.logo.width,
+                        height: version.logo.height,
                         opacity: 0.4,
                     }
                 },
@@ -3263,7 +3303,7 @@ function getLineOption(configs, container, myChart, dataset) {
         setSeriesAnimation(serie, configs, c);
         series.push(serie);
         if (configs.lineRegLineDisplay.value.toBoolean()) {
-            let regLine = getRegLine(configs, source.dimensions[c], source.getPoints(source.dimensions[c]).getMap([0, 2]));
+            let regLine = getRegLine(configs, source.dimensions[c], source.getPoints(source.dimensions[c]));
             series.push(regLine.serie);
             legend.push(regLine.name);
             if (xAxis.length < regLine.serie.data.length) {
@@ -3371,7 +3411,7 @@ function getBarOption(configs, container, myChart, dataset) {
         setSeriesAnimation(serie, configs, c);
         series.push(serie);
         if (configs.barRegLineDisplay.value.toBoolean()) {
-            let regLine = getRegLine(configs, source.dimensions[c], source.getPoints(source.dimensions[c]).getMap([0, 2]));
+            let regLine = getRegLine(configs, source.dimensions[c], source.getPoints(source.dimensions[c]));
             series.push(regLine.serie);
             legend.push(regLine.name);
             if (xAxis.length < regLine.serie.data.length) {
@@ -3557,12 +3597,15 @@ function getMultiGraphOption(configs, container, myChart, dataset) {
                         colorBy: configs.pieColorby.value,
                         type: type,
                         data: source.getItems(source.dimensions[i + 1]),
-                        radius: (configs.pieType.value == "pie" ? radius.outRadius : [radius.inRadius,radius.outRadius]),
+                        radius: (configs.pieType.value == "pie" ? radius.outRadius : [radius.inRadius, radius.outRadius]),
                         roseType: (configs.pieType.value == "pie" || configs.pieType.value == "ring" ? false : configs.pieRoseType.value),
                         selectedMode: configs.pieSelectedMode.value,
                         center: grids[i].center,
-                        left: configs.pieLabelAlignTo.value == "edge"? grids[i].left:0,
-                        right: configs.pieLabelAlignTo.value == "edge"? grids[i].right:0,
+                        top: configs.pieLabelAlignTo.value == "edge" ? grids[i].top : 0,
+                        bottom: configs.pieLabelAlignTo.value == "edge" ? grids[i].bottom : 0,
+                        left: configs.pieLabelAlignTo.value == "edge" ? grids[i].left : 0,
+                        right: configs.pieLabelAlignTo.value == "edge" ? grids[i].right : 0,
+
                         label: configs.richTextLabel.value.toBoolean() ? getPieRichText(configs, colors) : {
                             show: configs.pieLabelDisplay.value.toBoolean(),
                             position: configs.pieLabelPosition.value,
@@ -3701,14 +3744,17 @@ function getMultiGraphOption(configs, container, myChart, dataset) {
                         markArea: {},
                     };
                     if (configs.lineRegLineDisplay.value.toBoolean()) {
-                        let regLine = getRegLine(configs, source.dimensions[i + 1], source.getPoints(source.dimensions[i + 1]).getMap([0, 2]));
+                        let regLine = getRegLine(configs, source.dimensions[i + 1], source.getPoints(source.dimensions[i + 1]));
                         regLine.serie["xAxisIndex"] = i;
                         regLine.serie["yAxisIndex"] = i;
                         series.push(regLine.serie);
                         legend.push(regLine.name);
                         if (axis.xAxis[i].data.length < regLine.serie.data.length) {
                             for (let x = axis.xAxis[i].data.length; x < regLine.serie.data.length; x++) {
-                                axis.xAxis[i].data.push({name: "P" + regLine.serie.data[x][0], value: "P" + regLine.serie.data[x][0]});
+                                axis.xAxis[i].data.push({
+                                    name: "P" + regLine.serie.data[x][0],
+                                    value: "P" + regLine.serie.data[x][0]
+                                });
                             }
                         }
                     }
@@ -3757,14 +3803,17 @@ function getMultiGraphOption(configs, container, myChart, dataset) {
                         },
                     };
                     if (configs.barRegLineDisplay.value.toBoolean()) {
-                        let regLine = getRegLine(configs, source.dimensions[i + 1], source.getPoints(source.dimensions[i + 1]).getMap([0, 2]));
+                        let regLine = getRegLine(configs, source.dimensions[i + 1], source.getPoints(source.dimensions[i + 1]));
                         regLine.serie["xAxisIndex"] = i;
                         regLine.serie["yAxisIndex"] = i;
                         series.push(regLine.serie);
                         legend.push(regLine.name);
                         if (axis.xAxis[i].data.length < regLine.serie.data.length) {
                             for (let x = axis.xAxis[i].data.length; x < regLine.serie.data.length; x++) {
-                                axis.xAxis[i].data.push({name: "P" + regLine.serie.data[x][0], value: "P" + regLine.serie.data[x][0]});
+                                axis.xAxis[i].data.push({
+                                    name: "P" + regLine.serie.data[x][0],
+                                    value: "P" + regLine.serie.data[x][0]
+                                });
                             }
                         }
                     }
@@ -3825,14 +3874,17 @@ function getMultiGraphOption(configs, container, myChart, dataset) {
                         },
                     };
                     if (configs.scatterRegLineDisplay.value.toBoolean()) {
-                        let regLine = getRegLine(configs, source.dimensions[i + 1], source.getPoints(source.dimensions[i + 1]).getMap([0, 2]));
+                        let regLine = getRegLine(configs, source.dimensions[i + 1], source.getPoints(source.dimensions[i + 1]));
                         regLine.serie["xAxisIndex"] = i;
                         regLine.serie["yAxisIndex"] = i;
                         series.push(regLine.serie);
                         legend.push(regLine.name);
                         if (axis.xAxis[i].data.length < regLine.serie.data.length) {
                             for (let x = axis.xAxis[i].data.length; x < regLine.serie.data.length; x++) {
-                                axis.xAxis[i].data.push({name: "P" + regLine.serie.data[x][0], value: "P" + regLine.serie.data[x][0]});
+                                axis.xAxis[i].data.push({
+                                    name: "P" + regLine.serie.data[x][0],
+                                    value: "P" + regLine.serie.data[x][0]
+                                });
                             }
                         }
                     }
@@ -3992,7 +4044,7 @@ function getScatterOption(configs, container, myChart, dataset) {
             name: source.dimensions[c],
             type: configs.scatterType.value,
             colorBy: configs.scatterColorby.value,
-            data: source.getPoints(source.dimensions[c]).getMap([0, 2]),
+            data: source.getPoints(source.dimensions[c]),
             label: {
                 show: configs.scatterLabelDisplay.value.toBoolean(),
                 align: "center",
@@ -4129,6 +4181,8 @@ function getPieOption(configs, container, myChart, dataset) {
             roseType: (configs.pieType.value == "pie" || configs.pieType.value == "ring" ? false : configs.pieRoseType.value),
             selectedMode: configs.pieSelectedMode.value,
             center: grids[i].center,
+            top: configs.pieLabelAlignTo.value == "edge" ? grids[i].top : 0,
+            bottom: configs.pieLabelAlignTo.value == "edge" ? grids[i].bottom : 0,
             left: configs.pieLabelAlignTo.value == "edge" ? grids[i].left : 0,
             right: configs.pieLabelAlignTo.value == "edge" ? grids[i].right : 0,
 
@@ -4215,6 +4269,9 @@ function getFunnelOption(configs, container, myChart, dataset) {
         clearInterval(myChart.IntervalId);
 
     let source = getSource(dataset);
+    let cols = configs.funnelGroupWith.value;
+    let lines = Math.ceil((source.dimensions.length - 1) / cols);
+    let grids = getGrids(configs, source.dimensions.length, cols, lines, configs.funnelGrids.value);
     let series = [];
 
     function init() {
@@ -4260,17 +4317,9 @@ function getFunnelOption(configs, container, myChart, dataset) {
             series.push(serie);
         }
 
-        let top = toPoint(configs.gridTop.value);
-        let left = toPoint(configs.gridLeft.value);
-        let lines = parseInt(series.length / 2 + 0.5);
-        let height = parseInt((100 - toPoint(configs.gridTop.value) - toPoint(configs.gridBottom.value)) / lines);
-        let width = 100 - toPoint(configs.gridLeft.value) - toPoint(configs.gridRight.value);
-
-        if (series.length > 1)
-            width = 40;
         for (let i = 0; i < series.length; i++) {
-            series[i].top = ((top + parseInt(i / 2) * height) + parseInt(i / 2) * top) + "%";
-            series[i].left = (left + (i % 2) * 40) + "%";
+            series[i].top = grids[i].top;
+            series[i].left = grids[i].left;
             if (configs.funnelAlign.value == "auto") {
                 if (series.length == 1) {
                     series[i].funnelAlign = "center";
@@ -4289,8 +4338,8 @@ function getFunnelOption(configs, container, myChart, dataset) {
             } else {
                 series[i].funnelAlign = configs.funnelAlign.value;
             }
-            series[i].width = width + "%";
-            series[i].height = height + "%";
+            series[i].width = grids[i].width;
+            series[i].height = grids[i].height;
         }
     }
 
