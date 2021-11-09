@@ -649,7 +649,7 @@ function getFileSecurity(parent) {
     tool.className = "groupbar";
     content.appendChild(tool);
 
-    let openfiles = document.createElement("div");
+    let openfiles = document.createElement("button");
     openfiles.className = "button";
     openfiles.innerText = "打开";
     openfiles.onclick = function () {
@@ -664,7 +664,7 @@ function getFileSecurity(parent) {
     };
     tool.appendChild(openfiles);
 
-    let encrypt = document.createElement("div");
+    let encrypt = document.createElement("button");
     encrypt.className = "button";
     encrypt.innerText = "加密";
     encrypt.onclick = function () {
@@ -786,7 +786,7 @@ function getFileSecurity(parent) {
     };
     tool.appendChild(encrypt);
 
-    let encryptToPacket = document.createElement("div");
+    let encryptToPacket = document.createElement("button");
     encryptToPacket.className = "button";
     encryptToPacket.innerText = "打包加密";
     encryptToPacket.onclick = function () {
@@ -960,7 +960,7 @@ function getFileSecurity(parent) {
     };
     tool.appendChild(encryptToPacket);
 
-    let decrypt = document.createElement("div");
+    let decrypt = document.createElement("button");
     decrypt.className = "button";
     decrypt.innerText = "解密";
     decrypt.onclick = function () {
@@ -1068,7 +1068,7 @@ function getFileSecurity(parent) {
     };
     tool.appendChild(decrypt);
 
-    let cancel = document.createElement("div");
+    let cancel = document.createElement("button");
     cancel.className = "button";
     cancel.innerText = "退出";
     cancel.onclick = close.onclick = function () {

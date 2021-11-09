@@ -66,14 +66,17 @@ function getSource(dataset) {
             }
             return data;
         },
-        getPoints: function (key) {
+        getPoints: function (key, columnIndex) {
             let data = [];
             if (typeof key !== "undefined") {
                 //格式:[[rowid,value]...]
                 for (let i = 0; i < this.source.length; i++) {
                     let point = [];
                     let row = this.source[i];
-                    point = [i, row[key]];
+                    if (typeof columnIndex === "undefined")
+                        point = [i, row[key]];
+                    else
+                        point = [i, columnIndex, row[key]];
                     data.push(point);
                 }
             } else {
@@ -82,7 +85,7 @@ function getSource(dataset) {
                     let point = [];
                     let row = this.source[i];
                     for (let c = 1; c < this.dimensions.length; c++) {
-                        point = [i, c - 1, row[key]];
+                        point = [i, c - 1, row[this.dimensions[c]]];
                         data.push(point);
                     }
                 }
@@ -129,6 +132,10 @@ function getSource(dataset) {
         source.source.push(data);
     }
     return source;
+}
+
+function percentage(percent) {
+    return Number(percent.split("%")[0]);
 }
 
 function getOptionName(options, value) {
@@ -2086,7 +2093,7 @@ var __ECHARTS__ = {
         c.className = "groupbar";
         content.appendChild(c);
 
-        let b = document.createElement("a");
+        let b = document.createElement("button");
         b.className = "button";
         b.innerHTML = "确定";
         b.onclick = function () {
@@ -2101,7 +2108,7 @@ var __ECHARTS__ = {
         };
         c.appendChild(b);
 
-        b = document.createElement("a");
+        b = document.createElement("button");
         b.className = "button";
         b.innerHTML = "重置";
         b.onclick = close.onclick = function () {
@@ -2114,7 +2121,7 @@ var __ECHARTS__ = {
         };
         c.appendChild(b);
 
-        b = document.createElement("a");
+        b = document.createElement("button");
         b.className = "button";
         b.innerHTML = "退出";
         b.onclick = close.onclick = function () {
@@ -2842,7 +2849,7 @@ var geoCoordMap = {
         let groupbar = document.createElement("div");
         groupbar.className = "groupbar";
         content.appendChild(groupbar);
-        b = document.createElement("a");
+        b = document.createElement("button");
         b.className = "button";
         b.innerHTML = "增加";
         b.onclick = function () {
@@ -2854,7 +2861,7 @@ var geoCoordMap = {
         };
         groupbar.appendChild(b);
 
-        b = document.createElement("a");
+        b = document.createElement("button");
         b.className = "button";
         b.innerHTML = "删除";
         b.onclick = function () {
@@ -2893,7 +2900,7 @@ var geoCoordMap = {
         };
         groupbar.appendChild(b);
 
-        b = document.createElement("a");
+        b = document.createElement("button");
         b.className = "button";
         b.innerHTML = "保存";
         b.onclick = function () {
@@ -2903,7 +2910,7 @@ var geoCoordMap = {
         };
         groupbar.appendChild(b);
 
-        b = document.createElement("a");
+        b = document.createElement("button");
         b.className = "button";
         b.innerHTML = "重置";
         b.onclick = close.onclick = function () {
@@ -2917,7 +2924,7 @@ var geoCoordMap = {
         };
         groupbar.appendChild(b);
 
-        b = document.createElement("a");
+        b = document.createElement("button");
         b.className = "button";
         b.innerHTML = "退出";
         b.onclick = close.onclick = function () {
@@ -3018,10 +3025,6 @@ var geoCoordMap = {
         }, {});
     },
 };
-
-function toPoint(percent) {
-    return Number(percent.replace("%",""));
-}
 
 function getAnimationEasing(configs){
     return configs.animationEasing.value == "linear"?configs.animationEasing.value:configs.animationEasing.value + configs.animationFunctionType.value;
@@ -3153,10 +3156,10 @@ function getGrids(configs, dimensions, cols, lines, layout) {
     if (typeof dimensions !== "undefined" && typeof cols !== "undefined" && typeof lines !== "undefined" && typeof layout !== "undefined") {
         let grids = [];
         if (layout === "auto") {
-            let leftBorder = Number(configs.gridLeft.value.split("%")[0]);
-            let topBorder = Number(configs.gridTop.value.split("%")[0]);
-            let rightBorder = Number(configs.gridRight.value.split("%")[0]);
-            let bottomBorder = Number(configs.gridBottom.value.split("%")[0]);
+            let leftBorder = percentage(configs.gridLeft.value);
+            let topBorder = percentage(configs.gridTop.value);
+            let rightBorder = percentage(configs.gridRight.value);
+            let bottomBorder = percentage(configs.gridBottom.value);
             let sep = 5;
             let width = (100 - (leftBorder + rightBorder) - sep * (cols - 1)) / cols;
             let height = (100 - (topBorder + bottomBorder) - sep * (lines - 1)) / lines;
@@ -4476,8 +4479,8 @@ function getPolarOption(configs, container, myChart, dataset) {
             z: 10,
         },
         polar: {
-            center: [(toPoint(configs.gridLeft.value) + (100 - toPoint(configs.gridLeft.value) - toPoint(configs.gridRight.value)) / 2) + "%",
-                (toPoint(configs.gridTop.value) + (100 - toPoint(configs.gridTop.value) - toPoint(configs.gridBottom.value)) / 2) + "%"],
+            center: [(percentage(configs.gridLeft.value) + (100 - percentage(configs.gridLeft.value) - percentage(configs.gridRight.value)) / 2) + "%",
+                (percentage(configs.gridTop.value) + (100 - percentage(configs.gridTop.value) - percentage(configs.gridBottom.value)) / 2) + "%"],
         },
         series: series,
         legend: getLegend(configs, source.dimensions.slice(1, source.dimensions.length)),
@@ -5075,7 +5078,34 @@ function getSaveAsConfig(configs, container, myChart) {
                     "document.getElementsByClassName('SCRIPT')[0].getElementsByTagName('code')[0].innerText = report.dataset.sql;\n" +
                     "getConfigs(document.getElementsByClassName('CONFIGS')[0], report.configs);\n" +
                     "getConfigs(document.getElementsByClassName('CONFIGS')[0], dataset.configs);\n" +
+                    "getThemes();" +
                     "viewDataset(0);\n" +
+                    "}\n" +
+                    "</script>",
+
+                    "<script type='text/javascript'>\n" +
+                    "function getThemes(){\n" +
+                    "let themes = {" +
+                    "dimgrey: {backgroundColor: 'dimgrey', color: 'whitesmoke'}, \n" +
+                    "black: {backgroundColor: 'white', color: 'black'}, \n" +
+                    "DarkSlateGray: {backgroundColor: 'DarkSlateGray', color: 'AliceBlue'}, \n" +
+                    "Gainsboro: {backgroundColor: 'Gainsboro', color: 'IndianRed'}, \n" +
+                    "DarkRed: {backgroundColor: 'DarkRed', color: 'yellow'}, \n" +
+                    "white: {backgroundColor: 'black', color: 'white'}, \n" +
+                    "};\n" +
+                    "let content = document.getElementById('THEMES');\n" +
+                    "for (let key in themes){\n" +
+                    "let theme = document.createElement('span');\n" +
+                    "theme.className ='theme';\n" +
+                    "theme.style.backgroundColor = themes[key].backgroundColor;\n" +
+                    "theme.style.color = themes[key].color;\n" +
+                    "theme.innerHTML = '&emsp;&emsp;';" +
+                    "theme.onclick = function(){\n" +
+                    "document.body.style.backgroundColor = this.style.backgroundColor;\n" +
+                    "document.body.style.color = this.style.color;\n" +
+                    "}\n" +
+                    "content.appendChild(theme);\n" +
+                    "}\n" +
                     "}\n" +
                     "</script>",
 
@@ -5363,27 +5393,27 @@ function getSaveAsConfig(configs, container, myChart) {
                     "for (let x = 0; x < i; x++) {\n" +
                     "switch (columns[colid].order) {\n" +
                     "case 'asc':\n" +
-                    "if (data[i][columns[colid].name].type == 'number') {\n" +
+                    "if (data[i][columns[colid].name].type == 'number' && data[x][columns[colid].name].type == 'number') {\n" +
                     "if (data[i][columns[colid].name].value < data[x][columns[colid].name].value) {\n" +
                     "exchange(data[i], data[x]);\n" +
                     "}\n" +
-                    "} else if (data[i][columns[colid].name].type == 'object') {\n" +
-                    "exchange(data[i], data[x]);\n" +
+                    "} else if (data[i][columns[colid].name].type == 'object' || data[x][columns[colid].name].type == 'object') {\n" +
+                    "//exchange(data[i], data[x]);\n" +
                     "} else {\n" +
-                    "if (data[i][columns[colid].name].value.localeCompare(data[x][columns[colid].name].value) < 0) {\n" +
+                    "if (data[i][columns[colid].name].value.localeCompare(data[x][columns[colid].name].value) < 0 && data[i][columns[colid].name].type == data[x][columns[colid].name].type) {\n" +
                     "exchange(data[i], data[x]);\n" +
                     "}\n" +
                     "}\n" +
                     "break;\n" +
                     "case 'desc':\n" +
-                    "if (data[i][columns[colid].name].type == 'number') {\n" +
+                    "if (data[i][columns[colid].name].type == 'number' && data[x][columns[colid].name].type == 'number') {\n" +
                     "if (data[i][columns[colid].name].value > data[x][columns[colid].name].value) {\n" +
                     "exchange(data[i], data[x]);\n" +
                     "}\n" +
-                    "} else if (data[i][columns[colid].name].type == 'object') {\n" +
-                    "exchange(data[i], data[x]);\n" +
+                    "} else if (data[i][columns[colid].name].type == 'object' || data[x][columns[colid].name].type == 'object') {\n" +
+                    "//exchange(data[i], data[x]);\n" +
                     "} else {\n" +
-                    "if (data[i][columns[colid].name].value.localeCompare(data[x][columns[colid].name].value) > 0) {\n" +
+                    "if (data[i][columns[colid].name].value.localeCompare(data[x][columns[colid].name].value) > 0 && data[i][columns[colid].name].type == data[x][columns[colid].name].type) {\n" +
                     "exchange(data[i], data[x]);\n" +
                     "}\n" +
                     "}\n" +
@@ -5546,14 +5576,16 @@ function getSaveAsConfig(configs, container, myChart) {
                 "code{font-family: Verdana,Arial;font-size: 10px;width: 100%;white-space: normal;word-break: break-all;word-wrap: break-word;display:none}\n" +
                 "code.sql{font-family: Verdana,Arial;font-size: 10px;width: 100%;white-space: normal;word-break: break-all;word-wrap: break-word;display:block}\n" +
                 "h6{margin: auto;width: 80%;text-align: center}\n" +
-                "a{font-size: 80%;padding-left: 5px;padding-right: 5px;color: snow;background-color: sandybrown;outline-style: none;border-radius: 4px;text-decoration:none;}\n" +
-                "span.tabButton-selected{cursor: pointer;font-size: 80%;padding-left: 5px;padding-right: 5px;color: snow;background-color: #00A7AA;outline-style: none;border-top-left-radius: 4px;border-top-right-radius: 4px;border: 1px solid coral;border-bottom-width: 0px;}\n" +
-                "span.tabButton-unselected{cursor: pointer;font-size: 80%;padding-left: 5px;padding-right: 5px;color: snow;outline-style: none;border-top-left-radius: 4px;border-top-right-radius: 4px;border: 1px solid gray;border-bottom-width: 0px;}\n" +
+                "a{font-size: 80%;padding-left: 5px;padding-right: 5px;background-color: sandybrown;outline-style: none;border-radius: 4px;text-decoration:none;}\n" +
+                "span.tabButton-selected{cursor: pointer;font-size: 80%;padding-left: 5px;padding-right: 5px;background-color: #00A7AA;outline-style: none;border-top-left-radius: 4px;border-top-right-radius: 4px;border: 1px solid coral;border-bottom-width: 0px;}\n" +
+                "span.tabButton-unselected{cursor: pointer;font-size: 80%;padding-left: 5px;padding-right: 5px;outline-style: none;border-top-left-radius: 4px;border-top-right-radius: 4px;border: 1px solid gray;border-bottom-width: 0px;}\n" +
                 "span.tabButton-unselected:hover{background-color: sandybrown}\n" +
-                "dt{cursor: pointer;font-size: 80%;padding-left: 5px;padding-right: 5px;color: snow;outline-style: none;border-radius: 4px}\n" +
-                "dd{cursor: pointer;font-size: 80%;padding-left: 5px;padding-right: 5px;color: snow;outline-style: none;border-radius: 4px}\n" +
-                "span.configs-name{cursor: pointer;font-size: 80%;padding-left: 5px;padding-right: 5px;color: snow;background-color: sandybrown;outline-style: none;border-radius: 4px;border: 1px solid gray;}\n" +
-                "span.configs-value{cursor: pointer;font-size: 80%;padding-left: 5px;padding-right: 5px;color: snow;background-color: #00A7AA;outline-style: none;border-radius: 4px;border: 1px solid gray;}\n" +
+                "span.tabButton-theme{float: right;cursor: pointer;font-size: 80%;background-color: transparent;outline-style: none;}\n" +
+                "span.theme{cursor: pointer;font-size: 80%;width: 50px;outline-style: none;}\n" +
+                "dt{cursor: pointer;font-size: 80%;padding-left: 5px;padding-right: 5px;outline-style: none;border-radius: 4px}\n" +
+                "dd{cursor: pointer;font-size: 80%;padding-left: 5px;padding-right: 5px;outline-style: none;border-radius: 4px;overflow: hidden;white-space: nowrap;word-break: keep-all;text-overflow: ellipsis;-o-text-overflow: ellipsis;}\n" +
+                "span.configs-name{cursor: pointer;font-size: 80%;padding-left: 5px;padding-right: 5px;background-color: sandybrown;outline-style: none;border-radius: 4px;border: 1px solid gray;}\n" +
+                "span.configs-value{cursor: pointer;font-size: 80%;padding-left: 5px;padding-right: 5px;background-color: #00A7AA;outline-style: none;border-radius: 4px;border: 1px solid gray;}\n" +
                 "image{margin: auto;width: 80%;text-align: center}\n" +
                 "table{font-size: 80%;margin: 1px;line-height:12px;border-collapse:collapse;cursor: pointer;position:relative;min-width: 33%;border-radius: 5px;background-color: transparent;}\n" +
                 "th{margin: 0px;border: 1px solid gray;padding: 3px 3px 2px 3px;white-space: nowrap;word-break: keep-all;overflow: hidden;" +
@@ -5566,10 +5598,10 @@ function getSaveAsConfig(configs, container, myChart) {
                 "td{margin: 2px;border:1px solid gray;padding:3px 3px 2px 3px;white-space: nowrap; word-break: keep-all;" +
                 "overflow: hidden;text-overflow: ellipsis;-o-text-overflow: ellipsis;}\n" +
                 "td:hover{border-bottom:2px solid #00A7AA}\n" +
-                "span.page-tab{float:left;cursor: pointer;width: 50px;font-size: 60%;text-align: center;color:#DCDCDC;border-right:1px solid gray;border-bottom-left-radius: 6px;border-bottom-right-radius: 36px;}" +
-                "span.page-tab:hover{color: #DCDCDC;background-color: sandybrown;}\n" +
-                "span.page-button{float:left;cursor: pointer;width: 50px;font-size: 60%;text-align: center;color:#DCDCDC;border-left:1px solid gray;border-bottom-right-radius: 6px;border-bottom-left-radius: 36px;}" +
-                "span.page-button:hover{color: #DCDCDC;background-color: sandybrown;}\n" +
+                "span.page-tab{float:left;cursor: pointer;width: 50px;font-size: 60%;text-align: center;;border-right:1px solid gray;border-bottom-left-radius: 6px;border-bottom-right-radius: 36px;}" +
+                "span.page-tab:hover{background-color: sandybrown;}\n" +
+                "span.page-button{float:left;cursor: pointer;width: 50px;font-size: 60%;text-align: center;;border-left:1px solid gray;border-bottom-right-radius: 6px;border-bottom-left-radius: 36px;}" +
+                "span.page-button:hover{background-color: sandybrown;}\n" +
                 "</style>\n" +
                 getScript() +
                 "</head>\n" +
@@ -5582,6 +5614,8 @@ function getSaveAsConfig(configs, container, myChart) {
                 "<span class='tabButton-unselected' id='SCRIPT' onclick='selectTab(this.id)'>数据脚本</span>\n" +
                 "<span class='tabButton-unselected' id='CONFIGS' onclick='selectTab(this.id)'>视图参数</span>\n" +
                 link +
+                "<span class='tabButton-theme' id='THEMES'>" +
+                "</span>\n" +
                 "</div>\n" +
                 "<div class='ECHART'>\n" +
                 "<image src = '" + myChart.getDataURL({excludeComponents: ['toolbox']}) + "' width='100%' height='" + myChart.height + "'></image>" +
@@ -5706,10 +5740,10 @@ function getDataZoomXAxis(configs, xAxisIndex, type,start ,end) {
             xAxisIndex: xAxisIndex,
             start: start,
             end: end,
-            width: (100 - toPoint(configs.gridLeft.value) - toPoint(configs.gridRight.value)) + "%",
+            width: (100 - percentage(configs.gridLeft.value) - percentage(configs.gridRight.value)) + "%",
             height: configs.dataZoomBarWidth.value,
             left: configs.gridLeft.value,
-            top: (100 - toPoint(configs.gridBottom.value)) + "%",
+            top: (100 - percentage(configs.gridBottom.value)) + "%",
             handleIcon: __SYS_IMAGES_PATH__.dataZoomHandleIcon[configs.dataZoomHandleIcon.value],
             handleSize: configs.dataZoomHandleSize.value,
             borderColor: configs.dataZoomBarColor.value,
@@ -5744,9 +5778,9 @@ function getDataZoomYAxis(configs, yAxisIndex, type,start ,end, containerWidth) 
                 start: start,
                 end: end,
                 width: configs.dataZoomBarWidth.value,
-                height: (100 - toPoint(configs.gridTop.value) - toPoint(configs.gridBottom.value)) + "%",
+                height: (100 - percentage(configs.gridTop.value) - percentage(configs.gridBottom.value)) + "%",
                 top: configs.gridTop.value,
-                right: (100 - toPoint(configs.gridRight.value)) + "%",
+                right: (100 - percentage(configs.gridRight.value)) + "%",
                 handleIcon: __SYS_IMAGES_PATH__.dataZoomHandleIcon[configs.dataZoomHandleIcon.value],
                 handleSize: configs.dataZoomHandleSize.value,
                 borderColor: configs.dataZoomBarColor.value,
@@ -5766,9 +5800,9 @@ function getDataZoomYAxis(configs, yAxisIndex, type,start ,end, containerWidth) 
                 start: start,
                 end: end,
                 width: configs.dataZoomBarWidth.value,
-                height: (100 - toPoint(configs.gridTop.value) - toPoint(configs.gridBottom.value)) + "%",
+                height: (100 - percentage(configs.gridTop.value) - percentage(configs.gridBottom.value)) + "%",
                 top: configs.gridTop.value,
-                right: (toPoint(configs.gridRight.value) - configs.dataZoomBarWidth.value * 100 / containerWidth) + "%",
+                right: (percentage(configs.gridRight.value) - configs.dataZoomBarWidth.value * 100 / containerWidth) + "%",
                 handleIcon: __SYS_IMAGES_PATH__.dataZoomHandleIcon[configs.dataZoomHandleIcon.value],
                 handleSize: configs.dataZoomHandleSize.value,
                 borderColor: configs.dataZoomBarColor.value,
@@ -5797,7 +5831,7 @@ function getDataViewTable(table, dataset, configs, _echarts_instance_id) {
         table = document.createElement("table");
         table.className = "table";
         table.id = "optionToContentTable_" + _echarts_instance_id;
-        table.style.cssText = "width:" + (100 - toPoint(configs.gridLeft.value) - toPoint(configs.gridRight.value)) + "%;margin: auto";
+        table.style.cssText = "width:" + (100 - percentage(configs.gridLeft.value) - percentage(configs.gridRight.value)) + "%;margin: auto";
         if (__DATASET__.configs.reportFontFamily.value != "default")
             table.style.fontFamily = __DATASET__.configs.reportFontFamily.value;
         if (__DATASET__.configs.reportFontWeight.value != "default")
@@ -6789,8 +6823,8 @@ function getRadar(container, width, height, dataset, configs) {
         tooltip: getTooltip(configs, "item", null),
         toolbox: getToolbox(configs, container, dataset, myChart),
         radar: {
-            center: [(toPoint(configs.gridLeft.value) + (100 - toPoint(configs.gridLeft.value) - toPoint(configs.gridRight.value)) / 2) + "%",
-                (toPoint(configs.gridTop.value) + (100 - toPoint(configs.gridTop.value) - toPoint(configs.gridBottom.value)) / 2) + "%"],
+            center: [(percentage(configs.gridLeft.value) + (100 - percentage(configs.gridLeft.value) - percentage(configs.gridRight.value)) / 2) + "%",
+                (percentage(configs.gridTop.value) + (100 - percentage(configs.gridTop.value) - percentage(configs.gridBottom.value)) / 2) + "%"],
             shape: configs.radarShape.value,
             splitNumber: configs.radarSplitNumber.value,
             name: {
@@ -7041,10 +7075,8 @@ function getTree(container, width, height, dataset, configs) {
     let myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value,renderer:configs.renderer.value});
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
-    let columns = dataset["columns"].reduce(function (tmp, column) {
-        tmp.push(column.name);
-        return tmp;
-    }, []);
+    let source = getSource(dataset);
+    let columns = source.dimensions;
     if (columns.length != 2)
         UI.alert.show("提示","树形数据结构:[父级名称,子级名称].");
 
@@ -7072,18 +7104,18 @@ function getTree(container, width, height, dataset, configs) {
         return node;
     }
 
-    for (let i = 0; i < dataset["data"].length; i++) {
-        let r = dataset["data"][i];
+    for (let i = 0; i < source.source.length; i++) {
+        let row = source.source[i];
         for (let c = 0; c < columns.length; c++) {
             if ((c + 1) < columns.length) {
-                if (r[columns[c]].value !== r[columns[c + 1]].value && r[columns[c]].value != "" && r[columns[c + 1]].value != "") {
-                    let node = createNode(r[columns[c]].value);
-                    let child = createNode(r[columns[c + 1]].value);
+                if (row[columns[c]] !== row[columns[c + 1]] && row[columns[c]] != "" && row[columns[c + 1]] != "") {
+                    let node = createNode(row[columns[c]]);
+                    let child = createNode(row[columns[c + 1]]);
                     child.parent = node.name;
                 }
             } else {
-                if (r[columns[c]].value != "")
-                    createNode(r[columns[c]].value);
+                if (row[columns[c]] != "")
+                    createNode(row[columns[c]]);
             }
         }
     }
@@ -7103,7 +7135,7 @@ function getTree(container, width, height, dataset, configs) {
     let legends = [];
     for (let i = 0; i < nodes.length; i++) {
         if (nodes[i].parent == null) {
-            legends.push({name: nodes[i].name, icon: configs.legendIcon.value});
+            //legends.push({name: nodes[i].name, icon: configs.legendIcon.value});
             let serie = {
                 id: nodes[i].name,
                 type: "tree",
@@ -7944,7 +7976,7 @@ function getBar3D(container, width, height, dataset, configs) {
             name: source.dimensions[c],
             type: "bar3D",
             //stack: 'stack',
-            data: source.getPoints(source.dimensions[c]),
+            data: source.getPoints(source.dimensions[c], c - 1),
             bevelSize: 0.1,
             //柱子的倒角尺寸。支持设置为从 0 到 1 的值。默认为 0，即没有倒角。
             bevelSmoothness: 4,
@@ -8119,7 +8151,7 @@ function getLine3D(container, width, height, dataset, configs) {
             id: source.dimensions[c],
             name: source.dimensions[c],
             type: "line3D",
-            data: source.getPoints(source.dimensions[c]),
+            data: source.getPoints(source.dimensions[c], c - 1),
             smooth: configs.lineSmooth.value.toBoolean(),
             lineStyle: {
                 opacity: configs.itemStyleOpacityFor3D.value,
@@ -8286,7 +8318,7 @@ function getScatter3D(container, width, height, dataset, configs) {
             id: source.dimensions[c],
             name: source.dimensions[c],
             type: "scatter3D",
-            data: source.getPoints(source.dimensions[c]),
+            data: source.getPoints(source.dimensions[c], c - 1),
             symbolSize: function (data) {
                 let size = configs.scatterSymbolSizeFor3D.value.toArray([6, 18], ",");
                 if (size[0] > size[1]) {
@@ -10082,7 +10114,7 @@ function getSurface(container, width, height, dataset, configs) {
         title: getTitle(configs, dataset.title),
         legend: getLegend(configs, source.dimensions.slice(1, source.dimensions.length)),
         tooltip: getTooltip(configs, "item", function (params) {
-            return rows[params.value[0]] + "<br>" + params.marker + columns[params.value[1] + 1] + ":&emsp;<span style='display:inline-block;min-width:30px;text-align:right;font-weight:bold'>" + params.value[2] + "</span>";
+            return rows[params.value[0]] + "<br>" + params.marker + source.dimensions[params.value[1] + 1] + ":&emsp;<span style='display:inline-block;min-width:30px;text-align:right;font-weight:bold'>" + params.value[2] + "</span>";
         }),
         toolbox: getToolbox3D(configs, container, dataset, myChart),
         visualMap: getVisualMap(configs, ia.min, ia.max),
@@ -11190,27 +11222,25 @@ function getTreemap(container, width, height, dataset, configs) {
     } catch (e) {
     }
 
+    let source = getSource(dataset);
     let columns = [];
     let datas = [];
     let parent = "";
     let child = "";
-    if (dataset["columns"].length >= 3) {
-        parent = dataset["columns"][0].name;
-        child = dataset["columns"][1].name;
-
-        for (let i = 2; i < dataset["columns"].length; i++) {
-            columns.push(dataset["columns"][i].name);
-        }
+    if (source.dimensions.length >= 3) {
+        parent = source.dimensions[0];
+        child = source.dimensions[1];
+        columns = source.dimensions.slice(2, source.dimensions.length);
 
         for (let c = 0; c < columns.length; c++) {
             let data = [];
             let children = {};
-            for (let i = 0; i < dataset["data"].length; i++) {
-                let row = dataset["data"][i];
-                children[row[child].value] = {
-                    parent: row[parent].value,
+            for (let i = 0; i < source.source.length; i++) {
+                let row = source.source[i];
+                children[row[child]] = {
+                    parent: row[parent],
                     title: columns[c],
-                    value: row[columns[c]].value,
+                    value: row[columns[c]],
                     children: [],
                     itemStyle: {
                         color: colors[i % colors.length]
@@ -11291,7 +11321,7 @@ function getTreemap(container, width, height, dataset, configs) {
             }
         ],
 
-        name: (typeof dataset.title[0] !== "undefined" ? dataset.title[0] : ""),
+        name: dataset.title[0],
         data: datas,
         itemStyle: {
             borderRadius: Number(configs.treemapItemStyleBorderRadius.value),
@@ -11769,7 +11799,7 @@ function getPie3D(container, width, height, dataset, configs) {
             }
         }
         if (c > 0) {
-            series = series.concat(getSeries(da, toPoint(configs.ringInRadiusFor3D.value) / 100, c - 1));
+            series = series.concat(getSeries(da, percentage(configs.ringInRadiusFor3D.value) / 100, c - 1));
         }
     }
 

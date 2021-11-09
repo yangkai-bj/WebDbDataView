@@ -200,7 +200,7 @@ function getDataReader(parent, callback) {
     tool.style.width = "100%";
     content.appendChild(tool);
 
-    let b = document.createElement("a");
+    let b = document.createElement("button");
     b.className = "button";
     b.id = "import-button";
     b.innerHTML = "读取";
@@ -213,7 +213,7 @@ function getDataReader(parent, callback) {
     };
     tool.appendChild(b);
 
-    b = document.createElement("a");
+    b = document.createElement("button");
     b.className = "button";
     b.innerHTML = "退出";
     b.onclick = close.onclick = function () {

@@ -35,7 +35,7 @@ var UI = {
     alert: {
         title: null,
         message: null,
-        show: function (notice, message, parent) {
+        show: function (notice, message, parent, callback) {
             this.title = notice;
             this.message = message;
             let container = document.createElement("div");
@@ -71,7 +71,7 @@ var UI = {
             let item = document.createElement("div");
             item.style.cssText = "width:100%;";
             let image = document.createElement("img");
-            image.src = __SYS_IMAGES__.logo_mysql.image;
+            image.src = __SYS_IMAGES__.alert.image;
             image.size = "30% auto";
             image.attachment = "fixed";
             image.style.cssText = "width:30%;float: left;" +
@@ -88,7 +88,7 @@ var UI = {
                 "text-overflow: ellipsis;" +
                 "-o-text-overflow: ellipsis;" +
                 "color: var(--main-title-color);" +
-                "line-height: 1.1;" +
+                "line-height: 1.5;" +
                 "display: inline-block;" +
                 "vertical-align: middle;" +
                 "text-align: left;" +
@@ -105,16 +105,22 @@ var UI = {
             content.appendChild(hr);
 
             let tools = document.createElement("div");
+            tools.className = "groupbar";
             tools.style.width = "90%";
             content.appendChild(tools);
             let button = document.createElement("button");
+            button.className = "button";
+            button.id = "ui-alert-ok";
             button.innerText = "确定";
             button.style.cssFloat = "right";
             button.onclick = close.onclick = function () {
+                if (typeof callback === "function")
+                    callback();
                 parent.removeChild($("ui_alert"));
             };
             tools.appendChild(button);
             setDialogDrag(title);
+            $("ui-alert-ok").focus();
         },
     },
     confirm: {
@@ -157,7 +163,7 @@ var UI = {
             let item = document.createElement("div");
             item.style.cssText = "width:100%;";
             let image = document.createElement("img");
-            image.src = __SYS_IMAGES__.logo_mysql.image;
+            image.src = __SYS_IMAGES__.confirm.image;
             image.size = "30% auto";
             image.attachment = "fixed";
             image.style.cssText = "width:30%;float: left;" +
@@ -174,7 +180,7 @@ var UI = {
                 "text-overflow: ellipsis;" +
                 "-o-text-overflow: ellipsis;" +
                 "color: var(--main-title-color);" +
-                "line-height: 1.1;" +
+                "line-height: 1.5;" +
                 "display: inline-block;" +
                 "vertical-align: middle;" +
                 "text-align: left;" +
@@ -191,10 +197,13 @@ var UI = {
             content.appendChild(hr);
 
             let tools = document.createElement("div");
+            tools.className = "groupbar";
             tools.style.width = "90%";
             content.appendChild(tools);
 
             let button = document.createElement("button");
+            button.className = "button";
+            button.id = "ui-confirm-no";
             button.innerText = "取消";
             button.style.cssText = "float: right;margin-left:10px";
             button.onclick = close.onclick = function () {
@@ -203,6 +212,7 @@ var UI = {
             tools.appendChild(button);
 
             button = document.createElement("button");
+            button.className = "button";
             button.innerText = "确定";
             button.style.cssText = "float: right;margin-left:10px";
             button.onclick = function () {
@@ -216,6 +226,7 @@ var UI = {
             };
             tools.appendChild(button);
             setDialogDrag(title);
+            $("ui-confirm-no").focus();
         },
     },
     prompt: {
@@ -224,6 +235,20 @@ var UI = {
         show: function (message, items, parent, callback, args) {
             //items:{item:default,...}
             //return: items:{item:value,item:value,....}
+            function setFocus(domid) {
+                let inputs = document.getElementsByClassName("ui-container-item-input");
+                let focus = -1;
+                for (let i = 0; i < inputs.length; i++) {
+                    if (inputs[i].id === domid) {
+                        focus = i + 1;
+                        break;
+                    }
+                }
+                if (focus == inputs.length)
+                    $("ui-prompt-ok").focus();
+                else
+                    inputs[focus].focus();
+            }
             this.title = message;
             this.items = items;
             let container = document.createElement("div");
@@ -258,10 +283,22 @@ var UI = {
             let itemcontent = document.createElement("div");
             itemcontent.style.cssText = "min-height: 100px;width:100%;";
             content.appendChild(itemcontent);
+            let image = document.createElement("img");
+            image.src = __SYS_IMAGES__.prompt.image;
+            image.size = "30% auto";
+            image.attachment = "fixed";
+            image.style.cssText = "width:30%;float: left;" +
+                "text-align: center;" +
+                "background-color: transparent;" +
+                "color: var(--main-title-color);";
+            itemcontent.appendChild(image);
+
             for (let key in this.items) {
                 let it = items[key];
                 let item = document.createElement("div");
                 item.className = "ui-container-item";
+                item.style.width = "70%";
+                item.style.cssFloat = "right";
                 span = document.createElement("span");
                 span.className = "ui-container-item-name ";
                 span.title = key;
@@ -271,6 +308,13 @@ var UI = {
                 input.className = "ui-container-item-input";
                 input.id = "ui_prompt_value_" + key;
                 input.value = it;
+                input.onkeypress = function(event) {
+                let keyCode = event.keyCode ? event.keyCode : event.which ?
+                    event.which : event.charCode;
+                if (keyCode == 13) {
+                    setFocus(this.id);
+                }
+            };
                 item.appendChild(input);
                 itemcontent.appendChild(item);
             }
@@ -279,10 +323,12 @@ var UI = {
             content.appendChild(hr);
 
             let tools = document.createElement("div");
+            tools.className = "groupbar";
             tools.style.width = "90%";
             content.appendChild(tools);
 
             let button = document.createElement("button");
+            button.className = "button";
             button.innerText = "取消";
             button.style.cssText = "float: right;margin-left:10px";
             button.onclick = close.onclick = function () {
@@ -291,6 +337,8 @@ var UI = {
             tools.appendChild(button);
 
             button = document.createElement("button");
+            button.id = "ui-prompt-ok";
+            button.className = "button";
             button.innerText = "确定";
             button.style.cssText = "float: right;margin-left:10px";
             button.onclick = function () {
@@ -307,6 +355,7 @@ var UI = {
             };
             tools.appendChild(button);
             setDialogDrag(title);
+            document.getElementsByClassName("ui-container-item-input")[0].focus();
         },
     },
     choise: {
@@ -350,10 +399,23 @@ var UI = {
             let itemcontent = document.createElement("div");
             itemcontent.style.cssText = "min-height: 100px;width:100%;";
             content.appendChild(itemcontent);
+
+            let image = document.createElement("img");
+            image.src = __SYS_IMAGES__.choice.image;
+            image.size = "30% auto";
+            image.attachment = "fixed";
+            image.style.cssText = "width:30%;float: left;" +
+                "text-align: center;" +
+                "background-color: transparent;" +
+                "color: var(--main-title-color);";
+            itemcontent.appendChild(image);
+
             for (let key in this.items) {
                 let it = items[key];
                 let item = document.createElement("div");
                 item.className = "ui-container-item";
+                item.style.width = "70%";
+                item.style.cssFloat = "right";
                 let input = document.createElement("input");
                 input.type = type;
                 if (type == "checkbox")
@@ -391,10 +453,12 @@ var UI = {
             content.appendChild(hr);
 
             let tools = document.createElement("div");
+            tools.className = "groupbar";
             tools.style.width = "90%";
             content.appendChild(tools);
 
             let button = document.createElement("button");
+            button.className = "button";
             button.innerText = "取消";
             button.style.cssText = "float: right;margin-left:10px";
             button.onclick = close.onclick = function () {
@@ -403,6 +467,7 @@ var UI = {
             tools.appendChild(button);
 
             button = document.createElement("button");
+            button.className = "button";
             button.innerText = "确定";
             button.style.cssText = "float: right;margin-left:10px";
             button.onclick = function () {
@@ -416,6 +481,147 @@ var UI = {
             };
             tools.appendChild(button);
             setDialogDrag(title);
+        },
+    },
+    userLogin: {
+        title: null,
+        show: function (message, parent, callback, args) {
+            //return: {name:name,password:password}
+            this.title = message;
+            let container = document.createElement("div");
+            container.id = "ui_user_login";
+            container.className = "ui-container-background";
+            if (parent == "auto" || parent == null) {
+                if (document.fullscreen && typeof __CONFIGS__.fullScreen.element == "object") {
+                    parent = __CONFIGS__.fullScreen.element;
+                } else {
+                    parent = document.body;
+                }
+            }
+            parent.appendChild(container);
+            let content = document.createElement("div");
+            content.className = "ui-container-body";
+            container.appendChild(content);
+
+            let title = document.createElement("div");
+            title.className = "ui-container-title";
+            let span = document.createElement("span");
+            span.innerHTML = "● " + this.title;
+            title.appendChild(span);
+            let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
+            close.className = "ui-container-close";
+            title.appendChild(close);
+            content.appendChild(title);
+
+            let hr = document.createElement("hr");
+            hr.className = "ui-container-hr";
+            content.appendChild(hr);
+
+            let itemcontent = document.createElement("div");
+            itemcontent.style.cssText = "min-height: 100px;width:100%;font-size:120%;";
+            content.appendChild(itemcontent);
+            let image = document.createElement("img");
+            image.src = __SYS_IMAGES__.login.image;
+            image.size = "30% auto";
+            image.attachment = "fixed";
+            image.style.cssText = "width:30%;float: left;" +
+                "text-align: center;" +
+                "background-color: transparent;" +
+                "color: var(--main-title-color);";
+            itemcontent.appendChild(image);
+            let item = document.createElement("div");
+            item.className = "ui-container-item";
+            item.style.width = "70%";
+            item.style.cssFloat = "right";
+
+            span = document.createElement("span");
+            span.className = "ui-container-item-name";
+            span.title = "用户名称";
+            span.innerText = "用户" + " : ";
+            item.appendChild(span);
+            let input = document.createElement("input");
+            input.className = "ui-container-item-input";
+            input.id = "ui_user_login_value_name";
+            input.value = "";
+            input.placeholder = "名称";
+            input.style.backgroundImage = "url(" + __SYS_IMAGES__.user.image + ")";
+            input.style.backgroundRepeat = "no-repeat";
+            input.style.backgroundPosition = "right";
+            input.style.backgroundSize = "16px 16px";
+            item.appendChild(input);
+            input.onkeypress = function(event) {
+                let keyCode = event.keyCode ? event.keyCode : event.which ?
+                    event.which : event.charCode;
+                if (keyCode == 13) {
+                    $("ui_user_login_value_password").focus();
+                }
+
+            };
+            itemcontent.appendChild(item);
+
+            item = document.createElement("div");
+            item.className = "ui-container-item";
+            item.style.width = "70%";
+            item.style.cssFloat = "right";
+            span = document.createElement("span");
+            span.className = "ui-container-item-name";
+            span.title = "用户密码";
+            span.innerText = "密码" + " : ";
+            item.appendChild(span);
+            input = document.createElement("input");
+            input.className = "ui-container-item-input";
+            input.id = "ui_user_login_value_password";
+            input.type = "password";
+            input.value = "";
+            input.placeholder = "☀☀☀☀☀☀☀☀";
+            input.style.backgroundImage = "url(" + __SYS_IMAGES__.key.image + ")";
+            input.style.backgroundRepeat = "no-repeat";
+            input.style.backgroundPosition = "right";
+            input.style.backgroundSize = "16px 16px";
+            input.onkeypress = function(event){
+                let keyCode = event.keyCode ? event.keyCode : event.which ?
+                    event.which : event.charCode;
+                if (keyCode == 13) {
+                    $("ui_user_login_to").focus();
+                }
+            };
+            item.appendChild(input);
+            itemcontent.appendChild(item);
+
+            hr = document.createElement("hr");
+            hr.className = "ui-container-hr";
+            content.appendChild(hr);
+
+            let tools = document.createElement("div");
+            tools.className = "groupbar";
+            tools.style.width = "90%";
+            content.appendChild(tools);
+
+            close.onclick = function () {
+                location.reload();
+            };
+
+            let button = document.createElement("button");
+            button.className = "button";
+            button.innerText = "登录";
+            button.id = "ui_user_login_to";
+            button.style.cssText = "float: right;margin-left:10px";
+            button.onclick = function () {
+                let password = {
+                    name: document.getElementById("ui_user_login_value_name").value,
+                    password: document.getElementById("ui_user_login_value_password").value
+                };
+                if (typeof callback == "function") {
+                    if (typeof args == "undefined")
+                        callback(password);
+                    else
+                        callback(args, password);
+                }
+                parent.removeChild($("ui_user_login"));
+            };
+            tools.appendChild(button);
+            setDialogDrag(title);
+            $("ui_user_login_value_name").focus();
         },
     },
     password: {
@@ -458,10 +664,22 @@ var UI = {
             let itemcontent = document.createElement("div");
             itemcontent.style.cssText = "min-height: 100px;width:100%;";
             content.appendChild(itemcontent);
+            let image = document.createElement("img");
+            image.src = __SYS_IMAGES__.password.image;
+            image.size = "30% auto";
+            image.attachment = "fixed";
+            image.style.cssText = "width:30%;float: left;" +
+                "text-align: center;" +
+                "background-color: transparent;" +
+                "color: var(--main-title-color);";
+            itemcontent.appendChild(image);
+
             for (let key in this.items) {
                 let placeholder = items[key];
                 let item = document.createElement("div");
                 item.className = "ui-container-item";
+                item.style.width = "70%";
+                item.style.cssFloat = "right";
                 span = document.createElement("span");
                 span.className = "ui-container-item-name ";
                 span.title = key;
@@ -471,7 +689,12 @@ var UI = {
                 input.type = "password";
                 input.className = "ui-container-item-input";
                 input.id = "ui_password_value_" + key;
-                input.placeholder = placeholder;
+                input.placeholder = "☀☀☀☀☀☀☀☀";
+                input.title = placeholder;
+                input.style.backgroundImage = "url(" + __SYS_IMAGES__.key.image + ")";
+                input.style.backgroundRepeat = "no-repeat";
+                input.style.backgroundPosition = "right";
+                input.style.backgroundSize = "16px 16px";
                 item.appendChild(input);
                 itemcontent.appendChild(item);
             }
@@ -480,10 +703,12 @@ var UI = {
             content.appendChild(hr);
 
             let tools = document.createElement("div");
+            tools.className = "groupbar";
             tools.style.width = "90%";
             content.appendChild(tools);
 
             let button = document.createElement("button");
+            button.className = "button";
             button.innerText = "取消";
             button.style.cssText = "float: right;margin-left:10px";
             button.onclick = close.onclick = function () {
@@ -492,6 +717,7 @@ var UI = {
             tools.appendChild(button);
 
             button = document.createElement("button");
+            button.className = "button";
             button.innerText = "确定";
             button.style.cssText = "float: right;margin-left:10px";
             button.onclick = function () {
@@ -754,7 +980,7 @@ var UI = {
             content.appendChild(tool);
 
             if (type === UI.sqlManagerDialog.type.open) {
-                let open = document.createElement("div");
+                let open = document.createElement("button");
                 open.className = "button";
                 open.innerText = "打开";
                 open.onclick = function () {
@@ -771,7 +997,7 @@ var UI = {
             }
 
             if (type === UI.sqlManagerDialog.type.save) {
-                let add = document.createElement("div");
+                let add = document.createElement("button");
                 add.className = "button";
                 add.innerText = "保存";
                 add.onclick = function () {
@@ -792,7 +1018,7 @@ var UI = {
             }
 
             if (type === UI.sqlManagerDialog.type.open) {
-                let del = document.createElement("div");
+                let del = document.createElement("button");
                 del.className = "button";
                 del.innerText = "删除";
                 del.onclick = function () {
@@ -811,7 +1037,7 @@ var UI = {
             }
 
             if (type === UI.sqlManagerDialog.type.open) {
-                let rename = document.createElement("div");
+                let rename = document.createElement("button");
                 rename.className = "button";
                 rename.innerText = "重命名";
                 rename.onclick = function () {
@@ -851,7 +1077,7 @@ var UI = {
             }
 
             if (type === UI.sqlManagerDialog.type.backup) {
-                let saveas = document.createElement("div");
+                let saveas = document.createElement("button");
                 saveas.className = "button";
                 saveas.innerText = "备份";
                 saveas.onclick = function () {
@@ -932,7 +1158,7 @@ var UI = {
             tool.appendChild(input);
 
             if (type === UI.sqlManagerDialog.type.backup) {
-                let loadfile = document.createElement("div");
+                let loadfile = document.createElement("button");
                 loadfile.className = "button";
                 loadfile.innerText = "恢复";
                 loadfile.onclick = function () {
@@ -941,7 +1167,7 @@ var UI = {
                 tool.appendChild(loadfile);
             }
 
-            let exit = document.createElement("div");
+            let exit = document.createElement("button");
             exit.className = "button";
             exit.innerText = "取消";
             exit.onclick = close.onclick = function () {
@@ -1133,7 +1359,7 @@ var UI = {
         tool.className = "groupbar";
         content.appendChild(tool);
 
-        let add = document.createElement("div");
+        let add = document.createElement("button");
         add.className = "button";
         add.innerText = "增加";
         add.onclick = function () {
@@ -1142,7 +1368,7 @@ var UI = {
         };
         tool.appendChild(add);
 
-        let del = document.createElement("div");
+        let del = document.createElement("button");
         del.className = "button";
         del.innerText = "删除";
         del.onclick = function () {
@@ -1161,7 +1387,7 @@ var UI = {
         };
         tool.appendChild(del);
 
-        let confirm = document.createElement("div");
+        let confirm = document.createElement("button");
         confirm.className = "button";
         confirm.innerText = "确定";
         confirm.onclick = function () {
@@ -1220,7 +1446,7 @@ var UI = {
         };
         tool.appendChild(confirm);
 
-        let cancel = document.createElement("div");
+        let cancel = document.createElement("button");
         cancel.className = "button";
         cancel.innerText = "退出";
         cancel.onclick = close.onclick = function () {
@@ -1454,7 +1680,7 @@ var UI = {
         let tool = document.createElement("div");
         tool.className = "groupbar";
         content.appendChild(tool);
-        let confirm = document.createElement("div");
+        let confirm = document.createElement("button");
         confirm.className = "button";
         confirm.innerText = "确定";
         confirm.onclick = function () {
@@ -1482,7 +1708,7 @@ var UI = {
         };
         tool.appendChild(confirm);
 
-        let cancel = document.createElement("div");
+        let cancel = document.createElement("button");
         cancel.className = "button";
         cancel.innerText = "退出";
         cancel.onclick = close.onclick = function () {
@@ -1624,7 +1850,7 @@ var UI = {
         tool.className = "groupbar";
         content.appendChild(tool);
 
-        let checknone = document.createElement("div");
+        let checknone = document.createElement("button");
         checknone.className = "button";
         checknone.innerText = "反选";
         checknone.onclick = function () {
@@ -1641,7 +1867,7 @@ var UI = {
         };
         tool.appendChild(checknone);
 
-        let confirm = document.createElement("div");
+        let confirm = document.createElement("button");
         confirm.className = "button";
         confirm.innerText = "确定";
         confirm.onclick = function () {
@@ -1693,7 +1919,7 @@ var UI = {
         };
         tool.appendChild(confirm);
 
-        let cancel = document.createElement("div");
+        let cancel = document.createElement("button");
         cancel.className = "button";
         cancel.innerText = "退出";
         cancel.onclick = close.onclick = function () {
@@ -1861,7 +2087,7 @@ var UI = {
         content.appendChild(tool);
         tool.className = "groupbar";
 
-        let confirm = document.createElement("div");
+        let confirm = document.createElement("button");
         confirm.className = "button";
         confirm.innerText = "确定";
         confirm.onclick = function () {
@@ -1884,7 +2110,7 @@ var UI = {
         };
         tool.appendChild(confirm);
 
-        let cancel = document.createElement("div");
+        let cancel = document.createElement("button");
         cancel.className = "button";
         cancel.innerText = "退出";
         cancel.onclick = close.onclick = function () {
@@ -1916,7 +2142,7 @@ var SQLite = {
     },
     createDatabase:function(parent) {
         let __DATABASE__ = {
-            Name: {value: "", name: "库名称", type: "text"},
+            Name: {value: "", name: "库名称", type: "text", image: "url(" + __SYS_IMAGES__.database.image + ")"},
             Version: {value: 1.0, name: "版本号", type: "text"},
             Description: {value: "", name: "库描述", type: "text"},
             Size: {value: "1024*1024*1024", name: "库容量", type: "text"}
@@ -1967,6 +2193,12 @@ var SQLite = {
                 input.id = name;
                 input.type = "text";
                 input.value = __DATABASE__[name].value;
+                if (typeof __DATABASE__[name].image !== "undefined") {
+                    input.style.backgroundImage = __DATABASE__[name].image;
+                    input.style.backgroundRepeat = "no-repeat";
+                    input.style.backgroundPosition = "right";
+                    input.style.backgroundSize = "16px 16px";
+                }
                 input.onchange = function () {
                     __DATABASE__[this.id].value = this.value;
                 };
@@ -1983,7 +2215,7 @@ var SQLite = {
         tool.style.cssFloat = "left";
         content.appendChild(tool);
 
-        let b = document.createElement("a");
+        let b = document.createElement("button");
         b.className = "button";
         b.innerHTML = "创建";
         b.onclick = function () {
@@ -2019,7 +2251,7 @@ var SQLite = {
             }
         };
         tool.appendChild(b);
-        b = document.createElement("a");
+        b = document.createElement("button");
         b.className = "button";
         b.innerHTML = "退出";
         b.onclick = close.onclick = function () {
@@ -2174,7 +2406,7 @@ var SQLite = {
         tool.style.cssFloat = "left";
         content.appendChild(tool);
 
-        let add = document.createElement("a");
+        let add = document.createElement("button");
         add.className = "button";
         add.innerHTML = "增加";
         add.setAttribute("tb", tb.id);
@@ -2223,7 +2455,7 @@ var SQLite = {
         };
         tool.appendChild(add);
 
-        let del = document.createElement("a");
+        let del = document.createElement("button");
         del.className = "button";
         del.innerHTML = "删除";
         del.onclick = function () {
@@ -2242,7 +2474,7 @@ var SQLite = {
         };
         tool.appendChild(del);
 
-        let b = document.createElement("a");
+        let b = document.createElement("button");
         b.className = "button";
         b.innerHTML = "创建";
         b.onclick = function () {
@@ -2277,7 +2509,7 @@ var SQLite = {
         };
         tool.appendChild(b);
 
-        b = document.createElement("a");
+        b = document.createElement("button");
         b.className = "button";
         b.innerHTML = "退出";
         b.onclick = close.onclick = function () {
@@ -2773,7 +3005,7 @@ var SQLite = {
             tool.style.width = "100%";
             content.appendChild(tool);
 
-            let b = document.createElement("a");
+            let b = document.createElement("button");
             b.className = "button";
             b.id = "import-button";
             b.innerHTML = "导入";
@@ -2813,7 +3045,7 @@ var SQLite = {
             };
             tool.appendChild(b);
 
-            b = document.createElement("a");
+            b = document.createElement("button");
             b.className = "button";
             b.innerHTML = "退出";
             b.onclick = close.onclick = function () {

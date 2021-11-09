@@ -209,7 +209,7 @@ var __LOGS__ = {
         content.appendChild(tool);
         tool.className = "groupbar";
 
-        let confirm = document.createElement("div");
+        let confirm = document.createElement("button");
         confirm.className = "button";
         confirm.innerText = "确定";
         confirm.onclick = close.onclick = function () {
@@ -217,7 +217,7 @@ var __LOGS__ = {
         };
         tool.appendChild(confirm);
 
-        let help = document.createElement("div");
+        let help = document.createElement("button");
         help.className = "button";
         help.innerText = "帮助";
         help.onclick = function () {
@@ -298,34 +298,36 @@ var __XMLHTTP__ = {
         certificated: false,
     },
     hook: function (dom, timeout) {
-        __XMLHTTP__.elements[dom.id] = dom;
+        let index = dom.id;
+        __XMLHTTP__.elements[index] = dom;
 
-        function startTime() {
-            dom.innerHTML = "时间:" + (__XMLHTTP__.time == null ? "" : __XMLHTTP__.time.format("yyyy-MM-dd hh:mm")) + " 更新频率:" + getTimesLengthString(timeout, "毫秒");
-            dom.title = "授时服务:\n" +
+        function startTime(index) {
+            __XMLHTTP__.elements[index].innerHTML = "时间:" + (__XMLHTTP__.time == null ? "" : __XMLHTTP__.time.format("yyyy-MM-dd hh:mm")) + " 更新频率:" + getTimesLengthString(timeout, "毫秒");
+            __XMLHTTP__.elements[index].title = "授时服务:\n" +
                 (__XMLHTTP__.server == null ? "" : __XMLHTTP__.server) + "\n" +
                 (__XMLHTTP__.abstract == null ? "" : __XMLHTTP__.abstract);
 
-            if (typeof __XMLHTTP__.elements[dom.id] != "undefined") {
-                __XMLHTTP__.getResponse();
-                if (__XMLHTTP__.time != null && __XMLHTTP__.updatetime != null) {
-                    if (new Date() - __XMLHTTP__.updatetime < timeout) {
+            if (typeof __XMLHTTP__.elements[index] != "undefined") {
+                if (__XMLHTTP__.updatetime != null) {
+                    if ((new Date() - __XMLHTTP__.updatetime) < timeout) {
                         setTimeout(function () {
-                            startTime();
+                            startTime(index);
                         }, timeout);
                     } else {
+                        __XMLHTTP__.getResponse();
                         setTimeout(function () {
-                            startTime();
-                        }, 1000);
+                            startTime(index);
+                        }, 0);
                     }
                 } else {
+                    __XMLHTTP__.getResponse();
                     setTimeout(function () {
-                        startTime();
-                    }, 1000);
+                        startTime(index);
+                    }, 0);
                 }
             }
         }
-        startTime();
+        startTime(index);
     },
     unhook: function (dom) {
         delete __XMLHTTP__.elements[dom.id];
@@ -334,6 +336,7 @@ var __XMLHTTP__ = {
         let xhr = __XMLHTTP__.request();
         // 通过get或HEAD的方式请求当前文件
         if (xhr != null) {
+            __LOGS__.viewMessage("发送授时请求...");
             xhr.open("GET", location.href + "?timestamp=" + new Date().format("yyyyMMddhhmmssS"), true);
             //增加时间戳，避免前端缓存导致客户端不更新。
             //不能跨域名
@@ -344,12 +347,12 @@ var __XMLHTTP__ = {
                         __XMLHTTP__.server = xhr.responseURL.split("/").slice(0, 3).join("/");
                         __XMLHTTP__.abstract = xhr.getResponseHeader("Server");
                         __XMLHTTP__.time = new Date(xhr.getResponseHeader("Date"));
-                        __XMLHTTP__.localtime = new Date();
+                        __XMLHTTP__.updatetime = new Date();
                     } else if (xhr.status == 404) {
                         __XMLHTTP__.server = null;
                         __XMLHTTP__.abstract = null;
                         __XMLHTTP__.time = null;
-                        __XMLHTTP__.localtime = null;
+                        __XMLHTTP__.updatetime = null;
                     }
                 } catch (e) {
                     console.log("__XMLHTTP__.getResponse:" + e);
@@ -366,7 +369,7 @@ var __XMLHTTP__ = {
             {name: "主程序", src: "themes/default.css", type: "text/css", element: "link", load: false},
             {name: "主程序", src: "WebDBDataView.css", type: "text/css", element: "link", load: false},
             {name: "主程序", src: "UI-A.js", type: "text/javascript", element: "script", load: false},
-            {name: "资料库", src: "themes/images.js", type: "text/javascript", element: "script", load: false},
+            {name: "资料库", src: "images.js", type: "text/javascript", element: "script", load: false},
             {name: "公共函数", src: "FunctionsComponent.js", type: "text/javascript", element: "script", load: false},
             {
                 name: "Echarts",
@@ -949,7 +952,7 @@ var __CONFIGS__ = {
          c.className = "groupbar";
          content.appendChild(c);
 
-         let b = document.createElement("a");
+         let b = document.createElement("button");
          b.className = "button";
          b.innerHTML = "确定";
          b.onclick = function () {
@@ -965,7 +968,7 @@ var __CONFIGS__ = {
          };
          c.appendChild(b);
 
-         b = document.createElement("a");
+         b = document.createElement("button");
          b.className = "button";
          b.innerHTML = "重置";
          b.onclick = close.onclick = function () {
@@ -978,7 +981,7 @@ var __CONFIGS__ = {
          };
          c.appendChild(b);
 
-         b = document.createElement("a");
+         b = document.createElement("button");
          b.className = "button";
          b.innerHTML = "退出";
          b.onclick = close.onclick = function () {
@@ -1413,8 +1416,8 @@ function orderDatasetBy(dataset, colid) {
     // 对数据排序
     // 中文比较大小使用localeCompare
     function exchange(r1, r2) {
-        for (col in r1) {
-            for (attr in r1[col]) {
+        for (let col in r1) {
+            for (let attr in r1[col]) {
                 if (attr != "rowid" && attr != "colid") {
                     let tmp = r1[col][attr];
                     r1[col][attr] = r2[col][attr];
@@ -1441,27 +1444,27 @@ function orderDatasetBy(dataset, colid) {
         for (let x = 0; x < i; x++) {
             switch (columns[colid].order) {
                 case "asc":
-                    if (data[i][columns[colid].name].type == "number") {
+                    if (data[i][columns[colid].name].type == "number" && data[x][columns[colid].name].type == "number") {
                         if (data[i][columns[colid].name].value < data[x][columns[colid].name].value) {
                             exchange(data[i], data[x]);
                         }
-                    } else if (data[i][columns[colid].name].type == "object") {
-                        exchange(data[i], data[x]);
+                    } else if (data[i][columns[colid].name].type == "object" || data[x][columns[colid].name].type == "object") {
+                        //exchange(data[i], data[x]);
                     } else {
-                        if (data[i][columns[colid].name].value.localeCompare(data[x][columns[colid].name].value) < 0) {
+                        if (data[i][columns[colid].name].value.localeCompare(data[x][columns[colid].name].value) < 0 && data[i][columns[colid].name].type == data[x][columns[colid].name].type) {
                             exchange(data[i], data[x]);
                         }
                     }
                     break;
                 case "desc":
-                    if (data[i][columns[colid].name].type == "number") {
+                    if (data[i][columns[colid].name].type == "number" && data[x][columns[colid].name].type == "number") {
                         if (data[i][columns[colid].name].value > data[x][columns[colid].name].value) {
                             exchange(data[i], data[x]);
                         }
-                    } else if (data[i][columns[colid].name].type == "object") {
-                        exchange(data[i], data[x]);
+                    } else if (data[i][columns[colid].name].type == "object" || data[x][columns[colid].name].type == "object") {
+                        //exchange(data[i], data[x]);
                     } else {
-                        if (data[i][columns[colid].name].value.localeCompare(data[x][columns[colid].name].value) > 0) {
+                        if (data[i][columns[colid].name].value.localeCompare(data[x][columns[colid].name].value) > 0 && data[i][columns[colid].name].type == data[x][columns[colid].name].type) {
                             exchange(data[i], data[x]);
                         }
                     }
@@ -2112,7 +2115,7 @@ function appState(title, message) {
     $("time").height = 50;
     $("time").title = title;
     let ctx = $("time").getContext("2d");
-    ctx.drawImage(__SYS_IMAGES__.getLogoImage(__SYS_IMAGES__.child, 30, 30), 0, 20, 30, 30);
+    ctx.drawImage(__SYS_IMAGES__.getLogoImage(__SYS_IMAGES__.mouse, 30, 30), 0, 20, 30, 30);
     ctx.save();
     ctx.translate($("time").width / 2, $("time").height / 2);
     ctx.font = '12px Arial';
@@ -2124,19 +2127,6 @@ function appState(title, message) {
 }
 
 function drawClock(data) {
-    function getH24(data) {
-        let index = 0;
-        let date = new Date(data.toString().split("\n")[0]);
-        for (let i = 0; i < __SYS_IMAGES__.h24.length; i++) {
-            let h = __SYS_IMAGES__.h24[i];
-            if (date.format("MM/dd").localeCompare(h.date[0]) <= 0) {
-                index = i;
-                break;
-            }
-        }
-        return index == 0 ? 23 : (index - 1);
-    }
-
     $("time").title = data;
     let times = data.toString().split("\n")[1].split(":");
     $("time").width = 50;
@@ -2151,8 +2141,6 @@ function drawClock(data) {
     hours = hours > 12 ? hours - 12 : hours;
     let hour = hours + minutes / 60;
     let minute = minutes + seconds / 60;
-    ctx.drawImage(__SYS_IMAGES__.getLogoImage(__SYS_IMAGES__.h24[getH24(data)], 50, 50), 0, 0, 50, 50);
-    ctx.save();
 
     ctx.translate($("time").width / 2, $("time").height / 2);
     ctx.beginPath();
@@ -2212,6 +2200,117 @@ function drawClock(data) {
     ctx.restore();
 }
 
+function userLogin() {
+    UI.userLogin.show("用户登录", "auto", function (values) {
+        let users = getUserConfig("Users");
+        users = JSON.parse(users.decode());
+        let user = users[values.name];
+        if (typeof user === "undefined") {
+            UI.alert.show("用户登录", values.name + " 用户不存在!", "auto", function () {
+                userLogin();
+            });
+        } else {
+            if (user.password !== values.password.hex_md5_hash()) {
+                UI.alert.show("用户登录", "用户密码验证(MD5)未通过!", "auto", function () {
+                    userLogin();
+                });
+            } else {
+                let image = $("user").getElementsByTagName("img")[0];
+                image.src = __SYS_IMAGES__.logined.image;
+                let span = document.createElement("span");
+                span.innerHTML = values.name;
+                $("user").appendChild(span);
+            }
+        }
+    });
+}
+
+function init() {
+    if (initConfigs()) {
+        initMenus();
+        setPageThemes();
+        viewDatabases();
+        setDataPageTools(0);
+        getEchartsClock();
+
+        window.onresize = function () {
+            resize();
+        };
+
+        try {
+            //Worker需要在服务器上运行
+            if (typeof(Worker) !== "undefined") {
+                appState("服务器运行.", "Web service •••");
+                let worker = new Worker("time.js");
+                worker.onmessage = function (event) {
+                    let message = JSON.parse(event.data);
+                    switch (message.type) {
+                        case "time":
+                            drawClock(message.value);
+                            break;
+                        case "certificate":
+                            if (__XMLHTTP__.checking.certificated == false)
+                                __XMLHTTP__.certificate(true);
+                            break;
+                    }
+                }
+            }
+            else {
+                //worker.terminate();
+                //worker = undefined;
+                appState("本地运行.", "Local file •••");
+                if (__XMLHTTP__.checking.certificated == false)
+                    __XMLHTTP__.certificate(false);
+            }
+        } catch (e) {
+            appState("本地运行.", "Local file •••");
+            if (__XMLHTTP__.checking.certificated == false)
+                __XMLHTTP__.certificate(false);
+        }
+        try {
+            let users = getUserConfig("Users");
+            if (users == null) {
+                UI.confirm.show("注意", "您没有创建系统用户,是否需要立即创建?", "auto", function () {
+                    UI.prompt.show("请输入用户名称", {"用户名称": ""}, "auto", function (values) {
+                        let name = values["用户名称"].trim();
+                        if (name.length >= 2) {
+                            UI.password.show("用户 " + name + " 的登录密码", {
+                                "登录密码": "",
+                                "确认密码": ""
+                            }, "auto", function (args, values) {
+                                let name = args["name"];
+                                let users = {};
+                                let pattern = /^.*(?=.{8,})(?=.*\d{1,7})(?=.*[A-Za-z]{1,7}).*$/;
+                                //必须是8位密码,且必须包含字符和数字
+                                let key = values["登录密码"];
+                                if (key != values["确认密码"]) {
+                                    UI.alert.show("提示", "两次密码输入不一致.", "auto");
+                                } else if (pattern.test(key) == false) {
+                                    UI.alert.show("提示", "请输入8位密码,且必须包含英文字母和数字.", "auto");
+                                } else {
+                                    users[name] = {
+                                        password: values["确认密码"].hex_md5_hash(),
+                                        date: getNow()
+                                    };
+                                    setUserConfig("Users", JSON.stringify(users).encode());
+                                    location.reload();
+                                }
+                            }, {name: name});
+                        } else
+                            UI.alert.show("注意", "用户名称长度不符合系统要求!", "auto");
+                    });
+                });
+            } else {
+                userLogin();
+            }
+        } catch (e) {
+            __LOGS__.viewError("auto", e);
+        }
+        //#########################body init end#######################################
+    }
+}
+
+
 function initConfigs() {
     let checked = false;
     if (checkStorage()) {
@@ -2232,10 +2331,14 @@ function initConfigs() {
                 }
             }
 
-             $("main-title").appendChild(__SYS_IMAGES__.getLogoImage(__VERSION__.logo));
+            $("main-title").appendChild(__SYS_IMAGES__.getLogoImage(__VERSION__.logo));
             $("main-title").ondblclick = function () {
                 requestFullScreen(document.body);
             };
+
+            let image = document.createElement("img");
+            image.src = __SYS_IMAGES__.login.image;
+            $("user").appendChild(image);
 
             let helpurl = document.getElementsByClassName("help-url");
             for(let i=0;i<helpurl.length;i++){
@@ -2268,7 +2371,7 @@ function initConfigs() {
             let config = getUserConfig("echartsconfig");
             if (config != null) {
                 config = JSON.parse(config);
-                for (key in config) {
+                for (let key in config) {
                     try {
                         __ECHARTS__.configs[key].value = config[key];
                     } catch (e) {
@@ -2279,7 +2382,7 @@ function initConfigs() {
             config = getUserConfig("datasetConfig");
             if (config != null) {
                 config = JSON.parse(config);
-                for (key in config) {
+                for (let key in config) {
                     try {
                         __DATASET__.configs[key].value = config[key];
                     } catch (e) {
@@ -2564,7 +2667,8 @@ function initMenus() {
         newsql.onclick = help_createsql.onclick = function () {
             let openfile = $("open-sql-file");
             openfile.value = "";
-            __SQLEDITOR__.title = null; $("sql-title").innerText = "";
+            __SQLEDITOR__.title = null;
+            $("sql-title").innerText = "";
             __SQLEDITOR__.codeMirror.setValue("");
             if (this.id == "help-create-sql") {
                 let sql = "/*脚本案例*/\r\n" +
@@ -2593,11 +2697,11 @@ function initMenus() {
                     let reader = new FileReader();
                     reader.onload = function () {
                         __SQLEDITOR__.codeMirror.setValue(this.result);
-                        __SQLEDITOR__.title =  $("sql-title").innerText = file.name.split(".")[0];
+                        __SQLEDITOR__.title = $("sql-title").innerText = file.name.split(".")[0];
                     };
                     reader.readAsText(file, __SQLEDITOR__.charset.options[__SQLEDITOR__.charset.value]);
                 } catch (e) {
-                    UI.alert.show("提示","请选择需要导入的脚本文件.")
+                    UI.alert.show("提示", "请选择需要导入的脚本文件.")
                 }
             } else {
                 UI.alert.show("提示", "本应用适用于Chrome浏览器或IE10及以上版本。")
@@ -2692,7 +2796,8 @@ function initMenus() {
         backup.className = "button";
         backup.innerText = "备份";
         backup.id = "backup-sql-to-file";
-        backup.onclick = function() {
+        backup.appendChild(__SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.unload_sql));
+        backup.onclick = function () {
             UI.sqlManagerDialog.show("auto", function (args, values) {
 
             }, {type: UI.sqlManagerDialog.type.backup});
@@ -2707,7 +2812,7 @@ function initMenus() {
         execsql.appendChild(__SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.execute_sql));
         let help_execsql = $("help-execute-sql");
         execsql.onclick = help_execsql.onclick = function () {
-             if (checkStorage()) {
+            if (checkStorage()) {
                 let selection = "";
                 if (__SQLEDITOR__.codeMirror.somethingSelected())
                     selection = __SQLEDITOR__.codeMirror.getSelection();
@@ -2724,7 +2829,7 @@ function initMenus() {
                     }
                     params = temp;
                     UI.prompt.show("输入脚本参数", params, "auto", function (args, values) {
-                        for(let key in values) {
+                        for (let key in values) {
                             __SQLEDITOR__.parameter[key] = values[key];
                         }
                         if (__SQLEDITOR__.title != null) {
@@ -2947,7 +3052,7 @@ function initMenus() {
                     if (values[d].checked) {
                         let date = values[d].value;
                         __LOGS__.saveas(date);
-                        sleep(1000)
+                        sleep(1000);
                         count++;
                     }
                 }
@@ -3063,9 +3168,9 @@ function initMenus() {
                                         __LOGS__.viewError(e);
                                     }
                                 } else
-                                   __LOGS__.viewMessage(file.name  + " ...校验失败,文件或被篡改.", true);
+                                    __LOGS__.viewMessage(file.name + " ...校验失败,文件或被篡改.", true);
                             } else {
-                                __LOGS__.viewMessage(file.name  + " ...格式错误.", true);
+                                __LOGS__.viewMessage(file.name + " ...格式错误.", true);
                             }
                         } else {
                             __LOGS__.viewMessage(file.name + " ...格式错误.", true);
@@ -3125,7 +3230,7 @@ function initMenus() {
         dataslice.id = "dataset-slice";
         let help_datasetslice = $("help-dataset-slice");
         dataslice.onclick = help_datasetslice.onclick = function () {
-             if (__DATASET__.result.length > 0) {
+            if (__DATASET__.result.length > 0) {
                 UI.getDataSlice("auto", function (values) {
                     for (let i = 0; i < values.length; i++) {
                         __DATASET__.result.push(values[i]);
@@ -3219,9 +3324,9 @@ function initMenus() {
                                 aoa.push(row);
                             }
                             sheets.push(aoa);
-                            sheetNames = removingRedundant(sheetNames,dataset.title[dataset.title.length - 1]);
+                            sheetNames = removingRedundant(sheetNames, dataset.title[dataset.title.length - 1]);
                             sheets.push(comment);
-                            sheetNames = removingRedundant(sheetNames,"Comment");
+                            sheetNames = removingRedundant(sheetNames, "Comment");
                             UI.prompt.show("输入", {"文件名称": dataset.title.join("_")}, "auto", function (args, values) {
                                 let title = fixFileName(values["文件名称"]);
                                 if (title.trim() != "") {
@@ -3263,10 +3368,10 @@ function initMenus() {
                                                 aoa.push(row);
                                             }
                                             sheets.push(aoa);
-                                            sheetNames = removingRedundant(sheetNames,dataset.title[dataset.title.length - 1]);
+                                            sheetNames = removingRedundant(sheetNames, dataset.title[dataset.title.length - 1]);
                                         }
                                         sheets.push(comment);
-                                        sheetNames = removingRedundant(sheetNames,"Comment");
+                                        sheetNames = removingRedundant(sheetNames, "Comment");
                                         UI.prompt.show("输入", {"文件名称": ""}, "auto", function (args, values) {
                                             let title = fixFileName(values["文件名称"]);
                                             if (title.trim() != "") {
@@ -3407,7 +3512,7 @@ function initMenus() {
         datasetSetting.innerText = "┅";
         datasetSetting.id = "dataset-setting";
         datasetSetting.onclick = function () {
-            __DATASET__.setDatasetConfigs("auto", function() {
+            __DATASET__.setDatasetConfigs("auto", function () {
                 if (__DATASET__.result.length > 0) {
                     viewDataset(__DATASET__.default.sheet, __DATASET__.pages.default);
                 }
@@ -3533,7 +3638,7 @@ function initMenus() {
         toconfigs.id = "dataset-to-configs";
         let help_echartsConfigs = $("help-select-echarts-configs");
         toconfigs.onclick = help_echartsConfigs.onclick = function () {
-            __ECHARTS__.setEchartsConfigs("auto", function(configs) {
+            __ECHARTS__.setEchartsConfigs("auto", function (configs) {
                 let container = $("tableContainer");
                 try {
                     if (__DATASET__.result.length > 0) {
@@ -3686,6 +3791,45 @@ function initMenus() {
         $("image-base64").onclick = function () {
             getImageBase64Code("auto");
         };
+        //创建系统用户
+        $("create-sys-user").onclick = function () {
+            UI.prompt.show("创建用户", {"用户名称": ""}, "auto", function (values) {
+                let name = values["用户名称"].trim();
+                if (name.length >= 2) {
+                    let users = {};
+                    try {
+                        users = JSON.parse(getUserConfig("Users").decode());
+                    } catch (e) {
+                    }
+                    if (typeof users[name] === "undefined") {
+                        UI.password.show("用户 " + name + " 的登录密码", {
+                            "登录密码": "",
+                            "确认密码": ""
+                        }, "auto", function (args, values) {
+                            let name = args["name"];
+                            let users = args["users"];
+                            let pattern = /^.*(?=.{8,})(?=.*\d{1,7})(?=.*[A-Za-z]{1,7}).*$/;
+                            //必须是8位密码,且必须包含字符和数字
+                            let key = values["登录密码"];
+                            if (key != values["确认密码"]) {
+                                UI.alert.show("提示", "两次密码输入不一致.", "auto");
+                            } else if (pattern.test(key) == false) {
+                                UI.alert.show("提示", "请输入8位密码,且必须包含英文字母和数字.", "auto");
+                            } else {
+                                users[name] = {
+                                    password: values["确认密码"].hex_md5_hash(),
+                                    date: getNow()
+                                };
+                                setUserConfig("Users", JSON.stringify(users).encode());
+                                location.reload();
+                            }
+                        }, {name: name, users: users})
+                    } else
+                        UI.alert.show("提示", "该用户名称已存在！", "auto");
+                } else
+                    UI.alert.show("注意", "用户名称长度不符合系统要求!", "auto");
+            });
+        };
         __LOGS__.viewMessage(message + "...OK.");
     } catch (e) {
         __LOGS__.viewMessage(message + "...fails.\n" + e, true);
@@ -3720,52 +3864,6 @@ function getEchartsClock() {
     } catch (e) {
         __LOGS__.viewError(e);
     }
-}
-
-function init() {
-    if (initConfigs()) {
-        initMenus();
-        setPageThemes();
-        viewDatabases();
-        setDataPageTools(0);
-        getEchartsClock();
-
-        window.onresize = function () {
-            resize();
-        };
-
-        try {
-            //Worker需要在服务器上运行
-            if (typeof(Worker) !== "undefined") {
-                appState("服务器运行.", "Web service •••");
-                let worker = new Worker("time.js");
-                worker.onmessage = function (event) {
-                    let message = JSON.parse(event.data);
-                    switch (message.type) {
-                        case "time":
-                            drawClock(message.value);
-                            break;
-                        case "certificate":
-                            if (__XMLHTTP__.checking.certificated == false)
-                                __XMLHTTP__.certificate(true);
-                            break;
-                    }
-                }
-            }
-            else {
-                //worker.terminate();
-                //worker = undefined;
-                appState("本地运行.", "Local file •••");
-                if (__XMLHTTP__.checking.certificated == false)
-                    __XMLHTTP__.certificate(false);
-            }
-        } catch (e) {
-            appState("本地运行.", "Local file •••");
-            if (__XMLHTTP__.checking.certificated == false)
-                __XMLHTTP__.certificate(false);
-        }
-    }
-    //#########################body init end#######################################
 }
 
 function getQRCode(parent,width,height,text,logoImage) {
@@ -4717,7 +4815,7 @@ function getImageBase64Code(parent) {
     tool.className = "groupbar";
     content.appendChild(tool);
 
-    let show = document.createElement("div");
+    let show = document.createElement("button");
     show.className = "button";
     show.innerText = "打开";
     show.onclick = function () {
@@ -4734,7 +4832,7 @@ function getImageBase64Code(parent) {
     };
     tool.appendChild(show);
 
-    let toimage = document.createElement("div");
+    let toimage = document.createElement("button");
     toimage.className = "button";
     toimage.id = "toimage";
     toimage.innerText = "解析";
