@@ -32,6 +32,91 @@ function saveStorageSql(key, sql) {
 }
 
 var UI = {
+    tooltip: function(dom, text) {
+        dom.onmouseenter = function () {
+            if (typeof $("tooltip-" + this.id) !== "undefined") {
+                let parent = document.body;
+                if (document.fullscreen && typeof __CONFIGS__.fullScreen.element == "object") {
+                    parent = __CONFIGS__.fullScreen.element;
+                }
+                let tip = document.createElement("div");
+                tip.className = "ui-tooltip";
+                tip.id = "tooltip-" + dom.id;
+                let posi = getAbsolutePosition(dom);
+                let parentposi = getAbsolutePosition(parent);
+                if ((posi.top - 52) < 0)
+                    tip.style.top = (posi.top + posi.height) + "px";
+                else
+                    tip.style.top = (posi.top - 52) + "px";
+                if ((posi.left + 100) < parentposi.width)
+                    tip.style.left = (posi.left + posi.width) + "px";
+                else
+                    tip.style.left = (posi.left - 100) + "px";
+                tip.style.width = "100px";
+                tip.style.height = "40px";
+                tip.style.borderRadius = "5px";
+                tip.style.backgroundImage = "url(" + __SYS_IMAGES__.mouse.image + ")";
+                tip.style.backgroundRepeat = "no-repeat";
+                tip.style.backgroundPosition = "right bottom";
+                tip.style.backgroundSize = "24px 24px";
+                let span = document.createElement("span");
+                span.className = "message";
+                span.innerHTML = text;
+                tip.appendChild(span);
+                parent.appendChild(tip);
+            }
+        };
+        dom.onmouseleave = function () {
+            if (typeof $("tooltip-" + this.id) !== "undefined") {
+                let parent = document.body;
+                if (document.fullscreen && typeof __CONFIGS__.fullScreen.element == "object") {
+                    parent = __CONFIGS__.fullScreen.element;
+                }
+                parent.removeChild($("tooltip-" + this.id))
+            }
+        };
+    },
+    help: function(dom, key, parent, message) {
+        let posi = getAbsolutePosition(dom);
+        let container = document.createElement("div");
+        container.id = "ui_help";
+        container.className = "ui-container-background";
+
+        if (parent === "auto" || parent == null || typeof parent == "undefined") {
+            if (document.fullscreen && typeof __CONFIGS__.fullScreen.element == "object") {
+                parent = __CONFIGS__.fullScreen.element;
+            } else {
+                parent = document.body;
+            }
+        }
+        let parentposi = getAbsolutePosition(parent);
+        parent.appendChild(container);
+        let content = document.createElement("div");
+        content.className = "ui-container-help";
+        content.style.backgroundImage = "url(" + __SYS_IMAGES__.mouse.image + ")";
+        content.style.backgroundRepeat = "no-repeat";
+        content.style.backgroundPosition = "right bottom";
+        content.style.backgroundSize = "48px 48px";
+        container.appendChild(content);
+
+        let msg = document.createElement("div");
+        msg.className = "message";
+        msg.innerHTML = (typeof __VERSION__.helps[key] !== "undefined" ? __VERSION__.helps[key] : (typeof message =="undefined"?__VERSION__.helps["other"]: message)) +
+            "<hr><span style='font-size: 30%'>" + getUserConfig("CopyRight") + "</span>";
+        content.appendChild(msg);
+        content.onmouseleave = function () {
+            parent.removeChild($("ui_help"));
+        };
+        let contentposi = getAbsolutePosition(content);
+        if ((posi.left + posi.width + contentposi.width) < parentposi.width)
+            content.style.left = (posi.left + posi.width) + "px";
+        else
+            content.style.left = (posi.left - contentposi.width) + "px";
+        if ((posi.top + posi.height + contentposi.height) < parentposi.height)
+            content.style.top = posi.top + "px";
+        else
+            content.style.top = (posi.top - contentposi.height) + "px";
+    },
     alert: {
         title: null,
         message: null,
@@ -630,6 +715,20 @@ var UI = {
         show: function (message, items, parent, callback, args) {
             //items:{item:null,...}
             //return: items:{item:password,item:password,....}
+            function setFocus(domid) {
+                let inputs = document.getElementsByClassName("ui-container-item-input");
+                let focus = -1;
+                for (let i = 0; i < inputs.length; i++) {
+                    if (inputs[i].id === domid) {
+                        focus = i + 1;
+                        break;
+                    }
+                }
+                if (focus == inputs.length)
+                    $("ui-password-ok").focus();
+                else
+                    inputs[focus].focus();
+            }
             this.title = message;
             this.items = items;
             let container = document.createElement("div");
@@ -695,6 +794,13 @@ var UI = {
                 input.style.backgroundRepeat = "no-repeat";
                 input.style.backgroundPosition = "right";
                 input.style.backgroundSize = "16px 16px";
+                input.onkeypress = function (event) {
+                    let keyCode = event.keyCode ? event.keyCode : event.which ?
+                        event.which : event.charCode;
+                    if (keyCode == 13) {
+                        setFocus(this.id);
+                    }
+                };
                 item.appendChild(input);
                 itemcontent.appendChild(item);
             }
@@ -718,6 +824,7 @@ var UI = {
 
             button = document.createElement("button");
             button.className = "button";
+            button.id = "ui-password-ok";
             button.innerText = "确定";
             button.style.cssText = "float: right;margin-left:10px";
             button.onclick = function () {
@@ -734,6 +841,7 @@ var UI = {
             };
             tools.appendChild(button);
             setDialogDrag(title);
+            document.getElementsByClassName("ui-container-item-input")[0].focus();
         },
     },
     sqlManagerDialog: {

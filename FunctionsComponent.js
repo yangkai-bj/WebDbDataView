@@ -1,3 +1,4 @@
+
 // BEGIN DES3
 function des (key, message, encrypt, mode, iv, padding) {
     // DES 加密算法
@@ -1216,41 +1217,41 @@ function getFileSizeString(size, unit) {
     }
 }
 
-function getTimesLengthString(timelength, unit) {
+function getTimesLength(timelength, unit) {
     if (unit == "毫秒") {
         if (timelength < 1000) {
-            return Math.round(timelength * 100) / 100 + unit;
+            return {value: Math.floor(timelength * 100) / 100, unit: unit};
         } else {
             unit = "秒";
-            return getTimesLengthString(timelength / 1000, unit);
+            return getTimesLength(timelength / 1000, unit);
         }
     }
     else if (unit == "秒") {
         if (timelength < 60) {
-            return Math.round(timelength * 60) / 60 + unit;
+            return {value: Math.floor(timelength * 100) / 100, unit: unit};
         } else {
             unit = "分钟";
-            return getTimesLengthString(timelength / 60, unit);
+            return getTimesLength(timelength / 60, unit);
         }
     }
     else if (unit == "分钟") {
         if (timelength < 60) {
-            return Math.round(timelength * 60) / 60 + unit;
+            return {value: Math.floor(timelength * 100) / 100, unit: unit};
         } else {
             unit = "小时";
-            return getTimesLengthString(timelength / 60, unit);
+            return getTimesLength(timelength / 60, unit);
         }
     }
     else if (unit == "小时") {
         if (timelength < 24) {
-            return Math.round(timelength * 24) / 24 + unit;
+            return {value: Math.floor(timelength * 100) / 100, unit: unit};
         } else {
             unit = "天";
-            return getTimesLengthString(timelength / 24, unit);
+            return getTimesLength(timelength / 24, unit);
         }
     }
     else if (unit == "天") {
-        return Math.round(timelength * 24) / 24 + unit;
+        return {value: Math.floor(timelength * 100) / 100, unit: unit};
     }
 }
 
@@ -1300,3 +1301,67 @@ function getEventIndex(index) {
         index = Math.floor(Math.random() * 1000);
     return new Date().format("yyyyMMddhhmmssS") + "-" + index;
 }
+
+function getAbsolutePosition(obj)
+//获取控件绝对位置
+{
+    let position = {"left":0,"top":0,"width":0,"height":0};
+    let w=0,h=0;
+    position.width = obj.offsetWidth;
+    position.height = obj.offsetHeight;
+    while(obj.offsetParent)
+    {
+        w += obj.offsetLeft;
+        h += obj.offsetTop;
+        obj = obj.offsetParent;
+    }
+    position.left = w;
+    position.top = h;
+    return position;
+}
+
+function getUserConfig(key) {
+    try {
+        let storage = window.localStorage;
+        if (storage.getItem(__CONFIGS__.STORAGE.CONFIGS) == null) {
+            let th = {};
+            storage.setItem(__CONFIGS__.STORAGE.CONFIGS, JSON.stringify(th));
+        }
+        let configs = JSON.parse(storage.getItem(__CONFIGS__.STORAGE.CONFIGS));
+        return configs[key];
+    }catch (e) {
+        __LOGS__.viewError("auto", e);
+        return null;
+    }
+}
+
+function setUserConfig(key,value) {
+    try {
+        let storage = window.localStorage;
+        let configs = JSON.parse(storage.getItem(__CONFIGS__.STORAGE.CONFIGS));
+        configs[key] = value;
+        storage.setItem(__CONFIGS__.STORAGE.CONFIGS, JSON.stringify(configs));
+    } catch (e) {
+        __LOGS__.viewError("auto", e);
+    }
+}
+
+function getBrowserSize(){
+    let winWidth = 0;
+    let winHeight = 0;
+    if (window.innerWidth) {
+        winWidth = window.innerWidth;
+    } else if ((document.body) && (document.body.clientWidth)) {
+        winWidth = document.body.clientWidth;
+    }
+
+    if (window.innerHeight) {
+        winHeight = window.innerHeight;
+    } else if ((document.body) && (document.body.clientHeight)) {
+        winHeight = document.body.clientHeight;
+    }
+    return {
+        width: winWidth,
+        height: winHeight
+    };
+};

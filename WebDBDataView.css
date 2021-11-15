@@ -371,18 +371,16 @@ img.title_close_button:hover{
     color: var(--toolbar-background-color);
 }
 
-.toolbar .button{
+.toolbar .button {
     height: 100%;
     width: 60px;
     text-align: center;
     line-height: 36px;
     margin: 0px;
     cursor: pointer;
-    float:left;
+    float: left;
     position: relative;
-    border-bottom-right-radius: 15px;
-    border-top-left-radius: 15px;
-    border-top-right-radius: 5px;
+    border-radius: 5px;
 }
 
 .toolbar .button:hover{
@@ -489,45 +487,11 @@ img.title_close_button:hover{
     color: var(--toolbar-color);
     outline-style: none;
     border: 0px;
-    border-bottom-right-radius: 15px;
-    border-top-left-radius: 15px;
-    border-top-right-radius: 5px;
+    border-radius: 18px;
 }
 
 .toolbar select:hover {
     background-color: var(--toolbar-button-hover-background-color);
-}
-
-.tooltip-button {
-    display: block;
-    position: fixed;
-    line-height: 14px;
-    background-color: var(--toolbar-button-hover-background-color);
-    color: var(--toolbar-button-tooltip-color);
-    text-align: center;
-    padding: 5px 0;
-    z-index: 10000;
-    font-size: 6px;
-    -webkit-animation: content-show 2s 1;/*infinite; /* Chrome, Safari, Opera */
-    animation: content-show 2s 1;/*infinite;*/
-    border-bottom-left-radius: 15px;
-    border-top-right-radius: 15px;
-    border-bottom-right-radius: 5px;
-}
-
-.tooltip-charButton {
-    display: block;
-    position: fixed;
-    line-height: 14px;
-    background-color: var(--toolbar-button-hover-background-color);
-    color: var(--toolbar-button-tooltip-color);
-    text-align: center;
-    padding: 5px 0;
-    z-index: 10000;
-    font-size: 6px;
-    -webkit-animation: content-show 2s 1;/*infinite; /* Chrome, Safari, Opera */
-    animation: content-show 2s 1;/*infinite;*/
-    border-radius: 5px;
 }
 
 .groupbar {
@@ -1368,6 +1332,71 @@ textarea:enabled {
 
 .ui-progress-detail-item .ui-progress-detail-item-error {
     width: 60%;
+}
+
+.ui-container-help {
+    cursor: pointer;
+    line-height: 23px;
+    font-size: 130%;
+    position: absolute;
+    margin: 10px;
+    padding: 10px;
+    width: 400px;
+    background: rgba(0, 50, 50, 0.5);
+    color: var(--toolbar-background-color);
+    border: 1px solid var(--main-border-color);
+    border-radius: 16px;
+    /*box-shadow: 1px 1px 2px #aaaaaa;*/
+    z-index: 9999;
+    -webkit-animation: content-show 1s 1;
+    animation: content-show 1s 1;
+}
+
+.ui-container-help .message {
+    width: 85%;
+    float: left;
+    white-space: normal;
+    word-break: break-all;
+    word-wrap: break-word;
+    color: var(--main-title-color);
+    line-height: 1.5;
+    display: inline-block;
+    vertical-align: middle;
+    text-align: left;
+    background-color: transparent;
+    color: var(--main-title-color);
+    min-height: 100px;
+}
+
+.ui-tooltip {
+    display: block;
+    position: fixed;
+    line-height: 14px;
+    background: rgba(0, 50, 50, 0.7);
+    color: var(--main-title-color);
+    border: 1px solid var(--main-border-color);
+    text-align: center;
+    padding: 5px 0;
+    z-index: 10000;
+    font-size: 8px;
+    -webkit-animation: content-show 2s 1;/*infinite; /* Chrome, Safari, Opera */
+    animation: content-show 2s 1;/*infinite;*/
+}
+
+.ui-tooltip .message {
+    width: 80%;
+    float: left;
+    margin-left: 8px;
+    white-space: normal;
+    word-break: break-all;
+    word-wrap: break-word;
+    line-height: 1.5;
+    display: inline-block;
+    vertical-align: middle;
+    text-align: left;
+    background-color: transparent;
+    color: var(--main-title-color);
+    min-height: 100px;
 }
 
 .http-server-datetime {

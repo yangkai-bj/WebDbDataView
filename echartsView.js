@@ -246,7 +246,7 @@ function getBackgroundColor(configs) {
 
 function getEcharts(container, width, height, dataset, configs) {
     try {
-        $("copyright").innerHTML = getUserConfig("CopyRight");
+        // $("copyright").innerHTML = getUserConfig("CopyRight");
         if (echarts.version >= "5.0.2") {
             switch (configs.echartsType.value) {
                 case "Bar":
@@ -390,7 +390,10 @@ function getEcharts(container, width, height, dataset, configs) {
             UI.alert.show("提示","本模块支持Echarts5.0.2及以上版本,您目前使用的版本是" + echarts.version + ".");
         }
     }catch (e) {
-        __LOGS__.viewError("auto", e)
+        if (typeof __LOGS__ !== "undefined")
+            __LOGS__.viewError("auto", e);
+        else
+            console.log(e);
     }
 }
 
@@ -740,7 +743,7 @@ var __ECHARTS__ = {
             type: "select"
         },
 
-        toolboxSaveAsConfig: {
+        toolboxSaveAsReport: {
             name: "导出报表",
             value: "true",
             options: [new Option("是", "true"), new Option("否", "false")],
@@ -2057,11 +2060,18 @@ var __ECHARTS__ = {
                     if (event.keyCode == 46) {
                         event.target.value = "#FFFFFF";
                         __ECHARTS__.configs[event.target.id].value = "auto";
-                        __LOGS__.viewMessage(__ECHARTS__.configs[event.target.id].name + " 设置为自动.",false);
+                        if (typeof __LOGS__ !== "undefined")
+                            __LOGS__.viewMessage(__ECHARTS__.configs[event.target.id].name + " 设置为自动.", false);
+                        else
+                            alert(__ECHARTS__.configs[event.target.id].name + " 设置为自动.");
+
                     } else if (event.keyCode == 27) {
                         event.target.value = "#000000";
                         __ECHARTS__.configs[event.target.id].value = "transparent";
-                       __LOGS__.viewMessage(__ECHARTS__.configs[event.target.id].name + " 设置为透明.",false);
+                        if (typeof __LOGS__ !== "undefined")
+                            __LOGS__.viewMessage(__ECHARTS__.configs[event.target.id].name + " 设置为透明.", false);
+                        else
+                            alert(__ECHARTS__.configs[event.target.id].name + " 设置为透明.");
                     }
                 }
                 input.addEventListener("keydown",colorSetKeydown);
@@ -2632,7 +2642,10 @@ var geoCoordMap = {
             } else
                 localmap.selectedIndex = 0;
         } catch (e) {
-            __LOGS__.viewError("auto", e);
+            if (typeof __LOGS__ !== "undefined")
+                __LOGS__.viewError("auto", e);
+            else
+                console.log(e);
         }
         localmap.onclick = function() {
             let tb = this.parentNode.getElementsByClassName("tabButton");
@@ -2647,7 +2660,6 @@ var geoCoordMap = {
         };
         toolbar.appendChild(localmap);
         content.appendChild(toolbar);
-        setTooltip(localmap, "本地<br>地图");
 
         let tablecontainer = document.createElement("div");
         tablecontainer.className = "ui-container-scroll-div";
@@ -2877,7 +2889,10 @@ var geoCoordMap = {
                             }
                         }
                     } catch (e) {
-                        __LOGS__.viewError("auto", e);
+                        if (typeof __LOGS__ !== "undefined")
+                            __LOGS__.viewError("auto", e);
+                        else
+                            console.log(e);
                     }
                 }
             }
@@ -2893,7 +2908,10 @@ var geoCoordMap = {
                             }
                         }
                     } catch (e) {
-                        __LOGS__.viewError("auto", e);
+                        if (typeof __LOGS__ !== "undefined")
+                            __LOGS__.viewError("auto", e);
+                        else
+                            console.log(e);
                     }
                 }
             }
@@ -3204,7 +3222,10 @@ function getGrids(configs, dimensions, cols, lines, layout) {
                     grids.push(grid);
                 }
             } catch (e) {
-                __LOGS__.viewError("auto", e);
+                if (typeof __LOGS__ !== "undefined")
+                    __LOGS__.viewError("auto", e);
+                else
+                    console.log(e);
                 grids = [];
             }
         }
@@ -4814,7 +4835,10 @@ function getGeoOfLocalOption(configs, container, myChart, dataset) {
                 Regions[features[i].properties.name] = features[i].properties.cp;
             }
         } catch (e) {
-            __LOGS__.viewError("auto", e);
+            if (typeof __LOGS__ !== "undefined")
+                __LOGS__.viewError("auto", e);
+            else
+                console.log(e);
         }
         return Regions;
     };
@@ -4977,665 +5001,6 @@ function getToolboxFeatureGeoOfLocal(configs, container, myChart, dataset) {
         icon: __SYS_IMAGES_PATH__.geo,
         onclick: function () {
             myChart.setOption(getGeoOfLocalOption(configs, container, myChart, dataset), true);
-        }
-    } : {};
-}
-
-
-function getSaveAsConfig(configs, container, myChart) {
-    return configs.toolboxSaveAsConfig.value.toBoolean() ? {
-        show: configs.toolboxSaveAsConfig.value.toBoolean(),
-        title: '导出报表',
-        icon: __SYS_IMAGES_PATH__.linedown,
-        onclick: function () {
-            function getScript() {
-                return [
-                    "<script type='text/javascript'>\n" +
-                    "var dataset = {title: null, columns: null, data: null, configs: null};\n" +
-                    "</script>",
-
-                    "<script type='text/javascript'>\n" +
-                    "function str2ab(str) {\n" +
-                    "let codes = [];\n" +
-                    "for (let i = 0; i != str.length; ++i) {\n" +
-                    "let code = str.charCodeAt(i);\n" +
-                    "if (0x00 <= code && code <= 0x7f) {\n" +
-                    "codes.push(code);\n" +
-                    "} else if (0x80 <= code && code <= 0x7ff) {\n" +
-                    "codes.push((192 | (31 & (code >> 6))));\n" +
-                    "codes.push((128 | (63 & code)))\n" +
-                    "} else if ((0x800 <= code && code <= 0xd7ff)\n" +
-                    "|| (0xe000 <= code && code <= 0xffff)) {\n" +
-                    "codes.push((224 | (15 & (code >> 12))));\n" +
-                    "codes.push((128 | (63 & (code >> 6))));\n" +
-                    "codes.push((128 | (63 & code)))\n" +
-                    "}\n" +
-                    "}\n" +
-                    "let buf = new ArrayBuffer(codes.length);\n" +
-                    "let result = new Uint8Array(buf);\n" +
-                    "for (let i = 0; i < codes.length; i++) {\n" +
-                    "result[i] = codes[i] & 0xff;\n" +
-                    "}\n" +
-                    "return result;\n" +
-                    "}" +
-                    "</script>",
-
-                    "<script type='text/javascript'>\n" +
-                    "function openDownloadDialog(url, saveName) {\n" +
-                    "if (typeof url == 'object' && url instanceof Blob) {\n" +
-                    "url = URL.createObjectURL(url);\n" +
-                    "}\n" +
-                    "let aLink = document.createElement('a');\n" +
-                    "aLink.href = url;\n" +
-                    "aLink.download = saveName || '';\n" +
-                    "let event;\n" +
-                    "if (window.MouseEvent) {\n" +
-                    "event = new MouseEvent('click');\n" +
-                    "} else {\n" +
-                    "event = document.createEvent('MouseEvents');\n" +
-                    "event.initMouseEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);\n" +
-                    "}\n" +
-                    "aLink.dispatchEvent(event);\n" +
-                    "}" +
-                    "</script>",
-
-                    "<script type='text/javascript'>\n" +
-                    "function getConfigs(container, configs) {\n" +
-                    "let dl = document.createElement('dl');\n" +
-                    "container.appendChild(dl);\n" +
-                    "for (let name in configs) {\n" +
-                    "if (configs[name].type == 'hr') {\n" +
-                    "let dt = document.createElement('dt');\n" +
-                    "dt.innerText = configs[name].name;\n" +
-                    "dl.appendChild(dt);\n" +
-                    "} else {\n" +
-                    "let dd = document.createElement('dd');\n" +
-                    "dl.appendChild(dd);\n" +
-                    "let configsname = document.createElement('span');\n" +
-                    "configsname.className='configs-name';\n" +
-                    "configsname.innerText = configs[name].name;\n" +
-                    "let configsvalue = document.createElement('span');\n" +
-                    "configsvalue.className='configs-value';\n" +
-                    "configsvalue.innerText = configs[name].value;\n" +
-                    "dd.appendChild(configsname);\n" +
-                    "dd.appendChild(configsvalue);\n" +
-                    "}\n" +
-                    "}\n" +
-                    "}" +
-                    "</script>",
-
-                    "<script type='text/javascript'>\n" +
-                    "function init(){\n" +
-                    "let codes = document.getElementsByClassName('CODES')[0].getElementsByTagName('code');\n" +
-                    "let report = codes[0].innerText;\n" +
-                    "let hash = codes[1].innerText;\n" +
-                    "let configs = JSON.parse(codes[2].innerText);\n" +
-                    "report = JSON.parse(report);\n" +
-                    "dataset.title = report.dataset.title;\n" +
-                    "dataset.columns = report.dataset.columns;\n" +
-                    "dataset.data = report.dataset.data;\n" +
-                    "dataset.configs = configs;\n" +
-                    "document.getElementsByClassName('SCRIPT')[0].getElementsByTagName('code')[0].innerText = report.dataset.sql;\n" +
-                    "getConfigs(document.getElementsByClassName('CONFIGS')[0], report.configs);\n" +
-                    "getConfigs(document.getElementsByClassName('CONFIGS')[0], dataset.configs);\n" +
-                    "getThemes();" +
-                    "viewDataset(0);\n" +
-                    "}\n" +
-                    "</script>",
-
-                    "<script type='text/javascript'>\n" +
-                    "function getThemes(){\n" +
-                    "let themes = {" +
-                    "dimgrey: {backgroundColor: 'dimgrey', color: 'whitesmoke'}, \n" +
-                    "black: {backgroundColor: 'white', color: 'black'}, \n" +
-                    "DarkSlateGray: {backgroundColor: 'DarkSlateGray', color: 'AliceBlue'}, \n" +
-                    "Gainsboro: {backgroundColor: 'Gainsboro', color: 'IndianRed'}, \n" +
-                    "DarkRed: {backgroundColor: 'DarkRed', color: 'yellow'}, \n" +
-                    "white: {backgroundColor: 'black', color: 'white'}, \n" +
-                    "};\n" +
-                    "let content = document.getElementById('THEMES');\n" +
-                    "for (let key in themes){\n" +
-                    "let theme = document.createElement('span');\n" +
-                    "theme.className ='theme';\n" +
-                    "theme.style.backgroundColor = themes[key].backgroundColor;\n" +
-                    "theme.style.color = themes[key].color;\n" +
-                    "theme.innerHTML = '&emsp;&emsp;';" +
-                    "theme.onclick = function(){\n" +
-                    "document.body.style.backgroundColor = this.style.backgroundColor;\n" +
-                    "document.body.style.color = this.style.color;\n" +
-                    "}\n" +
-                    "content.appendChild(theme);\n" +
-                    "}\n" +
-                    "}\n" +
-                    "</script>",
-
-                    "<script type='text/javascript'>\n" +
-                    "function selectTab(id){\n" +
-                    "let names = ['ECHART','TABLE','SCRIPT','CONFIGS'];\n" +
-                    "for (let i=0;i<names.length;i++){\n" +
-                    "let tab = document.getElementById(names[i]);\n" +
-                    "let div = document.getElementsByClassName(names[i])[0];\n" +
-                    "if (names[i] == id){\n" +
-                    "tab.className = 'tabButton-selected';\n" +
-                    "div.style.display = 'block';\n" +
-                    "} else {\n" +
-                    "tab.className = 'tabButton-unselected';\n" +
-                    "div.style.display = 'none';\n" +
-                    "}\n" +
-                    "}\n" +
-                    "}\n" +
-                    "</script>",
-
-                    "<script type='text/javascript'>\n" +
-                    "Number.prototype.format = function(pattern) {\n" +
-                    "let num = this;\n" +
-                    "let is = false;\n" +
-                    "if (num < 0)\n" +
-                    "is = true;\n" +
-                    "num = Math.abs(num);\n" +
-                    "let strarr = num ? num.toString().split('.') : ['0'];\n" +
-                    "let fmtarr = pattern ? pattern.split('.') : [''];\n" +
-                    "let retstr = '';\n" +
-                    "let str = strarr[0];\n" +
-                    "let fmt = fmtarr[0];\n" +
-                    "let i = str.length - 1;\n" +
-                    "let comma = false;\n" +
-                    "for (let f = fmt.length - 1; f >= 0; f--) {\n" +
-                    "switch (fmt.substr(f, 1)) {\n" +
-                    "case '#':\n" +
-                    "if (i >= 0) retstr = str.substr(i--, 1) + retstr;\n" +
-                    "break;\n" +
-                    "case '0':\n" +
-                    "if (i >= 0) retstr = str.substr(i--, 1) + retstr;\n" +
-                    "else retstr = '0' + retstr;\n" +
-                    "break;\n" +
-                    "case ',':\n" +
-                    "comma = true;\n" +
-                    "retstr = ',' + retstr;\n" +
-                    "break;\n" +
-                    "}\n" +
-                    "}\n" +
-                    "if (i >= 0) {\n" +
-                    "if (comma) {\n" +
-                    "let l = str.length;\n" +
-                    "for (; i >= 0; i--) {\n" +
-                    "retstr = str.substr(i, 1) + retstr;\n" +
-                    "if (i > 0 && ((l - i) % 3) == 0) retstr = ',' + retstr;\n" +
-                    "}\n" +
-                    "}\n" +
-                    "else retstr = str.substr(0, i + 1) + retstr;\n" +
-                    "}\n" +
-                    "retstr = retstr + '.';\n" +
-                    "str = strarr.length > 1 ? strarr[1] : '';\n" +
-                    "fmt = fmtarr.length > 1 ? fmtarr[1] : '';\n" +
-                    "i = 0;\n" +
-                    "for (let f = 0; f < fmt.length; f++) {\n" +
-                    "switch (fmt.substr(f, 1)) {\n" +
-                    "case '#':\n" +
-                    "if (i < str.length) retstr += str.substr(i++, 1);\n" +
-                    "break;\n" +
-                    "case '0':\n" +
-                    "if (i < str.length) retstr += str.substr(i++, 1);\n" +
-                    "else retstr += '0';\n" +
-                    "break;\n" +
-                    "}\n" +
-                    "}\n" +
-                    "return is ? '-' + retstr.replace(/^,+/, '').replace(/\\.$/, '') : retstr.replace(/^,+/, '').replace(/\\.$/, '');\n" +
-                    "};\n" +
-                    "</script>",
-
-                    "<script type='text/javascript'>\n" +
-                    "Date.prototype.format = function(fmt) {\n" +
-                    "let o = {\n" +
-                    "'M+': this.getMonth() + 1,\n" +
-                    "'d+': this.getDate(),\n" +
-                    "'h+': this.getHours(),\n" +
-                    "'m+': this.getMinutes(),\n" +
-                    "'s+': this.getSeconds(),\n" +
-                    "'q+': Math.floor((this.getMonth() + 3) / 3),\n" +
-                    "'S': this.getMilliseconds()\n" +
-                    "};\n" +
-                    "if (/(y+)/.test(fmt))\n" +
-                    "fmt = fmt.replace(RegExp.$1, (this.getFullYear() + '').substr(4 - RegExp.$1.length));\n" +
-                    "for (let k in o)\n" +
-                    "if (new RegExp('(' + k + ')').test(fmt))\n" +
-                    "fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (('00' + o[k]).substr(('' + o[k]).length)));\n" +
-                    "return fmt;\n" +
-                    "};\n" +
-                    "</script>",
-
-                    "<script type='text/javascript'>\n" +
-                    "function selectPageGroup(div, index, pageindex, pages){\n" +
-                    "div.innerHTML = ''\n" +
-                    "let transpose = document.createElement('span');\n" +
-                    "transpose.className = 'page-button';\n" +
-                    "transpose.innerText = 'T';\n" +
-                    "transpose.title = '报表转置';\n" +
-                    "transpose.onclick = function(){\n" +
-                    "datasetTranspose();\n" +
-                    "}\n" +
-                    "div.appendChild(transpose);\n" +
-                    "let xml = document.createElement('span');\n" +
-                    "xml.className = 'page-tab';\n" +
-                    "xml.style.cssFloat = 'right';\n" +
-                    "xml.innerText = '⇣';\n" +
-                    "xml.title = '导出XML';\n" +
-                    "xml.onclick = function(){\n" +
-                    "getXML(dataset.title, dataset.columns, dataset.data);\n" +
-                    "}\n" +
-                    "div.appendChild(xml);\n" +
-                    "if (index>0){\n" +
-                    "let span = document.createElement('span');\n" +
-                    "span.className = 'page-tab';\n" +
-                    "span.id = index-1;\n" +
-                    "span.innerText = '•••';\n" +
-                    "span.onclick = function(){\n" +
-                    "selectPageGroup(div, Number(this.id),pageindex, pages);\n" +
-                    "}\n" +
-                    "div.appendChild(span);\n" +
-                    "}\n" +
-                    "for (let i=index*10;i<pages&&i<(index+1)*10;i++){\n" +
-                    "let span = document.createElement('span');\n" +
-                    "span.className = 'page-tab';\n" +
-                    "span.id = i;\n" +
-                    "span.innerText = (i+1);\n" +
-                    "if (pageindex == i)\n" +
-                    "span.style.backgroundColor = '#008080';\n" +
-                    "span.onclick = function(){\n" +
-                    "viewDataset(Number(this.id));\n" +
-                    "}\n" +
-                    "div.appendChild(span);\n" +
-                    "}\n" +
-                    "if ((index+1)*10<pages){\n" +
-                    "let span = document.createElement('span');\n" +
-                    "span.className = 'page-tab';\n" +
-                    "span.id = index+1;\n" +
-                    "span.innerText = '•••';\n" +
-                    "span.onclick = function(){\n" +
-                    "selectPageGroup(div, Number(this.id),pageindex, pages);\n" +
-                    "}\n" +
-                    "div.appendChild(span);\n" +
-                    "}\n" +
-                    "}\n" +
-                    "</script>",
-
-                    "<script type='text/javascript'>\n" +
-                    "function viewDataset(pageindex) {\n" +
-                    "let columns = dataset.columns;\n" +
-                    "let data = dataset.data;\n" +
-                    "let configs = dataset.configs;\n" +
-                    "let pagesize = Number(configs.reportPageSize.value);\n" +
-                    "let pages = (data.length%pagesize==0?Math.floor(data.length/pagesize):Math.floor(data.length/pagesize) + 1);\n" +
-                    "let table = document.createElement('table');\n" +
-                    "table.className = table.id = 'table';\n" +
-                    "if (configs.reportFontFamily.value != 'default')\n" +
-                    "table.style.fontFamily = configs.reportFontFamily.value;\n" +
-                    "if (configs.reportFontWeight.value != 'default')\n" +
-                    "table.style.fontWeight = configs.reportFontWeight.value;\n" +
-                    "if (configs.reportFontStyle.value != 'default')\n" +
-                    "table.style.fontStyle = configs.reportFontStyle.value;\n" +
-                    "\n" +
-                    "let tr = document.createElement('tr');\n" +
-                    "if (configs.reportRowHeight.value != 'default')\n" +
-                    "tr.style.height = configs.reportRowHeight.value;\n" +
-                    "table.appendChild(tr);\n" +
-                    "\n" +
-                    "for (let c = 0; c < columns.length; c++) {\n" +
-                    "let th = document.createElement('th');\n" +
-                    "th.style.textAlign = columns[c].style.textAlign;\n" +
-                    "switch (columns[c].order) {\n" +
-                    "case '':\n" +
-                    "th.innerText = '● ' + columns[c].name;\n" +
-                    "break;\n" +
-                    "case 'asc':\n" +
-                    "th.innerText = '▲ ' + columns[c].name;\n" +
-                    "break;\n" +
-                    "case 'desc':\n" +
-                    "th.innerText = '▼ ' + columns[c].name;\n" +
-                    "break;\n" +
-                    "}\n" +
-                    "th.title = columns[c].name;\n" +
-                    "th.setAttribute('colid', c);\n" +
-                    "th.onclick = function () {\n" +
-                    "orderDatasetBy(this.getAttribute('colid'));\n" +
-                    "viewDataset(0);\n" +
-                    "};\n" +
-                    "tr.appendChild(th);\n" +
-                    "}\n" +
-                    "let floatFormat = '#,##0.';\n" +
-                    "for (let i = 0; i < Number(configs.reportScale.value); i++) {\n" +
-                    "floatFormat += '0';\n" +
-                    "}\n" +
-                    "for (let i = pageindex * pagesize; i < data.length && i < (pageindex+1)* pagesize; i++) {\n" +
-                    "let tr = document.createElement('tr');\n" +
-                    "tr.type = 'tr';\n" +
-                    "if (configs.reportRowHeight.value != 'default')\n" +
-                    "tr.style.height =configs.reportRowHeight.value;\n" +
-                    "tr.id = i;\n" +
-                    "if (i % 2 > 0) {\n" +
-                    "tr.className = 'alt-line';\n" +
-                    "}\n" +
-                    "table.appendChild(tr);\n" +
-                    "let row = data[i];\n" +
-                    "for (let c = 0; c < columns.length; c++) {\n" +
-                    "let item = row[columns[c].name];\n" +
-                    "let td = document.createElement('td');\n" +
-                    "try {\n" +
-                    "if (item.value != null) {\n" +
-                    "if (item.type == 'number') {\n" +
-                    "let f = item.format;\n" +
-                    "if ((item.value + '').indexOf('.') !== -1) {\n" +
-                    "f = floatFormat;\n" +
-                    "item.value = Math.round(item.value * Math.pow(10,Number(configs.reportScale.value))) / Math.pow(10,Number(configs.reportScale.value));\n" +
-                    "} else {\n" +
-                    "if (columns[c]['format'] !== 'undefined') {\n" +
-                    "if (item.format != columns[c].format)\n" +
-                    "f = columns[c].format;\n" +
-                    "}\n" +
-                    "}\n" +
-                    "td.innerText = item.value.format(f);\n" +
-                    "item.format = columns[c]['format'] = f;\n" +
-                    "} else if (item.type == 'date' || item.type == 'datetime')\n" +
-                    "td.innerText = new Date(item.value).format(item.format);\n" +
-                    "else\n" +
-                    "td.innerText = item.value;\n" +
-                    "} else\n" +
-                    "td.innerText = '';\n" +
-                    "let style = '';\n" +
-                    "for (let key in item.style) {\n" +
-                    "style += key + ': ' + item.style[key] + ';';\n" +
-                    "}\n" +
-                    "td.style.cssText = style;\n" +
-                    "} catch (e) {\n" +
-                    "td.innerText = row[columns[c].name].value;\n" +
-                    "}\n" +
-                    "tr.appendChild(td);\n" +
-                    "}\n" +
-                    "}\n" +
-                    "let container = document.getElementsByClassName('TABLE')[0];\n" +
-                    "container.innerHTML='';\n" +
-                    "container.appendChild(table);\n" +
-                    "let div = document.createElement('div');\n" +
-                    "div.className = 'PAGES';\n" +
-                    "let groupindex = Math.floor(pageindex/10);\n" +
-                    "container.appendChild(div);\n" +
-                    "selectPageGroup(div, groupindex,pageindex,pages);\n" +
-                    "}\n" +
-                    "</script>",
-
-                    "<script type='text/javascript'>\n" +
-                    "function orderDatasetBy(colid) {\n" +
-                    "function exchange(r1, r2) {\n" +
-                    "for (col in r1) {\n" +
-                    "for (attr in r1[col]) {\n" +
-                    "if (attr != 'rowid' && attr != 'colid') {\n" +
-                    "let tmp = r1[col][attr];\n" +
-                    "r1[col][attr] = r2[col][attr];\n" +
-                    "r2[col][attr] = tmp;\n" +
-                    "}\n" +
-                    "}\n" +
-                    "}\n" +
-                    "}\n" +
-                    "let columns = dataset.columns;\n" +
-                    "let data = dataset.data;\n" +
-                    "switch (columns[colid].order) {\n" +
-                    "case '':\n" +
-                    "columns[colid].order = 'asc';\n" +
-                    "break;\n" +
-                    "case 'asc':\n" +
-                    "columns[colid].order = 'desc';\n" +
-                    "break;\n" +
-                    "case 'desc':\n" +
-                    "columns[colid].order = 'asc';\n" +
-                    "break;\n" +
-                    "}\n" +
-                    "for (let i = 0; i < data.length; i++) {\n" +
-                    "for (let x = 0; x < i; x++) {\n" +
-                    "switch (columns[colid].order) {\n" +
-                    "case 'asc':\n" +
-                    "if (data[i][columns[colid].name].type == 'number' && data[x][columns[colid].name].type == 'number') {\n" +
-                    "if (data[i][columns[colid].name].value < data[x][columns[colid].name].value) {\n" +
-                    "exchange(data[i], data[x]);\n" +
-                    "}\n" +
-                    "} else if (data[i][columns[colid].name].type == 'object' || data[x][columns[colid].name].type == 'object') {\n" +
-                    "//exchange(data[i], data[x]);\n" +
-                    "} else {\n" +
-                    "if (data[i][columns[colid].name].value.localeCompare(data[x][columns[colid].name].value) < 0 && data[i][columns[colid].name].type == data[x][columns[colid].name].type) {\n" +
-                    "exchange(data[i], data[x]);\n" +
-                    "}\n" +
-                    "}\n" +
-                    "break;\n" +
-                    "case 'desc':\n" +
-                    "if (data[i][columns[colid].name].type == 'number' && data[x][columns[colid].name].type == 'number') {\n" +
-                    "if (data[i][columns[colid].name].value > data[x][columns[colid].name].value) {\n" +
-                    "exchange(data[i], data[x]);\n" +
-                    "}\n" +
-                    "} else if (data[i][columns[colid].name].type == 'object' || data[x][columns[colid].name].type == 'object') {\n" +
-                    "//exchange(data[i], data[x]);\n" +
-                    "} else {\n" +
-                    "if (data[i][columns[colid].name].value.localeCompare(data[x][columns[colid].name].value) > 0 && data[i][columns[colid].name].type == data[x][columns[colid].name].type) {\n" +
-                    "exchange(data[i], data[x]);\n" +
-                    "}\n" +
-                    "}\n" +
-                    "break;\n" +
-                    "}\n" +
-                    "}\n" +
-                    "}\n" +
-                    "return dataset;\n" +
-                    "}\n" +
-                    "</script>",
-
-                    "<script type='text/javascript'>\n" +
-                    "function datasetTranspose(){\n" +
-                    "try {\n" +
-                    "let columns = dataset.columns;\n" +
-                    "let data = dataset.data;\n" +
-                    "let settmp = {columns: [], data: []};\n" +
-                    "let col = {\n" +
-                    "id: 0,\n" +
-                    "name: columns[0].name,\n" +
-                    "order: '',\n" +
-                    "type: 'string',\n" +
-                    "style: columns[0].style\n" +
-                    "};\n" +
-                    "settmp.columns.push(col);\n" +
-                    "for (let i = 0; i < data.length; i++) {\n" +
-                    "let row = data[i];\n" +
-                    "col = {\n" +
-                    "id: i + 1,\n" +
-                    "name: row[columns[0].name].value,\n" +
-                    "order: '',\n" +
-                    "type: row[columns[0].name].type,\n" +
-                    "style: row[columns[0].name].style\n" +
-                    "};\n" +
-                    "settmp.columns.push(col);\n" +
-                    "}\n" +
-                    "\n" +
-                    "for (let c = 1; c < columns.length; c++) {\n" +
-                    "let nr = {};\n" +
-                    "nr[columns[0].name] = {\n" +
-                    "rowid: c - 1,\n" +
-                    "colid: 0,\n" +
-                    "value: columns[c].name,\n" +
-                    "type: 'string',\n" +
-                    "style: columns[c].style\n" +
-                    "};\n" +
-                    "for (let i = 0; i < data.length; i++) {\n" +
-                    "let row = data[i];\n" +
-                    "nr[row[columns[0].name].value] = {\n" +
-                    "rowid: c - 1,\n" +
-                    "colid: i + 1,\n" +
-                    "value: row[columns[c].name].value,\n" +
-                    "type: row[columns[c].name].type,\n" +
-                    "style: row[columns[c].name].style\n" +
-                    "};\n" +
-                    "}\n" +
-                    "settmp.data.push(nr);\n" +
-                    "}\n" +
-                    "dataset.data = settmp.data;\n" +
-                    "dataset.columns = settmp.columns;\n" +
-                    "viewDataset(0);\n" +
-                    "} catch (e) {\n" +
-                    "console.log(e);\n" +
-                    "}\n" +
-                    "}" +
-                    "</script>",
-
-                    "<script type='text/javascript'>\n" +
-                    "function getXML(title, columns, dataset){\n" +
-                    "try{\n" +
-                    "let xml = '<?xml version=\"1.0\"?>" +
-                    "<?mso-application progid=\"Excel.Sheet\"?>" +
-                    "<Workbook xmlns=\"urn:schemas-microsoft-com:office:spreadsheet\"" +
-                    " xmlns:o=\"urn:schemas-microsoft-com:office:office\"" +
-                    " xmlns:x=\"urn:schemas-microsoft-com:office:excel\"" +
-                    " xmlns:ss=\"urn:schemas-microsoft-com:office:spreadsheet\"" +
-                    " xmlns:html=\"http://www.w3.org/TR/REC-html40\">" +
-                    "<DocumentProperties xmlns=\"urn:schemas-microsoft-com:office:office\">" +
-                    "<Author>杨凯</Author>" +
-                    "<LastAuthor></LastAuthor>" +
-                    "<Created>' + new Date() + '</Created>" +
-                    "<Version>1.0.0</Version>" +
-                    "</DocumentProperties>" +
-                    "<Styles>" +
-                    "<Style ss:ID=\"Default\" ss:Name=\"Normal\">" +
-                    "<Alignment ss:Vertical=\"Center\"/>" +
-                    "<Borders/>" +
-                    "<Font ss:FontName=\"宋体\" x:CharSet=\"134\" ss:Size=\"11\" ss:Color=\"#000000\"/>" +
-                    "<Interior/>" +
-                    "<NumberFormat ss:Format=\"#,##0.00_ \"/>" +
-                    "<Protection/>" +
-                    "</Style>" +
-                    "</Styles>';\n" +
-                    "xml += '<Worksheet ss:Name=\"' + title[title.length-1].split(\"<\").join(\"&lt;\").split(\">\").join(\"&gt;\").split(\"*\").join(\"#\").split(\"?\").join(\"#\").split(\"[\").join(\"#\").split(\"]\").join(\"#\").split(\"\\\\\").join(\"#\").split(\"/\").join(\"#\") + '\"><Table ss:ExpandedColumnCount=\"' + columns.length + '\" ss:ExpandedRowCount=\"' + (dataset.length + 1) + '\">';\n" +
-                    "let r = '<Row>';\n" +
-                    "for(let c = 0;c < columns.length; c++){\n" +
-                    "let ce = '<Cell><Data ss:Type=\"String\">'+ columns[c].name.split(\"<\").join(\"&lt;\").split(\">\").join(\"&gt;\") + '</Data></Cell>';\n" +
-                    "r += ce;\n" +
-                    "}\n" +
-                    "r += '</Row>';\n" +
-                    "xml += r;\n" +
-                    "for(let i = 0;i < dataset.length; i++){\n" +
-                    "let row = dataset[i];\n" +
-                    "r = '<Row>';\n" +
-                    "for(let c = 0;c < columns.length; c++){\n" +
-                    "let cell = row[columns[c].name];\n" +
-                    "let ce = '<Cell><Data ss:Type=\"' + (cell.type=='number'?'Number':'String') + '\">'+ (cell.type=='number'?cell.value:(typeof cell.value !== 'undefined'?cell.value.split(\"<\").join(\"&lt;\").split(\">\").join(\"&gt;\"):'')) + '</Data></Cell>';\n" +
-                    "r += ce;\n" +
-                    "}\n" +
-                    "r += '</Row>';\n" +
-                    "xml += r;\n" +
-                    "}\n" +
-                    "xml += '</Table></Worksheet></Workbook>';\n" +
-                    "let blob = new Blob([str2ab(xml)], {type: 'text/xml'});\n" +
-                    "openDownloadDialog(blob, title[0] + '.report.xml');\n" +
-                    "} catch (e) {\n" +
-                    "alert(e);\n" +
-                    "}\n" +
-                    "}" +
-                    "</script>",
-                ].join("\n");
-            }
-
-            let id = container.getAttribute("_echarts_instance_");
-            let report = JSON.parse(__ECHARTS__.history[id]);
-            let title = report.dataset.title;
-            let link = "<a title='进入系统,使用「打开报表」功能打开此文档,可查看动态视图.' href='" + window.location.href.split("?")[0] + "'>" + __VERSION__.name + "</a>";
-            report = JSON.stringify(report);
-            report = report.encode();
-            let configs = JSON.stringify(__DATASET__.configs).encode();
-            let time = getNow();
-            let html = "<!DOCTYPE html>\n" +
-                "<html>\n" +
-                "<head>\n" +
-                "<meta charset='utf-8'>\n" +
-                "<title>" + title[0] + "</title>\n" +
-                "<meta name='renderer' content='webkit'>\n" +
-                "<meta name='description' content='这是关于 " + __VERSION__.name + " 的固定报表'>\n" +
-                "<meta name='author' content='杨凯'>\n" +
-                "<meta name='create-time' content='" + time + "'>\n" +
-                "<style>\n" +
-                "body{background-color: dimgrey;color: whitesmoke;font-family: Arial, Verdana}\n" +
-                "body ::-webkit-scrollbar {width: 5px;height: 4px;background: transparent;}\n" +
-                "body ::-webkit-scrollbar-thumb {" +
-                "border-radius: 3px;background-color: grey;" +
-                "background-image: -webkit-linear-gradient(45deg,rgba(255, 255, 255, 0.2) 25%,transparent 25%,transparent 50%,rgba(255, 255, 255, 0.2) 50%,rgba(255, 255, 255, 0.2) 75%,transparent 75%,transparent);\n" +
-                "}\n" +
-                "body ::-webkit-scrollbar-track {box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);background: transparent;border-radius: 3px;}\n" +
-                "h1{margin: auto;width: 80%;text-align: left;white-space: normal;word-break: break-all;word-wrap: break-word;}\n" +
-                "h4{margin: auto;width: 80%;text-align: left;white-space: normal;word-break: break-all;word-wrap: break-word;}\n" +
-                "h5{margin: auto;width: 80%;text-align: right;white-space: normal;word-break: break-all;word-wrap: break-word;}\n" +
-                "div.TABS{margin: auto;padding-left: 5px;padding-right: 5px;width: 80%;overflow: hidden;height: 100%}\n" +
-                "div.ECHART{margin: auto;padding-left: 5px;padding-right: 5px;width: 80%;border: 1px solid coral;border-radius: 5px;overflow: hidden;height: 100%}\n" +
-                "div.TABLE{margin: auto;padding-left: 5px;padding-right: 5px;width: 80%;height: 80%;border: 1px solid coral;border-radius: 5px;overflow: scroll;height: 100%;display: none}\n" +
-                "div.SCRIPT{margin: auto;padding-left: 5px;padding-right: 5px;width: 80%;border: 1px solid coral;border-radius: 5px;overflow: hidden;height: 100%;display: none}\n" +
-                "div.CONFIGS{margin: auto;padding-left: 5px;padding-right: 5px;width: 80%;border: 1px solid coral;border-radius: 5px;" +
-                "overflow: hidden;height: 100%;display: none;-webkit-column-count: 4;column-count: 4;column-fill: auto;}\n" +
-                "div.PAGES{border-top:2px solid gray;}\n" +
-                "div.CODES{margin: auto;padding-left: 5px;padding-right: 5px;width: 80%;border: 1px solid coral;border-radius: 5px;overflow: hidden;height: 100%;display: none}\n" +
-                "code{font-family: Verdana,Arial;font-size: 10px;width: 100%;white-space: normal;word-break: break-all;word-wrap: break-word;display:none}\n" +
-                "code.sql{font-family: Verdana,Arial;font-size: 10px;width: 100%;white-space: normal;word-break: break-all;word-wrap: break-word;display:block}\n" +
-                "h6{margin: auto;width: 80%;text-align: center}\n" +
-                "a{font-size: 80%;padding-left: 5px;padding-right: 5px;background-color: sandybrown;outline-style: none;border-radius: 4px;text-decoration:none;}\n" +
-                "span.tabButton-selected{cursor: pointer;font-size: 80%;padding-left: 5px;padding-right: 5px;background-color: #00A7AA;outline-style: none;border-top-left-radius: 4px;border-top-right-radius: 4px;border: 1px solid coral;border-bottom-width: 0px;}\n" +
-                "span.tabButton-unselected{cursor: pointer;font-size: 80%;padding-left: 5px;padding-right: 5px;outline-style: none;border-top-left-radius: 4px;border-top-right-radius: 4px;border: 1px solid gray;border-bottom-width: 0px;}\n" +
-                "span.tabButton-unselected:hover{background-color: sandybrown}\n" +
-                "span.tabButton-theme{float: right;cursor: pointer;font-size: 80%;background-color: transparent;outline-style: none;}\n" +
-                "span.theme{cursor: pointer;font-size: 80%;width: 50px;outline-style: none;}\n" +
-                "dt{cursor: pointer;font-size: 80%;padding-left: 5px;padding-right: 5px;outline-style: none;border-radius: 4px}\n" +
-                "dd{cursor: pointer;font-size: 80%;padding-left: 5px;padding-right: 5px;outline-style: none;border-radius: 4px;overflow: hidden;white-space: nowrap;word-break: keep-all;text-overflow: ellipsis;-o-text-overflow: ellipsis;}\n" +
-                "span.configs-name{cursor: pointer;font-size: 80%;padding-left: 5px;padding-right: 5px;background-color: sandybrown;outline-style: none;border-radius: 4px;border: 1px solid gray;}\n" +
-                "span.configs-value{cursor: pointer;font-size: 80%;padding-left: 5px;padding-right: 5px;background-color: #00A7AA;outline-style: none;border-radius: 4px;border: 1px solid gray;}\n" +
-                "image{margin: auto;width: 80%;text-align: center}\n" +
-                "table{font-size: 80%;margin: 1px;line-height:12px;border-collapse:collapse;cursor: pointer;position:relative;min-width: 33%;border-radius: 5px;background-color: transparent;}\n" +
-                "th{margin: 0px;border: 1px solid gray;padding: 3px 3px 2px 3px;white-space: nowrap;word-break: keep-all;overflow: hidden;" +
-                "text-overflow: ellipsis;-o-text-overflow: ellipsis;font-weight: bolder;text-align: center;background-color: #00A7AA;color: #DCDCDC;border-bottom: 2px solid gray;}\n" +
-                "th:hover{background-color: #008080;}\n" +
-                "tr{height: 25px;color:slategray;background-color:darkgray;}\n" +
-                "tr:hover{background-color:rosybrown;}\n" +
-                "tr.alt-line{color:slategray;background-color:lightgray;}\n" +
-                "tr.alt-line:hover{background-color:rosybrown;}\n" +
-                "td{margin: 2px;border:1px solid gray;padding:3px 3px 2px 3px;white-space: nowrap; word-break: keep-all;" +
-                "overflow: hidden;text-overflow: ellipsis;-o-text-overflow: ellipsis;}\n" +
-                "td:hover{border-bottom:2px solid #00A7AA}\n" +
-                "span.page-tab{float:left;cursor: pointer;width: 50px;font-size: 60%;text-align: center;;border-right:1px solid gray;border-bottom-left-radius: 6px;border-bottom-right-radius: 36px;}" +
-                "span.page-tab:hover{background-color: sandybrown;}\n" +
-                "span.page-button{float:left;cursor: pointer;width: 50px;font-size: 60%;text-align: center;;border-left:1px solid gray;border-bottom-right-radius: 6px;border-bottom-left-radius: 36px;}" +
-                "span.page-button:hover{background-color: sandybrown;}\n" +
-                "</style>\n" +
-                getScript() +
-                "</head>\n" +
-                "<body onload='init()'>\n" +
-                "<h1>" + title[0] + "</h1>\n" +
-                "<h4>" + (title.length > 1 ? title.slice(1, title.length).join("&emsp;") : "") + "</h4>\n" +
-                "<div class='TABS'>\n" +
-                "<span class='tabButton-selected' id='ECHART' onclick='selectTab(this.id)'>静态视图</span>\n" +
-                "<span class='tabButton-unselected' id='TABLE' onclick='selectTab(this.id)'>数据报表</span>\n" +
-                "<span class='tabButton-unselected' id='SCRIPT' onclick='selectTab(this.id)'>数据脚本</span>\n" +
-                "<span class='tabButton-unselected' id='CONFIGS' onclick='selectTab(this.id)'>视图参数</span>\n" +
-                link +
-                "<span class='tabButton-theme' id='THEMES'>" +
-                "</span>\n" +
-                "</div>\n" +
-                "<div class='ECHART'>\n" +
-                "<image src = '" + myChart.getDataURL({excludeComponents: ['toolbox']}) + "' width='100%' height='" + myChart.height + "'></image>" +
-                "</div>\n" +
-                "<div class='TABLE'>\n" +
-                "</div>\n" +
-                "<div class='CONFIGS'>\n" +
-                "</div>\n" +
-                "<div class='SCRIPT'><code class='sql'></code></div>\n" +
-                "<div class='CODES'>\n" +
-                "<code>" + report + "</code>\n" +
-                "<code>" + report.hex_md5_hash() + "</code>\n" +
-                "<code>" + configs + "</code>\n" +
-                "<code>" + configs.hex_md5_hash() + "</code>\n" +
-                "</div>\n" +
-                "<h6>适用于<a href = 'https://www.google.cn/chrome/index.html' target='_blank'>Google Chrome</a>或<a href = 'https://www.microsoft.com/zh-cn/edge?form=MY01BV&OCID=MY01BV&r=1' target='_blank'>Microsoft Edge</a>浏览器&emsp;技术支持: 杨凯&emsp;电话: (010)63603329&emsp;邮箱: <a href='mailto:yangkai.bj@ccb.com'>yangkai.bj@ccb.com</a>&emsp;创建时间:" + time + "</h6>\n" +
-                "</body>\n" +
-                "</html>";
-            let blob = new Blob([str2ab(html)], {type: "text/html"});
-            openDownloadDialog(blob, title[0] + ".report.html");
         }
     } : {};
 }
@@ -5956,7 +5321,7 @@ function getToolbox(configs, container, dataset, myChart) {
             myFeatureGeoOfChina: getToolboxFeatureGeoOfChina(configs, container, myChart, dataset),
             myFeatureGeoOfLocal: getToolboxFeatureGeoOfLocal(configs, container, myChart, dataset),
             myMultiScreen: getMultiScreen(configs, container),
-            mySaveAsConfig: getSaveAsConfig(configs, container, myChart),
+            mySaveAsReport: getSaveAsReport(configs, container, myChart),
         },
         top: configs.toolboxTop.value,
         left: configs.toolboxLeft.value,
@@ -5991,7 +5356,7 @@ function getToolbox3D(configs, container, dataset, myChart) {
                 }
             },
             myMultiScreen: getMultiScreen(configs, container),
-            mySaveAsConfig: getSaveAsConfig(configs, container, myChart),
+            mySaveAsConfig: getSaveAsReport(configs, container, myChart),
         },
         top: configs.toolboxTop.value,
         left: configs.toolboxLeft.value,
@@ -7765,7 +7130,10 @@ function getGeoOfLocal(container, width, height, dataset, configs) {
                 Regions[features[i].properties.name] = features[i].properties.cp;
             }
         } catch (e) {
-            __LOGS__.viewError("auto", e);
+            if (typeof __LOGS__ !== "undefined")
+                __LOGS__.viewError("auto", e);
+            else
+                console.log(e);
         }
         return Regions;
     };
@@ -12464,7 +11832,7 @@ function getBarRacing(container, width, height, dataset, configs) {
                     fill: 'gray'
                 },
                 z: 100
-            }].concat(getWaterGraphic(__VERSION__.url))
+            }].concat(getWaterGraphic(__VERSION__))
         }
     };
 
@@ -12842,5 +12210,701 @@ function getDatasetImage(container, width, height, dataset, configs) {
     __ECHARTS__.addHistory(container, configs, dataset, width, height);
 
     return container;
+}
+
+function getSaveAsReport(configs, container, myChart) {
+    return configs.toolboxSaveAsReport.value.toBoolean() ? {
+        show: configs.toolboxSaveAsReport.value.toBoolean(),
+        title: '导出报表',
+        icon: __SYS_IMAGES_PATH__.linedown,
+        onclick: function () {
+            function getScript(main, path) {
+                let packets = [
+                    "images.js",
+                    "FunctionsComponent.js",
+                    main,
+                    "echarts/v5.2.1/echarts.min.js",
+                    "echarts/V5.2.1/echarts-gl.min.js",
+                    "echarts/V5.2.1/echarts-wordcloud.min.js",
+                    "echarts/map/world.js",
+                    "echarts/map/china-and-region.js",
+                    "echarts/V5.2.1/ecStat.js",
+                    "echarts/V5.2.1/echarts-liquidfill.min.js",
+                    "echartsThemes.js",
+                    "echartsView.js",
+                ];
+
+                for (let i = 0; i < packets.length; i++) {
+                    packets[i] = "<script type='text/javascript' src='" + path + "/" + packets[i] + "'></script>";
+                }
+                return packets.concat([
+                    "<script type='text/javascript'>\n" +
+                    "var dataset = {title: null, columns: null, data: null, configs: null, sql: null};\n" +
+                    "var report = null\n;" +
+                    "</script>",
+
+                    "<script type='text/javascript'>\n" +
+                    "function str2ab(str) {\n" +
+                    "let codes = [];\n" +
+                    "for (let i = 0; i != str.length; ++i) {\n" +
+                    "let code = str.charCodeAt(i);\n" +
+                    "if (0x00 <= code && code <= 0x7f) {\n" +
+                    "codes.push(code);\n" +
+                    "} else if (0x80 <= code && code <= 0x7ff) {\n" +
+                    "codes.push((192 | (31 & (code >> 6))));\n" +
+                    "codes.push((128 | (63 & code)))\n" +
+                    "} else if ((0x800 <= code && code <= 0xd7ff)\n" +
+                    "|| (0xe000 <= code && code <= 0xffff)) {\n" +
+                    "codes.push((224 | (15 & (code >> 12))));\n" +
+                    "codes.push((128 | (63 & (code >> 6))));\n" +
+                    "codes.push((128 | (63 & code)))\n" +
+                    "}\n" +
+                    "}\n" +
+                    "let buf = new ArrayBuffer(codes.length);\n" +
+                    "let result = new Uint8Array(buf);\n" +
+                    "for (let i = 0; i < codes.length; i++) {\n" +
+                    "result[i] = codes[i] & 0xff;\n" +
+                    "}\n" +
+                    "return result;\n" +
+                    "}" +
+                    "</script>",
+
+                    "<script type='text/javascript'>\n" +
+                    "function openDownloadDialog(url, saveName) {\n" +
+                    "if (typeof url == 'object' && url instanceof Blob) {\n" +
+                    "url = URL.createObjectURL(url);\n" +
+                    "}\n" +
+                    "let aLink = document.createElement('a');\n" +
+                    "aLink.href = url;\n" +
+                    "aLink.download = saveName || '';\n" +
+                    "let event;\n" +
+                    "if (window.MouseEvent) {\n" +
+                    "event = new MouseEvent('click');\n" +
+                    "} else {\n" +
+                    "event = document.createEvent('MouseEvents');\n" +
+                    "event.initMouseEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);\n" +
+                    "}\n" +
+                    "aLink.dispatchEvent(event);\n" +
+                    "}" +
+                    "</script>",
+
+                    "<script type='text/javascript'>\n" +
+                    "function getConfigs(container, configs) {\n" +
+                    "let dl = document.createElement('dl');\n" +
+                    "container.appendChild(dl);\n" +
+                    "for (let name in configs) {\n" +
+                    "if (configs[name].type == 'hr') {\n" +
+                    "let dt = document.createElement('dt');\n" +
+                    "dt.innerText = configs[name].name;\n" +
+                    "dl.appendChild(dt);\n" +
+                    "} else {\n" +
+                    "let dd = document.createElement('dd');\n" +
+                    "dl.appendChild(dd);\n" +
+                    "let configsname = document.createElement('span');\n" +
+                    "configsname.className='configs-name';\n" +
+                    "configsname.innerText = configs[name].name;\n" +
+                    "let configsvalue = document.createElement('span');\n" +
+                    "configsvalue.className='configs-value';\n" +
+                    "configsvalue.innerText = configs[name].value;\n" +
+                    "dd.appendChild(configsname);\n" +
+                    "dd.appendChild(configsvalue);\n" +
+                    "}\n" +
+                    "}\n" +
+                    "}" +
+                    "</script>",
+
+                    "<script type='text/javascript'>\n" +
+                    "function init(){\n" +
+                    "let codes = document.getElementsByClassName('CODES')[0].getElementsByTagName('code');\n" +
+                    "report = codes[0].innerText;\n" +
+                    "let hash = codes[1].innerText;\n" +
+                    "let configs = JSON.parse(codes[2].innerText);\n" +
+                    "report = JSON.parse(report);\n" +
+                    "dataset.title = report.dataset.title;\n" +
+                    "dataset.columns = report.dataset.columns;\n" +
+                    "dataset.data = report.dataset.data;\n" +
+                    "dataset.sql = report.dataset.sql;\n" +
+                    "dataset.configs = configs;\n" +
+                    "document.getElementsByClassName('SCRIPT')[0].getElementsByTagName('code')[0].innerText = dataset.sql;\n" +
+                    "getConfigs(document.getElementsByClassName('CONFIGS')[0], report.configs);\n" +
+                    "getConfigs(document.getElementsByClassName('CONFIGS')[0], dataset.configs);\n" +
+                    "getThemes();\n" +
+                    "viewDataset(0);\n" +
+                    "if (typeof echarts !== 'undefined'){\n" +
+                    "let container = document.getElementsByClassName('ECHART')[0];\n" +
+                    "let size = getAbsolutePosition(container);\n" +
+                    "container.style.height = size.height + 'px';\n" +
+                    "report.configs.toolboxSaveAsReport.value = 'false';\n" +
+                    "getEcharts(container, (size.width) + 'px', size.height + 'px', dataset, report.configs);\n" +
+                    "}\n" +
+                    "}\n" +
+                    "</script>",
+
+                    "<script type='text/javascript'>\n" +
+                    "function getThemes(){\n" +
+                    "let themes = {" +
+                    "浅粉: {backgroundColor: '#FFDAB9', color: '#FF0099'},\n" +
+                    "浅灰: {backgroundColor: '#696969', color: '#F5F5F5'},\n" +
+                    "深灰: {backgroundColor: '#404040', color: '#66CCFF'},\n" +
+                    "黑色: {backgroundColor: '#000000', color: '#F0FFFF'},\n" +
+                    "墨绿: {backgroundColor: '#2F4F4F', color: '#F0F8FF'},\n" +
+                    "深蓝: {backgroundColor: '#000033', color: '#CD5C5C'},\n" +
+                    "红色: {backgroundColor: '#8B0000', color: '#FFFF00'},\n" +
+                    "};\n" +
+                    "let content = document.getElementById('THEMES');\n" +
+                    "for (let key in themes){\n" +
+                    "let theme = document.createElement('span');\n" +
+                    "theme.className ='theme';\n" +
+                    "theme.title = key;\n" +
+                    "theme.style.backgroundColor = themes[key].backgroundColor;\n" +
+                    "theme.style.color = themes[key].color;\n" +
+                    "theme.innerHTML = '&emsp;&emsp;';" +
+                    "theme.onclick = function(){\n" +
+                    "document.body.style.backgroundColor = this.style.backgroundColor;\n" +
+                    "document.body.style.color = this.style.color;\n" +
+                    "}\n" +
+                    "content.appendChild(theme);\n" +
+                    "}\n" +
+                    "}\n" +
+                    "</script>",
+
+                    "<script type='text/javascript'>\n" +
+                    "function selectTab(id){\n" +
+                    "let names = ['ECHART','TABLE','SCRIPT','CONFIGS'];\n" +
+                    "for (let i=0;i<names.length;i++){\n" +
+                    "let tab = document.getElementById(names[i]);\n" +
+                    "let div = document.getElementsByClassName(names[i])[0];\n" +
+                    "if (names[i] == id){\n" +
+                    "tab.className = 'tabButton-selected';\n" +
+                    "div.style.display = 'block';\n" +
+                    "} else {\n" +
+                    "tab.className = 'tabButton-unselected';\n" +
+                    "div.style.display = 'none';\n" +
+                    "}\n" +
+                    "}\n" +
+                    "}\n" +
+                    "</script>",
+
+                    "<script type='text/javascript'>\n" +
+                    "Number.prototype.format = function(pattern) {\n" +
+                    "let num = this;\n" +
+                    "let is = false;\n" +
+                    "if (num < 0)\n" +
+                    "is = true;\n" +
+                    "num = Math.abs(num);\n" +
+                    "let strarr = num ? num.toString().split('.') : ['0'];\n" +
+                    "let fmtarr = pattern ? pattern.split('.') : [''];\n" +
+                    "let retstr = '';\n" +
+                    "let str = strarr[0];\n" +
+                    "let fmt = fmtarr[0];\n" +
+                    "let i = str.length - 1;\n" +
+                    "let comma = false;\n" +
+                    "for (let f = fmt.length - 1; f >= 0; f--) {\n" +
+                    "switch (fmt.substr(f, 1)) {\n" +
+                    "case '#':\n" +
+                    "if (i >= 0) retstr = str.substr(i--, 1) + retstr;\n" +
+                    "break;\n" +
+                    "case '0':\n" +
+                    "if (i >= 0) retstr = str.substr(i--, 1) + retstr;\n" +
+                    "else retstr = '0' + retstr;\n" +
+                    "break;\n" +
+                    "case ',':\n" +
+                    "comma = true;\n" +
+                    "retstr = ',' + retstr;\n" +
+                    "break;\n" +
+                    "}\n" +
+                    "}\n" +
+                    "if (i >= 0) {\n" +
+                    "if (comma) {\n" +
+                    "let l = str.length;\n" +
+                    "for (; i >= 0; i--) {\n" +
+                    "retstr = str.substr(i, 1) + retstr;\n" +
+                    "if (i > 0 && ((l - i) % 3) == 0) retstr = ',' + retstr;\n" +
+                    "}\n" +
+                    "}\n" +
+                    "else retstr = str.substr(0, i + 1) + retstr;\n" +
+                    "}\n" +
+                    "retstr = retstr + '.';\n" +
+                    "str = strarr.length > 1 ? strarr[1] : '';\n" +
+                    "fmt = fmtarr.length > 1 ? fmtarr[1] : '';\n" +
+                    "i = 0;\n" +
+                    "for (let f = 0; f < fmt.length; f++) {\n" +
+                    "switch (fmt.substr(f, 1)) {\n" +
+                    "case '#':\n" +
+                    "if (i < str.length) retstr += str.substr(i++, 1);\n" +
+                    "break;\n" +
+                    "case '0':\n" +
+                    "if (i < str.length) retstr += str.substr(i++, 1);\n" +
+                    "else retstr += '0';\n" +
+                    "break;\n" +
+                    "}\n" +
+                    "}\n" +
+                    "return is ? '-' + retstr.replace(/^,+/, '').replace(/\\.$/, '') : retstr.replace(/^,+/, '').replace(/\\.$/, '');\n" +
+                    "};\n" +
+                    "</script>",
+
+                    "<script type='text/javascript'>\n" +
+                    "Date.prototype.format = function(fmt) {\n" +
+                    "let o = {\n" +
+                    "'M+': this.getMonth() + 1,\n" +
+                    "'d+': this.getDate(),\n" +
+                    "'h+': this.getHours(),\n" +
+                    "'m+': this.getMinutes(),\n" +
+                    "'s+': this.getSeconds(),\n" +
+                    "'q+': Math.floor((this.getMonth() + 3) / 3),\n" +
+                    "'S': this.getMilliseconds()\n" +
+                    "};\n" +
+                    "if (/(y+)/.test(fmt))\n" +
+                    "fmt = fmt.replace(RegExp.$1, (this.getFullYear() + '').substr(4 - RegExp.$1.length));\n" +
+                    "for (let k in o)\n" +
+                    "if (new RegExp('(' + k + ')').test(fmt))\n" +
+                    "fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (('00' + o[k]).substr(('' + o[k]).length)));\n" +
+                    "return fmt;\n" +
+                    "};\n" +
+                    "</script>",
+
+                    "<script type='text/javascript'>\n" +
+                    "function selectPageGroup(div, index, pageindex, pages){\n" +
+                    "div.innerHTML = ''\n" +
+                    "let transpose = document.createElement('span');\n" +
+                    "transpose.className = 'page-button';\n" +
+                    "transpose.innerText = 'T';\n" +
+                    "transpose.title = '报表转置';\n" +
+                    "transpose.onclick = function(){\n" +
+                    "datasetTranspose();\n" +
+                    "}\n" +
+                    "div.appendChild(transpose);\n" +
+                    "let xml = document.createElement('span');\n" +
+                    "xml.className = 'page-tab';\n" +
+                    "xml.style.cssFloat = 'right';\n" +
+                    "xml.innerText = '⇣';\n" +
+                    "xml.title = '导出XML';\n" +
+                    "xml.onclick = function(){\n" +
+                    "getXML(dataset.title, dataset.columns, dataset.data);\n" +
+                    "}\n" +
+                    "div.appendChild(xml);\n" +
+                    "if (index>0){\n" +
+                    "let span = document.createElement('span');\n" +
+                    "span.className = 'page-tab';\n" +
+                    "span.id = index-1;\n" +
+                    "span.innerText = '•••';\n" +
+                    "span.onclick = function(){\n" +
+                    "selectPageGroup(div, Number(this.id),pageindex, pages);\n" +
+                    "}\n" +
+                    "div.appendChild(span);\n" +
+                    "}\n" +
+                    "for (let i=index*10;i<pages&&i<(index+1)*10;i++){\n" +
+                    "let span = document.createElement('span');\n" +
+                    "span.className = 'page-tab';\n" +
+                    "span.id = i;\n" +
+                    "span.innerText = (i+1);\n" +
+                    "if (pageindex == i)\n" +
+                    "span.style.backgroundColor = '#008080';\n" +
+                    "span.onclick = function(){\n" +
+                    "viewDataset(Number(this.id));\n" +
+                    "}\n" +
+                    "div.appendChild(span);\n" +
+                    "}\n" +
+                    "if ((index+1)*10<pages){\n" +
+                    "let span = document.createElement('span');\n" +
+                    "span.className = 'page-tab';\n" +
+                    "span.id = index+1;\n" +
+                    "span.innerText = '•••';\n" +
+                    "span.onclick = function(){\n" +
+                    "selectPageGroup(div, Number(this.id),pageindex, pages);\n" +
+                    "}\n" +
+                    "div.appendChild(span);\n" +
+                    "}\n" +
+                    "}\n" +
+                    "</script>",
+
+                    "<script type='text/javascript'>\n" +
+                    "function viewDataset(pageindex) {\n" +
+                    "let columns = dataset.columns;\n" +
+                    "let data = dataset.data;\n" +
+                    "let configs = dataset.configs;\n" +
+                    "let pagesize = Number(configs.reportPageSize.value);\n" +
+                    "let pages = (data.length%pagesize==0?Math.floor(data.length/pagesize):Math.floor(data.length/pagesize) + 1);\n" +
+                    "let table = document.createElement('table');\n" +
+                    "table.className = table.id = 'table';\n" +
+                    "if (configs.reportFontFamily.value != 'default')\n" +
+                    "table.style.fontFamily = configs.reportFontFamily.value;\n" +
+                    "if (configs.reportFontWeight.value != 'default')\n" +
+                    "table.style.fontWeight = configs.reportFontWeight.value;\n" +
+                    "if (configs.reportFontStyle.value != 'default')\n" +
+                    "table.style.fontStyle = configs.reportFontStyle.value;\n" +
+                    "\n" +
+                    "let tr = document.createElement('tr');\n" +
+                    "if (configs.reportRowHeight.value != 'default')\n" +
+                    "tr.style.height = configs.reportRowHeight.value;\n" +
+                    "table.appendChild(tr);\n" +
+                    "\n" +
+                    "for (let c = 0; c < columns.length; c++) {\n" +
+                    "let th = document.createElement('th');\n" +
+                    "th.style.textAlign = columns[c].style.textAlign;\n" +
+                    "switch (columns[c].order) {\n" +
+                    "case '':\n" +
+                    "th.innerText = '● ' + columns[c].name;\n" +
+                    "break;\n" +
+                    "case 'asc':\n" +
+                    "th.innerText = '▲ ' + columns[c].name;\n" +
+                    "break;\n" +
+                    "case 'desc':\n" +
+                    "th.innerText = '▼ ' + columns[c].name;\n" +
+                    "break;\n" +
+                    "}\n" +
+                    "th.title = columns[c].name;\n" +
+                    "th.setAttribute('colid', c);\n" +
+                    "th.onclick = function () {\n" +
+                    "orderDatasetBy(this.getAttribute('colid'));\n" +
+                    "viewDataset(0);\n" +
+                    "};\n" +
+                    "tr.appendChild(th);\n" +
+                    "}\n" +
+                    "let floatFormat = '#,##0.';\n" +
+                    "for (let i = 0; i < Number(configs.reportScale.value); i++) {\n" +
+                    "floatFormat += '0';\n" +
+                    "}\n" +
+                    "for (let i = pageindex * pagesize; i < data.length && i < (pageindex+1)* pagesize; i++) {\n" +
+                    "let tr = document.createElement('tr');\n" +
+                    "tr.type = 'tr';\n" +
+                    "if (configs.reportRowHeight.value != 'default')\n" +
+                    "tr.style.height =configs.reportRowHeight.value;\n" +
+                    "tr.id = i;\n" +
+                    "if (i % 2 > 0) {\n" +
+                    "tr.className = 'alt-line';\n" +
+                    "}\n" +
+                    "table.appendChild(tr);\n" +
+                    "let row = data[i];\n" +
+                    "for (let c = 0; c < columns.length; c++) {\n" +
+                    "let item = row[columns[c].name];\n" +
+                    "let td = document.createElement('td');\n" +
+                    "try {\n" +
+                    "if (item.value != null) {\n" +
+                    "if (item.type == 'number') {\n" +
+                    "let f = item.format;\n" +
+                    "if ((item.value + '').indexOf('.') !== -1) {\n" +
+                    "f = floatFormat;\n" +
+                    "item.value = Math.round(item.value * Math.pow(10,Number(configs.reportScale.value))) / Math.pow(10,Number(configs.reportScale.value));\n" +
+                    "} else {\n" +
+                    "if (columns[c]['format'] !== 'undefined') {\n" +
+                    "if (item.format != columns[c].format)\n" +
+                    "f = columns[c].format;\n" +
+                    "}\n" +
+                    "}\n" +
+                    "td.innerText = item.value.format(f);\n" +
+                    "item.format = columns[c]['format'] = f;\n" +
+                    "} else if (item.type == 'date' || item.type == 'datetime')\n" +
+                    "td.innerText = new Date(item.value).format(item.format);\n" +
+                    "else\n" +
+                    "td.innerText = item.value;\n" +
+                    "} else\n" +
+                    "td.innerText = '';\n" +
+                    "let style = '';\n" +
+                    "for (let key in item.style) {\n" +
+                    "style += key + ': ' + item.style[key] + ';';\n" +
+                    "}\n" +
+                    "td.style.cssText = style;\n" +
+                    "} catch (e) {\n" +
+                    "td.innerText = row[columns[c].name].value;\n" +
+                    "}\n" +
+                    "tr.appendChild(td);\n" +
+                    "}\n" +
+                    "}\n" +
+                    "let container = document.getElementsByClassName('TABLE')[0];\n" +
+                    "container.innerHTML='';\n" +
+                    "container.appendChild(table);\n" +
+                    "let div = document.createElement('div');\n" +
+                    "div.className = 'PAGES';\n" +
+                    "let groupindex = Math.floor(pageindex/10);\n" +
+                    "container.appendChild(div);\n" +
+                    "selectPageGroup(div, groupindex,pageindex,pages);\n" +
+                    "}\n" +
+                    "</script>",
+
+                    "<script type='text/javascript'>\n" +
+                    "function orderDatasetBy(colid) {\n" +
+                    "function exchange(r1, r2) {\n" +
+                    "for (col in r1) {\n" +
+                    "for (attr in r1[col]) {\n" +
+                    "if (attr != 'rowid' && attr != 'colid') {\n" +
+                    "let tmp = r1[col][attr];\n" +
+                    "r1[col][attr] = r2[col][attr];\n" +
+                    "r2[col][attr] = tmp;\n" +
+                    "}\n" +
+                    "}\n" +
+                    "}\n" +
+                    "}\n" +
+                    "let columns = dataset.columns;\n" +
+                    "let data = dataset.data;\n" +
+                    "switch (columns[colid].order) {\n" +
+                    "case '':\n" +
+                    "columns[colid].order = 'asc';\n" +
+                    "break;\n" +
+                    "case 'asc':\n" +
+                    "columns[colid].order = 'desc';\n" +
+                    "break;\n" +
+                    "case 'desc':\n" +
+                    "columns[colid].order = 'asc';\n" +
+                    "break;\n" +
+                    "}\n" +
+                    "for (let i = 0; i < data.length; i++) {\n" +
+                    "for (let x = 0; x < i; x++) {\n" +
+                    "switch (columns[colid].order) {\n" +
+                    "case 'asc':\n" +
+                    "if (data[i][columns[colid].name].type == 'number' && data[x][columns[colid].name].type == 'number') {\n" +
+                    "if (data[i][columns[colid].name].value < data[x][columns[colid].name].value) {\n" +
+                    "exchange(data[i], data[x]);\n" +
+                    "}\n" +
+                    "} else if (data[i][columns[colid].name].type == 'object' || data[x][columns[colid].name].type == 'object') {\n" +
+                    "//exchange(data[i], data[x]);\n" +
+                    "} else {\n" +
+                    "if (data[i][columns[colid].name].value.localeCompare(data[x][columns[colid].name].value) < 0 && data[i][columns[colid].name].type == data[x][columns[colid].name].type) {\n" +
+                    "exchange(data[i], data[x]);\n" +
+                    "}\n" +
+                    "}\n" +
+                    "break;\n" +
+                    "case 'desc':\n" +
+                    "if (data[i][columns[colid].name].type == 'number' && data[x][columns[colid].name].type == 'number') {\n" +
+                    "if (data[i][columns[colid].name].value > data[x][columns[colid].name].value) {\n" +
+                    "exchange(data[i], data[x]);\n" +
+                    "}\n" +
+                    "} else if (data[i][columns[colid].name].type == 'object' || data[x][columns[colid].name].type == 'object') {\n" +
+                    "//exchange(data[i], data[x]);\n" +
+                    "} else {\n" +
+                    "if (data[i][columns[colid].name].value.localeCompare(data[x][columns[colid].name].value) > 0 && data[i][columns[colid].name].type == data[x][columns[colid].name].type) {\n" +
+                    "exchange(data[i], data[x]);\n" +
+                    "}\n" +
+                    "}\n" +
+                    "break;\n" +
+                    "}\n" +
+                    "}\n" +
+                    "}\n" +
+                    "return dataset;\n" +
+                    "}\n" +
+                    "</script>",
+
+                    "<script type='text/javascript'>\n" +
+                    "function datasetTranspose(){\n" +
+                    "try {\n" +
+                    "let columns = dataset.columns;\n" +
+                    "let data = dataset.data;\n" +
+                    "let settmp = {columns: [], data: []};\n" +
+                    "let col = {\n" +
+                    "id: 0,\n" +
+                    "name: columns[0].name,\n" +
+                    "order: '',\n" +
+                    "type: 'string',\n" +
+                    "style: columns[0].style\n" +
+                    "};\n" +
+                    "settmp.columns.push(col);\n" +
+                    "for (let i = 0; i < data.length; i++) {\n" +
+                    "let row = data[i];\n" +
+                    "col = {\n" +
+                    "id: i + 1,\n" +
+                    "name: row[columns[0].name].value,\n" +
+                    "order: '',\n" +
+                    "type: row[columns[0].name].type,\n" +
+                    "style: row[columns[0].name].style\n" +
+                    "};\n" +
+                    "settmp.columns.push(col);\n" +
+                    "}\n" +
+                    "\n" +
+                    "for (let c = 1; c < columns.length; c++) {\n" +
+                    "let nr = {};\n" +
+                    "nr[columns[0].name] = {\n" +
+                    "rowid: c - 1,\n" +
+                    "colid: 0,\n" +
+                    "value: columns[c].name,\n" +
+                    "type: 'string',\n" +
+                    "style: columns[c].style\n" +
+                    "};\n" +
+                    "for (let i = 0; i < data.length; i++) {\n" +
+                    "let row = data[i];\n" +
+                    "nr[row[columns[0].name].value] = {\n" +
+                    "rowid: c - 1,\n" +
+                    "colid: i + 1,\n" +
+                    "value: row[columns[c].name].value,\n" +
+                    "type: row[columns[c].name].type,\n" +
+                    "style: row[columns[c].name].style\n" +
+                    "};\n" +
+                    "}\n" +
+                    "settmp.data.push(nr);\n" +
+                    "}\n" +
+                    "dataset.data = settmp.data;\n" +
+                    "dataset.columns = settmp.columns;\n" +
+                    "viewDataset(0);\n" +
+                    "} catch (e) {\n" +
+                    "console.log(e);\n" +
+                    "}\n" +
+                    "}" +
+                    "</script>",
+
+                    "<script type='text/javascript'>\n" +
+                    "function getXML(title, columns, dataset){\n" +
+                    "try{\n" +
+                    "let xml = '<?xml version=\"1.0\"?>" +
+                    "<?mso-application progid=\"Excel.Sheet\"?>" +
+                    "<Workbook xmlns=\"urn:schemas-microsoft-com:office:spreadsheet\"" +
+                    " xmlns:o=\"urn:schemas-microsoft-com:office:office\"" +
+                    " xmlns:x=\"urn:schemas-microsoft-com:office:excel\"" +
+                    " xmlns:ss=\"urn:schemas-microsoft-com:office:spreadsheet\"" +
+                    " xmlns:html=\"http://www.w3.org/TR/REC-html40\">" +
+                    "<DocumentProperties xmlns=\"urn:schemas-microsoft-com:office:office\">" +
+                    "<Author>杨凯</Author>" +
+                    "<LastAuthor></LastAuthor>" +
+                    "<Created>' + new Date() + '</Created>" +
+                    "<Version>1.0.0</Version>" +
+                    "</DocumentProperties>" +
+                    "<Styles>" +
+                    "<Style ss:ID=\"Default\" ss:Name=\"Normal\">" +
+                    "<Alignment ss:Vertical=\"Center\"/>" +
+                    "<Borders/>" +
+                    "<Font ss:FontName=\"宋体\" x:CharSet=\"134\" ss:Size=\"11\" ss:Color=\"#000000\"/>" +
+                    "<Interior/>" +
+                    "<NumberFormat ss:Format=\"#,##0.00_ \"/>" +
+                    "<Protection/>" +
+                    "</Style>" +
+                    "</Styles>';\n" +
+                    "xml += '<Worksheet ss:Name=\"' + title[title.length-1].split(\"<\").join(\"&lt;\").split(\">\").join(\"&gt;\").split(\"*\").join(\"#\").split(\"?\").join(\"#\").split(\"[\").join(\"#\").split(\"]\").join(\"#\").split(\"\\\\\").join(\"#\").split(\"/\").join(\"#\") + '\"><Table ss:ExpandedColumnCount=\"' + columns.length + '\" ss:ExpandedRowCount=\"' + (dataset.length + 1) + '\">';\n" +
+                    "let r = '<Row>';\n" +
+                    "for(let c = 0;c < columns.length; c++){\n" +
+                    "let ce = '<Cell><Data ss:Type=\"String\">'+ columns[c].name.split(\"<\").join(\"&lt;\").split(\">\").join(\"&gt;\") + '</Data></Cell>';\n" +
+                    "r += ce;\n" +
+                    "}\n" +
+                    "r += '</Row>';\n" +
+                    "xml += r;\n" +
+                    "for(let i = 0;i < dataset.length; i++){\n" +
+                    "let row = dataset[i];\n" +
+                    "r = '<Row>';\n" +
+                    "for(let c = 0;c < columns.length; c++){\n" +
+                    "let cell = row[columns[c].name];\n" +
+                    "let ce = '<Cell><Data ss:Type=\"' + (cell.type=='number'?'Number':'String') + '\">'+ (cell.type=='number'?cell.value:(typeof cell.value !== 'undefined'?cell.value.split(\"<\").join(\"&lt;\").split(\">\").join(\"&gt;\"):'')) + '</Data></Cell>';\n" +
+                    "r += ce;\n" +
+                    "}\n" +
+                    "r += '</Row>';\n" +
+                    "xml += r;\n" +
+                    "}\n" +
+                    "xml += '</Table></Worksheet></Workbook>';\n" +
+                    "let blob = new Blob([str2ab(xml)], {type: 'text/xml'});\n" +
+                    "openDownloadDialog(blob, title[0] + '.report.xml');\n" +
+                    "} catch (e) {\n" +
+                    "alert(e);\n" +
+                    "}\n" +
+                    "}" +
+                    "</script>",
+                ]).join("\n");
+            }
+
+            let id = container.getAttribute("_echarts_instance_");
+            let report = JSON.parse(__ECHARTS__.history[id]);
+            let title = report.dataset.title;
+            let link = "<a title='进入系统,使用「打开报表」功能可编辑此报表.' href='" + window.location.href.split("?")[0] + "'>" + __VERSION__.name + "</a>";
+            report = JSON.stringify(report);
+            report = report.encode();
+            let configs = JSON.stringify(__DATASET__.configs).encode();
+            let path = __VERSION__.url;
+            if (__DATASET__.configs.reportScopeOfUse.value === "intranet") {
+                path = location.href.split("?")[0].split("/");
+                path = path.slice(0, path.length - 1).join("/");
+            }
+            let time = getNow();
+            let html = "<!DOCTYPE html>\n" +
+                "<html>\n" +
+                "<head>\n" +
+                "<meta charset='utf-8'>\n" +
+                "<title>" + title[0] + "</title>\n" +
+                "<meta name='renderer' content='webkit'>\n" +
+                "<meta name='description' content='这是关于 " + __VERSION__.name + " 的固定报表'>\n" +
+                "<meta name='app-version' content='" + __VERSION__.version + "'>\n" +
+                "<meta name='app-author' content='" + __VERSION__.author + "'>\n" +
+                "<meta name='app-url' content='" + __VERSION__.url + "'>\n" +
+                "<meta name='report-author' content='" + (typeof __LOGS__.user.name !== "undefined"? __LOGS__.user.name: "") + "'>\n" +
+                "<meta name='report-create-time' content='" + time + "'>\n" +
+                "<style>\n" +
+                "body{background-color: dimgrey;color: whitesmoke;font-family: Arial, Verdana}\n" +
+                "body ::-webkit-scrollbar {width: 5px;height: 4px;background: transparent;}\n" +
+                "body ::-webkit-scrollbar-thumb {" +
+                "border-radius: 3px;background-color: grey;" +
+                "background-image: -webkit-linear-gradient(45deg,rgba(255, 255, 255, 0.2) 25%,transparent 25%,transparent 50%,rgba(255, 255, 255, 0.2) 50%,rgba(255, 255, 255, 0.2) 75%,transparent 75%,transparent);\n" +
+                "}\n" +
+                "body ::-webkit-scrollbar-track {box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);background: transparent;border-radius: 3px;}\n" +
+                "h1{margin: auto;width: 80%;text-align: left;white-space: normal;word-break: break-all;word-wrap: break-word;}\n" +
+                "h4{margin: auto;width: 80%;text-align: left;white-space: normal;word-break: break-all;word-wrap: break-word;}\n" +
+                "h5{margin: auto;width: 80%;text-align: right;white-space: normal;word-break: break-all;word-wrap: break-word;}\n" +
+                "div.TABS{margin: auto;padding-left: 5px;padding-right: 5px;width: 80%;overflow: hidden;height: 100%}\n" +
+                "div.ECHART{margin: auto;padding-left: 5px;padding-right: 5px;width: 80%;border: 1px solid coral;border-radius: 5px;overflow: hidden;height: 100%;}\n" +
+                "div.TABLE{margin: auto;padding-left: 5px;padding-right: 5px;width: 80%;height: 80%;border: 1px solid coral;border-radius: 5px;overflow: scroll;height: 100%;display: none}\n" +
+                "div.SCRIPT{margin: auto;padding-left: 5px;padding-right: 5px;width: 80%;border: 1px solid coral;border-radius: 5px;overflow: hidden;height: 100%;display: none}\n" +
+                "div.CONFIGS{margin: auto;padding-left: 5px;padding-right: 5px;width: 80%;border: 1px solid coral;border-radius: 5px;" +
+                "overflow: hidden;height: 100%;display: none;-webkit-column-count: 4;column-count: 4;column-fill: auto;}\n" +
+                "div.PAGES{border-top:2px solid gray;}\n" +
+                "div.CODES{margin: auto;padding-left: 5px;padding-right: 5px;width: 80%;border: 1px solid coral;border-radius: 5px;overflow: hidden;height: 100%;display: none}\n" +
+                "code{font-family: Verdana,Arial;font-size: 10px;width: 100%;white-space: normal;word-break: break-all;word-wrap: break-word;display:none}\n" +
+                "code.sql{font-family: Verdana,Arial;font-size: 10px;width: 100%;white-space: normal;word-break: break-all;word-wrap: break-word;display:block}\n" +
+                "h6{margin: auto;width: 80%;text-align: center}\n" +
+                "a{font-size: 80%;padding-left: 5px;padding-right: 5px;background-color: sandybrown;outline-style: none;border-radius: 4px;text-decoration:none;}\n" +
+                "span.tabButton-selected{cursor: pointer;font-size: 80%;padding-left: 5px;padding-right: 5px;background-color: #00A7AA;outline-style: none;border-top-left-radius: 4px;border-top-right-radius: 4px;border: 1px solid coral;border-bottom-width: 0px;}\n" +
+                "span.tabButton-unselected{cursor: pointer;font-size: 80%;padding-left: 5px;padding-right: 5px;outline-style: none;border-top-left-radius: 4px;border-top-right-radius: 4px;border: 1px solid gray;border-bottom-width: 0px;}\n" +
+                "span.tabButton-unselected:hover{background-color: sandybrown}\n" +
+                "span.tabButton-theme{float: right;cursor: pointer;font-size: 80%;background-color: transparent;outline-style: none;}\n" +
+                "span.theme{cursor: pointer;font-size: 80%;width: 50px;outline-style: none;}\n" +
+                "dt{cursor: pointer;font-size: 80%;padding-left: 5px;padding-right: 5px;outline-style: none;border-radius: 4px}\n" +
+                "dd{cursor: pointer;font-size: 80%;padding-left: 5px;padding-right: 5px;outline-style: none;border-radius: 4px;overflow: hidden;white-space: nowrap;word-break: keep-all;text-overflow: ellipsis;-o-text-overflow: ellipsis;}\n" +
+                "span.configs-name{cursor: pointer;font-size: 80%;padding-left: 5px;padding-right: 5px;background-color: sandybrown;outline-style: none;border-radius: 4px;border: 1px solid gray;}\n" +
+                "span.configs-value{cursor: pointer;font-size: 80%;padding-left: 5px;padding-right: 5px;background-color: #00A7AA;outline-style: none;border-radius: 4px;border: 1px solid gray;}\n" +
+                "image{margin: auto;width: 80%;text-align: center}\n" +
+                "table{font-size: 80%;margin: 1px;line-height:12px;border-collapse:collapse;cursor: pointer;position:relative;min-width: 33%;border-radius: 5px;background-color: transparent;}\n" +
+                "th{margin: 0px;border: 1px solid gray;padding: 3px 3px 2px 3px;white-space: nowrap;word-break: keep-all;overflow: hidden;" +
+                "text-overflow: ellipsis;-o-text-overflow: ellipsis;font-weight: bolder;text-align: center;background-color: #00A7AA;color: #DCDCDC;border-bottom: 2px solid gray;}\n" +
+                "th:hover{background-color: #008080;}\n" +
+                "tr{height: 25px;color:slategray;background-color:darkgray;}\n" +
+                "tr:hover{background-color:rosybrown;}\n" +
+                "tr.alt-line{color:slategray;background-color:lightgray;}\n" +
+                "tr.alt-line:hover{background-color:rosybrown;}\n" +
+                "td{margin: 2px;border:1px solid gray;padding:3px 3px 2px 3px;white-space: nowrap; word-break: keep-all;" +
+                "overflow: hidden;text-overflow: ellipsis;-o-text-overflow: ellipsis;}\n" +
+                "td:hover{border-bottom:2px solid #00A7AA}\n" +
+                "span.page-tab{float:left;cursor: pointer;width: 50px;font-size: 60%;text-align: center;;border-right:1px solid gray;border-bottom-left-radius: 6px;border-bottom-right-radius: 36px;}" +
+                "span.page-tab:hover{background-color: sandybrown;}\n" +
+                "span.page-button{float:left;cursor: pointer;width: 50px;font-size: 60%;text-align: center;;border-left:1px solid gray;border-bottom-right-radius: 6px;border-bottom-left-radius: 36px;}" +
+                "span.page-button:hover{background-color: sandybrown;}\n" +
+                "</style>\n" +
+                getScript(__VERSION__.main, path) +
+                "</head>\n" +
+                "<body onload='init()'>\n" +
+                "<h1>" + title[0] + "</h1>\n" +
+                "<h4>" + (title.length > 1 ? title.slice(1, title.length).join("&emsp;") : "") + "</h4>\n" +
+                "<div class='TABS'>\n" +
+                "<span class='tabButton-selected' id='ECHART' onclick='selectTab(this.id)'>数据视图</span>\n" +
+                "<span class='tabButton-unselected' id='TABLE' onclick='selectTab(this.id)'>数据报表</span>\n" +
+                "<span class='tabButton-unselected' id='SCRIPT' onclick='selectTab(this.id)'>数据脚本</span>\n" +
+                "<span class='tabButton-unselected' id='CONFIGS' onclick='selectTab(this.id)'>视图参数</span>\n" +
+                link +
+                "<span class='tabButton-theme' id='THEMES'>" +
+                "</span>\n" +
+                "</div>\n" +
+                "<div class='ECHART'>\n" +
+                "<image src = '" + myChart.getDataURL({excludeComponents: ['toolbox']}) + "' width='100%' height='" + myChart.height + "'></image>" +
+                "</div>\n" +
+                "<div class='TABLE'>\n" +
+                "</div>\n" +
+                "<div class='CONFIGS'>\n" +
+                "</div>\n" +
+                "<div class='SCRIPT'><code class='sql'></code></div>\n" +
+                "<div class='CODES'>\n" +
+                "<code>" + report + "</code>\n" +
+                "<code>" + report.hex_md5_hash() + "</code>\n" +
+                "<code>" + configs + "</code>\n" +
+                "<code>" + configs.hex_md5_hash() + "</code>\n" +
+                "</div>\n" +
+                "<h6>适用于<a href = 'https://www.google.cn/chrome/index.html' target='_blank'>Google Chrome</a>或<a href = 'https://www.microsoft.com/zh-cn/edge?form=MY01BV&OCID=MY01BV&r=1' target='_blank'>Microsoft Edge</a>浏览器&emsp;技术支持: <a href = '" + __VERSION__.url + "' target='_blank'>" +
+                __VERSION__.author +  "</a>&emsp;电话: " + __VERSION__.tel + "&emsp;邮箱: <a href='mailto:" + __VERSION__.email + "'>" + __VERSION__.email + "</a>&emsp;创建时间:" + time + "</h6>\n" +
+                "</body>\n" +
+                "</html>";
+            let blob = new Blob([str2ab(html)], {type: "text/html"});
+            openDownloadDialog(blob, title[0] + ".report.html");
+        }
+    } : {};
 }
 

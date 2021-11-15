@@ -187,6 +187,19 @@ var __SYS_IMAGES__ = {
         return img;
     },
 
+    getHelpButton: function (image, dom, key, parent) {
+        let img = document.createElement("img");
+        img.type = "img";
+        img.className = "title_close_button";
+        img.src = image.image;
+        img.width = image.width;
+        img.height = image.height;
+        img.onmouseenter = function(){
+            UI.help(dom, key, parent);
+        };
+        return img;
+    },
+
     getLogoImage: function (image, width, height) {
         let img = document.createElement("img");
         img.type = "img";
