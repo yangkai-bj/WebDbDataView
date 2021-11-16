@@ -1,6 +1,6 @@
 const __VERSION__ = {
     name: "Web DataView for SQLite Database of browser",
-    main: "WebDBDataview.js",
+    main: "WebDBDataView.js",
     version: "3.0.2",
     date: "2021/11/15",
     comment: [
@@ -385,7 +385,7 @@ var __XMLHTTP__ = {
         }
     },
     certificate: function (byServer) {
-        let echartsPath = "echarts/V5.2.1";
+        let echartsPath = "echarts/V5.2.2";
         let title = document.title;
         let scripts = [
             {name: "主程序", src: "WebDBDataView.js", type: "text/javascript", element: "script", load: false},
@@ -826,9 +826,9 @@ var __CONFIGS__ = {
          },
          hr_FixedReport: {name: "固定报表设置", value: "", type: "hr"},
          reportScopeOfUse: {
-             name: "使用范围",
+             name: "应用环境",
              value: "intranet",
-             options: [new Option("内部网络", "intranet"), new Option("互联网", "internet")],
+             options: [new Option("内部网络", "intranet"), new Option("静态文件", "internet")],
              type: "select"
          },
          hr_download: {name: "数据下载设置", value: "", type: "hr"},
