@@ -12220,17 +12220,19 @@ function getSaveAsReport(configs, container, myChart) {
         icon: __SYS_IMAGES_PATH__.linedown,
         onclick: function () {
             function getScript(main, jsPath) {
+                // chrome://flags/#same-site-by-default-cookies
+                // chrome://flags/#cookies-without-same-site-must-be-secure
                 let scripts = [
                     "images.js",
                     "FunctionsComponent.js",
                     main,
-                    "echarts/v5.2.1/echarts.min.js",
-                    "echarts/V5.2.1/echarts-gl.min.js",
-                    "echarts/V5.2.1/echarts-wordcloud.min.js",
+                    "echarts/v5.2.2/echarts.min.js",
+                    "echarts/v5.2.2/echarts-gl.min.js",
+                    "echarts/v5.2.2/echarts-wordcloud.min.js",
                     "echarts/map/world.js",
                     "echarts/map/china-and-region.js",
-                    "echarts/V5.2.1/ecStat.js",
-                    "echarts/V5.2.1/echarts-liquidfill.min.js",
+                    "echarts/v5.2.2/ecStat.js",
+                    "echarts/v5.2.2/echarts-liquidfill.min.js",
                     "echartsThemes.js",
                     "echartsView.js",
                 ];
