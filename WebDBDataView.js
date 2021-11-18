@@ -1,8 +1,9 @@
 const __VERSION__ = {
     name: "Web DataView for SQLite Database of browser",
     main: "WebDBDataView.js",
-    version: "3.0.2",
-    date: "2021/11/15",
+    echarts: "echarts/v5.2.2",
+    version: "3.0.3",
+    date: "2021/11/17",
     comment: [
         "-- 2021/03/08",
         "优化算法和压缩代码.",
@@ -62,6 +63,8 @@ const __VERSION__ = {
         "优化UI组件.",
         "-- 2021/11/15",
         "调整固定报表为双模式.",
+        "-- 2021/11/17",
+        "Echarts 5.2.2.",
     ],
     author: __SYS_LOGO_LINK__.author.decode(),
     url: __SYS_LOGO_LINK__.link.getee.decode(),
@@ -385,7 +388,7 @@ var __XMLHTTP__ = {
         }
     },
     certificate: function (byServer) {
-        let echartsPath = "echarts/V5.2.2";
+        let echartsPath = __VERSION__.echarts;
         let title = document.title;
         let scripts = [
             {name: "主程序", src: "WebDBDataView.js", type: "text/javascript", element: "script", load: false},
