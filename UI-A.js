@@ -852,6 +852,7 @@ var UI = {
         },
         show: function (parent, callback, args) {
             let type = typeof args.type != "undefined" ? args.type : "";
+            let charset = typeof args.charset != "undefined" ? args.charset : "GBK";
             if (parent == "auto" || parent == null) {
                 if (document.fullscreen && typeof __CONFIGS__.fullScreen.element == "object") {
                     parent = __CONFIGS__.fullScreen.element;
@@ -1255,7 +1256,7 @@ var UI = {
                                     + "<li>文件类型:&emsp;" + file.type + "</li><dl></span>")
                             }
                         };
-                        reader.readAsText(file, __SQLEDITOR__.charset.options[__SQLEDITOR__.charset.value]);
+                        reader.readAsText(file, charset);
                     } catch (e) {
                         UI.alert.show("提示", "请选择需要导入的文件.")
                     }

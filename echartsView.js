@@ -3295,8 +3295,8 @@ function getLineOption(configs, container, myChart, dataset) {
                 show: configs.lineDisplayEndLabel.value.toBoolean(),
                 distance: 8,
                 valueAnimation: true,
-                formatter: function (params) {
-                    return params.seriesName + '\n' + params.value;
+                formatter: function (param) {
+                    return param.seriesName + '\n' + param.value;
                 },
                 rotate: configs.lineLabelRotate.value,
             },
@@ -3636,8 +3636,8 @@ function getMultiGraphOption(configs, container, myChart, dataset) {
                             alignTo: configs.pieLabelAlignTo.value,
                             bleedMargin: 25,
                             margin: 20,
-                            formatter: function (params) {
-                                return [params.name, params.value + " , " + params.percent + "%"].join("\n");
+                            formatter: function (param) {
+                                return [param.name, param.value + " , " + param.percent + "%"].join("\n");
                             },
                             color: configs.pieLabelTextColor.value,
                             fontSize: configs.pieLabelFontSize.value,
@@ -3741,8 +3741,8 @@ function getMultiGraphOption(configs, container, myChart, dataset) {
                             show: configs.lineDisplayEndLabel.value.toBoolean(),
                             distance: 8,
                             valueAnimation: true,
-                            formatter: function (params) {
-                                return params.seriesName + '\n' + params.value;
+                            formatter: function (param) {
+                                return param.seriesName + '\n' + param.value;
                             },
                             rotate: configs.lineLabelRotate.value,
                         },
@@ -3927,7 +3927,7 @@ function getMultiGraphOption(configs, container, myChart, dataset) {
         toolbox: getToolbox(configs, container, dataset, myChart),
         title: getTitle(configs, dataset.title),
         tooltip: getTooltip(configs, "item", function (param) {
-            return [param.seriesName,"<hr>" +
+            return [param.seriesName,"<hr style='background-color:" + param.color + "'>" +
                 param.marker + "&ensp;" + param.name +
                 ":&ensp;<span style='display:inline-block;min-width:110px;text-align:right;font-weight:bold'>" +
                 param.value + (param.seriesType == "pie" ? ("&ensp;(&ensp;" + param.percent + "%&ensp;)") : "") + "</span>"].join("<br>");
@@ -4216,8 +4216,8 @@ function getPieOption(configs, container, myChart, dataset) {
                 alignTo: configs.pieLabelAlignTo.value,
                 bleedMargin: 25,
                 margin: 20,
-                formatter: function (params) {
-                    return [params.name, params.value + " , " + params.percent + "%"].join("\n");
+                formatter: function (param) {
+                    return [param.name, param.value + " , " + param.percent + "%"].join("\n");
                 },
                 color: configs.pieLabelTextColor.value,
                 fontSize: configs.pieLabelFontSize.value,
@@ -4262,7 +4262,7 @@ function getPieOption(configs, container, myChart, dataset) {
         legend: getLegend(configs, source.dimensions.slice(1, source.dimensions.length)),
         toolbox: getToolbox(configs, container, dataset, myChart),
         tooltip: getTooltip(configs, "item", function (param) {
-            return [param.seriesName,"<hr>" +
+            return [param.seriesName,"<hr style='background-color:" + param.color + "'>" +
                 param.marker + "&ensp;" + param.name +
                 ":&ensp;<span style='display:inline-block;min-width:110px;text-align:right;font-weight:bold'>" +
                 param.value + (param.seriesType == "pie" ? ("&ensp;(&ensp;" + param.percent + "%&ensp;)") : "") + "</span>"].join("<br>");
@@ -4373,7 +4373,7 @@ function getFunnelOption(configs, container, myChart, dataset) {
         backgroundColor: getBackgroundColor(configs),
         title: getTitle(configs, dataset.title),
         tooltip: getTooltip(configs, "item", function (param) {
-            return [param.seriesName,"<hr>" +
+            return [param.seriesName,"<hr style='background-color:" + param.color + "'>" +
                 param.marker + "&ensp;" + param.name +
                 ":&ensp;<span style='display:inline-block;min-width:110px;text-align:right;font-weight:bold'>" +
                 param.value + (param.seriesType == "pie" ? ("&ensp;(&ensp;" + param.percent + "%&ensp;)") : "") + "</span>"].join("<br>");
@@ -4684,8 +4684,8 @@ function getGeoOfChinaOption(configs, container, myChart, dataset) {
                 times.push({
                     value: source.dimensions[c],
                     tooltip: {
-                        formatter: function (params) {
-                            return params.name;
+                        formatter: function (param) {
+                            return param.name;
                         }
                     }
                 });
@@ -4695,11 +4695,13 @@ function getGeoOfChinaOption(configs, container, myChart, dataset) {
                     grid: getGrids(configs),
                     //backgroundColor: configs.geoBackgroundColor.value,
                     toolbox: getToolbox(configs, container, dataset, myChart),
-                    tooltip: getTooltip(configs, "item", function (params) {
+                    tooltip: getTooltip(configs, "item", function (param) {
                         try {
-                            return params.name + "<hr>" + params.marker + params.seriesName + ":&emsp;<span style='display:inline-block;min-width:110px;text-align:right;font-weight:bold;color:" + params.color + "'>" + ((params["value"].length == 3) ? params.data["value"][2] : params.data["value"] + "</span>")
+                            return param.name +
+                                "<hr style='background-color:" + param.color + "'>" +
+                                param.marker + param.seriesName + ":&emsp;<span style='display:inline-block;min-width:110px;text-align:right;font-weight:bold;'>" + ((param["value"].length == 3) ? param.data["value"][2] : param.data["value"] + "</span>")
                         } catch (e) {
-                            console.log("在地图中未检索到" + params.name + ".");
+                            console.log("在地图中未检索到" + param.name + ".");
                         }
                     }),
                     visualMap: getVisualMap(configs, ax.min, ax.max),
@@ -4867,8 +4869,8 @@ function getGeoOfLocalOption(configs, container, myChart, dataset) {
                 times.push({
                     value: source.dimensions[c],
                     tooltip: {
-                        formatter: function (params) {
-                            return params.name;
+                        formatter: function (param) {
+                            return param.name;
                         }
                     }
                 });
@@ -4879,8 +4881,9 @@ function getGeoOfLocalOption(configs, container, myChart, dataset) {
                     grid: getGrids(configs),
                     //backgroundColor: configs.geoBackgroundColor.value,
                     toolbox: getToolbox(configs, container, dataset, myChart),
-                    tooltip: getTooltip(configs, "item", function (params) {
-                        return params.name + "<hr>" + params.marker + params.seriesName + ":&emsp;<span style='display:inline-block;min-width:110px;text-align:right;font-weight:bold;color:" + params.color + "'>" + ((params["value"].length == 3) ? params.data["value"][2] : params.data["value"] + "</span>")
+                    tooltip: getTooltip(configs, "item", function (param) {
+                        return param.name + "<hr style='background-color:" + param.color + "'>" +
+                            param.marker + param.seriesName + ":&emsp;<span style='display:inline-block;min-width:110px;text-align:right;font-weight:bold'>" + ((param["value"].length == 3) ? param.data["value"][2] : param.data["value"] + "</span>")
                     }),
                     visualMap: getVisualMap(configs, ax.min, ax.max),
                     //backgroundColor: "#013954",
@@ -5906,15 +5909,15 @@ function getPolarHeatmap(container, width, height, dataset, configs) {
         return Math.min(min, item[2]);
     }, +Infinity);//默认+Infinity:无穷大
 
-    function renderItem(params, api) {
+    function renderItem(param, api) {
         let values = [api.value(0), api.value(1)];
         let coord = api.coord(values);
         let size = api.size([1, 1], values);
         return {
             type: 'sector',
             shape: {
-                cx: params.coordSys.cx,
-                cy: params.coordSys.cy,
+                cx: param.coordSys.cx,
+                cy: param.coordSys.cy,
                 r0: coord[2] - size[0] / 2,
                 r: coord[2] + size[0] / 2,
                 startAngle: -(coord[3] + size[1] / 2),
@@ -6021,7 +6024,8 @@ function getPolarHeatmap(container, width, height, dataset, configs) {
         legend: getLegend(configs, null),
         polar: {},
         tooltip: getTooltip(configs, "item", function (param) {
-            return [xAxis[param.value[1]], "<hr>" + param.marker + "&ensp;" + param.name + ":<span style='display:inline-block;min-width:110px;text-align:right;font-weight:bold;color:" + param.color + "'>&ensp;" + param.value[2] + "</span>"].join("<br>");
+            return [xAxis[param.value[1]], "<hr style='background-color:" + param.color + "'>" +
+            param.marker + "&ensp;" + param.name + ":<span style='display:inline-block;min-width:110px;text-align:right;font-weight:bold;color:" + param.color + "'>&ensp;" + param.value[2] + "</span>"].join("<br>");
         }),
         visualMap: getVisualMap(configs, minValue, maxValue),
         angleAxis: getAngleAxis(configs, xAxis),
@@ -6352,8 +6356,8 @@ function getRelation(container, width, height, dataset, configs) {
         grid: getGrids(configs),
         toolbox: getToolbox(configs, container, dataset, myChart),
         title: getTitle(configs, dataset.title),
-        tooltip: getTooltip(configs, "item", function (params) {
-            return params.marker + params.name;
+        tooltip: getTooltip(configs, "item", function (param) {
+            return param.marker + param.name;
         }),
         series: [serie],
         graphic: getWaterGraphic(__VERSION__),
@@ -6853,7 +6857,8 @@ function getCalendar(container, width, height, dataset, configs) {
         title: getTitle(configs, dataset.title),
         tooltip: getTooltip(configs, "item", function (param) {
             let date = echarts.format.formatTime("yyyy-MM-dd", param.value[0]);
-            return [param.seriesName, "<hr>" + param.marker + "&ensp;" + date + ":<span style='display:inline-block;min-width:110px;text-align:right;font-weight:bold;color:" + param.color + "'>&ensp;" + param.value[1] + "</span>"].join("<br>");
+            return [param.seriesName, "<hr style='background-color:" + param.color + "'>" +
+            param.marker + "&ensp;" + date + ":<span style='display:inline-block;min-width:110px;text-align:right;font-weight:bold;color:" + param.color + "'>&ensp;" + param.value[1] + "</span>"].join("<br>");
         }),
         toolbox: getToolbox(configs, container, dataset, myChart),
         visualMap: visualMaps,
@@ -6961,8 +6966,9 @@ function getGeoOfChina(container, width, height, dataset, configs) {
         grid: getGrids(configs),
         title: getTitle(configs, dataset.title),
         toolbox: getToolbox(configs, container, dataset, myChart),
-        tooltip: getTooltip(configs, "item", function (params) {
-            return params.name + "<hr>" + params.marker + params.seriesName + ":&emsp;<span style='display:inline-block;min-width:110px;text-align:right;font-weight:bold;color:" + params.color + "'>" + ((params["value"].length == 3) ? params.data["value"][2] : params.data["value"] + "</span>")
+        tooltip: getTooltip(configs, "item", function (param) {
+            return param.name + "<hr style='background-color:" + param.color + "'>" +
+                param.marker + param.seriesName + ":&emsp;<span style='display:inline-block;min-width:110px;text-align:right;font-weight:bold'>" + ((param["value"].length == 3) ? param.data["value"][2] : param.data["value"] + "</span>")
         }),
         visualMap: getVisualMap(configs, series[index].min, series[index].max),
         geo: {
@@ -7053,10 +7059,10 @@ function getGeoOfChina(container, width, height, dataset, configs) {
         myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    myChart.on("mouseover", function (params) {
+    myChart.on("mouseover", function (param) {
         stopTimer();
     });
-    myChart.on("mouseout", function (params) {
+    myChart.on("mouseout", function (param) {
         startTimer();
     });
 
@@ -7184,8 +7190,9 @@ function getGeoOfLocal(container, width, height, dataset, configs) {
         grid: getGrids(configs),
         title: getTitle(configs, dataset.title),
         toolbox: getToolbox(configs, container, dataset, myChart),
-        tooltip: getTooltip(configs, "item", function (params) {
-            return params.name + "<hr>" + params.marker + params.seriesName + ":&emsp;<span style='display:inline-block;min-width:110px;text-align:right;font-weight:bold;color:" + params.color + "'>" + ((params["value"].length == 3) ? params.data["value"][2] : params.data["value"] + "</span>")
+        tooltip: getTooltip(configs, "item", function (param) {
+            return param.name + "<hr style='background-color:" + param.color + "'>" +
+                param.marker + param.seriesName + ":&emsp;<span style='display:inline-block;min-width:110px;text-align:right;font-weight:bold'>" + ((param["value"].length == 3) ? param.data["value"][2] : param.data["value"] + "</span>")
         }),
         visualMap: getVisualMap(configs, series[index].min, series[index].max),
         geo: {
@@ -7277,10 +7284,10 @@ function getGeoOfLocal(container, width, height, dataset, configs) {
         myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    myChart.on("mouseover", function (params) {
+    myChart.on("mouseover", function (param) {
         stopTimer();
     });
-    myChart.on("mouseout", function (params) {
+    myChart.on("mouseout", function (param) {
         startTimer();
     });
 
@@ -7378,8 +7385,8 @@ function getBar3D(container, width, height, dataset, configs) {
                     fontSize: configs.label3DFontSize.value,
                     borderWidth: 1
                 },
-                formatter: function (params) {
-                    return rows[params.value[0]] + "\n" + columns[params.value[1] + 1] + ": " + params.value[2];
+                formatter: function (param) {
+                    return rows[param.value[0]] + "\n" + columns[param.value[1] + 1] + ": " + param.value[2];
                 },
             },
             emphasis: {
@@ -7402,8 +7409,9 @@ function getBar3D(container, width, height, dataset, configs) {
         grid: getGrids(configs),
         title: getTitle(configs, dataset.title),
         legend: getLegend(configs, source.dimensions.slice(1, source.dimensions.length)),
-        tooltip: getTooltip(configs, "item", function (params) {
-            return rows[params.value[0]] + "<hr>" + params.marker + columns[params.value[1] + 1] + ":&emsp;<span style='display:inline-block;min-width:110px;text-align:right;font-weight:bold;color:" + params.color + "'>" + params.value[2] + "</span>";
+        tooltip: getTooltip(configs, "item", function (param) {
+            return rows[param.value[0]] + "<hr style='background-color:" + param.color + "'>" +
+                param.marker + source.dimensions[param.value[1] + 1] + ":&emsp;<span style='display:inline-block;min-width:110px;text-align:right;font-weight:bold'>" + param.value[2] + "</span>";
         }),
         toolbox: getToolbox3D(configs, container, dataset, myChart),
         visualMap: getVisualMap(configs, ia.min, ia.max),
@@ -7531,8 +7539,8 @@ function getLine3D(container, width, height, dataset, configs) {
                     fontSize: configs.label3DFontSize.value,
                     borderWidth: 1
                 },
-                formatter: function (params) {
-                    return rows[params.value[0]] + "\n" + columns[params.value[1] + 1] + ": " + params.value[2];
+                formatter: function (param) {
+                    return rows[param.value[0]] + "\n" + columns[param.value[1] + 1] + ": " + param.value[2];
                 },
             },
             emphasis: {
@@ -7554,8 +7562,9 @@ function getLine3D(container, width, height, dataset, configs) {
         grid: getGrids(configs),
         title: getTitle(configs, dataset.title),
         legend: getLegend(configs, source.dimensions.slice(1, source.dimensions.length)),
-        tooltip: getTooltip(configs, "item", function (params) {
-            return rows[params.value[0]] + "<hr>" + params.marker + columns[params.value[1] + 1] + ":&emsp;<span style='display:inline-block;min-width:110px;text-align:right;font-weight:bold;color:" + params.color + "'>" + params.value[2] + "</span>";
+        tooltip: getTooltip(configs, "item", function (param) {
+            return rows[param.value[0]] + "<hr style='background-color:" + param.color + "'>" +
+                param.marker + source.dimensions[param.value[1] + 1] + ":&emsp;<span style='display:inline-block;min-width:110px;text-align:right;font-weight:bold'>" + param.value[2] + "</span>";
         }),
         toolbox: getToolbox3D(configs, container, dataset, myChart),
         visualMap: getVisualMap(configs, ia.min, ia.max),
@@ -7710,8 +7719,8 @@ function getScatter3D(container, width, height, dataset, configs) {
                     fontSize: configs.label3DFontSize.value,
                     borderWidth: 1
                 },
-                formatter: function (params) {
-                    return rows[params.value[0]] + "\n" + columns[params.value[1] + 1] + ": " + params.value[2];
+                formatter: function (param) {
+                    return rows[param.value[0]] + "\n" + columns[param.value[1] + 1] + ": " + param.value[2];
                 },
             },
             emphasis: {
@@ -7733,8 +7742,9 @@ function getScatter3D(container, width, height, dataset, configs) {
         grid: getGrids(configs),
         title: getTitle(configs, dataset.title),
         legend: getLegend(configs, source.dimensions.slice(1, source.dimensions.length)),
-        tooltip: getTooltip(configs, "item", function (params) {
-            return rows[params.value[0]] + "<hr>" + params.marker + columns[params.value[1] + 1] + ":&emsp;<span style='display:inline-block;min-width:110px;text-align:right;font-weight:bold;color:" + params.color + "'>" + params.value[2] + "</span>";
+        tooltip: getTooltip(configs, "item", function (param) {
+            return rows[param.value[0]] + "<hr style='background-color:" + param.color + "'>" +
+                param.marker + source.dimensions[param.value[1] + 1] + ":&emsp;<span style='display:inline-block;min-width:110px;text-align:right;font-weight:bold'>" + param.value[2] + "</span>";
         }),
         toolbox: getToolbox3D(configs, container, dataset, myChart),
         visualMap: getVisualMap(configs, ia.min, ia.max),
@@ -7869,8 +7879,8 @@ function getCategoryLine(container, width, height, dataset, configs) {
         times.push({
             value: row[columns[0]].value,
             tooltip: {
-                formatter: function (params) {
-                    return params.name;
+                formatter: function (param) {
+                    return param.name;
                 }
             }
         });
@@ -8320,12 +8330,12 @@ function getGeoMigrateLinesOfChinaCity(container, width, height, dataset, config
             grid: getGrids(configs),
             title: getTitle(configs, dataset.title),
             toolbox: getToolbox(configs, container, dataset, myChart),
-            tooltip: getTooltip(configs, "axis", function (params) {
-                if (params.seriesType == "lines")
-                    return params.data.fromName + "<span style='color:" + params.color + "'> ↣ </span>" + params.data.toName + "<br>" + params.marker + "&emsp;<span style='display:inline-block;min-width:80px;text-align:right;font-weight:bold'>" + params.data.details + "</span>";
+            tooltip: getTooltip(configs, "axis", function (param) {
+                if (param.seriesType == "lines")
+                    return param.data.fromName + "<span style='color:" + param.color + "'> ↣ </span>" + param.data.toName + "<br>" + param.marker + "&emsp;<span style='display:inline-block;min-width:80px;text-align:right;font-weight:bold'>" + param.data.details + "</span>";
                 //仅标注线提示;因点会重复,不标注点提示
                 //else
-                //return params.seriesName + " ↣ " + params.name + ":<br>" + params.data.details;
+                //return param.seriesName + " ↣ " + param.name + ":<br>" + param.data.details;
             }),
             legend: getLegend(configs, getSerieNames(seriedata)),
             geo: {
@@ -8436,8 +8446,8 @@ function getCategoryLineForGauge(container, width, height, dataset, configs) {
             {
                 value: names[i].value,
                 tooltip: {
-                    formatter: function (params) {
-                        return params.name;
+                    formatter: function (param) {
+                        return param.name;
                     }
                 }
             }
@@ -8555,9 +8565,10 @@ function getCategoryLineForGauge(container, width, height, dataset, configs) {
             backgroundColor: getBackgroundColor(configs),
             title: getTitle(configs, dataset.title),
             timeline: getTimeline(configs, times),
-            tooltip: getTooltip(configs, "item", function (params) {
-                return [params.seriesName,
-                    "<hr>" + params.marker + params.name.split("\n\n")[1] + ":&emsp;<span style='display:inline-block;min-width:110px;text-align:right;font-weight:bold'>" + params.data.value + "</span>"].join("<br>");
+            tooltip: getTooltip(configs, "item", function (param) {
+                return [param.seriesName,
+                    "<hr style='background-color:" + param.color + "'>" +
+                    param.marker + param.name.split("\n\n")[1] + ":&emsp;<span style='display:inline-block;min-width:110px;text-align:right;font-weight:bold'>" + param.data.value + "</span>"].join("<br>");
             }),
 
             toolbox: getToolbox(configs, container, dataset, myChart),
@@ -8635,8 +8646,8 @@ function getCategoryLineForLiqiud(container, width, height, dataset, configs) {
             {
                 value: names[i].value,
                 tooltip: {
-                    formatter: function (params) {
-                        return params.name;
+                    formatter: function (param) {
+                        return param.name;
                     }
                 }
             }
@@ -8838,8 +8849,10 @@ function getCategoryLineForLiqiud(container, width, height, dataset, configs) {
             timeline: getTimeline(configs, times),
             tooltip: {
                 show: configs.tooltipDisplay.value.toBoolean(),
-                formatter: function (params) {
-                    return [params.name, "<hr>" + params.marker + params.seriesName + ":&emsp;<span style='display:inline-block;min-width:110px;text-align:right;font-weight:bold'>" + Math.round(params.data.value * b.length + b.min, 2) + "</span>"].join("<br>");
+                formatter: function (param) {
+                    return [param.name,
+                        "<hr style='background-color:" + param.color + "'>"  +
+                        param.marker + param.seriesName + ":&emsp;<span style='display:inline-block;min-width:110px;text-align:right;font-weight:bold'>" + Math.round(param.data.value * b.length + b.min, 2) + "</span>"].join("<br>");
                 },
             },
             toolbox: getToolbox(configs, container, dataset, myChart),
@@ -9480,8 +9493,9 @@ function getSurface(container, width, height, dataset, configs) {
         grid: getGrids(configs),
         title: getTitle(configs, dataset.title),
         legend: getLegend(configs, source.dimensions.slice(1, source.dimensions.length)),
-        tooltip: getTooltip(configs, "item", function (params) {
-            return rows[params.value[0]] + "<hr>" + params.marker + source.dimensions[params.value[1] + 1] + ":&emsp;<span style='display:inline-block;min-width:110px;text-align:right;font-weight:bold'>" + params.value[2] + "</span>";
+        tooltip: getTooltip(configs, "item", function (param) {
+            return rows[param.value[0]] + "<hr style='background-color:" + param.color + "'>" +
+                param.marker + source.dimensions[param.value[1] + 1] + ":&emsp;<span style='display:inline-block;min-width:110px;text-align:right;font-weight:bold'>" + param.value[2] + "</span>";
         }),
         toolbox: getToolbox3D(configs, container, dataset, myChart),
         visualMap: getVisualMap(configs, ia.min, ia.max),
@@ -10210,9 +10224,9 @@ function getCandlestick(container, width, height, dataset, configs) {
         title: getTitle(configs, dataset.title),
         legend: getLegend(configs, columns.slice(1, columns.length)),
 
-        tooltip: getTooltip(configs, "axis", function (params) {
-            let param = params[0];
-            return [param.name,
+        tooltip: getTooltip(configs, "axis", function (param) {
+            param = param[0];
+            return [param.name,"<hr style='background-color:" + param.color + "'>" +
                 param.marker + "&ensp;" + param.seriesName,
                 "<span style='color:" + param.color + " '>•</span>" + "&ensp;开盘价:&emsp;<span style='display:inline-block;min-width:110px;text-align:right;font-weight:bold'>" + param.data[1] + "</span>",
                 "<span style='color:" + param.color + " '>•</span>" + "&ensp;最低价:&emsp;<span style='display:inline-block;min-width:110px;text-align:right;font-weight:bold'>" + param.data[3] + "</span>",
@@ -10418,7 +10432,8 @@ function getWordCloud(container, width, height, dataset, configs) {
         grid: getGrids(configs),
         title: getTitle(configs, dataset.title),
         tooltip: getTooltip(configs, "item", function (param) {
-            return [param.seriesName, "<hr>" + param.marker + "&ensp;" + param.name + ":<span style='display:inline-block;min-width:110px;text-align:right;font-weight:bold;color:" + param.color + "'>&ensp;" + param.value + "</span>"].join("<br>");
+            return [param.seriesName, "<hr style='background-color:" + param.color + "'>" +
+            param.marker + "&ensp;" + param.name + ":<span style='display:inline-block;min-width:110px;text-align:right;font-weight:bold'>&ensp;" + param.value + "</span>"].join("<br>");
         }),
         legend: getLegend(configs, source.dimensions.slice(1, source.dimensions.length)),
         toolbox: getToolbox(configs, container, dataset, myChart),
@@ -10554,7 +10569,8 @@ function getSunburst(container, width, height, dataset, configs) {
         // grid: getGrids(configs),
         title: getTitle(configs, dataset.title),
         tooltip: getTooltip(configs, "item", function (param) {
-            return [param.seriesName, "<hr>" + param.marker + "&ensp;" + param.name + ":<span style='display:inline-block;min-width:110px;text-align:right;font-weight:bold;color:" + param.color + "'>&ensp;" + param.value + "</span>"].join("<br>");
+            return [param.seriesName, "<hr style='background-color:" + param.color + "'>" +
+            param.marker + "&ensp;" + param.name + ":<span style='display:inline-block;min-width:110px;text-align:right;font-weight:bold'>&ensp;" + param.value + "</span>"].join("<br>");
         }),
         toolbox: getToolbox(configs, container, dataset, myChart),
         series: series,
@@ -10696,11 +10712,11 @@ function getTreemap(container, width, height, dataset, configs) {
         label: {
             normal: {
                 position: configs.treemapLabelPosition.value.toArray(['5%','5%'],","),
-                formatter: function (params) {
+                formatter: function (param) {
                     let arr = [
-                        '{name|' + params.data.name + '}',
+                        '{name|' + param.data.name + '}',
                         '{hr|}',
-                        '{label|' + params.data.title + '}  {value| ' + params.data.value + '}'
+                        '{label|' + param.data.title + '}  {value| ' + param.data.value + '}'
                     ];
                     return arr.join("\n");
                 },
@@ -10749,7 +10765,8 @@ function getTreemap(container, width, height, dataset, configs) {
         tooltip: getTooltip(configs, "item", function (param) {
             //暂不设置.需要思考
             //console.log(param);
-            //return [param.data.name, "<hr>" + param.marker + "&ensp;" + param.data.title + ":<span style='display:inline-block;min-width:110px;text-align:right;font-weight:bold'>&ensp;" + param.data.value + "</span>"].join("<br>");
+            //return [param.data.name, "<hr style='background-color:" + param.color + "'>" +
+            // param.marker + "&ensp;" + param.data.title + ":<span style='display:inline-block;min-width:110px;text-align:right;font-weight:bold'>&ensp;" + param.data.value + "</span>"].join("<br>");
         }),
         toolbox: getToolbox(configs, container, dataset, myChart),
         series: series,
@@ -11436,9 +11453,9 @@ function getPie3D(container, width, height, dataset, configs) {
         title: getTitle(configs, dataset.title),
         legend: getLegend(configs, legends),
         toolbox: getToolbox3D(configs, container, dataset, myChart),
-        tooltip: getTooltip(configs, "item", function (params) {
-            if (params.seriesName !== 'mouseoutSeries') {
-                return `${params.seriesName}<br/><span style="display:inline-block;margin-right:5px;border-radius:10px;width:10px;height:10px;background-color:${params.color};"></span>${option.series[params.seriesIndex].pieData.value}`;
+        tooltip: getTooltip(configs, "item", function (param) {
+            if (param.seriesName !== 'mouseoutSeries') {
+                return `${param.seriesName}<br/><span style="display:inline-block;margin-right:5px;border-radius:10px;width:10px;height:10px;background-color:${param.color};"></span>${option.series[param.seriesIndex].pieData.value}`;
             }
         }),
         xAxis3D: xAxis3Ds,
@@ -11500,7 +11517,7 @@ function getSingeAxis(container, width, height, dataset, configs) {
         toolbox: getToolbox(configs, container, dataset, myChart),
         legend: getLegend(configs, columns),
         tooltip: getTooltip(configs, "item", function (param) {
-            return [param.marker + "&ensp;" + param.name + ":<span style='display:inline-block;min-width:110px;text-align:right;font-weight:bold;color:" + param.color + "'>&ensp;" + param.value[1] + "</span>"].join("<br>");
+            return [param.marker + "&ensp;" + param.name + ":<span style='display:inline-block;min-width:110px;text-align:right;font-weight:bold'>&ensp;" + param.value[1] + "</span>"].join("<br>");
         }),
         singleAxis: [],
         series: [],
@@ -11918,8 +11935,8 @@ function getScrolling(container, width, height, dataset, configs) {
                 show: configs.lineDisplayEndLabel.value.toBoolean(),
                 distance: 8,
                 valueAnimation: true,
-                formatter: function (params) {
-                    return params.seriesName + '\n' + params.value;
+                formatter: function (param) {
+                    return param.seriesName + '\n' + param.value;
                 },
                 rotate: configs.lineLabelRotate.value,
             },
@@ -12139,8 +12156,8 @@ function getDatasetImage(container, width, height, dataset, configs) {
                     show: configs.lineDisplayEndLabel.value.toBoolean(),
                     distance: 8,
                     valueAnimation: true,
-                    formatter: function (params) {
-                        return params.seriesName + '\n' + params.value;
+                    formatter: function (param) {
+                        return param.seriesName + '\n' + param.value;
                     },
                     rotate: configs.lineLabelRotate.value,
                 },
@@ -12163,8 +12180,8 @@ function getDatasetImage(container, width, height, dataset, configs) {
                     label: {
                         show: true,
                         fontWeight: "bold",
-                        formatter: function (params) {
-                            return [params.name, params.seriesName + ":" + params.data[i]].join("\n");
+                        formatter: function (param) {
+                            return [param.name, param.seriesName + ":" + param.data[i]].join("\n");
                         },
                     }
                 } : {},

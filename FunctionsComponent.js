@@ -1,4 +1,36 @@
+function sleep(delay) {
+    let endTime = new Date().getTime() + parseInt(delay);
+    while (new Date().getTime() < endTime) ;
+    //用时间来控制延时,突破浏览器同时下载任务限制.
+}
 
+function getOptionName(options, value) {
+    let name = "";
+    try {
+        options.forEach(function (option) {
+            if (option.value === value) {
+                name = option.text;
+                throw new Error("break");
+            }
+        });
+    } catch (e) {
+    }
+    return name;
+}
+
+function getOptionValue(options, label) {
+    let value = null;
+    try {
+        options.forEach(function (option) {
+            if (option.label === label) {
+                value = option.value;
+                throw new Error("break");
+            }
+        });
+    } catch (e) {
+    }
+    return value;
+}
 // BEGIN DES3
 function des (key, message, encrypt, mode, iv, padding) {
     // DES 加密算法

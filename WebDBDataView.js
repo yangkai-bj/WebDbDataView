@@ -2,8 +2,8 @@ const __VERSION__ = {
     name: "Web DataView for SQLite Database of browser",
     main: "WebDBDataView.js",
     echarts: "echarts/v5.2.2",
-    version: "3.0.3",
-    date: "2021/11/17",
+    version: "3.0.4",
+    date: "2021/11/22",
     comment: [
         "-- 2021/03/08",
         "优化算法和压缩代码.",
@@ -76,15 +76,15 @@ const __VERSION__ = {
         create_database_connect: "在浏览器中创建一个数据库(SQLite)。",
         delete_database_connect: "删除当前数据库链接。",
         create_new_table: "在当前数据库中创建一个数据表。",
-        import_data: "可导入如下格式文件:<span style='font-size:50%'><li>.TXT</li><li>.CSV</li><li>.XLS</li><li>.XLSX</li></span>",
+        import_data: "协助您将如下格式数据导入当前数据库:<span style='font-size:50%'><li>.TXT</li><li>.CSV</li><li>.XLS</li><li>.XLSX</li></span>",
         show_table_construct: "解析当前数据表结构。",
-        drop_table: "删除当前数据表。",
+        drop_table: "删除当前数据库中的数据表。",
         create_new_sql: "新建数据库脚本。",
-        open_sql: "打开已保存脚本。",
-        save_sql: "保存正在编辑脚本。",
+        open_sql: "打开浏览器中保存的脚本。<br><span style='font-size:50%'>您还可以<li>删除脚本</li><li>重新命名</li></span>",
+        save_sql: "将脚本保存至浏览器中。<br><span style='font-size:50%'>浏览器中的脚本是以名称为索引存储,因此在保存时要确保脚本名称的唯一性，当然，系统会提示您是否覆盖保存。</span>",
         load_sql_from_file: "导入本地脚本文件(.SQL)。",
         save_sql_to_file: "将正在编辑脚本导出为本地文件。",
-        backup_sql_to_file: "备份或恢复所有脚本。",
+        backup_sql_to_file: "备份或恢复浏览器中所有脚本。<br><span style='font-size:50%'>备份文件中包含MD5校验码，用于在恢复时进行完整性校验。</span>",
         execute_sql: "执行当前脚本或函数并获取数据。",
         other: "帮助信息未定义。",
     }
@@ -853,11 +853,11 @@ var __CONFIGS__ = {
              type: "input"
          },
      },
-     setDatasetConfigs: function (parent, callback) {
+     setConfigs: function (parent, callback) {
          let config = getUserConfig("datasetConfig");
          if (config != null) {
              config = JSON.parse(config);
-             for (key in config) {
+             for (let key in config) {
                  try {
                      __DATASET__.configs[key].value = config[key];
                  } catch (e) {
@@ -1061,60 +1061,179 @@ var __CONFIGS__ = {
      title: null,
      codeMirror: null,
      parameter: {},
-     charset: {value: 1, name: "字符集", type: "select", options: ["GBK", "UTF-8"]},
-     modes: {SQL: "text/x-sqlite",函数: "text/javascript"},
-     themes: {
-         默认: {name: "default", href: "codemirror/theme/default.css"},
-         黑色: {name: "black", href: "codemirror/theme/black.css"},
-         粉色: {name: "pink", href: "codemirror/theme/pink.css"},
-         墨绿: {name: "blackish-green", href: "codemirror/theme/blackish-green.css"},
-         蓝色: {name: "duotone-light", href: "codemirror/theme/duotone-light.css"},
-         深蓝: {name: "cobalt", href: "codemirror/theme/cobalt.css"},
-         幻想: {name: "rubyblue", href: "codemirror/theme/rubyblue.css"},
-         初心: {name: "solarized light", href: "codemirror/theme/solarized.css"},
-         宁静: {name: "darcula", href: "codemirror/theme/darcula.css"},
-         优雅: {name: "elegant", href: "codemirror/theme/elegant.css"},
-         矩阵: {name: "the-matrix", href: "codemirror/theme/the-matrix.css"},
-         锐利: {name: "yonce", href: "codemirror/theme/yonce.css"},
-         黄昏: {name: "zenburn", href: "codemirror/theme/zenburn.css"},
-         黯然: {name: "eclipse", href: "codemirror/theme/eclipse.css"},
-         透明: {name: "transparent", href: "codemirror/theme/transparent.css"}
-     },
-     fontSize: {
-         options: {
-             "100%": "100%",
-             "110%": "110%",
-             "120%": "120%",
-             "130%": "130%",
-             "140%": "140%",
-             "150%": "150%"
+     configs: {
+         codeMirrorTheme: {
+             name: "主题",
+             value: JSON.stringify({name: "default", href: "codemirror/theme/default.css"}),
+             options: [
+                 new Option("默认", JSON.stringify({name: "default", href: "codemirror/theme/default.css"})),
+                 new Option("黑色", JSON.stringify({name: "black", href: "codemirror/theme/black.css"})),
+                 new Option("粉色", JSON.stringify({name: "pink", href: "codemirror/theme/pink.css"})),
+                 new Option("墨绿", JSON.stringify({name: "blackish-green", href: "codemirror/theme/blackish-green.css"})),
+                 new Option("蓝色", JSON.stringify({name: "duotone-light", href: "codemirror/theme/duotone-light.css"})),
+                 new Option("深蓝", JSON.stringify({name: "cobalt", href: "codemirror/theme/cobalt.css"})),
+                 new Option("幻想", JSON.stringify({name: "rubyblue", href: "codemirror/theme/rubyblue.css"})),
+                 new Option("初心", JSON.stringify({name: "solarized light", href: "codemirror/theme/solarized.css"})),
+                 new Option("宁静", JSON.stringify({name: "darcula", href: "codemirror/theme/darcula.css"})),
+                 new Option("优雅", JSON.stringify({name: "elegant", href: "codemirror/theme/elegant.css"})),
+                 new Option("矩阵", JSON.stringify({name: "the-matrix", href: "codemirror/theme/the-matrix.css"})),
+                 new Option("锐利", JSON.stringify({name: "yonce", href: "codemirror/theme/yonce.css"})),
+                 new Option("黄昏", JSON.stringify({name: "zenburn", href: "codemirror/theme/zenburn.css"})),
+                 new Option("黯然", JSON.stringify({name: "eclipse", href: "codemirror/theme/eclipse.css"})),
+                 new Option("透明", JSON.stringify({name: "transparent", href: "codemirror/theme/transparent.css"})),
+             ],
+             type: "select"
          },
-         default: 1
-     },
-     options: {
-         mode: "text/x-sqlite",
-         theme: "mdn-like",
-         indentWithTabs: true,
-         smartIndent: true,
-         lineNumbers: true,
-         matchBrackets: true,
-         autofocus: true,
-         gutters: ["CodeMirror-linenumbers", "breakpoints"],
-         extraKeys: {
-             "F10": "autocomplete",
-             "F11": function (cm) {
-                 cm.setOption("fullScreen", !cm.getOption("fullScreen"));
-             },
-             "Esc": function (cm) {
-                 if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
-             },
-             "Shift-F": "findPersistent"
+         codeMirrorMode: {
+             name: "模式",
+             value: "text/x-mysql",
+             options: [new Option("SQL", "text/x-mysql"), new Option("函数", "text/javascript")],
+             type: "select"
          },
-         hintOptions: {tables: {}}
+         codeMirrorFontSize: {
+             name: "字号",
+             value: "100%",
+             options: [
+                 new Option("100%", "100%"), new Option("110%", "110%"),
+                 new Option("120%", "120%"), new Option("130%", "130%"),
+                 new Option("140%", "140%"), new Option("150%", "150%"),
+             ],
+             type: "select"
+         },
+         codeMirrorRulers: {
+             name: "标尺数量",
+             value: "6",
+             type: "input"
+         },
+         codeMirrorRulerWidth: {
+             name: "标尺宽度",
+             value: "40",
+             type: "input"
+         },
+         codeMirrorLineNumber: {
+             name: "行号",
+             value: "true",
+             options: [new Option("显示", "true"), new Option("不显示", "false")],
+             type: "select"
+         },
+         codeMirrorSmartIndent: {
+             name: "智能缩进",
+             value: "true",
+             options: [new Option("开启", "true"), new Option("关闭", "false")],
+             type: "select"
+         },
+         codeMirrorMatchBrackets: {
+             name: "匹配括号",
+             value: "true",
+             options: [new Option("开启", "true"), new Option("关闭", "false")],
+             type: "select"
+         },
+         codeMirrorAutofocus: {
+             name: "自动焦点",
+             value: "true",
+             options: [new Option("开启", "true"), new Option("关闭", "false")],
+             type: "select"
+         },
+         codeMirrorBreakpoints: {
+             name: "断点",
+             value: "false",
+             options: [new Option("显示", "true"), new Option("不显示", "false")],
+             type: "select"
+         },
+         codeMirrorCharset: {
+             name: "字符集",
+             value: "GBK",
+             options: [new Option("GBK", "GBK"), new Option("UTF-8", "UTF-8")],
+             type: "select"
+         },
      },
+
+     reset: function() {
+         try {
+             if (this.codeMirror != null) {
+                 this.codeMirror.setOption("mode", this.configs.codeMirrorMode.value);
+                 let theme = JSON.parse(this.configs.codeMirrorTheme.value);
+                 $("sqlediterTheme").href = theme.href;
+                 this.codeMirror.setOption("theme", theme.name);
+                 let colors = ["#fcc", "#ccf", "#fcf", "#aff", "#cfc", "#f5f577"];
+                 let rulers = [];
+                 if (Number(this.configs.codeMirrorRulers.value) >= 1) {
+                     for (let i = 1; i <= Number(this.configs.codeMirrorRulers.value); i++) {
+                         rulers.push({
+                             color: colors[i % colors.length],
+                             column: i * Number(this.configs.codeMirrorRulerWidth.value),
+                             lineStyle: "dotted"
+                         });
+                         //solid//dashed//dash-dot//dotted
+                     }
+                 }
+                 this.codeMirror.setOption("rulers", rulers);
+                 this.codeMirror.setOption("lineNumbers", this.configs.codeMirrorLineNumber.value.toBoolean());
+                 this.codeMirror.setOption("smartIndent", this.configs.codeMirrorSmartIndent.value.toBoolean());
+                 this.codeMirror.setOption("matchBrackets", this.configs.codeMirrorMatchBrackets.value.toBoolean());
+                 this.codeMirror.setOption("autofocus", this.configs.codeMirrorAutofocus.value.toBoolean());
+                 this.codeMirror.setOption("gutters", [
+                     this.configs.codeMirrorLineNumber.value.toBoolean() ? "CodeMirror-linenumbers" : "",
+                     this.configs.codeMirrorBreakpoints.value.toBoolean() ? "breakpoints" : ""
+                 ]);
+                 let sqleditor = $("sqlContainer").getElementsByTagName("div");
+                 for (let i = 0; i < sqleditor.length; i++) {
+                     let div = sqleditor[i];
+                     if (div.className.split(" ")[0] == "CodeMirror")
+                         div.style.fontSize = this.configs.codeMirrorFontSize.value;
+                 }
+             }
+         } catch (e) {
+             __LOGS__.viewError("auto", e);
+         }
+     },
+
      init: function (textarea) {
          let messasge = "初始化脚本编辑器";
          try {
+             let theme = JSON.parse(this.configs.codeMirrorTheme.value);
+             $("sqlediterTheme").href = theme.href;
+             let colors = ["#fcc", "#ccf", "#fcf", "#aff", "#cfc", "#f5f577"];
+             let rulers = [];
+             if (Number(this.configs.codeMirrorRulers.value) >= 1) {
+                 for (let i = 1; i <= Number(this.configs.codeMirrorRulers.value); i++) {
+                     rulers.push({
+                         color: colors[i % colors.length],
+                         column: i * Number(this.configs.codeMirrorRulerWidth.value),
+                         lineStyle: "dotted"
+                     });
+                     //solid//dashed//dash-dot//dotted
+                 }
+             }
+             let options = {
+                 mode: this.configs.codeMirrorMode.value,
+                 theme: theme.name,
+                 indentWithTabs: true,
+                 smartIndent: this.configs.codeMirrorSmartIndent.value.toBoolean(),
+                 lineNumbers: this.configs.codeMirrorLineNumber.value.toBoolean(),
+                 matchBrackets: this.configs.codeMirrorMatchBrackets.value.toBoolean(),
+                 autofocus: this.configs.codeMirrorAutofocus.value.toBoolean(),
+                 rulers: rulers,
+                 gutters: [
+                     this.configs.codeMirrorLineNumber.value.toBoolean() ? "CodeMirror-linenumbers" : "",
+                     this.configs.codeMirrorBreakpoints.value.toBoolean() ? "breakpoints" : ""
+                 ],
+                 extraKeys: {
+                     "F10": "autocomplete",
+                     "F11": function (cm) {
+                         cm.setOption("fullScreen", !cm.getOption("fullScreen"));
+                     },
+                     "Esc": function (cm) {
+                         if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
+                     },
+                     "Shift-F":
+                         "findPersistent"
+                 },
+                 hintOptions: {
+                     tables: {}
+                 }
+             };
+
              textarea.placeholder = "\n" +
                  "F10 自动完成\n" +
                  "F11 全屏编辑切换;Esc 取消全屏\n" +
@@ -1123,37 +1242,202 @@ var __CONFIGS__ = {
                  "Shift-F 查找\n" +
                  "Shift-Ctrl-F 查找替换\n" +
                  "Shift-Ctrl-R 查找全部并替换\n";
-             this.codeMirror = CodeMirror.fromTextArea(textarea, this.options);
-             let colors = ["#fcc", "#ccf", "#fcf", "#aff", "#cfc", "#f5f577"];
-             let rulers = [];
-             for (let i = 1; i <= 6; i++) {
-                 rulers.push({color: colors[i], column: i * 40, lineStyle: "dotted"});
-                 //solid//dashed//dash-dot//dotted
-             }
-             this.codeMirror.setOption("rulers", rulers);
+             this.codeMirror = CodeMirror.fromTextArea(textarea, options);
              this.codeMirror.on("gutterClick", function (cm, n) {
+                 function marker() {
+                     let marker = document.createElement("div");
+                     marker.style.color = "#822";
+                     marker.innerHTML = "●";
+                     return marker;
+                 }
+
                  let info = cm.lineInfo(n);
                  cm.setGutterMarker(n, "breakpoints", info.gutterMarkers ? null : marker());
              });
-
-             function marker() {
-                 let marker = document.createElement("div");
-                 marker.style.color = "#822";
-                 marker.innerHTML = "●";
-                 return marker;
+             let sqleditor = $("sqlContainer").getElementsByTagName("div");
+             for (let i = 0; i < sqleditor.length; i++) {
+                 let div = sqleditor[i];
+                 if (div.className.split(" ")[0] == "CodeMirror")
+                     div.style.fontSize = this.configs.codeMirrorFontSize.value;
              }
              __LOGS__.viewMessage(messasge + "...OK.");
          } catch (e) {
-             __LOGS__.viewMessage(messasge + "...fails.");
+             __LOGS__.viewMessage(messasge + "...fails.", true);
+             __LOGS__.viewError("auto", e);
          }
-     }
- };
+     },
+     setConfigs: function (parent, callback) {
+         let config = getUserConfig("codeMirrorConfig");
+         if (config != null) {
+             config = JSON.parse(config);
+             for (let key in config) {
+                 try {
+                     __SQLEDITOR__.configs[key].value = config[key];
+                 } catch (e) {
+                 }
+             }
+         }
 
- function sleep(delay) {
-    let endTime = new Date().getTime() + parseInt(delay);
-    while (new Date().getTime() < endTime) ;
-    //用时间来控制延时,突破浏览器同时下载任务限制.
-}
+         if (parent == "auto" || parent == null) {
+             if (document.fullscreen && typeof __CONFIGS__.fullScreen.element == "object") {
+                 parent = __CONFIGS__.fullScreen.element;
+             } else {
+                 parent = document.body;
+             }
+         }
+
+         let container = document.createElement("div");
+         container.id = "ui_codeMirrorConfigs";
+         container.className = "ui-container-background";
+         parent.appendChild(container);
+
+         let content = document.createElement("div");
+         content.className = "ui-container-body";
+         content.id = "codeMirror-configs-Content";
+         container.appendChild(content);
+
+         let title = document.createElement("div");
+         title.className = "ui-container-title";
+         let span = document.createElement("span");
+         span.innerHTML = "● 编辑器设置 ";
+         title.appendChild(span);
+         let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
+         close.className = "ui-container-close";
+         title.appendChild(close);
+         content.appendChild(title);
+
+         let hr = document.createElement("hr");
+         hr.className = "ui-container-hr";
+         content.appendChild(hr);
+
+         let itemcontainer = document.createElement("div");
+         itemcontainer.id = itemcontainer.className = "ui-container-scroll-div";
+         content.appendChild(itemcontainer);
+
+         for (let name in __SQLEDITOR__.configs) {
+             let item = document.createElement("div");
+             item.className = "ui-container-item";
+             itemcontainer.appendChild(item);
+             let span = document.createElement("span");
+             span.className = "ui-container-item-name";
+             span.innerHTML = __SQLEDITOR__.configs[name].name + ":";
+             item.appendChild(span);
+             if (__SQLEDITOR__.configs[name].type == "input") {
+                 let input = document.createElement("input");
+                 input.style.cssFloat = "right";
+                 input.id = name;
+                 input.type = "input";
+                 input.className = "ui-container-item-input";
+                 input.value = __SQLEDITOR__.configs[name].value;
+                 input.onchange = function () {
+                     __SQLEDITOR__.configs[this.id].value = this.value;
+                 };
+                 if (typeof __SQLEDITOR__.configs[name].title != "undefined")
+                     input.title = __SQLEDITOR__.configs[name].title;
+                 else
+                     input.title = __SQLEDITOR__.configs[name].name;
+                 item.appendChild(input);
+             } else if (__SQLEDITOR__.configs[name].type == "select") {
+                 let input = document.createElement("select");
+                 input.style.cssFloat = "right";
+                 input.id = name;
+                 input.type = "select";
+                 input.className = "ui-container-item-input";
+                 for (let i = 0; i < __SQLEDITOR__.configs[name].options.length; i++) {
+                     if (typeof __SQLEDITOR__.configs[name].options[i] === "object")
+                         input.options.add(__SQLEDITOR__.configs[name].options[i]);
+                     else
+                         input.options.add(new Option(__SQLEDITOR__.configs[name].options[i]));
+                 }
+                 input.value = __SQLEDITOR__.configs[name].value;
+                 input.onchange = function () {
+                     __SQLEDITOR__.configs[this.id].value = this.value;
+                 };
+                 if (typeof __SQLEDITOR__.configs[name].title != "undefined")
+                     input.title = __SQLEDITOR__.configs[name].title;
+                 else
+                     input.title = __SQLEDITOR__.configs[name].name;
+                 item.appendChild(input);
+             } else if (__SQLEDITOR__.configs[name].type == "color") {
+                 let input = document.createElement("input");
+                 input.style.cssFloat = "right";
+                 input.id = name;
+                 input.type = "color";
+                 input.className = "ui-container-item-input";
+                 input.value = __SQLEDITOR__.configs[name].value;
+                 input.onchange = function () {
+                     __SQLEDITOR__.configs[this.id].value = this.value;
+                 };
+                 if (typeof __SQLEDITOR__.configs[name].title != "undefined")
+                     input.title = __SQLEDITOR__.configs[name].title;
+                 else
+                     input.title = __SQLEDITOR__.configs[name].name;
+                 item.appendChild(input);
+             } else if (__SQLEDITOR__.configs[name].type == "hr") {
+                 span.innerHTML = "[ " + __SQLEDITOR__.configs[name].name + " ]";
+                 span.style.fontWeight = "bolder";
+                 span.style.color = "var(--main-title-color)";
+                 let c = document.createElement("div");
+                 c.style.width = "70%";
+                 c.style.cssFloat = "right";
+                 item.appendChild(c);
+                 item.id = name;
+                 let h = document.createElement("hr");
+                 h.style.marginTop = "10px";
+                 c.appendChild(h)
+                 //d.innerHTML = "";
+                 //d.appendChild(h);
+             }
+         }
+
+         hr = document.createElement("hr");
+         hr.className = "ui-container-hr";
+         content.appendChild(hr);
+
+         let c = document.createElement("div");
+         c.className = "groupbar";
+         content.appendChild(c);
+
+         let b = document.createElement("button");
+         b.className = "button";
+         b.innerHTML = "确定";
+         b.onclick = function () {
+             let configs = $("ui_codeMirrorConfigs").getElementsByClassName("ui-container-item-input");
+             let config = {};
+             for (let i = 0; i < configs.length; i++) {
+                 __SQLEDITOR__.configs[configs[i].id].value = configs[i].value;
+                 config[configs[i].id] = configs[i].value;
+             }
+             setUserConfig("codeMirrorConfig", JSON.stringify(config));
+             callback();
+             parent.removeChild($("ui_codeMirrorConfigs"));
+         };
+         c.appendChild(b);
+
+         b = document.createElement("button");
+         b.className = "button";
+         b.innerHTML = "重置";
+         b.onclick = close.onclick = function () {
+             UI.confirm.show("注意", "您确定要重置全部编辑器参数吗?", "auto", function () {
+                 setUserConfig("codeMirrorConfig", JSON.stringify({}));
+                 parent.removeChild($("ui_codeMirrorConfigs"));
+                 UI.alert.show("提示", "编辑器参数已恢复为系统初始值,系统将重新载入页面...");
+                 location.reload();
+             });
+         };
+         c.appendChild(b);
+
+         b = document.createElement("button");
+         b.className = "button";
+         b.innerHTML = "退出";
+         b.onclick = close.onclick = function () {
+             parent.removeChild($("ui_codeMirrorConfigs"));
+         };
+         c.appendChild(b);
+
+         setDialogDrag(title);
+     },
+ };
 
 function transferData(structure,row) {
     //####################################
@@ -1785,7 +2069,7 @@ function execute(title) {
                                     eventid: getEventIndex(),
                                     title: title,
                                     sql: sql,
-                                    type: __SQLEDITOR__.options.mode,
+                                    type: __SQLEDITOR__.configs.codeMirrorMode.value,
                                     parameter: __SQLEDITOR__.parameter,
                                     columns: columns,
                                     data: data,
@@ -1945,7 +2229,7 @@ function transferResultDataset(funs, dataset, title, parameter) {
         eventid: getEventIndex(),
         title: title,
         sql: funs.join(";\n"),
-        type: __SQLEDITOR__.options.mode,
+        type: __SQLEDITOR__.configs.codeMirrorMode.value,
         parameter: parameter,
         columns: columns,
         total: data.length,
@@ -2401,7 +2685,20 @@ function initConfigs() {
             getQRCode($("page"), 90, 90, __VERSION__.url, __SYS_IMAGES__.echo);
             resize();
 
-            let config = getUserConfig("echartsconfig");
+             let config = getUserConfig("codeMirrorConfig");
+            if (config != null) {
+                config = JSON.parse(config);
+                for (let key in config) {
+                    try {
+                        __SQLEDITOR__.configs[key].value = config[key];
+                    } catch (e) {
+                    }
+                }
+            } else {
+                setUserConfig("codeMirrorConfig", JSON.stringify(__SQLEDITOR__.configs));
+            }
+
+            config = getUserConfig("echartsconfig");
             if (config != null) {
                 config = JSON.parse(config);
                 for (let key in config) {
@@ -2410,6 +2707,8 @@ function initConfigs() {
                     } catch (e) {
                     }
                 }
+            } else {
+                setUserConfig("echartsconfig", JSON.stringify(__ECHARTS__.configs));
             }
 
             config = getUserConfig("datasetConfig");
@@ -2421,6 +2720,8 @@ function initConfigs() {
                     } catch (e) {
                     }
                 }
+            } else {
+                setUserConfig("datasetConfig", JSON.stringify(__DATASET__.configs));
             }
 
             let map = getUserConfig("localMap");
@@ -2725,7 +3026,7 @@ function initMenus() {
                         __SQLEDITOR__.codeMirror.setValue(this.result);
                         __SQLEDITOR__.title = $("sql-title").innerText = file.name.split(".")[0];
                     };
-                    reader.readAsText(file, __SQLEDITOR__.charset.options[__SQLEDITOR__.charset.value]);
+                    reader.readAsText(file, __SQLEDITOR__.configs.codeMirrorCharset.value);
                 } catch (e) {
                     UI.alert.show("提示", "请选择需要导入的脚本文件.")
                 }
@@ -2744,9 +3045,9 @@ function initMenus() {
         opensql.onclick = help_opensql.onclick = function () {
             UI.sqlManagerDialog.show("auto", function (args, values) {
                 __SQLEDITOR__.title = $("sql-title").innerText = values.title;
-                __LOGS__.viewMessage("Open " + __SQLEDITOR__.options.mode + " : " + __SQLEDITOR__.title);
+                __LOGS__.viewMessage("Open " + __SQLEDITOR__.configs.codeMirrorMode.value + " : " + __SQLEDITOR__.title);
                 __SQLEDITOR__.codeMirror.setValue(values.sql);
-            }, {type: UI.sqlManagerDialog.type.open});
+            }, {type: UI.sqlManagerDialog.type.open, charset: __SQLEDITOR__.configs.codeMirrorCharset.value});
         };
         sqltools.appendChild(opensql);
 
@@ -2760,15 +3061,15 @@ function initMenus() {
             if (__SQLEDITOR__.title == null) {
                 UI.sqlManagerDialog.show("auto", function (args, values) {
                     __SQLEDITOR__.title = $("sql-title").innerText = values.title;
-                    __LOGS__.viewMessage("Save " + __SQLEDITOR__.options.mode + " : " + __SQLEDITOR__.title);
-                }, {type: UI.sqlManagerDialog.type.save, sql: __SQLEDITOR__.codeMirror.getValue()});
+                    __LOGS__.viewMessage("Save " + __SQLEDITOR__.configs.codeMirrorMode.value + " : " + __SQLEDITOR__.title);
+                }, {type: UI.sqlManagerDialog.type.save, sql: __SQLEDITOR__.codeMirror.getValue(), charset: __SQLEDITOR__.configs.codeMirrorCharset.value});
             } else {
                 let title = __SQLEDITOR__.title;
                 let sql = __SQLEDITOR__.codeMirror.getValue();
                 UI.confirm.show("注意", "您确定覆盖保存脚本 " + title + " 吗?", "auto", function (args) {
                     if (args.title != "" && args.sql != "") {
                         saveStorageSql(args.title, args.sql);
-                        __LOGS__.viewMessage("Save " + __SQLEDITOR__.options.mode + " : " + __SQLEDITOR__.title);
+                        __LOGS__.viewMessage("Save " + __SQLEDITOR__.configs.codeMirrorMode.value + " : " + __SQLEDITOR__.title);
                     } else
                         UI.alert.show("提示", "脚本及脚本名称不能为空!");
                 }, {title: title, sql: sql});
@@ -2798,7 +3099,7 @@ function initMenus() {
                 let title = values["文件名称"];
                 if (title != null && title.trim() != "") {
                     let blob = null;
-                    switch (__SQLEDITOR__.options.mode) {
+                    switch (__SQLEDITOR__.configs.codeMirrorMode.value) {
                         case "text/x-sqlite":
                             blob = new Blob([str2ab(__SQLEDITOR__.codeMirror.getValue())], {type: "text/plain"});
                             //application/octet-stream   扩展名:*
@@ -2822,7 +3123,7 @@ function initMenus() {
         backup.onclick = function () {
             UI.sqlManagerDialog.show("auto", function (args, values) {
 
-            }, {type: UI.sqlManagerDialog.type.backup});
+            }, {type: UI.sqlManagerDialog.type.backup, charset: __SQLEDITOR__.configs.codeMirrorCharset.value});
         }
         sqltools.appendChild(backup);
 
@@ -2855,16 +3156,16 @@ function initMenus() {
                         }
                         if (__SQLEDITOR__.title != null) {
                             let title = __SQLEDITOR__.title;
-                            if (__SQLEDITOR__.options.mode == "text/x-sqlite")
+                            if (__SQLEDITOR__.configs.codeMirrorMode.value == "text/x-sqlite")
                                 execute(title);
-                            if (__SQLEDITOR__.options.mode == "text/javascript")
+                            if (__SQLEDITOR__.configs.codeMirrorMode.value == "text/javascript")
                                 executeFunction(title)
                         } else {
                             UI.prompt.show("输入", {"集合名称": ""}, "auto", function (args, values) {
                                 let title = __SQLEDITOR__.title = $("sql-title").innerText = values["集合名称"];
-                                if (__SQLEDITOR__.options.mode == "text/x-sqlite")
+                                if (__SQLEDITOR__.configs.codeMirrorMode.value == "text/x-sqlite")
                                     execute(title);
-                                if (__SQLEDITOR__.options.mode == "text/javascript")
+                                if (__SQLEDITOR__.configs.codeMirrorMode.value == "text/javascript")
                                     executeFunction(title);
                             }, {})
                         }
@@ -2873,16 +3174,16 @@ function initMenus() {
                 } else {
                     if (__SQLEDITOR__.title != null) {
                         let title = __SQLEDITOR__.title;
-                        if (__SQLEDITOR__.options.mode == "text/x-sqlite")
+                        if (__SQLEDITOR__.configs.codeMirrorMode.value == "text/x-sqlite")
                             execute(title);
-                        if (__SQLEDITOR__.options.mode == "text/javascript")
+                        if (__SQLEDITOR__.configs.codeMirrorMode.value == "text/javascript")
                             executeFunction(title)
                     } else {
                         UI.prompt.show("输入", {"集合名称": ""}, "auto", function (args, values) {
                             let title = __SQLEDITOR__.title = values["集合名称"];
-                            if (__SQLEDITOR__.options.mode == "text/x-sqlite")
+                            if (__SQLEDITOR__.configs.codeMirrorMode.value == "text/x-sqlite")
                                 execute(title);
-                            if (__SQLEDITOR__.options.mode == "text/javascript")
+                            if (__SQLEDITOR__.configs.codeMirrorMode.value == "text/javascript")
                                 executeFunction(title);
                         }, {})
                     }
@@ -2896,6 +3197,19 @@ function initMenus() {
         sqltitle.style.cssFloat = "left";
         sqltools.appendChild(sqltitle);
 
+        let editerSetting = document.createElement("div");
+        sqltools.appendChild(editerSetting);
+        editerSetting.className = "charButton";
+        editerSetting.innerText = "┅";
+        editerSetting.style.cssFloat = "right";
+        editerSetting.id = "editer-setting";
+        editerSetting.onclick = function () {
+            __SQLEDITOR__.setConfigs("auto", function () {
+                __SQLEDITOR__.reset();
+            });
+        };
+        UI.tooltip(editerSetting, "编辑器设置");
+
         let tofull = document.createElement("div");
         sqltools.appendChild(tofull);
         tofull.className = "charButton";
@@ -2907,111 +3221,11 @@ function initMenus() {
         };
         UI.tooltip(tofull, "进入全屏编辑");
 
-        let editorCharset = document.createElement("select");
-        editorCharset.type = "select";
-        editorCharset.id = "set-editer-chartset";
-        for (let i = 0; i < __SQLEDITOR__.charset.options.length; i++) {
-            editorCharset.options.add(new Option(__SQLEDITOR__.charset.options[i], i));
-        }
-        try {
-            let charset = getUserConfig("editercharset");
-            if (charset != null) {
-                __SQLEDITOR__.charset.value = editorCharset.selectedIndex = charset;
-            } else
-                editorCharset.selectedIndex = 0;
-        } catch (e) {
-            __LOGS__.viewError(e);
-        }
-        editorCharset.onchange = function () {
-            __SQLEDITOR__.charset.value = this.value;
-            setUserConfig("editercharset", this.value);
-        };
-        sqltools.appendChild(editorCharset);
-        UI.tooltip(editorCharset,"脚本字符编码");
-
         //#######################################
         //必须先行实体化编辑器,否则不能预埋参数
         //#######################################
         $("sqlediter").style.width = (getAbsolutePosition($("sqlContainer")).width - 2) + "px";
         __SQLEDITOR__.init($("sqlediter"));
-
-        let setFontSize = document.createElement("select");
-        setFontSize.type = "select";
-        setFontSize.id = "set-editer-font-size";
-        for (let size in __SQLEDITOR__.fontSize.options) {
-            setFontSize.options.add(new Option(size, __SQLEDITOR__.fontSize.options[size]));
-        }
-        setFontSize.style.cssFloat = "right";
-        setFontSize.selectedIndex = __SQLEDITOR__.fontSize.default;
-        try {
-            let fontsize = getUserConfig("editerfontsize");
-            if (fontsize != null) {
-                setFontSize.value = getUserConfig("editerfontsize");
-                let editor = document.getElementsByClassName("CodeMirror")[0];
-                editor.style.fontSize = setFontSize.value
-            } else
-                setFontSize.selectedIndex = 0;
-        } catch (e) {
-            __LOGS__.viewError(e);
-        }
-        setFontSize.onchange = function () {
-            let editor = document.getElementsByClassName("CodeMirror")[0];
-            editor.style.fontSize = this.value;
-            setUserConfig("editerfontsize", this.value);
-        };
-        sqltools.appendChild(setFontSize);
-        UI.tooltip(setFontSize,　"编辑器字号");
-
-        let editorThemes = document.createElement("select");
-        editorThemes.type = "select";
-        editorThemes.id = "set-editer-theme";
-        for (let theme in __SQLEDITOR__.themes) {
-            editorThemes.options.add(new Option(theme));
-        }
-        try {
-            let themename = getUserConfig("editerthemes");
-            if (themename != null) {
-                editorThemes.value = themename;
-                let theme = __SQLEDITOR__.themes[themename];
-                $("sqlediterTheme").setAttribute("href", theme.href);
-                __SQLEDITOR__.codeMirror.setOption("theme", theme.name);
-            } else
-                editorThemes.selectedIndex = 0;
-        } catch (e) {
-            __LOGS__.viewError(e);
-        }
-        editorThemes.onchange = function () {
-            let theme = __SQLEDITOR__.themes[this.value];
-            $("sqlediterTheme").setAttribute("href", theme.href);
-            __SQLEDITOR__.codeMirror.setOption("theme", theme.name);
-            setUserConfig("editerthemes", this.value);
-        };
-        sqltools.appendChild(editorThemes);
-        UI.tooltip(editorThemes,　"编辑器主题");
-
-        let datasetSource = document.createElement("select");
-        datasetSource.type = "select";
-        datasetSource.id = "set-dataset-source";
-        datasetSource.style.cssFloat = "right";
-        for (let m in __SQLEDITOR__.modes) {
-            datasetSource.options.add(new Option(m, __SQLEDITOR__.modes[m]));
-        }
-        try {
-            let mode = getUserConfig("editermode");
-            if (mode != null) {
-                __SQLEDITOR__.options.mode = datasetSource.value = mode;
-            } else
-                datasetSource.selectedIndex = 0;
-        } catch (e) {
-            __LOGS__.viewError(e);
-        }
-        datasetSource.onchange = function () {
-            __SQLEDITOR__.options.mode = datasetSource.value = this.value;
-            __SQLEDITOR__.codeMirror.setOption("mode", this.value);
-            setUserConfig("editermode", this.value);
-        };
-        sqltools.appendChild(datasetSource);
-        UI.tooltip(datasetSource,　"编辑器语言模式");
 
         //#######################################
         //初始化消息菜单
@@ -3531,7 +3745,7 @@ function initMenus() {
         datasetSetting.innerText = "┅";
         datasetSetting.id = "dataset-setting";
         datasetSetting.onclick = function () {
-            __DATASET__.setDatasetConfigs("auto", function () {
+            __DATASET__.setConfigs("auto", function () {
                 if (__DATASET__.result.length > 0) {
                     viewDataset(__DATASET__.default.sheet, __DATASET__.pages.default);
                 }
@@ -4067,23 +4281,28 @@ function setPageThemes() {
             setUserConfig("pagethemes", this.value);
             $("themes").setAttribute("href", getUserConfig("pagethemes"));
             //同步编辑主题
-            $("set-editer-theme").value = this.options[this.selectedIndex].innerText;
-            let theme = __SQLEDITOR__.themes[$("set-editer-theme").value];
+            let theme = getOptionValue(__SQLEDITOR__.configs.codeMirrorTheme.options, this.options[this.selectedIndex].innerText);
+            __SQLEDITOR__.configs.codeMirrorTheme.value = theme;
+            theme = JSON.parse(theme);
             $("sqlediterTheme").setAttribute("href", theme.href);
             __SQLEDITOR__.codeMirror.setOption("theme", theme.name);
-            setUserConfig("editerthemes", $("set-editer-theme").value);
+            let config = {};
+            for (let key in __SQLEDITOR__.configs) {
+                config[key] = __SQLEDITOR__.configs[key].value;
+            }
+            setUserConfig("codeMirrorConfig", JSON.stringify(config));
 
             let img = {
-                 image: "var(--main-background-image)",
-                 repeat: "var(--main-background-image-repeat)",
-                 size: "var(--main-background-image-size)",
-                 attachment: "var(--main-background-image-attachment)"
-             };
-             setUserConfig("BackgroundImage", JSON.stringify(img));
-             document.body.style.backgroundImage = img.image;
-             document.body.style.backgroundRepeat = img.repeat;
-             document.body.style.backgroundSize = img.size;
-             document.body.style.backgroundAttachment = img.attachment;
+                image: "var(--main-background-image)",
+                repeat: "var(--main-background-image-repeat)",
+                size: "var(--main-background-image-size)",
+                attachment: "var(--main-background-image-attachment)"
+            };
+            setUserConfig("BackgroundImage", JSON.stringify(img));
+            document.body.style.backgroundImage = img.image;
+            document.body.style.backgroundRepeat = img.repeat;
+            document.body.style.backgroundSize = img.size;
+            document.body.style.backgroundAttachment = img.attachment;
         };
 
         let mapconfig = $("help-local-map-config");
@@ -4935,12 +5154,16 @@ function getImageBase64Code(parent) {
                 document.body.style.backgroundSize = img.size;
                 document.body.style.backgroundAttachment = img.attachment;
 
-                let name = "透明";
-                $("set-editer-theme").value = name;
-                let theme = __SQLEDITOR__.themes[name];
+                let theme = getOptionValue(__SQLEDITOR__.configs.codeMirrorTheme.options, "透明");
+                __SQLEDITOR__.configs.codeMirrorTheme.value = theme;
+                theme = JSON.parse(theme);
                 $("sqlediterTheme").setAttribute("href", theme.href);
                 __SQLEDITOR__.codeMirror.setOption("theme", theme.name);
-                setUserConfig("editerthemes", name);
+                let config = {};
+                for (let key in __SQLEDITOR__.configs) {
+                    config[key] = __SQLEDITOR__.configs[key].value;
+                }
+                setUserConfig("codeMirrorConfig", JSON.stringify(config));
             }
         } else {
             UI.alert.show("提示","背景图片文件(" + Math.round(file.size / 1024 / 1024 * 100) / 100 + "MB)不能大于 0.5MB.")
