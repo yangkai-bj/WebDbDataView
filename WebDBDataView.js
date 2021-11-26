@@ -1,9 +1,24 @@
+var __CONFIGS__ = {
+    STORAGE: {
+        DATABASES: "__WEB_SQLITE_DATABASES__",
+        SCRIPTS: "__WEB_SQLITE_SCRIPTS__",
+        DATASET: "__WEB_SQLITE_DATASET__",
+        CONFIGS: "__WEB_SQLITE_USER_CONFIGS__"
+    },
+    DATABASES: [],
+    CURRENT_DATABASE: {index: 0, value: null, connect: null},
+    TABLES: [],
+    CURRENT_TABLE: {name: "", sql: "", structure: {}, type: ""},
+    MAXLOGS: 1000,
+    fullScreen: {element: null},
+};
+
 const __VERSION__ = {
     name: "Web DataView for SQLite Database of browser",
     main: "WebDBDataView.js",
     echarts: "echarts/v5.2.2",
-    version: "3.0.4",
-    date: "2021/11/22",
+    version: "3.0.6",
+    date: "2021/11/24",
     comment: [
         "-- 2021/03/08",
         "优化算法和压缩代码.",
@@ -296,6 +311,7 @@ var __LOGS__ = {
                 msgbox.removeChild(dts[dts.length - 1]);
             }
         }
+        return message;
     }
 }
 
@@ -362,7 +378,7 @@ var __XMLHTTP__ = {
         let xhr = __XMLHTTP__.request();
         // 通过get或HEAD的方式请求当前文件
         if (xhr != null) {
-            __LOGS__.viewMessage("发送授时请求...");
+            let message = __LOGS__.viewMessage("发送授时请求...");
             xhr.open("GET", location.href + "?timestamp=" + new Date().format("yyyyMMddhhmmssS"), true);
             //增加时间戳，避免前端缓存导致客户端不更新。
             //不能跨域名
@@ -374,6 +390,7 @@ var __XMLHTTP__ = {
                         __XMLHTTP__.abstract = xhr.getResponseHeader("Server");
                         __XMLHTTP__.time = new Date(xhr.getResponseHeader("Date"));
                         __XMLHTTP__.updatetime = new Date();
+                        message.innerText += "授时: " + __XMLHTTP__.time.format("yyyy/MM/dd hh:mm")
                     } else if (xhr.status == 404) {
                         __XMLHTTP__.server = null;
                         __XMLHTTP__.abstract = null;
@@ -517,22 +534,28 @@ var __XMLHTTP__ = {
 
         if (byServer) {
             for (let i = 0; i < scripts.length; i++) {
-                if (scripts[i].load)
+                let message = null;
+                if (scripts[i].load) {
                     document.title = "加载(" + Math.floor((i + 1) * 100 / scripts.length) + "%)" + scripts[i].name + "...";
-                else
+                    message = __LOGS__.viewMessage("加载 " + scripts[i].name + "...");
+                } else {
                     document.title = "验证(" + Math.floor((i + 1) * 100 / scripts.length) + "%)" + scripts[i].name + "...";
+                    message = __LOGS__.viewMessage("验证 " + scripts[i].name + "...");
+                }
+
                 let xhr = __XMLHTTP__.request();
+                xhr["message"] = message;
                 if (xhr != null) {
                     xhr.open("GET", scripts[i].src + "?timestamp=" + new Date().format("yyyyMMddhhmmssS"), true);
                     xhr.onreadystatechange = function () {
                         try {
                             if (xhr.readyState == 4 && xhr.status == 404)
-                                __LOGS__.viewMessage("验证 " + scripts[i].name + "(" + scripts[i].src + ")...fails.", true);
+                                this.message.innerText += (scripts[i].src + "...fails.");
                             else if (xhr.readyState == 4 && xhr.status == 200) {
                                 let url = xhr.responseURL.split("?")[0];
                                 if (scripts[i].load == false) {
                                     url = url.split("/");
-                                    __LOGS__.viewMessage("验证 " + scripts[i].name + "(" + url[url.length - 1] + ")" + "...OK.");
+                                    this.message.innerText += (url[url.length - 1] + "...OK.");
                                 } else {
                                     switch (scripts[i].element) {
                                         case "script":
@@ -542,7 +565,7 @@ var __XMLHTTP__ = {
                                             script.src = xhr.responseURL.split("?")[0];
                                             document.head.appendChild(script);
                                             url = url.split("/");
-                                            __LOGS__.viewMessage("加载 " + scripts[i].name + "(" + url[url.length - 1] + ")" + "...OK.");
+                                            this.message.innerText += (url[url.length - 1] + "...OK.");
                                             break;
                                         case "link":
                                             let link = document.createElement(scripts[i].element);
@@ -552,7 +575,7 @@ var __XMLHTTP__ = {
                                             link.href = xhr.responseURL.split("?")[0];
                                             document.head.appendChild(link);
                                             url = url.split("/");
-                                            __LOGS__.viewMessage("加载 " + scripts[i].name + "(" + url[url.length - 1] + ")" + "...OK.");
+                                            this.message.innerText += ( url[url.length - 1] + "...OK.");
                                             break;
                                     }
                                 }
@@ -565,22 +588,13 @@ var __XMLHTTP__ = {
 
                     };
                     xhr.onerror = function (e) {
-                        if (scripts[i].load)
-                            __LOGS__.viewMessage("加载 " + scripts[i].name + "(" + scripts[i].src + ")..." + e, true);
-                        else
-                            __LOGS__.viewMessage("验证 " + scripts[i].name + "(" + scripts[i].src + ")..." + e, true);
+                        this.message += e;
                     };
                     xhr.onabort = function () {
-                         if (scripts[i].load)
-                            __LOGS__.viewMessage("加载 " + scripts[i].name + "(" + scripts[i].src + ")...中止.", true);
-                        else
-                            __LOGS__.viewMessage("验证 " + scripts[i].name + "(" + scripts[i].src + ")...中止.", true);
+                        this.message += "中止.";
                     };
                     xhr.ontimeout = function () {
-                        if (scripts[i].load)
-                            __LOGS__.viewMessage("加载 " + scripts[i].name + "(" + scripts[i].src + ")...超时.", true);
-                        else
-                            __LOGS__.viewMessage("验证 " + scripts[i].name + "(" + scripts[i].src + ")...超时.", true);
+                        this.message += "超时.";
                     };
 
                     xhr.send(null);
@@ -591,6 +605,7 @@ var __XMLHTTP__ = {
             for (let i = 0; i < scripts.length; i++) {
                 if (scripts[i].load) {
                     document.title = "加载(" + Math.floor((i + 1) * 100 / scripts.length) + "%)" + scripts[i].name + "...";
+                    let message = __LOGS__.viewMessage("加载 " + scripts[i].name + "...");
                     switch (scripts[i].element) {
                         case "script":
                             let script = document.createElement(scripts[i].element);
@@ -598,7 +613,7 @@ var __XMLHTTP__ = {
                             script.id = "onload-" + scripts[i].element + "-" + i;
                             script.src = scripts[i].src;
                             document.head.appendChild(script);
-                            __LOGS__.viewMessage("加载 " + scripts[i].name + "(" + scripts[i].src + ")" + "...OK.");
+                            message.innerText += (scripts[i].src + "...OK.");
                             break;
                         case "link":
                             let link = document.createElement(scripts[i].element);
@@ -607,11 +622,12 @@ var __XMLHTTP__ = {
                             link.rel = "stylesheet";
                             link.href = scripts[i].src;
                             document.head.appendChild(link);
-                            __LOGS__.viewMessage("加载 " + scripts[i].name + "(" + scripts[i].src + ")" + "...OK.");
+                            message.innerText += (scripts[i].src + "...OK.");
                             break;
                     }
                 } else {
                     document.title = "验证(" + Math.floor((i + 1) * 100 / scripts.length) + "%)" + scripts[i].name + "...";
+                    let message = __LOGS__.viewMessage("验证 " + scripts[i].name + "...");
                     let checked = false;
                     switch (scripts[i].element) {
                         case "script":
@@ -633,10 +649,7 @@ var __XMLHTTP__ = {
                             }
                             break;
                     }
-                    if (checked)
-                        __LOGS__.viewMessage("验证 " + scripts[i].name + "(" + scripts[i].src + ")" + "...OK.");
-                    else
-                        __LOGS__.viewMessage("验证 " + scripts[i].name + "(" + scripts[i].src + ")" + "...fails.", true);
+                    message.innerText += (scripts[i].src + "..." + (checked ? "OK." : "fails."));
                 }
                 sleep(100);
             }
@@ -644,21 +657,6 @@ var __XMLHTTP__ = {
         document.title = title;
         __XMLHTTP__.checking.certificated = true;
     }
-};
-
-var __CONFIGS__ = {
-    STORAGE: {
-        DATABASES: "__WEB_SQLITE_DATABASES__",
-        SCRIPTS: "__WEB_SQLITE_SCRIPTS__",
-        DATASET: "__WEB_SQLITE_DATASET__",
-        CONFIGS: "__WEB_SQLITE_USER_CONFIGS__"
-    },
-    DATABASES: [],
-    CURRENT_DATABASE: {index: 0, value: null, connect: null},
-    TABLES: [],
-    CURRENT_TABLE: {name: "", sql: "", structure: {}, type: ""},
-    MAXLOGS: 1000,
-    fullScreen: {element: null},
 };
 
  var __DATASET__ = {
@@ -1086,8 +1084,8 @@ var __CONFIGS__ = {
          },
          codeMirrorMode: {
              name: "模式",
-             value: "text/x-mysql",
-             options: [new Option("SQL", "text/x-mysql"), new Option("函数", "text/javascript")],
+             value: "text/x-sqlite",
+             options: [new Option("SQLite", "text/x-sqlite"), new Option("函数", "text/javascript")],
              type: "select"
          },
          codeMirrorFontSize: {
@@ -1495,7 +1493,7 @@ function checkStorage() {
 
 
 function viewDatabases() {
-    let message = "读取数据库列表...";
+    let message = __LOGS__.viewMessage("读取数据库列表...");
     try {
         let storage = window.localStorage;
         if (storage.getItem(__CONFIGS__.STORAGE.DATABASES) == null) {
@@ -1553,9 +1551,10 @@ function viewDatabases() {
                 ul.appendChild(li);
             }
         }
-        __LOGS__.viewMessage(message + "OK.");
+        message.innerText += "OK.";
     } catch (e) {
-        __LOGS__.viewMessage(message + "fails.\n" + e, true);
+        message.innerText += "fails.";
+        __LOGS__.viewError("auto", e);
     }
 }
 
@@ -1813,7 +1812,7 @@ function viewDataset(index, pageindex) {
     let container = $("tableContainer");
     try {
         container.removeAttribute("_echarts_instance_");
-        echarts.getInstanceByDom(container).dispose();
+        echarts.getInstanceByDom(container).clear();
     } catch (e) {
     }
     container.innerText = "";
@@ -2627,12 +2626,12 @@ function init() {
 
 
 function initConfigs() {
+    __LOGS__.viewMessage(__VERSION__.name + "\n版本代码:" + __VERSION__.version + "\n发布日期:" + __VERSION__.date);
     let checked = false;
     if (checkStorage()) {
-        let message = "初始化系统参数";
+        let message = __LOGS__.viewMessage("初始化系统参数...");
         try {
             __LOGS__.init();
-            __LOGS__.viewMessage(__VERSION__.name + "\n版本代码:" + __VERSION__.version + "\n发布日期:" + __VERSION__.date);
 
             let img = getUserConfig("BackgroundImage");
             if (img != null) {
@@ -2724,6 +2723,15 @@ function initConfigs() {
                 setUserConfig("datasetConfig", JSON.stringify(__DATASET__.configs));
             }
 
+            let multi_layouts =  getUserConfig("MULTI_LAYOUTS");
+            if (multi_layouts != null) {
+                try {
+                    if (multi_layouts != "{}")
+                        __ECHARTS__.layouts = JSON.parse(multi_layouts);
+                } catch (e) {
+                }
+            }
+
             let map = getUserConfig("localMap");
             if (map != null) {
                 geoCoordMap.LocalMap = map;
@@ -2737,10 +2745,11 @@ function initConfigs() {
                 geoCoordMap.Custom = coord;
             }
 
-            __LOGS__.viewMessage(message + "...OK.");
+            message.innerText += "OK.";
             checked = true;
         } catch (e) {
-            __LOGS__.viewMessage(message + "...fails<br>Error:" + e, true);
+            message.innerText += "fails.";
+            __LOGS__.viewError("auto", e);
             checked = false;
         }
     } else {
@@ -2751,7 +2760,7 @@ function initConfigs() {
 }
 
 function initMenus() {
-    let message = "初始化系统菜单";
+    let message = __LOGS__.viewMessage("初始化系统菜单...");
     //#######################################
     //初始化数据库菜单
     //#######################################
@@ -2811,48 +2820,7 @@ function initMenus() {
         dbinfo.innerText = "调试";
         dbinfo.style.display = "none";
         dbinfo.onclick = function () {
-            //##########################################
-            //字符串可传输编码转化
-            // let a = "2021/00/02 12:12:100";
-            // console.log(a.toDatetime("yyyy-MM-dd hh:mm:ss"));
 
-            //##########################################
-            //字符串可传输编码转化
-            // let a = "yangkai.bj@ccb.com";
-            // console.log(a.encode());
-            //##########################################
-            //图片转base64代码
-            // let tb = getImageBase64Code();
-            // setCenterPosition($("page"), tb);
-            //##########################################
-
-            //存量脚本升级转换
-            // try {
-            //     let storage = window.localStorage;
-            //     let sqllist = {};
-            //     if (storage.getItem(__CONFIGS__.STORAGE.SCRIPTS) == null)
-            //         storage.setItem(__CONFIGS__.STORAGE.SCRIPTS, "{}");
-            //     else {
-            //         sqllist = JSON.parse(storage.getItem(__CONFIGS__.STORAGE.SCRIPTS));
-            //     }
-            //     for (let name in sqllist) {
-            //         let sql;
-            //         if (typeof sqllist[name] == "object") {
-            //             if (typeof sqllist[name].sql == "undefined" && typeof sqllist[name].time == "undefined") {
-            //                 sql = sqllist[name];
-            //                 sqllist[name] = {sql: sql, time: getNow()};
-            //             }
-            //         } else if (typeof sqllist[name] == "string") {
-            //             sql = sqllist[name].decode().str2binary();
-            //             sqllist[name] = {sql: sql, time: getNow()};
-            //         }
-            //     }
-            //     storage.setItem(__CONFIGS__.STORAGE.SCRIPTS, JSON.stringify(sqllist));
-            //     UI.alert.show("提示","脚本转换完成!")
-            // } catch (e) {
-            //     UI.alert.show("提示",e);
-            // }
-            //##########################################
         };
         dbstools.appendChild(dbinfo);
         UI.tooltip(dbinfo,"auto", dbinfo.id, "调试");
@@ -3197,6 +3165,17 @@ function initMenus() {
         sqltitle.style.cssFloat = "left";
         sqltools.appendChild(sqltitle);
 
+        let tofull = document.createElement("div");
+        sqltools.appendChild(tofull);
+        tofull.className = "charButton";
+        tofull.innerText = "❏";
+        tofull.style.cssFloat = "right";
+        tofull.id = "set-editer-to-full";
+        tofull.onclick = function () {
+            __SQLEDITOR__.codeMirror.setOption("fullScreen", !__SQLEDITOR__.codeMirror.getOption("fullScreen"));
+        };
+        UI.tooltip(tofull, "进入全屏编辑");
+
         let editerSetting = document.createElement("div");
         sqltools.appendChild(editerSetting);
         editerSetting.className = "charButton";
@@ -3209,17 +3188,6 @@ function initMenus() {
             });
         };
         UI.tooltip(editerSetting, "编辑器设置");
-
-        let tofull = document.createElement("div");
-        sqltools.appendChild(tofull);
-        tofull.className = "charButton";
-        tofull.innerText = "❏";
-        tofull.style.cssFloat = "right";
-        tofull.id = "set-editer-to-full";
-        tofull.onclick = function () {
-            __SQLEDITOR__.codeMirror.setOption("fullScreen", !__SQLEDITOR__.codeMirror.getOption("fullScreen"));
-        };
-        UI.tooltip(tofull, "进入全屏编辑");
 
         //#######################################
         //必须先行实体化编辑器,否则不能预埋参数
@@ -3374,7 +3342,7 @@ function initMenus() {
                                         let container = $("tableContainer");
                                         try {
                                             container.removeAttribute("_echarts_instance_");
-                                            echarts.getInstanceByDom(container).dispose();
+                                            echarts.getInstanceByDom(container).clear();
                                         } catch (e) {
                                         }
                                         __DATASET__.result.push(report.dataset);
@@ -3388,13 +3356,13 @@ function initMenus() {
                                         let _width = (getAbsolutePosition(container).width * 1) + "px";
                                         let _height = (getAbsolutePosition(container).height * 1) + "px";
                                         container.innerHTML = "";
-                                        let echart = getEcharts(
+                                        let echart_target = getEcharts(
                                             container,
                                             _width,
                                             _height,
                                             __DATASET__.result[__DATASET__.default.sheet],
                                             report.configs);
-                                        setDragNook(container, echart.getAttribute("_echarts_instance_"));
+                                        setDragNook(container, echart_target.getAttribute("_echarts_instance_"));
                                         $("open-echarts-file").value = "";
                                         __LOGS__.viewMessage("读取 " + file.name + " ...OK.");
                                     } catch (e) {
@@ -3786,6 +3754,66 @@ function initMenus() {
         };
         UI.tooltip(analysis, "Analysis");
 
+        let toecharts = document.createElement("div");
+        datatools.appendChild(toecharts);
+        toecharts.className = "charButton";
+        toecharts.innerText = "❏";
+        toecharts.style.cssFloat = "right";
+        toecharts.id = "dataset-to-echarts";
+        toecharts.onclick = function () {
+            setTimeout(function () {
+                try {
+                    let echart_target = echarts.getInstanceByDom($("tableContainer"));
+                    if (typeof echart_target !== "undefined") {
+                        requestFullScreen($("tableContainer"));
+                        echart_target.resize();
+                    } else if ($("multi-echarts") != null) {
+                        requestFullScreen($("tableContainer"));
+                    } else {
+                        requestFullScreen($("main"));
+                    }
+                } catch (e) {
+                    __LOGS__.viewError("auto", e);
+                }
+            }, 100);
+        };
+        UI.tooltip(toecharts, "显示大视图");
+
+        let toconfigs = document.createElement("div");
+        datatools.appendChild(toconfigs);
+        toconfigs.className = "charButton";
+        toconfigs.innerText = "┅";
+        toconfigs.style.cssFloat = "right";
+        toconfigs.id = "dataset-to-configs";
+        let help_echartsConfigs = $("help-select-echarts-configs");
+        toconfigs.onclick = help_echartsConfigs.onclick = function () {
+            __ECHARTS__.setEchartsConfigs("auto", function (configs) {
+                let container = $("tableContainer");
+                try {
+                    if (__DATASET__.result.length > 0) {
+                        try {
+                            container.removeAttribute("_echarts_instance_");
+                            echarts.getInstanceByDom(container).clear();
+                        } catch (e) {
+                        }
+                        let _width = (getAbsolutePosition(container).width * 1) + "px";
+                        let _height = (getAbsolutePosition(container).height * 1) + "px";
+                        container.innerHTML = "";
+                        let echart_target = getEcharts(
+                            container,
+                            _width,
+                            _height,
+                            __DATASET__["result"][__DATASET__.default.sheet],
+                            configs);
+                        setDragNook(container, echart_target.getAttribute("_echarts_instance_"));
+                    }
+                } catch (e) {
+                    __LOGS__.viewError(e);
+                }
+            });
+        };
+        UI.tooltip(toconfigs, "更多视图参数");
+
         let toMultiEcharts = document.createElement("div");
         datatools.appendChild(toMultiEcharts);
         toMultiEcharts.className = "charButton";
@@ -3793,7 +3821,7 @@ function initMenus() {
         toMultiEcharts.style.cssFloat = "right";
         toMultiEcharts.id = "dataset-to-multi-echarts";
         toMultiEcharts.onclick = $("help-dataset-to-multi-echarts").onclick = function () {
-            $("page").appendChild(getMultiEcharts());
+            getMultiEcharts($("tableContainer"));
         };
         toMultiEcharts.ondragenter = function (event) {
             if (event.target.id == "dataset-to-multi-echarts") {
@@ -3814,89 +3842,10 @@ function initMenus() {
         };
         toMultiEcharts.ondragleave = function (event) {
             if (event.target.id == "dataset-to-multi-echarts") {
-                event.target.style.border = "1px dotted var(--main-border-color)";
+                event.target.style.border = "0px dotted var(--main-border-color)";
             }
         };
-        UI.tooltip(toMultiEcharts,"视图组合");
-
-        let toecharts = document.createElement("div");
-        datatools.appendChild(toecharts);
-        toecharts.className = "charButton";
-        toecharts.innerText = "❏";
-        toecharts.style.cssFloat = "right";
-        toecharts.id = "dataset-to-echarts";
-        toecharts.onclick = function () {
-            try {
-                if (__DATASET__.result.length > 0) {
-                    let mecharts = document.createElement("div");
-                    mecharts.className = "echarts";
-                    mecharts.id = "echarts-full-screen";
-                    mecharts.style.width = (getAbsolutePosition($("page")).width + 10) + "px";
-                    mecharts.style.height = (getAbsolutePosition($("page")).height + 25) + "px";
-                    mecharts.style.top = "0px";
-                    mecharts.style.left = "0px";
-                    window.addEventListener("keydown", function (e) {
-                        //keypress无法获取Esc键值,keydown和keyup可以.
-                        let keycode = e.which || e.keyCode;
-                        if (keycode == 27) {
-                            if ($("echarts-full-screen") != null) {
-                                try {
-                                    echarts.getInstanceByDom($("echarts-full-screen")).dispose();
-                                } catch (e) {
-                                }
-                                $("echarts-full-screen").parentElement.removeChild($("echarts-full-screen"));
-                            }
-                        }
-                    });
-                    let echart = getEcharts(
-                        mecharts,
-                        (getAbsolutePosition($("page")).width + 5) + "px",
-                        (getAbsolutePosition($("page")).height + 20) + "px",
-                        __DATASET__.result[__DATASET__.default.sheet],
-                        __ECHARTS__.configs);
-                    setDragNook(mecharts, echart.getAttribute("_echarts_instance_"));
-                    $("page").appendChild(mecharts);
-                }
-            } catch (e) {
-                __LOGS__.viewError(e);
-            }
-        };
-        UI.tooltip(toecharts, "显示大视图");
-
-        let toconfigs = document.createElement("div");
-        datatools.appendChild(toconfigs);
-        toconfigs.className = "charButton";
-        toconfigs.innerText = "┅";
-        toconfigs.style.cssFloat = "right";
-        toconfigs.id = "dataset-to-configs";
-        let help_echartsConfigs = $("help-select-echarts-configs");
-        toconfigs.onclick = help_echartsConfigs.onclick = function () {
-            __ECHARTS__.setEchartsConfigs("auto", function (configs) {
-                let container = $("tableContainer");
-                try {
-                    if (__DATASET__.result.length > 0) {
-                        try {
-                            container.removeAttribute("_echarts_instance_");
-                            echarts.getInstanceByDom(container).dispose();
-                        } catch (e) {
-                        }
-                        let _width = (getAbsolutePosition(container).width * 1) + "px";
-                        let _height = (getAbsolutePosition(container).height * 1) + "px";
-                        container.innerHTML = "";
-                        let echart = getEcharts(
-                            container,
-                            _width,
-                            _height,
-                            __DATASET__["result"][__DATASET__.default.sheet],
-                            configs);
-                        setDragNook(container, echart.getAttribute("_echarts_instance_"));
-                    }
-                } catch (e) {
-                    __LOGS__.viewError(e);
-                }
-            });
-        };
-        UI.tooltip(toconfigs, "更多视图参数");
+        UI.tooltip(toMultiEcharts, "视图组合<br><span style='color: var(--main-border-color)'>☄</span>");
 
         let echartsThemes = document.createElement("select");
         echartsThemes.className = "select";
@@ -3922,19 +3871,19 @@ function initMenus() {
                     let container = $("tableContainer");
                     try {
                         container.removeAttribute("_echarts_instance_");
-                        echarts.getInstanceByDom(container).dispose();
+                        echarts.getInstanceByDom(container).clear();
                     } catch (e) {
                     }
                     let _width = (getAbsolutePosition(container).width * 1) + "px";
                     let _height = (getAbsolutePosition(container).height * 1) + "px";
                     container.innerHTML = "";
-                    let echart = getEcharts(
+                    let echart_target = getEcharts(
                         container,
                         _width,
                         _height,
                         __DATASET__.result[__DATASET__.default.sheet],
                         __ECHARTS__.configs);
-                    setDragNook(container, echart.getAttribute("_echarts_instance_"));
+                    setDragNook(container, echart_target.getAttribute("_echarts_instance_"));
                 }
             } catch (e) {
                 __LOGS__.viewError(e);
@@ -3965,19 +3914,19 @@ function initMenus() {
                     let container = $("tableContainer");
                     try {
                         container.removeAttribute("_echarts_instance_");
-                        echarts.getInstanceByDom(container).dispose();
+                        echarts.getInstanceByDom(container).clear();
                     } catch (e) {
                     }
                     let _width = (getAbsolutePosition(container).width * 1) + "px";
                     let _height = (getAbsolutePosition(container).height * 1) + "px";
                     container.innerHTML = "";
-                    let echart = getEcharts(
+                    let echart_target = getEcharts(
                         container,
                         _width,
                         _height,
                         __DATASET__.result[__DATASET__.default.sheet],
                         __ECHARTS__.configs);
-                    setDragNook(container, echart.getAttribute("_echarts_instance_"));
+                    setDragNook(container, echart_target.getAttribute("_echarts_instance_"));
                 }
             } catch (e) {
                 __LOGS__.viewError(e);
@@ -3986,39 +3935,39 @@ function initMenus() {
         datatools.appendChild(echartsType);
         UI.tooltip(echartsType, "视图类型");
 
-        let echarts = document.createElement("div");
-        datatools.appendChild(echarts);
-        echarts.className = "charButton";
-        echarts.innerText = "❖";
-        echarts.style.cssFloat = "right";
-        echarts.id = "dataset-to-charts";
+        let getecharts = document.createElement("div");
+        datatools.appendChild(getecharts);
+        getecharts.className = "charButton";
+        getecharts.innerText = "❖";
+        getecharts.style.cssFloat = "right";
+        getecharts.id = "dataset-to-charts";
         let help_echarts = $("help-dataset-echarts");
-        echarts.onclick = help_echarts.onclick = function () {
+        getecharts.onclick = help_echarts.onclick = function () {
             try {
                 if (__DATASET__.result.length > 0) {
                     let container = $("tableContainer");
                     try {
                         container.removeAttribute("_echarts_instance_");
-                        echarts.getInstanceByDom(container).dispose();
+                        echarts.getInstanceByDom(container).clear();
                     } catch (e) {
                     }
                     let dataset = __DATASET__.result[__DATASET__.default.sheet];
                     let _width = (getAbsolutePosition(container).width * 1) + "px";
                     let _height = (getAbsolutePosition(container).height * 1) + "px";
                     container.innerHTML = "";
-                    let echart = getEcharts(
+                    let echart_target = getEcharts(
                         container,
                         _width,
                         _height,
                         dataset,
                         __ECHARTS__.configs);
-                    setDragNook(container, echart.getAttribute("_echarts_instance_"));
+                    setDragNook(container, echart_target.getAttribute("_echarts_instance_"));
                 }
             } catch (e) {
                 __LOGS__.viewError(e);
             }
         };
-        UI.tooltip(echarts, "绘制数据视图");
+        UI.tooltip(getecharts, "绘制数据视图");
 
         //其他工具
         $("image-base64").onclick = function () {
@@ -4100,9 +4049,10 @@ function initMenus() {
             }
         };
 
-        __LOGS__.viewMessage(message + "...OK.");
+        message.innerText += "OK.";
     } catch (e) {
-        __LOGS__.viewMessage(message + "...fails.\n" + e, true);
+        message.innerText += "fails.";
+        __LOGS__.viewError("auto", e);
     }
 }
 
@@ -4111,7 +4061,7 @@ function getEchartsClock() {
         if (__DATASET__.result.length == 0) {
             try {
                 container.removeAttribute("_echarts_instance_");
-                echarts.getInstanceByDom(container).dispose();
+                echarts.getInstanceByDom(container).clear();
             } catch (e) {
             }
             let container = $("tableContainer");
@@ -4124,7 +4074,7 @@ function getEchartsClock() {
             configs.titleDisplay.value = "false";
             configs.renderer.value = "canvas";
             configs.toolboxDisplay.value = "false";
-            let echart = getEcharts(
+            let echart_target = getEcharts(
                 container,
                 width,
                 height,
@@ -4189,6 +4139,21 @@ function resize() {
 
     $("qrcode").style.top = (getAbsolutePosition($("page")).height - getAbsolutePosition($("qrcode")).height + 5) + "px";
     $("qrcode").style.left = (getAbsolutePosition($("page")).width - getAbsolutePosition($("qrcode")).width - 10) + "px";
+    setTimeout(function () {
+         try {
+             let echart_target = echarts.getInstanceByDom($("tableContainer"));
+             if (typeof echart_target !== "undefined")
+                 echart_target.resize();
+             let contents = $("tableContainer").getElementsByClassName("multi-echarts-view-contain");
+             for(let i =0;i<contents.length;i++) {
+                 echart_target = echarts.getInstanceByDom(contents[i]);
+                 if (typeof echart_target !== "undefined")
+                     echart_target.resize();
+             }
+         } catch (e) {
+             __LOGS__.viewError("auto", e);
+         }
+     }, 100);
 }
 
 function isScroll(el) {
@@ -4260,7 +4225,7 @@ function getColumnMenu(colid) {
 }
 
 function setPageThemes() {
-    let message = "设置应用页面主题...";
+    let message = __LOGS__.viewMessage("设置应用页面主题...");
     try {
         let themes = $("help-select-user-themes");
         themes.options.add(new Option("默认", "themes/default.css"));
@@ -4310,9 +4275,10 @@ function setPageThemes() {
         mapconfig.onclick = localmap.onclick = function () {
             geoCoordMap.setMapConfig("auto");
         }
-        __LOGS__.viewMessage(message + "OK.");
+        message.innerText += "OK.";
     }catch (e) {
-        __LOGS__.viewMessage(message + "fails.\n" + e, true);
+        message.innerText += "fails.";
+        __LOGS__.viewError("auto", e);
     }
 }
 
@@ -4340,7 +4306,7 @@ function setEchartDrag(ec) {
     ec.ondrop = function (event) {
         if (event.target.className == "multi-echarts-view-contain") {
             try {
-                echarts.getInstanceByDom(this).dispose();
+                echarts.getInstanceByDom(this).clear();
             } catch (e) {
             }
             event.target.style.border = "0px dotted var(--main-border-color)";
@@ -4371,7 +4337,7 @@ function setEchartDrag(ec) {
     };
     ec.ondragleave = function (event) {
         if (event.target.className == "multi-echarts-view-contain") {
-            event.target.style.border = "1px dotted var(--main-border-color)";
+            event.target.style.border = "0px dotted var(--main-border-color)";
         }
     };
 }
@@ -4384,24 +4350,10 @@ function setMultiEchartsView(parent, template) {
         let contain = document.createElement("div");
         contain.className = "multi-echarts-view-contain";
         contain.style.position = views.position;
-        switch (views.position) {
-            case "static":
-                //contain.style.left = view[0] + "%";
-                //contain.style.top = view[1] + "%";
-                contain.style.width = view[2] + "%";
-                contain.style.height = view[3] + "%";
-            case "relative":
-                contain.style.left = view[0] + "%";
-                contain.style.top = view[1] + "%";
-                contain.style.width = view[2] + "%";
-                contain.style.height = view[3] + "%";
-
-            case "absolute":
-                contain.style.left = view[0] + "%";
-                contain.style.top = view[1] + "%";
-                contain.style.width = view[2] + "%";
-                contain.style.height = view[3] + "%";
-        }
+        contain.style.left = view[0] + "%";
+        contain.style.top = view[1] + "%";
+        contain.style.width = view[2] + "%";
+        contain.style.height = view[3] + "%";
         parent.appendChild(contain);
         contain.style.lineHeight = getAbsolutePosition(parent).height * view[3] / 100 + "px";
         contain.innerHTML = "请从右侧拖入布局框架或从左侧拖入数据视图。";
@@ -4422,7 +4374,7 @@ function getLayoutslist(parent) {
     toolbar.className = "toolbar";
     let b = document.createElement("a");
     b.className = "button";
-    b.innerHTML = "重置";
+    b.innerHTML = "重新布局";
     b.onclick = function () {
         $("multi-echarts-view").innerHTML = "请从右侧拖入您需要的布局框架。";
     };
@@ -4445,19 +4397,40 @@ function getLayoutslist(parent) {
                 if (ex == true)
                     UI.alert.show("提示", "名称 " + name + " 已经存在.");
                 else {
-                    __ECHARTS__.layouts[name] = {data: [[0, 0, 99, 99],], position: "absolute"};
+                    __ECHARTS__.layouts[name] = {data: [[1, 1, 98, 98],], position: "absolute"};
+                    setUserConfig("MULTI_LAYOUTS", JSON.stringify(__ECHARTS__.layouts));
                     getLayoutslist($("multi-layouts-list"))
                 }
             }
         }, {});
     };
     toolbar.appendChild(b);
+
+    b = document.createElement("a");
+    b.className = "button";
+    b.innerHTML = "重置";
+    b.onclick = function () {
+        UI.confirm.show("警告", "您确定初始化所有框架吗?", "auto", function () {
+            setUserConfig("MULTI_LAYOUTS", JSON.stringify({}));
+            location.reload();
+        }, {});
+    };
+    toolbar.appendChild(b);
+
     for (let name in __ECHARTS__.layouts) {
         let row = document.createElement("div");
         row.className = "multi-layouts-list-row";
         row.id = name;
+        row.draggable = "true";
+        row.ondragstart = function (event) {
+            event.dataTransfer.setData("Text", event.target.id);
+        };
+        parent.appendChild(row);
 
         let title = document.createElement("div");
+        title.style.position = "relative";
+        title.style.margin = "5px";
+        title.style.minHeight = "16px";
         let text = document.createElement("span");
         title.appendChild(text);
         text.innerHTML = name;
@@ -4471,157 +4444,262 @@ function getLayoutslist(parent) {
             try {
                 let name = this.getAttribute("id");
                 let value = $("multi-layouts-list-row-edit-" + name).value;
-                __ECHARTS__.layouts[name].data = JSON.parse(value);
-                UI.alert.show("提示","布局 " + name + " 修改成功.")
-            }catch (e) {
-                UI.alert.show("提示","布局格式输入错误，请检查！\r\n请遵循[左边距%,上边距%,宽度%,高度%]设置.")
+                let layouts = JSON.parse(value);
+                let checked = true;
+                for (let i = 0; i < layouts.length; i++) {
+                    let layout = layouts[i];
+                    if (layout.length != 4) {
+                        checked = false;
+                        break;
+                    } else if ((layout[0] + layout[2]) > 100 || (layout[1] + layout[3]) > 100 || layout[0] < 0 || layout[1] < 0 || layout[2] < 0 || layout[3] < 0) {
+                        checked = false;
+                        break;
+                    }
+                }
+                if (checked) {
+                    __ECHARTS__.layouts[name].data = layouts;
+                    setUserConfig("MULTI_LAYOUTS", JSON.stringify(__ECHARTS__.layouts));
+                    UI.alert.show("提示", "布局格式已保存.");
+                } else
+                    UI.alert.show("提示", "布局格式检查未通过！<li>[ 左边距 , 上边距 , 宽度 , 高度 ].</li><li>采用百分比数值.</li><li>数值在[0-100]之间.</li></li><li>左边距与宽度之和小于100.</li><li>上边距与高度之和小于100.</li>");
+            } catch (e) {
+                UI.alert.show("提示", "布局格式检查未通过！<li>[ 左边距 , 上边距 , 宽度 , 高度 ].</li><li>采用百分比数值.</li><li>数值在[0-100]之间.</li></li><li>左边距与宽度之和小于100.</li><li>上边距与高度之和小于100.</li>");
             }
         };
         title.appendChild(save);
 
+        let del = document.createElement("span");
+        del.className = "clickable";
+        del.innerText = "✘";
+        del.setAttribute("id", name);
+        del.onclick = function () {
+            let name = this.getAttribute("id");
+            delete __ECHARTS__.layouts[name];
+            setUserConfig("MULTI_LAYOUTS", JSON.stringify(__ECHARTS__.layouts));
+            row.parentElement.removeChild(row);
+        };
+        title.appendChild(del);
+
+        let toedit = document.createElement("span");
+        toedit.className = "clickable";
+        toedit.innerText = "…";
+        toedit.setAttribute("id", name);
+        toedit.onclick = function () {
+            let name = this.getAttribute("id");
+            let edit = $("multi-layouts-list-row-edit-" + name);
+            if (edit.style.display == "block") {
+                this.innerText = "…";
+                edit.style.display = "none";
+                let container = $("multi-layouts-list-row-view-" + name);
+                let contents = container.getElementsByClassName("multi-echarts-view-contain");
+                for (let i = 0; i < contents.length; i++) {
+                    container.removeChild(contents[i]);
+                }
+                try {
+                    contents = JSON.parse(edit.value);
+                    let checked = true;
+                    for (let i = 0; i < contents.length; i++) {
+                        let layout = contents[i];
+                        if (layout.length != 4) {
+                            checked = false;
+                            break;
+                        } else if ((layout[0] + layout[2]) > 100 || (layout[1] + layout[3]) > 100 || layout[0] < 0 || layout[1] < 0 || layout[2] < 0 || layout[3] < 0) {
+                            checked = false;
+                            break;
+                        }
+                    }
+                    if (checked) {
+                        for (let i = 0; i < contents.length; i++) {
+                            let view = contents[i];
+                            let content = document.createElement("div");
+                            content.className = "multi-echarts-view-contain";
+                            content.style.position = "absolute";
+                            content.style.left = view[0] + "%";
+                            content.style.top = view[1] + "%";
+                            content.style.width = view[2] + "%";
+                            content.style.height = view[3] + "%";
+                            content.style.zIndex = "0";
+                            container.appendChild(content);
+                        }
+                    } else {
+                        UI.alert.show("提示", "布局格式检查未通过！<li>[ 左边距 , 上边距 , 宽度 , 高度 ].</li><li>采用百分比数值.</li><li>数值在[0-100]之间.</li></li><li>左边距与宽度之和小于100.</li><li>上边距与高度之和小于100.</li>");
+                    }
+                } catch (e) {
+                    UI.alert.show("提示", "布局格式检查未通过！<li>[ 左边距 , 上边距 , 宽度 , 高度 ].</li><li>采用百分比数值.</li><li>数值在[0-100]之间.</li></li><li>左边距与宽度之和小于100.</li><li>上边距与高度之和小于100.</li>");
+                }
+            } else {
+                this.innerText = "❏";
+                edit.style.display = "block";
+            }
+        };
+        title.appendChild(toedit);
+
         let detail = document.createElement("div");
+        detail.id = "multi-layouts-list-row-view-" + name;
+        detail.style.display = "block";
+        detail.style.position = "relative";
+        detail.style.height = "100px";
+        detail.style.width = "100%";
+        detail.style.overflow = "hide";
+        row.appendChild(detail);
+
+        for (let i = 0; i < __ECHARTS__.layouts[name].data.length; i++) {
+            let view = __ECHARTS__.layouts[name].data[i];
+            let contain = document.createElement("div");
+            contain.className = "multi-echarts-view-contain";
+            contain.style.position = "absolute";
+            contain.style.left = view[0] + "%";
+            contain.style.top = view[1] + "%";
+            contain.style.width = view[2] + "%";
+            contain.style.height = view[3] + "%";
+            contain.style.zIndex = "0";
+            detail.appendChild(contain);
+        }
+
         let edit = document.createElement("textarea");
         edit.className = "multi-layouts-list-row-edit";
-        edit.id = "multi-layouts-list-row-edit-" + name;
+        edit.id = ("multi-layouts-list-row-edit-" + name);
+        edit.style.position = "absolute";
+        edit.style.display = "none";
+        edit.style.width = "100%";
+        edit.style.height = "100%";
+        edit.style.zIndex = "1";
         edit.type = "textarea";
         edit.value = JSON.stringify(__ECHARTS__.layouts[name].data);
         detail.appendChild(edit);
-        row.appendChild(detail);
-
-        parent.appendChild(row);
-        row.draggable = "true";
-        row.ondragstart = function (event) {
-            event.dataTransfer.setData("Text", event.target.id);
-        };
     }
 }
 
-function getMultiEcharts() {
+function getMultiEcharts(parent) {
     try {
-        let multiEcharts = document.createElement("div");
-        multiEcharts.className = "echarts";
-        multiEcharts.id = "multi-echarts";
-        multiEcharts.style.width = (getAbsolutePosition($("page")).width + 10) + "px";
-        multiEcharts.style.height = (getAbsolutePosition($("page")).height + 25) + "px";
-        multiEcharts.style.top = "0px";
-        multiEcharts.style.left = "0px";
+        if (parent.getElementsByClassName("multi-echarts").length == 0) {
+            parent.innerHTML = "";
 
-        let echartsList = document.createElement("div");
-        echartsList.id = echartsList.className = "multi-echarts-list";
-        multiEcharts.appendChild(echartsList);
+            let multiEcharts = document.createElement("div");
+            multiEcharts.className = multiEcharts.id = "multi-echarts";
+            parent.appendChild(multiEcharts);
 
-        for (let i = 0; i < __ECHARTS__.sets.data.length; i++) {
-            let history = JSON.parse(__ECHARTS__.history[__ECHARTS__.sets.data[i]]);
-            let row = document.createElement("div");
-            row.className = "multi-echarts-list-row";
-            row.id = history.id;
+            let echartsList = document.createElement("div");
+            echartsList.id = echartsList.className = "multi-echarts-list";
+            multiEcharts.appendChild(echartsList);
 
-            let title = document.createElement("div");
-            let text = document.createElement("span");
-            title.appendChild(text);
-            text.innerHTML = history.dataset.title[0];
-            row.appendChild(title);
+            for (let i = 0; i < __ECHARTS__.sets.data.length; i++) {
+                let history = JSON.parse(__ECHARTS__.history[__ECHARTS__.sets.data[i]]);
+                let row = document.createElement("div");
+                row.className = "multi-echarts-list-row";
+                row.id = history.id;
 
-            let del = document.createElement("span");
-            del.className = "clickable";
-            del.innerText = "✘";
-            del.setAttribute("id", history.id);
-            del.onclick = function () {
-                let row = $(this.getAttribute("id"));
-                let data = [];
-                for (let i = 0; i < __ECHARTS__.sets.data.length; i++) {
-                    if (__ECHARTS__.sets.data[i] != this.getAttribute("id"))
-                        data.push(__ECHARTS__.sets.data[i]);
-                }
-                __ECHARTS__.sets.data = data;
-                row.parentElement.removeChild(row);
-            };
-            title.appendChild(del);
+                let title = document.createElement("div");
+                title.style.minHeight = "20px";
+                let text = document.createElement("span");
+                title.appendChild(text);
+                text.innerHTML = history.dataset.title[0];
+                row.appendChild(title);
 
-            let detail = document.createElement("div");
-            let type = document.createElement("span");
-            type.innerText = getOptionName(__ECHARTS__.configs.echartsType.options, history.configs.echartsType.value);
-            detail.appendChild(type);
-            let themes = document.createElement("span");
-            themes.innerText = getOptionName(__ECHARTS__.configs.echartsTheme.options, history.configs.echartsTheme.value);
-            detail.appendChild(themes);
-            row.appendChild(detail);
-
-            echartsList.appendChild(row);
-            row.draggable = "true";
-            row.ondragstart = function (event) {
-                event.dataTransfer.setData("Text", event.target.id);
-            };
-        }
-
-        let layoutsList = document.createElement("div");
-        layoutsList.id = layoutsList.className = "multi-layouts-list";
-        multiEcharts.appendChild(layoutsList);
-        getLayoutslist(layoutsList);
-
-        let multiEchartsViews = document.createElement("div");
-        multiEchartsViews.className = multiEchartsViews.id = "multi-echarts-view";
-        multiEcharts.appendChild(multiEchartsViews);
-        multiEchartsViews.style.lineHeight = getAbsolutePosition($("page")).height + "px";
-        multiEchartsViews.innerHTML = "请从右侧拖入您需要的布局框架。";
-        multiEchartsViews.onmousemove = function () {
-            let active = 3;
-            if (event.x < active && (event.y*100/getAbsolutePosition($("multi-echarts-view")).height >= 25 && event.y*100/getAbsolutePosition($("multi-echarts-view")).height <= 75)) {
-                $("multi-echarts-list").style.display = "block";
-            } else {
-                $("multi-echarts-list").style.display = "none";
-            }
-
-            if (event.x> getAbsolutePosition($("multi-echarts-view")).width - active
-                && (event.y*100/getAbsolutePosition($("multi-echarts-view")).height >= 25 && event.y*100/getAbsolutePosition($("multi-echarts-view")).height <= 75)){
-                $("multi-layouts-list").style.display = "block";
-                $("multi-layouts-list").style.left = (getAbsolutePosition($("multi-echarts-view")).width - 305) + "px"
-            } else {
-                $("multi-layouts-list").style.display = "none";
-            }
-        };
-        multiEchartsViews.ondragenter = function (event) {
-            if (event.target.className == "multi-echarts-view") {
-                event.target.style.opacity = 0.5
-            }
-        };
-        multiEchartsViews.ondragover = function (event) {
-            if (event.target.className == "multi-echarts-view") {
-                event.preventDefault();
-            }
-        };
-        multiEchartsViews.ondrop = function (event) {
-            if (event.target.className == "multi-echarts-view") {
-                event.target.style.opacity = 1
-                let id = event.dataTransfer.getData("Text");
-                setMultiEchartsView(this, id);
-            }
-        };
-        multiEchartsViews.ondragleave = function (event) {
-            if (event.target.className == "multi-echarts-view") {
-                event.target.style.opacity = 1
-            }
-        };
-
-        window.addEventListener("keydown", function (e) {
-            //keypress无法获取Esc键值,keydown和keyup可以.
-            let keycode = e.which || e.keyCode;
-            if (keycode == 27) {
-                if ($("multi-echarts") != null) {
-                    let mul = $("multi-echarts").getElementsByClassName("multi-echarts-view-contain");
-                    for (i = 0; i < mul.length; i++) {
-                        try {
-                            echarts.getInstanceByDom(mul[i]).dispose();
-                        }catch (e) {
-                        }
+                let del = document.createElement("span");
+                del.className = "clickable";
+                del.innerText = "✘";
+                del.setAttribute("id", history.id);
+                del.onclick = function () {
+                    let row = $(this.getAttribute("id"));
+                    let data = [];
+                    for (let i = 0; i < __ECHARTS__.sets.data.length; i++) {
+                        if (__ECHARTS__.sets.data[i] != this.getAttribute("id"))
+                            data.push(__ECHARTS__.sets.data[i]);
                     }
-                    $("multi-echarts").parentElement.removeChild($("multi-echarts"));
-                }
+                    __ECHARTS__.sets.data = data;
+                    row.parentElement.removeChild(row);
+                };
+                title.appendChild(del);
+
+                let detail = document.createElement("div");
+                let type = document.createElement("span");
+                type.innerText = getOptionName(__ECHARTS__.configs.echartsType.options, history.configs.echartsType.value);
+                detail.appendChild(type);
+                let themes = document.createElement("span");
+                themes.innerText = getOptionName(__ECHARTS__.configs.echartsTheme.options, history.configs.echartsTheme.value);
+                detail.appendChild(themes);
+                row.appendChild(detail);
+
+                echartsList.appendChild(row);
+                row.draggable = "true";
+                row.ondragstart = function (event) {
+                    event.dataTransfer.setData("Text", event.target.id);
+                };
             }
-        });
-        return multiEcharts;
+
+            let layoutsList = document.createElement("div");
+            layoutsList.id = layoutsList.className = "multi-layouts-list";
+            multiEcharts.appendChild(layoutsList);
+            getLayoutslist(layoutsList);
+
+            let multiEchartsViews = document.createElement("div");
+            multiEchartsViews.className = multiEchartsViews.id = "multi-echarts-view";
+            multiEcharts.appendChild(multiEchartsViews);
+            multiEchartsViews.style.lineHeight = getAbsolutePosition(parent).height + "px";
+            multiEchartsViews.innerHTML = "请从右侧拖入您需要的布局框架。";
+            multiEchartsViews.onmousemove = function () {
+                let active = 6;
+                let posit = getAbsolutePosition($("multi-echarts"));
+                if ((event.x - posit.left) < active && ((event.y - posit.top) * 100 / posit.height >= 25 && (event.y - posit.top) * 100 / posit.height <= 75)) {
+                    $("multi-echarts-list").style.display = "block";
+                } else {
+                    $("multi-echarts-list").style.display = "none";
+                }
+
+                if ((posit.left + posit.width - event.x) < active
+                    && ((event.y - posit.top) * 100 / posit.height >= 25 && (event.y - posit.top) * 100 / posit.height <= 75)) {
+                    $("multi-layouts-list").style.display = "block";
+                    $("multi-layouts-list").style.left = (posit.width - 305) + "px"
+                } else {
+                    $("multi-layouts-list").style.display = "none";
+                }
+            };
+            multiEchartsViews.ondragenter = function (event) {
+                if (event.target.className == "multi-echarts-view") {
+                    event.target.style.opacity = 0.5
+                }
+            };
+            multiEchartsViews.ondragover = function (event) {
+                if (event.target.className == "multi-echarts-view") {
+                    event.preventDefault();
+                }
+            };
+            multiEchartsViews.ondrop = function (event) {
+                if (event.target.className == "multi-echarts-view") {
+                    event.target.style.opacity = 1;
+                    let id = event.dataTransfer.getData("Text");
+                    setMultiEchartsView(this, id);
+                }
+            };
+            multiEchartsViews.ondragleave = function (event) {
+                if (event.target.className == "multi-echarts-view") {
+                    event.target.style.opacity = 1
+                }
+            };
+
+            window.addEventListener("keydown", function (e) {
+                //keypress无法获取Esc键值,keydown和keyup可以.
+                let keycode = e.which || e.keyCode;
+                if (keycode == 27) {
+                    if ($("multi-echarts") != null) {
+                        let mul = $("multi-echarts").getElementsByClassName("multi-echarts-view-contain");
+                        for (let i = 0; i < mul.length; i++) {
+                            setTimeout(function () {
+                                try {
+                                    echarts.getInstanceByDom(mul[i]).clear();
+                                    mul[i].parentNode.removeChild(mul[i]);
+                                } catch (e) {
+                                }
+                            }, 100);
+                        }
+                        $("multi-echarts").parentNode.removeChild($("multi-echarts"));
+                    }
+                }
+            });
+        }
     } catch (e) {
-        __LOGS__.viewError(e);
+        __LOGS__.viewError("auto", e);
     }
 }
 
@@ -4644,7 +4722,7 @@ function setDragNook(parent, id) {
             if (event.target.className == "drag-nook") {
                 let parent = this.parentNode;
                 try {
-                    echarts.getInstanceByDom(parent).dispose();
+                    echarts.getInstanceByDom(parent).clear();
                 } catch (e) {
                 }
                 parent.style.border = "0px dotted var(--main-border-color)";
@@ -4675,7 +4753,7 @@ function setDragNook(parent, id) {
         };
         nook.ondragleave = function (event) {
             if (event.target.className == "drag-nook") {
-                event.target.parentNode.style.border = "1px dotted var(--main-border-color)";
+                event.target.parentNode.style.border = "0px dotted var(--main-border-color)";
             }
         };
     }
@@ -4852,7 +4930,7 @@ function setDataPageTools(index) {
         } else {
             label.innerText = " ● ";
         }
-    }
+    };
     main.appendChild(todown);
 
     let curr = document.createElement("span");

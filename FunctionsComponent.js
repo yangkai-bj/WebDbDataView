@@ -1,3 +1,11 @@
+function $(id) {
+    try {
+        return document.getElementById(id);
+    } catch (e) {
+        return null;
+    }
+}
+
 function sleep(delay) {
     let endTime = new Date().getTime() + parseInt(delay);
     while (new Date().getTime() < endTime) ;
@@ -5,7 +13,7 @@ function sleep(delay) {
 }
 
 function getOptionName(options, value) {
-    let name = "";
+    let name = null;
     try {
         options.forEach(function (option) {
             if (option.value === value) {
@@ -1037,15 +1045,7 @@ String.prototype.fromHextoAscii = function() {
         text += ch;
     }
     return text;
-}
-
-function $(id){
-     try{
-         return document.getElementById(id);
-     } catch (e) {
-         return null;
-     }
- }
+};
 
  String.prototype.encode = function() {
     let str = this.toString();

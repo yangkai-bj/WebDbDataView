@@ -67,12 +67,8 @@ var UI = {
             }
         };
         dom.onmouseleave = function () {
-            if (typeof $("tooltip-" + this.id) !== "undefined") {
-                let parent = document.body;
-                if (document.fullscreen && typeof __CONFIGS__.fullScreen.element == "object") {
-                    parent = __CONFIGS__.fullScreen.element;
-                }
-                parent.removeChild($("tooltip-" + this.id))
+            if ($("tooltip-" + this.id) != null) {
+                $("tooltip-" + this.id).parentNode.removeChild($("tooltip-" + this.id))
             }
         };
     },
