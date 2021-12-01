@@ -17,8 +17,8 @@ const __VERSION__ = {
     name: "Web DataView for SQLite Database of browser",
     main: "WebDBDataView.js",
     echarts: "echarts/v5.2.2",
-    version: "3.0.6",
-    date: "2021/11/24",
+    version: "3.0.7",
+    date: "2021/12/01",
     comment: [
         "-- 2021/03/08",
         "优化算法和压缩代码.",
@@ -2777,6 +2777,7 @@ function initMenus() {
             SQLite.createDatabase("auto");
         };
         dbstools.appendChild(crdb);
+        UI.tooltip(crdb, "创建数据库");
 
         let rmdb = document.createElement("div");
         rmdb.className = "button";
@@ -2813,6 +2814,7 @@ function initMenus() {
             });
         };
         dbstools.appendChild(rmdb);
+        UI.tooltip(rmdb, "删除数据库");
 
         let dbinfo = document.createElement("div");
         dbinfo.className = "button";
@@ -2879,6 +2881,7 @@ function initMenus() {
             });
         };
         tbstools.appendChild(crtb);
+        UI.tooltip(crtb, "创建数据表");
 
         let importtb = document.createElement("div");
         importtb.className = "button";
@@ -2890,6 +2893,7 @@ function initMenus() {
             SQLite.import.start("auto");
         };
         tbstools.appendChild(importtb);
+        UI.tooltip(importtb, "导入数据");
 
         let exConstr = document.createElement("div");
         exConstr.className = "button";
@@ -2909,6 +2913,7 @@ function initMenus() {
             __LOGS__.viewMessage(__CONFIGS__.CURRENT_TABLE.name + ":\n" + __CONFIGS__.CURRENT_TABLE.sql);
         };
         tbstools.appendChild(exConstr);
+        UI.tooltip(exConstr, "获取表结构");
 
         let rmtb = document.createElement("div");
         rmtb.className = "button";
@@ -2945,6 +2950,7 @@ function initMenus() {
             });
         };
         tbstools.appendChild(rmtb);
+        UI.tooltip(rmtb, "删除数据表");
 
         //#######################################
         //初始化SQL菜单
@@ -2979,6 +2985,7 @@ function initMenus() {
 
         };
         sqltools.appendChild(newsql);
+        UI.tooltip(newsql, "新建脚本");
 
         let input = document.createElement("input");
         input.type = "file";
@@ -3018,6 +3025,7 @@ function initMenus() {
             }, {type: UI.sqlManagerDialog.type.open, charset: __SQLEDITOR__.configs.codeMirrorCharset.value});
         };
         sqltools.appendChild(opensql);
+        UI.tooltip(opensql, "打开脚本");
 
         let saveto = document.createElement("div");
         saveto.className = "button";
@@ -3044,6 +3052,7 @@ function initMenus() {
             }
         };
         sqltools.appendChild(saveto);
+        UI.tooltip(saveto, "保存脚本");
 
         let loadfile = document.createElement("div");
         loadfile.className = "button";
@@ -3055,6 +3064,7 @@ function initMenus() {
             $("open-sql-file").click();
         };
         sqltools.appendChild(loadfile);
+        UI.tooltip(loadfile, "导入脚本");
 
         let saveas = document.createElement("div");
         saveas.className = "button";
@@ -3082,6 +3092,7 @@ function initMenus() {
             }, {});
         };
         sqltools.appendChild(saveas);
+        UI.tooltip(saveas, "导出脚本");
 
         let backup = document.createElement("div");
         backup.className = "button";
@@ -3094,6 +3105,7 @@ function initMenus() {
             }, {type: UI.sqlManagerDialog.type.backup, charset: __SQLEDITOR__.configs.codeMirrorCharset.value});
         }
         sqltools.appendChild(backup);
+        UI.tooltip(backup, "备份脚本");
 
         let execsql = document.createElement("div");
         execsql.className = "button";
@@ -3159,6 +3171,7 @@ function initMenus() {
             }
         };
         sqltools.appendChild(execsql);
+        UI.tooltip(execsql, "执行脚本");
 
         let sqltitle = document.createElement("div");
         sqltitle.id = "sql-title";
@@ -4102,6 +4115,31 @@ function getQRCode(parent,width,height,text,logoImage) {
         logo.style.marginLeft = (width - width / 4.0) / 2 + "px";
         logo.style.marginTop = (height - width / 4.0 * (logoImage.width / logoImage.height)) / 2 + "px";
         qr.appendChild(logo);
+        qr.ondblclick = function () {
+            UI.prompt.show("二维码", {内容: text, 宽度: "90", 高度: "90", 颜色: "black", 背景: "white"}, "auto", function (values) {
+                try {
+                    let qr = $("qrcode");
+                    qr.innerText = "";
+                    qr.style.width = values["宽度"] + "px";
+                    qr.style.height = values["高度"] + "px";
+                    let code = new QRCode("qrcode", {
+                        text: values["内容"],
+                        width: Number(values["宽度"]),
+                        height: Number(values["高度"]),
+                        colorDark: values["颜色"],
+                        colorLight: values["背景"],
+                        correctLevel: QRCode.CorrectLevel.H
+                    });
+                    setTimeout(function () {
+                        let img = qr.getElementsByTagName("img")[0];
+                        getImageBase64Code("auto", img);
+                        $("qrcode").parentNode.removeChild($("qrcode"));
+                    }, 1000);
+                } catch (e) {
+                    __LOGS__.viewError(e);
+                }
+            });
+        };
 
         new QRCode("qrcode", {
             text: text,
@@ -4137,8 +4175,10 @@ function resize() {
     $("messageContainer").style.height = (getAbsolutePosition($("detail")).height -
         getAbsolutePosition($("detail-tools")).height) + "px";
 
-    $("qrcode").style.top = (getAbsolutePosition($("page")).height - getAbsolutePosition($("qrcode")).height + 5) + "px";
-    $("qrcode").style.left = (getAbsolutePosition($("page")).width - getAbsolutePosition($("qrcode")).width - 10) + "px";
+    if ($("qrcode") !== null) {
+         $("qrcode").style.top = (getAbsolutePosition($("page")).height - getAbsolutePosition($("qrcode")).height + 5) + "px";
+         $("qrcode").style.left = (getAbsolutePosition($("page")).width - getAbsolutePosition($("qrcode")).width - 10) + "px";
+     }
     setTimeout(function () {
          try {
              let echart_target = echarts.getInstanceByDom($("tableContainer"));
@@ -4274,7 +4314,7 @@ function setPageThemes() {
         let localmap = $("help-local-map");
         mapconfig.onclick = localmap.onclick = function () {
             geoCoordMap.setMapConfig("auto");
-        }
+        };
         message.innerText += "OK.";
     }catch (e) {
         message.innerText += "fails.";
@@ -4309,7 +4349,7 @@ function setEchartDrag(ec) {
                 echarts.getInstanceByDom(this).clear();
             } catch (e) {
             }
-            event.target.style.border = "0px dotted var(--main-border-color)";
+            event.target.style.border = "0px dotted  sandybrown";
             let id = event.dataTransfer.getData("Text");
             let history = __ECHARTS__.history[id];
             if (history != null) {
@@ -4318,26 +4358,26 @@ function setEchartDrag(ec) {
                     let posi = getAbsolutePosition(this);
                     let _width = posi.width + "px";
                     let _height = posi.height + "px";
-                    let e = getEcharts(
+                    let echart_target = getEcharts(
                         this,
                         _width,
                         _height,
                         history.dataset,
                         history.configs);
-                    setDragNook(e, e.getAttribute("_echarts_instance_"));
+                    setDragNook(echart_target, echart_target.getAttribute("_echarts_instance_"));
                     setEchartDrag(this);
                 } catch (e) {
                     __LOGS__.viewError(e);
                 }
             } else {
                 setMultiEchartsView(this, id);
-                this.style.border = "0px dotted var(--main-border-color)";
+                this.style.border = "0px dotted  sandybrown";
             }
         }
     };
     ec.ondragleave = function (event) {
         if (event.target.className == "multi-echarts-view-contain") {
-            event.target.style.border = "0px dotted var(--main-border-color)";
+            event.target.style.border = "1px dotted sandybrown";
         }
     };
 }
@@ -4428,13 +4468,24 @@ function getLayoutslist(parent) {
         parent.appendChild(row);
 
         let title = document.createElement("div");
-        title.style.position = "relative";
-        title.style.margin = "5px";
-        title.style.minHeight = "16px";
+        title.className = "title";
         let text = document.createElement("span");
         title.appendChild(text);
+        text.style.cssFloat = "left";
         text.innerHTML = name;
         row.appendChild(title);
+
+        let del = document.createElement("span");
+        del.className = "clickable";
+        del.innerText = "✘";
+        del.setAttribute("id", name);
+        del.onclick = function () {
+            let name = this.getAttribute("id");
+            delete __ECHARTS__.layouts[name];
+            setUserConfig("MULTI_LAYOUTS", JSON.stringify(__ECHARTS__.layouts));
+            row.parentElement.removeChild(row);
+        };
+        title.appendChild(del);
 
         let save = document.createElement("span");
         save.className = "clickable";
@@ -4467,18 +4518,6 @@ function getLayoutslist(parent) {
             }
         };
         title.appendChild(save);
-
-        let del = document.createElement("span");
-        del.className = "clickable";
-        del.innerText = "✘";
-        del.setAttribute("id", name);
-        del.onclick = function () {
-            let name = this.getAttribute("id");
-            delete __ECHARTS__.layouts[name];
-            setUserConfig("MULTI_LAYOUTS", JSON.stringify(__ECHARTS__.layouts));
-            row.parentElement.removeChild(row);
-        };
-        title.appendChild(del);
 
         let toedit = document.createElement("span");
         toedit.className = "clickable";
@@ -4969,19 +5008,55 @@ function setDataPageTools(index) {
 }
 
 
-function getImageBase64Code(parent) {
-    if (parent == "auto" || parent == null) {
-            if (document.fullscreen && typeof __CONFIGS__.fullScreen.element == "object") {
-                parent = __CONFIGS__.fullScreen.element;
-            } else {
-                parent = document.body;
-            }
-        }
+function getImageBase64Code(parent, img) {
+    function getImage(src) {
+        let image = document.createElement("img");
+        image.id = "source-image-file-image";
+        image.type = "img";
+        image.src = img.src;
+        image.style.display = "none";
+        image.onload = function () {
+            this.alt = this.title = "width:" + this.width + "\nheight:" + this.height;
+            this.setAttribute("_width_", this.width);
+            this.setAttribute("_height_", this.height);
 
-        let container = document.createElement("div");
-        container.id = "ui_imageBase";
-        container.className = "ui-container-background";
-        parent.appendChild(container);
+            function getSize(w, h, width, height) {
+                if (width > w || height > h) {
+                    if (width > w) {
+                        height = height / (width / w);
+                        width = w;
+                    }
+                    if (height > h) {
+                        width = width / (height / h);
+                        height = h;
+                    }
+                }
+                return [width, height];
+            }
+
+            let parent = getAbsolutePosition($("image-container"));
+            let size = getSize(parent.width, parent.height, this.width, this.height);
+            this.width = size[0];
+            this.height = size[1];
+            this.style.margin = "auto";
+            this.style.display = "block";
+            this.style.padding = (parent.height - size[1]) / 2 + "px 0";
+        };
+        return image;
+    }
+
+    if (parent == "auto" || parent == null) {
+        if (document.fullscreen && typeof __CONFIGS__.fullScreen.element == "object") {
+            parent = __CONFIGS__.fullScreen.element;
+        } else {
+            parent = document.body;
+        }
+    }
+
+    let container = document.createElement("div");
+    container.id = "ui_imageBase";
+    container.className = "ui-container-background";
+    parent.appendChild(container);
 
     let content = document.createElement("div");
     content.id = "image-base64-code";
@@ -5000,8 +5075,8 @@ function getImageBase64Code(parent) {
     content.appendChild(title);
 
     let hr = document.createElement("hr");
-        hr.className = "ui-container-hr";
-        content.appendChild(hr);
+    hr.className = "ui-container-hr";
+    content.appendChild(hr);
 
     let tabtools = document.createElement("div");
     tabtools.className = "tabToolbar";
@@ -5042,7 +5117,7 @@ function getImageBase64Code(parent) {
         if (this.files.length > 0) {
             let file = this.files[0];
             if (!/image\/\w+/.test(file.type)) {
-                UI.alert.show("提示","请选择图片文件！");
+                UI.alert.show("提示", "请选择图片文件！");
                 return false;
             }
             let reader = new FileReader();
@@ -5093,6 +5168,9 @@ function getImageBase64Code(parent) {
     filecontainer.id = "image-container";
     filecontainer.style.width = "100%";
     filecontainer.style.height = "370.8px";
+        if (typeof img !== "undefined") {
+            filecontainer.appendChild(getImage(img.src));
+        }
     content.appendChild(filecontainer);
 
     let imagecode = document.createElement("textarea");
@@ -5103,6 +5181,9 @@ function getImageBase64Code(parent) {
         "display: none;" +
         "font-size: 90%;\n";
     imagecode.type = "textarea";
+    if (typeof img !== "undefined") {
+        imagecode.value = img.src;
+    }
     content.appendChild(imagecode);
 
     let br = document.createElement("hr");
@@ -5130,45 +5211,13 @@ function getImageBase64Code(parent) {
     };
     tool.appendChild(show);
 
-    let toimage = document.createElement("button");
+    let toimage = document.createElement("div");
     toimage.className = "button";
     toimage.id = "toimage";
     toimage.innerText = "解析";
     toimage.onclick = close.onclick = function () {
         $("image-container").innerHTML = "";
-        let image = document.createElement("img");
-        image.id = "source-image-file-image";
-        image.type = "img";
-        image.src = $("source-image-file-code").value;
-        image.style.display = "none";
-        image.onload = function () {
-            this.alt = this.title = "width:" + this.width + "\nheight:" + this.height;
-            this.setAttribute("_width_", this.width);
-            this.setAttribute("_height_", this.height);
-
-            function getSize(w, h, width, height) {
-                if (width > w || height > h) {
-                    if (width > w) {
-                        height = height / (width / w);
-                        width = w;
-                    }
-                    if (height > h) {
-                        width = width / (height / h);
-                        height = h;
-                    }
-                }
-                return [width, height];
-            }
-
-            let parent = getAbsolutePosition($("image-container"));
-            let size = getSize(parent.width, parent.height, this.width, this.height);
-            this.width = size[0];
-            this.height = size[1];
-            this.style.margin = "auto";
-            this.style.display = "block";
-            this.style.padding = (parent.height - size[1]) / 2 + "px 0";
-        };
-        $("image-container").appendChild(image);
+        $("image-container").appendChild(getImage($("source-image-file-code").value));
         $("image-container").style.display = "block";
         $("source-image-file-code").style.display = "none";
 
@@ -5187,7 +5236,7 @@ function getImageBase64Code(parent) {
     copyto.onclick = close.onclick = function () {
         setClipboardListener($("source-image-file-code"));
         document.execCommand('copy');   // 执行copy命令触发监听
-        UI.alert.show("提示","已复制到粘贴板.");
+        UI.alert.show("提示", "已复制到粘贴板.");
     };
     tool.appendChild(copyto);
 
@@ -5244,7 +5293,7 @@ function getImageBase64Code(parent) {
                 setUserConfig("codeMirrorConfig", JSON.stringify(config));
             }
         } else {
-            UI.alert.show("提示","背景图片文件(" + Math.round(file.size / 1024 / 1024 * 100) / 100 + "MB)不能大于 0.5MB.")
+            UI.alert.show("提示", "背景图片文件(" + Math.round(file.size / 1024 / 1024 * 100) / 100 + "MB)不能大于 0.5MB.")
         }
     };
     tool.appendChild(setBackgroundImage);
@@ -5261,11 +5310,15 @@ function getImageBase64Code(parent) {
 }
 
 function  setClipboardListener(target) {
+    console.log(target);
     function handler(event) {
         if (typeof target.value != "undefined")
             event.clipboardData.setData("text/plain", target.value);
-        else
+        else if (target.innerText != "undefined")
             event.clipboardData.setData("text/plain", target.innerText);
+        else if (target.src != "undefined")
+            event.clipboardData.setData("text/plain", target.src);
+        console.log(event.clipboardData);
         event.preventDefault();
     }
     document.addEventListener("copy", handler);   // 增加copy监听

@@ -161,11 +161,12 @@ var UI = {
                 "background-color: transparent;" +
                 "color: var(--main-title-color);";
             item.appendChild(image);
-            let msg = document.createElement("span");
+            let msg = document.createElement("div");
             msg.style.cssText = "cursor: pointer;" +
                 "width:70%;" +
                 "float: left;" +
-                "white-space: auto;" +
+                //"white-space: auto;" +
+                "white-space: normal;word-break: break-all;word-wrap: break-word;" +
                 "text-overflow: ellipsis;" +
                 "-o-text-overflow: ellipsis;" +
                 "color: var(--main-title-color);" +
@@ -176,7 +177,8 @@ var UI = {
                 "font-size: 100%;" +
                 "background-color: transparent;" +
                 "color: var(--main-title-color);" +
-                "min-height: 100px;";
+                "min-height: 100px;max-height:200px;" +
+                "overflow:scroll;";
             msg.innerHTML = message;
             item.appendChild(msg);
             content.appendChild(item);

@@ -2056,7 +2056,6 @@ var __ECHARTS__ = {
                 };
                 input.title = "[Esc]:透明;[Del]:自动";
                 function colorSetKeydown(event){
-                    console.log(event.keyCode);
                     if (event.keyCode == 46) {
                         event.target.value = "#FFFFFF";
                         __ECHARTS__.configs[event.target.id].value = "auto";
