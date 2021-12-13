@@ -1074,7 +1074,7 @@ String.prototype.decode = function() {
     return decodeStr;
 }
 
-String.prototype.getBytesSize =function() {
+String.prototype.getBytesSize = function() {
     let size = 0;
     for (let i = 0; i != this.length; ++i) {
         let code = this.charCodeAt(i);

@@ -32,6 +32,142 @@ function saveStorageSql(key, sql) {
 }
 
 var UI = {
+    QRCode: function(parent, text, options, callback) {
+        if (parent == "auto" || parent == null) {
+            if (document.fullscreen && typeof __CONFIGS__.fullScreen.element == "object") {
+                parent = __CONFIGS__.fullScreen.element;
+            } else {
+                parent = document.body;
+            }
+        }
+        let container = document.createElement("div");
+        container.id = "ui-qrcode-component";
+        container.className = "ui-container-background";
+        parent.appendChild(container);
+
+        let content = document.createElement("div");
+        content.id = "qrcode-component";
+        content.className = "ui-container-body";
+        content.style.width = "600px";
+        container.appendChild(content);
+
+        let title = document.createElement("div");
+        title.className = "ui-container-title";
+        let span = document.createElement("span");
+        span.innerHTML = "● 二维码";
+        title.appendChild(span);
+        let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
+        close.className = "ui-container-close";
+        title.appendChild(close);
+        content.appendChild(title);
+
+        let hr = document.createElement("hr");
+        hr.className = "ui-container-hr";
+        content.appendChild(hr);
+
+        let tabtools = document.createElement("div");
+        tabtools.className = "tabToolbar";
+        tabtools.id = "imageTabToolbar";
+        let b = document.createElement("a");
+        b.className = "tabButton";
+        b.innerHTML = "图像";
+        b.onclick = function () {
+            $("qrcode-container").style.display = "block";
+            $("qrcode-detail").style.display = "none";
+            let tb = this.parentNode.getElementsByClassName("tabButton");
+            for (let i = 0; i < tb.length; i++) {
+                tb[i].style.background = "var(--toolbar-background-color)";
+            }
+            this.style.background = "var(--toolbar-button-hover-background-color)";
+        };
+        tabtools.appendChild(b);
+        b = document.createElement("a");
+        b.className = "tabButton";
+        b.innerHTML = "代码";
+        b.onclick = function () {
+            $("qrcode-container").style.display = "none";
+            $("qrcode-detail").style.display = "block";
+            let tb = this.parentNode.getElementsByClassName("tabButton");
+            for (let i = 0; i < tb.length; i++) {
+                tb[i].style.background = "var(--toolbar-background-color)";
+            }
+            this.style.background = "var(--toolbar-button-hover-background-color)";
+        };
+        tabtools.appendChild(b);
+        content.appendChild(tabtools);
+
+        let contentContainer = document.createElement("div");
+        contentContainer.className = "tabToolbar-content-container";
+        contentContainer.id = "qrcode-container";
+        contentContainer.style.overflow = "hidden";
+        contentContainer.style.width = "100%";
+        contentContainer.style.height = "370.8px";
+        content.appendChild(contentContainer);
+
+        let imagecontainer = document.createElement("div");
+        imagecontainer.style.cssText = "width: 100%;" +
+            "height: 100%;" +
+            "overflow: scroll;" +
+            "position: relative;" +
+            "float: left;";
+        contentContainer.appendChild(imagecontainer);
+        let image = document.createElement("div");
+        imagecontainer.appendChild(image);
+        image.id = "qrcode-image";
+        image.style.cssText = "position: absolute;" +
+            "border:1px solid " + options.color + ";" +
+            "margin:5px;padding:5px;" +
+            "top: 50%;" +
+            "left: 50%;" +
+            "transform: translate(-50%, -50%);";
+        new QRCode("qrcode-image", {
+            text: text,
+            width: options.width,
+            height: options.height,
+            colorDark: options.color,
+            colorLight: options.background,
+            correctLevel: QRCode.CorrectLevel.H
+        });
+
+        contentContainer = document.createElement("div");
+        contentContainer.className = "tabToolbar-content-container";
+        contentContainer.id = "qrcode-detail";
+        contentContainer.style.overflow = "hidden";
+        contentContainer.style.width = "100%";
+        contentContainer.style.height = "370.8px";
+        contentContainer.style.display = "none";
+        content.appendChild(contentContainer);
+
+        let codecontainer = document.createElement("div");
+        codecontainer.style.cssText = "width: 100%;" +
+            "height: 100%;" +
+            // "overflow: scroll;" +
+            "position: relative;" +
+            "float: left;";
+        contentContainer.appendChild(codecontainer);
+
+        let code = document.createElement("textarea");
+        code.className = "ui-container-item-input";
+        code.id = "ui_qrcode_code";
+        code.type = "textarea";
+        code.style.cssText = "width: 100%;" +
+            "height: 100%;" +
+            "resize: none;";
+        codecontainer.appendChild(code);
+
+        close.onclick = function () {
+            parent.removeChild($("ui-qrcode-component"));
+        };
+        setDialogDrag(title);
+        setTimeout(function () {
+            let img = $("qrcode-image").getElementsByTagName("img")[0];
+            $("ui_qrcode_code").value = img.src;
+            if (typeof callback !== "undefined") {
+                callback($("ui_qrcode_code").value);
+            }
+        }, 1000);
+    },
+
     tooltip: function(dom, text) {
         dom.onmouseenter = function () {
             if (typeof $("tooltip-" + this.id) !== "undefined") {
@@ -72,7 +208,7 @@ var UI = {
             }
         };
     },
-    help: function(dom, key, parent, message) {
+    help: function(dom, key, parent, message, callback) {
         let posi = getAbsolutePosition(dom);
         let container = document.createElement("div");
         container.id = "ui_help";
@@ -99,6 +235,10 @@ var UI = {
         msg.className = "message";
         msg.innerHTML = (typeof __VERSION__.helps[key] !== "undefined" ? __VERSION__.helps[key] : (typeof message =="undefined"?__VERSION__.helps["other"]: message)) +
             "<hr><span style='font-size: 30%'>" + getUserConfig("CopyRight") + "</span>";
+        msg.onclick = function() {
+            if (typeof callback !== "undefined")
+                callback();
+        };
         content.appendChild(msg);
         content.onmouseleave = function () {
             parent.removeChild($("ui_help"));
@@ -862,10 +1002,8 @@ var UI = {
             function getSQLList(table) {
                 table.innerText = "";
                 let tr = document.createElement("tr");
-                tr.className = "tr";
                 table.appendChild(tr);
                 let th = document.createElement("th");
-                th.className = "th";
                 th.style.width = "40px";
                 let check = document.createElement("input");
                 check.type = "checkbox";
@@ -882,16 +1020,13 @@ var UI = {
                 th.appendChild(check);
                 tr.appendChild(th);
                 th = document.createElement("th");
-                th.className = "th";
                 th.style.width = "40px";
                 th.innerText = "序号";
                 tr.appendChild(th);
                 th = document.createElement("th");
-                th.className = "th";
                 th.innerText = "脚本名称";
                 tr.appendChild(th);
                 th = document.createElement("th");
-                th.className = "th";
                 th.style.width = "120px";
                 th.innerText = "编辑时间";
                 tr.appendChild(th);
@@ -925,7 +1060,6 @@ var UI = {
                     table.appendChild(tr);
 
                     let td = document.createElement("td");
-                    td.className = "td";
                     let check = document.createElement("input");
                     check.type = "checkbox";
                     check.className = "check";
@@ -934,19 +1068,16 @@ var UI = {
                     tr.appendChild(td);
 
                     td = document.createElement("td");
-                    td.className = "td";
                     td.style.width = "36px";
                     td.style.textAlign = "center";
                     td.innerText = i + 1;
                     tr.appendChild(td);
 
                     td = document.createElement("td");
-                    td.className = "td";
                     td.innerText = td.title = name;
                     tr.appendChild(td);
 
                     td = document.createElement("td");
-                    td.className = "td";
                     td.style.width = "120px";
                     td.innerText = td.title = sqllist[name].time;
                     tr.appendChild(td);

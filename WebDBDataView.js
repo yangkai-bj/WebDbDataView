@@ -17,8 +17,8 @@ const __VERSION__ = {
     name: "Web DataView for SQLite Database of browser",
     main: "WebDBDataView.js",
     echarts: "echarts/v5.2.2",
-    version: "3.0.7",
-    date: "2021/12/01",
+    version: "3.0.8",
+    date: "2021/12/13",
     comment: [
         "-- 2021/03/08",
         "优化算法和压缩代码.",
@@ -80,6 +80,8 @@ const __VERSION__ = {
         "调整固定报表为双模式.",
         "-- 2021/11/17",
         "Echarts 5.2.2.",
+        "-- 2021/12/08",
+        "增加邮件编辑组件.",
     ],
     author: __SYS_LOGO_LINK__.author.decode(),
     url: __SYS_LOGO_LINK__.link.getee.decode(),
@@ -500,6 +502,7 @@ var __XMLHTTP__ = {
             {name: "常用统计函数", src: "StatisticsComponent.js", type: "text/javascript", element: "script", load: true},
             {name: "文件加密组件", src: "FileSecurityComponent.js", type: "text/javascript", element: "script", load: false},
             {name: "数据读取组件", src: "DataReaderComponent.js", type: "text/javascript", element: "script", load: true},
+            {name: "批量邮件组件", src: "MailComponent.js", type: "text/javascript", element: "script", load: true},
             {
                 name: "Echarts",
                 src: echartsPath + "/echarts-gl.min.js",
@@ -851,6 +854,28 @@ var __XMLHTTP__ = {
              type: "input"
          },
      },
+
+     getConfigItems: function(){
+        let configs = {};
+        for(let key in this.configs){
+            configs[key]  = this.configs[key].value;
+        }
+        return configs;
+    },
+
+     getConfigs: function(){
+        let configs = {};
+        for(let key in this.configs) {
+            let config = this.configs[key];
+            configs[key] = {
+                name: config.name,
+                type: config.type,
+                value: config.value
+            };
+        }
+        return configs;
+    },
+
      setConfigs: function (parent, callback) {
          let config = getUserConfig("datasetConfig");
          if (config != null) {
@@ -987,13 +1012,7 @@ var __XMLHTTP__ = {
          b.className = "button";
          b.innerHTML = "确定";
          b.onclick = function () {
-             let configs = $("ui_datasetConfigs").getElementsByClassName("ui-container-item-input");
-             let config = {};
-             for (let i = 0; i < configs.length; i++) {
-                 __DATASET__.configs[configs[i].id].value = configs[i].value;
-                 config[configs[i].id] = configs[i].value;
-             }
-             setUserConfig("datasetConfig", JSON.stringify(config));
+             setUserConfig("datasetConfig", JSON.stringify(__DATASET__.getConfigItems()));
              callback();
              parent.removeChild($("ui_datasetConfigs"));
          };
@@ -1085,7 +1104,7 @@ var __XMLHTTP__ = {
          codeMirrorMode: {
              name: "模式",
              value: "text/x-sqlite",
-             options: [new Option("SQLite", "text/x-sqlite"), new Option("函数", "text/javascript")],
+             options: [new Option("MySQL", "text/x-mysql"), new Option("SQLite", "text/x-sqlite"), new Option("HTML", "text/html"), new Option("函数", "text/javascript")],
              type: "select"
          },
          codeMirrorFontSize: {
@@ -1146,10 +1165,31 @@ var __XMLHTTP__ = {
          },
      },
 
+     getConfigItems: function(){
+        let configs = {};
+        for(let key in this.configs){
+            configs[key]  = this.configs[key].value;
+        }
+        return configs;
+    },
+
+     getConfigs: function(){
+        let configs = {};
+        for(let key in this.configs) {
+            let config = this.configs[key];
+            configs[key] = {
+                name: config.name,
+                type: config.type,
+                value: config.value
+            };
+        }
+        return configs;
+    },
+
      reset: function() {
          try {
              if (this.codeMirror != null) {
-                 this.codeMirror.setOption("mode", this.configs.codeMirrorMode.value);
+                 this.codeMirror.setOption("mode", (this.configs.codeMirrorMode.value == "text/html" ? "text/javascript" : this.configs.codeMirrorMode.value));
                  let theme = JSON.parse(this.configs.codeMirrorTheme.value);
                  $("sqlediterTheme").href = theme.href;
                  this.codeMirror.setOption("theme", theme.name);
@@ -1204,7 +1244,7 @@ var __XMLHTTP__ = {
                  }
              }
              let options = {
-                 mode: this.configs.codeMirrorMode.value,
+                 mode: (this.configs.codeMirrorMode.value == "text/html" ? "text/javascript" : this.configs.codeMirrorMode.value),
                  theme: theme.name,
                  indentWithTabs: true,
                  smartIndent: this.configs.codeMirrorSmartIndent.value.toBoolean(),
@@ -1400,13 +1440,7 @@ var __XMLHTTP__ = {
          b.className = "button";
          b.innerHTML = "确定";
          b.onclick = function () {
-             let configs = $("ui_codeMirrorConfigs").getElementsByClassName("ui-container-item-input");
-             let config = {};
-             for (let i = 0; i < configs.length; i++) {
-                 __SQLEDITOR__.configs[configs[i].id].value = configs[i].value;
-                 config[configs[i].id] = configs[i].value;
-             }
-             setUserConfig("codeMirrorConfig", JSON.stringify(config));
+             setUserConfig("codeMirrorConfig", JSON.stringify(__SQLEDITOR__.getConfigItems()));
              callback();
              parent.removeChild($("ui_codeMirrorConfigs"));
          };
@@ -2486,6 +2520,17 @@ function userLogin() {
                         userLogin();
                     });
                 } else {
+                    const USER_INFOR = {
+                        "电话": {value: "TEL", card: "TEL"},
+                        "手机": {value: "PHONE", card: "TEL"},
+                        "传真": {value: "FAX", card: "FAX"},
+                        "邮箱": {value: "EMAIL", card: "EMAIL"},
+                        "组织": {value: "ORG", card: "ORG"},
+                        "职位": {value: "TIL", card: "TIL"},
+                        "地址": {value: "ADR", card: "ADR"},
+                        "网址": {value: "URL", card: "URL"},
+                        "备忘": {value: "NOTE", card: "NOTE"},
+                    };
                     let image = $("user").getElementsByTagName("img")[0];
                     image.src = __SYS_IMAGES__.logined.image;
                     let span = document.createElement("span");
@@ -2498,8 +2543,50 @@ function userLogin() {
                         let passwordTimelength = getTimesLength((new Date() - new Date(__LOGS__.user.attribute.password.date)), "毫秒");
                         UI.help(span, "none", "auto", __LOGS__.user.name +
                             "<span style='font-size:80%'><li>已使用" + (userTimelength.value + userTimelength.unit) + "</li>" +
-                            "<li>密码期限" + (passwordTimelength.unit == "天" ? (__LOGS__.user.attribute.password.age - passwordTimelength.value) + "天" : __LOGS__.user.attribute.password.age + "天") + "</li></span>"
-                        );
+                            "<li>密码期限" + (passwordTimelength.unit == "天" ? (__LOGS__.user.attribute.password.age - passwordTimelength.value) + "天" : __LOGS__.user.attribute.password.age + "天") + "</li></span>" +
+                            (typeof __LOGS__.user.attribute.QRCODE !== "undefined" ? "<img width='130' height='130' style= 'margin:3px;padding:3px; border:1px solid var(--toolbar-color);float:left' src='" + __LOGS__.user.attribute.QRCODE + "'></img>" : ""),
+                            function () {
+                                let items = {};
+                                for (let key in USER_INFOR) {
+                                    items[key] = (typeof __LOGS__.user.attribute[USER_INFOR[key].value] !== "undefined" ? __LOGS__.user.attribute[USER_INFOR[key].value] : "")
+                                }
+                                UI.prompt.show(__LOGS__.user.name + " 用户信息",
+                                    items, "auto", function (values) {
+                                        let users = getUserConfig("Users");
+                                        users = JSON.parse(users.decode());
+                                        for (let key in USER_INFOR) {
+                                            users[__LOGS__.user.name][USER_INFOR[key].value] = __LOGS__.user.attribute[USER_INFOR[key].value] = values[key];
+                                        }
+                                        setUserConfig("Users", JSON.stringify(users).encode());
+
+                                        UI.confirm.show("提示", "是否生成用户二维码?", "auto", function () {
+                                            let mecard = "MECARD:";
+                                            mecard += "N:" + __LOGS__.user.name + ";";
+                                            for (let key in USER_INFOR) {
+                                                values[key] !== "" ? (mecard += USER_INFOR[key].card + ":" + values[key] + ";") : mecard += "";
+                                            }
+                                            UI.prompt.show("二维码参数", {
+                                                "颜色": "#000000",
+                                                "背景": "#FFFFFF",
+                                                "宽度": "300",
+                                                "高度": "300"
+                                            }, "auto", function (args, values) {
+                                                let options = {
+                                                    color: values["颜色"],
+                                                    background: values["背景"],
+                                                    width: Number(values["宽度"]),
+                                                    height: Number(values["高度"])
+                                                };
+                                                UI.QRCode("auto", args.mecard, options, function (src) {
+                                                    let users = getUserConfig("Users");
+                                                    users = JSON.parse(users.decode());
+                                                    users[__LOGS__.user.name]["QRCODE"] = __LOGS__.user.attribute["QRCODE"] = src;
+                                                    setUserConfig("Users", JSON.stringify(users).encode());
+                                                });
+                                            }, {mecard: mecard});
+                                        });
+                                    });
+                            });
                     };
                     let passwordTimelength = getTimesLength((new Date() - new Date(__LOGS__.user.attribute.password.date)), "毫秒");
                     if (passwordTimelength.unit === "天" && passwordTimelength.value > __LOGS__.user.attribute.password.age) {
@@ -2655,17 +2742,18 @@ function initConfigs() {
             $("user").appendChild(image);
 
             let helpurl = document.getElementsByClassName("help-url");
-            for(let i=0;i<helpurl.length;i++){
+            for (let i = 0; i < helpurl.length; i++) {
                 helpurl[i].herf = helpurl[i].innerHTML = __VERSION__.url;
             }
 
             $("main-version").innerText = __VERSION__.version;
-            $("main-version").onmouseenter = function() {
+            $("main-version").onmouseenter = function () {
                 UI.help($("main-version"), "none", "auto", "发布日期: " + __VERSION__.date + "<br><span style='font-size: 50%'>● ...<br> ● " + __VERSION__.comment.splice(__VERSION__.comment.length % 10 + (Math.floor(__VERSION__.comment.length / 10) - 1) * 10).join("<br>● ") + "</span>");
             };
             let copyright = __VERSION__.author + " ☎ " + __VERSION__.tel + " ✉ <a href='mailto:" + __VERSION__.email + "'>" + __VERSION__.email + "</a>";
             setUserConfig("CopyRight", copyright);
             $("copyright").innerHTML = copyright;
+
             $("footer").style.display = getUserConfig("help");
             $("detail").style.display = getUserConfig("displayLogs");
             if ($("detail").style.display == "none") {
@@ -2684,7 +2772,7 @@ function initConfigs() {
             getQRCode($("page"), 90, 90, __VERSION__.url, __SYS_IMAGES__.echo);
             resize();
 
-             let config = getUserConfig("codeMirrorConfig");
+            let config = getUserConfig("codeMirrorConfig");
             if (config != null) {
                 config = JSON.parse(config);
                 for (let key in config) {
@@ -2694,7 +2782,7 @@ function initConfigs() {
                     }
                 }
             } else {
-                setUserConfig("codeMirrorConfig", JSON.stringify(__SQLEDITOR__.configs));
+                setUserConfig("codeMirrorConfig", JSON.stringify(__SQLEDITOR__.getConfigItems()));
             }
 
             config = getUserConfig("echartsconfig");
@@ -2707,7 +2795,7 @@ function initConfigs() {
                     }
                 }
             } else {
-                setUserConfig("echartsconfig", JSON.stringify(__ECHARTS__.configs));
+                setUserConfig("echartsconfig", JSON.stringify(__ECHARTS__.getConfigItems()));
             }
 
             config = getUserConfig("datasetConfig");
@@ -2720,10 +2808,10 @@ function initConfigs() {
                     }
                 }
             } else {
-                setUserConfig("datasetConfig", JSON.stringify(__DATASET__.configs));
+                setUserConfig("datasetConfig", JSON.stringify(__DATASET__.getConfigItems()));
             }
 
-            let multi_layouts =  getUserConfig("MULTI_LAYOUTS");
+            let multi_layouts = getUserConfig("MULTI_LAYOUTS");
             if (multi_layouts != null) {
                 try {
                     if (multi_layouts != "{}")
@@ -2753,7 +2841,7 @@ function initConfigs() {
             checked = false;
         }
     } else {
-        UI.alert.show("提示","当前浏览器不支持Local Storage,建议使用Chrome或Edge浏览器.");
+        UI.alert.show("提示", "当前浏览器不支持Local Storage,建议使用Chrome或Edge浏览器.");
         checked = false;
     }
     return checked;
@@ -3005,6 +3093,7 @@ function initMenus() {
                 } catch (e) {
                     UI.alert.show("提示", "请选择需要导入的脚本文件.")
                 }
+                this.value = null;
             } else {
                 UI.alert.show("提示", "本应用适用于Chrome浏览器或IE10及以上版本。")
             }
@@ -3115,25 +3204,46 @@ function initMenus() {
         let help_execsql = $("help-execute-sql");
         execsql.onclick = help_execsql.onclick = function () {
             if (checkStorage()) {
-                let selection = "";
-                if (__SQLEDITOR__.codeMirror.somethingSelected())
-                    selection = __SQLEDITOR__.codeMirror.getSelection();
-                else
-                    selection = __SQLEDITOR__.codeMirror.getValue();
-                let reg = new RegExp(/\{[\[\]\:\,\;\-\"\'a-zA-Z0-9\u4e00-\u9fa5]+\}/, "g");
-                let params = selection.match(reg);
-                if (params != null) {
-                    //参数去重
-                    let temp = {};
-                    for (let i = 0; i < params.length; i++) {
-                        let key = params[i].substring(params[i].indexOf("{") + 1, params[i].indexOf("}"));
-                        temp[key] = typeof __SQLEDITOR__.parameter[key] !== "undefined" ? __SQLEDITOR__.parameter[key] : "";
-                    }
-                    params = temp;
-                    UI.prompt.show("输入脚本参数", params, "auto", function (args, values) {
-                        for (let key in values) {
-                            __SQLEDITOR__.parameter[key] = values[key];
+                if (__SQLEDITOR__.configs.codeMirrorMode.value == "text/html")
+                    $("tableContainer").innerHTML = __SQLEDITOR__.codeMirror.getValue();
+                else {
+                    let selection = "";
+                    if (__SQLEDITOR__.codeMirror.somethingSelected())
+                        selection = __SQLEDITOR__.codeMirror.getSelection();
+                    else
+                        selection = __SQLEDITOR__.codeMirror.getValue();
+                    let reg = new RegExp(/\{[\[\]\:\,\;\-\"\'a-zA-Z0-9\u4e00-\u9fa5]+\}/, "g");
+                    let params = selection.match(reg);
+                    if (params != null) {
+                        //参数去重
+                        let temp = {};
+                        for (let i = 0; i < params.length; i++) {
+                            let key = params[i].substring(params[i].indexOf("{") + 1, params[i].indexOf("}"));
+                            temp[key] = typeof __SQLEDITOR__.parameter[key] !== "undefined" ? __SQLEDITOR__.parameter[key] : "";
                         }
+                        params = temp;
+                        UI.prompt.show("输入脚本参数", params, "auto", function (args, values) {
+                            for (let key in values) {
+                                __SQLEDITOR__.parameter[key] = values[key];
+                            }
+                            if (__SQLEDITOR__.title != null) {
+                                let title = __SQLEDITOR__.title;
+                                if (__SQLEDITOR__.configs.codeMirrorMode.value == "text/x-sqlite")
+                                    execute(title);
+                                if (__SQLEDITOR__.configs.codeMirrorMode.value == "text/javascript")
+                                    executeFunction(title)
+                            } else {
+                                UI.prompt.show("输入", {"集合名称": ""}, "auto", function (args, values) {
+                                    let title = __SQLEDITOR__.title = $("sql-title").innerText = values["集合名称"];
+                                    if (__SQLEDITOR__.configs.codeMirrorMode.value == "text/x-sqlite")
+                                        execute(title);
+                                    if (__SQLEDITOR__.configs.codeMirrorMode.value == "text/javascript")
+                                        executeFunction(title);
+                                }, {})
+                            }
+
+                        }, {});
+                    } else {
                         if (__SQLEDITOR__.title != null) {
                             let title = __SQLEDITOR__.title;
                             if (__SQLEDITOR__.configs.codeMirrorMode.value == "text/x-sqlite")
@@ -3142,30 +3252,13 @@ function initMenus() {
                                 executeFunction(title)
                         } else {
                             UI.prompt.show("输入", {"集合名称": ""}, "auto", function (args, values) {
-                                let title = __SQLEDITOR__.title = $("sql-title").innerText = values["集合名称"];
+                                let title = __SQLEDITOR__.title = values["集合名称"];
                                 if (__SQLEDITOR__.configs.codeMirrorMode.value == "text/x-sqlite")
                                     execute(title);
                                 if (__SQLEDITOR__.configs.codeMirrorMode.value == "text/javascript")
                                     executeFunction(title);
                             }, {})
                         }
-
-                    }, {});
-                } else {
-                    if (__SQLEDITOR__.title != null) {
-                        let title = __SQLEDITOR__.title;
-                        if (__SQLEDITOR__.configs.codeMirrorMode.value == "text/x-sqlite")
-                            execute(title);
-                        if (__SQLEDITOR__.configs.codeMirrorMode.value == "text/javascript")
-                            executeFunction(title)
-                    } else {
-                        UI.prompt.show("输入", {"集合名称": ""}, "auto", function (args, values) {
-                            let title = __SQLEDITOR__.title = values["集合名称"];
-                            if (__SQLEDITOR__.configs.codeMirrorMode.value == "text/x-sqlite")
-                                execute(title);
-                            if (__SQLEDITOR__.configs.codeMirrorMode.value == "text/javascript")
-                                executeFunction(title);
-                        }, {})
                     }
                 }
             }
@@ -3720,6 +3813,15 @@ function initMenus() {
         };
         UI.tooltip(fileSecurity,　"文件加密解密");
 
+        let mailto = document.createElement("div");
+        datatools.appendChild(mailto);
+        mailto.className = "charButton";
+        mailto.innerText = "✉";
+        mailto.onclick = function () {
+            getMailComponent("auto");
+        };
+        UI.tooltip(mailto, "邮件编辑");
+
         let datasetSetting = document.createElement("div");
         datatools.appendChild(datasetSetting);
         datasetSetting.className = "charButton";
@@ -3800,7 +3902,7 @@ function initMenus() {
         toconfigs.id = "dataset-to-configs";
         let help_echartsConfigs = $("help-select-echarts-configs");
         toconfigs.onclick = help_echartsConfigs.onclick = function () {
-            __ECHARTS__.setEchartsConfigs("auto", function (configs) {
+            __ECHARTS__.setConfigs("auto", function (configs) {
                 let container = $("tableContainer");
                 try {
                     if (__DATASET__.result.length > 0) {
@@ -3874,11 +3976,7 @@ function initMenus() {
         echartsThemes.onchange = help_echartsThemes.onchange = function () {
             try {
                 __ECHARTS__.configs.echartsTheme.value = this.value;
-                let config = {};
-                for (let key in __ECHARTS__.configs) {
-                    config[key] = __ECHARTS__.configs[key].value;
-                }
-                setUserConfig("echartsconfig", JSON.stringify(config));
+                setUserConfig("echartsconfig", JSON.stringify(__ECHARTS__.getConfigItems()));
 
                 if (__DATASET__.result.length > 0) {
                     let container = $("tableContainer");
@@ -3895,7 +3993,7 @@ function initMenus() {
                         _width,
                         _height,
                         __DATASET__.result[__DATASET__.default.sheet],
-                        __ECHARTS__.configs);
+                        __ECHARTS__.getConfigs());
                     setDragNook(container, echart_target.getAttribute("_echarts_instance_"));
                 }
             } catch (e) {
@@ -3918,11 +4016,7 @@ function initMenus() {
         echartsType.onchange = help_echartsType.onchange = function () {
             try {
                 __ECHARTS__.configs.echartsType.value = this.value;
-                let config = {};
-                for (let key in __ECHARTS__.configs) {
-                    config[key] = __ECHARTS__.configs[key].value;
-                }
-                setUserConfig("echartsconfig", JSON.stringify(config));
+                setUserConfig("echartsconfig", JSON.stringify(__ECHARTS__.getConfigItems()));
                 if (__DATASET__.result.length > 0) {
                     let container = $("tableContainer");
                     try {
@@ -3938,7 +4032,7 @@ function initMenus() {
                         _width,
                         _height,
                         __DATASET__.result[__DATASET__.default.sheet],
-                        __ECHARTS__.configs);
+                        __ECHARTS__.getConfigs());
                     setDragNook(container, echart_target.getAttribute("_echarts_instance_"));
                 }
             } catch (e) {
@@ -4087,7 +4181,7 @@ function getEchartsClock() {
             configs.titleDisplay.value = "false";
             configs.renderer.value = "canvas";
             configs.toolboxDisplay.value = "false";
-            let echart_target = getEcharts(
+            getEcharts(
                 container,
                 width,
                 height,
@@ -4099,48 +4193,34 @@ function getEchartsClock() {
     }
 }
 
-function getQRCode(parent,width,height,text,logoImage) {
+function getQRCode(parent,width,height,text,logoImage){
     try {
         let qr = document.createElement("div");
         qr.id = qr.className = "qrcode";
         parent.appendChild(qr);
+        qr.style.position = "absolute";
         qr.style.width = width + "px";
         qr.style.height = height + "px";
-        qr.style.top = (getAbsolutePosition(parent).height - height + 5) + "px";
-        qr.style.left = (getAbsolutePosition(parent).width - width - 10) + "px";
+        qr.style.bottom = "10px";
+        qr.style.right = "10px";
         let logo = __SYS_IMAGES__.getLogoImage(logoImage);
         logo.id = "qrcode_logo";
-        logo.style.width = width / 4.0 + "px";
-        logo.style.height = width / 4.0 * (logoImage.width / logoImage.height) + "px";
-        logo.style.marginLeft = (width - width / 4.0) / 2 + "px";
-        logo.style.marginTop = (height - width / 4.0 * (logoImage.width / logoImage.height)) / 2 + "px";
+        logo.style.width = width/4.0 + "px";
+        logo.style.height = width/4.0 * (logoImage.width/logoImage.height) + "px";
+        logo.style.marginLeft = (width-width/4.0)/2 + "px";
+        logo.style.marginTop = (height-width/4.0 * (logoImage.width/logoImage.height))/2 + "px";
         qr.appendChild(logo);
-        qr.ondblclick = function () {
-            UI.prompt.show("二维码", {内容: text, 宽度: "90", 高度: "90", 颜色: "black", 背景: "white"}, "auto", function (values) {
-                try {
-                    let qr = $("qrcode");
-                    qr.innerText = "";
-                    qr.style.width = values["宽度"] + "px";
-                    qr.style.height = values["高度"] + "px";
-                    let code = new QRCode("qrcode", {
-                        text: values["内容"],
-                        width: Number(values["宽度"]),
-                        height: Number(values["高度"]),
-                        colorDark: values["颜色"],
-                        colorLight: values["背景"],
-                        correctLevel: QRCode.CorrectLevel.H
-                    });
-                    setTimeout(function () {
-                        let img = qr.getElementsByTagName("img")[0];
-                        getImageBase64Code("auto", img);
-                        $("qrcode").parentNode.removeChild($("qrcode"));
-                    }, 1000);
-                } catch (e) {
-                    __LOGS__.viewError(e);
-                }
+        qr.ondblclick = function() {
+            UI.prompt.show("二维码", {内容: this.title, 宽度: 300, 高度: 300, 颜色: "#000000", 背景: "#FFFFFF"}, "auto", function (values) {
+                let options = {
+                    color: values["颜色"],
+                    background: values["背景"],
+                    width: Number(values["宽度"]),
+                    height: Number(values["高度"])
+                };
+                UI.QRCode("auto", values["内容"], options);
             });
         };
-
         new QRCode("qrcode", {
             text: text,
             width: width,
@@ -4149,8 +4229,8 @@ function getQRCode(parent,width,height,text,logoImage) {
             colorLight: "#FFFFFF",
             correctLevel: QRCode.CorrectLevel.H
         });
-    } catch (e) {
-        __LOGS__.viewError(e);
+    }catch (e) {
+        __LOGS__.viewError("auto", e);
     }
 }
 
@@ -4176,24 +4256,24 @@ function resize() {
         getAbsolutePosition($("detail-tools")).height) + "px";
 
     if ($("qrcode") !== null) {
-         $("qrcode").style.top = (getAbsolutePosition($("page")).height - getAbsolutePosition($("qrcode")).height + 5) + "px";
-         $("qrcode").style.left = (getAbsolutePosition($("page")).width - getAbsolutePosition($("qrcode")).width - 10) + "px";
-     }
+        $("qrcode").style.bottom = "10px";
+        $("qrcode").style.right = "10px";
+    }
     setTimeout(function () {
-         try {
-             let echart_target = echarts.getInstanceByDom($("tableContainer"));
-             if (typeof echart_target !== "undefined")
-                 echart_target.resize();
-             let contents = $("tableContainer").getElementsByClassName("multi-echarts-view-contain");
-             for(let i =0;i<contents.length;i++) {
-                 echart_target = echarts.getInstanceByDom(contents[i]);
-                 if (typeof echart_target !== "undefined")
-                     echart_target.resize();
-             }
-         } catch (e) {
-             __LOGS__.viewError("auto", e);
-         }
-     }, 100);
+        try {
+            let echart_target = echarts.getInstanceByDom($("tableContainer"));
+            if (typeof echart_target !== "undefined")
+                echart_target.resize();
+            let contents = $("tableContainer").getElementsByClassName("multi-echarts-view-contain");
+            for (let i = 0; i < contents.length; i++) {
+                echart_target = echarts.getInstanceByDom(contents[i]);
+                if (typeof echart_target !== "undefined")
+                    echart_target.resize();
+            }
+        } catch (e) {
+            __LOGS__.viewError("auto", e);
+        }
+    }, 100);
 }
 
 function isScroll(el) {
@@ -4291,11 +4371,7 @@ function setPageThemes() {
             theme = JSON.parse(theme);
             $("sqlediterTheme").setAttribute("href", theme.href);
             __SQLEDITOR__.codeMirror.setOption("theme", theme.name);
-            let config = {};
-            for (let key in __SQLEDITOR__.configs) {
-                config[key] = __SQLEDITOR__.configs[key].value;
-            }
-            setUserConfig("codeMirrorConfig", JSON.stringify(config));
+            setUserConfig("codeMirrorConfig", JSON.stringify(__SQLEDITOR__.getConfigItems()));
 
             let img = {
                 image: "var(--main-background-image)",
@@ -5013,7 +5089,7 @@ function getImageBase64Code(parent, img) {
         let image = document.createElement("img");
         image.id = "source-image-file-image";
         image.type = "img";
-        image.src = img.src;
+        image.src = src;
         image.style.display = "none";
         image.onload = function () {
             this.alt = this.title = "width:" + this.width + "\nheight:" + this.height;
@@ -5124,39 +5200,8 @@ function getImageBase64Code(parent, img) {
             reader.readAsDataURL(file);
             reader.onload = function (e) {
                 $("image-container").innerHTML = "";
-                let image = document.createElement("img");
-                image.id = "source-image-file-image";
-                image.type = "img";
-                image.src = $("source-image-file-code").value = this.result;
-                image.style.display = "none";
-                image.onload = function () {
-                    this.alt = this.title = $("source-image-file").files[0].name + "\nwidth:" + this.width + "\nheight:" + this.height;
-                    this.setAttribute("_width_", this.width);
-                    this.setAttribute("_height_", this.height);
-
-                    function getSize(w, h, width, height) {
-                        if (width > w || height > h) {
-                            if (width > w) {
-                                height = height / (width / w);
-                                width = w;
-                            }
-                            if (height > h) {
-                                width = width / (height / h);
-                                height = h;
-                            }
-                        }
-                        return [width, height];
-                    }
-
-                    let parent = getAbsolutePosition($("image-container"));
-                    let size = getSize(parent.width, parent.height, this.width, this.height);
-                    this.width = size[0];
-                    this.height = size[1];
-                    this.style.margin = "auto";
-                    this.style.display = "block";
-                    this.style.padding = (parent.height - size[1]) / 2 + "px 0";
-                };
-                $("image-container").appendChild(image);
+                $("source-image-file-code").value = this.result;
+                $("image-container").appendChild(getImage(this.result));
             };
         } else
             $("image-container").innerHTML = "";
@@ -5286,11 +5331,7 @@ function getImageBase64Code(parent, img) {
                 theme = JSON.parse(theme);
                 $("sqlediterTheme").setAttribute("href", theme.href);
                 __SQLEDITOR__.codeMirror.setOption("theme", theme.name);
-                let config = {};
-                for (let key in __SQLEDITOR__.configs) {
-                    config[key] = __SQLEDITOR__.configs[key].value;
-                }
-                setUserConfig("codeMirrorConfig", JSON.stringify(config));
+                setUserConfig("codeMirrorConfig", JSON.stringify(__SQLEDITOR__.getConfigItems()));
             }
         } else {
             UI.alert.show("提示", "背景图片文件(" + Math.round(file.size / 1024 / 1024 * 100) / 100 + "MB)不能大于 0.5MB.")

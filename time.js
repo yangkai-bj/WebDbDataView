@@ -22,6 +22,7 @@ function getDoing() {
 
     message = {type: "certificate", value: true};
     postMessage(JSON.stringify(message));
+
     setTimeout(getDoing, 1000);
 }
 getDoing();
