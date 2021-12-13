@@ -13,7 +13,7 @@ function sleep(delay) {
 }
 
 function getOptionName(options, value) {
-    let name = null;
+    let name = "";
     try {
         options.forEach(function (option) {
             if (option.value === value) {
@@ -39,6 +39,7 @@ function getOptionValue(options, label) {
     }
     return value;
 }
+
 // BEGIN DES3
 function des (key, message, encrypt, mode, iv, padding) {
     // DES 加密算法
@@ -1071,6 +1072,18 @@ String.prototype.decode = function() {
         decodeStr += String.fromCharCode(parseInt(s.substring(2)))
     }
     return decodeStr;
+}
+
+String.prototype.getBytesSize =function() {
+    let size = 0;
+    for (let i = 0; i != this.length; ++i) {
+        let code = this.charCodeAt(i);
+        if (0x00 <= code && code <= 0x7f)
+            size += 1;
+        else
+            size += 2;
+    }
+    return size;
 }
 
 Number.prototype.format = function(pattern) {

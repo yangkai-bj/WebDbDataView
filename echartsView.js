@@ -138,20 +138,6 @@ function percentage(percent) {
     return Number(percent.split("%")[0]);
 }
 
-function getOptionName(options, value) {
-    let name = "";
-    try {
-        options.forEach(function (option) {
-            if (option.value === value) {
-                name = option.text;
-                throw new Error("break");
-            }
-        });
-    }catch (e) {
-    }
-    return name;
-}
-
 function getLinearColor(x,y,x2,y2,colors) {
     // 线性渐变，前四个参数分别是 x0, y0, x2, y2, 范围从 0 - 1，相当于在图形包围盒中的百分比，如果 globalCoord 为 `true`，则该四个值是绝对的像素位置
     try {
@@ -1920,7 +1906,28 @@ var __ECHARTS__ = {
         },
     },
 
-    setEchartsConfigs: function (parent, callback) {
+    getConfigItems: function(){
+        let configs = {};
+        for(let key in this.configs){
+            configs[key]  = this.configs[key].value;
+        }
+        return configs;
+    },
+
+    getConfigs: function(){
+        let configs = {};
+        for(let key in this.configs) {
+            let config = this.configs[key];
+            configs[key] = {
+                name: config.name,
+                type: config.type,
+                value: config.value
+            };
+        }
+        return configs;
+    },
+
+    setConfigs: function (parent, callback) {
         let config = getUserConfig("echartsconfig");
         if (config != null) {
             config = JSON.parse(config);
@@ -2106,13 +2113,8 @@ var __ECHARTS__ = {
         b.className = "button";
         b.innerHTML = "确定";
         b.onclick = function () {
-            let configs = $("ui_echartsConfigs").getElementsByClassName("ui-container-item-input");
-            let config = {};
-            for (let i = 0; i < configs.length; i++) {
-                config[configs[i].id] = __ECHARTS__.configs[configs[i].id].value;
-            }
-            setUserConfig("echartsconfig", JSON.stringify(config));
-            callback(__ECHARTS__.configs);
+            setUserConfig("echartsconfig", JSON.stringify(__ECHARTS__.getConfigItems()));
+            callback(__ECHARTS__.getConfigs());
             parent.removeChild($("ui_echartsConfigs"));
         };
         c.appendChild(b);
@@ -3550,6 +3552,14 @@ function getMultiGraphOption(configs, container, myChart, dataset) {
     }
 
     let axis = getAxis(source, types, grids);
+    let dataZoom = [];
+    for (let i = 0;i<axis.xAxis.length;i++) {
+        dataZoom.push(getDataZoomXAxis(configs, i, "inside", 0, 100));
+        dataZoom.push(getDataZoomXAxis(configs, i, "slider", 0, 100));
+        dataZoom.push(getDataZoomYAxis(configs, i, "inside", 0, 100, myChart.getWidth() / axis.xAxis.length));
+        dataZoom.push(getDataZoomYAxis(configs, i, "slider", 0, 100, myChart.getWidth() / axis.xAxis.length));
+    };
+
 
     function getSeries(source, types, grids) {
         let series = [];
@@ -3926,15 +3936,16 @@ function getMultiGraphOption(configs, container, myChart, dataset) {
         toolbox: getToolbox(configs, container, dataset, myChart),
         title: getTitle(configs, dataset.title),
         tooltip: getTooltip(configs, "item", function (param) {
-            return [param.seriesName,"<hr style='background-color:" + param.color + "'>" +
-                param.marker + "&ensp;" + param.name +
-                ":&ensp;<span style='display:inline-block;min-width:110px;text-align:right;font-weight:bold'>" +
-                param.value + (param.seriesType == "pie" ? ("&ensp;(&ensp;" + param.percent + "%&ensp;)") : "") + "</span>"].join("<br>");
+            return [param.seriesName, "<hr style='background-color:" + param.color + "'>" +
+            param.marker + "&ensp;" + param.name +
+            ":&ensp;<span style='display:inline-block;min-width:110px;text-align:right;font-weight:bold'>" +
+            param.value + (param.seriesType == "pie" ? ("&ensp;(&ensp;" + param.percent + "%&ensp;)") : "") + "</span>"].join("<br>");
         }),
         legend: getLegend(configs, legend),
         xAxis: axis.xAxis,
         yAxis: axis.yAxis,
         series: getSeries(source, types, grids),
+        dataZoom: dataZoom,
         graphic: getWaterGraphic(__VERSION__)
     };
     return option;
@@ -5088,7 +5099,7 @@ function getYAxis(configs,type,data,position, name) {
     };
 }
 
-function getDataZoomXAxis(configs, xAxisIndex, type,start ,end) {
+function getDataZoomXAxis(configs, xAxisIndex, type, start, end) {
     if (type == "inside") {
         return {
             type: type,
