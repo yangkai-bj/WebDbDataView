@@ -32,10 +32,241 @@ function saveStorageSql(key, sql) {
 }
 
 var UI = {
+    uploadFile: function (message, parent, callback) {
+        let results = [];
+
+        function getFileName(user, term) {
+            //用户HASH-至毫秒的时间-期限-随机序号
+            let index = Math.floor(Math.random() * 1000);
+            if (typeof user !== "undefined")
+                index = user.hex_md5_hash() + "-" + new Date().format("yyyyMMddhhmmssS") + "-" + term + "-" + index;
+            else
+                index = "undefined".hex_md5_hash() + "-" + new Date().format("yyyyMMddhhmmssS") + "-" + term + "-" + index;
+            return index;
+        }
+
+        function upload(file, index, callback) {
+            let xhr = new XMLHttpRequest();
+            let ot = new Date().getTime();
+            let oloaded = 0;
+            let result = {
+                name: null,
+                url: null
+            };
+
+            $("ui_upload_cancel_" + index).onclick = function() {
+                xhr.abort();
+            };
+
+            let path = location.href.split("/").slice(0, location.href.split("/").length - 1).join("/") + __CONFIGS__.UPLOADPATH;
+            // if (typeof __LOGS__.user.name !== "undefined")
+            //     path += ("/" + __LOGS__.user.name.hex_md5_hash());
+            let form = new FormData();
+            let filename = file.name.split(".");
+            result.name = filename.slice(0, filename.length - 1).join(".");
+            form.append("file", file, index + "." + filename[filename.length - 1]);
+            xhr.open("post", path, true);
+            xhr.onload = function (evt) {
+                //传输结束执行
+                //根据服务器返回信息判断是否上传成功.不同的服务器接口不同。
+                //以下是MySQL_Query_Analysis_server的接口返回
+                let res = jsonParse(evt.target.responseText)
+                if (res.state !== 1) {
+                    UI.alert.show("提示",
+                        "文件上传失败!" +
+                        "<li>" + res.message + "</li>" +
+                        "<li>" + res.path + "</li>" +
+                        "<li>" + res.client + "</li>",
+                        "auto");
+                } else {
+                    result.url = evt.target.responseURL + "/" + res.message;
+                    if (typeof callback !== "undefined")
+                        callback(result);
+                }
+            };
+            xhr.onerror = function (evt) {
+                UI.alert.show("提示",
+                    "服务器未受理,上传失败!" +
+                    "<li>路径:" + path + "</li>" +
+                    "<li>文件:" +  file.name + "</li>" +
+                    "<li>请与系统管理员联系.</li>",
+                    "auto");
+            };
+            xhr.upload.onprogress = function (evt) {
+                if (evt.lengthComputable) {
+                    $("ui_upload_progress_" + index).max = evt.total;
+                    $("ui_upload_progress_" + index).value = evt.loaded;
+                    $("ui_upload_percentage_" + index).innerHTML = Math.round(evt.loaded / evt.total * 100) + "%";
+                }
+
+                let nt = new Date().getTime();//获取当前时间
+                let pertime = (nt - ot) / 1000; //计算出上次调用该方法时到现在的时间差，单位为s
+                ot = new Date().getTime(); //重新赋值时间，用于下次计算
+                let perload = evt.loaded - oloaded; //计算该分段上传的文件大小，单位b
+                oloaded = evt.loaded;//重新赋值已上传文件大小，用以下次计算
+                //上传速度计算
+                let speed = perload / pertime;//单位b/s
+                let bspeed = speed;
+                let units = 'b/s';//单位名称
+                if (speed / 1024 > 1) {
+                    speed = speed / 1024;
+                    units = 'k/s';
+                }
+                if (speed / 1024 > 1) {
+                    speed = speed / 1024;
+                    units = 'M/s';
+                }
+                speed = speed.toFixed(1);
+
+                let resttime = ((evt.total - evt.loaded) / bspeed).toFixed(1);
+                $("ui_upload_time_"+ index).innerHTML = '，速度：' + speed + units + '，剩余时间：' + resttime + 's';
+                if (bspeed == 0)
+                    $("ui_upload_time_" + index).innerHTML = '上传已取消';
+            };
+            xhr.upload.onloadstart = function () {
+                ot = new Date().getTime();
+                oloaded = 0;
+            };
+            xhr.send(form);
+        };
+
+        let container = document.createElement("div");
+        container.id = "ui_upload_file";
+        container.className = "ui-container-background";
+
+        if (parent === "auto" || parent == null || typeof parent == "undefined") {
+            if (document.fullscreen && typeof __CONFIGS__.FULLSCREEN.element == "object") {
+                parent = __CONFIGS__.FULLSCREEN.element;
+            } else {
+                parent = document.body;
+            }
+        }
+        parent.appendChild(container);
+        let content = document.createElement("div");
+        content.className = "ui-container-body";
+        content.style.width = "500px";
+        container.appendChild(content);
+
+        let title = document.createElement("div");
+        title.className = "ui-container-title";
+        let span = document.createElement("span");
+        span.innerHTML = "● " + message;
+        title.appendChild(span);
+        let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
+        close.className = "ui-container-close";
+        title.appendChild(close);
+        content.appendChild(title);
+
+        let hr = document.createElement("hr");
+        hr.className = "ui-container-hr";
+        content.appendChild(hr);
+
+        let item = document.createElement("div");
+        item.style.cssText = "width:100%;display:none";
+        let source = document.createElement("input");
+        source.type = "file";
+        source.multiple = "multiple";
+        source.style.width = "100%";
+        source.id = "upload_file";
+        source.onchange = function(){
+            for(let i=0;i<this.files.length;i++) {
+                let index = getFileName(__LOGS__.user.name, __CONFIGS__.UPLOAD_FILE_EXPIRY_DATE);
+                let item = document.createElement("div");
+                item.id = index;
+                item.style.cssText = "width:100%;min-height:55px";
+                $("ui_upload_file_messages").appendChild(item);
+
+                let title = document.createElement("div");
+                title.style.cssText = "width:100%;height:26px;cursor: pointer;margin-bottom:0px";
+                item.appendChild(title);
+                let name = document.createElement("span");
+                name.innerText = "● " + this.files[i].name;
+                name.style.cssText = "width:80%;height:100%;margin:0px;" +
+                    "cursor: pointer;float:left;overflow: hidden;" +
+                    "white-space: nowrap;" +
+                    "word-break: keep-all;" +
+                    "text-overflow: ellipsis;" +
+                    "-o-text-overflow: ellipsis;";
+                title.appendChild(name);
+                let cancel = document.createElement("span");
+                cancel.innerText = "✘";
+                cancel.id = "ui_upload_cancel_" + index;
+                cancel.style.cssText = "width:5%;height:100%;margin:0px;cursor:pointer;float:right;";
+                title.appendChild(cancel);
+
+                let msg = document.createElement("div");
+                msg.style.cssText = "width:100%;height:26px;";
+                item.appendChild(msg);
+                let percentage = document.createElement("span");
+                percentage.id = "ui_upload_percentage_" + index;
+                msg.appendChild(percentage);
+                let uploadtime = document.createElement("span");
+                uploadtime.id = "ui_upload_time_" + index;
+                msg.appendChild(uploadtime);
+
+                let progressBar = document.createElement("progress");
+                progressBar.value = 0;
+                progressBar.max = 100;
+                progressBar.style.cssText = "width:100%;height:5px;cursor:pointer;";
+                progressBar.id = "ui_upload_progress_" + index;
+                item.appendChild(progressBar);
+
+                upload(this.files[i], index, function (result) {
+                    results.push(result);
+                });
+            }
+        };
+        item.appendChild(source);
+        content.appendChild(item);
+
+        item = document.createElement("div");
+        item.style.cssText = "width:100%;min-height:200px;max-height:550px;overflow:scroll";
+        item.id = "ui_upload_file_messages";
+        content.appendChild(item);
+
+        hr = document.createElement("hr");
+        hr.className = "ui-container-hr";
+        content.appendChild(hr);
+
+        let tools = document.createElement("div");
+        tools.className = "groupbar";
+        tools.style.width = "90%";
+        content.appendChild(tools);
+
+        let button = document.createElement("button");
+        button.className = "button";
+        button.id = "ui-upload-file-confirm";
+        button.innerText = "确定";
+        button.style.cssFloat = "right";
+        button.onclick = close.onclick = function () {
+            if (typeof callback !== "undefined")
+                callback(results);
+            parent.removeChild($("ui_upload_file"));
+        };
+        tools.appendChild(button);
+
+        button = document.createElement("button");
+        button.className = "button";
+        button.id = "ui-upload-file-ok";
+        button.innerText = "选择";
+        button.style.cssFloat = "right";
+        button.onclick = function () {
+            $("upload_file").click();
+        };
+        tools.appendChild(button);
+
+        close.onclick = function () {
+            parent.removeChild($("ui_upload_file"));
+        };
+        tools.appendChild(button);
+        setDialogDrag(title);
+        $("ui-upload-file-ok").focus();
+    },
+
     QRCode: function(parent, text, options, callback) {
         if (parent == "auto" || parent == null) {
-            if (document.fullscreen && typeof __CONFIGS__.fullScreen.element == "object") {
-                parent = __CONFIGS__.fullScreen.element;
+            if (document.fullscreen && typeof __CONFIGS__.FULLSCREEN.element == "object") {
+                parent = __CONFIGS__.FULLSCREEN.element;
             } else {
                 parent = document.body;
             }
@@ -172,8 +403,8 @@ var UI = {
         dom.onmouseenter = function () {
             if (typeof $("tooltip-" + this.id) !== "undefined") {
                 let parent = document.body;
-                if (document.fullscreen && typeof __CONFIGS__.fullScreen.element == "object") {
-                    parent = __CONFIGS__.fullScreen.element;
+                if (document.fullscreen && typeof __CONFIGS__.FULLSCREEN.element == "object") {
+                    parent = __CONFIGS__.FULLSCREEN.element;
                 }
                 let tip = document.createElement("div");
                 tip.className = "ui-tooltip";
@@ -215,8 +446,8 @@ var UI = {
         container.className = "ui-container-background";
 
         if (parent === "auto" || parent == null || typeof parent == "undefined") {
-            if (document.fullscreen && typeof __CONFIGS__.fullScreen.element == "object") {
-                parent = __CONFIGS__.fullScreen.element;
+            if (document.fullscreen && typeof __CONFIGS__.FULLSCREEN.element == "object") {
+                parent = __CONFIGS__.FULLSCREEN.element;
             } else {
                 parent = document.body;
             }
@@ -264,8 +495,8 @@ var UI = {
             container.className = "ui-container-background";
 
             if (parent === "auto" || parent == null || typeof parent == "undefined") {
-                if (document.fullscreen && typeof __CONFIGS__.fullScreen.element == "object") {
-                    parent = __CONFIGS__.fullScreen.element;
+                if (document.fullscreen && typeof __CONFIGS__.FULLSCREEN.element == "object") {
+                    parent = __CONFIGS__.FULLSCREEN.element;
                 } else {
                     parent = document.body;
                 }
@@ -358,8 +589,8 @@ var UI = {
             container.id = "ui_confirm";
             container.className = "ui-container-background";
             if (parent == "auto" || parent == null) {
-                if (document.fullscreen && typeof __CONFIGS__.fullScreen.element == "object") {
-                    parent = __CONFIGS__.fullScreen.element;
+                if (document.fullscreen && typeof __CONFIGS__.FULLSCREEN.element == "object") {
+                    parent = __CONFIGS__.FULLSCREEN.element;
                 } else {
                     parent = document.body;
                 }
@@ -478,8 +709,8 @@ var UI = {
             container.id = "ui_prompt";
             container.className = "ui-container-background";
             if (parent == "auto" || parent == null) {
-                if (document.fullscreen && typeof __CONFIGS__.fullScreen.element == "object") {
-                    parent = __CONFIGS__.fullScreen.element;
+                if (document.fullscreen && typeof __CONFIGS__.FULLSCREEN.element == "object") {
+                    parent = __CONFIGS__.FULLSCREEN.element;
                 } else {
                     parent = document.body;
                 }
@@ -594,8 +825,8 @@ var UI = {
             container.id = "ui_choise";
             container.className = "ui-container-background";
             if (parent == "auto" || parent == null) {
-                if (document.fullscreen && typeof __CONFIGS__.fullScreen.element == "object") {
-                    parent = __CONFIGS__.fullScreen.element;
+                if (document.fullscreen && typeof __CONFIGS__.FULLSCREEN.element == "object") {
+                    parent = __CONFIGS__.FULLSCREEN.element;
                 } else {
                     parent = document.body;
                 }
@@ -715,8 +946,8 @@ var UI = {
             container.id = "ui_user_login";
             container.className = "ui-container-background";
             if (parent == "auto" || parent == null) {
-                if (document.fullscreen && typeof __CONFIGS__.fullScreen.element == "object") {
-                    parent = __CONFIGS__.fullScreen.element;
+                if (document.fullscreen && typeof __CONFIGS__.FULLSCREEN.element == "object") {
+                    parent = __CONFIGS__.FULLSCREEN.element;
                 } else {
                     parent = document.body;
                 }
@@ -873,8 +1104,8 @@ var UI = {
             container.id = "ui_password";
             container.className = "ui-container-background";
             if (parent == "auto" || parent == null) {
-                if (document.fullscreen && typeof __CONFIGS__.fullScreen.element == "object") {
-                    parent = __CONFIGS__.fullScreen.element;
+                if (document.fullscreen && typeof __CONFIGS__.FULLSCREEN.element == "object") {
+                    parent = __CONFIGS__.FULLSCREEN.element;
                 } else {
                     parent = document.body;
                 }
@@ -992,8 +1223,8 @@ var UI = {
             let type = typeof args.type != "undefined" ? args.type : "";
             let charset = typeof args.charset != "undefined" ? args.charset : "GBK";
             if (parent == "auto" || parent == null) {
-                if (document.fullscreen && typeof __CONFIGS__.fullScreen.element == "object") {
-                    parent = __CONFIGS__.fullScreen.element;
+                if (document.fullscreen && typeof __CONFIGS__.FULLSCREEN.element == "object") {
+                    parent = __CONFIGS__.FULLSCREEN.element;
                 } else {
                     parent = document.body;
                 }
@@ -1424,8 +1655,8 @@ var UI = {
         }
 
         if (parent == "auto" || parent == null) {
-            if (document.fullscreen && typeof __CONFIGS__.fullScreen.element == "object") {
-                parent = __CONFIGS__.fullScreen.element;
+            if (document.fullscreen && typeof __CONFIGS__.FULLSCREEN.element == "object") {
+                parent = __CONFIGS__.FULLSCREEN.element;
             } else {
                 parent = document.body;
             }
@@ -1779,8 +2010,8 @@ var UI = {
         }
 
         if (parent == "auto" || parent == null) {
-            if (document.fullscreen && typeof __CONFIGS__.fullScreen.element == "object") {
-                parent = __CONFIGS__.fullScreen.element;
+            if (document.fullscreen && typeof __CONFIGS__.FULLSCREEN.element == "object") {
+                parent = __CONFIGS__.FULLSCREEN.element;
             } else {
                 parent = document.body;
             }
@@ -1963,8 +2194,8 @@ var UI = {
         let data = __DATASET__.result[__DATASET__.default.sheet].data;
 
         if (parent == "auto" || parent == null) {
-            if (document.fullscreen && typeof __CONFIGS__.fullScreen.element == "object") {
-                parent = __CONFIGS__.fullScreen.element;
+            if (document.fullscreen && typeof __CONFIGS__.FULLSCREEN.element == "object") {
+                parent = __CONFIGS__.FULLSCREEN.element;
             } else {
                 parent = document.body;
             }
@@ -2177,8 +2408,8 @@ var UI = {
         }
 
         if (parent == "auto" || parent == null) {
-            if (document.fullscreen && typeof __CONFIGS__.fullScreen.element == "object") {
-                parent = __CONFIGS__.fullScreen.element;
+            if (document.fullscreen && typeof __CONFIGS__.FULLSCREEN.element == "object") {
+                parent = __CONFIGS__.FULLSCREEN.element;
             } else {
                 parent = document.body;
             }
@@ -2386,8 +2617,8 @@ var SQLite = {
             Size: {value: "1024*1024*1024", name: "库容量", type: "text"}
         };
         if (parent == "auto" || parent == null) {
-            if (document.fullscreen && typeof __CONFIGS__.fullScreen.element == "object") {
-                parent = __CONFIGS__.fullScreen.element;
+            if (document.fullscreen && typeof __CONFIGS__.FULLSCREEN.element == "object") {
+                parent = __CONFIGS__.FULLSCREEN.element;
             } else {
                 parent = document.body;
             }
@@ -2502,8 +2733,8 @@ var SQLite = {
 
     createTable:function(parent, structure, callback) {
         if (parent == "auto" || parent == null) {
-            if (document.fullscreen && typeof __CONFIGS__.fullScreen.element == "object") {
-                parent = __CONFIGS__.fullScreen.element;
+            if (document.fullscreen && typeof __CONFIGS__.FULLSCREEN.element == "object") {
+                parent = __CONFIGS__.FULLSCREEN.element;
             } else {
                 parent = document.body;
             }
@@ -3124,8 +3355,8 @@ var SQLite = {
             SQLite.import.configs.SourceFile.total = 0;
 
             if (parent == "auto" || parent == null) {
-                if (document.fullscreen && typeof __CONFIGS__.fullScreen.element == "object") {
-                    parent = __CONFIGS__.fullScreen.element;
+                if (document.fullscreen && typeof __CONFIGS__.FULLSCREEN.element == "object") {
+                    parent = __CONFIGS__.FULLSCREEN.element;
                 } else {
                     parent = document.body;
                 }

@@ -633,6 +633,20 @@ Array.prototype.getMap = function(ids){
     return data;
 }
 
+Array.prototype.wash = function(){
+    return this.reduce(function(array, item) {
+        if (typeof item === "object")
+            array.push(item);
+        else if (item != null) {
+            if (typeof item !== "string")
+                array.push(item);
+            else if (item.trim() != "")
+                array.push(item);
+        }
+        return array;
+    },[]);
+}
+
 function str2ab(str) {
     //使用UTF8编码规则,涉及中文的转换.
     let codes = [];
@@ -1074,7 +1088,7 @@ String.prototype.decode = function() {
     return decodeStr;
 }
 
-String.prototype.getBytesSize = function() {
+String.prototype.getBytesSize =function() {
     let size = 0;
     for (let i = 0; i != this.length; ++i) {
         let code = this.charCodeAt(i);
@@ -1324,7 +1338,7 @@ function requestFullScreen(element) {
         } else if (document.webkitCancelFullScreen) {
             document.webkitCancelFullScreen();
         }
-        __CONFIGS__.fullScreen.element = null;
+        __CONFIGS__.FULLSCREEN.element = null;
     } else {
         if (element.requestFullscreen){
             element.requestFullscreen();
@@ -1337,7 +1351,7 @@ function requestFullScreen(element) {
         else if (element.webkitRequestFullScreen) {
             element.webkitRequestFullScreen();
         }
-        __CONFIGS__.fullScreen.element = element;
+        __CONFIGS__.FULLSCREEN.element = element;
     }
 }
 
@@ -1410,3 +1424,32 @@ function getBrowserSize(){
         height: winHeight
     };
 };
+
+function jsonParse(message) {
+    try {
+        //需要将所有Python数据集中的None转换为Null,如果JSON.parse转换失败,则采用eval转换,前提是定义None=null.
+        message = message.substr(0, message.lastIndexOf("}") + 1);
+        //因为最后一个'}'后可能有隐藏字符,强制抽取第一个'{'和最后一个'}'之间内容.
+        let target = message;
+        try {
+            target = target.replaceAll("'", '"');
+            //因JSON规范要求,强制替换字符串中所有单引号为双引号
+            //需要检查WS服务中各交易数据格式...
+            target = JSON.parse(target);
+        } catch (e) {
+            //如果JSON.parse失败,则采用eval转换.
+            try {
+                let None = null;
+                //定义eval过程中针对 None的转换
+                target = eval("(" + message + ")");
+            } catch (e) {
+                __LOGS__.viewError("auto", e);
+                target = null;
+            }
+        }
+        return target;
+    }catch (e) {
+        __LOGS__.viewError("auto", e);
+        return null;
+    }
+}

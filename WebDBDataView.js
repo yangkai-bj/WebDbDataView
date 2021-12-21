@@ -10,15 +10,17 @@ var __CONFIGS__ = {
     TABLES: [],
     CURRENT_TABLE: {name: "", sql: "", structure: {}, type: ""},
     MAXLOGS: 1000,
-    fullScreen: {element: null},
+    FULLSCREEN: {element: null},
+    UPLOADPATH: "/upload",
+    UPLOAD_FILE_EXPIRY_DATE: "7D",//D:天;H:小时;M:分钟
 };
 
 const __VERSION__ = {
     name: "Web DataView for SQLite Database of browser",
     main: "WebDBDataView.js",
     echarts: "echarts/v5.2.2",
-    version: "3.0.8",
-    date: "2021/12/13",
+    version: "3.1.0",
+    date: "2021/12/20",
     comment: [
         "-- 2021/03/08",
         "优化算法和压缩代码.",
@@ -82,6 +84,8 @@ const __VERSION__ = {
         "Echarts 5.2.2.",
         "-- 2021/12/08",
         "增加邮件编辑组件.",
+        "-- 2021/12/15",
+        "增加文件上传组件.",
     ],
     author: __SYS_LOGO_LINK__.author.decode(),
     url: __SYS_LOGO_LINK__.link.getee.decode(),
@@ -202,8 +206,8 @@ var __LOGS__ = {
         container.className = "ui-container-background";
 
         if (parent === "auto" || parent == null || typeof parent == "undefined") {
-            if (document.fullscreen && typeof __CONFIGS__.fullScreen.element == "object") {
-                parent = __CONFIGS__.fullScreen.element;
+            if (document.fullscreen && typeof __CONFIGS__.FULLSCREEN.element == "object") {
+                parent = __CONFIGS__.FULLSCREEN.element;
             } else {
                 parent = document.body;
             }
@@ -889,8 +893,8 @@ var __XMLHTTP__ = {
          }
 
          if (parent == "auto" || parent == null) {
-             if (document.fullscreen && typeof __CONFIGS__.fullScreen.element == "object") {
-                 parent = __CONFIGS__.fullScreen.element;
+             if (document.fullscreen && typeof __CONFIGS__.FULLSCREEN.element == "object") {
+                 parent = __CONFIGS__.FULLSCREEN.element;
              } else {
                  parent = document.body;
              }
@@ -1317,8 +1321,8 @@ var __XMLHTTP__ = {
          }
 
          if (parent == "auto" || parent == null) {
-             if (document.fullscreen && typeof __CONFIGS__.fullScreen.element == "object") {
-                 parent = __CONFIGS__.fullScreen.element;
+             if (document.fullscreen && typeof __CONFIGS__.FULLSCREEN.element == "object") {
+                 parent = __CONFIGS__.FULLSCREEN.element;
              } else {
                  parent = document.body;
              }
@@ -5122,8 +5126,8 @@ function getImageBase64Code(parent, img) {
     }
 
     if (parent == "auto" || parent == null) {
-        if (document.fullscreen && typeof __CONFIGS__.fullScreen.element == "object") {
-            parent = __CONFIGS__.fullScreen.element;
+        if (document.fullscreen && typeof __CONFIGS__.FULLSCREEN.element == "object") {
+            parent = __CONFIGS__.FULLSCREEN.element;
         } else {
             parent = document.body;
         }

@@ -1,4 +1,12 @@
 function getMailComponent(parent) {
+    let MAIL_TOTAL_MAXLENGTH = 8000;
+    let MAIL_INDEX_MAXLENGTH = 55;
+    let MAIL_MAILTO_MAXLENGTH = 50;
+    let MAIL_CC_MAXLENGTH = 10;
+    let MAIL_BCC_MAXLENGTH = 5;
+    let MAIL_SUBJECT_MAXLENGTH = 128;
+    let MAIL_BODY_MAXLENGTH = 500;
+    let MAIL_ATTACHMENTS_MAXLENGTH = 15;
     let COLUMNS = ["索引", "主送", "主题", "正文", "抄送", "密送", "附件"];
     let MAILS = {
         // "测试": {
@@ -57,6 +65,66 @@ function getMailComponent(parent) {
         return source;
     }
 
+    function getAttachValue(parent) {
+        let list = parent.getElementsByClassName("attach");
+        let attachments = [];
+        for (let i = 0; i < list.length; i++) {
+            if (i <= (MAIL_ATTACHMENTS_MAXLENGTH - 1)) {
+                let attach = list[i].getAttribute("name") + "<" + list[i].getAttribute("url") + ">";
+                attachments.push(attach);
+            } else {
+                UI.alert.show("提示", "最多允许" + MAIL_ATTACHMENTS_MAXLENGTH + "个附件.", "auto");
+                break;
+            }
+        }
+        return attachments.join(";");
+    }
+
+    function setAttachItems(parent, values) {
+        parent.innerText = "";
+        let list = values.split(";").wash();
+        for (let i = 0; i < list.length; i++) {
+            if (i <= (MAIL_ATTACHMENTS_MAXLENGTH - 1)) {
+                let item = list[i].split("<");
+                let result = {name: null, url: null};
+                if (item.length >= 2) {
+                    result.name = item[0];
+                    result.url = item[1].split(">")[0];
+                } else {
+                    let url = item[0].split("/");
+                    result.name = url[url.length - 1];
+                    result.url = item[0];
+                }
+                let attach = document.createElement("a");
+                attach.className = "attach";
+                let radio = document.createElement("input");
+                radio.id = result.name;
+                radio.type = "radio";
+                radio.name = "attach";
+                radio.style.cssText = "vertical-align:-3px;";
+                attach.appendChild(radio);
+                let name = document.createElement("span");
+                name.innerText = attach.title = result.name;
+                attach.appendChild(name);
+                attach.href = result.url;
+                attach.target = "_blank";
+                attach.setAttribute("name", result.name);
+                attach.setAttribute("url", result.url);
+                attach.style.cssText = "padding:0px 0;width:20%;" +
+                    "cursor: pointer;float:left;overflow: hidden;" +
+                    "white-space: nowrap;" +
+                    "word-break: keep-all;" +
+                    "text-overflow: ellipsis;" +
+                    "-o-text-overflow: ellipsis;" +
+                    "border-bottom:1px solid var(--main-border-color)";
+                parent.appendChild(attach);
+            } else {
+                UI.alert.show("提示", "最多允许" + MAIL_ATTACHMENTS_MAXLENGTH + "个附件.", "auto");
+                break;
+            }
+        }
+    }
+
     function getMail(key) {
         let mail = MAILS[key];
         $("ui_mail_index").value = key;
@@ -65,7 +133,7 @@ function getMailComponent(parent) {
         $("ui_mail_bcc").value = getDecodeUrl(mail.bcc.join(";"));
         $("ui_mail_subject").value = getDecodeUrl(mail.subject);
         $("ui_mail_body").value = getDecodeUrl(mail.body);
-        $("ui_mail_attach").value = getDecodeUrl(mail.attach.join(";"));
+        setAttachItems($("ui_mail_attach_container"), getDecodeUrl(mail.attach.join(";")));
 
         $("mails-container").style.display = "none";
         $("mail-detail").style.display = "block";
@@ -216,14 +284,14 @@ function getMailComponent(parent) {
             link.type = "text/html";
             link.innerText = key;
             link.href = getLink(key, mail);
-            link.title = link.href.getBytesSize() > 8000 ? "邮件超过8000字节,可能无法发送.":link.href.getBytesSize() + " B / 8000 B";
+            link.title = link.href.getBytesSize() > MAIL_TOTAL_MAXLENGTH ? "邮件整体超过" + MAIL_TOTAL_MAXLENGTH + "字节,可能无法发送." : link.href.getBytesSize() + " 字节 / " + MAIL_TOTAL_MAXLENGTH + " 字节";
             td.appendChild(link);
             tr.appendChild(td);
 
             td = document.createElement("td");
             td.style.width = "120px";
             td.innerText = getDecodeUrl(mail.mailto.join(";"));
-            td.title = ((mail.mailto.length == 1 && mail.mailto[0] == "")? 0:mail.mailto.length)  + " 人";
+            td.title = mail.mailto.length + " 人";
             tr.appendChild(td);
             td.onclick = function () {
                 getMail(this.parentNode.getAttribute("value"));
@@ -240,8 +308,8 @@ function getMailComponent(parent) {
             td = document.createElement("td");
             td.style.width = "120px";
             td.style.textAlign = "right";
-            td.innerText = getFileSizeString(mail.body.getBytesSize(), " B") + " / 1000 B";
-            td.title = mail.body.getBytesSize() > 1000? "正文超过1000字节,可能无法发送.":"";
+            td.innerText = getFileSizeString(mail.body.getBytesSize(), " 字节") + " / " + MAIL_BODY_MAXLENGTH + " 字节";
+            td.title = mail.body.getBytesSize() > MAIL_BODY_MAXLENGTH ? "正文超过" + MAIL_BODY_MAXLENGTH + "字节,可能无法发送." : "";
             tr.appendChild(td);
             td.onclick = function () {
                 getMail(this.parentNode.getAttribute("value"));
@@ -250,7 +318,7 @@ function getMailComponent(parent) {
             td = document.createElement("td");
             td.style.width = "120px";
             td.innerText = getDecodeUrl(mail.cc.join(";"));
-            td.title = ((mail.cc.length == 1 && mail.cc[0] == "")? 0:mail.cc.length)  + " 人";
+            td.title = mail.cc.length + " 人";
             tr.appendChild(td);
             td.onclick = function () {
                 getMail(this.parentNode.getAttribute("value"));
@@ -259,7 +327,7 @@ function getMailComponent(parent) {
             td = document.createElement("td");
             td.style.width = "120px";
             td.innerText = getDecodeUrl(mail.bcc.join(";"));
-            td.title = ((mail.bcc.length == 1 && mail.bcc[0] == "")? 0:mail.bcc.length)  + " 人";
+            td.title = mail.bcc.length + " 人";
             tr.appendChild(td);
             td.onclick = function () {
                 getMail(this.parentNode.getAttribute("value"));
@@ -267,8 +335,9 @@ function getMailComponent(parent) {
 
             td = document.createElement("td");
             td.style.width = "120px";
-            td.innerText = getDecodeUrl(mail.attach.join(";"));
-            td.title = ((mail.attach.length == 1 && mail.attach[0] == "")? 0:mail.attach.length)  + " 个";
+            td.style.textAlign = "center";
+            td.innerText = mail.attach.length + " 个";
+            td.title = "最多允许" + MAIL_ATTACHMENTS_MAXLENGTH + "个附件.";
             tr.appendChild(td);
             td.onclick = function () {
                 getMail(this.parentNode.getAttribute("value"));
@@ -278,8 +347,8 @@ function getMailComponent(parent) {
     }
 
     if (parent == "auto" || parent == null) {
-        if (document.fullscreen && typeof __CONFIGS__.fullScreen.element == "object") {
-            parent = __CONFIGS__.fullScreen.element;
+        if (document.fullscreen && typeof __CONFIGS__.FULLSCREEN.element == "object") {
+            parent = __CONFIGS__.FULLSCREEN.element;
         } else {
             parent = document.body;
         }
@@ -390,12 +459,12 @@ function getMailComponent(parent) {
                                 let row = lines[i].split(sep);
                                 if (row.length >= 7) {
                                     MAILS[row[0]] = {
-                                        mailto: row[1].split(";"),
+                                        mailto: row[1].split(";").wash(),
                                         subject: row[2],
                                         body: row[3],
-                                        cc: row[4].split(";"),
-                                        bcc: row[5].split(";"),
-                                        attach: row[6].split(";"),
+                                        cc: row[4].split(";").wash(),
+                                        bcc: row[5].split(";").wash(),
+                                        attach: row[6].split(";").wash(),
                                         checked: false
                                     }
                                 }
@@ -462,6 +531,12 @@ function getMailComponent(parent) {
     input.className = "ui-container-item-input";
     input.id = "ui_mail_index";
     input.value = "";
+    input.title = "最多 " + MAIL_INDEX_MAXLENGTH + " 字节";
+    input.onkeypress = input.onchange = input.oncut = input.ondragend = input.oninput = function () {
+        this.title = this.value.getBytesSize() + "字节 / " + MAIL_INDEX_MAXLENGTH + "字节";
+        if (this.value.getBytesSize() > MAIL_INDEX_MAXLENGTH)
+            UI.alert.show("注意", "邮件索引不能超过" + MAIL_INDEX_MAXLENGTH + "字节", "auto");
+    };
     input.style.width = "88%";
     item.appendChild(input);
     maildetail.appendChild(item);
@@ -480,6 +555,12 @@ function getMailComponent(parent) {
     input.className = "ui-container-item-input";
     input.id = "ui_mail_mailto";
     input.value = "";
+    input.title = "最多 " + MAIL_MAILTO_MAXLENGTH + " 人";
+    input.onkeypress = input.onchange = input.oncut = input.ondragend = input.oninput = function () {
+        this.title = this.value.split(";").wash().length + "人 / " + MAIL_MAILTO_MAXLENGTH + "人";
+        if (this.value.split(";").wash() > MAIL_MAILTO_MAXLENGTH)
+            UI.alert.show("注意", "邮件主送不能超过" + MAIL_MAILTO_MAXLENGTH + "人", "auto");
+    };
     input.style.width = "88%";
     item.appendChild(input);
     maildetail.appendChild(item);
@@ -498,6 +579,12 @@ function getMailComponent(parent) {
     input.className = "ui-container-item-input";
     input.id = "ui_mail_cc";
     input.value = "";
+    input.title = "最多 " + MAIL_BCC_MAXLENGTH + " 人";
+    input.onkeypress = input.onchange = input.oncut = input.ondragend = input.oninput = function () {
+        this.title = this.value.split(";").wash().length + "人 / " + MAIL_CC_MAXLENGTH + "人";
+        if (this.value.split(";").wash() > MAIL_CC_MAXLENGTH)
+            UI.alert.show("注意", "邮件抄送不能超过" + MAIL_CC_MAXLENGTH + "人", "auto");
+    };
     input.style.width = "88%";
     item.appendChild(input);
     maildetail.appendChild(item);
@@ -516,6 +603,12 @@ function getMailComponent(parent) {
     input.className = "ui-container-item-input";
     input.id = "ui_mail_bcc";
     input.value = "";
+    input.title = "最多 " + MAIL_BCC_MAXLENGTH + " 人";
+    input.onkeypress = input.onchange = input.oncut = input.ondragend = input.oninput = function () {
+        this.title = this.value.split(";").wash().length + "人 / " + MAIL_BCC_MAXLENGTH + " 人";
+        if (this.value.split(";").wash() > MAIL_BCC_MAXLENGTH)
+            UI.alert.show("注意", "邮件密送不能超过" + MAIL_BCC_MAXLENGTH + "人", "auto");
+    };
     input.style.width = "88%";
     item.appendChild(input);
     maildetail.appendChild(item);
@@ -534,6 +627,12 @@ function getMailComponent(parent) {
     input.className = "ui-container-item-input";
     input.id = "ui_mail_subject";
     input.value = "";
+    input.title = "最长 " + MAIL_SUBJECT_MAXLENGTH + " 字节";
+    input.onkeypress = input.onchange = input.oncut = input.ondragend = input.oninput = function () {
+        this.title = this.value.getBytesSize() + "字节 / " + MAIL_SUBJECT_MAXLENGTH + "字节";
+        if (this.value.getBytesSize() > MAIL_SUBJECT_MAXLENGTH)
+            UI.alert.show("注意", "邮件主题不能超过" + MAIL_SUBJECT_MAXLENGTH + "字节", "auto");
+    };
     input.style.width = "88%";
     item.appendChild(input);
     maildetail.appendChild(item);
@@ -541,36 +640,113 @@ function getMailComponent(parent) {
     item = document.createElement("div");
     item.className = "ui-container-item";
     item.style.width = "100%";
-    item.style.paddingTop = "6px";
+    item.style.height = "150px";
     input = document.createElement("textarea");
     input.className = "ui-container-item-input";
     input.id = "ui_mail_body";
     input.type = "textarea";
-    input.style.cssText = "margin-left:10px;margin-right:10px;" +
-        "width: 94.5%;" +
-        "height: 180px;" +
+    input.style.cssText = "width: 94.5%;" +
+        "height: 100%;" +
         "resize: none;" +
-        "padding: 6px;";
+        "margin-left:10px;padding-left: 10px;";
     input.value = "";
+    input.title = "最长 " + MAIL_BODY_MAXLENGTH + " 字节";
+    input.onkeypress = input.onchange = input.oncut = input.ondragend = input.oninput = function () {
+        this.title = this.value.getBytesSize() + "字节 / " + MAIL_BODY_MAXLENGTH + "字节";
+        if (this.value.getBytesSize() > MAIL_BODY_MAXLENGTH)
+            UI.alert.show("注意", "邮件正文不能超过" + MAIL_BODY_MAXLENGTH + "字节", "auto");
+    };
     item.appendChild(input);
     maildetail.appendChild(item);
 
     item = document.createElement("div");
     item.className = "ui-container-item";
     item.style.width = "100%";
-    item.style.paddingTop = "6px";
+    item.style.height = "75px";
+
+    let div = document.createElement("div");
+    div.style.cssText = "width:15%;height:100%;position: relative;float:left;";
+    item.appendChild(div);
     span = document.createElement("span");
     span.className = "ui-container-item-name";
-    span.title = "附件链接";
-    span.innerText = "附件链接" + " : ";
-    span.style.cssText = "margin-left:10px;width:15%;";
-    item.appendChild(span);
-    input = document.createElement("input");
-    input.className = "ui-container-item-input";
-    input.id = "ui_mail_attach";
-    input.value = "";
-    input.style.width = "81%";
-    item.appendChild(input);
+    span.innerText = "附件";
+    span.style.cssText = "width:100%;height:26%;text-align:center";
+    div.appendChild(span);
+
+    span = document.createElement("span");
+    span.className = "ui-container-item-name";
+    span.innerText = "[+]";
+    span.title = "上传附件";
+    span.style.cssText = "width:100%;height:26%;margin:0px;cursor:pointer;text-align:center;color: brown";
+    span.onclick = function () {
+        UI.uploadFile("上传附件", "auto", function (results) {
+            let list = $("ui_mail_attach_container");
+            for (let i = 0; i < results.length; i++) {
+                if (list.getElementsByClassName("attach").length < MAIL_ATTACHMENTS_MAXLENGTH) {
+                    let result = results[i];
+                    let attach = document.createElement("a");
+                    attach.className = "attach";
+                    let radio = document.createElement("input");
+                    radio.id = result.name;
+                    radio.type = "radio";
+                    radio.name = "attach";
+                    radio.style.cssText = "vertical-align:-3px;";
+                    attach.appendChild(radio);
+                    let name = document.createElement("span");
+                    name.innerText = attach.title = result.name;
+                    attach.appendChild(name);
+                    attach.href = result.url;
+                    attach.target = "_blank";
+                    attach.setAttribute("name", result.name);
+                    attach.setAttribute("url", result.url);
+                    attach.style.cssText = "padding:0px 0;width:20%;" +
+                        "cursor: pointer;float:left;overflow: hidden;" +
+                        "white-space: nowrap;" +
+                        "word-break: keep-all;" +
+                        "text-overflow: ellipsis;" +
+                        "-o-text-overflow: ellipsis;" +
+                        "border-bottom:1px solid var(--main-border-color)";
+                    list.appendChild(attach);
+                } else {
+                    UI.alert.show("提示", "最多允许" + MAIL_ATTACHMENTS_MAXLENGTH + "个附件.", "auto");
+                    break;
+                }
+            }
+        });
+    };
+    div.appendChild(span);
+    span = document.createElement("span");
+    span.className = "ui-container-item-name";
+    span.innerText = "[×]";
+    span.title = "删除附件";
+    span.style.cssText = "width:100%;height:26%;margin:0px;cursor:pointer;text-align:center;color: brown";
+    span.onclick = function () {
+        let radio = $("ui_mail_attach_container").getElementsByTagName("input");
+        for (let i = 0; i < radio.length; i++) {
+            if (radio[i].checked) {
+                $("ui_mail_attach_container").removeChild(radio[i].parentNode);
+                break;
+            }
+        }
+    };
+    div.appendChild(span);
+    div.appendChild(span);
+    span = document.createElement("span");
+    span.className = "ui-container-item-name";
+    span.innerHTML = "[▢]";
+    span.title = "清空附件";
+    span.style.cssText = "width:100%;height:26%;margin:0px;cursor:pointer;text-align:center;color: brown";
+    span.onclick = function () {
+        $("ui_mail_attach_container").innerText = "";
+    };
+    div.appendChild(span);
+
+    let attach = document.createElement("div");
+    attach.id = "ui_mail_attach_container";
+    attach.title = "附件有效期: " + __CONFIGS__.UPLOAD_FILE_EXPIRY_DATE.replaceAll("D","天").replaceAll("H","小时").replaceAll("M","分钟");
+    attach.style.cssText = "width:80%;position: relative;float:right;height:100%;";
+    item.appendChild(attach);
+
     maildetail.appendChild(item);
 
     let br = document.createElement("hr");
@@ -594,7 +770,7 @@ function getMailComponent(parent) {
         $("ui_mail_bcc").value = "";
         $("ui_mail_subject").value = "";
         $("ui_mail_body").value = "";
-        $("ui_mail_attach").value = "";
+        $("ui_mail_attach_container").innerText = "";
     };
     tool.appendChild(add);
 
@@ -607,22 +783,23 @@ function getMailComponent(parent) {
         $("mail-detail").style.display = "block";
         if ($("ui_mail_index").value.length > 0 && $("ui_mail_mailto").value.length) {
             let mail = {
-                mailto: getEncodeUrl($("ui_mail_mailto").value).split(";"),
-                cc: getEncodeUrl($("ui_mail_cc").value).split(";"),
-                bcc: getEncodeUrl($("ui_mail_bcc").value).split(";"),
+                mailto: getEncodeUrl($("ui_mail_mailto").value).split(";").wash(),
+                cc: getEncodeUrl($("ui_mail_cc").value).split(";").wash(),
+                bcc: getEncodeUrl($("ui_mail_bcc").value).split(";").wash(),
                 subject: getEncodeUrl($("ui_mail_subject").value),
                 body: getEncodeUrl($("ui_mail_body").value),
-                attach: getEncodeUrl($("ui_mail_attach").value).split(";"),
+                attach: getEncodeUrl(getAttachValue($("ui_mail_attach_container"))).split(";").wash(),
                 checked: false
             };
             MAILS[$("ui_mail_index").value] = mail;
-            UI.alert.show("提示", " 邮件( " + $("ui_mail_index").value + " )已保存."
+            UI.alert.show("提示", " 邮件已保存."
+                + "<li>索引: " + $("ui_mail_index").value + "</li>"
                 + "<li>主题: " + getDecodeUrl(mail.subject) + "</li>"
-                + "<li>主送: " + ((mail.cc.length == 1 && mail.mailto[0] == "") ? 0 : mail.mailto.length) + " 人" + "</li>"
-                + "<li>抄送: " + ((mail.cc.length == 1 && mail.cc[0] == "") ? 0 : mail.cc.length) + " 人" + "</li>"
-                + "<li>密送: " + ((mail.cc.length == 1 && mail.bcc[0] == "") ? 0 : mail.bcc.length) + " 人" + "</li>"
-                + "<li>正文: " + (mail.body.getBytesSize() > 1000 ? "正文超过1000字节,可能无法发送." : getFileSizeString(mail.body.getBytesSize(), " B") + " / 1000 B") + "</li>"
-                + "<li>附件链接:" + ((mail.attach.length == 1 && mail.attach[0] == "") ? 0 : mail.attach.length) + " 个" + "</li>",
+                + "<li>主送: " + mail.mailto.length + "人</li>"
+                + "<li>抄送: " + mail.cc.length + "人</li>"
+                + "<li>密送: " + mail.bcc.length + "人</li>"
+                + "<li>正文: " + mail.body.getBytesSize() +"字节</li>"
+                + "<li>附件: " + mail.attach.length + "个</li>",
                 "auto",
                 function () {
                     $("mails-container").style.display = "block";

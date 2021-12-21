@@ -1940,8 +1940,8 @@ var __ECHARTS__ = {
         }
 
         if (parent == "auto" || parent == null || typeof parent == "undefined") {
-            if (document.fullscreen && typeof __CONFIGS__.fullScreen.element == "object") {
-                parent = __CONFIGS__.fullScreen.element;
+            if (document.fullscreen && typeof __CONFIGS__.FULLSCREEN.element == "object") {
+                parent = __CONFIGS__.FULLSCREEN.element;
             } else {
                 parent = document.body;
             }
@@ -2561,8 +2561,8 @@ var geoCoordMap = {
     },
     setMapConfig: function (parent) {
         if (parent == "auto" || parent == null) {
-            if (document.fullscreen && typeof __CONFIGS__.fullScreen.element == "object") {
-                parent = __CONFIGS__.fullScreen.element;
+            if (document.fullscreen && typeof __CONFIGS__.FULLSCREEN.element == "object") {
+                parent = __CONFIGS__.FULLSCREEN.element;
             } else {
                 parent = document.body;
             }

@@ -87,8 +87,8 @@ function getDataReader(parent, callback) {
     __DATA_READER__.SourceFile.total = 0;
 
     if (parent == "auto" || parent == null) {
-        if (document.fullscreen && typeof __CONFIGS__.fullScreen.element == "object") {
-            parent = __CONFIGS__.fullScreen.element;
+        if (document.fullscreen && typeof __CONFIGS__.FULLSCREEN.element == "object") {
+            parent = __CONFIGS__.FULLSCREEN.element;
         } else {
             parent = document.body;
         }
