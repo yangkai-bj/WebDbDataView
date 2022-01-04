@@ -11,8 +11,7 @@ var __CONFIGS__ = {
     CURRENT_TABLE: {name: "", sql: "", structure: {}, type: ""},
     MAXLOGS: 1000,
     FULLSCREEN: {element: null},
-    UPLOADPATH: "/upload",
-    UPLOAD_FILE_EXPIRY_DATE: "7D",//D:天;H:小时;M:分钟
+    TEMPORARY_FILES: "/upload"
 };
 
 const __VERSION__ = {
@@ -20,7 +19,7 @@ const __VERSION__ = {
     main: "WebDBDataView.js",
     echarts: "echarts/v5.2.2",
     version: "3.1.0",
-    date: "2021/12/20",
+    date: "2021/12/25",
     comment: [
         "-- 2021/03/08",
         "优化算法和压缩代码.",
@@ -117,27 +116,30 @@ var __LOGS__ = {
     data: {},
     init: function () {
         let logs = getUserConfig("UserLogs");
-        if (typeof logs != "undefined")
-            __LOGS__.data = JSON.parse(logs);
-        //############################
-        //默认保留7天的日志
-        //############################
-        let list = [];
-        for (let date in __LOGS__.data) {
-            list.push(date);
-        }
-        list.sort(function (a, b) {
-            return (new Date(a)) - (new Date(b))
-        });
-        if (list.length > __LOGS__.days) {
-            let retain = list.slice(list.length - __LOGS__.days, list.length);
-            let tmp = {};
-            for (let i = 0; i < retain.length; i++) {
-                tmp[retain[i]] = __LOGS__.data[retain[i]];
+        if (typeof logs != "undefined") {
+            //############################
+            //默认保留7天的日志
+            //############################
+            logs = JSON.parse(logs);
+            let list = [];
+            for (let day in logs) {
+                list.push(day);
             }
-            __LOGS__.data = tmp;
+            list.sort(function (a, b) {
+                return (new Date(a)) - (new Date(b))
+            });
+            if (list.length > __LOGS__.days) {
+                let retain = list.slice(list.length - __LOGS__.days);
+                let results = retain.reduce(function (result, day) {
+                        result[day] = logs[day];
+                        return result;
+                    },
+                    {});
+                __LOGS__.data = results;
+                setUserConfig("UserLogs", JSON.stringify(results));
+            } else
+                __LOGS__.data = logs;
         }
-        setUserConfig("UserLogs", JSON.stringify(__LOGS__.data));
     },
 
     delete: function(date){
@@ -2717,12 +2719,13 @@ function init() {
 
 
 function initConfigs() {
-    __LOGS__.viewMessage(__VERSION__.name + "\n版本代码:" + __VERSION__.version + "\n发布日期:" + __VERSION__.date);
     let checked = false;
     if (checkStorage()) {
-        let message = __LOGS__.viewMessage("初始化系统参数...");
+        let message = null;
         try {
             __LOGS__.init();
+            __LOGS__.viewMessage(__VERSION__.name + "\n版本代码:" + __VERSION__.version + "\n发布日期:" + __VERSION__.date);
+            message = __LOGS__.viewMessage("初始化系统参数...");
 
             let img = getUserConfig("BackgroundImage");
             if (img != null) {

@@ -7,6 +7,7 @@ function getMailComponent(parent) {
     let MAIL_SUBJECT_MAXLENGTH = 128;
     let MAIL_BODY_MAXLENGTH = 500;
     let MAIL_ATTACHMENTS_MAXLENGTH = 15;
+
     let COLUMNS = ["索引", "主送", "主题", "正文", "抄送", "密送", "附件"];
     let MAILS = {
         // "测试": {
@@ -125,6 +126,16 @@ function getMailComponent(parent) {
         }
     }
 
+    function checkMailAdd(maillist){
+        let pattern = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
+        let result = maillist.reduce(function(rel,item) {
+            if (pattern.test(item) != true)
+                rel.push(item);
+            return rel;
+        },[]);
+        return result;
+    }
+
     function getMail(key) {
         let mail = MAILS[key];
         $("ui_mail_index").value = key;
@@ -148,15 +159,15 @@ function getMailComponent(parent) {
             items.push("bcc=" + mail.bcc.join(";"));
         if (mail.subject.length > 0)
             items.push("subject=" + mail.subject.toString());
+        let body = [];
+            body.push("❀" + key + "%0D%0A");
         if (mail.body.length > 0 || mail.attach.length > 0) {
-            let body = [];
-            if (mail.body.length > 0 && mail.body != "")
+            if (mail.body.length > 0 && mail.body.trim() != "")
                 body.push(mail.body.toString());
             if (mail.attach.length > 0 && mail.attach.join("%0D%0A") != "")
-                body.push("%0D%0A☘附件链接:%0D%0A" + mail.attach.join("%0D%0A"));
-            body.push("%0D%0A❈邮件索引:" + key);
-            items.push("body=" + body.join("%0D%0A"));
+                body.push("%0D%0A☘附件:%0D%0A" + mail.attach.join("%0D%0A"));
         }
+        items.push("body=" + body.join("%0D%0A"));
         text.push(items.join("&"));
         text = text.join("?");
         //text = encodeURIComponent(text);
@@ -284,6 +295,8 @@ function getMailComponent(parent) {
             link.type = "text/html";
             link.innerText = key;
             link.href = getLink(key, mail);
+            link.target = null;
+            //必须增加,否则将导致主页面退出
             link.title = link.href.getBytesSize() > MAIL_TOTAL_MAXLENGTH ? "邮件整体超过" + MAIL_TOTAL_MAXLENGTH + "字节,可能无法发送." : link.href.getBytesSize() + " 字节 / " + MAIL_TOTAL_MAXLENGTH + " 字节";
             td.appendChild(link);
             tr.appendChild(td);
@@ -579,7 +592,7 @@ function getMailComponent(parent) {
     input.className = "ui-container-item-input";
     input.id = "ui_mail_cc";
     input.value = "";
-    input.title = "最多 " + MAIL_BCC_MAXLENGTH + " 人";
+    input.title = "最多 " + MAIL_CC_MAXLENGTH + " 人";
     input.onkeypress = input.onchange = input.oncut = input.ondragend = input.oninput = function () {
         this.title = this.value.split(";").wash().length + "人 / " + MAIL_CC_MAXLENGTH + "人";
         if (this.value.split(";").wash() > MAIL_CC_MAXLENGTH)
@@ -665,7 +678,7 @@ function getMailComponent(parent) {
     item.style.height = "75px";
 
     let div = document.createElement("div");
-    div.style.cssText = "width:15%;height:100%;position: relative;float:left;";
+    div.style.cssText = "width:10%;height:100%;position: relative;float:left;";
     item.appendChild(div);
     span = document.createElement("span");
     span.className = "ui-container-item-name";
@@ -675,9 +688,9 @@ function getMailComponent(parent) {
 
     span = document.createElement("span");
     span.className = "ui-container-item-name";
-    span.innerText = "[+]";
+    span.innerHTML = "[✚]";
     span.title = "上传附件";
-    span.style.cssText = "width:100%;height:26%;margin:0px;cursor:pointer;text-align:center;color: brown";
+    span.style.cssText = "width:100%;height:26%;margin:0px;cursor:pointer;text-align:center;color: brown;font-weight: bolder;";
     span.onclick = function () {
         UI.uploadFile("上传附件", "auto", function (results) {
             let list = $("ui_mail_attach_container");
@@ -712,14 +725,17 @@ function getMailComponent(parent) {
                     break;
                 }
             }
+        }, {
+            path: location.href.split("/").slice(0, location.href.split("/").length - 1).join("/") + __CONFIGS__.TEMPORARY_FILES,
+            user: (typeof __LOGS__.user.name !== "undefined" ? __LOGS__.user.name : "None")
         });
     };
     div.appendChild(span);
     span = document.createElement("span");
     span.className = "ui-container-item-name";
-    span.innerText = "[×]";
+    span.innerHTML = "[✖]";
     span.title = "删除附件";
-    span.style.cssText = "width:100%;height:26%;margin:0px;cursor:pointer;text-align:center;color: brown";
+    span.style.cssText = "width:100%;height:26%;margin:0px;cursor:pointer;text-align:center;color: brown;font-weight: bolder;";
     span.onclick = function () {
         let radio = $("ui_mail_attach_container").getElementsByTagName("input");
         for (let i = 0; i < radio.length; i++) {
@@ -733,9 +749,9 @@ function getMailComponent(parent) {
     div.appendChild(span);
     span = document.createElement("span");
     span.className = "ui-container-item-name";
-    span.innerHTML = "[▢]";
+    span.innerHTML = "[❖]";
     span.title = "清空附件";
-    span.style.cssText = "width:100%;height:26%;margin:0px;cursor:pointer;text-align:center;color: brown";
+    span.style.cssText = "width:100%;height:26%;margin:0px;cursor:pointer;text-align:center;color: brown;font-weight: bolder;";
     span.onclick = function () {
         $("ui_mail_attach_container").innerText = "";
     };
@@ -743,8 +759,7 @@ function getMailComponent(parent) {
 
     let attach = document.createElement("div");
     attach.id = "ui_mail_attach_container";
-    attach.title = "附件有效期: " + __CONFIGS__.UPLOAD_FILE_EXPIRY_DATE.replaceAll("D","天").replaceAll("H","小时").replaceAll("M","分钟");
-    attach.style.cssText = "width:80%;position: relative;float:right;height:100%;";
+    attach.style.cssText = "width:85%;position: relative;float:right;height:100%;";
     item.appendChild(attach);
 
     maildetail.appendChild(item);
@@ -791,21 +806,32 @@ function getMailComponent(parent) {
                 attach: getEncodeUrl(getAttachValue($("ui_mail_attach_container"))).split(";").wash(),
                 checked: false
             };
-            MAILS[$("ui_mail_index").value] = mail;
-            UI.alert.show("提示", " 邮件已保存."
-                + "<li>索引: " + $("ui_mail_index").value + "</li>"
-                + "<li>主题: " + getDecodeUrl(mail.subject) + "</li>"
-                + "<li>主送: " + mail.mailto.length + "人</li>"
-                + "<li>抄送: " + mail.cc.length + "人</li>"
-                + "<li>密送: " + mail.bcc.length + "人</li>"
-                + "<li>正文: " + mail.body.getBytesSize() +"字节</li>"
-                + "<li>附件: " + mail.attach.length + "个</li>",
-                "auto",
-                function () {
-                    $("mails-container").style.display = "block";
-                    $("mail-detail").style.display = "none";
-                    getMailList($("mails-list-table"));
-                });
+            let mailto_checked = checkMailAdd($("ui_mail_mailto").value.split(";").wash());
+            let cc_checked = checkMailAdd($("ui_mail_cc").value.split(";").wash());
+            let bcc_checked = checkMailAdd($("ui_mail_bcc").value.split(";").wash());
+            if (mailto_checked.length > 0)
+                UI.alert.show("主送邮箱校验错误", "<li>" + mailto_checked.join("</li><li>") + "</li>", "auto");
+            else if (cc_checked.length > 0)
+                UI.alert.show("抄送邮箱校验错误", "<li>" + cc_checked.join("</li><li>") + "</li>", "auto");
+            else if (bcc_checked.length > 0)
+                UI.alert.show("密送邮箱校验错误", "<li>" + bcc_checked.join("</li><li>") + "</li>", "auto");
+            else {
+                MAILS[$("ui_mail_index").value] = mail;
+                UI.alert.show("提示", " 邮件已保存."
+                    + "<li>索引: " + $("ui_mail_index").value + "</li>"
+                    + "<li>主题: " + getDecodeUrl(mail.subject) + "</li>"
+                    + "<li>主送: " + mail.mailto.length + "人</li>"
+                    + "<li>抄送: " + mail.cc.length + "人</li>"
+                    + "<li>密送: " + mail.bcc.length + "人</li>"
+                    + "<li>正文: " + mail.body.getBytesSize() + "字节</li>"
+                    + "<li>附件: " + mail.attach.length + "个</li>",
+                    "auto",
+                    function () {
+                        $("mails-container").style.display = "block";
+                        $("mail-detail").style.display = "none";
+                        getMailList($("mails-list-table"));
+                    });
+            }
         } else
             UI.alert.show("注意", "请填写邮件索引和主送.", "auto");
     };
@@ -893,8 +919,12 @@ function getMailComponent(parent) {
         let links = document.getElementsByClassName("mail-link");
         for (let i = 0; i < links.length; i++) {
             if (MAILS[links[i].innerText].checked) {
-                links[i].click();
-                sleep(5000);
+                setTimeout(function () {
+                    window.open(links[i].href, links[i].target);
+                    //不能使用location.href,否则覆盖当前地址导致WebSocket服务器断开.
+                    //window.open中target=null.
+                    //不能解决同时弹出多个窗口.
+                }, 1000)
             }
         }
     };

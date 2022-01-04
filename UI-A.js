@@ -32,20 +32,34 @@ function saveStorageSql(key, sql) {
 }
 
 var UI = {
-    uploadFile: function (message, parent, callback) {
+    uploadFile: function (message, parent, callback, args) {
+        let configs = {
+            ATTACHMENT_EXPIRY_DATE: {name: "有效期", value: "7", type: "input"},
+            ATTACHMENT_EXPIRY_DATE_UNIT: {
+                name: "单位", value: "D", options: [new Option("天", "D"), new Option("小时", "H"), new Option("分钟", "M")],
+                type: "select"
+            },
+            ATTACHMENT_MAX_NUM_VISITS: {name: "访问限制", value: 0, type: "input"},
+            ATTACHMENT_IP_PATTERN: {name: "网络限制", value: "", type: "input"}
+        };
+        let path = args.path;
+        let user = args.user.hex_md5_hash();
         let results = [];
 
-        function getFileName(user, term) {
-            //用户HASH-至毫秒的时间-期限-随机序号
+        function getFileName(expiryDate, max_num_visits, ip_pattern, type) {
             let index = Math.floor(Math.random() * 1000);
-            if (typeof user !== "undefined")
-                index = user.hex_md5_hash() + "-" + new Date().format("yyyyMMddhhmmssS") + "-" + term + "-" + index;
-            else
-                index = "undefined".hex_md5_hash() + "-" + new Date().format("yyyyMMddhhmmssS") + "-" + term + "-" + index;
-            return index;
+            let options = {
+                name: new Date().format("yyyyMMddhhmmssS"),
+                index: index,
+                max_num_visits: max_num_visits,
+                expiry_date: expiryDate,
+                ip_pattern: ip_pattern,
+                type: type
+            };
+            return JSON.stringify(options);
         }
 
-        function upload(file, index, callback) {
+        function upload(file, name, uploadedCallback) {
             let xhr = new XMLHttpRequest();
             let ot = new Date().getTime();
             let oloaded = 0;
@@ -54,23 +68,20 @@ var UI = {
                 url: null
             };
 
-            $("ui_upload_cancel_" + index).onclick = function() {
+            $("ui_upload_cancel_" + name).onclick = function () {
                 xhr.abort();
             };
 
-            let path = location.href.split("/").slice(0, location.href.split("/").length - 1).join("/") + __CONFIGS__.UPLOADPATH;
-            // if (typeof __LOGS__.user.name !== "undefined")
-            //     path += ("/" + __LOGS__.user.name.hex_md5_hash());
             let form = new FormData();
             let filename = file.name.split(".");
             result.name = filename.slice(0, filename.length - 1).join(".");
-            form.append("file", file, index + "." + filename[filename.length - 1]);
-            xhr.open("post", path, true);
+            form.append("file", file, name);
+            xhr.open("post", path + "/" + user, true);
             xhr.onload = function (evt) {
                 //传输结束执行
                 //根据服务器返回信息判断是否上传成功.不同的服务器接口不同。
                 //以下是MySQL_Query_Analysis_server的接口返回
-                let res = jsonParse(evt.target.responseText)
+                let res = jsonParse(evt.target.responseText);
                 if (res.state !== 1) {
                     UI.alert.show("提示",
                         "文件上传失败!" +
@@ -80,23 +91,23 @@ var UI = {
                         "auto");
                 } else {
                     result.url = evt.target.responseURL + "/" + res.message;
-                    if (typeof callback !== "undefined")
-                        callback(result);
+                    if (typeof uploadedCallback !== "undefined")
+                        uploadedCallback(result);
                 }
             };
             xhr.onerror = function (evt) {
                 UI.alert.show("提示",
                     "服务器未受理,上传失败!" +
                     "<li>路径:" + path + "</li>" +
-                    "<li>文件:" +  file.name + "</li>" +
+                    "<li>文件:" + file.name + "</li>" +
                     "<li>请与系统管理员联系.</li>",
                     "auto");
             };
             xhr.upload.onprogress = function (evt) {
                 if (evt.lengthComputable) {
-                    $("ui_upload_progress_" + index).max = evt.total;
-                    $("ui_upload_progress_" + index).value = evt.loaded;
-                    $("ui_upload_percentage_" + index).innerHTML = Math.round(evt.loaded / evt.total * 100) + "%";
+                    $("ui_upload_progress_" + name).max = evt.total;
+                    $("ui_upload_progress_" + name).value = evt.loaded;
+                    $("ui_upload_percentage_" + name).innerHTML = Math.round(evt.loaded / evt.total * 100) + "%";
                 }
 
                 let nt = new Date().getTime();//获取当前时间
@@ -119,9 +130,9 @@ var UI = {
                 speed = speed.toFixed(1);
 
                 let resttime = ((evt.total - evt.loaded) / bspeed).toFixed(1);
-                $("ui_upload_time_"+ index).innerHTML = '，速度：' + speed + units + '，剩余时间：' + resttime + 's';
+                $("ui_upload_time_" + name).innerHTML = '，速度：' + speed + units + '，剩余时间：' + resttime + 's';
                 if (bspeed == 0)
-                    $("ui_upload_time_" + index).innerHTML = '上传已取消';
+                    $("ui_upload_time_" + name).innerHTML = '上传已取消';
             };
             xhr.upload.onloadstart = function () {
                 ot = new Date().getTime();
@@ -168,9 +179,17 @@ var UI = {
         source.multiple = "multiple";
         source.style.width = "100%";
         source.id = "upload_file";
-        source.onchange = function(){
-            for(let i=0;i<this.files.length;i++) {
-                let index = getFileName(__LOGS__.user.name, __CONFIGS__.UPLOAD_FILE_EXPIRY_DATE);
+        source.onchange = function () {
+            for (let i = 0; i < this.files.length; i++) {
+                let expiryDate = {
+                    term: Math.trunc(Number($("file_expiry_date").value)),
+                    unit: $("file_expiry_unit").value
+                };
+                let max_num_visits = Math.trunc(Number($("file_max_num_visits").value));
+                let ip_pattern = $("file_ip_pattern").value;
+                let filename = this.files[i].name.split(".");
+                let type = filename[filename.length - 1];
+                let index = getFileName(expiryDate, max_num_visits, ip_pattern, type);
                 let item = document.createElement("div");
                 item.id = index;
                 item.style.cssText = "width:100%;min-height:55px";
@@ -220,6 +239,66 @@ var UI = {
         content.appendChild(item);
 
         item = document.createElement("div");
+        item.style.cssText = "width:100%;max-height:50px;overflow:hidden;border-bottom: 1px solid var(--main-border-color)";
+        item.id = "ui_upload_file_param";
+        content.appendChild(item);
+        span = document.createElement("span");
+        span.innerHTML = "➤ " + configs.ATTACHMENT_EXPIRY_DATE.name;
+        item.appendChild(span);
+        let expiry = document.createElement("input");
+        expiry.id = "file_expiry_date";
+        expiry.value = "7";
+        expiry.style.width = "40px";
+        expiry.style.textAlign = "center";
+        expiry.style.border = "0px";
+        item.appendChild(expiry);
+        let expiryunit = document.createElement("select");
+        expiryunit.id = "file_expiry_unit";
+        expiryunit.style.border = "0px";
+        for(let i=0;i<configs.ATTACHMENT_EXPIRY_DATE_UNIT.options.length;i++){
+            expiryunit.options.add(configs.ATTACHMENT_EXPIRY_DATE_UNIT.options[i]);
+        }
+        item.appendChild(expiryunit);
+
+        span = document.createElement("span");
+        span.innerHTML = "&emsp;" + configs.ATTACHMENT_MAX_NUM_VISITS.name;
+        item.appendChild(span);
+        let visits = document.createElement("input");
+        visits.id = "file_max_num_visits";
+        visits.style.width = "40px";
+        visits.style.textAlign = "center";
+        visits.value = "";
+        visits.style.border = "0px";
+        item.appendChild(visits);
+        span = document.createElement("span");
+        span.innerHTML = "次";
+        item.appendChild(span);
+
+        span = document.createElement("span");
+        span.innerHTML = "&emsp;" + configs.ATTACHMENT_IP_PATTERN.name;
+        item.appendChild(span);
+        let pattern = document.createElement("input");
+        pattern.id = "file_ip_pattern";
+        pattern.style.width = "115px";
+        pattern.style.textAlign = "center";
+        pattern.value = "*.*.*.*";
+        pattern.style.letterSpacing = "1px";
+        pattern.style.border = "0px";
+        item.appendChild(pattern);
+
+        span = document.createElement("span");
+        span.innerHTML = "&emsp;…";
+        span.style.cursor = "pointer";
+        span.onclick = function() {
+            UI.alert.show("有效期、访问限制次数和网络限制",
+                "<li>有效期必须大于0(天/小时/分钟)</li>" +
+                "<li>访问限制次数必须大于或等于0次</li>" +
+                "<li>如果访问限制次数设置为0时,系统将不限制访问次数</li>" +
+                "<li>网络限制参数指定了可以访问该文件的网络地址</li>", "auto");
+        };
+        item.appendChild(span);
+
+        item = document.createElement("div");
         item.style.cssText = "width:100%;min-height:200px;max-height:550px;overflow:scroll";
         item.id = "ui_upload_file_messages";
         content.appendChild(item);
@@ -251,7 +330,28 @@ var UI = {
         button.innerText = "选择";
         button.style.cssFloat = "right";
         button.onclick = function () {
-            $("upload_file").click();
+            let expiryDate = Math.trunc(Number($("file_expiry_date").value));
+            let max_num_visits = Math.trunc(Number($("file_max_num_visits").value));
+            let ip_pattern = $("file_ip_pattern").value.split(".");
+            if (expiryDate != "NaN" && max_num_visits != "NaN")
+                if (expiryDate > 0 && max_num_visits >= 0 && ip_pattern.length == 4)
+                    $("upload_file").click();
+                else if (expiryDate <= 0)
+                    UI.alert.show("注意", "有效期必须大于0(天/小时/分钟).", "auto");
+                else if (max_num_visits < 0)
+                    UI.alert.show("注意", "访问限制次数必须大于或等于0次(0次:不限制).", "auto");
+                else if (ip_pattern.length != 4)
+                    UI.alert.show("注意", "请输入正确的网络限制参数,如:" +
+                        "<li>*.*.*.* (不做限制)</li>" +
+                        "<li>12.*.*.* (以12开始的所有地址)</li>" +
+                        "<li>12.0.*.* (以12.0开始的所有地址)</li>" +
+                        "<li>其他依次类推</li>", "auto");
+                else
+                    UI.alert.show("注意", "请输入正确的有效期、访问限制次数或网路限制参数." +
+                        "<li>有效期必须大于0(天/小时/分钟)</li>" +
+                        "<li>访问限制次数必须大于或等于0次</li>" +
+                        "<li>如果访问限制次数设置为0时,系统将不限制访问次数</li>" +
+                        "<li>网络限制参数指定了可以访问该文件的网络地址</li>", "auto");
         };
         tools.appendChild(button);
 
@@ -524,9 +624,9 @@ var UI = {
             item.style.cssText = "width:100%;";
             let image = document.createElement("img");
             image.src = __SYS_IMAGES__.alert.image;
-            image.size = "30% auto";
+            image.size = "25% auto";
             image.attachment = "fixed";
-            image.style.cssText = "width:30%;float: left;" +
+            image.style.cssText = "width:25%;float: left;" +
                 "text-align: center;" +
                 "font-size: 90%;" +
                 "background-color: transparent;" +
@@ -618,9 +718,9 @@ var UI = {
             item.style.cssText = "width:100%;";
             let image = document.createElement("img");
             image.src = __SYS_IMAGES__.confirm.image;
-            image.size = "30% auto";
+            image.size = "25% auto";
             image.attachment = "fixed";
-            image.style.cssText = "width:30%;float: left;" +
+            image.style.cssText = "width:25%;float: left;" +
                 "text-align: center;" +
                 "font-size: 90%;" +
                 "background-color: transparent;" +
@@ -739,9 +839,9 @@ var UI = {
             content.appendChild(itemcontent);
             let image = document.createElement("img");
             image.src = __SYS_IMAGES__.prompt.image;
-            image.size = "30% auto";
+            image.size = "25% auto";
             image.attachment = "fixed";
-            image.style.cssText = "width:30%;float: left;" +
+            image.style.cssText = "width:25%;float: left;" +
                 "text-align: center;" +
                 "background-color: transparent;" +
                 "color: var(--main-title-color);";
@@ -856,9 +956,9 @@ var UI = {
 
             let image = document.createElement("img");
             image.src = __SYS_IMAGES__.choice.image;
-            image.size = "30% auto";
+            image.size = "25% auto";
             image.attachment = "fixed";
-            image.style.cssText = "width:30%;float: left;" +
+            image.style.cssText = "width:25%;float: left;" +
                 "text-align: center;" +
                 "background-color: transparent;" +
                 "color: var(--main-title-color);";
@@ -976,9 +1076,9 @@ var UI = {
             content.appendChild(itemcontent);
             let image = document.createElement("img");
             image.src = __SYS_IMAGES__.login.image;
-            image.size = "30% auto";
+            image.size = "25% auto";
             image.attachment = "fixed";
-            image.style.cssText = "width:30%;float: left;" +
+            image.style.cssText = "width:25%;float: left;" +
                 "text-align: center;" +
                 "background-color: transparent;" +
                 "color: var(--main-title-color);";
@@ -1134,9 +1234,9 @@ var UI = {
             content.appendChild(itemcontent);
             let image = document.createElement("img");
             image.src = __SYS_IMAGES__.password.image;
-            image.size = "30% auto";
+            image.size = "25% auto";
             image.attachment = "fixed";
-            image.style.cssText = "width:30%;float: left;" +
+            image.style.cssText = "width:25%;float: left;" +
                 "text-align: center;" +
                 "background-color: transparent;" +
                 "color: var(--main-title-color);";
