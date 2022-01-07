@@ -39,9 +39,19 @@ var UI = {
                 name: "单位", value: "D", options: [new Option("天", "D"), new Option("小时", "H"), new Option("分钟", "M")],
                 type: "select"
             },
-            ATTACHMENT_MAX_NUM_VISITS: {name: "访问限制", value: 0, type: "input"},
-            ATTACHMENT_IP_PATTERN: {name: "网络限制", value: "", type: "input"}
+            ATTACHMENT_MAX_NUM_VISITS: {name: "访问限制", value: "", type: "input"},
+            ATTACHMENT_IP_PATTERN: {name: "网络限制", value: "*.*.*.*", type: "input"}
         };
+
+        let cf = getUserConfig("mailAttachConfig");
+        if (cf != null) {
+            cf = JSON.parse(cf);
+            configs.ATTACHMENT_EXPIRY_DATE.value = cf.expiryDate.term;
+            configs.ATTACHMENT_EXPIRY_DATE_UNIT.value = cf.expiryDate.unit;
+            configs.ATTACHMENT_MAX_NUM_VISITS.value = cf.max_num_visits;
+            configs.ATTACHMENT_IP_PATTERN.value = cf.ip_pattern;
+        }
+
         let path = args.path;
         let user = args.user.hex_md5_hash();
         let results = [];
@@ -107,7 +117,7 @@ var UI = {
                 if (evt.lengthComputable) {
                     $("ui_upload_progress_" + name).max = evt.total;
                     $("ui_upload_progress_" + name).value = evt.loaded;
-                    $("ui_upload_percentage_" + name).innerHTML = Math.round(evt.loaded / evt.total * 100) + "%";
+                    $("ui_upload_percentage_" + name).innerHTML = "进度：" + getFileSizeString(evt.loaded, " B") + " " + Math.round(evt.loaded / evt.total * 100) + "%";
                 }
 
                 let nt = new Date().getTime();//获取当前时间
@@ -118,14 +128,14 @@ var UI = {
                 //上传速度计算
                 let speed = perload / pertime;//单位b/s
                 let bspeed = speed;
-                let units = 'b/s';//单位名称
+                let units = 'B/s';//单位名称
                 if (speed / 1024 > 1) {
                     speed = speed / 1024;
-                    units = 'k/s';
+                    units = 'KB/s';
                 }
                 if (speed / 1024 > 1) {
                     speed = speed / 1024;
-                    units = 'M/s';
+                    units = 'MB/s';
                 }
                 speed = speed.toFixed(1);
 
@@ -243,11 +253,11 @@ var UI = {
         item.id = "ui_upload_file_param";
         content.appendChild(item);
         span = document.createElement("span");
-        span.innerHTML = "➤ " + configs.ATTACHMENT_EXPIRY_DATE.name;
+        span.innerHTML = "➢ " + configs.ATTACHMENT_EXPIRY_DATE.name;
         item.appendChild(span);
         let expiry = document.createElement("input");
         expiry.id = "file_expiry_date";
-        expiry.value = "7";
+        expiry.value = configs.ATTACHMENT_EXPIRY_DATE.value;
         expiry.style.width = "40px";
         expiry.style.textAlign = "center";
         expiry.style.border = "0px";
@@ -255,7 +265,7 @@ var UI = {
         let expiryunit = document.createElement("select");
         expiryunit.id = "file_expiry_unit";
         expiryunit.style.border = "0px";
-        for(let i=0;i<configs.ATTACHMENT_EXPIRY_DATE_UNIT.options.length;i++){
+        for (let i = 0; i < configs.ATTACHMENT_EXPIRY_DATE_UNIT.options.length; i++) {
             expiryunit.options.add(configs.ATTACHMENT_EXPIRY_DATE_UNIT.options[i]);
         }
         item.appendChild(expiryunit);
@@ -267,7 +277,7 @@ var UI = {
         visits.id = "file_max_num_visits";
         visits.style.width = "40px";
         visits.style.textAlign = "center";
-        visits.value = "";
+        visits.value = configs.ATTACHMENT_MAX_NUM_VISITS.value;
         visits.style.border = "0px";
         item.appendChild(visits);
         span = document.createElement("span");
@@ -281,19 +291,18 @@ var UI = {
         pattern.id = "file_ip_pattern";
         pattern.style.width = "115px";
         pattern.style.textAlign = "center";
-        pattern.value = "*.*.*.*";
+        pattern.value = configs.ATTACHMENT_IP_PATTERN.value;
         pattern.style.letterSpacing = "1px";
         pattern.style.border = "0px";
         item.appendChild(pattern);
 
         span = document.createElement("span");
-        span.innerHTML = "&emsp;…";
+        span.innerHTML = "&emsp;❖";
         span.style.cursor = "pointer";
-        span.onclick = function() {
+        span.onclick = function () {
             UI.alert.show("有效期、访问限制次数和网络限制",
                 "<li>有效期必须大于0(天/小时/分钟)</li>" +
-                "<li>访问限制次数必须大于或等于0次</li>" +
-                "<li>如果访问限制次数设置为0时,系统将不限制访问次数</li>" +
+                "<li>访问限制次数不能小于0次,如果设置为0时,系统将不限制访问次数</li>" +
                 "<li>网络限制参数指定了可以访问该文件的网络地址</li>", "auto");
         };
         item.appendChild(span);
@@ -334,9 +343,15 @@ var UI = {
             let max_num_visits = Math.trunc(Number($("file_max_num_visits").value));
             let ip_pattern = $("file_ip_pattern").value.split(".");
             if (expiryDate != "NaN" && max_num_visits != "NaN")
-                if (expiryDate > 0 && max_num_visits >= 0 && ip_pattern.length == 4)
+                if (expiryDate > 0 && max_num_visits >= 0 && ip_pattern.length == 4) {
                     $("upload_file").click();
-                else if (expiryDate <= 0)
+                    let configs = {
+                        expiryDate: {term: expiryDate, unit: $("file_expiry_unit").value},
+                        max_num_visits: max_num_visits,
+                        ip_pattern: $("file_ip_pattern").value
+                    };
+                    setUserConfig("mailAttachConfig", JSON.stringify(configs));
+                } else if (expiryDate <= 0)
                     UI.alert.show("注意", "有效期必须大于0(天/小时/分钟).", "auto");
                 else if (max_num_visits < 0)
                     UI.alert.show("注意", "访问限制次数必须大于或等于0次(0次:不限制).", "auto");
@@ -349,8 +364,7 @@ var UI = {
                 else
                     UI.alert.show("注意", "请输入正确的有效期、访问限制次数或网路限制参数." +
                         "<li>有效期必须大于0(天/小时/分钟)</li>" +
-                        "<li>访问限制次数必须大于或等于0次</li>" +
-                        "<li>如果访问限制次数设置为0时,系统将不限制访问次数</li>" +
+                        "<li>访问限制次数不能小于0次,如果设置为0时,系统将不限制访问次数</li>" +
                         "<li>网络限制参数指定了可以访问该文件的网络地址</li>", "auto");
         };
         tools.appendChild(button);
@@ -3267,8 +3281,8 @@ var SQLite = {
                 item.className = "ui-progress-detail-item";
                 item.id = "ui-progress-detail-item-" + packet.index;
                 container.appendChild(item);
-                let first = container.firstChild;
-                container.insertBefore(item, first);
+                // let first = container.firstChild;
+                // container.insertBefore(item, first);
 
                 let d_index = document.createElement("span");
                 d_index.className = "ui-progress-detail-item-index";

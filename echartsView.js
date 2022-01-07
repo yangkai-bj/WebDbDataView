@@ -12369,12 +12369,12 @@ function getSaveAsReport(configs, container, myChart) {
                     "<script type='text/javascript'>\n" +
                     "function getThemes(){\n" +
                     "let themes = {" +
-                    "浅粉: {backgroundColor: '#FFDAB9', color: '#FF0099'},\n" +
+                    "白色: {backgroundColor: '#F8F8F8', color: '#000000'},\n" +
                     "浅灰: {backgroundColor: '#696969', color: '#F5F5F5'},\n" +
-                    "深灰: {backgroundColor: '#404040', color: '#66CCFF'},\n" +
+                    "深灰: {backgroundColor: '#404040', color: '#F8F8F8'},\n" +
                     "黑色: {backgroundColor: '#000000', color: '#F0FFFF'},\n" +
                     "墨绿: {backgroundColor: '#2F4F4F', color: '#F0F8FF'},\n" +
-                    "深蓝: {backgroundColor: '#000033', color: '#CD5C5C'},\n" +
+                    "深蓝: {backgroundColor: '#003355', color: '#F8F8F8'},\n" +
                     "红色: {backgroundColor: '#8B0000', color: '#FFFF00'},\n" +
                     "};\n" +
                     "let content = document.getElementById('THEMES');\n" +
@@ -12494,7 +12494,7 @@ function getSaveAsReport(configs, container, myChart) {
                     "div.innerHTML = ''\n" +
                     "let transpose = document.createElement('span');\n" +
                     "transpose.className = 'page-button';\n" +
-                    "transpose.innerText = 'T';\n" +
+                    "transpose.innerHTML = '&#9735';\n" +
                     "transpose.title = '报表转置';\n" +
                     "transpose.onclick = function(){\n" +
                     "datasetTranspose();\n" +
@@ -12503,7 +12503,7 @@ function getSaveAsReport(configs, container, myChart) {
                     "let xml = document.createElement('span');\n" +
                     "xml.className = 'page-tab';\n" +
                     "xml.style.cssFloat = 'right';\n" +
-                    "xml.innerText = '⇣';\n" +
+                    "xml.innerHTML = '&#8675';\n" +
                     "xml.title = '导出XML';\n" +
                     "xml.onclick = function(){\n" +
                     "getXML(dataset.title, dataset.columns, dataset.data);\n" +

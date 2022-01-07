@@ -1,5 +1,5 @@
 function getMailComponent(parent) {
-    let MAIL_TOTAL_MAXLENGTH = 8000;
+    let MAIL_TOTAL_MAXLENGTH = 4000;
     let MAIL_INDEX_MAXLENGTH = 55;
     let MAIL_MAILTO_MAXLENGTH = 50;
     let MAIL_CC_MAXLENGTH = 10;
@@ -126,7 +126,7 @@ function getMailComponent(parent) {
         }
     }
 
-    function checkMailAdd(maillist){
+    function checkMailFormat(maillist){
         let pattern = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
         let result = maillist.reduce(function(rel,item) {
             if (pattern.test(item) != true)
@@ -688,7 +688,7 @@ function getMailComponent(parent) {
 
     span = document.createElement("span");
     span.className = "ui-container-item-name";
-    span.innerHTML = "[✚]";
+    span.innerHTML = "[➕]";
     span.title = "上传附件";
     span.style.cssText = "width:100%;height:26%;margin:0px;cursor:pointer;text-align:center;color: brown;font-weight: bolder;";
     span.onclick = function () {
@@ -733,7 +733,7 @@ function getMailComponent(parent) {
     div.appendChild(span);
     span = document.createElement("span");
     span.className = "ui-container-item-name";
-    span.innerHTML = "[✖]";
+    span.innerHTML = "[➖]";
     span.title = "删除附件";
     span.style.cssText = "width:100%;height:26%;margin:0px;cursor:pointer;text-align:center;color: brown;font-weight: bolder;";
     span.onclick = function () {
@@ -749,7 +749,7 @@ function getMailComponent(parent) {
     div.appendChild(span);
     span = document.createElement("span");
     span.className = "ui-container-item-name";
-    span.innerHTML = "[❖]";
+    span.innerHTML = "[❌]";
     span.title = "清空附件";
     span.style.cssText = "width:100%;height:26%;margin:0px;cursor:pointer;text-align:center;color: brown;font-weight: bolder;";
     span.onclick = function () {
@@ -806,9 +806,9 @@ function getMailComponent(parent) {
                 attach: getEncodeUrl(getAttachValue($("ui_mail_attach_container"))).split(";").wash(),
                 checked: false
             };
-            let mailto_checked = checkMailAdd($("ui_mail_mailto").value.split(";").wash());
-            let cc_checked = checkMailAdd($("ui_mail_cc").value.split(";").wash());
-            let bcc_checked = checkMailAdd($("ui_mail_bcc").value.split(";").wash());
+            let mailto_checked = checkMailFormat($("ui_mail_mailto").value.split(";").wash());
+            let cc_checked = checkMailFormat($("ui_mail_cc").value.split(";").wash());
+            let bcc_checked = checkMailFormat($("ui_mail_bcc").value.split(";").wash());
             if (mailto_checked.length > 0)
                 UI.alert.show("主送邮箱校验错误", "<li>" + mailto_checked.join("</li><li>") + "</li>", "auto");
             else if (cc_checked.length > 0)
@@ -878,13 +878,12 @@ function getMailComponent(parent) {
         aoa.push(COLUMNS);
         if (JSON.stringify(MAILS) === "{}") {
             let row = [
-                "索引", "主送列表\n(多人以分号连接)", "主题\n(标点符号必须使用全角字符)", "正文\n(标点符号必须使用全角字符)", "抄送列表\n(多人以分号连接)", "密送列表\n(多人以分号连接)", "附件链接列表\n(多附件以分号连接)"
+                "索引", "主送列表(多人以分号连接)", "主题(标点符号必须使用全角字符)", "正文(标点符号必须使用全角字符，单元格内不能强制换行)", "抄送列表(多人以分号连接)", "密送列表(多人以分号连接)", "附件链接列表(多附件以分号连接)"
             ];
             aoa.push(row);
         } else {
             for (let key in MAILS) {
                 let mail = MAILS[key];
-                console.log(mail);
                 let row = [
                     key,
                     mail.mailto.join(";"),
