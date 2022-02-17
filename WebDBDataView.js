@@ -18,8 +18,8 @@ const __VERSION__ = {
     name: "Web DataView for SQLite Database of browser",
     main: "WebDBDataView.js",
     echarts: "echarts/v5.2.2",
-    version: "3.1.0",
-    date: "2021/12/25",
+    version: "3.1.1",
+    date: "2022/02/15",
     comment: [
         "-- 2021/03/08",
         "优化算法和压缩代码.",
@@ -1843,7 +1843,7 @@ function viewDataset(index, pageindex) {
     if (__DATASET__.result.length > 0) {
         __DATASET__.default.sheet = index;
         __DATASET__.pages.total = Math.ceil(__DATASET__.result[__DATASET__.default.sheet].data.length / Number(__DATASET__.configs.reportPageSize.value));
-        __DATASET__.default.tab = Math.floor(__DATASET__.default.sheet/10);
+        __DATASET__.default.tab = Math.floor(__DATASET__.default.sheet / 10);
         if (typeof  pageindex != "undefined")
             __DATASET__.pages.default = pageindex;
         setDataPageTools(index);
@@ -1855,6 +1855,10 @@ function viewDataset(index, pageindex) {
         echarts.getInstanceByDom(container).clear();
     } catch (e) {
     }
+
+    __SQLEDITOR__.title = $("sql-title").innerText = __DATASET__.result[index].title[0];
+    __SQLEDITOR__.codeMirror.setValue(__DATASET__.result[index].sql);
+
     container.innerText = "";
     let columns = __DATASET__.result[index].columns;
     let data = __DATASET__.result[index].data;
@@ -1946,7 +1950,7 @@ function viewDataset(index, pageindex) {
                             let f = item.format;
                             if ((item.value + '').indexOf('.') !== -1) {
                                 f = floatFormat;
-                                item.value = Math.round(item.value * Math.pow(10,Number(__DATASET__.configs.reportScale.value))) / Math.pow(10,Number(__DATASET__.configs.reportScale.value));
+                                item.value = Math.round(item.value * Math.pow(10, Number(__DATASET__.configs.reportScale.value))) / Math.pow(10, Number(__DATASET__.configs.reportScale.value));
                             } else {
                                 if (columns[c]["format"] !== "undefined") {
                                     if (item.format != columns[c].format)
@@ -2750,14 +2754,14 @@ function initConfigs() {
 
             let helpurl = document.getElementsByClassName("help-url");
             for (let i = 0; i < helpurl.length; i++) {
-                helpurl[i].herf = helpurl[i].innerHTML = __VERSION__.url;
+                helpurl[i].href = helpurl[i].innerHTML = __VERSION__.url;
             }
 
             $("main-version").innerText = __VERSION__.version;
             $("main-version").onmouseenter = function () {
                 UI.help($("main-version"), "none", "auto", "发布日期: " + __VERSION__.date + "<br><span style='font-size: 50%'>● ...<br> ● " + __VERSION__.comment.splice(__VERSION__.comment.length % 10 + (Math.floor(__VERSION__.comment.length / 10) - 1) * 10).join("<br>● ") + "</span>");
             };
-            let copyright = __VERSION__.author + " ☎ " + __VERSION__.tel + " ✉ <a href='mailto:" + __VERSION__.email + "'>" + __VERSION__.email + "</a>";
+            let copyright = __VERSION__.author + " ☎ " + __VERSION__.tel + " ✉ <a href='mailto:" + __VERSION__.email + "' target='_blank'>" + __VERSION__.email + "</a>";
             setUserConfig("CopyRight", copyright);
             $("copyright").innerHTML = copyright;
 
@@ -2915,9 +2919,13 @@ function initMenus() {
         dbinfo.className = "button";
         dbinfo.id = "test-button";
         dbinfo.innerText = "调试";
-        dbinfo.style.display = "none";
+        //dbinfo.style.display = "none";
         dbinfo.onclick = function () {
-
+            let str = '2018-12-10,上海分�';
+            //65533
+            console.log(str.charAt(str.length-1));
+            console.log(str.charCodeAt(str.length-1));
+            UI.ReadFileBlob.show("Read Blob ...","auto",null);
         };
         dbstools.appendChild(dbinfo);
         UI.tooltip(dbinfo,"auto", dbinfo.id, "调试");

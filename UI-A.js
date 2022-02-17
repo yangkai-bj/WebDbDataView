@@ -32,6 +32,111 @@ function saveStorageSql(key, sql) {
 }
 
 var UI = {
+    ReadFileBlob: {
+        title: null,
+        show: function (message, parent, callback) {
+            function blobSlice(blob, start, length) {
+                if (blob.slice) {
+                    return blob.slice(start, length);
+                } else if (blob.webkitSlice) {
+                    return blob.webkitSlice(start, length);
+                } else if (blob.mozSlice) {
+                    return blob.mozSlice(start, length);
+                } else {
+                    return null;
+                }
+            };
+            this.title = message;
+            let container = document.createElement("div");
+            container.id = "ui_read_file_blob";
+            container.className = "ui-container-background";
+
+            if (parent === "auto" || parent == null || typeof parent == "undefined") {
+                if (document.fullscreen && typeof __CONFIGS__.FULLSCREEN.element == "object") {
+                    parent = __CONFIGS__.FULLSCREEN.element;
+                } else {
+                    parent = document.body;
+                }
+            }
+            parent.appendChild(container);
+            let content = document.createElement("div");
+            content.className = "ui-container-body";
+            container.appendChild(content);
+
+            let title = document.createElement("div");
+            title.className = "ui-container-title";
+            let span = document.createElement("span");
+            span.innerHTML = "● " + this.title;
+            title.appendChild(span);
+            let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
+            close.className = "ui-container-close";
+            title.appendChild(close);
+            content.appendChild(title);
+
+            let hr = document.createElement("hr");
+            hr.className = "ui-container-hr";
+            content.appendChild(hr);
+
+            let item = document.createElement("div");
+            item.style.cssText = "width:100%;";
+            let source = document.createElement("input");
+            source.type = "file";
+            source.multiple = "multiple";
+            source.style.width = "100%";
+            source.id = "upload_file";
+            source.onchange = function() {
+                let tail = "";
+                let step = 1024*10;
+                let i =0;
+                while (i<this.files[0].size) {
+                    let blob = blobSlice(this.files[0], i, step);
+                    let reader = new FileReader();
+                    reader.onload = function (event) {
+                        let result = tail.concat(event.target.result);
+                        // if (result.charCodeAt(result.length - 1) >= 65533) {
+                        //     result = result.substring(-1, result.length - 1);
+                        //     i=i-1;
+                        // }
+
+                        let index = result.lastIndexOf("\r\n");
+                        let a = result.substring(-1, index + 1);
+                        tail = result.substring(index - 1, result.length);
+                        console.log(a);
+                        console.log(tail);
+                        i+=step;
+                    };
+                    let secquence = Promise.resolve();
+                    secquence.then(
+                    reader.readAsText(blob, "utf-8")
+                    );
+                }
+            };
+            item.appendChild(source);
+            content.appendChild(item);
+
+            hr = document.createElement("hr");
+            hr.className = "ui-container-hr";
+            content.appendChild(hr);
+
+            let tools = document.createElement("div");
+            tools.className = "groupbar";
+            tools.style.width = "90%";
+            content.appendChild(tools);
+            let button = document.createElement("button");
+            button.className = "button";
+            button.id = "ui-alert-ok";
+            button.innerText = "确定";
+            button.style.cssFloat = "right";
+            button.onclick = close.onclick = function () {
+                if (typeof callback === "function")
+                    callback();
+                parent.removeChild($("ui_read_file_blob"));
+            };
+            tools.appendChild(button);
+            setDialogDrag(title);
+        },
+    },
+
     uploadFile: function (message, parent, callback, args) {
         let configs = {
             ATTACHMENT_EXPIRY_DATE: {name: "有效期", value: "7", type: "input"},
@@ -3281,8 +3386,6 @@ var SQLite = {
                 item.className = "ui-progress-detail-item";
                 item.id = "ui-progress-detail-item-" + packet.index;
                 container.appendChild(item);
-                // let first = container.firstChild;
-                // container.insertBefore(item, first);
 
                 let d_index = document.createElement("span");
                 d_index.className = "ui-progress-detail-item-index";
@@ -3303,9 +3406,14 @@ var SQLite = {
                 return item;
             }
 
-            function scrollto() {
-                let items = $("ui-progress-detail").getElementsByClassName("ui-progress-detail-item");
-                items[items.length - 1].scrollIntoView({
+            function scrollto(item) {
+                let element = null;
+                if (typeof item === "undefined") {
+                    let items = $("ui-progress-detail").getElementsByClassName("ui-progress-detail-item");
+                    element = items[items.length - 1]
+                } else
+                    element = item;
+                element.scrollIntoView({
                     behavior: "smooth",
                     block: "start",
                     inline: "nearest"
@@ -3368,8 +3476,7 @@ var SQLite = {
                                                     endTime: getNow()
                                                 };
                                                 SQLite.import.configs.SourceFile.error.push(packet);
-                                                viewPacket(packet);
-                                                scrollto();
+                                                scrollto(viewPacket(packet));
                                                 __LOGS__.viewMessage("Imported : " + SQLite.import.configs.SourceFile.imported + " / " + SQLite.import.configs.SourceFile.count + "(" + pre + "%)")
                                             }
                                         }
@@ -3387,8 +3494,7 @@ var SQLite = {
                                             endTime: getNow()
                                         };
                                         SQLite.import.configs.SourceFile.error.push(packet);
-                                        viewPacket(packet);
-                                        scrollto();
+                                        scrollto(viewPacket(packet));
                                         __LOGS__.viewMessage("Imported : " + SQLite.import.configs.SourceFile.imported + " / " + SQLite.import.configs.SourceFile.count + "(" + pre + "%),\n" + error.message)
                                     });
                             } else {
@@ -3404,8 +3510,7 @@ var SQLite = {
                                     endTime: getNow()
                                 };
                                 SQLite.import.configs.SourceFile.error.push(packet);
-                                viewPacket(packet);
-                                scrollto();
+                                scrollto(viewPacket(packet));
                                 __LOGS__.viewMessage("Imported : " + SQLite.import.configs.SourceFile.imported + " / " + SQLite.import.configs.SourceFile.count + "(" + pre + "%),\n" + "数据解析后长度小于数据库结构.")
                             }
                         } catch (e) {
@@ -3421,8 +3526,7 @@ var SQLite = {
                                 endTime: getNow()
                             };
                             SQLite.import.configs.SourceFile.error.push(packet);
-                            viewPacket(packet);
-                            scrollto();
+                            scrollto(viewPacket(packet));
                             __LOGS__.viewMessage("Imported : " + SQLite.import.configs.SourceFile.imported + " / " + SQLite.import.configs.SourceFile.count + "(" + pre + "%),\n" + e)
                         }
                     }
