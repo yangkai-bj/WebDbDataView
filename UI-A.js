@@ -35,17 +35,19 @@ var UI = {
     ReadFileBlob: {
         title: null,
         show: function (message, parent, callback) {
-            function blobSlice(blob, start, length) {
+            let indexes = [];
+            function blobSlice(blob, start, end) {
                 if (blob.slice) {
-                    return blob.slice(start, length);
+                    return blob.slice(start, end);
                 } else if (blob.webkitSlice) {
-                    return blob.webkitSlice(start, length);
+                    return blob.webkitSlice(start, end);
                 } else if (blob.mozSlice) {
-                    return blob.mozSlice(start, length);
+                    return blob.mozSlice(start, end);
                 } else {
                     return null;
                 }
-            };
+            }
+
             this.title = message;
             let container = document.createElement("div");
             container.id = "ui_read_file_blob";
@@ -85,30 +87,25 @@ var UI = {
             source.style.width = "100%";
             source.id = "upload_file";
             source.onchange = function() {
-                let tail = "";
-                let step = 1024*10;
-                let i =0;
-                while (i<this.files[0].size) {
-                    let blob = blobSlice(this.files[0], i, step);
+                let step = 1024*20;
+                for (let i = 0; i < this.files[0].size; i += step) {
+                    let blob = blobSlice(this.files[0], i, i + step);
                     let reader = new FileReader();
+                    reader["index"] = {start: i, end: i + step, pos: 0, code: [], tail: ""};
                     reader.onload = function (event) {
-                        let result = tail.concat(event.target.result);
-                        // if (result.charCodeAt(result.length - 1) >= 65533) {
-                        //     result = result.substring(-1, result.length - 1);
-                        //     i=i-1;
-                        // }
-
-                        let index = result.lastIndexOf("\r\n");
-                        let a = result.substring(-1, index + 1);
-                        tail = result.substring(index - 1, result.length);
-                        console.log(a);
-                        console.log(tail);
-                        i+=step;
+                        let result = this.result;
+                        let index = this.index;
+                        index.code.push(result.charCodeAt(result.length - 1));
+                        if (result.charCodeAt(result.length - 1) >= 65533) {
+                            index.pos = -1;
+                        }
+                        indexes.push(index);
                     };
                     let secquence = Promise.resolve();
                     secquence.then(
-                    reader.readAsText(blob, "utf-8")
+                        reader.readAsText(blob, "utf-8")
                     );
+                    i+=1;
                 }
             };
             item.appendChild(source);
@@ -128,9 +125,37 @@ var UI = {
             button.innerText = "确定";
             button.style.cssFloat = "right";
             button.onclick = close.onclick = function () {
-                if (typeof callback === "function")
-                    callback();
-                parent.removeChild($("ui_read_file_blob"));
+                let upload = document.getElementById("upload_file");
+                let file = upload.files[0];
+                let pos = 0;
+                for(let i=0;i<indexes.length;i++) {
+                    let start = indexes[i].start + pos;
+                    let end = indexes[i].end + indexes[i].pos;
+                    let blob = blobSlice(file, start, end);
+                    let reader = new FileReader();
+                    reader["index"] = indexes[i];
+                    reader["id"] = i;
+                    reader.onload = function (event) {
+                        let result = null;
+                        if (reader.id > 0)
+                            result = indexes[this.id - 1].tail.concat(this.result);
+                        else
+                            result = this.result;
+                        let x = result.lastIndexOf("\r\n");
+                        this.index.tail = result.substring(x + 2, result.length);
+                        result = result.substring(-1, x);//.split("\r\n");
+                        console.log(reader.index);
+                        console.log(result);
+                    };
+                    let secquence = Promise.resolve();
+                    secquence.then(
+                        reader.readAsText(blob, "utf-8")
+                    );
+                    pos = indexes[i].pos;
+                }
+                // if (typeof callback === "function")
+                //     callback();
+                // parent.removeChild($("ui_read_file_blob"));
             };
             tools.appendChild(button);
             setDialogDrag(title);
@@ -1440,7 +1465,6 @@ var UI = {
         },
         show: function (parent, callback, args) {
             let type = typeof args.type != "undefined" ? args.type : "";
-            let charset = typeof args.charset != "undefined" ? args.charset : "GBK";
             if (parent == "auto" || parent == null) {
                 if (document.fullscreen && typeof __CONFIGS__.FULLSCREEN.element == "object") {
                     parent = __CONFIGS__.FULLSCREEN.element;
@@ -1783,6 +1807,7 @@ var UI = {
                         hash: hash,
                         date: getNow()
                     };
+                    //使用UTF8编码规则.
                     let blob = new Blob([str2ab(JSON.stringify(wr))], {type: "application/octet-stream"});
                     openDownloadDialog(blob, __VERSION__.name + " SQL backup.json");
                 };
@@ -1835,7 +1860,8 @@ var UI = {
                                     + "<li>文件类型:&emsp;" + file.type + "</li><dl></span>")
                             }
                         };
-                        reader.readAsText(file, charset);
+                        //使用UTF8编码规则.
+                        reader.readAsText(file, "UTF-8");
                     } catch (e) {
                         UI.alert.show("提示", "请选择需要导入的文件.")
                     }

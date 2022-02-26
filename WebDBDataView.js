@@ -17,9 +17,9 @@ var __CONFIGS__ = {
 const __VERSION__ = {
     name: "Web DataView for SQLite Database of browser",
     main: "WebDBDataView.js",
-    echarts: "echarts/v5.2.2",
-    version: "3.1.1",
-    date: "2022/02/15",
+    echarts: "echarts/v5.3.0",
+    version: "3.1.2",
+    date: "2022/02/25",
     comment: [
         "-- 2021/03/08",
         "优化算法和压缩代码.",
@@ -85,6 +85,8 @@ const __VERSION__ = {
         "增加邮件编辑组件.",
         "-- 2021/12/15",
         "增加文件上传组件.",
+        "-- 2022/02/25",
+        "Echarts 5.3.0.",
     ],
     author: __SYS_LOGO_LINK__.author.decode(),
     url: __SYS_LOGO_LINK__.link.getee.decode(),
@@ -841,6 +843,8 @@ var __XMLHTTP__ = {
              options: [new Option("内部网络", "intranet"), new Option("静态文件", "internet")],
              type: "select"
          },
+         reportBackgroundColor: {name: "报表默认背景", value: "#003355", type: "color"},
+         reportColor: {name: "报表默认颜色", value: "#F8F8F8", type: "color"},
          hr_download: {name: "数据下载设置", value: "", type: "hr"},
          reportType: {
              name: "文件类型",
@@ -1165,8 +1169,8 @@ var __XMLHTTP__ = {
          },
          codeMirrorCharset: {
              name: "字符集",
-             value: "GBK",
-             options: [new Option("GBK", "GBK"), new Option("UTF-8", "UTF-8")],
+             value: "UTF-8",
+             options: [new Option("UTF-8", "UTF-8"), new Option("GBK", "GBK")],
              type: "select"
          },
      },
@@ -3206,7 +3210,7 @@ function initMenus() {
         backup.onclick = function () {
             UI.sqlManagerDialog.show("auto", function (args, values) {
 
-            }, {type: UI.sqlManagerDialog.type.backup, charset: __SQLEDITOR__.configs.codeMirrorCharset.value});
+            }, {type: UI.sqlManagerDialog.type.backup});
         }
         sqltools.appendChild(backup);
         UI.tooltip(backup, "备份脚本");
@@ -4196,6 +4200,7 @@ function getEchartsClock() {
             configs.titleDisplay.value = "false";
             configs.renderer.value = "canvas";
             configs.toolboxDisplay.value = "false";
+            configs.waterGraphEnable.value = "false";
             getEcharts(
                 container,
                 width,

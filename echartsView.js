@@ -1904,6 +1904,19 @@ var __ECHARTS__ = {
             options: [new Option("向下波动", "In"), new Option("向上波动", "Out"), new Option("上下浮动", "InOut")],
             type: "select"
         },
+        hr_waterGraph: {name: "水印", value: "", type: "hr"},
+        waterGraphEnable: {
+            name: "显示水印",
+            value: "true",
+            options: [new Option("是", "true"), new Option("否", "false")],
+            type: "select"
+        },
+        waterGraphText: {
+            name: "水印文本",
+            value: "",
+            type: "input"
+        },
+        waterGraphColor: {value: "auto", name: "水印颜色", type: "color"},
     },
 
     getConfigItems: function(){
@@ -3053,9 +3066,9 @@ function getAnimationEasingUpdate(configs){
     return configs.animationEasingUpdate.value == "linear"?configs.animationEasingUpdate.value:configs.animationEasingUpdate.value + configs.animationFunctionType.value;
 }
 
-function getLoading(text){
+function getLoading(text) {
     return {
-        text : text,
+        text: text,
         color: '#c23531',
         textColor: '#c23531',
         maskColor: 'rgba(255, 255, 255, 0.2)',
@@ -3063,64 +3076,102 @@ function getLoading(text){
     };
 }
 
-function getWaterGraphic(version) {
+function getWaterGraphic(configs, version) {
     let title = version.url;
     if (title.split("\/").length > 4)
         title = title.split("\/").slice(0, 4).join("\/");
-    let graphic = [
-        {
-            type: 'group',
-            id: "logoLink",
-            rotation: Math.PI / 4,
-            bounding: 'raw',
-            right: 110,
-            bottom: 110,
-            z: -100,
-            onclick: function () {
-                window.open(title)
-            },
-            children: [
-                {
-                    type: 'image',
-                    z: -10,
-                    left: 'center',
-                    top: 'center',
-                    position: [90, 0],
-                    style: {
-                        image: version.logo.image,
-                        width: version.logo.width,
-                        height: version.logo.height,
-                        opacity: 0.4,
-                    }
+    let graphic = [];
+    if (configs.waterGraphEnable.value.toBoolean()) {
+        graphic = [
+            {
+                type: 'group',
+                id: "logoLink",
+                rotation: Math.PI / 4,
+                bounding: 'raw',
+                right: 110,
+                bottom: 110,
+                z: -100,
+                opacity: 0.4,
+                onclick: function () {
+                    window.open(title)
                 },
-                {
-                    type: 'rect',
-                    left: 'center',
-                    top: 'center',
-                    z: -100,
-                    shape: {
-                        width: 400,
-                        height: 50
+                children: [
+                    // {
+                    //     type: 'image',
+                    //     z: -10,
+                    //     left: 'left',
+                    //     top: 'center',
+                    //     position: [90, 0],
+                    //     style: {
+                    //         image: version.logo.image,
+                    //         width: version.logo.width,
+                    //         height: version.logo.height,
+                    //         opacity: 0.4,
+                    //     }
+                    // },
+                    {
+                        type: 'rect',
+                        left: 'center',
+                        top: 'center',
+                        z: -100,
+                        shape: {
+                            width: 400,
+                            height: 50
+                        },
+                        style: {
+                            fill: 'rgba(0,0,0,0.3)',
+                            opacity: 0.4,
+                        }
                     },
-                    style: {
-                        fill: 'rgba(0,0,0,0.3)',
-                        opacity: 0.4,
+                    {
+                        type: 'text',
+                        left: 'center',
+                        top: 'center',
+                        style: {
+                            text: configs.waterGraphText.value.length == 0 ? title : configs.waterGraphText.value,
+                            fontSize: 20,
+                            fontWeight: 'normal',
+                            lineDash: [0, 200],
+                            lineDashOffset: 0,
+                            fill: 'transparent',
+                            stroke: configs.waterGraphColor.value == 'auto'?'#fff':configs.waterGraphColor.value,
+                            lineWidth: 1,
+                            opacity: 0.4,
+                        },
+                        keyframeAnimation: {
+                            duration: 5000,
+                            loop: false,
+                            keyframes: [
+                                {
+                                    percent: 0.7,
+                                    style: {
+                                        fill: 'transparent',
+                                        lineDashOffset: 200,
+                                        lineDash: [200, 0],
+                                        opacity: 0.4,
+                                    }
+                                },
+                                {
+                                    // Stop for a while.
+                                    percent: 0.8,
+                                    style: {
+                                        fill: 'transparent',
+                                        opacity: 0.4,
+                                    }
+                                },
+                                {
+                                    percent: 1,
+                                    style: {
+                                        fill: configs.waterGraphColor.value == 'auto'?'#fff':configs.waterGraphColor.value,
+                                        opacity: 0.4,
+                                    }
+                                }
+                            ]
+                        }
                     }
-                },
-                {
-                    type: 'text',
-                    left: 'center',
-                    top: 'center',
-                    z: -100,
-                    style: {
-                        fill: '#fff',
-                        text: title,
-                        font: 'bold 18px Microsoft YaHei',
-                        opacity: 0.4,
-                    }
-                }
-            ]
-        }];
+                ]
+            }];
+    }
     return graphic;
 }
 
@@ -3358,7 +3409,7 @@ function getLineOption(configs, container, myChart, dataset) {
             getDataZoomYAxis(configs, 0, "inside", 0, 100, myChart.getWidth()),
             getDataZoomYAxis(configs, 0, "slider", 0, 100, myChart.getWidth())
         ],
-        graphic: getWaterGraphic(__VERSION__),
+        graphic: getWaterGraphic(configs,__VERSION__),
         series: series,
     };
     return option;
@@ -3467,7 +3518,7 @@ function getBarOption(configs, container, myChart, dataset) {
             getDataZoomYAxis(configs, 0, "inside", 0, 100, myChart.getWidth()),
             getDataZoomYAxis(configs, 0, "slider", 0, 100, myChart.getWidth())
         ],
-        graphic: getWaterGraphic(__VERSION__),
+        graphic:  getWaterGraphic(configs,__VERSION__),
         series: series,
     };
     return option;
@@ -3946,7 +3997,7 @@ function getMultiGraphOption(configs, container, myChart, dataset) {
         yAxis: axis.yAxis,
         series: getSeries(source, types, grids),
         dataZoom: dataZoom,
-        graphic: getWaterGraphic(__VERSION__)
+        graphic:  getWaterGraphic(configs,__VERSION__)
     };
     return option;
 }
@@ -4158,7 +4209,7 @@ function getScatterOption(configs, container, myChart, dataset) {
             getDataZoomYAxis(configs, 0, "slider", 0, 100, myChart.getWidth())
         ],
         series: series,
-        graphic: getWaterGraphic(__VERSION__),
+        graphic: getWaterGraphic(configs,__VERSION__),
         animationDurationUpdate: 1500,
         animationEasingUpdate: "quinticInOut",
     };
@@ -4281,7 +4332,7 @@ function getPieOption(configs, container, myChart, dataset) {
             fontSize: configs.pieLabelFontSize.value,
         },
         series: series,
-        graphic: getWaterGraphic(__VERSION__),
+        graphic: getWaterGraphic(configs,__VERSION__),
     };
     return option;
 }
@@ -4392,7 +4443,7 @@ function getFunnelOption(configs, container, myChart, dataset) {
         legend: getLegend(configs, source.dimensions.slice(1, source.dimensions.length)),
 
         series: series,
-        graphic: getWaterGraphic(__VERSION__),
+        graphic: getWaterGraphic(configs,__VERSION__),
     };
     return option;
 }
@@ -4527,7 +4578,7 @@ function getPolarOption(configs, container, myChart, dataset) {
             end: 100,
             radiusAxis: 0
         }],
-        graphic: getWaterGraphic(__VERSION__),
+        graphic: getWaterGraphic(configs,__VERSION__),
     };
     return option;
 }
@@ -4622,7 +4673,7 @@ function getTransversBarOption(configs, container, myChart, dataset) {
             getDataZoomYAxis(configs, 0, "inside", 0, 100, myChart.getWidth()),
             getDataZoomYAxis(configs, 0, "slider", 0, 100, myChart.getWidth())
         ],
-        graphic: getWaterGraphic(__VERSION__),
+        graphic: getWaterGraphic(configs,__VERSION__),
         series: series,
     };
     return option;
@@ -4706,12 +4757,16 @@ function getGeoOfChinaOption(configs, container, myChart, dataset) {
                     //backgroundColor: configs.geoBackgroundColor.value,
                     toolbox: getToolbox(configs, container, dataset, myChart),
                     tooltip: getTooltip(configs, "item", function (param) {
-                        try {
+                        if (param.data !== undefined) {
                             return param.name +
                                 "<hr style='background-color:" + param.color + "'>" +
-                                param.marker + param.seriesName + ":&emsp;<span style='display:inline-block;min-width:110px;text-align:right;font-weight:bold;'>" + ((param["value"].length == 3) ? param.data["value"][2] : param.data["value"] + "</span>")
-                        } catch (e) {
-                            console.log("在地图中未检索到" + param.name + ".");
+                                param.marker +
+                                param.seriesName +
+                                ":&emsp;<span style='display:inline-block;min-width:110px;text-align:right;font-weight:bold'>" +
+                                (param["value"].length == 3 ? param.data["value"][2] : (param.data === undefined ? "" : param.data["value"])) +
+                                "</span>";
+                        } else {
+                            return param.marker + param.name;
                         }
                     }),
                     visualMap: getVisualMap(configs, ax.min, ax.max),
@@ -4791,7 +4846,7 @@ function getGeoOfChinaOption(configs, container, myChart, dataset) {
                             zlevel: 1
                         }
                     ],
-                    graphic: getWaterGraphic(__VERSION__),
+                    graphic: getWaterGraphic(configs,__VERSION__),
                 };
                 setSeriesAnimation(opt.series, configs, c);
                 options.push(opt);
@@ -4812,7 +4867,7 @@ function getGeoOfChinaOption(configs, container, myChart, dataset) {
                 show: configs.tooltipDisplay.value.toBoolean(),
             },
             toolbox: getToolbox(configs, container, dataset, myChart),
-            graphic: getWaterGraphic(__VERSION__),
+            graphic: getWaterGraphic(configs,__VERSION__),
         },
         options: options
     };
@@ -4892,8 +4947,17 @@ function getGeoOfLocalOption(configs, container, myChart, dataset) {
                     //backgroundColor: configs.geoBackgroundColor.value,
                     toolbox: getToolbox(configs, container, dataset, myChart),
                     tooltip: getTooltip(configs, "item", function (param) {
-                        return param.name + "<hr style='background-color:" + param.color + "'>" +
-                            param.marker + param.seriesName + ":&emsp;<span style='display:inline-block;min-width:110px;text-align:right;font-weight:bold'>" + ((param["value"].length == 3) ? param.data["value"][2] : param.data["value"] + "</span>")
+                        if (param.data !== undefined) {
+                            return param.name +
+                                "<hr style='background-color:" + param.color + "'>" +
+                                param.marker +
+                                param.seriesName +
+                                ":&emsp;<span style='display:inline-block;min-width:110px;text-align:right;font-weight:bold'>" +
+                                (param["value"].length == 3 ? param.data["value"][2] : (param.data === undefined ? "" : param.data["value"])) +
+                                "</span>";
+                        } else {
+                            return param.marker + param.name;
+                        }
                     }),
                     visualMap: getVisualMap(configs, ax.min, ax.max),
                     //backgroundColor: "#013954",
@@ -4973,7 +5037,7 @@ function getGeoOfLocalOption(configs, container, myChart, dataset) {
                             zlevel: 1
                         }
                     ],
-                    graphic: getWaterGraphic(__VERSION__),
+                    graphic: getWaterGraphic(configs,__VERSION__),
                 };
                 setSeriesAnimation(opt, configs, c);
                 options.push(opt);
@@ -4998,7 +5062,7 @@ function getGeoOfLocalOption(configs, container, myChart, dataset) {
             timeline: getTimeline(configs, times),
             tooltip: getTooltip(configs, "item", null),
             toolbox: getToolbox(configs, container, dataset, myChart),
-            graphic: getWaterGraphic(__VERSION__),
+            graphic: getWaterGraphic(configs,__VERSION__),
         },
         options: options
     };
@@ -5724,7 +5788,7 @@ function getBarAndLine(container, width, height, dataset, configs) {
             getDataZoomYAxis(configs, 1, "inside", 0, 100, myChart.getWidth()),
             getDataZoomYAxis(configs, 1, "slider", 0, 100, myChart.getWidth())
         ],
-        graphic: getWaterGraphic(__VERSION__),
+        graphic: getWaterGraphic(configs,__VERSION__),
         series: series,
     };
 
@@ -5840,7 +5904,7 @@ function getAreaStyle(container, width, height, dataset, configs) {
             getDataZoomYAxis(configs, 0, "inside", 0, 100, myChart.getWidth()),
             getDataZoomYAxis(configs, 0, "slider", 0, 100, myChart.getWidth())
         ],
-        graphic: getWaterGraphic(__VERSION__),
+        graphic: getWaterGraphic(configs,__VERSION__),
         series: series,
     };
     setTimeout(() => {
@@ -6041,7 +6105,7 @@ function getPolarHeatmap(container, width, height, dataset, configs) {
         angleAxis: getAngleAxis(configs, xAxis),
         radiusAxis: getRadiusAxis(configs, columns.slice(1)),
         series: serie,
-        graphic: getWaterGraphic(__VERSION__),
+        graphic: getWaterGraphic(configs,__VERSION__),
     };
 
     setTimeout(() => {
@@ -6240,7 +6304,7 @@ function getRadar(container, width, height, dataset, configs) {
             },
         },
         series: series,
-        graphic: getWaterGraphic(__VERSION__),
+        graphic: getWaterGraphic(configs,__VERSION__),
     };
     setTimeout(() => {
         myChart.hideLoading();
@@ -6370,7 +6434,7 @@ function getRelation(container, width, height, dataset, configs) {
             return param.marker + param.name;
         }),
         series: [serie],
-        graphic: getWaterGraphic(__VERSION__),
+        graphic: getWaterGraphic(configs,__VERSION__),
     };
 
     //以下代码是为解决节点拖动
@@ -6396,7 +6460,7 @@ function getRelation(container, width, height, dataset, configs) {
                 };
             })
         };
-        graphic.graphic.concat(getWaterGraphic(__VERSION__));
+        graphic.graphic.concat(getWaterGraphic(configs, __VERSION__));
         myChart.setOption(graphic);
     }
 
@@ -6411,7 +6475,7 @@ function getRelation(container, width, height, dataset, configs) {
                 };
             })
         };
-        graphic.graphic.concat(getWaterGraphic(__VERSION__));
+        graphic.graphic.concat(getWaterGraphic(configs, __VERSION__));
         myChart.setOption(graphic);
     }
 
@@ -6574,7 +6638,7 @@ function getTree(container, width, height, dataset, configs) {
         legend: getLegend(configs, legends),
         series: series,
         draggable: true,
-        graphic: getWaterGraphic(__VERSION__),
+        graphic: getWaterGraphic(configs,__VERSION__),
     };
 
     setTimeout(() => {
@@ -6693,7 +6757,7 @@ function getWebkitDep(container, width, height, dataset, configs) {
             },
             edges: webkitDep.links
         }],
-        graphic: getWaterGraphic(__VERSION__),
+        graphic: getWaterGraphic(configs,__VERSION__),
     };
 
     setTimeout(() => {
@@ -6874,7 +6938,7 @@ function getCalendar(container, width, height, dataset, configs) {
         visualMap: visualMaps,
         calendar: calendars,
         series: series,
-        graphic: getWaterGraphic(__VERSION__),
+        graphic: getWaterGraphic(configs,__VERSION__),
     };
 
     setTimeout(() => {
@@ -7060,7 +7124,7 @@ function getGeoOfChina(container, width, height, dataset, configs) {
                 zlevel: 1
             }
         ],
-        graphic: getWaterGraphic(__VERSION__),
+        graphic: getWaterGraphic(configs,__VERSION__),
     };
     setSeriesAnimation(option, configs, 0);
 
@@ -7285,7 +7349,7 @@ function getGeoOfLocal(container, width, height, dataset, configs) {
             }
         ],
 
-        graphic: getWaterGraphic(__VERSION__),
+        graphic: getWaterGraphic(configs,__VERSION__),
     };
     setSeriesAnimation(option, configs, 0);
 
@@ -7498,7 +7562,7 @@ function getBar3D(container, width, height, dataset, configs) {
             },
         },
         series: series,
-        graphic: getWaterGraphic(__VERSION__),
+        graphic: getWaterGraphic(configs,__VERSION__),
     };
     setTimeout(() => {
         myChart.hideLoading();
@@ -7665,7 +7729,7 @@ function getLine3D(container, width, height, dataset, configs) {
             },
         },
         series: series,
-        graphic: getWaterGraphic(__VERSION__),
+        graphic: getWaterGraphic(configs,__VERSION__),
     };
     setTimeout(() => {
         myChart.hideLoading();
@@ -7845,7 +7909,7 @@ function getScatter3D(container, width, height, dataset, configs) {
             },
         },
         series: series,
-        graphic: getWaterGraphic(__VERSION__),
+        graphic: getWaterGraphic(configs,__VERSION__),
     };
     setTimeout(() => {
         myChart.hideLoading();
@@ -8085,7 +8149,7 @@ function getCategoryLine(container, width, height, dataset, configs) {
             series: {
                 type: configs.categoryLineType.value == "areaStyle" ? "line" : configs.categoryLineType.value,
             },
-            graphic: getWaterGraphic(__VERSION__),
+            graphic: getWaterGraphic(configs,__VERSION__),
         },
         options: options
     };
@@ -8374,7 +8438,7 @@ function getGeoMigrateLinesOfChinaCity(container, width, height, dataset, config
                 }
             },
             series: series,
-            graphic: getWaterGraphic(__VERSION__),
+            graphic: getWaterGraphic(configs,__VERSION__),
         };
     } else {
         UI.alert.show("提示","该视图需要[源城市]、[目标城市]和[详细信息]等三个数据指标.")
@@ -8585,7 +8649,7 @@ function getCategoryLineForGauge(container, width, height, dataset, configs) {
             series: {
                 type: "gauge",
             },
-            graphic: getWaterGraphic(__VERSION__),
+            graphic: getWaterGraphic(configs,__VERSION__),
         },
         options: options
     };
@@ -8866,7 +8930,7 @@ function getCategoryLineForLiqiud(container, width, height, dataset, configs) {
                 },
             },
             toolbox: getToolbox(configs, container, dataset, myChart),
-            graphic: getWaterGraphic(__VERSION__),
+            graphic: getWaterGraphic(configs,__VERSION__),
         },
         options: options
     };
@@ -8946,7 +9010,7 @@ function getScrollingScreen(container, width, height, dataset, configs) {
     let cols = [];
     let data = [];
     let txtOffset = 8;
-    let scrollingScreenGraphic = getWaterGraphic(__VERSION__);
+    let scrollingScreenGraphic = getWaterGraphic(configs,__VERSION__);
     let lineHeight = Number(configs.scrollingScreenFontSize.value) + txtOffset;
     let groupHeight = lineHeight;
     let timeout = false;
@@ -9118,7 +9182,7 @@ function getWalkingLantern(container, width, height, dataset, configs) {
     let lines = configs.walkingLanternLines.value;
     let groups = 0;
     let index = 0;
-    let walkingLanterGraphic = getWaterGraphic(__VERSION__);
+    let walkingLanterGraphic = getWaterGraphic(configs,__VERSION__);
     let txtOffset = 8;
     let lineHeight = Number(configs.walkingLanternFontSize.value) + txtOffset;
     let timeout = false;
@@ -9302,7 +9366,7 @@ function getWindowShades(container, width, height, dataset, configs) {
     let pageIndex = 0;
     let lineIndex = 0;
     let dire = 0;
-    let windowShadesGraphic = getWaterGraphic(__VERSION__);
+    let windowShadesGraphic = getWaterGraphic(configs,__VERSION__);
     let txtOffset = 8;
     let lineHeight = Number(configs.windowShadesFontSize.value) + txtOffset;
     let timeout = false;
@@ -9596,7 +9660,7 @@ function getSurface(container, width, height, dataset, configs) {
             },
         },
         series: series,
-        graphic: getWaterGraphic(__VERSION__),
+        graphic: getWaterGraphic(configs,__VERSION__),
     };
     setTimeout(() => {
         myChart.hideLoading();
@@ -9687,7 +9751,7 @@ function getBoxplot(container, width, height, dataset, configs) {
             getDataZoomYAxis(configs, 0, "slider", 0, 100, myChart.getWidth())
         ],
         series: [serie],
-        graphic: getWaterGraphic(__VERSION__),
+        graphic: getWaterGraphic(configs,__VERSION__),
     };
 
     if (configs.boxplotNormalDisplay.value.toBoolean()) {
@@ -9805,7 +9869,7 @@ function getClock(container, width, height, dataset, configs) {
         grid: getGrids(configs),
         title: getTitle(configs, []),
         toolbox: getToolbox(configs, container, dataset, myChart),
-        graphic: getWaterGraphic(__VERSION__),
+        graphic: getWaterGraphic(configs,__VERSION__),
         series: [
             {
                 //表盘
@@ -10252,7 +10316,7 @@ function getCandlestick(container, width, height, dataset, configs) {
             getDataZoomYAxis(configs, 0, "inside", 0, 100, myChart.getWidth()),
             getDataZoomYAxis(configs, 0, "slider", 0, 100, myChart.getWidth())
         ],
-        graphic: getWaterGraphic(__VERSION__),
+        graphic: getWaterGraphic(configs,__VERSION__),
         series: [serie]
     };
 
@@ -10324,7 +10388,7 @@ function getBanners(container, width, height, dataset, configs) {
         backgroundColor: getBackgroundColor(configs),
         title: getTitle(configs, dataset.title),
         toolbox: getToolbox(configs, container, dataset, myChart),
-        graphic: [banners[index]].concat(getWaterGraphic(__VERSION__))
+        graphic: [banners[index]].concat(getWaterGraphic(configs, __VERSION__))
     };
 
     setTimeout(() => {
@@ -10334,7 +10398,7 @@ function getBanners(container, width, height, dataset, configs) {
             try {
                 myChart.setOption(
                     {
-                        graphic: [banners[index]].concat(getWaterGraphic(__VERSION__)),
+                        graphic: [banners[index]].concat(getWaterGraphic(configs, __VERSION__)),
                     }, {replaceMerge: "graphic"}
                 );
             } catch (e) {
@@ -10448,7 +10512,7 @@ function getWordCloud(container, width, height, dataset, configs) {
         legend: getLegend(configs, source.dimensions.slice(1, source.dimensions.length)),
         toolbox: getToolbox(configs, container, dataset, myChart),
         series: series,
-        graphic: getWaterGraphic(__VERSION__),
+        graphic: getWaterGraphic(configs,__VERSION__),
     };
 
     setTimeout(() => {
@@ -10584,7 +10648,7 @@ function getSunburst(container, width, height, dataset, configs) {
         }),
         toolbox: getToolbox(configs, container, dataset, myChart),
         series: series,
-        graphic: getWaterGraphic(__VERSION__)
+        graphic: getWaterGraphic(configs,__VERSION__)
     };
 
 
@@ -10780,7 +10844,7 @@ function getTreemap(container, width, height, dataset, configs) {
         }),
         toolbox: getToolbox(configs, container, dataset, myChart),
         series: series,
-        graphic: getWaterGraphic(__VERSION__)
+        graphic: getWaterGraphic(configs,__VERSION__)
     };
 
 
@@ -10900,7 +10964,7 @@ function getParallelAxis(container, width, height, dataset, configs) {
         toolbox: getToolbox(configs, container, dataset, myChart),
         parallelAxis: parallelAxis,
         series: series,
-        graphic: getWaterGraphic(__VERSION__)
+        graphic: getWaterGraphic(configs,__VERSION__)
     };
 
     setTimeout(() => {
@@ -11002,7 +11066,7 @@ function getSankey(container, width, height, dataset, configs) {
         toolbox: getToolbox(configs, container, dataset, myChart),
         legend: getLegend(configs, legends),
         series: series,
-        graphic: getWaterGraphic(__VERSION__),
+        graphic: getWaterGraphic(configs,__VERSION__),
     };
 
     setTimeout(() => {
@@ -11086,7 +11150,7 @@ function getThemeRiver(container, width, height, dataset, configs) {
             }
         },
         series: [serie],
-        graphic: getWaterGraphic(__VERSION__),
+        graphic: getWaterGraphic(configs,__VERSION__),
 
     };
 
@@ -11482,7 +11546,7 @@ function getPie3D(container, width, height, dataset, configs) {
             }
         },
         series: series,
-        graphic: getWaterGraphic(__VERSION__),
+        graphic: getWaterGraphic(configs,__VERSION__),
     };
 
     setTimeout(() => {
@@ -11531,7 +11595,7 @@ function getSingeAxis(container, width, height, dataset, configs) {
         }),
         singleAxis: [],
         series: [],
-        graphic: getWaterGraphic(__VERSION__)
+        graphic: getWaterGraphic(configs,__VERSION__)
     };
 
     columns.forEach(function (column, idx) {
@@ -11751,7 +11815,7 @@ function getFunctionLine(container, width, height, dataset, configs) {
             endValue: 20
         }],
         series: series,
-        graphic: getWaterGraphic(__VERSION__),
+        graphic: getWaterGraphic(configs,__VERSION__),
     };
 
     setTimeout(function () {
@@ -11858,7 +11922,7 @@ function getBarRacing(container, width, height, dataset, configs) {
                     fill: 'gray'
                 },
                 z: 100
-            }].concat(getWaterGraphic(__VERSION__))
+            }].concat(getWaterGraphic(configs.waterGraphEnable.value, configs.waterGraphText.value, __VERSION__))
         }
     };
 
@@ -11994,7 +12058,7 @@ function getScrolling(container, width, height, dataset, configs) {
             getDataZoomYAxis(configs, 0, "inside", 0, 100, myChart.getWidth()),
             getDataZoomYAxis(configs, 0, "slider", 0, 100, myChart.getWidth())
         ],
-        graphic: getWaterGraphic(__VERSION__),
+        graphic: getWaterGraphic(configs,__VERSION__),
         series: series,
     };
 
@@ -12224,7 +12288,7 @@ function getDatasetImage(container, width, height, dataset, configs) {
         ],
         xAxis: getAxis(source, types, cols).xAxis,
         yAxis: getAxis(source, types, cols).yAxis,
-        graphic: getWaterGraphic(__VERSION__),
+        graphic: getWaterGraphic(configs,__VERSION__),
         series: getSeries(source, types, 1),
     };
 
@@ -12244,18 +12308,18 @@ function getSaveAsReport(configs, container, myChart) {
         title: '导出报表',
         icon: __SYS_IMAGES_PATH__.linedown,
         onclick: function () {
-            function getScript(main, jsPath) {
+            function getScript(main, jsPath, echartsPath) {
                 let scripts = [
                     "images.js",
                     "FunctionsComponent.js",
                     main,
-                    "echarts/v5.2.2/echarts.min.js",
-                    "echarts/v5.2.2/echarts-gl.min.js",
-                    "echarts/v5.2.2/echarts-wordcloud.min.js",
+                    echartsPath + "/echarts.min.js",
+                    echartsPath + "/echarts-gl.min.js",
+                    echartsPath + "/echarts-wordcloud.min.js",
+                    echartsPath + "/ecStat.js",
+                    echartsPath + "/echarts-liquidfill.min.js",
                     "echarts/map/world.js",
                     "echarts/map/china-and-region.js",
-                    "echarts/v5.2.2/ecStat.js",
-                    "echarts/v5.2.2/echarts-liquidfill.min.js",
                     "echartsThemes.js",
                     "echartsView.js",
                 ];
@@ -12849,7 +12913,7 @@ function getSaveAsReport(configs, container, myChart) {
                 "<meta name='report-author' content='" + (typeof __LOGS__.user.name !== "undefined"? __LOGS__.user.name: "") + "'>\n" +
                 "<meta name='report-create-time' content='" + time + "'>\n" +
                 "<style>\n" +
-                "body{background-color: dimgrey;color: whitesmoke;font-family: Arial, Verdana}\n" +
+                "body{background-color:" + __DATASET__.configs.reportBackgroundColor.value + ";color: " + __DATASET__.configs.reportColor.value + ";font-family: Arial, Verdana}\n" +
                 "body ::-webkit-scrollbar {width: 5px;height: 4px;background: transparent;}\n" +
                 "body ::-webkit-scrollbar-thumb {" +
                 "border-radius: 3px;background-color: grey;" +
@@ -12897,7 +12961,7 @@ function getSaveAsReport(configs, container, myChart) {
                 "span.page-button{float:left;cursor: pointer;width: 50px;font-size: 60%;text-align: center;;border-left:1px solid gray;border-bottom-right-radius: 6px;border-bottom-left-radius: 36px;}" +
                 "span.page-button:hover{background-color: sandybrown;}\n" +
                 "</style>\n" +
-                getScript(__VERSION__.main, jsPath) +
+                getScript(__VERSION__.main, jsPath, __VERSION__.echarts) +
                 "</head>\n" +
                 "<body onload='init()'>\n" +
                 "<h1>" + title[0] + "</h1>\n" +
