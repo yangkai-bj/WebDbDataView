@@ -1916,7 +1916,37 @@ var __ECHARTS__ = {
             value: "",
             type: "input"
         },
+        waterGraphTextFontSize: {
+            name: "文本字号",
+            value: "auto",
+            type: "input"
+        },
+        waterGraphUrl: {
+            name: "水印链接",
+            value: "",
+            type: "input"
+        },
         waterGraphColor: {value: "auto", name: "水印颜色", type: "color"},
+        waterGraphRotation: {
+            name: "旋转角度",
+            value: "auto",
+            type: "input"
+        },
+        waterGraphRight: {
+            name: "右边距",
+            value: "auto",
+            type: "input"
+        },
+        waterGraphBottom: {
+            name: "下边距",
+            value: "auto",
+            type: "input"
+        },
+        waterGraphOpacity: {
+            name: "透明度",
+            value: "0.4",
+            type: "input"
+        },
     },
 
     getConfigItems: function(){
@@ -3086,14 +3116,14 @@ function getWaterGraphic(configs, version) {
             {
                 type: 'group',
                 id: "logoLink",
-                rotation: Math.PI / 4,
+                rotation: configs.waterGraphRotation.value == "auto" ? Math.PI / 4 : Number(configs.waterGraphRotation.value),
                 bounding: 'raw',
-                right: 110,
-                bottom: 110,
+                right: configs.waterGraphRight.value == "auto" ? 110 : Number(configs.waterGraphRight.value),
+                bottom: configs.waterGraphBottom.value == "auto" ? 110 : Number(configs.waterGraphBottom.value),
+                // opacity: Number(configs.waterGraphOpacity.value),
                 z: -100,
-                opacity: 0.4,
                 onclick: function () {
-                    window.open(title)
+                    window.open(configs.waterGraphUrl.value.length == 0 ? title : configs.waterGraphUrl.value);
                 },
                 children: [
                     // {
@@ -3109,34 +3139,34 @@ function getWaterGraphic(configs, version) {
                     //         opacity: 0.4,
                     //     }
                     // },
-                    {
-                        type: 'rect',
-                        left: 'center',
-                        top: 'center',
-                        z: -100,
-                        shape: {
-                            width: 400,
-                            height: 50
-                        },
-                        style: {
-                            fill: 'rgba(0,0,0,0.3)',
-                            opacity: 0.4,
-                        }
-                    },
+                    // {
+                    //     type: 'rect',
+                    //     left: 'center',
+                    //     top: 'center',
+                    //     z: -100,
+                    //     shape: {
+                    //         width: 400,
+                    //         height: 50
+                    //     },
+                    //     style: {
+                    //         fill: 'rgba(0,0,0,0.3)',
+                    //         opacity: Number(configs.waterGraphOpacity.value),
+                    //     }
+                    // },
                     {
                         type: 'text',
                         left: 'center',
                         top: 'center',
                         style: {
                             text: configs.waterGraphText.value.length == 0 ? title : configs.waterGraphText.value,
-                            fontSize: 20,
+                            fontSize: configs.waterGraphTextFontSize.value == "auto" ? 20 : Number(configs.waterGraphTextFontSize.value),
                             fontWeight: 'normal',
                             lineDash: [0, 200],
                             lineDashOffset: 0,
                             fill: 'transparent',
-                            stroke: configs.waterGraphColor.value == 'auto'?'#fff':configs.waterGraphColor.value,
+                            stroke: configs.waterGraphColor.value == 'auto' ? '#fff' : configs.waterGraphColor.value,
                             lineWidth: 1,
-                            opacity: 0.4,
+                            opacity: Number(configs.waterGraphOpacity.value),
                         },
                         keyframeAnimation: {
                             duration: 5000,
@@ -3148,7 +3178,7 @@ function getWaterGraphic(configs, version) {
                                         fill: 'transparent',
                                         lineDashOffset: 200,
                                         lineDash: [200, 0],
-                                        opacity: 0.4,
+                                        opacity: Number(configs.waterGraphOpacity.value),
                                     }
                                 },
                                 {
@@ -3156,14 +3186,14 @@ function getWaterGraphic(configs, version) {
                                     percent: 0.8,
                                     style: {
                                         fill: 'transparent',
-                                        opacity: 0.4,
+                                        opacity: Number(configs.waterGraphOpacity.value),
                                     }
                                 },
                                 {
                                     percent: 1,
                                     style: {
-                                        fill: configs.waterGraphColor.value == 'auto'?'#fff':configs.waterGraphColor.value,
-                                        opacity: 0.4,
+                                        fill: configs.waterGraphColor.value == 'auto' ? '#fff' : configs.waterGraphColor.value,
+                                        opacity: Number(configs.waterGraphOpacity.value),
                                     }
                                 }
                             ]
@@ -12420,12 +12450,12 @@ function getSaveAsReport(configs, container, myChart) {
                     "getConfigs(document.getElementsByClassName('CONFIGS')[0], dataset.configs);\n" +
                     "getThemes();\n" +
                     "viewDataset(0);\n" +
-                    "if (typeof echarts !== 'undefined'){\n" +
+                    "if (typeof getEcharts === 'function'){\n" +
                     "let container = document.getElementsByClassName('ECHART')[0];\n" +
                     "let size = getAbsolutePosition(container);\n" +
                     "container.style.height = size.height + 'px';\n" +
                     "report.configs.toolboxSaveAsReport.value = 'false';\n" +
-                    "getEcharts(container, (size.width) + 'px', size.height + 'px', dataset, report.configs);\n" +
+                    "getEcharts(container, size.width + 'px', size.height + 'px', dataset, report.configs);\n" +
                     "}\n" +
                     "}\n" +
                     "</script>",

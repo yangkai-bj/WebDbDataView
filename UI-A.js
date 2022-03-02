@@ -32,10 +32,11 @@ function saveStorageSql(key, sql) {
 }
 
 var UI = {
-    ReadFileBlob: {
+    splitFileBlob: {
         title: null,
         show: function (message, parent, callback) {
-            let indexes = [];
+            let packets = [];
+
             function blobSlice(blob, start, end) {
                 if (blob.slice) {
                     return blob.slice(start, end);
@@ -45,6 +46,117 @@ var UI = {
                     return blob.mozSlice(start, end);
                 } else {
                     return null;
+                }
+            }
+
+            function initTable(content){
+                content.innerHTML = "";
+                let table = document.createElement("table");
+                table.id = "ui_read_file_blob_packets_table";
+                table.className = "table";
+                table.style.width = "100%";
+                content.appendChild(table);
+                let ths = [
+                    {name: "序号", width: "40px", align:"center"},
+                    {name: "↣", width: "100px", align:"center"},
+                    {name: "↢", width: "100px", align:"center"},
+                    {name: "上偏移", width: "40px", align:"center"},
+                    {name: "包大小", width: "100px", align:"center"},
+                    {name: "行结余", width: "200px", align:"left"}
+                ];
+
+                let tr = document.createElement("tr");
+                tr.className = "tr";
+                table.appendChild(tr);
+                for (let i = 0; i < ths.length; i++) {
+                    let th = document.createElement("th");
+                    th.className = "th";
+                    th.style.textAlign = ths[i].align;
+                    th.style.width = ths[i].width;
+                    th.innerText = ths[i].name;
+                    tr.appendChild(th);
+                }
+            }
+
+            function showPacket(index, packet) {
+                let table = $("ui_read_file_blob_packets_table");
+                let tr = document.createElement("tr");
+                tr.className = "tr";
+                if (index % 2 > 0) {
+                    tr.className = "alt-line";
+                }
+                table.appendChild(tr);
+                let td = document.createElement("td");
+                td.style.textAlign = "center";
+                td.innerText = index;
+                tr.appendChild(td);
+                td = document.createElement("td");
+                td.style.textAlign = "center";
+                td.innerText = packet.start;
+                tr.appendChild(td);
+                td = document.createElement("td");
+                td.style.textAlign = "center";
+                td.innerText = packet.end;
+                tr.appendChild(td);
+                td = document.createElement("td");
+                td.style.textAlign = "center";
+                td.innerText = packet.pos;
+                tr.appendChild(td);
+                td = document.createElement("td");
+                td.style.textAlign = "center";
+                td.innerText = getFileSizeString(packet.end - packet.start + packet.pos - (packet.tail != null ? packet.tail.getBytesSize() : 0), " B");
+                tr.appendChild(td);
+                td = document.createElement("td");
+                td.style.textAlign = "left";
+                td.innerText = packet.tail != null ? packet.tail : "";
+                td.title = packet.tail;
+                tr.appendChild(td);
+            }
+
+            function initPackets(file) {
+                packets = [];
+                initTable($("ui_read_file_blob_table_content"));
+                let packetsize = Number($("read_file_blob_packet_size").value);
+                if (file.size > packetsize) {
+                    $("read_file_blob_file_name").value = file.name;
+                    let index = 0;
+                    $("ui_read_file_blob_progress").value = 0;
+                    $("ui_read_file_blob_progress").max = file.size;
+                    for (let i = 0; i < file.size; i += packetsize) {
+                        let blob = blobSlice(file, i, i + packetsize);
+                        let reader = new FileReader();
+                        reader["packet"] = {
+                            start: i,
+                            end: (i + packetsize) < file.size ? (i + packetsize) : (file.size - 1),
+                            pos: 0,
+                            code: null,
+                            tail: null
+                        };
+                        packets.push(reader.packet);
+                        reader["id"] = index;
+                        reader.onload = function (event) {
+                            this.packet.code = this.result.charCodeAt(this.result.length - 1);
+                            if (this.packet.code == 65533) {
+                                //判断末尾是否是不完整汉字
+                                this.packet.pos = -1;
+                            }
+                            showPacket(this.id + 1, this.packet);
+                            $("ui_read_file_blob_progress").value += (this.packet.end - this.packet.start);
+                        };
+                        let secquence = Promise.resolve();
+                        secquence.then(
+                            reader.readAsText(blob, $("read_file_blob_charset").value)
+                        );
+                        index++;
+                    }
+                    $("ui_read_file_blob_open").style.display = "block";
+                    $("ui_read_file_blob_count").style.display = "block";
+                    $("ui_read_file_blob_split").style.display = "none";
+                } else {
+                    $("ui_read_file_blob_open").style.display = "block";
+                    $("ui_read_file_blob_count").style.display = "none";
+                    $("ui_read_file_blob_split").style.display = "none";
+                    UI.alert.show("大数据文件拆分", "文件长度(" + getFileSizeString(file.size, " B") + ")小于所选包大小(" + getFileSizeString(packetsize, " B") + ").", "auto", null);
                 }
             }
 
@@ -63,6 +175,7 @@ var UI = {
             parent.appendChild(container);
             let content = document.createElement("div");
             content.className = "ui-container-body";
+            content.style.width = "600px";
             container.appendChild(content);
 
             let title = document.createElement("div");
@@ -80,84 +193,209 @@ var UI = {
             content.appendChild(hr);
 
             let item = document.createElement("div");
+            item.className = "ui-container-item";
             item.style.cssText = "width:100%;";
+            span = document.createElement("span");
+            span.className = "ui-container-item-name";
+            span.innerHTML = "源文件:";
+            item.appendChild(span);
+            let blob_filename = document.createElement("input");
+            blob_filename.id = "read_file_blob_file_name";
+            blob_filename.className = "ui-container-item-input";
+            item.appendChild(blob_filename);
             let source = document.createElement("input");
+            source.id = "source_file";
+            source.className = "ui-container-item-file";
             source.type = "file";
-            source.multiple = "multiple";
-            source.style.width = "100%";
-            source.id = "upload_file";
-            source.onchange = function() {
-                let step = 1024*20;
-                for (let i = 0; i < this.files[0].size; i += step) {
-                    let blob = blobSlice(this.files[0], i, i + step);
-                    let reader = new FileReader();
-                    reader["index"] = {start: i, end: i + step, pos: 0, code: [], tail: ""};
-                    reader.onload = function (event) {
-                        let result = this.result;
-                        let index = this.index;
-                        index.code.push(result.charCodeAt(result.length - 1));
-                        if (result.charCodeAt(result.length - 1) >= 65533) {
-                            index.pos = -1;
-                        }
-                        indexes.push(index);
-                    };
-                    let secquence = Promise.resolve();
-                    secquence.then(
-                        reader.readAsText(blob, "utf-8")
-                    );
-                    i+=1;
+            source.style.display = "none";
+            // source.multiple = "multiple";
+            source.style.width = "70%";
+            source.onchange = function () {
+                if (this.files.length > 0)
+                    initPackets(this.files[0]);
+                else {
+                    $("read_file_blob_file_name").value = "";
+                    initTable($("ui_read_file_blob_table_content"));
+                    $("ui_read_file_blob_open").style.display = "block";
+                    $("ui_read_file_blob_count").style.display = "none";
+                    $("ui_read_file_blob_split").style.display = "none";
                 }
             };
             item.appendChild(source);
             content.appendChild(item);
 
-            hr = document.createElement("hr");
-            hr.className = "ui-container-hr";
-            content.appendChild(hr);
+            item = document.createElement("div");
+            item.className = "ui-container-item";
+            item.style.cssText = "width:100%;";
+            span = document.createElement("span");
+            span.className = "ui-container-item-name";
+            span.innerHTML = "字符集:";
+            item.appendChild(span);
+            let blob_charset = document.createElement("select");
+            blob_charset.id = "read_file_blob_charset";
+            blob_charset.className = "ui-container-item-select";
+            blob_charset.add(new Option("UTF-8", "UTF-8"));
+            blob_charset.add(new Option("GBK", "GBK"));
+            blob_charset.onchange = function() {
+                if ($("source_file").files.length > 0) {
+                    initPackets($("source_file").files[0]);
+                }
+            };
+            item.appendChild(blob_charset);
+            content.appendChild(item);
+
+            item = document.createElement("div");
+            item.className = "ui-container-item";
+            item.style.cssText = "width:100%;";
+            span = document.createElement("span");
+            span.className = "ui-container-item-name";
+            span.innerHTML = "包大小:";
+            item.appendChild(span);
+            let blob_size = document.createElement("select");
+            blob_size.id = "read_file_blob_packet_size";
+            blob_size.className = "ui-container-item-select";
+            blob_size.add(new Option("0.5MB", 1024 * 1024 * 0.5));
+            blob_size.add(new Option("1MB", 1024 * 1024 * 1));
+            blob_size.add(new Option("2MB", 1024 * 1024 * 2));
+            blob_size.add(new Option("3MB", 1024 * 1024 * 3));
+            blob_size.add(new Option("4MB", 1024 * 1024 * 4));
+            blob_size.add(new Option("5MB", 1024 * 1024 * 5));
+            blob_size.add(new Option("10MB", 1024 * 1024 * 10));
+            blob_size.add(new Option("20MB", 1024 * 1024 * 20));
+            blob_size.add(new Option("30MB", 1024 * 1024 * 30));
+            blob_size.add(new Option("40MB", 1024 * 1024 * 40));
+            blob_size.add(new Option("50MB", 1024 * 1024 * 50));
+            blob_size.onchange = function() {
+                if ($("source_file").files.length > 0) {
+                    initPackets($("source_file").files[0]);
+                }
+            };
+            item.appendChild(blob_size);
+            content.appendChild(item);
+
+            let div = document.createElement("div");
+            div.id = "ui_read_file_blob_table_content";
+            div.className = "ui-container-scroll-div";
+            content.appendChild(div);
+            initTable(div);
+
+            item = document.createElement("div");
+            item.className = "ui-container-item";
+            item.style.cssText = "width:100%;";
+            let progressBar = document.createElement("progress");
+            progressBar.value = 0;
+            progressBar.max = 100;
+            progressBar.style.cssText = "width:100%;height:5px;cursor:pointer;";
+            progressBar.id = "ui_read_file_blob_progress";
+            item.appendChild(progressBar);
+            content.appendChild(item);
+
+            // hr = document.createElement("hr");
+            // hr.className = "ui-container-hr";
+            // content.appendChild(hr);
 
             let tools = document.createElement("div");
             tools.className = "groupbar";
             tools.style.width = "90%";
             content.appendChild(tools);
+
             let button = document.createElement("button");
             button.className = "button";
-            button.id = "ui-alert-ok";
-            button.innerText = "确定";
-            button.style.cssFloat = "right";
-            button.onclick = close.onclick = function () {
-                let upload = document.getElementById("upload_file");
-                let file = upload.files[0];
+            button.id = "ui_read_file_blob_open";
+            button.innerText = "打开";
+            button.style.cssFloat = "left";
+            button.onclick = function () {
+                $("source_file").click();
+            };
+            tools.appendChild(button);
+
+            button = document.createElement("button");
+            button.className = "button";
+            button.id = "ui_read_file_blob_count";
+            button.innerText = "分割";
+            button.style.cssFloat = "left";
+            button.style.display = "none";
+            button.onclick = function () {
+                initTable($("ui_read_file_blob_table_content"));
+                let file = $("source_file").files[0];
                 let pos = 0;
-                for(let i=0;i<indexes.length;i++) {
-                    let start = indexes[i].start + pos;
-                    let end = indexes[i].end + indexes[i].pos;
+                $("ui_read_file_blob_progress").value = 0;
+                $("ui_read_file_blob_progress").max = packets.length;
+                for (let i = 0; i < packets.length; i++) {
+                    let start = packets[i].start + pos;
+                    let end = packets[i].end + packets[i].pos;
                     let blob = blobSlice(file, start, end);
                     let reader = new FileReader();
-                    reader["index"] = indexes[i];
                     reader["id"] = i;
                     reader.onload = function (event) {
-                        let result = null;
-                        if (reader.id > 0)
-                            result = indexes[this.id - 1].tail.concat(this.result);
-                        else
-                            result = this.result;
-                        let x = result.lastIndexOf("\r\n");
-                        this.index.tail = result.substring(x + 2, result.length);
-                        result = result.substring(-1, x);//.split("\r\n");
-                        console.log(reader.index);
-                        console.log(result);
+                        let index = this.result.lastIndexOf("\r\n") + 2;
+                        packets[this.id].tail = this.result.substr(index, this.result.length - index - 1);
+                        if (packets[this.id].tail.charCodeAt(packets[this.id].tail.length - 1) == 65533) {
+                            //再次判断末尾是否是不完整汉字
+                            packets[this.id].tail = packets[this.id].tail.substr(0, packets[this.id].tail.length - 1);
+                            packets[this.id].pos += -1;
+                        }
+                        showPacket(this.id + 1, packets[this.id]);
+                        $("ui_read_file_blob_progress").value ++;
                     };
                     let secquence = Promise.resolve();
                     secquence.then(
-                        reader.readAsText(blob, "utf-8")
+                        reader.readAsText(blob, $("read_file_blob_charset").value)
                     );
-                    pos = indexes[i].pos;
+                    pos = packets[i].pos;
                 }
-                // if (typeof callback === "function")
-                //     callback();
-                // parent.removeChild($("ui_read_file_blob"));
+                $("ui_read_file_blob_open").style.display = "block";
+                $("ui_read_file_blob_count").style.display = "none";
+                $("ui_read_file_blob_split").style.display = "block";
             };
             tools.appendChild(button);
+
+            button = document.createElement("button");
+            button.className = "button";
+            button.id = "ui_read_file_blob_split";
+            button.innerText = "保存";
+            button.style.cssFloat = "left";
+            button.style.display = "none";
+            button.onclick = function () {
+                let file = $("source_file").files[0];
+                let pos = 0;
+                $("ui_read_file_blob_progress").value = 0;
+                $("ui_read_file_blob_progress").max = packets.length;
+                for (let i = 0; i < packets.length; i++) {
+                    let start = packets[i].start + pos;
+                    let end = packets[i].end + packets[i].pos;
+                    let blob = blobSlice(file, start, end);
+                    let reader = new FileReader();
+                    reader["id"] = i;
+                    reader.onload = function (event) {
+                        let result = null;
+                        if (reader.id > 0) {
+                            result = packets[this.id - 1].tail.concat(this.result);
+                        } else {
+                            result = this.result;
+                        }
+                        if (reader.id < packets.length - 1)
+                            result = result.substr(0, result.lastIndexOf("\r\n"));
+                        callback({result: result, name: file.name.split(".")[0] + "_" + (this.id + 1) + ".txt"});
+                        $("ui_read_file_blob_progress").value ++;
+                    };
+                    let secquence = Promise.resolve();
+                    secquence.then(
+                        reader.readAsText(blob, $("read_file_blob_charset").value)
+                    );
+                    pos = packets[i].pos;
+                    sleep(500);
+                }
+                $("ui_read_file_blob_open").style.display = "block";
+                $("ui_read_file_blob_count").style.display = "none";
+                $("ui_read_file_blob_split").style.display = "none";
+            };
+            tools.appendChild(button);
+
+            close.onclick = function () {
+                parent.removeChild($("ui_read_file_blob"));
+            };
+
             setDialogDrag(title);
         },
     },

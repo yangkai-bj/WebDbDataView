@@ -18,8 +18,8 @@ const __VERSION__ = {
     name: "Web DataView for SQLite Database of browser",
     main: "WebDBDataView.js",
     echarts: "echarts/v5.3.0",
-    version: "3.1.2",
-    date: "2022/02/25",
+    version: "3.1.3",
+    date: "2022/03/01",
     comment: [
         "-- 2021/03/08",
         "优化算法和压缩代码.",
@@ -87,6 +87,8 @@ const __VERSION__ = {
         "增加文件上传组件.",
         "-- 2022/02/25",
         "Echarts 5.3.0.",
+        "-- 2022/03/01",
+        "增加大数据文件分割功能.",
     ],
     author: __SYS_LOGO_LINK__.author.decode(),
     url: __SYS_LOGO_LINK__.link.getee.decode(),
@@ -2923,13 +2925,9 @@ function initMenus() {
         dbinfo.className = "button";
         dbinfo.id = "test-button";
         dbinfo.innerText = "调试";
-        //dbinfo.style.display = "none";
+        dbinfo.style.display = "none";
         dbinfo.onclick = function () {
-            let str = '2018-12-10,上海分�';
-            //65533
-            console.log(str.charAt(str.length-1));
-            console.log(str.charCodeAt(str.length-1));
-            UI.ReadFileBlob.show("Read Blob ...","auto",null);
+
         };
         dbstools.appendChild(dbinfo);
         UI.tooltip(dbinfo,"auto", dbinfo.id, "调试");
@@ -3840,6 +3838,18 @@ function initMenus() {
             getMailComponent("auto");
         };
         UI.tooltip(mailto, "邮件编辑");
+
+        let blobsplit = document.createElement("div");
+        datatools.appendChild(blobsplit);
+        blobsplit.className = "charButton";
+        blobsplit.innerText = "⚒";
+        blobsplit.onclick = function () {
+            UI.splitFileBlob.show("大数据文件分割", "auto", function (args) {
+                let blob = new Blob([str2ab(args.result)], {type: "plain/text"});
+                openDownloadDialog(blob, args.name);
+            });
+        };
+        UI.tooltip(blobsplit, "大数据文件拆分");
 
         let datasetSetting = document.createElement("div");
         datatools.appendChild(datasetSetting);

@@ -1261,7 +1261,7 @@ textarea:enabled {
 }
 
 #ui-progress {
-     position: relative;
+    position: relative;
     margin: auto;
     margin-top: 5px;
     border: var(--main-border-color) 1px solid;
