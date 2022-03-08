@@ -49,7 +49,7 @@ var UI = {
                 }
             }
 
-            function initTable(content){
+            function initTable(content) {
                 content.innerHTML = "";
                 let table = document.createElement("table");
                 table.id = "ui_read_file_blob_packets_table";
@@ -57,12 +57,13 @@ var UI = {
                 table.style.width = "100%";
                 content.appendChild(table);
                 let ths = [
-                    {name: "序号", width: "40px", align:"center"},
-                    {name: "↣", width: "100px", align:"center"},
-                    {name: "↢", width: "100px", align:"center"},
-                    {name: "上偏移", width: "40px", align:"center"},
-                    {name: "包大小", width: "100px", align:"center"},
-                    {name: "行结余", width: "200px", align:"left"}
+                    {name: "序号", width: "40px", align: "center"},
+                    {name: "↣", width: "100px", align: "center"},
+                    {name: "↢", width: "100px", align: "center"},
+                    {name: "末尾值", width: "40px", align: "center"},
+                    {name: "位移", width: "40px", align: "center"},
+                    {name: "包大小", width: "100px", align: "center"},
+                    {name: "包结余", width: "200px", align: "left"}
                 ];
 
                 let tr = document.createElement("tr");
@@ -82,7 +83,7 @@ var UI = {
                 let table = $("ui_read_file_blob_packets_table");
                 let tr = document.createElement("tr");
                 tr.className = "tr";
-                if (index % 2 > 0) {
+                if (table.getElementsByTagName("tr").length % 2 > 0) {
                     tr.className = "alt-line";
                 }
                 table.appendChild(tr);
@@ -100,16 +101,19 @@ var UI = {
                 tr.appendChild(td);
                 td = document.createElement("td");
                 td.style.textAlign = "center";
-                td.innerText = packet.pos;
+                td.innerText = packet.code;
                 tr.appendChild(td);
                 td = document.createElement("td");
                 td.style.textAlign = "center";
-                td.innerText = getFileSizeString(packet.end - packet.start + packet.pos - (packet.tail != null ? packet.tail.getBytesSize() : 0), " B");
+                td.innerText = packet.pos;
+                tr.appendChild(td);
+                td = document.createElement("td");
+                td.style.textAlign = "right";
+                td.innerText = getFileSizeString(packet.end - packet.start + packet.pos - (index < (packets.length - 1) ? (packet.tail != null ? packet.tail.getBytesSize() : 0) : 0), " B");
                 tr.appendChild(td);
                 td = document.createElement("td");
                 td.style.textAlign = "left";
                 td.innerText = packet.tail != null ? packet.tail : "";
-                td.title = packet.tail;
                 tr.appendChild(td);
             }
 
@@ -119,6 +123,7 @@ var UI = {
                 let packetsize = Number($("read_file_blob_packet_size").value);
                 if (file.size > packetsize) {
                     $("read_file_blob_file_name").value = file.name;
+                    $("read_file_blob_file_name").title = file.size + " B";
                     let index = 0;
                     $("ui_read_file_blob_progress").value = 0;
                     $("ui_read_file_blob_progress").max = file.size;
@@ -143,10 +148,10 @@ var UI = {
                             showPacket(this.id + 1, this.packet);
                             $("ui_read_file_blob_progress").value += (this.packet.end - this.packet.start);
                         };
-                        let secquence = Promise.resolve();
-                        secquence.then(
-                            reader.readAsText(blob, $("read_file_blob_charset").value)
-                        );
+                        // let secquence = Promise.resolve();
+                        // secquence.then(
+                        reader.readAsText(blob, $("read_file_blob_charset").value);
+                        // );
                         index++;
                     }
                     $("ui_read_file_blob_open").style.display = "block";
@@ -194,12 +199,13 @@ var UI = {
 
             let item = document.createElement("div");
             item.className = "ui-container-item";
-            item.style.cssText = "width:100%;";
+            // item.style.cssText = "width:100%;";
             span = document.createElement("span");
             span.className = "ui-container-item-name";
             span.innerHTML = "源文件:";
             item.appendChild(span);
             let blob_filename = document.createElement("input");
+            blob_filename.setAttribute("readonly", "readonly");
             blob_filename.id = "read_file_blob_file_name";
             blob_filename.className = "ui-container-item-input";
             item.appendChild(blob_filename);
@@ -226,7 +232,7 @@ var UI = {
 
             item = document.createElement("div");
             item.className = "ui-container-item";
-            item.style.cssText = "width:100%;";
+            // item.style.cssText = "width:100%;";
             span = document.createElement("span");
             span.className = "ui-container-item-name";
             span.innerHTML = "字符集:";
@@ -236,7 +242,7 @@ var UI = {
             blob_charset.className = "ui-container-item-select";
             blob_charset.add(new Option("UTF-8", "UTF-8"));
             blob_charset.add(new Option("GBK", "GBK"));
-            blob_charset.onchange = function() {
+            blob_charset.onchange = function () {
                 if ($("source_file").files.length > 0) {
                     initPackets($("source_file").files[0]);
                 }
@@ -246,7 +252,6 @@ var UI = {
 
             item = document.createElement("div");
             item.className = "ui-container-item";
-            item.style.cssText = "width:100%;";
             span = document.createElement("span");
             span.className = "ui-container-item-name";
             span.innerHTML = "包大小:";
@@ -265,7 +270,7 @@ var UI = {
             blob_size.add(new Option("30MB", 1024 * 1024 * 30));
             blob_size.add(new Option("40MB", 1024 * 1024 * 40));
             blob_size.add(new Option("50MB", 1024 * 1024 * 50));
-            blob_size.onchange = function() {
+            blob_size.onchange = function () {
                 if ($("source_file").files.length > 0) {
                     initPackets($("source_file").files[0]);
                 }
@@ -273,26 +278,22 @@ var UI = {
             item.appendChild(blob_size);
             content.appendChild(item);
 
+            item = document.createElement("div");
+            item.className = "ui-container-item";
+            item.style.height = "20px";
+            let progressBar = document.createElement("progress");
+            progressBar.value = 0;
+            progressBar.max = 100;
+            progressBar.style.cssText = "width:100%;height:3px;cursor:pointer;";
+            progressBar.id = "ui_read_file_blob_progress";
+            item.appendChild(progressBar);
+            content.appendChild(item);
+
             let div = document.createElement("div");
             div.id = "ui_read_file_blob_table_content";
             div.className = "ui-container-scroll-div";
             content.appendChild(div);
             initTable(div);
-
-            item = document.createElement("div");
-            item.className = "ui-container-item";
-            item.style.cssText = "width:100%;";
-            let progressBar = document.createElement("progress");
-            progressBar.value = 0;
-            progressBar.max = 100;
-            progressBar.style.cssText = "width:100%;height:5px;cursor:pointer;";
-            progressBar.id = "ui_read_file_blob_progress";
-            item.appendChild(progressBar);
-            content.appendChild(item);
-
-            // hr = document.createElement("hr");
-            // hr.className = "ui-container-hr";
-            // content.appendChild(hr);
 
             let tools = document.createElement("div");
             tools.className = "groupbar";
@@ -336,12 +337,12 @@ var UI = {
                             packets[this.id].pos += -1;
                         }
                         showPacket(this.id + 1, packets[this.id]);
-                        $("ui_read_file_blob_progress").value ++;
+                        $("ui_read_file_blob_progress").value++;
                     };
-                    let secquence = Promise.resolve();
-                    secquence.then(
-                        reader.readAsText(blob, $("read_file_blob_charset").value)
-                    );
+                    // let secquence = Promise.resolve();
+                    // secquence.then(
+                    reader.readAsText(blob, $("read_file_blob_charset").value);
+                    //);
                     pos = packets[i].pos;
                 }
                 $("ui_read_file_blob_open").style.display = "block";
@@ -377,12 +378,12 @@ var UI = {
                         if (reader.id < packets.length - 1)
                             result = result.substr(0, result.lastIndexOf("\r\n"));
                         callback({result: result, name: file.name.split(".")[0] + "_" + (this.id + 1) + ".txt"});
-                        $("ui_read_file_blob_progress").value ++;
+                        $("ui_read_file_blob_progress").value++;
                     };
-                    let secquence = Promise.resolve();
-                    secquence.then(
-                        reader.readAsText(blob, $("read_file_blob_charset").value)
-                    );
+                    // let secquence = Promise.resolve();
+                    // secquence.then(
+                    reader.readAsText(blob, $("read_file_blob_charset").value);
+                    //);
                     pos = packets[i].pos;
                     sleep(500);
                 }

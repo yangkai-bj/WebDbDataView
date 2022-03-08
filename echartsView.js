@@ -11952,7 +11952,7 @@ function getBarRacing(container, width, height, dataset, configs) {
                     fill: 'gray'
                 },
                 z: 100
-            }].concat(getWaterGraphic(configs.waterGraphEnable.value, configs.waterGraphText.value, __VERSION__))
+            }].concat(getWaterGraphic(configs,__VERSION__))
         }
     };
 

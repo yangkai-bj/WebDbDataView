@@ -1171,12 +1171,12 @@ textarea:enabled {
 }
 
 .ui-container-scroll-div {
+    position: relative;
     font-size: 95%;
     width: 100%;
     float: left;
     height: 300px;
     overflow: scroll;
-    position: relative;
 }
 
 .ui-container-item {
