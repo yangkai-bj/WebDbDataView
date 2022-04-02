@@ -57,13 +57,14 @@ var UI = {
                 table.style.width = "100%";
                 content.appendChild(table);
                 let ths = [
-                    {name: "序号", width: "40px", align: "center"},
-                    {name: "↣", width: "100px", align: "center"},
-                    {name: "↢", width: "100px", align: "center"},
-                    {name: "末尾值", width: "40px", align: "center"},
-                    {name: "位移", width: "40px", align: "center"},
-                    {name: "包大小", width: "100px", align: "center"},
-                    {name: "包结余", width: "200px", align: "left"}
+                    {name: "选择", width: "32px", align: "center", type: "checkbox"},
+                    {name: "序号", width: "40px", align: "center", type: "th"},
+                    {name: "↣", width: "100px", align: "center", type: "th"},
+                    {name: "↢", width: "100px", align: "center", type: "th"},
+                    // {name: "末尾值", width: "40px", align: "center", type: "th"},
+                    {name: "位移", width: "40px", align: "center", type: "th"},
+                    {name: "大小", width: "100px", align: "center", type: "th"},
+                    {name: "结余", width: "200px", align: "left", type: "th"}
                 ];
 
                 let tr = document.createElement("tr");
@@ -72,9 +73,25 @@ var UI = {
                 for (let i = 0; i < ths.length; i++) {
                     let th = document.createElement("th");
                     th.className = "th";
-                    th.style.textAlign = ths[i].align;
-                    th.style.width = ths[i].width;
-                    th.innerText = ths[i].name;
+                    if (ths[i].type == "th") {
+                        th.style.textAlign = ths[i].align;
+                        th.style.width = ths[i].width;
+                        th.innerText = ths[i].name;
+                    } else {
+                        let check = document.createElement("input");
+                        check.type = "checkbox";
+                        check.className = "packet-checkall";
+                        check.style.width = "18px";
+                        check.onclick = function () {
+                            let pks = $("ui_read_file_blob_packets_table").getElementsByClassName("packet-check");
+                            for (let i = 0; i < pks.length; i++) {
+                                pks[i].checked = this.checked;
+                                this.checked ? pks[i].setAttribute("checked", "checked") : pks[i].removeAttribute("checked");
+                            }
+                        };
+                        th.style.textAlign = "center";
+                        th.appendChild(check);
+                    }
                     tr.appendChild(th);
                 }
             }
@@ -86,8 +103,25 @@ var UI = {
                 if (table.getElementsByTagName("tr").length % 2 > 0) {
                     tr.className = "alt-line";
                 }
+                tr.onclick = function () {
+                if (this.getElementsByClassName("packet-check")[0].checked == true)
+                    this.getElementsByClassName("packet-check")[0].removeAttribute("checked");
+                else
+                    this.getElementsByClassName("packet-check")[0].setAttribute("checked", "checked");
+                };
                 table.appendChild(tr);
                 let td = document.createElement("td");
+                td.style.textAlign = "center";
+                let check = document.createElement("input");
+                check.type = "checkbox";
+                check.className = "packet-check";
+                check.id = "packet-check-" + index;
+                check.style.width = "18px";
+                td.style.textAlign = "center";
+                td.appendChild(check);
+                tr.appendChild(td);
+
+                td = document.createElement("td");
                 td.style.textAlign = "center";
                 td.innerText = index;
                 tr.appendChild(td);
@@ -99,10 +133,10 @@ var UI = {
                 td.style.textAlign = "center";
                 td.innerText = packet.end;
                 tr.appendChild(td);
-                td = document.createElement("td");
-                td.style.textAlign = "center";
-                td.innerText = packet.code;
-                tr.appendChild(td);
+                // td = document.createElement("td");
+                // td.style.textAlign = "center";
+                // td.innerText = packet.code;
+                // tr.appendChild(td);
                 td = document.createElement("td");
                 td.style.textAlign = "center";
                 td.innerText = packet.pos;
@@ -122,23 +156,25 @@ var UI = {
                 initTable($("ui_read_file_blob_table_content"));
                 let packetsize = Number($("read_file_blob_packet_size").value);
                 if (file.size > packetsize) {
+                    let packetcount = file.size % packetsize > 0 ? Math.floor(file.size / packetsize) + 1 : Math.floor(file.size / packetsize);
                     $("read_file_blob_file_name").value = file.name;
                     $("read_file_blob_file_name").title = file.size + " B";
-                    let index = 0;
                     $("ui_read_file_blob_progress").value = 0;
-                    $("ui_read_file_blob_progress").max = file.size;
-                    for (let i = 0; i < file.size; i += packetsize) {
-                        let blob = blobSlice(file, i, i + packetsize);
+                    $("ui_read_file_blob_progress").max = packetcount;
+                    for (let i = 0; i < packetcount; i++) {
+                        let start = i * packetsize;
+                        let end = (i + 1) * packetsize;
+                        let blob = blobSlice(file, start, end);
                         let reader = new FileReader();
                         reader["packet"] = {
-                            start: i,
-                            end: (i + packetsize) < file.size ? (i + packetsize) : (file.size - 1),
+                            start: start,
+                            end: end < (file.size - 1) ? end : (file.size - 1),
                             pos: 0,
                             code: null,
                             tail: null
                         };
                         packets.push(reader.packet);
-                        reader["id"] = index;
+                        reader["id"] = i;
                         reader.onload = function (event) {
                             this.packet.code = this.result.charCodeAt(this.result.length - 1);
                             if (this.packet.code == 65533) {
@@ -146,13 +182,12 @@ var UI = {
                                 this.packet.pos = -1;
                             }
                             showPacket(this.id + 1, this.packet);
-                            $("ui_read_file_blob_progress").value += (this.packet.end - this.packet.start);
+                            $("ui_read_file_blob_progress").value ++;
                         };
-                        // let secquence = Promise.resolve();
-                        // secquence.then(
-                        reader.readAsText(blob, $("read_file_blob_charset").value);
-                        // );
-                        index++;
+                        let secquence = Promise.resolve();
+                        secquence.then(
+                            reader.readAsText(blob, $("read_file_blob_charset").value)
+                        );
                     }
                     $("ui_read_file_blob_open").style.display = "block";
                     $("ui_read_file_blob_count").style.display = "block";
@@ -259,17 +294,17 @@ var UI = {
             let blob_size = document.createElement("select");
             blob_size.id = "read_file_blob_packet_size";
             blob_size.className = "ui-container-item-select";
-            blob_size.add(new Option("0.5MB", 1024 * 1024 * 0.5));
-            blob_size.add(new Option("1MB", 1024 * 1024 * 1));
-            blob_size.add(new Option("2MB", 1024 * 1024 * 2));
-            blob_size.add(new Option("3MB", 1024 * 1024 * 3));
-            blob_size.add(new Option("4MB", 1024 * 1024 * 4));
-            blob_size.add(new Option("5MB", 1024 * 1024 * 5));
-            blob_size.add(new Option("10MB", 1024 * 1024 * 10));
-            blob_size.add(new Option("20MB", 1024 * 1024 * 20));
-            blob_size.add(new Option("30MB", 1024 * 1024 * 30));
-            blob_size.add(new Option("40MB", 1024 * 1024 * 40));
-            blob_size.add(new Option("50MB", 1024 * 1024 * 50));
+            // blob_size.add(new Option("0.5MB", 1024 * 1024 * 0.5));
+            blob_size.add(new Option("1 MB", 1024 * 1024 * 1));
+            blob_size.add(new Option("2 MB", 1024 * 1024 * 2));
+            blob_size.add(new Option("3 MB", 1024 * 1024 * 3));
+            blob_size.add(new Option("4 MB", 1024 * 1024 * 4));
+            blob_size.add(new Option("5 MB", 1024 * 1024 * 5));
+            // blob_size.add(new Option("10MB", 1024 * 1024 * 10));
+            // blob_size.add(new Option("20MB", 1024 * 1024 * 20));
+            // blob_size.add(new Option("30MB", 1024 * 1024 * 30));
+            // blob_size.add(new Option("40MB", 1024 * 1024 * 40));
+            // blob_size.add(new Option("50MB", 1024 * 1024 * 50));
             blob_size.onchange = function () {
                 if ($("source_file").files.length > 0) {
                     initPackets($("source_file").files[0]);
@@ -339,10 +374,10 @@ var UI = {
                         showPacket(this.id + 1, packets[this.id]);
                         $("ui_read_file_blob_progress").value++;
                     };
-                    // let secquence = Promise.resolve();
-                    // secquence.then(
-                    reader.readAsText(blob, $("read_file_blob_charset").value);
-                    //);
+                    let secquence = Promise.resolve();
+                    secquence.then(
+                    reader.readAsText(blob, $("read_file_blob_charset").value)
+                    );
                     pos = packets[i].pos;
                 }
                 $("ui_read_file_blob_open").style.display = "block";
@@ -380,16 +415,15 @@ var UI = {
                         callback({result: result, name: file.name.split(".")[0] + "_" + (this.id + 1) + ".txt"});
                         $("ui_read_file_blob_progress").value++;
                     };
-                    // let secquence = Promise.resolve();
-                    // secquence.then(
-                    reader.readAsText(blob, $("read_file_blob_charset").value);
-                    //);
-                    pos = packets[i].pos;
-                    sleep(500);
+                    if ($("packet-check-" + (i + 1)).checked == true) {
+                        let secquence = Promise.resolve();
+                        secquence.then(
+                            reader.readAsText(blob, $("read_file_blob_charset").value)
+                        );
+                        pos = packets[i].pos;
+                        sleep(500);
+                    }
                 }
-                $("ui_read_file_blob_open").style.display = "block";
-                $("ui_read_file_blob_count").style.display = "none";
-                $("ui_read_file_blob_split").style.display = "none";
             };
             tools.appendChild(button);
 

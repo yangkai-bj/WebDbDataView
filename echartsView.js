@@ -12338,7 +12338,7 @@ function getSaveAsReport(configs, container, myChart) {
         title: '导出报表',
         icon: __SYS_IMAGES_PATH__.linedown,
         onclick: function () {
-            function getScript(main, jsPath, echartsPath) {
+            function getScript(main, jsPath, echartsPath, defaultThemes) {
                 let scripts = [
                     "images.js",
                     "FunctionsComponent.js",
@@ -12359,8 +12359,77 @@ function getSaveAsReport(configs, container, myChart) {
                 }
                 scripts = scripts.concat([
                     "<script type='text/javascript'>\n" +
+                    "function setStyleValue(selectorText, name, value){\n" +
+                    "for(let i=0;i<document.styleSheets[0].cssRules.length;i++){\n" +
+                    "if (document.styleSheets[0].cssRules[i].selectorText == selectorText){\n" +
+                    "document.styleSheets[0].cssRules[i].style[name] = value;\n" +
+                    "break;\n" +
+                    "}\n" +
+                    "}\n" +
+                    "}\n" +
+                    "function setThemes(name){\n" +
+                    "setStyleValue('body', 'backgroundColor', themes[name].backgroundColor);\n" +
+                    "setStyleValue('body', 'backgroundImage', themes[name].backgroundImage);\n" +
+                    "setStyleValue('body', 'color', themes[name].color);\n" +
+                    "setStyleValue('table.table', 'color', themes[name].color);\n" +
+                    "setStyleValue('th', 'backgroundColor', themes[name].selected);\n" +
+                    "setStyleValue('th', 'color', themes[name].color);\n" +
+                    "setStyleValue('th:hover', 'backgroundColor', themes[name].hover);\n" +
+                    "setStyleValue('span.tabButton-selected', 'backgroundColor', themes[name].selected);\n" +
+                    "setStyleValue('span.tabButton-unselected:hover', 'backgroundColor', themes[name].hover);\n" +
+                    "setStyleValue('span.page-tab-selected', 'backgroundColor', themes[name].selected);\n" +
+                    "setStyleValue('span.page-tab:hover', 'backgroundColor', themes[name].hover);\n" +
+                    "setStyleValue('span.page-tab-left:hover', 'backgroundColor', themes[name].hover);\n" +
+                    "setStyleValue('div.ECHART', 'border-color', themes[name].border);\n" +
+                    "setStyleValue('div.TABLE', 'border-color', themes[name].border);\n" +
+                    "setStyleValue('div.SCRIPT', 'border-color', themes[name].border);\n" +
+                    "setStyleValue('div.CONFIGS', 'border-color', themes[name].border);\n" +
+                    "setStyleValue('span.theme-selected', 'border-color', themes[name].border);\n" +
+                    "}\n" +
                     "var dataset = {title: null, columns: null, data: null, configs: null, sql: null};\n" +
-                    "var report = null\n;" +
+                    "var report = null;\n" +
+                    "var configs = {themes: '" + defaultThemes + "'};\n" +
+                    "var themes = {" +
+                    "白色: {backgroundColor: '#C0C0C0', color: '#000000', selected: 'rgba(0, 0, 0, 0.3)', hover: 'rgba(0, 0, 0, 0.3)', border: '#008080', " +
+                    "backgroundImage:'-webkit-linear-gradient(45deg,rgba(255, 255, 255, 0.25) 25%,transparent 25%,transparent 50%,rgba(255, 255, 255, 0.25) 50%,rgba(255, 255, 255, 0.25) 75%,transparent 75%,transparent)," +
+                    "-webkit-linear-gradient(-45deg,rgba(255, 255, 255, 0.25) 25%,transparent 25%,transparent 50%,rgba(255, 255, 255, 0.25) 50%,rgba(255, 255, 255, 0.25) 75%,transparent 75%,transparent)'},\n" +
+                    "浅灰: {backgroundColor: '#696969', color: '#F5F5F5', selected: 'rgba(0, 0, 0, 0.3)', hover: 'rgba(0, 0, 0, 0.3)', border: '#FF7F50'," +
+                    "backgroundImage:'-webkit-linear-gradient(45deg,rgba(255, 255, 255, 0.15) 25%,transparent 25%,transparent 50%,rgba(255, 255, 255, 0.15) 50%,rgba(255, 255, 255, 0.15) 75%,transparent 75%,transparent)," +
+                    "-webkit-linear-gradient(-45deg,rgba(255, 255, 255, 0.15) 25%,transparent 25%,transparent 50%,rgba(255, 255, 255, 0.15) 50%,rgba(255, 255, 255, 0.15) 75%,transparent 75%,transparent)'},\n" +
+                    "深灰: {backgroundColor: '#404040', color: '#F8F8F8', selected: 'rgba(0, 0, 0, 0.3)', hover: 'rgba(0, 0, 0, 0.3)', border: '#FF7F50'," +
+                    "backgroundImage:'-webkit-linear-gradient(45deg,rgba(255, 255, 255, 0.15) 25%,transparent 25%,transparent 50%,rgba(255, 255, 255, 0.15) 50%,rgba(255, 255, 255, 0.15) 75%,transparent 75%,transparent)," +
+                    "-webkit-linear-gradient(-45deg,rgba(255, 255, 255, 0.15) 25%,transparent 25%,transparent 50%,rgba(255, 255, 255, 0.15) 50%,rgba(255, 255, 255, 0.15) 75%,transparent 75%,transparent)'},\n" +
+                    "黑色: {backgroundColor: '#000000', color: '#F0FFFF', selected: '#303030', hover: 'rgba(0, 0, 0, 0.3)', border: '#F0FFFF'," +
+                    "backgroundImage:'-webkit-linear-gradient(90deg,rgba(255, 255, 255, 0.15) 25%,transparent 25%,transparent 50%,rgba(255, 255, 255, 0.15) 50%,rgba(255, 255, 255, 0.15) 75%,transparent 75%,transparent)'},\n" +
+                    "墨绿: {backgroundColor: '#2F4F4F', color: '#F0F8FF', selected: 'rgba(0, 0, 0, 0.3)', hover: 'rgba(0, 0, 0, 0.3)', border: '#FF7F50'," +
+                    "backgroundImage:'-webkit-linear-gradient(45deg,rgba(255, 255, 255, 0.15) 25%,transparent 25%,transparent 50%,rgba(255, 255, 255, 0.15) 50%,rgba(255, 255, 255, 0.15) 75%,transparent 75%,transparent)'},\n" +
+                    "深蓝: {backgroundColor: '#003355', color: '#F8F8F8', selected: 'rgba(0, 0, 0, 0.3)', hover: 'rgba(0, 0, 0, 0.3)', border: '#F0FFFF'," +
+                    "backgroundImage:'-webkit-linear-gradient(45deg,rgba(255, 255, 255, 0.15) 25%,transparent 25%,transparent 50%,rgba(255, 255, 255, 0.15) 50%,rgba(255, 255, 255, 0.15) 75%,transparent 75%,transparent)'},\n" +
+                    "红色: {backgroundColor: '#8B0000', color: '#FFFF00', selected: 'rgba(0, 0, 0, 0.3)', hover: 'rgba(0, 0, 0, 0.3)', border: '#FAFAD2'," +
+                    "backgroundImage:'-webkit-linear-gradient(45deg,rgba(255, 255, 255, 0.15) 25%,transparent 25%,transparent 50%,rgba(255, 255, 255, 0.15) 50%,rgba(255, 255, 255, 0.15) 75%,transparent 75%,transparent)'},\n" +
+                    "};\n" +
+                    "setThemes(configs.themes);\n" +
+                    "</script>",
+
+                    "<script type='text/javascript'>\n" +
+                    "function getBrowserSize(){\n" +
+                    "let winWidth = 0;\n" +
+                    "let winHeight = 0;\n" +
+                    "if (window.innerWidth) {\n" +
+                    "winWidth = window.innerWidth;\n" +
+                    "} else if ((document.body) && (document.body.clientWidth)) {\n" +
+                    "winWidth = document.body.clientWidth;\n" +
+                    "}\n" +
+                    "if (window.innerHeight) {\n" +
+                    "winHeight = window.innerHeight;\n" +
+                    "} else if ((document.body) && (document.body.clientHeight)) {\n" +
+                    "winHeight = document.body.clientHeight;\n" +
+                    "}\n" +
+                    "return {\n" +
+                    "width: winWidth,\n" +
+                    "height: winHeight\n" +
+                    "};\n" +
+                    "}\n" +
                     "</script>",
 
                     "<script type='text/javascript'>\n" +
@@ -12412,14 +12481,36 @@ function getSaveAsReport(configs, container, myChart) {
                     "function getConfigs(container, configs) {\n" +
                     "let dl = document.createElement('dl');\n" +
                     "container.appendChild(dl);\n" +
+                    "let dt = null;\n" +
                     "for (let name in configs) {\n" +
                     "if (configs[name].type == 'hr') {\n" +
-                    "let dt = document.createElement('dt');\n" +
-                    "dt.innerText = configs[name].name;\n" +
+                    "dt = document.createElement('dt');\n" +
+                    "let sp = document.createElement('span');\n" +
+                    "sp.innerHTML = '<span class=exp-close>☘ </span>' + configs[name].name;\n" +
+                    "dt.appendChild(sp);" +
+                    "dt.setAttribute('value', configs[name].name);\n" +
+                    "dt.setAttribute('state','0');\n" +
+                    "dt.onclick = function(){\n" +
+                    "let state = this.getAttribute('state');\n" +
+                    "let dds = this.getElementsByTagName('dd');\n" +
+                    "for(let i=0;i<dds.length;i++){\n" +
+                    "if (state == '0')\n" +
+                    "dds[i].style.display = 'block';\n" +
+                    "else\n" +
+                    "dds[i].style.display = 'none';\n" +
+                    "}\n" +
+                    "if (state == '0'){\n" +
+                    "this.setAttribute('state','1');\n" +
+                    "this.getElementsByTagName('span')[0].innerHTML = '<span class=exp-open>❀ </span>' + this.getAttribute('value');\n"+
+                    "} else {\n" +
+                    "this.setAttribute('state','0');\n" +
+                    "this.getElementsByTagName('span')[0].innerHTML = '<span class=exp-close>☘ </span>' + this.getAttribute('value');\n"+
+                    "}\n" +
+                    "}\n" +
                     "dl.appendChild(dt);\n" +
                     "} else {\n" +
                     "let dd = document.createElement('dd');\n" +
-                    "dl.appendChild(dd);\n" +
+                    "dt.appendChild(dd);\n" +
                     "let configsname = document.createElement('span');\n" +
                     "configsname.className='configs-name';\n" +
                     "configsname.innerText = configs[name].name;\n" +
@@ -12434,7 +12525,73 @@ function getSaveAsReport(configs, container, myChart) {
                     "</script>",
 
                     "<script type='text/javascript'>\n" +
+                    "function viewSql(script){\n" +
+                    "let re = new RegExp(\'\\(\\\\/\\\\*[^\\\\*]\\*\\\\*\\\\/\\)|\\(\\-\\-[^.].\\*\\)\', 'gm');\n" +
+                    "let comments = script.match(re);\n" +
+                    "script = script.split(re);\n" +
+                    "let sqls = [];\n" +
+                    "for(let t=0;t<script.length;t++){\n" +
+                    "let sql = script[t];\n" +
+                    "if (sql !=='' && typeof sql != 'undefined' && (comments == null || comments.indexOf(sql) == -1)){\n" +
+                    "re = new RegExp('\\(\\\\\\'(.*?)\\\\\\')|(\\\\\\\"(.*?)\\\\\\\")', 'gm');\n" +
+                    "let constants = sql.match(re);\n" +
+                    "if (constants != null){\n" +
+                    "for(let i =0;i<constants.length;i++){\n" +
+                    "sql = sql.replace(new RegExp(constants[i],'g'), '&#60;span class&#61;SQLWordf&#62;' + constants[i]  + '&#60;&#47;span&#62;');\n" +
+                    "}\n" +
+                    "}\n" +
+
+                    "let words = [{key:'=',type:'d', value:'＝'},{key:\'\\\'\',type:'d'},{key:'\\\"\',type:'d'},\n" +
+                    "{key:\'\/\',type:'d', value:'&#47;'},{key:\'\>\',type:'d', value:'❯'},{key:\'\<\',type:'d', value:'❮'},\n" +
+                    "{key:':',type:'d', value:':'}, {key:',',type:'d'}, {key:\'\\\\+\',type:'d', value:'+'}, {key:'-',type:'d', value:'–'},\n" +
+                    "{key:\'\\\\*\',type:'d', value:'×'}, {key:\'\\\\(\',type:'d', value:'('}, {key:\'\\\\)\',type:'d', value:')'}, \n" +
+                    "{key:'ADD',type:'a'},{key:'BEFORE',type:'a'},{key:'GRANT',type:'a'},{key:'FOR',type:'a'},{key:'LOAD',type:'a'},{key:'ELSE',type:'a'},\n" +
+                    "{key:'WHEN',type:'a'},{key:'CASE',type:'a'},{key:'THEN',type:'a'},{key:'UNIQUE',type:'a'},{key:'DATABASE',type:'a'},{key:'END',type:'a'},\n" +
+                    "{key:'DECLARE',type:'a'},{key:'DROP',type:'a'},{key:'LIKE',type:'a'},{key:'LIMIT',type:'a'},{key:'DISTINCT',type:'a'},{key:'ELSEIF',type:'a'},\n" +
+                    "{key:'TABLE',type:'a'},{key:'VIEW',type:'a'},{key:'INDEX',type:'a'},{key:'PROCEDURE',type:'a'},{key:'TRIGGTER',type:'a'},{key:'CURSOR',type:'a'},\n" +
+                    "{key:'CREATE',type:'a'},{key:'DELETE',type:'a'}, {key:'UPDATE',type:'a'}, {key:'INSERT',type:'a'},{key:'AFTER',type:'a'},{key:'EACH',type:'a'},\n" +
+                    "{key:'INTO',type:'a'}, {key:'SELECT',type:'a'},{key:'FROM',type:'a'}, {key:'WHERE', type:'a'},{key:'PRIMARY',type:'a'},{key:'KEY',type:'a'},\n" +
+                    "{key:'GROUP',type:'a'},{key:'ORDER',type:'a'},{key:'BY',type:'a'},{key:'HAVING',type:'a'}, {key:'LEFT',type:'a'}, {key:'ENGINE',type:'a'},\n" +
+                    "{key:'VALUES',type:'a'},{key:'SET',type:'a'},{key:'RIGHT',type:'a'}, {key:'JOIN',type:'a'},{key:'ON',type:'a'},{key:'UNION',type:'a'}, \n" +
+                    "{key:'ALL',type:'a'},{key:'AS',type:'a'}, {key:'OUTER',type:'a'}, {key:'INNER',type:'a'},{key:'IS',type:'a'},{key:'NULL',type:'a'},\n" +
+                    "{key:'ASC',type:'a',value:'⇡'}, {key:'DESC',type:'a', value:'⇣'},{key:'NOT',type:'a'}, {key:'IN',type:'a'},{key:'BETWEEN',type:'a'},\n" +
+                    "{key:'AND',type:'b'}, {key:'OR',type:'b'},{key:'SUM',type:'c'},{key:'CONCAT',type:'c'}, {key:'REGEXP',type:'c'},\n" +
+                    "{key:'AVG',type:'c'}, {key:'COUNT',type:'c'},{key:'MIN',type:'c'}, {key:'MAX',type:'c'}, {key:'MONTH',type:'c'},{key:'REPLACE',type:'c'}, \n" +
+                    "{key:'YEAR',type:'c'},{key:'ROUND',type:'c'},{key:'IFNULL',type:'c'}, {key:'ABS',type:'c'}, {key:'POWER',type:'c'}, {key:'XOR',type:'c'},\n" +
+                    "{key:'DATE_FORMAT',type:'c'},{key:'STRFTIME',type:'c'},{key:'DATE',type:'c'},{key:'LENGTH',type:'c'},{key:'SUBSTR',type:'c'},{key:'MOD',type:'c'},\n" +
+                    "{key:'ADDDATE',type:'c'},{key:'ADDTIME',type:'c'},{key:'CURDATE',type:'c'},{key:'ADDTIME',type:'c'},{key:'DATE',type:'c'},{key:'CONVERT',type:'c'},\n" +
+                    "{key:'DATEDIFF',type:'c'},{key:'DATE_ADD',type:'c'},{key:'DAY',type:'c'},{key:'DAYOFWEEK',type:'c'},{key:'HOUR',type:'c'},{key:'MINUTE',type:'c'},\n" +
+                    "{key:'SECOND',type:'c'},{key:'TIME',type:'c'},{key:'LOCATE',type:'c'},{key:'LTRIM',type:'c'},{key:'RTRIM',type:'c'},{key:'SOUNDEX',type:'c'},\n" +
+                    "{key:'SUBSTRING',type:'c'},{key:'LOWER',type:'c'},{key:'UPPER',type:'c'},{key:'GETDATE',type:'c'},{key:'NOW',type:'c'},];\n" +
+                    "for(let i=0;i<words.length;i++){\n" +
+                    "re = new RegExp(words[i].key, 'g');\n" +
+                    "if (words[i].type !== 'd')\n" +
+                    "re = new RegExp(\'\\\\b\' + words[i].key + \'\\\\b\', 'gi');\n" +
+                    "sql = sql.replace(re,'&#60;span class&#61;SQLWord' + words[i].type + '&#62;' + (typeof words[i].value !== 'undefined'?words[i].value:words[i].key)  + '&#60;&#47;span&#62;');\n" +
+                    "}\n" +
+                    "sql = sql.replace(new RegExp('&#60;','g'), '<');\n" +
+                    "sql = sql.replace(new RegExp('&#61;','g'), '=');\n" +
+                    "sql = sql.replace(new RegExp('&#62;','g'), '>');\n" +
+                    "sql = sql.replace(new RegExp('&#47;','g'), '/');\n" +
+                    "sql = sql.replace(new RegExp(\'\\\\n\','g'), '<br>');\n" +
+                    "sql = sql.replace(new RegExp(\'\\\\t\','g'), '&emsp;&emsp;&emsp;&emsp;');\n" +
+                    "sqls.push(sql);\n" +
+                    "} else if (sql !=='' && typeof sql != 'undefined' && comments.indexOf(sql) !== -1){\n" +
+                    "sql = sql.replace(new RegExp(\'\\\\/\\\\*\','g'), '<span class=SQLWordg>•••</span>');\n" +
+                    "sql = sql.replace(new RegExp(\'\\\\*\\\\/\','g'), '');\n" +
+                    "sql = sql.replace(new RegExp(\'\\\\n\','g'), '<br>');\n" +
+                    "sql = sql.replace(new RegExp(\'\\\\t\','g'), '&emsp;&emsp;&emsp;&emsp;');\n" +
+                    "sql = '<p class=SQLWorde>' + sql + '</p>';\n" +
+                    "sqls.push(sql);\n" +
+                    "}\n" +
+                    "}\n" +
+                    "return sqls.join('');\n" +
+                    "}\n" +
+                    "</script>",
+
+                    "<script type='text/javascript'>\n" +
                     "function init(){\n" +
+                    "let size = getBrowserSize();\n" +
                     "let codes = document.getElementsByClassName('CODES')[0].getElementsByTagName('code');\n" +
                     "report = codes[0].innerText;\n" +
                     "let hash = codes[1].innerText;\n" +
@@ -12445,43 +12602,47 @@ function getSaveAsReport(configs, container, myChart) {
                     "dataset.data = report.dataset.data;\n" +
                     "dataset.sql = report.dataset.sql;\n" +
                     "dataset.configs = configs;\n" +
-                    "document.getElementsByClassName('SCRIPT')[0].getElementsByTagName('code')[0].innerText = dataset.sql;\n" +
+                    "document.getElementsByClassName('ECHART')[0].style.minHeight = (size.height*0.80) + 'px';\n" +
+                    "document.getElementsByClassName('TABLE')[0].style.minHeight = (size.height*0.80) + 'px';\n" +
+                    "document.getElementsByClassName('SCRIPT')[0].style.minHeight = (size.height*0.80) + 'px';\n" +
+                    "document.getElementsByClassName('SCRIPT')[0].getElementsByTagName('code')[0].innerHTML = viewSql(dataset.sql);\n" +
+                    "document.getElementsByClassName('CONFIGS')[0].style.minHeight = (size.height*0.80) + 'px';\n" +
                     "getConfigs(document.getElementsByClassName('CONFIGS')[0], report.configs);\n" +
                     "getConfigs(document.getElementsByClassName('CONFIGS')[0], dataset.configs);\n" +
                     "getThemes();\n" +
                     "viewDataset(0);\n" +
                     "if (typeof getEcharts === 'function'){\n" +
                     "let container = document.getElementsByClassName('ECHART')[0];\n" +
-                    "let size = getAbsolutePosition(container);\n" +
-                    "container.style.height = size.height + 'px';\n" +
+                    "container.style.height = (size.height*0.80) + 'px';\n" +
                     "report.configs.toolboxSaveAsReport.value = 'false';\n" +
-                    "getEcharts(container, size.width + 'px', size.height + 'px', dataset, report.configs);\n" +
+                    "getEcharts(container, (size.width*0.8) + 'px', (size.height*0.80) + 'px', dataset, report.configs);\n" +
+                    "} else {\n" +
+                    "document.getElementById('report-system').innerHTML = '组件服务器未连接...';\n" +
+                    "document.getElementById('report-system').removeAttribute('href');\n" +
+                    "document.getElementById('report-system').removeAttribute('title');\n" +
                     "}\n" +
                     "}\n" +
                     "</script>",
 
                     "<script type='text/javascript'>\n" +
                     "function getThemes(){\n" +
-                    "let themes = {" +
-                    "白色: {backgroundColor: '#F8F8F8', color: '#000000'},\n" +
-                    "浅灰: {backgroundColor: '#696969', color: '#F5F5F5'},\n" +
-                    "深灰: {backgroundColor: '#404040', color: '#F8F8F8'},\n" +
-                    "黑色: {backgroundColor: '#000000', color: '#F0FFFF'},\n" +
-                    "墨绿: {backgroundColor: '#2F4F4F', color: '#F0F8FF'},\n" +
-                    "深蓝: {backgroundColor: '#003355', color: '#F8F8F8'},\n" +
-                    "红色: {backgroundColor: '#8B0000', color: '#FFFF00'},\n" +
-                    "};\n" +
                     "let content = document.getElementById('THEMES');\n" +
                     "for (let key in themes){\n" +
                     "let theme = document.createElement('span');\n" +
-                    "theme.className ='theme';\n" +
+                    "if (key == configs.themes)\n" +
+                    "theme.className ='theme-selected';\n" +
+                    "else\n" +
+                    "theme.className = 'theme';\n" +
                     "theme.title = key;\n" +
                     "theme.style.backgroundColor = themes[key].backgroundColor;\n" +
                     "theme.style.color = themes[key].color;\n" +
+                    "theme.style.borderColor = themes[key].borderColor;\n" +
                     "theme.innerHTML = '&emsp;&emsp;';" +
                     "theme.onclick = function(){\n" +
-                    "document.body.style.backgroundColor = this.style.backgroundColor;\n" +
-                    "document.body.style.color = this.style.color;\n" +
+                    "configs.themes = this.title;\n" +
+                    "document.getElementsByClassName('theme-selected')[0].className = 'theme';\n" +
+                    "this.className = 'theme-selected';\n" +
+                    "setThemes(configs.themes);\n" +
                     "}\n" +
                     "content.appendChild(theme);\n" +
                     "}\n" +
@@ -12587,7 +12748,7 @@ function getSaveAsReport(configs, container, myChart) {
                     "function selectPageGroup(div, index, pageindex, pages){\n" +
                     "div.innerHTML = ''\n" +
                     "let transpose = document.createElement('span');\n" +
-                    "transpose.className = 'page-button';\n" +
+                    "transpose.className = 'page-tab-left';\n" +
                     "transpose.innerHTML = '&#9735';\n" +
                     "transpose.title = '报表转置';\n" +
                     "transpose.onclick = function(){\n" +
@@ -12619,7 +12780,7 @@ function getSaveAsReport(configs, container, myChart) {
                     "span.id = i;\n" +
                     "span.innerText = (i+1);\n" +
                     "if (pageindex == i)\n" +
-                    "span.style.backgroundColor = '#008080';\n" +
+                    "span.className = 'page-tab-selected';\n" +
                     "span.onclick = function(){\n" +
                     "viewDataset(Number(this.id));\n" +
                     "}\n" +
@@ -12647,6 +12808,10 @@ function getSaveAsReport(configs, container, myChart) {
                     "let pages = (data.length%pagesize==0?Math.floor(data.length/pagesize):Math.floor(data.length/pagesize) + 1);\n" +
                     "let table = document.createElement('table');\n" +
                     "table.className = table.id = 'table';\n" +
+                    "table.style.minWidth = configs.reportMinWidth.value;\n" +
+                    "table.style.maxWidth = configs.reportMaxWidth.value;\n" +
+                    "table.style.color = document.body.style.color;\n" +
+                    "table.style.fontSize = configs.reportFontSize.value;\n" +
                     "if (configs.reportFontFamily.value != 'default')\n" +
                     "table.style.fontFamily = configs.reportFontFamily.value;\n" +
                     "if (configs.reportFontWeight.value != 'default')\n" +
@@ -12722,6 +12887,9 @@ function getSaveAsReport(configs, container, myChart) {
                     "td.innerText = '';\n" +
                     "let style = '';\n" +
                     "for (let key in item.style) {\n" +
+                    "if (key === 'color')" +
+                    "Number(row[columns[c].name].value) < 0?style += key + ': red': '';\n" +
+                    "else " +
                     "style += key + ': ' + item.style[key] + ';';\n" +
                     "}\n" +
                     "td.style.cssText = style;\n" +
@@ -12920,7 +13088,7 @@ function getSaveAsReport(configs, container, myChart) {
             let id = container.getAttribute("_echarts_instance_");
             let report = JSON.parse(__ECHARTS__.history[id]);
             let title = report.dataset.title;
-            let link = "<a title='进入系统,使用「打开报表」功能可编辑此报表.' href='" + window.location.href.split("?")[0] + "'>" + __VERSION__.name + "</a>";
+            let link = "<a id = 'report-system' title='进入系统,使用「打开报表」功能可编辑此报表.' href='" + window.location.href.split("?")[0] + "'>" + __VERSION__.name + "</a>";
             report = JSON.stringify(report);
             report = report.encode();
             let configs = JSON.stringify(__DATASET__.configs).encode();
@@ -12936,14 +13104,15 @@ function getSaveAsReport(configs, container, myChart) {
                 "<meta charset='utf-8'>\n" +
                 "<title>" + title[0] + "</title>\n" +
                 "<meta name='renderer' content='webkit'>\n" +
-                "<meta name='description' content='这是关于 " + __VERSION__.name + " 的固定报表'>\n" +
+                "<meta name='description' content='这是 " + __VERSION__.name + " 的固定报表'>\n" +
                 "<meta name='app-version' content='" + __VERSION__.version + "'>\n" +
                 "<meta name='app-author' content='" + __VERSION__.author + "'>\n" +
                 "<meta name='app-url' content='" + __VERSION__.url + "'>\n" +
                 "<meta name='report-author' content='" + (typeof __LOGS__.user.name !== "undefined"? __LOGS__.user.name: "") + "'>\n" +
                 "<meta name='report-create-time' content='" + time + "'>\n" +
                 "<style>\n" +
-                "body{background-color:" + __DATASET__.configs.reportBackgroundColor.value + ";color: " + __DATASET__.configs.reportColor.value + ";font-family: Arial, Verdana}\n" +
+                "body{margin-top:15px;font-family: Arial, Verdana;" +
+                "background-image: -webkit-linear-gradient(45deg,rgba(255, 255, 255, 0.15) 25%,transparent 25%,transparent 50%,rgba(255, 255, 255, 0.15) 50%,rgba(255, 255, 255, 0.15) 75%,transparent 75%,transparent);}\n" +
                 "body ::-webkit-scrollbar {width: 5px;height: 4px;background: transparent;}\n" +
                 "body ::-webkit-scrollbar-thumb {" +
                 "border-radius: 3px;background-color: grey;" +
@@ -12951,51 +13120,64 @@ function getSaveAsReport(configs, container, myChart) {
                 "}\n" +
                 "body ::-webkit-scrollbar-track {box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);background: transparent;border-radius: 3px;}\n" +
                 "h1{margin: auto;width: 80%;text-align: left;white-space: normal;word-break: break-all;word-wrap: break-word;}\n" +
-                "h4{margin: auto;width: 80%;text-align: left;white-space: normal;word-break: break-all;word-wrap: break-word;}\n" +
+                "h2{margin: auto;width: 80%;text-align: left;white-space: normal;word-break: break-all;word-wrap: break-word;}\n" +
                 "h5{margin: auto;width: 80%;text-align: right;white-space: normal;word-break: break-all;word-wrap: break-word;}\n" +
                 "div.TABS{margin: auto;padding-left: 5px;padding-right: 5px;width: 80%;overflow: hidden;height: 100%}\n" +
                 "div.ECHART{margin: auto;padding-left: 5px;padding-right: 5px;width: 80%;border: 1px solid coral;border-radius: 5px;overflow: hidden;height: 100%;}\n" +
-                "div.TABLE{margin: auto;padding-left: 5px;padding-right: 5px;width: 80%;height: 80%;border: 1px solid coral;border-radius: 5px;overflow: scroll;height: 100%;display: none}\n" +
-                "div.SCRIPT{margin: auto;padding-left: 5px;padding-right: 5px;width: 80%;border: 1px solid coral;border-radius: 5px;overflow: hidden;height: 100%;display: none}\n" +
-                "div.CONFIGS{margin: auto;padding-left: 5px;padding-right: 5px;width: 80%;border: 1px solid coral;border-radius: 5px;" +
-                "overflow: hidden;height: 100%;display: none;-webkit-column-count: 4;column-count: 4;column-fill: auto;}\n" +
-                "div.PAGES{border-top:2px solid gray;}\n" +
+                "div.TABLE{margin: auto;padding-left: 5px;padding-right: 5px;width: 80%;border: 1px solid coral;border-radius: 5px;overflow: scroll;display: none}\n" +
+                "div.SCRIPT{margin: auto;font-size: 90%;padding-left: 5px;padding-right: 5px;width: 80%;border: 1px solid coral;border-radius: 5px;overflow: hidden;height: 100%;line-height: 2;display: none}\n" +
+                "div.CONFIGS{margin: auto;font-size: 80%;padding-left: 5px;padding-right: 5px;width: 80%;border: 1px solid coral;border-radius: 5px;overflow: hidden;height: 100%;display: none;" +
+                "-webkit-column-count: 2;column-count: 2;column-fill: auto}\n" +
+                "div.PAGES{margin: 5px;border-top:1px solid gray;}\n" +
                 "div.CODES{margin: auto;padding-left: 5px;padding-right: 5px;width: 80%;border: 1px solid coral;border-radius: 5px;overflow: hidden;height: 100%;display: none}\n" +
-                "code{font-family: Verdana,Arial;font-size: 10px;width: 100%;white-space: normal;word-break: break-all;word-wrap: break-word;display:none}\n" +
-                "code.sql{font-family: Verdana,Arial;font-size: 10px;width: 100%;white-space: normal;word-break: break-all;word-wrap: break-word;display:block}\n" +
+                "code{cursor: pointer;font-family: Verdana,Arial;font-size: 80%;width: 100%;white-space: normal;word-break: break-all;word-wrap: break-word;display:none}\n" +
+                "code.sql{cursor: pointer;font-family: Verdana,Arial;font-size: 80%;height: 100%;width: 100%;white-space: normal;word-break: break-all;word-wrap: break-word;display:block;margin:10px;}\n" +
                 "h6{margin: auto;width: 80%;text-align: center}\n" +
-                "a{font-size: 80%;padding-left: 5px;padding-right: 5px;background-color: sandybrown;outline-style: none;border-radius: 4px;text-decoration:none;}\n" +
-                "span.tabButton-selected{cursor: pointer;font-size: 80%;padding-left: 5px;padding-right: 5px;background-color: #00A7AA;outline-style: none;border-top-left-radius: 4px;border-top-right-radius: 4px;border: 1px solid coral;border-bottom-width: 0px;}\n" +
-                "span.tabButton-unselected{cursor: pointer;font-size: 80%;padding-left: 5px;padding-right: 5px;outline-style: none;border-top-left-radius: 4px;border-top-right-radius: 4px;border: 1px solid gray;border-bottom-width: 0px;}\n" +
+                "a{font-size: 100%;padding-left: 5px;padding-right: 5px;background-color: sandybrown;outline-style: none;border-radius: 4px;text-decoration:none;}\n" +
+                "span.tabButton-selected{cursor: pointer;font-size: 100%;padding-left: 5px;padding-right: 5px;background-color: #00A7AA;outline-style: none;border-top-left-radius: 4px;border-top-right-radius: 4px;border: 1px solid coral;border-bottom-width: 0px;}\n" +
+                "span.tabButton-unselected{cursor: pointer;font-size: 100%;padding-left: 5px;padding-right: 5px;outline-style: none;border-top-left-radius: 4px;border-top-right-radius: 4px;border: 1px solid gray;border-bottom-width: 0px;}\n" +
                 "span.tabButton-unselected:hover{background-color: sandybrown}\n" +
-                "span.tabButton-theme{float: right;cursor: pointer;font-size: 80%;background-color: transparent;outline-style: none;}\n" +
-                "span.theme{cursor: pointer;font-size: 80%;width: 50px;outline-style: none;}\n" +
-                "dt{cursor: pointer;font-size: 80%;padding-left: 5px;padding-right: 5px;outline-style: none;border-radius: 4px}\n" +
-                "dd{cursor: pointer;font-size: 80%;padding-left: 5px;padding-right: 5px;outline-style: none;border-radius: 4px;overflow: hidden;white-space: nowrap;word-break: keep-all;text-overflow: ellipsis;-o-text-overflow: ellipsis;}\n" +
-                "span.configs-name{cursor: pointer;font-size: 80%;padding-left: 5px;padding-right: 5px;background-color: sandybrown;outline-style: none;border-radius: 4px;border: 1px solid gray;}\n" +
-                "span.configs-value{cursor: pointer;font-size: 80%;padding-left: 5px;padding-right: 5px;background-color: #00A7AA;outline-style: none;border-radius: 4px;border: 1px solid gray;}\n" +
+                "span.tabButton-theme{height: 100%;float: right;cursor: pointer;font-size: 100%;background-color: transparent;outline-style: none;}\n" +
+                "span.theme{height: 100%;cursor: pointer;font-size: 80%;width: 50px;outline-style: none;}\n" +
+                "span.theme-selected{height: 100%;cursor: pointer;font-size: 90%;width: 50px;outline-style: none;border:1px solid gray;}\n" +
+                "dl{padding-left: 5px;padding-right: 5px;}\n" +
+                "dt{cursor: pointer;outline-style: none;border-radius: 4px}\n" +
+                "dt:hover{background-color: rgba(0, 0, 0, 0.1);}\n" +
+                "span.exp-open{cursor: pointer;outline-style: none;color:mediumvioletred;font-weight: bolder}\n" +
+                "span.exp-close{cursor: pointer;outline-style: none;color:darkgreen;font-weight: bolder}\n" +
+                "dd{display:none;cursor: pointer;font-size: 100%;padding-left: 5px;padding-right: 5px;outline-style: none;border-radius: 4px;overflow: hidden;white-space: nowrap;word-break: keep-all;text-overflow: ellipsis;-o-text-overflow: ellipsis;}\n" +
+                "span.configs-name{cursor: pointer;font-size: 100%;padding-left: 5px;padding-right: 5px;background-color: sandybrown;outline-style: none;border-radius: 4px;border: 1px solid gray;}\n" +
+                "span.configs-value{cursor: pointer;font-size: 100%;padding-left: 5px;padding-right: 5px;background-color: #00A7AA;outline-style: none;border-radius: 4px;border: 1px solid gray;}\n" +
+                "span.SQLWorda{cursor: pointer;padding-left: 3px;padding-right: 3px;background-color: #00A7AA;outline-style: none;border-radius: 4px;}\n" +
+                "span.SQLWordb{cursor: pointer;padding-left: 3px;padding-right: 3px;background-color: sandybrown;outline-style: none;border-radius: 4px;}\n" +
+                "span.SQLWordc{cursor: pointer;padding-left: 3px;padding-right: 3px;background-color: rosybrown;outline-style: none;border-radius: 4px;}\n" +
+                "span.SQLWordd{cursor: pointer;margin-left:0px;margin-right:0px;padding-left: 0px;padding-right: 0px;background-color: transparent;color: coral;outline-style: none;font-weight:bold}\n" +
+                "p.SQLWorde{cursor: pointer;margin-right:5px;margin-right:20px;padding-left: 5px;padding-right: 5px;background-color: rgba(0, 0, 0, 0.1);outline-style: none;border-radius: 4px;}\n" +
+                "span.SQLWordf{cursor: pointer;margin-left:0px;margin-right:0px;padding-left: 0px;padding-right: 0px;background-color: transparent;color: green;outline-style: none;font-weight:bold}\n" +
+                "span.SQLWordg{cursor: pointer;outline-style: none;color:mediumvioletred;font-weight: bolder}\n" +
                 "image{margin: auto;width: 80%;text-align: center}\n" +
-                "table{font-size: 80%;margin: 1px;line-height:12px;border-collapse:collapse;cursor: pointer;position:relative;min-width: 33%;border-radius: 5px;background-color: transparent;}\n" +
-                "th{margin: 0px;border: 1px solid gray;padding: 3px 3px 2px 3px;white-space: nowrap;word-break: keep-all;overflow: hidden;" +
-                "text-overflow: ellipsis;-o-text-overflow: ellipsis;font-weight: bolder;text-align: center;background-color: #00A7AA;color: #DCDCDC;border-bottom: 2px solid gray;}\n" +
-                "th:hover{background-color: #008080;}\n" +
-                "tr{height: 25px;color:slategray;background-color:darkgray;}\n" +
+                "table.table{font-size: 100%;margin: 6px;line-height:12px;border-collapse:collapse;cursor: pointer;position:relative;min-width: 33%;border-radius: 5px;background-color: transparent;}\n" +
+                "tr{height: 25px;background-color:rgba(0, 0, 0, 0);}\n" +
                 "tr:hover{background-color:rosybrown;}\n" +
-                "tr.alt-line{color:slategray;background-color:lightgray;}\n" +
+                "tr.alt-line{background-color:rgba(0, 0, 0, 0.15);}\n" +
                 "tr.alt-line:hover{background-color:rosybrown;}\n" +
-                "td{margin: 2px;border:1px solid gray;padding:3px 3px 2px 3px;white-space: nowrap; word-break: keep-all;" +
+                "th{border-radius: 4px;margin: 0px;padding: 3px 3px 2px 3px;white-space: nowrap;word-break: keep-all;overflow: hidden;" +
+                "text-overflow: ellipsis;-o-text-overflow: ellipsis;font-weight: bolder;text-align: center;background-color: #00A7AA;color: #DCDCDC}\n" +
+                "th:hover{background-color: #008080;}\n" +
+                "td{border-bottom:1px solid gray;margin: 2px;padding:3px 3px 2px 3px;white-space: nowrap; word-break: keep-all;" +
                 "overflow: hidden;text-overflow: ellipsis;-o-text-overflow: ellipsis;}\n" +
                 "td:hover{border-bottom:2px solid #00A7AA}\n" +
-                "span.page-tab{float:left;cursor: pointer;width: 50px;font-size: 60%;text-align: center;;border-right:1px solid gray;border-bottom-left-radius: 6px;border-bottom-right-radius: 36px;}" +
+                "span.page-tab{float:left;cursor: pointer;width: 50px;font-size: 80%;text-align: center;border-right:1px solid gray;border-bottom-left-radius: 6px;border-bottom-right-radius: 36px;}" +
+                "span.page-tab-selected{float:left;cursor: pointer;width: 50px;font-size: 80%;background-color: #00A7AA;text-align: center;border-right:1px solid gray;border-bottom-left-radius: 6px;border-bottom-right-radius: 36px;}" +
                 "span.page-tab:hover{background-color: sandybrown;}\n" +
-                "span.page-button{float:left;cursor: pointer;width: 50px;font-size: 60%;text-align: center;;border-left:1px solid gray;border-bottom-right-radius: 6px;border-bottom-left-radius: 36px;}" +
-                "span.page-button:hover{background-color: sandybrown;}\n" +
+                "span.page-tab-left{float:left;cursor: pointer;width: 50px;font-size: 80%;text-align: center;border-left:1px solid gray;border-bottom-right-radius: 6px;border-bottom-left-radius: 36px;}" +
+                "span.page-tab-left:hover{background-color: sandybrown;}\n" +
                 "</style>\n" +
-                getScript(__VERSION__.main, jsPath, __VERSION__.echarts) +
+                getScript(__VERSION__.main, jsPath, __VERSION__.echarts, __DATASET__.configs.reportThemes.value) +
                 "</head>\n" +
                 "<body onload='init()'>\n" +
                 "<h1>" + title[0] + "</h1>\n" +
-                "<h4>" + (title.length > 1 ? title.slice(1, title.length).join("&emsp;") : "") + "</h4>\n" +
+                "<h2>" + (title.length > 1 ? title.slice(1, title.length).join("&emsp;") : "") + "</h2>\n" +
                 "<div class='TABS'>\n" +
                 "<span class='tabButton-selected' id='ECHART' onclick='selectTab(this.id)'>数据视图</span>\n" +
                 "<span class='tabButton-unselected' id='TABLE' onclick='selectTab(this.id)'>数据报表</span>\n" +

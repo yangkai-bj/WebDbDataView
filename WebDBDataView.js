@@ -9,7 +9,6 @@ var __CONFIGS__ = {
     CURRENT_DATABASE: {index: 0, value: null, connect: null},
     TABLES: [],
     CURRENT_TABLE: {name: "", sql: "", structure: {}, type: ""},
-    MAXLOGS: 1000,
     FULLSCREEN: {element: null},
     TEMPORARY_FILES: "/upload"
 };
@@ -18,8 +17,8 @@ const __VERSION__ = {
     name: "Web DataView for SQLite Database of browser",
     main: "WebDBDataView.js",
     echarts: "echarts/v5.3.0",
-    version: "3.1.3",
-    date: "2022/03/01",
+    version: "3.2.2",
+    date: "2022/04/02",
     comment: [
         "-- 2021/03/08",
         "优化算法和压缩代码.",
@@ -89,6 +88,8 @@ const __VERSION__ = {
         "Echarts 5.3.0.",
         "-- 2022/03/01",
         "增加大数据文件分割功能.",
+        "-- 2022/03/30",
+        "修改固定报表.",
     ],
     author: __SYS_LOGO_LINK__.author.decode(),
     url: __SYS_LOGO_LINK__.link.getee.decode(),
@@ -115,10 +116,42 @@ const __VERSION__ = {
 };
 
 var __LOGS__ = {
-    user:{},
-    days: 7,
+    user: {},
     data: {},
+    configs: {
+        logsDays: {
+            name: "保留日志天数",
+            value: "7",
+            options: ["3", "4", "5", "6", "7"],
+            type: "select"
+        },
+        logsPageSize: {
+            name: "页面日志条数",
+            value: "1000",
+            options: ["50", "100", "500", "1000", "5000"],
+            type: "select"
+        },
+        logsOrderby: {
+            name: "日志排序方式",
+            value: "DESC",
+            options: ["ASC", "DESC"],
+            type: "select"
+        },
+    },
     init: function () {
+        let config = getUserConfig("logsConfig");
+        if (config != null) {
+            config = JSON.parse(config);
+            for (let key in config) {
+                try {
+                    __LOGS__.configs[key].value = config[key];
+                } catch (e) {
+                }
+            }
+        } else {
+            setUserConfig("logsConfig", JSON.stringify(__LOGS__.getConfigItems()));
+        }
+
         let logs = getUserConfig("UserLogs");
         if (typeof logs != "undefined") {
             //############################
@@ -144,6 +177,193 @@ var __LOGS__ = {
             } else
                 __LOGS__.data = logs;
         }
+    },
+
+    getConfigItems: function(){
+        let configs = {};
+        for(let key in this.configs){
+            configs[key]  = this.configs[key].value;
+        }
+        return configs;
+    },
+
+     getConfigs: function(){
+        let configs = {};
+        for(let key in this.configs) {
+            let config = this.configs[key];
+            configs[key] = {
+                name: config.name,
+                type: config.type,
+                value: config.value
+            };
+        }
+        return configs;
+    },
+
+    setConfigs: function (parent, callback) {
+        let config = getUserConfig("logsConfig");
+        if (config != null) {
+            config = JSON.parse(config);
+            for (key in config) {
+                try {
+                    __LOGS__.configs[key].value = config[key];
+                } catch (e) {
+                }
+            }
+        }
+
+        if (parent == "auto" || parent == null) {
+            if (document.fullscreen && typeof __CONFIGS__.FULLSCREEN.element == "object") {
+                parent = __CONFIGS__.FULLSCREEN.element;
+            } else {
+                parent = document.body;
+            }
+        }
+
+        let container = document.createElement("div");
+        container.id = "ui_logsConfigs";
+        container.className = "ui-container-background";
+        parent.appendChild(container);
+
+        let content = document.createElement("div");
+        content.className = "ui-container-body";
+        content.id = "logs-configs-Content";
+        container.appendChild(content);
+
+        let title = document.createElement("div");
+        title.className = "ui-container-title";
+        let span = document.createElement("span");
+        span.innerHTML = "● 日志设置 ";
+        title.appendChild(span);
+        let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
+        close.className = "ui-container-close";
+        title.appendChild(close);
+        content.appendChild(title);
+
+        let hr = document.createElement("hr");
+        hr.className = "ui-container-hr";
+        content.appendChild(hr);
+
+        let itemcontainer = document.createElement("div");
+        itemcontainer.id = itemcontainer.className = "ui-container-scroll-div";
+        content.appendChild(itemcontainer);
+
+        for (let name in __LOGS__.configs) {
+            let item = document.createElement("div");
+            item.className = "ui-container-item";
+            itemcontainer.appendChild(item);
+            let span = document.createElement("span");
+            span.className = "ui-container-item-name";
+            span.innerHTML = __LOGS__.configs[name].name + ":";
+            item.appendChild(span);
+            if (__LOGS__.configs[name].type == "input") {
+                let input = document.createElement("input");
+                input.style.cssFloat = "right";
+                input.id = name;
+                input.type = "input";
+                input.className = "ui-container-item-input";
+                input.value = __LOGS__.configs[name].value;
+                input.onchange = function () {
+                    __LOGS__.configs[this.id].value = this.value;
+                };
+                if (typeof __LOGS__.configs[name].title != "undefined")
+                    input.title = __LOGS__.configs[name].title;
+                else
+                    input.title = __LOGS__.configs[name].name;
+                item.appendChild(input);
+            } else if (__LOGS__.configs[name].type == "select") {
+                let input = document.createElement("select");
+                input.style.cssFloat = "right";
+                input.id = name;
+                input.type = "select";
+                input.className = "ui-container-item-input";
+                for (let i = 0; i < __LOGS__.configs[name].options.length; i++) {
+                    if (typeof __LOGS__.configs[name].options[i] === "object")
+                        input.options.add(__LOGS__.configs[name].options[i]);
+                    else
+                        input.options.add(new Option(__LOGS__.configs[name].options[i]));
+                }
+                input.value = __LOGS__.configs[name].value;
+                input.onchange = function () {
+                    __LOGS__.configs[this.id].value = this.value;
+                };
+                if (typeof __LOGS__.configs[name].title != "undefined")
+                    input.title = __LOGS__.configs[name].title;
+                else
+                    input.title = __LOGS__.configs[name].name;
+                item.appendChild(input);
+            } else if (__LOGS__.configs[name].type == "color") {
+                let input = document.createElement("input");
+                input.style.cssFloat = "right";
+                input.id = name;
+                input.type = "color";
+                input.className = "ui-container-item-input";
+                input.value = __LOGS__.configs[name].value;
+                input.onchange = function () {
+                    __LOGS__.configs[this.id].value = this.value;
+                };
+                if (typeof __LOGS__.configs[name].title != "undefined")
+                    input.title = __LOGS__.configs[name].title;
+                else
+                    input.title = __LOGS__.configs[name].name;
+                item.appendChild(input);
+            } else if (__LOGS__.configs[name].type == "hr") {
+                span.innerHTML = "[ " + __LOGS__.configs[name].name + " ]";
+                span.style.fontWeight = "bolder";
+                span.style.color = "var(--main-title-color)";
+                let c = document.createElement("div");
+                c.style.width = "70%";
+                c.style.cssFloat = "right";
+                item.appendChild(c);
+                item.id = name;
+                let h = document.createElement("hr");
+                h.style.marginTop = "10px";
+                c.appendChild(h)
+                //d.innerHTML = "";
+                //d.appendChild(h);
+            }
+        }
+
+        hr = document.createElement("hr");
+        hr.className = "ui-container-hr";
+        content.appendChild(hr);
+
+        let c = document.createElement("div");
+        c.className = "groupbar";
+        content.appendChild(c);
+
+        let b = document.createElement("button");
+        b.className = "button";
+        b.innerHTML = "确定";
+        b.onclick = function () {
+            setUserConfig("logsConfig", JSON.stringify(__LOGS__.getConfigItems()));
+            callback();
+            parent.removeChild($("ui_logsConfigs"));
+        };
+        c.appendChild(b);
+
+        b = document.createElement("button");
+        b.className = "button";
+        b.innerHTML = "重置";
+        b.onclick = close.onclick = function () {
+            UI.confirm.show("注意", "您确定要重置全部日志参数吗?", "auto", function () {
+                setUserConfig("logsConfig", JSON.stringify({}));
+                parent.removeChild($("ui_logsConfigs"));
+                UI.alert.show("提示", "日志参数已恢复为系统初始值,系统将重新载入页面...");
+                location.reload();
+            });
+        };
+        c.appendChild(b);
+
+        b = document.createElement("button");
+        b.className = "button";
+        b.innerHTML = "退出";
+        b.onclick = close.onclick = function () {
+            parent.removeChild($("ui_logsConfigs"));
+        };
+        c.appendChild(b);
+
+        setDialogDrag(title);
     },
 
     delete: function(date){
@@ -303,8 +523,16 @@ var __LOGS__ = {
         };
         dt.appendChild(tocopy);
 
-        let first = msgbox.firstChild;
-        msgbox.insertBefore(dt, first);
+        if (__LOGS__.configs.logsOrderby.value == "DESC") {
+            let first = msgbox.firstChild;
+            msgbox.insertBefore(dt, first);
+        } else
+            msgbox.appendChild(dt);
+        dt.scrollIntoView({behavior: "smooth", block: "start", inline: "nearest"});
+            //滚动参数
+            //behavior: 定义缓动动画， "auto", "instant", 或 "smooth"。默认为 "auto"。
+            //block: "start", "center", "end", 或 "nearest"。默认为 "start"。
+            //inline:"start", "center", "end", 或 "nearest"。默认为 "nearest"。
 
         let message = document.createElement("dd");
         message.type = "dd";
@@ -313,14 +541,17 @@ var __LOGS__ = {
         if (warning)
             message.style.color = "red";
         dt.appendChild(message);
-
         __LOGS__.add(log);
 
         //保留日志设置
-        if (__CONFIGS__.MAXLOGS > 0) {
+        let logsPageSize = Number(__LOGS__.configs.logsPageSize.value);
+        if (logsPageSize > 0) {
             let dts = msgbox.getElementsByClassName("dt");
-            if (dts.length > __CONFIGS__.MAXLOGS) {
-                msgbox.removeChild(dts[dts.length - 1]);
+            if (dts.length > logsPageSize) {
+                if (__LOGS__.configs.logsOrderby.value == "DESC")
+                    msgbox.removeChild(dts[dts.length - 1]);
+                else
+                    msgbox.removeChild(dts[0]);
             }
         }
         return message;
@@ -797,7 +1028,7 @@ var __XMLHTTP__ = {
          reportFontSize: {
              name: "报表字号",
              value: "100%",
-             options: ["100%", "110%", "120%", "130%", "140%", "150%"],
+             options: ["70%", "80%", "90%", "100%", "110%", "120%", "130%", "140%", "150%"],
              type: "select"
          },
          reportFontStyle: {
@@ -845,8 +1076,7 @@ var __XMLHTTP__ = {
              options: [new Option("内部网络", "intranet"), new Option("静态文件", "internet")],
              type: "select"
          },
-         reportBackgroundColor: {name: "报表默认背景", value: "#003355", type: "color"},
-         reportColor: {name: "报表默认颜色", value: "#F8F8F8", type: "color"},
+         reportThemes: {name: "报表默认主题", value: "深蓝", options:["白色","浅灰","深灰","黑色","墨绿","深蓝","红色"], type: "select"},
          hr_download: {name: "数据下载设置", value: "", type: "hr"},
          reportType: {
              name: "文件类型",
@@ -1845,7 +2075,7 @@ function datasetTranspose(index) {
     }
 }
 
-function viewDataset(index, pageindex) {
+function viewDataset(index, pageindex, syncSql) {
     if (__DATASET__.result.length > 0) {
         __DATASET__.default.sheet = index;
         __DATASET__.pages.total = Math.ceil(__DATASET__.result[__DATASET__.default.sheet].data.length / Number(__DATASET__.configs.reportPageSize.value));
@@ -1862,8 +2092,12 @@ function viewDataset(index, pageindex) {
     } catch (e) {
     }
 
-    __SQLEDITOR__.title = $("sql-title").innerText = __DATASET__.result[index].title[0];
-    __SQLEDITOR__.codeMirror.setValue(__DATASET__.result[index].sql);
+    if (typeof syncSql === "undefined")
+        syncSql = true;
+    if (syncSql) {
+        __SQLEDITOR__.title = $("sql-title").innerText = __DATASET__.result[index].title[0];
+        __SQLEDITOR__.codeMirror.setValue(__DATASET__.result[index].sql);
+    }
 
     container.innerText = "";
     let columns = __DATASET__.result[index].columns;
@@ -1920,7 +2154,7 @@ function viewDataset(index, pageindex) {
         column.onclick = function () {
             let index = __DATASET__.default.sheet;
             orderDatasetBy(__DATASET__.result[index], this.getAttribute("colid"));
-            viewDataset(index, 0);
+            viewDataset(index, 0, false);
         };
         th.appendChild(column);
         tr.appendChild(th);
@@ -2126,7 +2360,7 @@ function execute(title) {
                                 });
 
                                 if (__DATASET__.result.length > 0) {
-                                    viewDataset(__DATASET__.result.length - 1, 0);
+                                    viewDataset(__DATASET__.result.length - 1, 0, false);
                                 }
                             }
                             if (aff > 0) {
@@ -2206,7 +2440,7 @@ function executeFunction(title) {
         __DATASET__.result.push(transferResultDataset(funs, data, title, __SQLEDITOR__.parameter));
 
         if (__DATASET__.result.length > 0) {
-            viewDataset(__DATASET__.result.length - 1, 0);
+            viewDataset(__DATASET__.result.length - 1, 0, false);
         }
     }
 }
@@ -3014,7 +3248,7 @@ function initMenus() {
             result["time"] = getNow();
             __DATASET__.result.push(result);
             __DATASET__.default.sheet = __DATASET__.result.length - 1;
-            viewDataset(__DATASET__.default.sheet, 0);
+            viewDataset(__DATASET__.default.sheet, 0, false);
             __LOGS__.viewMessage(__CONFIGS__.CURRENT_TABLE.name + ":\n" + __CONFIGS__.CURRENT_TABLE.sql);
         };
         tbstools.appendChild(exConstr);
@@ -3284,6 +3518,7 @@ function initMenus() {
         UI.tooltip(execsql, "执行脚本");
 
         let sqltitle = document.createElement("div");
+        sqltitle.className = "button";
         sqltitle.id = "sql-title";
         sqltitle.style.cssFloat = "left";
         sqltools.appendChild(sqltitle);
@@ -3365,7 +3600,7 @@ function initMenus() {
         savelogs.className = "charButton";
         savelogs.id = "save-logs";
         savelogs.innerHTML = "&#8675";
-        savelogs.style.cssFloat = "right";
+        savelogs.style.cssFloat = "left";
         savelogs.onclick = function () {
             let logslist = {};
             for (let d in __LOGS__.data) {
@@ -3394,38 +3629,25 @@ function initMenus() {
         detailtools.appendChild(savelogs);
         UI.tooltip(savelogs,"下载(删除)历史日志");
 
-        let logs = document.createElement("div");
-        logs.id = "logs-records";
-        logs.className = "charButton";
-        logs.innerHTML = "≢";
-        logs.style.cursor = "pointer";
-        logs.style.cssFloat = "right";
-        let logItems = {
-            "50条": {value: 10, checked: Number(getUserConfig("pagelogs")) == 10 ? "true" : false},
-            "100条": {value: 100, checked: Number(getUserConfig("pagelogs")) == 100 ? "true" : false},
-            "1000条": {title: 1000, checked: Number(getUserConfig("pagelogs")) == 1000 ? "true" : false},
-            "5000条": {title: 5000, checked: Number(getUserConfig("pagelogs")) == 5000 ? "true" : false},
-            "10000条": {title: 10000, checked: Number(getUserConfig("pagelogs")) == 10000 ? "true" : false},
-        };
-        __CONFIGS__.MAXLOGS = Number(getUserConfig("pagelogs"));
-        logs.onclick = function () {
-            UI.choise.show("设置浏览器日志上限", logItems, "radio", "auto", function (args, values) {
-                for (let key in values) {
-                    if (values[key].checked) {
-                        __CONFIGS__.MAXLOGS = values[key].value;
-                        setUserConfig("pagelogs", values[key].value);
-                        let msgbox = $("messageBox");
-                        if (__CONFIGS__.MAXLOGS > 0) {
-                            while (msgbox.getElementsByClassName("dt").length > __CONFIGS__.MAXLOGS) {
-                                msgbox.removeChild(msgbox.getElementsByClassName("dt")[msgbox.getElementsByClassName("dt").length - 1])
-                            }
-                        }
+        let logsets = document.createElement("div");
+        logsets.id = "logs-records";
+        detailtools.appendChild(logsets);
+        logsets.className = "charButton";
+        logsets.innerText = "┅";
+        logsets.id = "logs-setting";
+        logsets.style.cssFloat = "right";
+        logsets.onclick = function () {
+            __LOGS__.setConfigs("auto", function () {
+                let msgbox = $("messageBox");
+                let pagelogs = Number(__LOGS__.configs.logsPageSize.value);
+                if (pagelogs > 0) {
+                    while (msgbox.getElementsByClassName("dt").length > pagelogs) {
+                        msgbox.removeChild(msgbox.getElementsByClassName("dt")[msgbox.getElementsByClassName("dt").length - 1])
                     }
                 }
-            }, {});
+            });
         };
-        detailtools.appendChild(logs);
-        UI.tooltip(logs,"设置浏览器日志上限");
+        UI.tooltip(logsets, "日志设置");
 
         //#######################################
         //初始化数据菜单
@@ -3475,7 +3697,7 @@ function initMenus() {
                                         $("dataset-select-echarts-type").value = __ECHARTS__.configs.echartsType.value = report.configs.echartsType.value;
                                         __SQLEDITOR__.title = $("sql-title").innerText = report.dataset.title.join("_");
                                         __SQLEDITOR__.codeMirror.setValue(report.dataset.sql);
-                                        viewDataset(__DATASET__.default.sheet, 0);
+                                        viewDataset(__DATASET__.default.sheet, 0, false);
                                         let _width = (getAbsolutePosition(container).width * 1) + "px";
                                         let _height = (getAbsolutePosition(container).height * 1) + "px";
                                         container.innerHTML = "";
@@ -3528,7 +3750,7 @@ function initMenus() {
         dataReader.onclick = $("read-xls-file").onclick = function () {
             getDataReader("auto", function (values) {
                 __DATASET__.result.push(values);
-                viewDataset(__DATASET__.result.length - 1, 0);
+                viewDataset(__DATASET__.result.length - 1, 0, false);
             });
         };
         UI.tooltip(dataReader,"读取外部数据");
@@ -3542,7 +3764,7 @@ function initMenus() {
         datatran.onclick = help_datasettranspose.onclick = function () {
             if (__DATASET__.result.length > 0) {
                 datasetTranspose(__DATASET__.default.sheet);
-                viewDataset(__DATASET__.default.sheet, 0);
+                viewDataset(__DATASET__.default.sheet, 0, false);
             }
         };
         UI.tooltip(datatran,"转置数据");
@@ -3559,7 +3781,7 @@ function initMenus() {
                     for (let i = 0; i < values.length; i++) {
                         __DATASET__.result.push(values[i]);
                     }
-                    viewDataset(__DATASET__.result.length - 1, 0);
+                    viewDataset(__DATASET__.result.length - 1, 0, false);
                 })
             }
         };
@@ -3575,7 +3797,7 @@ function initMenus() {
             if (__DATASET__.result.length > 0) {
                 UI.getSubtotal("auto", null, function (values) {
                     __DATASET__.result.push(values);
-                    viewDataset(__DATASET__.result.length - 1, 0);
+                    viewDataset(__DATASET__.result.length - 1, 0, false);
                 });
             }
         };
@@ -3790,7 +4012,7 @@ function initMenus() {
                     __DATASET__.default.sheet = __DATASET__.result.length - 1;
 
                 if (__DATASET__.result.length > 0) {
-                    viewDataset(__DATASET__.default.sheet, 0);
+                    viewDataset(__DATASET__.default.sheet, 0, false);
                 } else {
                     $("tableContainer").innerText = "";
                     __DATASET__.default.tab = 0;
@@ -3859,7 +4081,7 @@ function initMenus() {
         datasetSetting.onclick = function () {
             __DATASET__.setConfigs("auto", function () {
                 if (__DATASET__.result.length > 0) {
-                    viewDataset(__DATASET__.default.sheet, __DATASET__.pages.default);
+                    viewDataset(__DATASET__.default.sheet, __DATASET__.pages.default, false);
                 }
             });
         };
@@ -5070,7 +5292,7 @@ function setDataPageTools(index) {
             if (__DATASET__.pages.default < __DATASET__.pages.total - 1) {
                 __DATASET__.pages.default += 1;
                 label.innerText = (__DATASET__.pages.default + 1) + " ● " + __DATASET__.pages.total;
-                viewDataset(__DATASET__.default.sheet);
+                viewDataset(__DATASET__.default.sheet, __DATASET__.pages.default, false);
             }
         } else {
             label.innerText = " ● ";
@@ -5087,7 +5309,7 @@ function setDataPageTools(index) {
     }
     curr.onclick = function() {
         if (__DATASET__.result.length > 0) {
-            viewDataset(__DATASET__.default.sheet);
+            viewDataset(__DATASET__.default.sheet, __DATASET__.pages.default, false);
         } else {
             curr.innerHTML = " ● ";
         }
@@ -5104,7 +5326,7 @@ function setDataPageTools(index) {
             if (__DATASET__.pages.default > 0) {
                 __DATASET__.pages.default -= 1;
                 label.innerText = (__DATASET__.pages.default + 1) + " ● " + __DATASET__.pages.total;
-                viewDataset(__DATASET__.default.sheet);
+                viewDataset(__DATASET__.default.sheet, __DATASET__.pages.default, false);
             }
         } else {
             label.innerText = " ● ";
