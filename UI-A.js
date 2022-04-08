@@ -223,7 +223,7 @@ var UI = {
             let span = document.createElement("span");
             span.innerHTML = "● " + this.title;
             title.appendChild(span);
-            let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
+            let close = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.close,"#00A7AA", "24px", "24px");
             close.className = "ui-container-close";
             title.appendChild(close);
             content.appendChild(title);
@@ -576,7 +576,7 @@ var UI = {
         let span = document.createElement("span");
         span.innerHTML = "● " + message;
         title.appendChild(span);
-        let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
+        let close = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.close,"#00A7AA", "24px", "24px");
         close.className = "ui-container-close";
         title.appendChild(close);
         content.appendChild(title);
@@ -804,7 +804,7 @@ var UI = {
         let span = document.createElement("span");
         span.innerHTML = "● 二维码";
         title.appendChild(span);
-        let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
+        let close = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.close,"#00A7AA", "24px", "24px");
         close.className = "ui-container-close";
         title.appendChild(close);
         content.appendChild(title);
@@ -939,7 +939,7 @@ var UI = {
                 tip.style.width = "100px";
                 tip.style.height = "40px";
                 tip.style.borderRadius = "5px";
-                tip.style.backgroundImage = "url(" + __SYS_IMAGES__.mouse.image + ")";
+                tip.style.backgroundImage = "url(" + __SYS_IMAGES_PNG__.mouse.image + ")";
                 tip.style.backgroundRepeat = "no-repeat";
                 tip.style.backgroundPosition = "right bottom";
                 tip.style.backgroundSize = "24px 24px";
@@ -973,7 +973,7 @@ var UI = {
         parent.appendChild(container);
         let content = document.createElement("div");
         content.className = "ui-container-help";
-        content.style.backgroundImage = "url(" + __SYS_IMAGES__.mouse.image + ")";
+        content.style.backgroundImage = "url(" + __SYS_IMAGES_PNG__.mouse.image + ")";
         content.style.backgroundRepeat = "no-repeat";
         content.style.backgroundPosition = "right bottom";
         content.style.backgroundSize = "48px 48px";
@@ -1028,7 +1028,7 @@ var UI = {
             let span = document.createElement("span");
             span.innerHTML = "● " + this.title;
             title.appendChild(span);
-            let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
+            let close = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.close,"#00A7AA", "24px", "24px");
             close.className = "ui-container-close";
             title.appendChild(close);
             content.appendChild(title);
@@ -1040,7 +1040,7 @@ var UI = {
             let item = document.createElement("div");
             item.style.cssText = "width:100%;";
             let image = document.createElement("img");
-            image.src = __SYS_IMAGES__.alert.image;
+            image.src =__SYS_IMAGES_SVG__.getSrc(__SYS_IMAGES_SVG__.alert,"#00A7AA","100px","100px");
             image.size = "25% auto";
             image.attachment = "fixed";
             image.style.cssText = "width:25%;float: left;" +
@@ -1122,7 +1122,7 @@ var UI = {
             let span = document.createElement("span");
             span.innerHTML = "● " + this.title;
             title.appendChild(span);
-            let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
+            let close = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.close,"#00A7AA", "24px", "24px");
             close.className = "ui-container-close";
             title.appendChild(close);
             content.appendChild(title);
@@ -1134,7 +1134,7 @@ var UI = {
             let item = document.createElement("div");
             item.style.cssText = "width:100%;";
             let image = document.createElement("img");
-            image.src = __SYS_IMAGES__.confirm.image;
+            image.src = __SYS_IMAGES_SVG__.getSrc(__SYS_IMAGES_SVG__.confirm,"#00A7AA","100px","100px");
             image.size = "25% auto";
             image.attachment = "fixed";
             image.style.cssText = "width:25%;float: left;" +
@@ -1242,7 +1242,7 @@ var UI = {
             let span = document.createElement("span");
             span.innerHTML = "● " + this.title;
             title.appendChild(span);
-            let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
+            let close = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.close,"#00A7AA", "24px", "24px");
             close.className = "ui-container-close";
             title.appendChild(close);
             content.appendChild(title);
@@ -1255,7 +1255,7 @@ var UI = {
             itemcontent.style.cssText = "min-height: 100px;width:100%;";
             content.appendChild(itemcontent);
             let image = document.createElement("img");
-            image.src = __SYS_IMAGES__.prompt.image;
+            image.src = __SYS_IMAGES_SVG__.getSrc(__SYS_IMAGES_SVG__.prompt,"#00A7AA","100px","100px");
             image.size = "25% auto";
             image.attachment = "fixed";
             image.style.cssText = "width:25%;float: left;" +
@@ -1358,7 +1358,7 @@ var UI = {
             let span = document.createElement("span");
             span.innerHTML = "● " + this.title;
             title.appendChild(span);
-            let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
+            let close = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.close,"#00A7AA", "24px", "24px");
             close.className = "ui-container-close";
             title.appendChild(close);
             content.appendChild(title);
@@ -1372,7 +1372,7 @@ var UI = {
             content.appendChild(itemcontent);
 
             let image = document.createElement("img");
-            image.src = __SYS_IMAGES__.choice.image;
+            image.src = __SYS_IMAGES_SVG__.getSrc(__SYS_IMAGES_SVG__.choice,"#00A7AA","100px","100px");
             image.size = "25% auto";
             image.attachment = "fixed";
             image.style.cssText = "width:25%;float: left;" +
@@ -1479,7 +1479,7 @@ var UI = {
             let span = document.createElement("span");
             span.innerHTML = "● " + this.title;
             title.appendChild(span);
-            let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
+            let close = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.close,"#00A7AA", "24px", "24px");
             close.className = "ui-container-close";
             title.appendChild(close);
             content.appendChild(title);
@@ -1492,7 +1492,7 @@ var UI = {
             itemcontent.style.cssText = "min-height: 100px;width:100%;font-size:120%;";
             content.appendChild(itemcontent);
             let image = document.createElement("img");
-            image.src = __SYS_IMAGES__.login.image;
+            image.src = __SYS_IMAGES_SVG__.getSrc(__SYS_IMAGES_SVG__.user,"#00A7AA","100px","100px");
             image.size = "25% auto";
             image.attachment = "fixed";
             image.style.cssText = "width:25%;float: left;" +
@@ -1515,7 +1515,7 @@ var UI = {
             input.id = "ui_user_login_value_name";
             input.value = "";
             input.placeholder = "名称";
-            input.style.backgroundImage = "url(" + __SYS_IMAGES__.user.image + ")";
+            input.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__SYS_IMAGES_SVG__.user,"#C0C0C0","16px","16px");
             input.style.backgroundRepeat = "no-repeat";
             input.style.backgroundPosition = "right";
             input.style.backgroundSize = "16px 16px";
@@ -1545,7 +1545,7 @@ var UI = {
             input.type = "password";
             input.value = "";
             input.placeholder = "☀☀☀☀☀☀☀☀";
-            input.style.backgroundImage = "url(" + __SYS_IMAGES__.key.image + ")";
+            input.style.backgroundImage =  __SYS_IMAGES_SVG__.getUrl(__SYS_IMAGES_SVG__.key,"#C0C0C0","16px","16px");
             input.style.backgroundRepeat = "no-repeat";
             input.style.backgroundPosition = "right";
             input.style.backgroundSize = "16px 16px";
@@ -1637,7 +1637,7 @@ var UI = {
             let span = document.createElement("span");
             span.innerHTML = "● " + this.title;
             title.appendChild(span);
-            let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
+            let close = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.close,"#00A7AA", "24px", "24px");
             close.className = "ui-container-close";
             title.appendChild(close);
             content.appendChild(title);
@@ -1650,7 +1650,7 @@ var UI = {
             itemcontent.style.cssText = "min-height: 100px;width:100%;";
             content.appendChild(itemcontent);
             let image = document.createElement("img");
-            image.src = __SYS_IMAGES__.password.image;
+            image.src = __SYS_IMAGES_SVG__.getSrc(__SYS_IMAGES_SVG__.password,"#00A7AA","100px","100px")
             image.size = "25% auto";
             image.attachment = "fixed";
             image.style.cssText = "width:25%;float: left;" +
@@ -1676,7 +1676,7 @@ var UI = {
                 input.id = "ui_password_value_" + key;
                 input.placeholder = "☀☀☀☀☀☀☀☀";
                 input.title = placeholder;
-                input.style.backgroundImage = "url(" + __SYS_IMAGES__.key.image + ")";
+                input.style.backgroundImage =  __SYS_IMAGES_SVG__.getUrl(__SYS_IMAGES_SVG__.key,"#C0C0C0","16px","16px");
                 input.style.backgroundRepeat = "no-repeat";
                 input.style.backgroundPosition = "right";
                 input.style.backgroundSize = "16px 16px";
@@ -1849,7 +1849,7 @@ var UI = {
             let span = document.createElement("span");
             span.innerHTML = "● 脚本管理 ";
             title.appendChild(span);
-            let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
+            let close = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.close,"#00A7AA", "24px", "24px");
             close.className = "ui-container-close";
             title.appendChild(close);
             content.appendChild(title);
@@ -2252,7 +2252,7 @@ var UI = {
         let span = document.createElement("span");
         span.innerHTML = "● 分类计算";
         title.appendChild(span);
-        let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
+        let close = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.close,"#00A7AA", "24px", "24px");
         close.className = "ui-container-close";
         title.appendChild(close);
         content.appendChild(title);
@@ -2550,7 +2550,7 @@ var UI = {
         let span = document.createElement("span");
         span.innerHTML = "● 数据切片";
         title.appendChild(span);
-        let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
+        let close = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.close,"#00A7AA", "24px", "24px");
         close.className = "ui-container-close";
         title.appendChild(close);
         content.appendChild(title);
@@ -2734,7 +2734,7 @@ var UI = {
         let span = document.createElement("span");
         span.innerHTML = "● 筛选字段 [ " + columns[Number(colid)].name + " ]";
         title.appendChild(span);
-        let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
+        let close = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.close,"#00A7AA", "24px", "24px");
         close.className = "ui-container-close";
         title.appendChild(close);
         content.appendChild(title);
@@ -2948,7 +2948,7 @@ var UI = {
         let span = document.createElement("span");
         span.innerHTML = "● 格式设置 [ " + columns[Number(colid)].name + " ]";
         title.appendChild(span);
-        let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
+        let close = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.close,"#00A7AA", "24px", "24px");
         close.className = "ui-container-close";
         title.appendChild(close);
         content.appendChild(title);
@@ -3129,7 +3129,7 @@ var SQLite = {
     },
     createDatabase:function(parent) {
         let __DATABASE__ = {
-            Name: {value: "", name: "库名称", type: "text", image: "url(" + __SYS_IMAGES__.database.image + ")"},
+            Name: {value: "", name: "库名称", type: "text", image:  __SYS_IMAGES_SVG__.getUrl(__SYS_IMAGES_SVG__.database,"#C0C0C0","16px","16px")},
             Version: {value: 1.0, name: "版本号", type: "text"},
             Description: {value: "", name: "库描述", type: "text"},
             Size: {value: "1024*1024*1024", name: "库容量", type: "text"}
@@ -3157,7 +3157,7 @@ var SQLite = {
         let span = document.createElement("span");
         span.innerHTML = "● 创建数据库 ";
         title.appendChild(span);
-        let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
+        let close = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.close,"#00A7AA", "24px", "24px");
         close.className = "ui-container-close";
         title.appendChild(close);
         content.appendChild(title);
@@ -3274,7 +3274,7 @@ var SQLite = {
         let span = document.createElement("span");
         span.innerHTML = "● 创建数据表 ";
         title.appendChild(span);
-        let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
+        let close = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.close,"#00A7AA", "24px", "24px");
         close.className = "ui-container-close";
         title.appendChild(close);
         content.appendChild(title);
@@ -3894,7 +3894,7 @@ var SQLite = {
             let span = document.createElement("span");
             span.innerHTML = "● 导入数据";
             title.appendChild(span);
-            let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
+            let close = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.close,"#00A7AA", "24px", "24px");
             close.className = "ui-container-close";
             title.appendChild(close);
             content.appendChild(title);

@@ -405,6 +405,8 @@ img.title_close_button:hover{
     position: relative;
     border:1px solid var(--toolbar-background-color);
     border-radius: 20px;
+    background-position: center;
+    background-repeat: no-repeat;
 }
 
 .toolbar .charButton:hover{

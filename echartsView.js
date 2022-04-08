@@ -2005,7 +2005,7 @@ var __ECHARTS__ = {
         let span = document.createElement("span");
         span.innerHTML = "● 图形参数 ";
         title.appendChild(span);
-        let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
+        let close = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.close,"#00A7AA", "24px", "24px");
         close.className = "ui-container-close";
         title.appendChild(close);
         content.appendChild(title);
@@ -2627,7 +2627,7 @@ var geoCoordMap = {
         let span = document.createElement("span");
         span.innerHTML = "● 地图设置 ";
         title.appendChild(span);
-        let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
+        let close = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.close,"#00A7AA", "24px", "24px");
         close.className = "ui-container-close";
         title.appendChild(close);
         content.appendChild(title);
@@ -12400,7 +12400,7 @@ function getSaveAsReport(configs, container, myChart) {
                     "backgroundImage:'-webkit-linear-gradient(45deg,rgba(255, 255, 255, 0.15) 25%,transparent 25%,transparent 50%,rgba(255, 255, 255, 0.15) 50%,rgba(255, 255, 255, 0.15) 75%,transparent 75%,transparent)," +
                     "-webkit-linear-gradient(-45deg,rgba(255, 255, 255, 0.15) 25%,transparent 25%,transparent 50%,rgba(255, 255, 255, 0.15) 50%,rgba(255, 255, 255, 0.15) 75%,transparent 75%,transparent)'},\n" +
                     "黑色: {backgroundColor: '#000000', color: '#F0FFFF', selected: '#303030', hover: 'rgba(0, 0, 0, 0.3)', border: '#F0FFFF'," +
-                    "backgroundImage:'-webkit-linear-gradient(90deg,rgba(255, 255, 255, 0.15) 25%,transparent 25%,transparent 50%,rgba(255, 255, 255, 0.15) 50%,rgba(255, 255, 255, 0.15) 75%,transparent 75%,transparent)'},\n" +
+                    "backgroundImage:'-webkit-linear-gradient(45deg,rgba(255, 255, 255, 0.15) 25%,transparent 25%,transparent 50%,rgba(255, 255, 255, 0.15) 50%,rgba(255, 255, 255, 0.15) 75%,transparent 75%,transparent)'},\n" +
                     "墨绿: {backgroundColor: '#2F4F4F', color: '#F0F8FF', selected: 'rgba(0, 0, 0, 0.3)', hover: 'rgba(0, 0, 0, 0.3)', border: '#FF7F50'," +
                     "backgroundImage:'-webkit-linear-gradient(45deg,rgba(255, 255, 255, 0.15) 25%,transparent 25%,transparent 50%,rgba(255, 255, 255, 0.15) 50%,rgba(255, 255, 255, 0.15) 75%,transparent 75%,transparent)'},\n" +
                     "深蓝: {backgroundColor: '#003355', color: '#F8F8F8', selected: 'rgba(0, 0, 0, 0.3)', hover: 'rgba(0, 0, 0, 0.3)', border: '#F0FFFF'," +
@@ -13139,7 +13139,7 @@ function getSaveAsReport(configs, container, myChart) {
                 "span.tabButton-unselected:hover{background-color: sandybrown}\n" +
                 "span.tabButton-theme{height: 100%;float: right;cursor: pointer;font-size: 100%;background-color: transparent;outline-style: none;}\n" +
                 "span.theme{height: 100%;cursor: pointer;font-size: 80%;width: 50px;outline-style: none;}\n" +
-                "span.theme-selected{height: 100%;cursor: pointer;font-size: 90%;width: 50px;outline-style: none;border:1px solid gray;}\n" +
+                "span.theme-selected{height: 100%;cursor: pointer;font-size: 90%;width: 50px;outline-style: none;border:1px solid gray;border-radius: 2px}\n" +
                 "dl{padding-left: 5px;padding-right: 5px;}\n" +
                 "dt{cursor: pointer;outline-style: none;border-radius: 4px}\n" +
                 "dt:hover{background-color: rgba(0, 0, 0, 0.1);}\n" +

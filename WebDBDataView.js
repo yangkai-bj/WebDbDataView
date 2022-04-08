@@ -3,7 +3,8 @@ var __CONFIGS__ = {
         DATABASES: "__WEB_SQLITE_DATABASES__",
         SCRIPTS: "__WEB_SQLITE_SCRIPTS__",
         DATASET: "__WEB_SQLITE_DATASET__",
-        CONFIGS: "__WEB_SQLITE_USER_CONFIGS__"
+        CONFIGS: "__WEB_SQLITE_CONFIGS__",
+        LOGS: "__WEB_SQLITE_LOGS__",
     },
     DATABASES: [],
     CURRENT_DATABASE: {index: 0, value: null, connect: null},
@@ -17,8 +18,8 @@ const __VERSION__ = {
     name: "Web DataView for SQLite Database of browser",
     main: "WebDBDataView.js",
     echarts: "echarts/v5.3.0",
-    version: "3.2.2",
-    date: "2022/04/02",
+    version: "3.2.4",
+    date: "2022/04/08",
     comment: [
         "-- 2021/03/08",
         "优化算法和压缩代码.",
@@ -90,12 +91,18 @@ const __VERSION__ = {
         "增加大数据文件分割功能.",
         "-- 2022/03/30",
         "修改固定报表.",
+        "-- 2022/04/02",
+        "增加保存日志上限,防止内存溢出导致浏览器崩溃.",
+        "-- 2022/04/07",
+        "优化前端日志模块.",
+        "-- 2022/04/08",
+        "优化系统资源库.",
     ],
     author: __SYS_LOGO_LINK__.author.decode(),
     url: __SYS_LOGO_LINK__.link.getee.decode(),
     tel: __SYS_LOGO_LINK__.tel.decode(),
     email: __SYS_LOGO_LINK__.email.decode(),
-    logo: __SYS_LOGO_LINK__.image,
+    logo: __SYS_IMAGES_SVG__.getSrc(__SYS_IMAGES_SVG__.echarts, "#00A7AA", "48px", "48px"),
     notes: "",
     helps: {
         create_database_connect: "在浏览器中创建一个数据库(SQLite)。",
@@ -125,10 +132,16 @@ var __LOGS__ = {
             options: ["3", "4", "5", "6", "7"],
             type: "select"
         },
+        logsDaySize: {
+            name: "每天日志条数",
+            value: "100",
+            options: ["100","200","300", "400", "500"],
+            type: "select"
+        },
         logsPageSize: {
             name: "页面日志条数",
-            value: "1000",
-            options: ["50", "100", "500", "1000", "5000"],
+            value: "50",
+            options: ["50", "100", "500"],
             type: "select"
         },
         logsOrderby: {
@@ -152,30 +165,32 @@ var __LOGS__ = {
             setUserConfig("logsConfig", JSON.stringify(__LOGS__.getConfigItems()));
         }
 
-        let logs = getUserConfig("UserLogs");
+        let logs = getUserLogs();
         if (typeof logs != "undefined") {
-            //############################
-            //默认保留7天的日志
-            //############################
-            logs = JSON.parse(logs);
-            let list = [];
-            for (let day in logs) {
-                list.push(day);
+            try {
+                logs = JSON.parse(logs);
+                let list = [];
+                for (let day in logs) {
+                    list.push(day);
+                }
+                list.sort(function (a, b) {
+                    return (new Date(a)) - (new Date(b))
+                });
+                let days = Number(__LOGS__.configs.logsDays.value);
+                if (list.length > days) {
+                    let retain = list.slice(list.length - days);
+                    let results = retain.reduce(function (result, day) {
+                            result[day] = logs[day];
+                            return result;
+                        },
+                        {});
+                    __LOGS__.data = results;
+                    setUserLogs(JSON.stringify(results));
+                } else
+                    __LOGS__.data = logs;
+            }catch (e) {
+                console.log(e);
             }
-            list.sort(function (a, b) {
-                return (new Date(a)) - (new Date(b))
-            });
-            if (list.length > __LOGS__.days) {
-                let retain = list.slice(list.length - __LOGS__.days);
-                let results = retain.reduce(function (result, day) {
-                        result[day] = logs[day];
-                        return result;
-                    },
-                    {});
-                __LOGS__.data = results;
-                setUserConfig("UserLogs", JSON.stringify(results));
-            } else
-                __LOGS__.data = logs;
         }
     },
 
@@ -235,7 +250,7 @@ var __LOGS__ = {
         let span = document.createElement("span");
         span.innerHTML = "● 日志设置 ";
         title.appendChild(span);
-        let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
+        let close = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.close,"#00A7AA", "24px", "24px");
         close.className = "ui-container-close";
         title.appendChild(close);
         content.appendChild(title);
@@ -366,14 +381,14 @@ var __LOGS__ = {
         setDialogDrag(title);
     },
 
-    delete: function(date){
+    delete: function (date) {
         if (typeof __LOGS__.data[date] != "undefined") {
             delete __LOGS__.data[date];
-            setUserConfig("UserLogs", JSON.stringify(__LOGS__.data));
+            setUserLogs(JSON.stringify(__LOGS__.data));
         }
     },
 
-    saveas: function(date) {
+    saveas: function (date) {
         let sheets = [];
         let sheetNames = [];
         let comment = [
@@ -395,14 +410,14 @@ var __LOGS__ = {
                 row.push(log.warning);
                 aoa.push(row);
             }
-        }catch (e) {
+        } catch (e) {
         }
         sheets.push(aoa);
         let sheetname = date;
         sheetNames.push(sheetname);
         sheets.push(comment);
         sheetNames.push("Comment");
-        openDownloadDialog(workbook2blob(sheets, sheetNames), __VERSION__.name.replaceAll(" ","_") + "_logs_" + date + ".xlsx");
+        openDownloadDialog(workbook2blob(sheets, sheetNames), __VERSION__.name.replaceAll(" ", "_") + "_logs_" + date + ".xlsx");
     },
 
     add: function (log) {
@@ -411,11 +426,15 @@ var __LOGS__ = {
         log.message = log.message.encode();
         if (typeof __LOGS__.data[date] == "undefined")
             __LOGS__.data[date] = [];
+        if (__LOGS__.data[date].length == Number(__LOGS__.configs.logsDaySize.value) - 10)
+            UI.alert.show("注意", "当前日志数量上限为" + __LOGS__.configs.logsDaySize.value + "，系统将自动清理过往日志。");
+        if (__LOGS__.data[date].length >= Number(__LOGS__.configs.logsDaySize.value))
+            __LOGS__.data[date] = __LOGS__.data[date].slice(1);
         __LOGS__.data[date].push(log);
-        setUserConfig("UserLogs", JSON.stringify(__LOGS__.data));
+        setUserLogs(JSON.stringify(__LOGS__.data));
     },
 
-    viewError: function(parent, error) {
+    viewError: function (parent, error) {
         let names = {
             EvalError: "eval的使用与定义不一致",
             RangeError: "数值越界",
@@ -443,6 +462,7 @@ var __LOGS__ = {
         let content = document.createElement("div");
         content.id = "error-dialog";
         content.className = "ui-container-body";
+        content.style.width = "550px";
         container.appendChild(content);
 
         let title = document.createElement("div");
@@ -452,7 +472,7 @@ var __LOGS__ = {
 
         span.innerHTML = "● " + (typeof names[error.name] !== "undefined" ? names[error.name] : "其他未定义错误");
         title.appendChild(span);
-        let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
+        let close = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.close,"#00A7AA", "24px", "24px");
         close.className = "ui-container-close";
         title.appendChild(close);
         content.appendChild(title);
@@ -467,9 +487,9 @@ var __LOGS__ = {
         let code = document.createElement("code");
         code.className = "stack";
         code.innerHTML = error.stack.toString()
-            .replace(error.name, "<span class='name'>" + error.name + "</span>")
-            .replace(error.message, "<span class='message'>" + error.message + "</span>")
-            .split("\n").join("<br> ● ") + "<hr>" + getUserConfig("CopyRight") + "<br>" +
+                .replace(error.name, "<span class='name'>" + error.name + "</span>")
+                .replace(error.message, "<span class='message'>" + error.message + "</span>")
+                .split("\n").join("<br> ● ") + "<hr>" + getUserConfig("CopyRight") + "<br>" +
             "<a href =" + __VERSION__.url + " target = '_blank'>" + __VERSION__.url + "</a>";
         detail.appendChild(code);
 
@@ -498,7 +518,6 @@ var __LOGS__ = {
         tool.appendChild(help);
         setDialogDrag(title);
     },
-
     viewMessage: function (msg, warning) {
         let log = {
             time: new Date(),
@@ -512,14 +531,14 @@ var __LOGS__ = {
         dt.className = "dt";
         dt.id = dt.innerText = log.time.format("yyyy-MM-dd hh:mm:ss S");
         let tocopy = document.createElement("span");
-        tocopy.innerHTML= "⇢";
+        tocopy.innerHTML = "⇢";
         tocopy.className = "copy";
         tocopy.title = "复制";
-        tocopy.onclick = function(){
+        tocopy.onclick = function () {
             let target = this.parentNode.getElementsByClassName("message")[0];
             setClipboardListener(target);
             document.execCommand("copy");
-            UI.alert.show("提示","日志内容已复制到粘贴板.");
+            UI.alert.show("提示", "日志内容已复制到粘贴板.");
         };
         dt.appendChild(tocopy);
 
@@ -741,7 +760,7 @@ var __XMLHTTP__ = {
             {name: "codemirror", src: "codemirror/dialog.css", type: "text/css", element: "link", load: false},
             {name: "Excel组件", src: "sheetjs/xlsx.full.min.js", type: "text/javascript", element: "script", load: true},
             {name: "常用统计函数", src: "StatisticsComponent.js", type: "text/javascript", element: "script", load: true},
-            {name: "文件加密组件", src: "FileSecurityComponent.js", type: "text/javascript", element: "script", load: false},
+            {name: "文件加密组件", src: "FileSecurityComponent.js", type: "text/javascript", element: "script", load: true},
             {name: "数据读取组件", src: "DataReaderComponent.js", type: "text/javascript", element: "script", load: true},
             {name: "批量邮件组件", src: "MailComponent.js", type: "text/javascript", element: "script", load: true},
             {
@@ -1153,7 +1172,7 @@ var __XMLHTTP__ = {
          let span = document.createElement("span");
          span.innerHTML = "● 报表设置 ";
          title.appendChild(span);
-         let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
+         let close = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.close,"#00A7AA", "24px", "24px");
          close.className = "ui-container-close";
          title.appendChild(close);
          content.appendChild(title);
@@ -1581,7 +1600,7 @@ var __XMLHTTP__ = {
          let span = document.createElement("span");
          span.innerHTML = "● 编辑器设置 ";
          title.appendChild(span);
-         let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
+         let close = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.close,"#00A7AA", "24px", "24px");
          close.className = "ui-container-close";
          title.appendChild(close);
          content.appendChild(title);
@@ -2669,7 +2688,7 @@ function appState(title, message) {
     $("time").height = 50;
     $("time").title = title;
     let ctx = $("time").getContext("2d");
-    ctx.drawImage(__SYS_IMAGES__.getLogoImage(__SYS_IMAGES__.mouse, 30, 30), 0, 20, 30, 30);
+    ctx.drawImage(__SYS_IMAGES_PNG__.getImage(__SYS_IMAGES_PNG__.mouse, 30, 30), 0, 20, 30, 30);
     ctx.save();
     ctx.translate($("time").width / 2, $("time").height / 2);
     ctx.font = '12px Arial';
@@ -2782,7 +2801,40 @@ function userLogin() {
                         "备忘": {value: "NOTE", card: "NOTE"},
                     };
                     let image = $("user").getElementsByTagName("img")[0];
-                    image.src = __SYS_IMAGES__.logined.image;
+                    image.src = __SYS_IMAGES_SVG__.getSrc(__SYS_IMAGES_SVG__.logined_user,"#00A7AA","24px","24px");
+                    image.onclick = function () {
+                        if (typeof __LOGS__.user.name !== "undefined") {
+                            let name = __LOGS__.user.name;
+                            UI.password.show("修改 " + name + " 的登录密码", {
+                                "旧的密码": "",
+                                "新的密码": "",
+                                "确认密码": ""
+                            }, "auto", function (args, values) {
+                                if (__LOGS__.user.attribute.password.value === values["旧的密码"].hex_md5_hash()) {
+                                    let name = args["name"];
+                                    let users = getUserConfig("Users");
+                                    users = JSON.parse(users.decode());
+                                    let pattern = /^.*(?=.{8,})(?=.*\d{1,7})(?=.*[A-Za-z]{1,7}).*$/;
+                                    //必须是8位密码,且必须包含字符和数字
+                                    let key = values["新的密码"];
+                                    if (key != values["确认密码"]) {
+                                        UI.alert.show("提示", "两次密码输入不一致。", "auto");
+                                    } else if (pattern.test(key) == false) {
+                                        UI.alert.show("提示", "请输入8位密码,且必须包含英文字母和数字。", "auto");
+                                    } else {
+                                        users[name].password = {
+                                            value: values["确认密码"].hex_md5_hash(),
+                                            date: new Date(),
+                                            age: 180
+                                        };
+                                        setUserConfig("Users", JSON.stringify(users).encode());
+                                        location.reload();
+                                    }
+                                } else
+                                    UI.alert.show("注意", "原密码校验错误。", "auto");
+                            }, {name: name});
+                        }
+                    };
                     let span = document.createElement("span");
                     span.id = "user-name";
                     span.innerHTML = values.name;
@@ -2922,7 +2974,7 @@ function init() {
             let users = getUserConfig("Users");
             if (users == null) {
                 UI.confirm.show("注意", "您没有创建系统用户,是否需要立即创建?", "auto", function () {
-                    UI.prompt.show("请输入用户名称", {"用户名称": ""}, "auto", function (values) {
+                    UI.prompt.show("创建用户", {"用户名称": ""}, "auto", function (values) {
                         let name = values["用户名称"].trim();
                         if (name.length >= 2) {
                             UI.password.show("用户 " + name + " 的登录密码", {
@@ -2983,15 +3035,45 @@ function initConfigs() {
                 }
             }
 
-            $("main-title").appendChild(__SYS_IMAGES__.getLogoImage(__VERSION__.logo));
+            let logo = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.echarts, "#00A7AA", "48px","48px");
+            logo.style.cssFloat = "left";
+            $("main-title").appendChild(logo);
             $("main-title").ondblclick = function () {
                 requestFullScreen(document.body);
             };
 
-            let image = document.createElement("img");
-            image.src = __SYS_IMAGES__.login.image;
-            $("user").appendChild(image);
-
+            let user = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.user_add, "#00A7AA", "32px","32px");
+            user.onclick = function() {
+                UI.prompt.show("创建用户", {"用户名称": ""}, "auto", function (values) {
+                    let name = values["用户名称"].trim();
+                    if (name.length >= 2) {
+                        UI.password.show("用户 " + name + " 的登录密码", {
+                            "登录密码": "",
+                            "确认密码": ""
+                        }, "auto", function (args, values) {
+                            let name = args["name"];
+                            let users = {};
+                            let pattern = /^.*(?=.{8,})(?=.*\d{1,7})(?=.*[A-Za-z]{1,7}).*$/;
+                            //必须是8位密码,且必须包含字符和数字
+                            let key = values["登录密码"];
+                            if (key != values["确认密码"]) {
+                                UI.alert.show("提示", "两次密码输入不一致。", "auto");
+                            } else if (pattern.test(key) == false) {
+                                UI.alert.show("提示", "请输入8位密码,且必须包含英文字母和数字.", "auto");
+                            } else {
+                                users[name] = {
+                                    password: {value: values["确认密码"].hex_md5_hash(), date: new Date(), age: 180},
+                                    date: new Date(),
+                                };
+                                setUserConfig("Users", JSON.stringify(users).encode());
+                                location.reload();
+                            }
+                        }, {name: name});
+                    } else
+                        UI.alert.show("注意", "用户名称长度不符合系统要求!", "auto");
+                });
+            }
+            $("user").appendChild(user);
             let helpurl = document.getElementsByClassName("help-url");
             for (let i = 0; i < helpurl.length; i++) {
                 helpurl[i].href = helpurl[i].innerHTML = __VERSION__.url;
@@ -3020,7 +3102,7 @@ function initConfigs() {
             }
             $("themes").setAttribute("href", getUserConfig("pagethemes") == null ? "themes/default.css" : getUserConfig("pagethemes"));
 
-            getQRCode($("page"), 90, 90, __VERSION__.url, __SYS_IMAGES__.echo);
+            getQRCode($("page"), 90, 90, __VERSION__.url, __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.echarts, "#00A7AA", "48px","48px"));
             resize();
 
             let config = getUserConfig("codeMirrorConfig");
@@ -3110,7 +3192,7 @@ function initMenus() {
         crdb.className = "button";
         crdb.innerText = "新增";
         crdb.id = "create_database_connect";
-        crdb.appendChild(__SYS_IMAGES__.getHelpButton(__SYS_IMAGES__.create_database, crdb, crdb.id, "auto"));
+        crdb.appendChild(__SYS_IMAGES_SVG__.getHelp(__SYS_IMAGES_SVG__.add, crdb, crdb.id, "auto", "white", "16px", "16px"));
         let help_crdb = $("help-create-database");
         crdb.onclick = help_crdb.onclick = function () {
             SQLite.createDatabase("auto");
@@ -3122,7 +3204,7 @@ function initMenus() {
         rmdb.className = "button";
         rmdb.innerText = "删除";
         rmdb.id = "delete_database_connect";
-        rmdb.appendChild(__SYS_IMAGES__.getHelpButton(__SYS_IMAGES__.drop_database, rmdb, rmdb.id, "auto"));
+        rmdb.appendChild(__SYS_IMAGES_SVG__.getHelp(__SYS_IMAGES_SVG__.del, rmdb, rmdb.id, "auto", "white", "16px", "16px"));
         rmdb.onclick = function () {
             if (__CONFIGS__.CURRENT_DATABASE.connect == null) {
                 UI.alert.show("提示", "请选择数据库.");
@@ -3168,7 +3250,7 @@ function initMenus() {
 
         let about = document.createElement("div");
         about.className = "charButton";
-        about.innerHTML = "☂";
+        about.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__SYS_IMAGES_SVG__.help,"white","20px", "20px");
         about.id = "about_and_help";
         about.style.cssFloat = "right";
         about.onclick = function () {
@@ -3195,7 +3277,7 @@ function initMenus() {
         crtb.className = "button";
         crtb.innerText = "新增";
         crtb.id = "create_new_table";
-        crtb.appendChild(__SYS_IMAGES__.getHelpButton(__SYS_IMAGES__.create_table, crtb, crtb.id, "auto"));
+        crtb.appendChild(__SYS_IMAGES_SVG__.getHelp(__SYS_IMAGES_SVG__.add, crtb, crtb.id, "auto", "white", "16px", "16px"));
         let help_crtb = $("help-create-table");
         crtb.onclick = help_crtb.onclick = function () {
             SQLite.createTable("auto", null, function (values) {
@@ -3226,7 +3308,7 @@ function initMenus() {
         importtb.className = "button";
         importtb.innerText = "导入";
         importtb.id = "import_data";
-        importtb.appendChild(__SYS_IMAGES__.getHelpButton(__SYS_IMAGES__.import, importtb, importtb.id, "auto"));
+        importtb.appendChild(__SYS_IMAGES_SVG__.getHelp(__SYS_IMAGES_SVG__.import, importtb, importtb.id, "auto", "white", "16px", "16px"));
         let help_importtb = $("help-import-data");
         importtb.onclick = help_importtb.onclick = function () {
             SQLite.import.start("auto");
@@ -3238,7 +3320,7 @@ function initMenus() {
         exConstr.className = "button";
         exConstr.innerText = "结构";
         exConstr.id = "show_table_construct";
-        exConstr.appendChild(__SYS_IMAGES__.getHelpButton(__SYS_IMAGES__.table_construct, exConstr, exConstr.id, "auto"));
+        exConstr.appendChild(__SYS_IMAGES_SVG__.getHelp(__SYS_IMAGES_SVG__.construct, exConstr, exConstr.id, "auto", "white", "16px", "16px"));
         exConstr.onclick = function () {
             let result = __CONFIGS__.CURRENT_TABLE.structure;
             result["eventid"] = getEventIndex();
@@ -3258,7 +3340,7 @@ function initMenus() {
         rmtb.className = "button";
         rmtb.innerText = "删除";
         rmtb.id = "drop_table";
-        rmtb.appendChild(__SYS_IMAGES__.getHelpButton(__SYS_IMAGES__.drop_table, rmtb, rmtb.id, "auto"));
+        rmtb.appendChild(__SYS_IMAGES_SVG__.getHelp(__SYS_IMAGES_SVG__.del, rmtb, rmtb.id, "auto", "white", "16px", "16px"));
         rmtb.onclick = function () {
             UI.confirm.show("注意", "确定要删除数据表(视图) " + __CONFIGS__.CURRENT_TABLE.name + " 吗?", "auto", function () {
                 if (checkStorage()) {
@@ -3303,7 +3385,7 @@ function initMenus() {
         newsql.className = "button";
         newsql.innerText = "新建";
         newsql.id = "create_new_sql";
-        newsql.appendChild(__SYS_IMAGES__.getHelpButton(__SYS_IMAGES__.create_sql, newsql, newsql.id, "auto"));
+        newsql.appendChild(__SYS_IMAGES_SVG__.getHelp(__SYS_IMAGES_SVG__.add, newsql, newsql.id, "auto", "white", "16px", "16px"));
         let help_createsql = $("help-create-sql");
         newsql.onclick = help_createsql.onclick = function () {
             let openfile = $("open-sql-file");
@@ -3355,7 +3437,7 @@ function initMenus() {
         opensql.className = "button";
         opensql.innerText = "打开";
         opensql.id = "open_sql";
-        opensql.appendChild(__SYS_IMAGES__.getHelpButton(__SYS_IMAGES__.open_sql, opensql, opensql.id, "auto"));
+        opensql.appendChild(__SYS_IMAGES_SVG__.getHelp(__SYS_IMAGES_SVG__.open, opensql, opensql.id, "auto", "white", "16px", "16px"));
         let help_opensql = $("help-open-sql");
         opensql.onclick = help_opensql.onclick = function () {
             UI.sqlManagerDialog.show("auto", function (args, values) {
@@ -3371,7 +3453,7 @@ function initMenus() {
         saveto.className = "button";
         saveto.innerText = "保存";
         saveto.id = "save_sql";
-        saveto.appendChild(__SYS_IMAGES__.getHelpButton(__SYS_IMAGES__.save_sql, saveto, saveto.id, "auto"));
+        saveto.appendChild(__SYS_IMAGES_SVG__.getHelp(__SYS_IMAGES_SVG__.save, saveto, saveto.id, "auto", "white", "16px", "16px"));
         let help_savesql = $("help-save-sql");
         saveto.onclick = help_savesql.onclick = function () {
             if (__SQLEDITOR__.title == null) {
@@ -3398,7 +3480,7 @@ function initMenus() {
         loadfile.className = "button";
         loadfile.innerText = "导入";
         loadfile.id = "load_sql_from_file";
-        loadfile.appendChild(__SYS_IMAGES__.getHelpButton(__SYS_IMAGES__.load_sql, loadfile, loadfile.id, "auto"));
+        loadfile.appendChild(__SYS_IMAGES_SVG__.getHelp(__SYS_IMAGES_SVG__.import, loadfile, loadfile.id, "auto", "white", "16px", "16px"));
         let help_loadsql = $("help-load-sql");
         loadfile.onclick = help_loadsql.onclick = function () {
             $("open-sql-file").click();
@@ -3410,7 +3492,7 @@ function initMenus() {
         saveas.className = "button";
         saveas.innerText = "导出";
         saveas.id = "save_sql_to_file";
-        saveas.appendChild(__SYS_IMAGES__.getHelpButton(__SYS_IMAGES__.unload_sql, saveas, saveas.id, "auto"));
+        saveas.appendChild(__SYS_IMAGES_SVG__.getHelp(__SYS_IMAGES_SVG__.emport, saveas, saveas.id, "auto", "white", "16px", "16px"));
         let help_downloadsql = $("help-download-sql");
         saveas.onclick = help_downloadsql.onclick = function () {
             UI.prompt.show("输入", {"文件名称": __SQLEDITOR__.title != null ? __SQLEDITOR__.title.split("_")[0] : ""}, "auto", function (args, values) {
@@ -3438,7 +3520,7 @@ function initMenus() {
         backup.className = "button";
         backup.innerText = "备份";
         backup.id = "backup_sql_to_file";
-        backup.appendChild(__SYS_IMAGES__.getHelpButton(__SYS_IMAGES__.unload_sql, backup, backup.id, "auto"));
+        backup.appendChild(__SYS_IMAGES_SVG__.getHelp(__SYS_IMAGES_SVG__.backup, backup, backup.id, "auto", "white", "16px", "16px"));
         backup.onclick = function () {
             UI.sqlManagerDialog.show("auto", function (args, values) {
 
@@ -3451,7 +3533,7 @@ function initMenus() {
         execsql.className = "button";
         execsql.innerText = "提交";
         execsql.id = "execute-sql";
-        execsql.appendChild(__SYS_IMAGES__.getHelpButton(__SYS_IMAGES__.execute_sql, execsql, "execute_sql", "auto"));
+        execsql.appendChild(__SYS_IMAGES_SVG__.getHelp(__SYS_IMAGES_SVG__.execute, execsql, "execute_sql", "auto", "white", "16px", "16px"));
         let help_execsql = $("help-execute-sql");
         execsql.onclick = help_execsql.onclick = function () {
             if (checkStorage()) {
@@ -3526,7 +3608,7 @@ function initMenus() {
         let tofull = document.createElement("div");
         sqltools.appendChild(tofull);
         tofull.className = "charButton";
-        tofull.innerText = "❏";
+        tofull.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__SYS_IMAGES_SVG__.fullscreen,"white","20px", "20px");
         tofull.style.cssFloat = "right";
         tofull.id = "set-editer-to-full";
         tofull.onclick = function () {
@@ -3537,7 +3619,7 @@ function initMenus() {
         let editerSetting = document.createElement("div");
         sqltools.appendChild(editerSetting);
         editerSetting.className = "charButton";
-        editerSetting.innerText = "┅";
+        editerSetting.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__SYS_IMAGES_SVG__.more,"white","20px", "20px");
         editerSetting.style.cssFloat = "right";
         editerSetting.id = "editer-setting";
         editerSetting.onclick = function () {
@@ -3563,7 +3645,7 @@ function initMenus() {
 
         let toDisplay = document.createElement("div");
         toDisplay.className = "charButton";
-        toDisplay.innerHTML = "∼";//"»";
+        toDisplay.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__SYS_IMAGES_SVG__.display,"white","20px", "20px");
         toDisplay.id = "display-log";
         toDisplay.onclick = function () {
             if ($("detail").style.display != "none") {
@@ -3586,9 +3668,8 @@ function initMenus() {
 
         let clean = document.createElement("div");
         clean.className = "charButton";
-        clean.innerHTML = "&#9850";
+        clean.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__SYS_IMAGES_SVG__.clear,"white","20px", "20px");
         clean.id = "logs-clear";
-        // clean.appendChild(__SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.clear_logs));
         clean.onclick = function () {
             let msgbox = $("messageBox");
             msgbox.innerHTML = "";
@@ -3599,7 +3680,7 @@ function initMenus() {
         let savelogs = document.createElement("div");
         savelogs.className = "charButton";
         savelogs.id = "save-logs";
-        savelogs.innerHTML = "&#8675";
+        savelogs.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__SYS_IMAGES_SVG__.download,"white","20px", "20px");
         savelogs.style.cssFloat = "left";
         savelogs.onclick = function () {
             let logslist = {};
@@ -3633,7 +3714,7 @@ function initMenus() {
         logsets.id = "logs-records";
         detailtools.appendChild(logsets);
         logsets.className = "charButton";
-        logsets.innerText = "┅";
+        logsets.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__SYS_IMAGES_SVG__.more,"white","20px", "20px");
         logsets.id = "logs-setting";
         logsets.style.cssFloat = "right";
         logsets.onclick = function () {
@@ -3734,7 +3815,7 @@ function initMenus() {
         let openEchartsFile = document.createElement("div");
         datatools.appendChild(openEchartsFile);
         openEchartsFile.className = "charButton";
-        openEchartsFile.innerText = "✓";
+        openEchartsFile.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__SYS_IMAGES_SVG__.report,"white","20px", "20px");
         openEchartsFile.style.cssFloat = "left";
         openEchartsFile.onclick = $("open-html-report").onclick = function () {
             $("open-echarts-file").click();
@@ -3744,7 +3825,7 @@ function initMenus() {
         let dataReader = document.createElement("div");
         datatools.appendChild(dataReader);
         dataReader.className = "charButton";
-        dataReader.innerText = "⚘";
+        dataReader.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__SYS_IMAGES_SVG__.onload,"white","20px", "20px");
         dataReader.style.cssFloat = "left";
         dataReader.id = "data-reader";
         dataReader.onclick = $("read-xls-file").onclick = function () {
@@ -3758,7 +3839,7 @@ function initMenus() {
         let datatran = document.createElement("div");
         datatools.appendChild(datatran);
         datatran.className = "charButton";
-        datatran.innerHTML = "&#9735";//"☇"
+        datatran.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__SYS_IMAGES_SVG__.datatran,"white","20px", "20px");
         datatran.id = "dataset-transpose";
         let help_datasettranspose = $("help-dataset-transpose");
         datatran.onclick = help_datasettranspose.onclick = function () {
@@ -3772,7 +3853,7 @@ function initMenus() {
         let dataslice = document.createElement("div");
         datatools.appendChild(dataslice);
         dataslice.className = "charButton";
-        dataslice.innerHTML = "&#9839";//"♯";
+        dataslice.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__SYS_IMAGES_SVG__.slice,"white","20px", "20px");
         dataslice.id = "dataset-slice";
         let help_datasetslice = $("help-dataset-slice");
         dataslice.onclick = help_datasetslice.onclick = function () {
@@ -3790,7 +3871,7 @@ function initMenus() {
         let subtotal = document.createElement("div");
         datatools.appendChild(subtotal);
         subtotal.className = "charButton";
-        subtotal.innerHTML = "&#931";//"Σ";
+        subtotal.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__SYS_IMAGES_SVG__.sum,"white","20px", "20px");
         subtotal.id = "dataset-subtotal";
         let help_datasetsubtotal = $("help-dataset-subtotal");
         subtotal.onclick = help_datasetsubtotal.onclick = function () {
@@ -3806,7 +3887,7 @@ function initMenus() {
         let download = document.createElement("div");
         datatools.appendChild(download);
         download.className = "charButton";
-        download.innerHTML = "&#8675";//"⇣";
+        download.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__SYS_IMAGES_SVG__.download,"white","20px", "20px");
         download.id = "dataset-download";
         let help_datasetdownload = $("help-dataset-download");
         download.onclick = help_datasetdownload.onclick = function () {
@@ -4002,7 +4083,7 @@ function initMenus() {
         let remove = document.createElement("div");
         datatools.appendChild(remove);
         remove.className = "charButton";
-        remove.innerHTML = "&#10007";//"✗";
+        remove.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__SYS_IMAGES_SVG__.remove,"white","20px", "20px");
         remove.id = "dataset-remove";
         let help_datasetremove = $("help-dataset-remove");
         remove.onclick = help_datasetremove.onclick = function () {
@@ -4025,7 +4106,7 @@ function initMenus() {
         let removeall = document.createElement("div");
         datatools.appendChild(removeall);
         removeall.className = "charButton";
-        removeall.innerHTML = "&#9850";//"♻";
+        removeall.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__SYS_IMAGES_SVG__.clear,"white","20px", "20px");
         removeall.id = "dataset-removeall";
         removeall.onclick = function () {
             if (__DATASET__.result.length > 0) {
@@ -4046,7 +4127,7 @@ function initMenus() {
         let fileSecurity = document.createElement("div");
         datatools.appendChild(fileSecurity);
         fileSecurity.className = "charButton";
-        fileSecurity.innerText = "☍";
+        fileSecurity.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__SYS_IMAGES_SVG__.encrypt,"white","20px", "20px");
         fileSecurity.onclick = $("file-security").onclick = function () {
             getFileSecurity("auto");
         };
@@ -4055,7 +4136,7 @@ function initMenus() {
         let mailto = document.createElement("div");
         datatools.appendChild(mailto);
         mailto.className = "charButton";
-        mailto.innerText = "✉";
+        mailto.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__SYS_IMAGES_SVG__.email,"white","20px", "20px");
         mailto.onclick = function () {
             getMailComponent("auto");
         };
@@ -4064,7 +4145,7 @@ function initMenus() {
         let blobsplit = document.createElement("div");
         datatools.appendChild(blobsplit);
         blobsplit.className = "charButton";
-        blobsplit.innerText = "⚒";
+        blobsplit.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__SYS_IMAGES_SVG__.datasplit,"white","20px", "20px");
         blobsplit.onclick = function () {
             UI.splitFileBlob.show("大数据文件分割", "auto", function (args) {
                 let blob = new Blob([str2ab(args.result)], {type: "plain/text"});
@@ -4076,7 +4157,7 @@ function initMenus() {
         let datasetSetting = document.createElement("div");
         datatools.appendChild(datasetSetting);
         datasetSetting.className = "charButton";
-        datasetSetting.innerText = "┅";
+        datasetSetting.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__SYS_IMAGES_SVG__.more,"white","20px", "20px");
         datasetSetting.id = "dataset-setting";
         datasetSetting.onclick = function () {
             __DATASET__.setConfigs("auto", function () {
@@ -4123,7 +4204,7 @@ function initMenus() {
         let toecharts = document.createElement("div");
         datatools.appendChild(toecharts);
         toecharts.className = "charButton";
-        toecharts.innerText = "❏";
+        toecharts.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__SYS_IMAGES_SVG__.fullscreen,"white","20px", "20px");
         toecharts.style.cssFloat = "right";
         toecharts.id = "dataset-to-echarts";
         toecharts.onclick = function () {
@@ -4148,7 +4229,7 @@ function initMenus() {
         let toconfigs = document.createElement("div");
         datatools.appendChild(toconfigs);
         toconfigs.className = "charButton";
-        toconfigs.innerText = "┅";
+        toconfigs.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__SYS_IMAGES_SVG__.more,"white","20px", "20px");
         toconfigs.style.cssFloat = "right";
         toconfigs.id = "dataset-to-configs";
         let help_echartsConfigs = $("help-select-echarts-configs");
@@ -4183,7 +4264,7 @@ function initMenus() {
         let toMultiEcharts = document.createElement("div");
         datatools.appendChild(toMultiEcharts);
         toMultiEcharts.className = "charButton";
-        toMultiEcharts.innerText = "☶";
+        toMultiEcharts.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__SYS_IMAGES_SVG__.multiview,"white","20px", "20px");
         toMultiEcharts.style.cssFloat = "right";
         toMultiEcharts.id = "dataset-to-multi-echarts";
         toMultiEcharts.onclick = $("help-dataset-to-multi-echarts").onclick = function () {
@@ -4296,7 +4377,7 @@ function initMenus() {
         let getecharts = document.createElement("div");
         datatools.appendChild(getecharts);
         getecharts.className = "charButton";
-        getecharts.innerText = "❖";
+        getecharts.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__SYS_IMAGES_SVG__.echarts,"white","20px", "20px");
         getecharts.style.cssFloat = "right";
         getecharts.id = "dataset-to-charts";
         let help_echarts = $("help-dataset-echarts");
@@ -4455,12 +4536,13 @@ function getQRCode(parent,width,height,text,logoImage){
         qr.style.height = height + "px";
         qr.style.bottom = "10px";
         qr.style.right = "10px";
-        let logo = __SYS_IMAGES__.getLogoImage(logoImage);
+        let logo = logoImage;
         logo.id = "qrcode_logo";
+        logo.style.backgroundColor = "white";
         logo.style.width = width/4.0 + "px";
-        logo.style.height = width/4.0 * (logoImage.width/logoImage.height) + "px";
+        logo.style.height = width/4.0  + "px";
         logo.style.marginLeft = (width-width/4.0)/2 + "px";
-        logo.style.marginTop = (height-width/4.0 * (logoImage.width/logoImage.height))/2 + "px";
+        logo.style.marginTop = (height-width/4.0)/2 + "px";
         qr.appendChild(logo);
         qr.ondblclick = function() {
             UI.prompt.show("二维码", {内容: this.title, 宽度: 300, 高度: 300, 颜色: "#000000", 背景: "#FFFFFF"}, "auto", function (values) {
@@ -5397,7 +5479,7 @@ function getImageBase64Code(parent, img) {
     let span = document.createElement("span");
     span.innerHTML = "● 设置背景";
     title.appendChild(span);
-    let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
+    let close = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.close,"#00A7AA", "24px", "24px");
     close.className = "ui-container-close";
     title.appendChild(close);
     content.appendChild(title);

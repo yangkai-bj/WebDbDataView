@@ -383,7 +383,7 @@ function getMailComponent(parent) {
     let span = document.createElement("span");
     span.innerHTML = "● 邮件编辑";
     title.appendChild(span);
-    let close = __SYS_IMAGES__.getButtonImage(__SYS_IMAGES__.close);
+    let close = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.close,"#00A7AA", "24px", "24px");
     close.className = "ui-container-close";
     title.appendChild(close);
     content.appendChild(title);

@@ -1405,6 +1405,30 @@ function setUserConfig(key,value) {
     }
 }
 
+function getUserLogs() {
+    try {
+        let storage = window.localStorage;
+        if (storage.getItem(__CONFIGS__.STORAGE.LOGS) == null) {
+            let th = {};
+            storage.setItem(__CONFIGS__.STORAGE.LOGS, JSON.stringify(th));
+        }
+        let configs = JSON.parse(storage.getItem(__CONFIGS__.STORAGE.LOGS));
+        return configs;
+    }catch (e) {
+        __LOGS__.viewError("auto", e);
+        return null;
+    }
+}
+
+function setUserLogs(value) {
+    try {
+        let storage = window.localStorage;
+        storage.setItem(__CONFIGS__.STORAGE.LOGS, JSON.stringify(value));
+    } catch (e) {
+        __LOGS__.viewError("auto", e);
+    }
+}
+
 function getBrowserSize(){
     let winWidth = 0;
     let winHeight = 0;
