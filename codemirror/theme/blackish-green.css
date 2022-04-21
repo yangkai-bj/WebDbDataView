@@ -2,6 +2,34 @@
     Name:       black
     Author:     yangkai
 */
+/* Little shadow on the view-port of the buffer view */
+.cm-s-blackish-green.CodeMirror {
+  background: transparent;
+  /*-moz-box-shadow: inset 7px 0 12px -6px #000;*/
+  /*-webkit-box-shadow: inset 7px 0 12px -6px #000;*/
+  /*box-shadow: inset 7px 0 12px -6px #000;*/
+}
+
+/* Remove gutter border */
+.cm-s-blackish-green .CodeMirror-gutters {
+  border-right: 0;
+  background: transparent;
+}
+
+.cm-s-blackish-green .CodeMirror-linenumber {
+  color: #586e75;
+  text-shadow: 0 -1px #021014;
+  /*padding: 0 5px;*/
+}
+
+/* Common */
+
+.cm-s-blackish-green .CodeMirror-guttermarker-subtle { color: #586e75; }
+.cm-s-blackish-green .CodeMirror-guttermarker { color: #ddd; }
+
+.cm-s-blackish-green .CodeMirror-gutter .CodeMirror-gutter-text {
+  color: #586e75;
+}
 
 .blackish-green.base03 { color: var(--main-background-color); }
 .blackish-green.base02 { color: #073642; }
@@ -87,42 +115,6 @@
 .cm-s-blackish-green.CodeMirror ::selection { background: rgba(7, 54, 66, 0.99); }
 .cm-s-blackish-green .CodeMirror-line::-moz-selection, .CodeMirror-line > span::-moz-selection, .CodeMirror-line > span > span::-moz-selection { background: rgba(7, 54, 66, 0.99); }
 
-
-/* Little shadow on the view-port of the buffer view */
-.cm-s-blackish-green.CodeMirror {
-  -moz-box-shadow: inset 7px 0 12px -6px #000;
-  -webkit-box-shadow: inset 7px 0 12px -6px #000;
-  box-shadow: inset 7px 0 12px -6px #000;
-}
-
-/* Remove gutter border */
-.cm-s-blackish-green .CodeMirror-gutters {
-  border-right: 0;
-}
-
-/* Gutter colors and line number styling based of color scheme (dark / light) */
-
-/* Dark */
-.cm-s-blackish-green .CodeMirror-gutters {
-  background-image: var(--main-background-image);
-}
-
-.cm-s-blackish-green .CodeMirror-linenumber {
-  color: #586e75;
-  text-shadow: #021014 0 -1px;
-}
-
-/* Common */
-.cm-s-blackish-green .CodeMirror-linenumber {
-  padding: 0 5px;
-}
-.cm-s-blackish-green .CodeMirror-guttermarker-subtle { color: #586e75; }
-.cm-s-blackish-green .CodeMirror-guttermarker { color: #ddd; }
-
-.cm-s-blackish-green .CodeMirror-gutter .CodeMirror-gutter-text {
-  color: #586e75;
-}
-
 /* Cursor */
 .cm-s-blackish-green .CodeMirror-cursor { border-left: 1px solid #819090; }
 
@@ -134,7 +126,4 @@
   background: rgba(255, 255, 255, 0.06);
 }
 
-.cm-s-blackish-green.CodeMirror {
-  background-image: var(--main-background-image);
-}
 

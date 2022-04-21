@@ -38,5 +38,7 @@
 .cm-s-black .CodeMirror-activeline-background { background: #3C3636; }
 .cm-s-black .CodeMirror-matchingbracket { outline:1px solid grey;color:white !important; }
 
-.cm-s-black.CodeMirror { background-image: var(--main-background-image);
+.cm-s-black.CodeMirror {
+    /*background-image: var(--main-background-image);*/
+    background: transparent;
 }

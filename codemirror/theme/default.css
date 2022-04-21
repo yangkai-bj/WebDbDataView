@@ -42,5 +42,6 @@ div.cm-s-default .CodeMirror-activeline-background { background: #efefff; }
 div.cm-s-default span.CodeMirror-matchingbracket { outline:1px solid grey; color: inherit; }
 
 .cm-s-default.CodeMirror {
-    background-image: var(--main-background-image);
+    /*background-image: var(--main-background-image);*/
+    background: transparent;
 }

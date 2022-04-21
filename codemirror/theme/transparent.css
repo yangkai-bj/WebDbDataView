@@ -2,7 +2,11 @@
     Name:       transparent
     Author:     yangkai
 */
-.cm-s-transparent.CodeMirror { color: #999; background-color: #fff; }
+.cm-s-transparent.CodeMirror {
+    color: #999;
+    background-color: #fff;
+    background: transparent;
+}
 .cm-s-transparent div.CodeMirror-selected { background: #cfc; }
 .cm-s-transparent .CodeMirror-line::selection, .cm-s-transparent .CodeMirror-line > span::selection, .cm-s-transparent .CodeMirror-line > span > span::selection { background: #cfc; }
 .cm-s-transparent .CodeMirror-line::-moz-selection, .cm-s-transparent .CodeMirror-line > span::-moz-selection, .cm-s-transparent .CodeMirror-line > span > span::-moz-selection { background: #cfc; }
@@ -40,6 +44,3 @@
 div.cm-s-transparent .CodeMirror-activeline-background { background: #efefff; }
 div.cm-s-transparent span.CodeMirror-matchingbracket { outline:1px solid grey; color: inherit; }
 
-.cm-s-transparent.CodeMirror {
-    background: transparent;
-}

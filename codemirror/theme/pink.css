@@ -39,5 +39,6 @@
 .cm-s-pink .CodeMirror-activeline-background { background: #FFB6C1; }
 .cm-s-pink .CodeMirror-matchingbracket { text-decoration: underline; }
 .cm-s-pink.CodeMirror {
-  background-image: var(--main-background-image);
+  /*background-image: var(--main-background-image);*/
+  background: transparent;
 }
