@@ -538,7 +538,7 @@ function getFileSecurity(parent) {
     let span = document.createElement("span");
     span.innerHTML = "● 文件加密/解密";
     title.appendChild(span);
-    let close = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.close,"#00A7AA", "24px", "24px");
+    let close = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.close,__THEMES__.list[__THEMES__.selected].color, "24px", "24px");
     close.className = "ui-container-close";
     title.appendChild(close);
     content.appendChild(title);

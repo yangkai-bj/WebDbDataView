@@ -14,12 +14,38 @@ var __CONFIGS__ = {
     TEMPORARY_FILES: "/upload"
 };
 
+const __THEMES__ = {
+    list: {
+        "默认": {
+            href: "themes/default.css",
+            color: "lightseagreen",
+        },
+        "黑色": {
+            href: "themes/black.css",
+            color: "lightseagreen",
+        },
+        "粉色": {
+            href: "themes/pink.css",
+            color: "#C71585",
+        },
+        "墨绿": {
+            href: "themes/blackish-green.css",
+            color: "lightseagreen",
+        },
+        "蓝色": {
+            href: "themes/blue.css",
+            color: "#0c7ab2",
+        }
+    },
+    selected: "默认"
+};
+
 const __VERSION__ = {
     name: "Web DataView for SQLite Database of browser",
     main: "WebDBDataView.js",
-    echarts: "echarts/v5.3.0",
-    version: "3.2.4",
-    date: "2022/04/08",
+    echarts: "echarts/v5.3.2",
+    version: "3.2.5",
+    date: "2022/04/14",
     comment: [
         "-- 2021/03/08",
         "优化算法和压缩代码.",
@@ -97,12 +123,15 @@ const __VERSION__ = {
         "优化前端日志模块.",
         "-- 2022/04/08",
         "优化系统资源库.",
+        "-- 2022/04/14",
+        "优化主题.",
+        "Echarts 5.3.2.",
     ],
     author: __SYS_LOGO_LINK__.author.decode(),
     url: __SYS_LOGO_LINK__.link.getee.decode(),
     tel: __SYS_LOGO_LINK__.tel.decode(),
     email: __SYS_LOGO_LINK__.email.decode(),
-    logo: __SYS_IMAGES_SVG__.getSrc(__SYS_IMAGES_SVG__.echarts, "#00A7AA", "48px", "48px"),
+    logo: __SYS_IMAGES_SVG__.getSrc(__SYS_IMAGES_SVG__.echarts, __THEMES__.list[__THEMES__.selected].color, "48px", "48px"),
     notes: "",
     helps: {
         create_database_connect: "在浏览器中创建一个数据库(SQLite)。",
@@ -250,7 +279,7 @@ var __LOGS__ = {
         let span = document.createElement("span");
         span.innerHTML = "● 日志设置 ";
         title.appendChild(span);
-        let close = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.close,"#00A7AA", "24px", "24px");
+        let close = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.close,__THEMES__.list[__THEMES__.selected].color, "24px", "24px");
         close.className = "ui-container-close";
         title.appendChild(close);
         content.appendChild(title);
@@ -472,7 +501,7 @@ var __LOGS__ = {
 
         span.innerHTML = "● " + (typeof names[error.name] !== "undefined" ? names[error.name] : "其他未定义错误");
         title.appendChild(span);
-        let close = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.close,"#00A7AA", "24px", "24px");
+        let close = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.close,__THEMES__.list[__THEMES__.selected].color, "24px", "24px");
         close.className = "ui-container-close";
         title.appendChild(close);
         content.appendChild(title);
@@ -1172,7 +1201,7 @@ var __XMLHTTP__ = {
          let span = document.createElement("span");
          span.innerHTML = "● 报表设置 ";
          title.appendChild(span);
-         let close = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.close,"#00A7AA", "24px", "24px");
+         let close = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.close,__THEMES__.list[__THEMES__.selected].color, "24px", "24px");
          close.className = "ui-container-close";
          title.appendChild(close);
          content.appendChild(title);
@@ -1348,8 +1377,8 @@ var __XMLHTTP__ = {
                  new Option("黑色", JSON.stringify({name: "black", href: "codemirror/theme/black.css"})),
                  new Option("粉色", JSON.stringify({name: "pink", href: "codemirror/theme/pink.css"})),
                  new Option("墨绿", JSON.stringify({name: "blackish-green", href: "codemirror/theme/blackish-green.css"})),
-                 new Option("蓝色", JSON.stringify({name: "duotone-light", href: "codemirror/theme/duotone-light.css"})),
-                 new Option("深蓝", JSON.stringify({name: "cobalt", href: "codemirror/theme/cobalt.css"})),
+                 new Option("蓝色", JSON.stringify({name: "cobalt", href: "codemirror/theme/cobalt.css"})),
+                 new Option("深蓝", JSON.stringify({name: "duotone-light", href: "codemirror/theme/duotone-light.css"})),
                  new Option("幻想", JSON.stringify({name: "rubyblue", href: "codemirror/theme/rubyblue.css"})),
                  new Option("初心", JSON.stringify({name: "solarized light", href: "codemirror/theme/solarized.css"})),
                  new Option("宁静", JSON.stringify({name: "darcula", href: "codemirror/theme/darcula.css"})),
@@ -1600,7 +1629,7 @@ var __XMLHTTP__ = {
          let span = document.createElement("span");
          span.innerHTML = "● 编辑器设置 ";
          title.appendChild(span);
-         let close = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.close,"#00A7AA", "24px", "24px");
+         let close = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.close,__THEMES__.list[__THEMES__.selected].color, "24px", "24px");
          close.className = "ui-container-close";
          title.appendChild(close);
          content.appendChild(title);
@@ -1805,6 +1834,7 @@ function viewDatabases() {
             if (__CONFIGS__.DATABASES[i].name != null) {
                 let li = document.createElement("li");
                 li.className = "database-list";
+                li.style.listStyleImage = __SYS_IMAGES_SVG__.getUrl(__SYS_IMAGES_SVG__.database, __THEMES__.list[__THEMES__.selected].color, "16px", "16px");
                 let a = document.createElement("a");
                 a.className = "list";
                 a.innerText = __CONFIGS__.DATABASES[i].name;
@@ -1878,6 +1908,7 @@ function viewTables(index) {
                     if (results.rows.item(i).tablename != "__WebKitDatabaseInfoTable__" && results.rows.item(i).tablename != "") {
                         let li = document.createElement("li");
                         li.className = "table-list";
+                        li.style.listStyleImage = __SYS_IMAGES_SVG__.getUrl(__SYS_IMAGES_SVG__.table, __THEMES__.list[__THEMES__.selected].color, "16px", "16px");
                         let a = document.createElement("div");
                         li.appendChild(a);
                         a.className = "table-name";
@@ -1921,6 +1952,7 @@ function viewTables(index) {
                                                 let columns = [];
                                                 for (let m = 0; m < __CONFIGS__.CURRENT_TABLE.structure.data.length; m++) {
                                                     let l = document.createElement("li");
+                                                    l.style.listStyleImage = __SYS_IMAGES_SVG__.getUrl(__SYS_IMAGES_SVG__.field, __THEMES__.list[__THEMES__.selected].color, "16px", "16px");
                                                     $("ul-tb-" + __CONFIGS__.CURRENT_TABLE.name).appendChild(l);
                                                     let col = document.createElement("div");
                                                     col.className = "column-name";
@@ -2801,7 +2833,7 @@ function userLogin() {
                         "备忘": {value: "NOTE", card: "NOTE"},
                     };
                     let image = $("user").getElementsByTagName("img")[0];
-                    image.src = __SYS_IMAGES_SVG__.getSrc(__SYS_IMAGES_SVG__.logined_user,"#00A7AA","24px","24px");
+                    image.src = __SYS_IMAGES_SVG__.getSrc(__SYS_IMAGES_SVG__.logined_user,__THEMES__.list[__THEMES__.selected].color,"24px","24px");
                     image.onclick = function () {
                         if (typeof __LOGS__.user.name !== "undefined") {
                             let name = __LOGS__.user.name;
@@ -2970,6 +3002,49 @@ function init() {
             if (__XMLHTTP__.checking.certificated == false)
                 __XMLHTTP__.certificate(false);
         }
+
+        let logo = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.echarts, __THEMES__.list[__THEMES__.selected].color, "48px", "48px");
+        logo.style.cssFloat = "left";
+        $("main-title").appendChild(logo);
+        $("main-title").ondblclick = function () {
+            requestFullScreen(document.body);
+        };
+
+        let user = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.user_add,  __THEMES__.list[__THEMES__.selected].color, "32px", "32px");
+        user.onclick = function () {
+            UI.prompt.show("创建用户", {"用户名称": ""}, "auto", function (values) {
+                let name = values["用户名称"].trim();
+                if (name.length >= 2) {
+                    UI.password.show("用户 " + name + " 的登录密码", {
+                        "登录密码": "",
+                        "确认密码": ""
+                    }, "auto", function (args, values) {
+                        let name = args["name"];
+                        let users = {};
+                        let pattern = /^.*(?=.{8,})(?=.*\d{1,7})(?=.*[A-Za-z]{1,7}).*$/;
+                        //必须是8位密码,且必须包含字符和数字
+                        let key = values["登录密码"];
+                        if (key != values["确认密码"]) {
+                            UI.alert.show("提示", "两次密码输入不一致。", "auto");
+                        } else if (pattern.test(key) == false) {
+                            UI.alert.show("提示", "请输入8位密码,且必须包含英文字母和数字.", "auto");
+                        } else {
+                            users[name] = {
+                                password: {value: values["确认密码"].hex_md5_hash(), date: new Date(), age: 180},
+                                date: new Date(),
+                            };
+                            setUserConfig("Users", JSON.stringify(users).encode());
+                            location.reload();
+                        }
+                    }, {name: name});
+                } else
+                    UI.alert.show("注意", "用户名称长度不符合系统要求!", "auto");
+            });
+        };
+        $("user").appendChild(user);
+
+        getQRCode($("page"), 90, 90, __VERSION__.url, __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.echarts,  __THEMES__.list[__THEMES__.selected].color, "48px","48px"));
+
         try {
             let users = getUserConfig("Users");
             if (users == null) {
@@ -3019,6 +3094,7 @@ function initConfigs() {
     if (checkStorage()) {
         let message = null;
         try {
+
             __LOGS__.init();
             __LOGS__.viewMessage(__VERSION__.name + "\n版本代码:" + __VERSION__.version + "\n发布日期:" + __VERSION__.date);
             message = __LOGS__.viewMessage("初始化系统参数...");
@@ -3035,45 +3111,6 @@ function initConfigs() {
                 }
             }
 
-            let logo = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.echarts, "#00A7AA", "48px","48px");
-            logo.style.cssFloat = "left";
-            $("main-title").appendChild(logo);
-            $("main-title").ondblclick = function () {
-                requestFullScreen(document.body);
-            };
-
-            let user = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.user_add, "#00A7AA", "32px","32px");
-            user.onclick = function() {
-                UI.prompt.show("创建用户", {"用户名称": ""}, "auto", function (values) {
-                    let name = values["用户名称"].trim();
-                    if (name.length >= 2) {
-                        UI.password.show("用户 " + name + " 的登录密码", {
-                            "登录密码": "",
-                            "确认密码": ""
-                        }, "auto", function (args, values) {
-                            let name = args["name"];
-                            let users = {};
-                            let pattern = /^.*(?=.{8,})(?=.*\d{1,7})(?=.*[A-Za-z]{1,7}).*$/;
-                            //必须是8位密码,且必须包含字符和数字
-                            let key = values["登录密码"];
-                            if (key != values["确认密码"]) {
-                                UI.alert.show("提示", "两次密码输入不一致。", "auto");
-                            } else if (pattern.test(key) == false) {
-                                UI.alert.show("提示", "请输入8位密码,且必须包含英文字母和数字.", "auto");
-                            } else {
-                                users[name] = {
-                                    password: {value: values["确认密码"].hex_md5_hash(), date: new Date(), age: 180},
-                                    date: new Date(),
-                                };
-                                setUserConfig("Users", JSON.stringify(users).encode());
-                                location.reload();
-                            }
-                        }, {name: name});
-                    } else
-                        UI.alert.show("注意", "用户名称长度不符合系统要求!", "auto");
-                });
-            }
-            $("user").appendChild(user);
             let helpurl = document.getElementsByClassName("help-url");
             for (let i = 0; i < helpurl.length; i++) {
                 helpurl[i].href = helpurl[i].innerHTML = __VERSION__.url;
@@ -3100,9 +3137,7 @@ function initConfigs() {
                     resize();
                 };
             }
-            $("themes").setAttribute("href", getUserConfig("pagethemes") == null ? "themes/default.css" : getUserConfig("pagethemes"));
 
-            getQRCode($("page"), 90, 90, __VERSION__.url, __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.echarts, "#00A7AA", "48px","48px"));
             resize();
 
             let config = getUserConfig("codeMirrorConfig");
@@ -4682,23 +4717,25 @@ function setPageThemes() {
     let message = __LOGS__.viewMessage("设置应用页面主题...");
     try {
         let themes = $("help-select-user-themes");
-        themes.options.add(new Option("默认", "themes/default.css"));
-        themes.options.add(new Option("黑色", "themes/black.css"));
-        themes.options.add(new Option("粉色", "themes/pink.css"));
-        themes.options.add(new Option("墨绿", "themes/blackish-green.css"));
-        themes.options.add(new Option("蓝色", "themes/blue.css"));
+        for(let name in __THEMES__.list){
+            themes.options.add(new Option(name));
+        }
         try {
             let theme = getUserConfig("pagethemes");
-            if (theme != null)
-                themes.value = getUserConfig("pagethemes");
-            else
+            if (theme != null) {
+                __THEMES__.selected = themes.value = getUserConfig("pagethemes");
+                $("themes").setAttribute("href", __THEMES__.list[__THEMES__.selected].href);
+            } else {
                 themes.selectedIndex = 0;
+                $("themes").setAttribute("href", __THEMES__.list.默认.href);
+            }
         } catch (e) {
-            __LOGS__.viewError(e);
+            __LOGS__.viewError("auto", e);
         }
         themes.onchange = function () {
             setUserConfig("pagethemes", this.value);
-            $("themes").setAttribute("href", getUserConfig("pagethemes"));
+            __THEMES__.selected = this.value;
+            $("themes").setAttribute("href", __THEMES__.list[__THEMES__.selected].href);
             //同步编辑主题
             let theme = getOptionValue(__SQLEDITOR__.configs.codeMirrorTheme.options, this.options[this.selectedIndex].innerText);
             __SQLEDITOR__.configs.codeMirrorTheme.value = theme;
@@ -4718,6 +4755,8 @@ function setPageThemes() {
             document.body.style.backgroundRepeat = img.repeat;
             document.body.style.backgroundSize = img.size;
             document.body.style.backgroundAttachment = img.attachment;
+
+            location.reload();
         };
 
         let mapconfig = $("help-local-map-config");
@@ -4726,7 +4765,7 @@ function setPageThemes() {
             geoCoordMap.setMapConfig("auto");
         };
         message.innerText += "OK.";
-    }catch (e) {
+    } catch (e) {
         message.innerText += "fails.";
         __LOGS__.viewError("auto", e);
     }
@@ -5479,7 +5518,7 @@ function getImageBase64Code(parent, img) {
     let span = document.createElement("span");
     span.innerHTML = "● 设置背景";
     title.appendChild(span);
-    let close = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.close,"#00A7AA", "24px", "24px");
+    let close = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.close,__THEMES__.list[__THEMES__.selected].color, "24px", "24px");
     close.className = "ui-container-close";
     title.appendChild(close);
     content.appendChild(title);

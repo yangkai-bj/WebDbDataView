@@ -2005,7 +2005,7 @@ var __ECHARTS__ = {
         let span = document.createElement("span");
         span.innerHTML = "● 图形参数 ";
         title.appendChild(span);
-        let close = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.close,"#00A7AA", "24px", "24px");
+        let close = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.close,__THEMES__.list[__THEMES__.selected].color, "24px", "24px");
         close.className = "ui-container-close";
         title.appendChild(close);
         content.appendChild(title);
@@ -2627,7 +2627,7 @@ var geoCoordMap = {
         let span = document.createElement("span");
         span.innerHTML = "● 地图设置 ";
         title.appendChild(span);
-        let close = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.close,"#00A7AA", "24px", "24px");
+        let close = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.close,__THEMES__.list[__THEMES__.selected].color, "24px", "24px");
         close.className = "ui-container-close";
         title.appendChild(close);
         content.appendChild(title);
