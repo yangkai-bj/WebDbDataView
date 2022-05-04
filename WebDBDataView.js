@@ -1,51 +1,10 @@
-var __CONFIGS__ = {
-    STORAGE: {
-        DATABASES: "__WEB_SQLITE_DATABASES__",
-        SCRIPTS: "__WEB_SQLITE_SCRIPTS__",
-        DATASET: "__WEB_SQLITE_DATASET__",
-        CONFIGS: "__WEB_SQLITE_CONFIGS__",
-        LOGS: "__WEB_SQLITE_LOGS__",
-    },
-    DATABASES: [],
-    CURRENT_DATABASE: {index: 0, value: null, connect: null},
-    TABLES: [],
-    CURRENT_TABLE: {name: "", sql: "", structure: {}, type: ""},
-    FULLSCREEN: {element: null},
-    TEMPORARY_FILES: "/upload"
-};
-
-const __THEMES__ = {
-    list: {
-        "默认": {
-            href: "themes/default.css",
-            color: "lightseagreen",
-        },
-        "黑色": {
-            href: "themes/black.css",
-            color: "lightseagreen",
-        },
-        "粉色": {
-            href: "themes/pink.css",
-            color: "#C71585",
-        },
-        "墨绿": {
-            href: "themes/blackish-green.css",
-            color: "lightseagreen",
-        },
-        "蓝色": {
-            href: "themes/blue.css",
-            color: "#0c7ab2",
-        }
-    },
-    selected: "默认"
-};
 
 const __VERSION__ = {
     name: "Web DataView for SQLite Database of browser",
     main: "WebDBDataView.js",
     echarts: "echarts/v5.3.2",
-    version: "3.2.5",
-    date: "2022/04/14",
+    version: "3.2.8",
+    date: "2022/05/04",
     comment: [
         "-- 2021/03/08",
         "优化算法和压缩代码.",
@@ -118,7 +77,7 @@ const __VERSION__ = {
         "-- 2022/03/30",
         "修改固定报表.",
         "-- 2022/04/02",
-        "增加保存日志上限,防止内存溢出导致浏览器崩溃.",
+        "增设日志上限,防止浏览器内存溢出.",
         "-- 2022/04/07",
         "优化前端日志模块.",
         "-- 2022/04/08",
@@ -131,11 +90,12 @@ const __VERSION__ = {
     url: __SYS_LOGO_LINK__.link.getee.decode(),
     tel: __SYS_LOGO_LINK__.tel.decode(),
     email: __SYS_LOGO_LINK__.email.decode(),
-    logo: __SYS_IMAGES_SVG__.getSrc(__SYS_IMAGES_SVG__.echarts, __THEMES__.list[__THEMES__.selected].color, "48px", "48px"),
+    logo: {name: "mouse", transform: "rotateY(180deg)"},
     notes: "",
     helps: {
         create_database_connect: "在浏览器中创建一个数据库(SQLite)。",
-        delete_database_connect: "删除当前数据库链接。",
+        edit_database_connect: "修改当前数据库信息。",
+        delete_database_connect: "删除当前数据库。",
         create_new_table: "在当前数据库中创建一个数据表。",
         import_data: "协助您将如下格式数据导入当前数据库:<span style='font-size:50%'><li>.TXT</li><li>.CSV</li><li>.XLS</li><li>.XLSX</li></span>",
         show_table_construct: "解析当前数据表结构。",
@@ -148,6 +108,68 @@ const __VERSION__ = {
         backup_sql_to_file: "备份或恢复浏览器中所有脚本。<br><span style='font-size:50%'>备份文件中包含MD5校验码，用于在恢复时进行完整性校验。</span>",
         execute_sql: "执行当前脚本或函数并获取数据。",
         other: "帮助信息未定义。",
+    }
+};
+
+const __CONFIGS__ = {
+    STORAGE: {
+        DATABASES: "__WEB_SQLITE_DATABASES__",
+        SCRIPTS: "__WEB_SQLITE_SCRIPTS__",
+        DATASET: "__WEB_SQLITE_DATASET__",
+        CONFIGS: "__WEB_SQLITE_CONFIGS__",
+        LOGS: "__WEB_SQLITE_LOGS__",
+    },
+    DATABASES: [],
+    CURRENT_DATABASE: {index: null, value: null, connect: null},
+    TABLES: [],
+    CURRENT_TABLE: {name: null, sql: "", structure: {}, type: ""},
+    FULLSCREEN: {element: null},
+    TEMPORARY_FILES: "/upload"
+};
+
+const __THEMES__ = {
+    selected: "默认",
+    list: {
+        "默认": {
+            href: "themes/default.css",
+            color: "lightseagreen",
+            hover: '#336633',
+        },
+        "黑色": {
+            href: "themes/black.css",
+            color: "lightseagreen",
+            hover: '#800000',
+        },
+        "粉色": {
+            href: "themes/pink.css",
+            color: "#C71585",
+            hover: '#0c7ab2',
+        },
+        "墨绿": {
+            href: "themes/blackish-green.css",
+            color: "lightseagreen",
+            hover: '#CC6600',
+        },
+        "蓝色": {
+            href: "themes/blue.css",
+            color: "#0c7ab2",
+            hover: '#C71585',
+        }
+    },
+    set: function (name) {
+        if (typeof this.list[name] !== "undefined")
+            this.selected = name;
+    },
+    get: function (name) {
+        let themes = this.list["默认"];
+        if (typeof name === "undefined") {
+            if (typeof this.list[this.selected] !== "undefined")
+                themes = this.list[this.selected];
+        } else {
+            if (typeof this.list[name] !== "undefined")
+                themes = this.list[name];
+        }
+        return themes;
     }
 };
 
@@ -186,12 +208,12 @@ var __LOGS__ = {
             config = JSON.parse(config);
             for (let key in config) {
                 try {
-                    __LOGS__.configs[key].value = config[key];
+                    this.configs[key].value = config[key];
                 } catch (e) {
                 }
             }
         } else {
-            setUserConfig("logsConfig", JSON.stringify(__LOGS__.getConfigItems()));
+            setUserConfig("logsConfig", JSON.stringify(this.getConfigItems()));
         }
 
         let logs = getUserLogs();
@@ -205,7 +227,7 @@ var __LOGS__ = {
                 list.sort(function (a, b) {
                     return (new Date(a)) - (new Date(b))
                 });
-                let days = Number(__LOGS__.configs.logsDays.value);
+                let days = Number(this.configs.logsDays.value);
                 if (list.length > days) {
                     let retain = list.slice(list.length - days);
                     let results = retain.reduce(function (result, day) {
@@ -213,10 +235,10 @@ var __LOGS__ = {
                             return result;
                         },
                         {});
-                    __LOGS__.data = results;
+                    this.data = results;
                     setUserLogs(JSON.stringify(results));
                 } else
-                    __LOGS__.data = logs;
+                    this.data = logs;
             }catch (e) {
                 console.log(e);
             }
@@ -248,9 +270,9 @@ var __LOGS__ = {
         let config = getUserConfig("logsConfig");
         if (config != null) {
             config = JSON.parse(config);
-            for (key in config) {
+            for (let key in config) {
                 try {
-                    __LOGS__.configs[key].value = config[key];
+                    this.configs[key].value = config[key];
                 } catch (e) {
                 }
             }
@@ -279,7 +301,7 @@ var __LOGS__ = {
         let span = document.createElement("span");
         span.innerHTML = "● 日志设置 ";
         title.appendChild(span);
-        let close = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.close,__THEMES__.list[__THEMES__.selected].color, "24px", "24px");
+        let close = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.close,__THEMES__.get().color, "24px", "24px", null, __THEMES__.get().hover);
         close.className = "ui-container-close";
         title.appendChild(close);
         content.appendChild(title);
@@ -292,67 +314,67 @@ var __LOGS__ = {
         itemcontainer.id = itemcontainer.className = "ui-container-scroll-div";
         content.appendChild(itemcontainer);
 
-        for (let name in __LOGS__.configs) {
+        for (let name in this.configs) {
             let item = document.createElement("div");
             item.className = "ui-container-item";
             itemcontainer.appendChild(item);
             let span = document.createElement("span");
             span.className = "ui-container-item-name";
-            span.innerHTML = __LOGS__.configs[name].name + ":";
+            span.innerHTML = this.configs[name].name + ":";
             item.appendChild(span);
-            if (__LOGS__.configs[name].type == "input") {
+            if (this.configs[name].type == "input") {
                 let input = document.createElement("input");
                 input.style.cssFloat = "right";
                 input.id = name;
                 input.type = "input";
                 input.className = "ui-container-item-input";
-                input.value = __LOGS__.configs[name].value;
+                input.value = this.configs[name].value;
                 input.onchange = function () {
                     __LOGS__.configs[this.id].value = this.value;
                 };
-                if (typeof __LOGS__.configs[name].title != "undefined")
-                    input.title = __LOGS__.configs[name].title;
+                if (typeof this.configs[name].title != "undefined")
+                    input.title = this.configs[name].title;
                 else
-                    input.title = __LOGS__.configs[name].name;
+                    input.title = this.configs[name].name;
                 item.appendChild(input);
-            } else if (__LOGS__.configs[name].type == "select") {
+            } else if (this.configs[name].type == "select") {
                 let input = document.createElement("select");
                 input.style.cssFloat = "right";
                 input.id = name;
                 input.type = "select";
                 input.className = "ui-container-item-input";
-                for (let i = 0; i < __LOGS__.configs[name].options.length; i++) {
-                    if (typeof __LOGS__.configs[name].options[i] === "object")
-                        input.options.add(__LOGS__.configs[name].options[i]);
+                for (let i = 0; i < this.configs[name].options.length; i++) {
+                    if (typeof this.configs[name].options[i] === "object")
+                        input.options.add(this.configs[name].options[i]);
                     else
-                        input.options.add(new Option(__LOGS__.configs[name].options[i]));
+                        input.options.add(new Option(this.configs[name].options[i]));
                 }
-                input.value = __LOGS__.configs[name].value;
+                input.value = this.configs[name].value;
                 input.onchange = function () {
                     __LOGS__.configs[this.id].value = this.value;
                 };
-                if (typeof __LOGS__.configs[name].title != "undefined")
-                    input.title = __LOGS__.configs[name].title;
+                if (typeof this.configs[name].title != "undefined")
+                    input.title = this.configs[name].title;
                 else
-                    input.title = __LOGS__.configs[name].name;
+                    input.title = this.configs[name].name;
                 item.appendChild(input);
-            } else if (__LOGS__.configs[name].type == "color") {
+            } else if (this.configs[name].type == "color") {
                 let input = document.createElement("input");
                 input.style.cssFloat = "right";
                 input.id = name;
                 input.type = "color";
                 input.className = "ui-container-item-input";
-                input.value = __LOGS__.configs[name].value;
+                input.value = this.configs[name].value;
                 input.onchange = function () {
                     __LOGS__.configs[this.id].value = this.value;
                 };
-                if (typeof __LOGS__.configs[name].title != "undefined")
-                    input.title = __LOGS__.configs[name].title;
+                if (typeof this.configs[name].title != "undefined")
+                    input.title = this.configs[name].title;
                 else
-                    input.title = __LOGS__.configs[name].name;
+                    input.title = this.configs[name].name;
                 item.appendChild(input);
-            } else if (__LOGS__.configs[name].type == "hr") {
-                span.innerHTML = "[ " + __LOGS__.configs[name].name + " ]";
+            } else if (this.configs[name].type == "hr") {
+                span.innerHTML = "[ " + this.configs[name].name + " ]";
                 span.style.fontWeight = "bolder";
                 span.style.color = "var(--main-title-color)";
                 let c = document.createElement("div");
@@ -411,9 +433,9 @@ var __LOGS__ = {
     },
 
     delete: function (date) {
-        if (typeof __LOGS__.data[date] != "undefined") {
-            delete __LOGS__.data[date];
-            setUserLogs(JSON.stringify(__LOGS__.data));
+        if (typeof this.data[date] != "undefined") {
+            delete this.data[date];
+            setUserLogs(JSON.stringify(this.data));
         }
     },
 
@@ -430,7 +452,7 @@ var __LOGS__ = {
         let columns = ["日期", "时间", "日志", "警告"];
         aoa.push(columns);
         try {
-            let logs = __LOGS__.data[date];
+            let logs = this.data[date];
             for (let i = 0; i < logs.length; i++) {
                 let log = logs[i];
                 let row = [date];
@@ -453,14 +475,14 @@ var __LOGS__ = {
         let date = log.time.format("yyyy-MM-dd");
         log.time = log.time.format("hh:mm:ss S");
         log.message = log.message.encode();
-        if (typeof __LOGS__.data[date] == "undefined")
-            __LOGS__.data[date] = [];
-        if (__LOGS__.data[date].length == Number(__LOGS__.configs.logsDaySize.value) - 10)
-            UI.alert.show("注意", "当前日志数量上限为" + __LOGS__.configs.logsDaySize.value + "，系统将自动清理过往日志。");
-        if (__LOGS__.data[date].length >= Number(__LOGS__.configs.logsDaySize.value))
-            __LOGS__.data[date] = __LOGS__.data[date].slice(1);
-        __LOGS__.data[date].push(log);
-        setUserLogs(JSON.stringify(__LOGS__.data));
+        if (typeof this.data[date] == "undefined")
+            this.data[date] = [];
+        if (this.data[date].length == Number(this.configs.logsDaySize.value) - 10)
+            UI.alert.show("注意", "当前日志数量上限为" + this.configs.logsDaySize.value + "，系统将自动清理过往日志。");
+        if (this.data[date].length >= Number(this.configs.logsDaySize.value))
+            this.data[date] = this.data[date].slice(1);
+        this.data[date].push(log);
+        setUserLogs(JSON.stringify(this.data));
     },
 
     viewError: function (parent, error) {
@@ -473,7 +495,7 @@ var __LOGS__ = {
             URIError: "URI处理函数使用不当",
             QuotaExceededError: "超出存储限额"
         };
-        __LOGS__.viewMessage(error.stack, true);
+        this.viewMessage(error.stack, true);
 
         let container = document.createElement("div");
         container.id = "ui_error";
@@ -501,7 +523,7 @@ var __LOGS__ = {
 
         span.innerHTML = "● " + (typeof names[error.name] !== "undefined" ? names[error.name] : "其他未定义错误");
         title.appendChild(span);
-        let close = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.close,__THEMES__.list[__THEMES__.selected].color, "24px", "24px");
+        let close = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.close,__THEMES__.get().color, "24px", "24px", null, __THEMES__.get().hover);
         close.className = "ui-container-close";
         title.appendChild(close);
         content.appendChild(title);
@@ -571,7 +593,7 @@ var __LOGS__ = {
         };
         dt.appendChild(tocopy);
 
-        if (__LOGS__.configs.logsOrderby.value == "DESC") {
+        if (this.configs.logsOrderby.value == "DESC") {
             let first = msgbox.firstChild;
             msgbox.insertBefore(dt, first);
         } else
@@ -604,7 +626,7 @@ var __LOGS__ = {
         }
         return message;
     }
-}
+};
 
 var __XMLHTTP__ = {
     server: null,
@@ -618,55 +640,56 @@ var __XMLHTTP__ = {
             //     xhr = new ActiveObject("Microsoft.XMLHTTP");
             // }
         } catch (e) {
-            console.log("__XMLHTTP__.request:" + e);
         }
         return xhr;
     },
     time: null,
     updatetime: null,
+    sent: false,
     abstract: null,
     elements: {},
     checking: {
         certificated: false,
     },
-    hook: function (dom, timeout) {
-        let index = dom.id;
-        __XMLHTTP__.elements[index] = dom;
+    getTime: function (index, timeout) {
+        let userTimelength = getTimesLength(timeout, "毫秒");
+        this.elements[index].innerHTML = "时间:" + (this.time == null ? "" : this.time.format("yyyy-MM-dd hh:mm")) + " 更新频率:" + (userTimelength.value + userTimelength.unit);
+        this.elements[index].title = "授时服务:\n" +
+            (this.server == null ? "" : this.server) + "\n" +
+            (this.abstract == null ? "" : this.abstract);
 
-        function startTime(index) {
-            let timelength = getTimesLength(timeout, "毫秒");
-            __XMLHTTP__.elements[index].innerHTML = "时间:" + (__XMLHTTP__.time == null ? "" : __XMLHTTP__.time.format("yyyy-MM-dd hh:mm")) + " 更新频率:" + (timelength.value + timelength.unit);
-            __XMLHTTP__.elements[index].title = "授时服务:\n" +
-                (__XMLHTTP__.server == null ? "" : __XMLHTTP__.server) + "\n" +
-                (__XMLHTTP__.abstract == null ? "" : __XMLHTTP__.abstract);
-
-            if (typeof __XMLHTTP__.elements[index] != "undefined") {
-                if (__XMLHTTP__.updatetime != null) {
-                    if ((new Date() - __XMLHTTP__.updatetime) < timeout) {
-                        setTimeout(function () {
-                            startTime(index);
-                        }, timeout);
-                    } else {
-                        __XMLHTTP__.getResponse();
-                        setTimeout(function () {
-                            startTime(index);
-                        }, 0);
-                    }
-                } else {
-                    __XMLHTTP__.getResponse();
+        if (typeof this.elements[index] != "undefined") {
+            if (this.updatetime != null) {
+                if ((new Date() - this.updatetime) < timeout) {
                     setTimeout(function () {
-                        startTime(index);
+                        __XMLHTTP__.getTime(index, timeout);
+                    }, timeout);
+                } else {
+                    if (this.sent == false)
+                        this.getResponse();
+                    setTimeout(function () {
+                        __XMLHTTP__.getTime(index, timeout);
                     }, 0);
                 }
+            } else {
+                if (this.sent == false)
+                    this.getResponse();
+                setTimeout(function () {
+                    __XMLHTTP__.getTime(index, timeout);
+                }, 0);
             }
         }
-        startTime(index);
+    },
+    hook: function (dom, timeout) {
+        let index = dom.id;
+        this.elements[index] = dom;
+        this.getTime(index, timeout);
     },
     unhook: function (dom) {
-        delete __XMLHTTP__.elements[dom.id];
+        delete this.elements[dom.id];
     },
     getResponse: function () {
-        let xhr = __XMLHTTP__.request();
+        let xhr = this.request();
         // 通过get或HEAD的方式请求当前文件
         if (xhr != null) {
             let message = __LOGS__.viewMessage("发送授时请求...");
@@ -681,7 +704,7 @@ var __XMLHTTP__ = {
                         __XMLHTTP__.abstract = xhr.getResponseHeader("Server");
                         __XMLHTTP__.time = new Date(xhr.getResponseHeader("Date"));
                         __XMLHTTP__.updatetime = new Date();
-                        message.innerText += "授时: " + __XMLHTTP__.time.format("yyyy/MM/dd hh:mm")
+                        message.innerText += "授时: " + __XMLHTTP__.time.format("yyyy/MM/dd hh:mm");
                     } else if (xhr.status == 404) {
                         __XMLHTTP__.server = null;
                         __XMLHTTP__.abstract = null;
@@ -689,10 +712,13 @@ var __XMLHTTP__ = {
                         __XMLHTTP__.updatetime = null;
                     }
                 } catch (e) {
-                    console.log("__XMLHTTP__.getResponse:" + e);
+                    console.log("__XMLHTTP__getResponse:" + e);
+                } finally {
+                    __XMLHTTP__.sent = false;
                 }
             };
-            xhr.send();
+            xhr.send(null);
+            this.sent = true;
         }
     },
     certificate: function (byServer) {
@@ -835,7 +861,7 @@ var __XMLHTTP__ = {
                     message = __LOGS__.viewMessage("验证 " + scripts[i].name + "...");
                 }
 
-                let xhr = __XMLHTTP__.request();
+                let xhr = this.request();
                 xhr["message"] = message;
                 if (xhr != null) {
                     xhr.open("GET", scripts[i].src + "?timestamp=" + new Date().format("yyyyMMddhhmmssS"), true);
@@ -867,7 +893,7 @@ var __XMLHTTP__ = {
                                             link.href = xhr.responseURL.split("?")[0];
                                             document.head.appendChild(link);
                                             url = url.split("/");
-                                            this.message.innerText += ( url[url.length - 1] + "...OK.");
+                                            this.message.innerText += (url[url.length - 1] + "...OK.");
                                             break;
                                     }
                                 }
@@ -876,7 +902,7 @@ var __XMLHTTP__ = {
                             console.log("__XMLHTTP__.certificate:" + e);
                         }
                     };
-                    xhr.onload = function(){
+                    xhr.onload = function () {
 
                     };
                     xhr.onerror = function (e) {
@@ -947,13 +973,108 @@ var __XMLHTTP__ = {
             }
         }
         document.title = title;
-        __XMLHTTP__.checking.certificated = true;
+        this.checking.certificated = true;
     }
 };
 
  var __DATASET__ = {
+     configs: {
+         hr_view: {name: "显示设置", value: "", type: "hr"},
+         reportMinWidth: {
+             name: "最小宽度",
+             value: "50%",
+             options: ["30%", "50%", "100%", "120%", "130%", "140%", "150%"],
+             type: "select"
+         },
+         reportMaxWidth: {
+             name: "最大宽度",
+             value: "200%",
+             options: ["100%", "200%", "300%", "400%", "500%"],
+             type: "select"
+         },
+         reportFontFamily: {
+             name: "报表字体",
+             value: "default",
+             type: "input"
+         },
+         reportFontSize: {
+             name: "报表字号",
+             value: "100%",
+             options: ["70%", "80%", "90%", "100%", "110%", "120%", "130%", "140%", "150%"],
+             type: "select"
+         },
+         reportFontStyle: {
+             name: "字体样式",
+             value: "default",
+             options: ["default", "italic", "oblique"],
+             type: "select"
+         },
+         reportFontWeight: {
+             name: "字体粗细",
+             value: "default",
+             options: ["default", "lighter", "bold", "bolder"],
+             type: "select"
+         },
+         reportRowHeight: {
+             name: "报表行高",
+             value: "default",
+             options: ["default", "30px", "35px", "40px", "45px", "50px", "55px", "60px"],
+             type: "select"
+         },
+         reportScale: {
+             name: "小数位数",
+             value: 6,
+             type: "input"
+         },
+         hr_page: {name: "分页设置", value: "", type: "hr"},
+         reportPageSize: {
+             name: "每页", value: 100,
+             options: [
+                 new Option("25行", 25),
+                 new Option("50行", 50),
+                 new Option("100行", 100),
+                 new Option("200行", 200),
+                 new Option("300行", 300),
+                 new Option("400行", 400),
+                 new Option("500行", 500),
+                 new Option("1000行", 1000),
+             ],
+             type: "select"
+         },
+         hr_FixedReport: {name: "固定报表设置", value: "", type: "hr"},
+         reportScopeOfUse: {
+             name: "应用环境",
+             value: "intranet",
+             options: [new Option("内部网络", "intranet"), new Option("静态文件", "internet")],
+             type: "select"
+         },
+         reportThemes: {
+             name: "报表默认主题",
+             value: "深蓝",
+             options: ["白色", "浅灰", "深灰", "黑色", "墨绿", "深蓝", "红色"],
+             type: "select"
+         },
+         hr_download: {name: "数据下载设置", value: "", type: "hr"},
+         reportType: {
+             name: "文件类型",
+             value: "xlsx",
+             options: [new Option("Excel", "xlsx"), new Option("XML", "xml")],
+             type: "select"
+         },
+         reportDownload: {
+             name: "下载方式",
+             value: "current",
+             options: [new Option("当前数据集", "current"), new Option("所有数据集-合并为单一工作簿", "all-single"), new Option("所有数据集-拆分为多个工作簿", "all-multi")],
+             type: "select"
+         },
+         reportDownloadDelay: {
+             name: "下载延时(毫秒)",
+             value: 1000,
+             type: "input"
+         },
+     },
      result: [
-         //{eventid:null, title:[],sql: null,columns:[],data:[],parameter:null,time:null, type:null}
+         //{eventid:null, title:[],sql: null,columns:[],data:[],parameter:null,time:null}
      ],
      default: {sheet: 0, column: null, cell: [], tab: 0},
      pages: {total: 0, default: 1},
@@ -967,8 +1088,9 @@ var __XMLHTTP__ = {
              this.entity.style.minWidth = __DATASET__.configs.reportMinWidth.value;
              this.entity.style.maxWidth = __DATASET__.configs.reportMaxWidth.value;
              let table = this;
+
              function setEvent(ob) {
-                 for (let i = 0; i < ob.length; i++) {
+                 for (var i = 0; i < ob.length; i++) {
                      if (ob[i].type == "td") {
                          ob[i].ondblclick = function () {
                              let msg = "";
@@ -1054,117 +1176,27 @@ var __XMLHTTP__ = {
 
          },
      },
-     configs: {
-         hr_view: {name: "显示设置", value: "", type: "hr"},
-         reportMinWidth: {
-             name: "最小宽度",
-             value: "50%",
-             options: ["30%", "50%", "100%", "120%", "130%", "140%", "150%"],
-             type: "select"
-         },
-         reportMaxWidth: {
-             name: "最大宽度",
-             value: "200%",
-             options: ["100%", "200%", "300%", "400%", "500%"],
-             type: "select"
-         },
-         reportFontFamily: {
-             name: "报表字体",
-             value: "default",
-             type: "input"
-         },
-         reportFontSize: {
-             name: "报表字号",
-             value: "100%",
-             options: ["70%", "80%", "90%", "100%", "110%", "120%", "130%", "140%", "150%"],
-             type: "select"
-         },
-         reportFontStyle: {
-             name: "字体样式",
-             value: "default",
-             options: ["default", "italic", "oblique"],
-             type: "select"
-         },
-         reportFontWeight: {
-             name: "字体粗细",
-             value: "default",
-             options: ["default", "lighter", "bold", "bolder"],
-             type: "select"
-         },
-         reportRowHeight: {
-             name: "报表行高",
-             value: "default",
-             options: ["default", "30px", "35px", "40px", "45px", "50px", "55px", "60px"],
-             type: "select"
-         },
-         reportScale:{
-             name: "小数位数",
-             value: 6,
-             type: "input"
-         },
-         hr_page: {name: "分页设置", value: "", type: "hr"},
-         reportPageSize: {
-             name: "每页", value: 100,
-             options: [
-                 new Option("25行", 25),
-                 new Option("50行", 50),
-                 new Option("100行", 100),
-                 new Option("200行", 200),
-                 new Option("300行", 300),
-                 new Option("400行", 400),
-                 new Option("500行", 500),
-                 new Option("1000行", 1000),
-             ],
-             type: "select"
-         },
-         hr_FixedReport: {name: "固定报表设置", value: "", type: "hr"},
-         reportScopeOfUse: {
-             name: "应用环境",
-             value: "intranet",
-             options: [new Option("内部网络", "intranet"), new Option("静态文件", "internet")],
-             type: "select"
-         },
-         reportThemes: {name: "报表默认主题", value: "深蓝", options:["白色","浅灰","深灰","黑色","墨绿","深蓝","红色"], type: "select"},
-         hr_download: {name: "数据下载设置", value: "", type: "hr"},
-         reportType: {
-             name: "文件类型",
-             value: "xlsx",
-             options: [new Option("Excel", "xlsx"), new Option("XML", "xml")],
-             type: "select"
-         },
-         reportDownload: {
-             name: "下载方式",
-             value: "current",
-             options: [new Option("当前数据集", "current"), new Option("所有数据集-合并为单一工作簿", "all-single"), new Option("所有数据集-拆分为多个工作簿", "all-multi")],
-             type: "select"
-         },
-         reportDownloadDelay: {
-             name: "下载延时(毫秒)",
-             value: 1000,
-             type: "input"
-         },
+
+     getConfigItems: function () {
+         let configs = {};
+         for (let key in this.configs) {
+             configs[key] = this.configs[key].value;
+         }
+         return configs;
      },
 
-     getConfigItems: function(){
-        let configs = {};
-        for(let key in this.configs){
-            configs[key]  = this.configs[key].value;
-        }
-        return configs;
-    },
-
-     getConfigs: function(){
-        let configs = {};
-        for(let key in this.configs) {
-            let config = this.configs[key];
-            configs[key] = {
-                name: config.name,
-                type: config.type,
-                value: config.value
-            };
-        }
-        return configs;
-    },
+     getConfigs: function () {
+         let configs = {};
+         for (let key in this.configs) {
+             let config = this.configs[key];
+             configs[key] = {
+                 name: config.name,
+                 type: config.type,
+                 value: config.value
+             };
+         }
+         return configs;
+     },
 
      setConfigs: function (parent, callback) {
          let config = getUserConfig("datasetConfig");
@@ -1172,7 +1204,7 @@ var __XMLHTTP__ = {
              config = JSON.parse(config);
              for (let key in config) {
                  try {
-                     __DATASET__.configs[key].value = config[key];
+                     this.configs[key].value = config[key];
                  } catch (e) {
                  }
              }
@@ -1201,7 +1233,7 @@ var __XMLHTTP__ = {
          let span = document.createElement("span");
          span.innerHTML = "● 报表设置 ";
          title.appendChild(span);
-         let close = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.close,__THEMES__.list[__THEMES__.selected].color, "24px", "24px");
+         let close = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.close, __THEMES__.get().color, "24px", "24px", null, __THEMES__.get().hover);
          close.className = "ui-container-close";
          title.appendChild(close);
          content.appendChild(title);
@@ -1214,67 +1246,67 @@ var __XMLHTTP__ = {
          itemcontainer.id = itemcontainer.className = "ui-container-scroll-div";
          content.appendChild(itemcontainer);
 
-         for (let name in __DATASET__.configs) {
+         for (let name in this.configs) {
              let item = document.createElement("div");
              item.className = "ui-container-item";
              itemcontainer.appendChild(item);
              let span = document.createElement("span");
              span.className = "ui-container-item-name";
-             span.innerHTML = __DATASET__.configs[name].name + ":";
+             span.innerHTML = this.configs[name].name + ":";
              item.appendChild(span);
-             if (__DATASET__.configs[name].type == "input") {
+             if (this.configs[name].type == "input") {
                  let input = document.createElement("input");
                  input.style.cssFloat = "right";
                  input.id = name;
                  input.type = "input";
                  input.className = "ui-container-item-input";
-                 input.value = __DATASET__.configs[name].value;
+                 input.value = this.configs[name].value;
                  input.onchange = function () {
                      __DATASET__.configs[this.id].value = this.value;
                  };
-                 if (typeof __DATASET__.configs[name].title != "undefined")
-                     input.title = __DATASET__.configs[name].title;
+                 if (typeof this.configs[name].title != "undefined")
+                     input.title = this.configs[name].title;
                  else
-                     input.title = __DATASET__.configs[name].name;
+                     input.title = this.configs[name].name;
                  item.appendChild(input);
-             } else if (__DATASET__.configs[name].type == "select") {
+             } else if (this.configs[name].type == "select") {
                  let input = document.createElement("select");
                  input.style.cssFloat = "right";
                  input.id = name;
                  input.type = "select";
                  input.className = "ui-container-item-input";
-                 for (let i = 0; i < __DATASET__.configs[name].options.length; i++) {
-                     if (typeof __DATASET__.configs[name].options[i] === "object")
-                         input.options.add(__DATASET__.configs[name].options[i]);
+                 for (let i = 0; i < this.configs[name].options.length; i++) {
+                     if (typeof this.configs[name].options[i] === "object")
+                         input.options.add(this.configs[name].options[i]);
                      else
-                         input.options.add(new Option(__DATASET__.configs[name].options[i]));
+                         input.options.add(new Option(this.configs[name].options[i]));
                  }
-                 input.value = __DATASET__.configs[name].value;
+                 input.value = this.configs[name].value;
                  input.onchange = function () {
                      __DATASET__.configs[this.id].value = this.value;
                  };
-                 if (typeof __DATASET__.configs[name].title != "undefined")
-                     input.title = __DATASET__.configs[name].title;
+                 if (typeof this.configs[name].title != "undefined")
+                     input.title = this.configs[name].title;
                  else
-                     input.title = __DATASET__.configs[name].name;
+                     input.title = this.configs[name].name;
                  item.appendChild(input);
-             } else if (__DATASET__.configs[name].type == "color") {
+             } else if (this.configs[name].type == "color") {
                  let input = document.createElement("input");
                  input.style.cssFloat = "right";
                  input.id = name;
                  input.type = "color";
                  input.className = "ui-container-item-input";
-                 input.value = __DATASET__.configs[name].value;
+                 input.value = this.configs[name].value;
                  input.onchange = function () {
                      __DATASET__.configs[this.id].value = this.value;
                  };
-                 if (typeof __DATASET__.configs[name].title != "undefined")
-                     input.title = __DATASET__.configs[name].title;
+                 if (typeof this.configs[name].title != "undefined")
+                     input.title = this.configs[name].title;
                  else
-                     input.title = __DATASET__.configs[name].name;
+                     input.title = this.configs[name].name;
                  item.appendChild(input);
-             } else if (__DATASET__.configs[name].type == "hr") {
-                 span.innerHTML = "[ " + __DATASET__.configs[name].name + " ]";
+             } else if (this.configs[name].type == "hr") {
+                 span.innerHTML = "[ " + this.configs[name].name + " ]";
                  span.style.fontWeight = "bolder";
                  span.style.color = "var(--main-title-color)";
                  let c = document.createElement("div");
@@ -1315,7 +1347,7 @@ var __XMLHTTP__ = {
              UI.confirm.show("注意", "您确定要重置全部报表参数吗?", "auto", function () {
                  setUserConfig("datasetConfig", JSON.stringify({}));
                  parent.removeChild($("ui_datasetConfigs"));
-                 UI.alert.show("提示", "所有参数已恢复为系统初始值,系统将重新载入页面...");
+                 UI.alert.show("提示", "报表参数已恢复为系统初始值,系统将重新载入页面...");
                  location.reload();
              });
          };
@@ -1331,31 +1363,31 @@ var __XMLHTTP__ = {
 
          setDialogDrag(title);
      },
-     getResultIndex: function(eventid) {
+     getResultIndex: function (eventid) {
          let index = null;
-         for (let i = 0; i < __DATASET__.result.length; i++) {
-             if (__DATASET__.result[i].eventid == eventid) {
+         for (let i = 0; i < this.result.length; i++) {
+             if (this.result[i].eventid == eventid) {
                  index = i;
                  break;
              }
          }
          return index;
      },
-     getResult: function(eventid) {
+     getResult: function (eventid) {
          let result = null;
-         for (let i = 0; i < __DATASET__.result.length; i++) {
-             if (__DATASET__.result[i].eventid == eventid) {
-                 result = __DATASET__.result[i];
+         for (let i = 0; i < this.result.length; i++) {
+             if (this.result[i].eventid == eventid) {
+                 result = this.result[i];
                  break;
              }
          }
          return result;
      },
-     removeResult: function(eventid) {
+     removeResult: function (eventid) {
          let result = false;
-         for (let i = 0; i < __DATASET__.result.length; i++) {
-             if (__DATASET__.result[i].eventid == eventid) {
-                 __DATASET__.result.splice(i, 1);
+         for (let i = 0; i < this.result.length; i++) {
+             if (this.result[i].eventid == eventid) {
+                 this.result.splice(i, 1);
                  result = true;
                  break;
              }
@@ -1393,7 +1425,7 @@ var __XMLHTTP__ = {
          },
          codeMirrorMode: {
              name: "模式",
-             value: "text/x-sqlite",
+             value: "text/x-mysql",
              options: [new Option("MySQL", "text/x-mysql"), new Option("SQLite", "text/x-sqlite"), new Option("HTML", "text/html"), new Option("函数", "text/javascript")],
              type: "select"
          },
@@ -1517,7 +1549,7 @@ var __XMLHTTP__ = {
      },
 
      init: function (textarea) {
-         let messasge = "初始化脚本编辑器";
+         let messasge = __LOGS__.viewMessage("初始化脚本编辑器...");
          try {
              let theme = JSON.parse(this.configs.codeMirrorTheme.value);
              $("sqlediterTheme").href = theme.href;
@@ -1574,7 +1606,7 @@ var __XMLHTTP__ = {
              this.codeMirror.on("gutterClick", function (cm, n) {
                  function marker() {
                      let marker = document.createElement("div");
-                     marker.style.color = "#822";
+                     marker.style.color = __THEMES__.get().color;
                      marker.innerHTML = "●";
                      return marker;
                  }
@@ -1588,9 +1620,9 @@ var __XMLHTTP__ = {
                  if (div.className.split(" ")[0] == "CodeMirror")
                      div.style.fontSize = this.configs.codeMirrorFontSize.value;
              }
-             __LOGS__.viewMessage(messasge + "...OK.");
+             messasge.innerText += "OK.";
          } catch (e) {
-             __LOGS__.viewMessage(messasge + "...fails.", true);
+             messasge.innerText += ("fails.<br>" + e);
              __LOGS__.viewError("auto", e);
          }
      },
@@ -1600,7 +1632,7 @@ var __XMLHTTP__ = {
              config = JSON.parse(config);
              for (let key in config) {
                  try {
-                     __SQLEDITOR__.configs[key].value = config[key];
+                     this.configs[key].value = config[key];
                  } catch (e) {
                  }
              }
@@ -1629,7 +1661,7 @@ var __XMLHTTP__ = {
          let span = document.createElement("span");
          span.innerHTML = "● 编辑器设置 ";
          title.appendChild(span);
-         let close = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.close,__THEMES__.list[__THEMES__.selected].color, "24px", "24px");
+         let close = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.close,__THEMES__.get().color, "24px", "24px", null, __THEMES__.get().hover);
          close.className = "ui-container-close";
          title.appendChild(close);
          content.appendChild(title);
@@ -1642,67 +1674,67 @@ var __XMLHTTP__ = {
          itemcontainer.id = itemcontainer.className = "ui-container-scroll-div";
          content.appendChild(itemcontainer);
 
-         for (let name in __SQLEDITOR__.configs) {
+         for (let name in this.configs) {
              let item = document.createElement("div");
              item.className = "ui-container-item";
              itemcontainer.appendChild(item);
              let span = document.createElement("span");
              span.className = "ui-container-item-name";
-             span.innerHTML = __SQLEDITOR__.configs[name].name + ":";
+             span.innerHTML = this.configs[name].name + ":";
              item.appendChild(span);
-             if (__SQLEDITOR__.configs[name].type == "input") {
+             if (this.configs[name].type == "input") {
                  let input = document.createElement("input");
                  input.style.cssFloat = "right";
                  input.id = name;
                  input.type = "input";
                  input.className = "ui-container-item-input";
-                 input.value = __SQLEDITOR__.configs[name].value;
+                 input.value = this.configs[name].value;
                  input.onchange = function () {
                      __SQLEDITOR__.configs[this.id].value = this.value;
                  };
-                 if (typeof __SQLEDITOR__.configs[name].title != "undefined")
-                     input.title = __SQLEDITOR__.configs[name].title;
+                 if (typeof this.configs[name].title != "undefined")
+                     input.title = this.configs[name].title;
                  else
-                     input.title = __SQLEDITOR__.configs[name].name;
+                     input.title = this.configs[name].name;
                  item.appendChild(input);
-             } else if (__SQLEDITOR__.configs[name].type == "select") {
+             } else if (this.configs[name].type == "select") {
                  let input = document.createElement("select");
                  input.style.cssFloat = "right";
                  input.id = name;
                  input.type = "select";
                  input.className = "ui-container-item-input";
-                 for (let i = 0; i < __SQLEDITOR__.configs[name].options.length; i++) {
-                     if (typeof __SQLEDITOR__.configs[name].options[i] === "object")
-                         input.options.add(__SQLEDITOR__.configs[name].options[i]);
+                 for (let i = 0; i < this.configs[name].options.length; i++) {
+                     if (typeof this.configs[name].options[i] === "object")
+                         input.options.add(this.configs[name].options[i]);
                      else
-                         input.options.add(new Option(__SQLEDITOR__.configs[name].options[i]));
+                         input.options.add(new Option(this.configs[name].options[i]));
                  }
-                 input.value = __SQLEDITOR__.configs[name].value;
+                 input.value = this.configs[name].value;
                  input.onchange = function () {
                      __SQLEDITOR__.configs[this.id].value = this.value;
                  };
-                 if (typeof __SQLEDITOR__.configs[name].title != "undefined")
-                     input.title = __SQLEDITOR__.configs[name].title;
+                 if (typeof this.configs[name].title != "undefined")
+                     input.title = this.configs[name].title;
                  else
-                     input.title = __SQLEDITOR__.configs[name].name;
+                     input.title = this.configs[name].name;
                  item.appendChild(input);
-             } else if (__SQLEDITOR__.configs[name].type == "color") {
+             } else if (this.configs[name].type == "color") {
                  let input = document.createElement("input");
                  input.style.cssFloat = "right";
                  input.id = name;
                  input.type = "color";
                  input.className = "ui-container-item-input";
-                 input.value = __SQLEDITOR__.configs[name].value;
+                 input.value = this.configs[name].value;
                  input.onchange = function () {
                      __SQLEDITOR__.configs[this.id].value = this.value;
                  };
-                 if (typeof __SQLEDITOR__.configs[name].title != "undefined")
-                     input.title = __SQLEDITOR__.configs[name].title;
+                 if (typeof this.configs[name].title != "undefined")
+                     input.title = this.configs[name].title;
                  else
-                     input.title = __SQLEDITOR__.configs[name].name;
+                     input.title = this.configs[name].name;
                  item.appendChild(input);
-             } else if (__SQLEDITOR__.configs[name].type == "hr") {
-                 span.innerHTML = "[ " + __SQLEDITOR__.configs[name].name + " ]";
+             } else if (this.configs[name].type == "hr") {
+                 span.innerHTML = "[ " + this.configs[name].name + " ]";
                  span.style.fontWeight = "bolder";
                  span.style.color = "var(--main-title-color)";
                  let c = document.createElement("div");
@@ -1821,7 +1853,7 @@ function viewDatabases() {
     try {
         let storage = window.localStorage;
         if (storage.getItem(__CONFIGS__.STORAGE.DATABASES) == null) {
-            storage.setItem(__CONFIGS__.STORAGE.DATABASES, "[]")
+            storage.setItem(__CONFIGS__.STORAGE.DATABASES, "{}")
         }
         let dbslist = $("sidebar-dbs");
         dbslist.innerText = "";
@@ -1830,51 +1862,100 @@ function viewDatabases() {
         ul.style.position = "relative";
         dbslist.appendChild(ul);
         __CONFIGS__.DATABASES = JSON.parse(storage.getItem(__CONFIGS__.STORAGE.DATABASES));
-        for (let i = 0; i < __CONFIGS__.DATABASES.length; i++) {
-            if (__CONFIGS__.DATABASES[i].name != null) {
-                let li = document.createElement("li");
-                li.className = "database-list";
-                li.style.listStyleImage = __SYS_IMAGES_SVG__.getUrl(__SYS_IMAGES_SVG__.database, __THEMES__.list[__THEMES__.selected].color, "16px", "16px");
-                let a = document.createElement("a");
-                a.className = "list";
-                a.innerText = __CONFIGS__.DATABASES[i].name;
-                a.setAttribute("index", i);
-                a.id = __CONFIGS__.DATABASES[i].name;
-                a.onclick = function () {
-                    let dbs = $("sidebar-dbs");
-                    let l = dbs.getElementsByClassName("list");
-                    for (let i = 0; i < l.length; i++) {
-                        l[i].style.fontWeight = "normal";
+        for (let name in __CONFIGS__.DATABASES) {
+            let li = document.createElement("li");
+            li.className = "database-list";
+            li.style.listStyleImage = __SYS_IMAGES_SVG__.getUrl(__SYS_IMAGES_SVG__.sqlite, __THEMES__.get().color, "24px", "24px");
+            let a = document.createElement("a");
+            a.className = "list";
+            a.innerText = name;
+            a.setAttribute("index", name);
+            a.id = name;
+            a.onclick = function () {
+                let dbs = $("sidebar-dbs");
+                let l = dbs.getElementsByClassName("list");
+                for (let i = 0; i < l.length; i++) {
+                    l[i].style.fontWeight = "normal";
+                }
+                this.style.fontWeight = "bold";
+                viewTables(this.getAttribute("index"));
+                __CONFIGS__.CURRENT_TABLE.name = null;
+                __CONFIGS__.CURRENT_TABLE.sql = "";
+                __CONFIGS__.CURRENT_TABLE.structure = [];
+                __CONFIGS__.CURRENT_TABLE.type = "";
+                //显示库信息
+                $("ul-db-" + this.id).innerText = "";
+                if ($("ul-db-" + this.id).getAttribute("isOpen") == "false") {
+                    for (let key in __CONFIGS__.CURRENT_DATABASE.value) {
+                        let l = document.createElement("li");
+                        $("ul-db-" + this.id).appendChild(l);
+                        let inf = document.createElement("div");
+                        inf.className = "list";
+                        inf.innerText = key + ": " + __CONFIGS__.CURRENT_DATABASE.value[key];
+                        l.appendChild(inf);
                     }
-                    this.style.fontWeight = "bold";
-                    viewTables(this.getAttribute("index"));
-                    __CONFIGS__.CURRENT_TABLE.name = "";
-                    __CONFIGS__.CURRENT_TABLE.sql = "";
-                    __CONFIGS__.CURRENT_TABLE.structure = [];
-                    __CONFIGS__.CURRENT_TABLE.type = "";
-                    //显示库信息
-                    $("ul-db-" + this.id).innerText = "";
-                    if ($("ul-db-" + this.id).getAttribute("isOpen") == "false") {
-                        for (let key in __CONFIGS__.CURRENT_DATABASE.value) {
-                            let l = document.createElement("li");
-                            $("ul-db-" + this.id).appendChild(l);
-                            let inf = document.createElement("div");
-                            inf.className = "list";
-                            inf.innerText = key + ": " + __CONFIGS__.CURRENT_DATABASE.value[key];
-                            l.appendChild(inf);
-                        }
-                        $("ul-db-" + this.id).setAttribute("isOpen", "true");
+                    $("ul-db-" + this.id).setAttribute("isOpen", "true");
+                } else {
+                    $("ul-db-" + this.id).setAttribute("isOpen", "false");
+                }
+            };
+            li.appendChild(a);
+
+            let del = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.del, __THEMES__.get().color, "18px", "18px", null, __THEMES__.get().hover);
+            del.setAttribute("index", name);
+            del.style.cssFloat = "right";
+            del.title = "删除";
+            del.onclick = function () {
+                let name = this.getAttribute("index");
+                UI.confirm.show("注意", "确定要删除数据库 " + name + " 吗?", "auto", function () {
+                    let storage = window.localStorage;
+                    let dbs = JSON.parse(storage.getItem(__CONFIGS__.STORAGE.DATABASES));
+                    delete dbs[name];
+                    storage.setItem(__CONFIGS__.STORAGE.DATABASES, JSON.stringify(dbs));
+                    viewDatabases();
+                    if (__CONFIGS__.CURRENT_DATABASE.index === name) {
+                        __CONFIGS__.CURRENT_DATABASE.index = null;
+                        __CONFIGS__.CURRENT_DATABASE.value = null;
+                        __CONFIGS__.CURRENT_DATABASE.connect = null;
+                        __CONFIGS__.CURRENT_TABLE.name = null;
+                        __CONFIGS__.CURRENT_TABLE.sql = "";
+                        __CONFIGS__.CURRENT_TABLE.structure = [];
+                        __CONFIGS__.CURRENT_TABLE.type = "";
+                        $("sidebar-tbs").innerText = "";
+                    }
+                });
+            };
+
+            li.appendChild(del);
+            let ed = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.edit, __THEMES__.get().color, "18px", "18px", null, __THEMES__.get().hover);
+            ed.setAttribute("index", name);
+            ed.style.cssFloat = "right";
+            ed.title = "编辑";
+            ed.onclick = function () {
+                let name = this.getAttribute("index");
+                let storage = window.localStorage;
+                let dbs = JSON.parse(storage.getItem(__CONFIGS__.STORAGE.DATABASES));
+                SQLite.dbManager("修改数据库", "auto", function (args, values) {
+                    let storage = window.localStorage;
+                    let dbs = JSON.parse(storage.getItem(__CONFIGS__.STORAGE.DATABASES));
+                    if (typeof dbs[values.name] === "undefined" || args.index === values.name) {
+                        if (args.index !== values.name)
+                            delete dbs[args.index];
+                        dbs[values.name] = values.db;
+                        storage.setItem(__CONFIGS__.STORAGE.DATABASES, JSON.stringify(dbs));
+                        viewDatabases();
                     } else {
-                        $("ul-db-" + this.id).setAttribute("isOpen", "false");
+                        UI.alert.show("注意", "数据库 " + values.name + " 已经存在.", "auto");
                     }
-                };
-                li.appendChild(a);
-                let dul = document.createElement("ul");
-                dul.id = "ul-db-" + __CONFIGS__.DATABASES[i].name;
-                dul.setAttribute("isOpen", "false");
-                li.appendChild(dul);
-                ul.appendChild(li);
-            }
+                }, {index: name, db: dbs[name]});
+            };
+            li.appendChild(ed);
+
+            let dul = document.createElement("ul");
+            dul.id = "ul-db-" + name;
+            dul.setAttribute("isOpen", "false");
+            li.appendChild(dul);
+            ul.appendChild(li);
         }
         message.innerText += "OK.";
     } catch (e) {
@@ -1885,7 +1966,7 @@ function viewDatabases() {
 
 function viewTables(index) {
     let database = __CONFIGS__.DATABASES[index];
-    let db = openDatabase(database.name, database.version, database.description, eval(database.size));
+    let db = openDatabase(database.Database, database.Version, database.Description, eval(database.Size));
     __CONFIGS__.CURRENT_DATABASE.index = index;
     __CONFIGS__.CURRENT_DATABASE.value = database;
     __CONFIGS__.CURRENT_DATABASE.connect = db;
@@ -1908,8 +1989,8 @@ function viewTables(index) {
                     if (results.rows.item(i).tablename != "__WebKitDatabaseInfoTable__" && results.rows.item(i).tablename != "") {
                         let li = document.createElement("li");
                         li.className = "table-list";
-                        li.style.listStyleImage = __SYS_IMAGES_SVG__.getUrl(__SYS_IMAGES_SVG__.table, __THEMES__.list[__THEMES__.selected].color, "16px", "16px");
-                        let a = document.createElement("div");
+                        li.style.listStyleImage = __SYS_IMAGES_SVG__.getUrl(__SYS_IMAGES_SVG__.table, __THEMES__.get().color, "16px", "16px");
+                        let a = document.createElement("a");
                         li.appendChild(a);
                         a.className = "table-name";
                         hintOptions.tables[results.rows.item(i).tablename] = [];
@@ -1952,7 +2033,7 @@ function viewTables(index) {
                                                 let columns = [];
                                                 for (let m = 0; m < __CONFIGS__.CURRENT_TABLE.structure.data.length; m++) {
                                                     let l = document.createElement("li");
-                                                    l.style.listStyleImage = __SYS_IMAGES_SVG__.getUrl(__SYS_IMAGES_SVG__.field, __THEMES__.list[__THEMES__.selected].color, "16px", "16px");
+                                                    l.style.listStyleImage = __SYS_IMAGES_SVG__.getUrl(__SYS_IMAGES_SVG__.field, __THEMES__.get().color, "16px", "16px");
                                                     $("ul-tb-" + __CONFIGS__.CURRENT_TABLE.name).appendChild(l);
                                                     let col = document.createElement("div");
                                                     col.className = "column-name";
@@ -1994,6 +2075,43 @@ function viewTables(index) {
                             }
                             this.style.fontWeight = "bold";
                         };
+                        let del = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.del, __THEMES__.get().color, "18px", "18px", null, __THEMES__.get().hover);
+                        del.setAttribute("type", results.rows.item(i).type);
+                        del.setAttribute("name", results.rows.item(i).tablename);
+
+                        del.style.cssFloat = "right";
+                        del.title = "删除";
+                        del.onclick = function () {
+                            UI.confirm.show("注意", "确定要删除数据表(视图) " + this.getAttribute("name") + " 吗?", "auto", function (args) {
+                                __CONFIGS__.CURRENT_DATABASE.connect.transaction(function (tx) {
+                                    let sql = "drop " + args.type + " " + args.name;
+                                    __LOGS__.viewMessage(sql);
+                                    tx.executeSql(sql, [],
+                                        function (tx, results) {
+                                            let aff = results.rowsAffected;
+                                            let len = results.rows.length;
+                                            if (aff > 0) {
+                                                __LOGS__.viewMessage(aff + " 条记录被修改.")
+                                            }
+                                            if (aff == 0 && len == 0) {
+                                                __LOGS__.viewMessage("数据库没有返回数据和消息.")
+                                            }
+                                            viewTables(__CONFIGS__.CURRENT_DATABASE.index);
+                                            if (__CONFIGS__.CURRENT_TABLE.name === args.name) {
+                                                __CONFIGS__.CURRENT_TABLE.name = null;
+                                                __CONFIGS__.CURRENT_TABLE.sql = "";
+                                                __CONFIGS__.CURRENT_TABLE.structure = [];
+                                                __CONFIGS__.CURRENT_TABLE.type = "";
+                                            }
+                                        },
+                                        function (tx, error) {
+                                            __LOGS__.viewMessage(error.message);
+                                        });
+                                })
+                            }, {name: this.getAttribute("name"), type: this.getAttribute("type")});
+                        };
+                        li.appendChild(del);
+
                         let colul = document.createElement("ul");
                         colul.id = "ul-tb-" + results.rows.item(i).tablename;
                         colul.setAttribute("isOpen", "false");
@@ -2833,7 +2951,7 @@ function userLogin() {
                         "备忘": {value: "NOTE", card: "NOTE"},
                     };
                     let image = $("user").getElementsByTagName("img")[0];
-                    image.src = __SYS_IMAGES_SVG__.getSrc(__SYS_IMAGES_SVG__.logined_user,__THEMES__.list[__THEMES__.selected].color,"24px","24px");
+                    image.src = __SYS_IMAGES_SVG__.getSrc(__SYS_IMAGES_SVG__.logined_user,__THEMES__.get().color,"24px","24px");
                     image.onclick = function () {
                         if (typeof __LOGS__.user.name !== "undefined") {
                             let name = __LOGS__.user.name;
@@ -3003,14 +3121,14 @@ function init() {
                 __XMLHTTP__.certificate(false);
         }
 
-        let logo = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.echarts, __THEMES__.list[__THEMES__.selected].color, "48px", "48px");
+        let logo = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.getSVG(__VERSION__.logo.name), __THEMES__.get().color, "48px", "48px", __VERSION__.logo.transform, __THEMES__.get().hover);
         logo.style.cssFloat = "left";
         $("main-title").appendChild(logo);
         $("main-title").ondblclick = function () {
             requestFullScreen(document.body);
         };
 
-        let user = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.user_add,  __THEMES__.list[__THEMES__.selected].color, "32px", "32px");
+        let user = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.user_add,  __THEMES__.get().color, "32px", "32px", null, __THEMES__.get().hover);
         user.onclick = function () {
             UI.prompt.show("创建用户", {"用户名称": ""}, "auto", function (values) {
                 let name = values["用户名称"].trim();
@@ -3043,7 +3161,7 @@ function init() {
         };
         $("user").appendChild(user);
 
-        getQRCode($("page"), 90, 90, __VERSION__.url, __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.echarts,  __THEMES__.list[__THEMES__.selected].color, "48px","48px"));
+        getQRCode($("page"), 90, 90, __VERSION__.url, __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.getSVG(__VERSION__.logo.name),  __THEMES__.get().color, "48px","48px", null, __THEMES__.get().hover));
 
         try {
             let users = getUserConfig("Users");
@@ -3230,47 +3348,20 @@ function initMenus() {
         crdb.appendChild(__SYS_IMAGES_SVG__.getHelp(__SYS_IMAGES_SVG__.add, crdb, crdb.id, "auto", "white", "16px", "16px"));
         let help_crdb = $("help-create-database");
         crdb.onclick = help_crdb.onclick = function () {
-            SQLite.createDatabase("auto");
+            SQLite.dbManager("创建数据库", "auto", function(args, values) {
+                let storage = window.localStorage;
+                let dbs = JSON.parse(storage.getItem(__CONFIGS__.STORAGE.DATABASES));
+                if (typeof dbs[values.name] === "undefined") {
+                    dbs[values.name] = values.db;
+                    storage.setItem(__CONFIGS__.STORAGE.DATABASES, JSON.stringify(dbs));
+                    viewDatabases();
+                } else {
+                    UI.alert.show("注意","数据库 " + values.name + " 已经存在,系统不能创建同名称数据库!","auto");
+                }
+            }, {});
         };
         dbstools.appendChild(crdb);
         UI.tooltip(crdb, "创建数据库");
-
-        let rmdb = document.createElement("div");
-        rmdb.className = "button";
-        rmdb.innerText = "删除";
-        rmdb.id = "delete_database_connect";
-        rmdb.appendChild(__SYS_IMAGES_SVG__.getHelp(__SYS_IMAGES_SVG__.del, rmdb, rmdb.id, "auto", "white", "16px", "16px"));
-        rmdb.onclick = function () {
-            if (__CONFIGS__.CURRENT_DATABASE.connect == null) {
-                UI.alert.show("提示", "请选择数据库.");
-                return;
-            }
-            UI.confirm.show("注意", "确定要删除数据库 " + __CONFIGS__.CURRENT_DATABASE.value.name + " 吗?", "auto", function () {
-                if (checkStorage()) {
-                    if (__CONFIGS__.CURRENT_DATABASE.value != null) {
-                        let storage = window.localStorage;
-                        let dbs = JSON.parse(storage.getItem(__CONFIGS__.STORAGE.DATABASES));
-                        let list = [];
-                        for (let i = 0; i < dbs.length; i++) {
-                            if (i != __CONFIGS__.CURRENT_DATABASE.index) {
-                                list.push(dbs[i]);
-                            }
-                        }
-                        storage.setItem(__CONFIGS__.STORAGE.DATABASES, JSON.stringify(list));
-                        viewDatabases();
-                        __CONFIGS__.CURRENT_DATABASE.index = 0;
-                        __CONFIGS__.CURRENT_DATABASE.value = null;
-                        __CONFIGS__.CURRENT_DATABASE.connect = null;
-                        __CONFIGS__.CURRENT_TABLE.name = "";
-                        __CONFIGS__.CURRENT_TABLE.sql = "";
-                        __CONFIGS__.CURRENT_TABLE.structure = [];
-                        __CONFIGS__.CURRENT_TABLE.type = "";
-                    }
-                }
-            });
-        };
-        dbstools.appendChild(rmdb);
-        UI.tooltip(rmdb, "删除数据库");
 
         let dbinfo = document.createElement("div");
         dbinfo.className = "button";
@@ -3315,6 +3406,10 @@ function initMenus() {
         crtb.appendChild(__SYS_IMAGES_SVG__.getHelp(__SYS_IMAGES_SVG__.add, crtb, crtb.id, "auto", "white", "16px", "16px"));
         let help_crtb = $("help-create-table");
         crtb.onclick = help_crtb.onclick = function () {
+            if (__CONFIGS__.CURRENT_DATABASE.service == null) {
+                UI.alert.show("注意", "请选择一个数据库.", "auto");
+                return;
+            }
             SQLite.createTable("auto", null, function (values) {
                 let sql = values.sql;
                 __CONFIGS__.CURRENT_DATABASE.connect.transaction(function (tx) {
@@ -3346,6 +3441,11 @@ function initMenus() {
         importtb.appendChild(__SYS_IMAGES_SVG__.getHelp(__SYS_IMAGES_SVG__.import, importtb, importtb.id, "auto", "white", "16px", "16px"));
         let help_importtb = $("help-import-data");
         importtb.onclick = help_importtb.onclick = function () {
+            if (__CONFIGS__.CURRENT_DATABASE.service == null) {
+                UI.alert.show("注意", "请选择一个数据库连接.", "auto");
+                return;
+            }
+
             SQLite.import.start("auto");
         };
         tbstools.appendChild(importtb);
@@ -3357,6 +3457,15 @@ function initMenus() {
         exConstr.id = "show_table_construct";
         exConstr.appendChild(__SYS_IMAGES_SVG__.getHelp(__SYS_IMAGES_SVG__.construct, exConstr, exConstr.id, "auto", "white", "16px", "16px"));
         exConstr.onclick = function () {
+            if (__CONFIGS__.CURRENT_DATABASE.service == null) {
+                UI.alert.show("注意", "请选择一个数据库连接.", "auto");
+                return;
+            }
+
+            if (__CONFIGS__.CURRENT_TABLE.name == null) {
+                UI.alert.show("注意", "请选择一个数据库表.", "auto");
+                return;
+            }
             let result = __CONFIGS__.CURRENT_TABLE.structure;
             result["eventid"] = getEventIndex();
             result["title"] = [__CONFIGS__.CURRENT_TABLE.name];
@@ -3370,43 +3479,6 @@ function initMenus() {
         };
         tbstools.appendChild(exConstr);
         UI.tooltip(exConstr, "获取表结构");
-
-        let rmtb = document.createElement("div");
-        rmtb.className = "button";
-        rmtb.innerText = "删除";
-        rmtb.id = "drop_table";
-        rmtb.appendChild(__SYS_IMAGES_SVG__.getHelp(__SYS_IMAGES_SVG__.del, rmtb, rmtb.id, "auto", "white", "16px", "16px"));
-        rmtb.onclick = function () {
-            UI.confirm.show("注意", "确定要删除数据表(视图) " + __CONFIGS__.CURRENT_TABLE.name + " 吗?", "auto", function () {
-                if (checkStorage()) {
-                    __CONFIGS__.CURRENT_DATABASE.connect.transaction(function (tx) {
-                        let sql = "drop " + __CONFIGS__.CURRENT_TABLE.type + " " + __CONFIGS__.CURRENT_TABLE.name;
-                        __LOGS__.viewMessage(sql);
-                        tx.executeSql(sql, [],
-                            function (tx, results) {
-                                let aff = results.rowsAffected;
-                                let len = results.rows.length;
-                                if (aff > 0) {
-                                    __LOGS__.viewMessage(aff + " 条记录被修改.")
-                                }
-                                if (aff == 0 && len == 0) {
-                                    __LOGS__.viewMessage("数据库没有返回数据和消息.")
-                                }
-                                viewTables(__CONFIGS__.CURRENT_DATABASE.index);
-                                __CONFIGS__.CURRENT_TABLE.name = "";
-                                __CONFIGS__.CURRENT_TABLE.sql = "";
-                                __CONFIGS__.CURRENT_TABLE.structure = [];
-                                __CONFIGS__.CURRENT_TABLE.type = "";
-                            },
-                            function (tx, error) {
-                                __LOGS__.viewMessage(error.message);
-                            });
-                    });
-                }
-            });
-        };
-        tbstools.appendChild(rmtb);
-        UI.tooltip(rmtb, "删除数据表");
 
         //#######################################
         //初始化SQL菜单
@@ -3527,7 +3599,7 @@ function initMenus() {
         saveas.className = "button";
         saveas.innerText = "导出";
         saveas.id = "save_sql_to_file";
-        saveas.appendChild(__SYS_IMAGES_SVG__.getHelp(__SYS_IMAGES_SVG__.emport, saveas, saveas.id, "auto", "white", "16px", "16px"));
+        saveas.appendChild(__SYS_IMAGES_SVG__.getHelp(__SYS_IMAGES_SVG__.export, saveas, saveas.id, "auto", "white", "16px", "16px"));
         let help_downloadsql = $("help-download-sql");
         saveas.onclick = help_downloadsql.onclick = function () {
             UI.prompt.show("输入", {"文件名称": __SQLEDITOR__.title != null ? __SQLEDITOR__.title.split("_")[0] : ""}, "auto", function (args, values) {
@@ -3680,7 +3752,7 @@ function initMenus() {
 
         let toDisplay = document.createElement("div");
         toDisplay.className = "charButton";
-        toDisplay.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__SYS_IMAGES_SVG__.display,"white","20px", "20px");
+        toDisplay.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__SYS_IMAGES_SVG__.display,"white","22px", "22px");
         toDisplay.id = "display-log";
         toDisplay.onclick = function () {
             if ($("detail").style.display != "none") {
@@ -3703,7 +3775,7 @@ function initMenus() {
 
         let clean = document.createElement("div");
         clean.className = "charButton";
-        clean.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__SYS_IMAGES_SVG__.clear,"white","20px", "20px");
+        clean.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__SYS_IMAGES_SVG__.clearLogs,"white","18px", "18px");
         clean.id = "logs-clear";
         clean.onclick = function () {
             let msgbox = $("messageBox");
@@ -4141,7 +4213,7 @@ function initMenus() {
         let removeall = document.createElement("div");
         datatools.appendChild(removeall);
         removeall.className = "charButton";
-        removeall.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__SYS_IMAGES_SVG__.clear,"white","20px", "20px");
+        removeall.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__SYS_IMAGES_SVG__.clearSets,"white","20px", "20px");
         removeall.id = "dataset-removeall";
         removeall.onclick = function () {
             if (__DATASET__.result.length > 0) {
@@ -4412,7 +4484,7 @@ function initMenus() {
         let getecharts = document.createElement("div");
         datatools.appendChild(getecharts);
         getecharts.className = "charButton";
-        getecharts.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__SYS_IMAGES_SVG__.echarts,"white","20px", "20px");
+        getecharts.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__SYS_IMAGES_SVG__.getSVG(__VERSION__.logo.name),"white","20px", "20px");
         getecharts.style.cssFloat = "right";
         getecharts.id = "dataset-to-charts";
         let help_echarts = $("help-dataset-echarts");
@@ -4723,19 +4795,19 @@ function setPageThemes() {
         try {
             let theme = getUserConfig("pagethemes");
             if (theme != null) {
-                __THEMES__.selected = themes.value = getUserConfig("pagethemes");
-                $("themes").setAttribute("href", __THEMES__.list[__THEMES__.selected].href);
+                __THEMES__.set(theme);
+                themes.value = theme;
             } else {
                 themes.selectedIndex = 0;
-                $("themes").setAttribute("href", __THEMES__.list.默认.href);
             }
+            $("themes").setAttribute("href", __THEMES__.get().href);
         } catch (e) {
             __LOGS__.viewError("auto", e);
         }
         themes.onchange = function () {
             setUserConfig("pagethemes", this.value);
-            __THEMES__.selected = this.value;
-            $("themes").setAttribute("href", __THEMES__.list[__THEMES__.selected].href);
+            __THEMES__.set(this.value);
+            $("themes").setAttribute("href", __THEMES__.get().href);
             //同步编辑主题
             let theme = getOptionValue(__SQLEDITOR__.configs.codeMirrorTheme.options, this.options[this.selectedIndex].innerText);
             __SQLEDITOR__.configs.codeMirrorTheme.value = theme;
@@ -4770,6 +4842,7 @@ function setPageThemes() {
         __LOGS__.viewError("auto", e);
     }
 }
+
 
 function setCenterPosition(parent, obj) {
     parent.appendChild(obj);
@@ -5518,7 +5591,7 @@ function getImageBase64Code(parent, img) {
     let span = document.createElement("span");
     span.innerHTML = "● 设置背景";
     title.appendChild(span);
-    let close = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.close,__THEMES__.list[__THEMES__.selected].color, "24px", "24px");
+    let close = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.close,__THEMES__.get().color, "24px", "24px", null, __THEMES__.get().hover);
     close.className = "ui-container-close";
     title.appendChild(close);
     content.appendChild(title);

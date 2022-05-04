@@ -383,7 +383,7 @@ function getMailComponent(parent) {
     let span = document.createElement("span");
     span.innerHTML = "● 邮件编辑";
     title.appendChild(span);
-    let close = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.close,__THEMES__.list[__THEMES__.selected].color, "24px", "24px");
+    let close = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.close,__THEMES__.get().color, "24px", "24px", null, __THEMES__.get().hover);
     close.className = "ui-container-close";
     title.appendChild(close);
     content.appendChild(title);
@@ -688,7 +688,7 @@ function getMailComponent(parent) {
 
     span = document.createElement("span");
     span.className = "ui-container-item-name";
-    span.appendChild(__SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.add, __THEMES__.list[__THEMES__.selected].color,"20px", "20px"));
+    span.appendChild(__SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.add, __THEMES__.get().color,"20px", "20px", null, __THEMES__.get().hover));
     //span.innerHTML = "[➕]";
     span.title = "上传附件";
     span.style.cssText = "width:100%;height:26%;margin:0px;cursor:pointer;text-align:center;color: brown;font-weight: bolder;";
@@ -734,7 +734,7 @@ function getMailComponent(parent) {
     div.appendChild(span);
     span = document.createElement("span");
     span.className = "ui-container-item-name";
-    span.appendChild(__SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.subtract, __THEMES__.list[__THEMES__.selected].color,"20px", "20px"));
+    span.appendChild(__SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.subtract, __THEMES__.get().color,"20px", "20px", null, __THEMES__.get().hover));
     // span.innerHTML = "[➖]";
     span.title = "删除附件";
     span.style.cssText = "width:100%;height:26%;margin:0px;cursor:pointer;text-align:center;color: brown;font-weight: bolder;";
@@ -751,7 +751,7 @@ function getMailComponent(parent) {
     div.appendChild(span);
     span = document.createElement("span");
     span.className = "ui-container-item-name";
-    span.appendChild(__SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.del, __THEMES__.list[__THEMES__.selected].color,"20px", "20px"));
+    span.appendChild(__SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.del, __THEMES__.get().color,"20px", "20px", null, __THEMES__.get().hover));
     // span.innerHTML = "[❌]";
     span.title = "清空附件";
     span.style.cssText = "width:100%;height:26%;margin:0px;cursor:pointer;text-align:center;color: brown;font-weight: bolder;";

@@ -387,7 +387,7 @@ var __ECHARTS__ = {
     history: {},
     addHistory: function (container, configs, dataset, width, height) {
         let id = container.getAttribute("_echarts_instance_");
-        __ECHARTS__.history[id] = JSON.stringify({
+        this.history[id] = JSON.stringify({
             id: id,
             configs: configs,
             dataset: dataset,
@@ -404,14 +404,14 @@ var __ECHARTS__ = {
         data: [],
         add: function (id) {
             let ex = false;
-            for (let i = 0; i < __ECHARTS__.sets.data.length; i++) {
-                if (__ECHARTS__.sets.data[i] == id) {
+            for (let i = 0; i <this.data.length; i++) {
+                if (this.data[i] == id) {
                     ex = true;
                     break;
                 }
             }
             if (ex == false)
-                __ECHARTS__.sets.data.push(id);
+                this.data.push(id);
         }
     },
     layouts: {
@@ -1976,7 +1976,7 @@ var __ECHARTS__ = {
             config = JSON.parse(config);
             for (key in config) {
                 try {
-                    __ECHARTS__.configs[key].value = config[key];
+                    this.configs[key].value = config[key];
                 } catch (e) {
                 }
             }
@@ -2005,7 +2005,7 @@ var __ECHARTS__ = {
         let span = document.createElement("span");
         span.innerHTML = "● 图形参数 ";
         title.appendChild(span);
-        let close = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.close,__THEMES__.list[__THEMES__.selected].color, "24px", "24px");
+        let close = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.close,__THEMES__.get().color, "24px", "24px", null, __THEMES__.get().hover);
         close.className = "ui-container-close";
         title.appendChild(close);
         content.appendChild(title);
@@ -2039,67 +2039,67 @@ var __ECHARTS__ = {
         itemcontainer.id = itemcontainer.className = "ui-container-scroll-div";
         content.appendChild(itemcontainer);
 
-        for (let name in __ECHARTS__.configs) {
+        for (let name in this.configs) {
             item = document.createElement("div");
             item.className = "ui-container-item";
             itemcontainer.appendChild(item);
             span = document.createElement("span");
             span.className = "ui-container-item-name";
-            span.innerHTML = span.title = __ECHARTS__.configs[name].name + ":";
+            span.innerHTML = span.title = this.configs[name].name + ":";
             item.appendChild(span);
-            if (__ECHARTS__.configs[name].type == "input") {
+            if (this.configs[name].type == "input") {
                 let input = document.createElement("input");
                 input.style.cssFloat = "right";
                 input.id = name;
                 input.type = "input";
                 input.className = "ui-container-item-input";
-                input.value = __ECHARTS__.configs[name].value;
+                input.value = this.configs[name].value;
                 input.onchange = function () {
                     __ECHARTS__.configs[this.id].value = this.value;
                 };
-                if (typeof __ECHARTS__.configs[name].title != "undefined")
-                    input.title = __ECHARTS__.configs[name].title;
+                if (typeof this.configs[name].title != "undefined")
+                    input.title = this.configs[name].title;
                 else
-                    input.title = __ECHARTS__.configs[name].name;
+                    input.title = this.configs[name].name;
                 item.appendChild(input);
-            } else if (__ECHARTS__.configs[name].type == "select") {
+            } else if (this.configs[name].type == "select") {
                 let input = document.createElement("select");
                 input.style.cssFloat = "right";
                 input.id = name;
                 input.type = "select";
                 input.className = "ui-container-item-input";
-                for (let i = 0; i < __ECHARTS__.configs[name].options.length; i++) {
-                    if (typeof __ECHARTS__.configs[name].options[i] === "object")
-                        input.options.add(__ECHARTS__.configs[name].options[i]);
+                for (let i = 0; i < this.configs[name].options.length; i++) {
+                    if (typeof this.configs[name].options[i] === "object")
+                        input.options.add(this.configs[name].options[i]);
                     else
-                        input.options.add(new Option(__ECHARTS__.configs[name].options[i]));
+                        input.options.add(new Option(this.configs[name].options[i]));
                 }
-                input.value = __ECHARTS__.configs[name].value;
+                input.value = this.configs[name].value;
                 input.onchange = function () {
                     __ECHARTS__.configs[this.id].value = this.value;
                 };
-                if (typeof __ECHARTS__.configs[name].title != "undefined")
-                    input.title = __ECHARTS__.configs[name].title;
+                if (typeof this.configs[name].title != "undefined")
+                    input.title = this.configs[name].title;
                 else
-                    input.title = __ECHARTS__.configs[name].name;
+                    input.title = this.configs[name].name;
                 item.appendChild(input);
-            } else if (__ECHARTS__.configs[name].type == "color") {
+            } else if (this.configs[name].type == "color") {
                 let input = document.createElement("input");
                 input.style.cssFloat = "right";
                 input.style.minHeight = "130%";
                 input.id = name;
                 input.type = "color";
                 input.className = "ui-container-item-input";
-                if (typeof __ECHARTS__.configs[name].title != "undefined")
-                    input.title = __ECHARTS__.configs[name].title;
+                if (typeof this.configs[name].title != "undefined")
+                    input.title = this.configs[name].title;
                 else
-                    input.title = __ECHARTS__.configs[name].name;
-                if (__ECHARTS__.configs[name].value == "auto")
+                    input.title = this.configs[name].name;
+                if (this.configs[name].value == "auto")
                     input.style.backgroundColor = input.value = "#FFFFFF";
-                else if (__ECHARTS__.configs[name].value == "transparent")
+                else if (this.configs[name].value == "transparent")
                     input.style.backgroundColor =input.value = "#000000";
                 else
-                    input.style.backgroundColor =input.value = __ECHARTS__.configs[name].value;
+                    input.style.backgroundColor =input.value = this.configs[name].value;
 
                 input.onchange = function () {
                     this.style.backgroundColor =__ECHARTS__.configs[this.id].value = this.value;
@@ -2125,8 +2125,8 @@ var __ECHARTS__ = {
                 }
                 input.addEventListener("keydown",colorSetKeydown);
                 item.appendChild(input);
-            } else if (__ECHARTS__.configs[name].type == "hr") {
-                span.innerHTML = "[ " + __ECHARTS__.configs[name].name + " ]";
+            } else if (this.configs[name].type == "hr") {
+                span.innerHTML = "[ " + this.configs[name].name + " ]";
                 span.style.color = "var(--main-title-color)";
                 span.style.fontWeight = "bolder";
                 let c = document.createElement("div");
@@ -2134,7 +2134,7 @@ var __ECHARTS__ = {
                 c.style.cssFloat = "right";
                 item.appendChild(c);
                 item.id = name;
-                toconfig.options.add(new Option(__ECHARTS__.configs[name].name, name));
+                toconfig.options.add(new Option(this.configs[name].name, name));
                 //设置锚点
                 let h = document.createElement("hr");
                 h.style.marginTop = "10px";
@@ -2627,7 +2627,7 @@ var geoCoordMap = {
         let span = document.createElement("span");
         span.innerHTML = "● 地图设置 ";
         title.appendChild(span);
-        let close = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.close,__THEMES__.list[__THEMES__.selected].color, "24px", "24px");
+        let close = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.close,__THEMES__.get().color, "24px", "24px", null, __THEMES__.get().hover);
         close.className = "ui-container-close";
         title.appendChild(close);
         content.appendChild(title);
@@ -3335,7 +3335,7 @@ function getMultiScreen(configs, container) {
     return configs.toolboxFeatureMultiScreen.value.toBoolean() ? {
         show: configs.toolboxFeatureMultiScreen.value.toBoolean(),
         title: '视图组合',
-        icon: __SYS_IMAGES_PATH__.viewCombination,
+        icon: __SYS_IMAGES_SVG__.getPath("echarts_combination"),
         onclick: function () {
             __ECHARTS__.sets.add(container.getAttribute("_echarts_instance_"));
             UI.alert.show("提示","视图已提交组合列表.");
@@ -3449,7 +3449,7 @@ function getToolboxFeatureLine(configs, container, myChart, dataset) {
     return configs.toolboxFeatureLine.value.toBoolean() ? {
         show: configs.toolboxFeatureLine.value.toBoolean(),
         title: '线形图',
-        icon: __SYS_IMAGES_PATH__.line,
+        icon: __SYS_IMAGES_SVG__.getPath("echarts_line"),
         onclick: function () {
             myChart.setOption(getLineOption(configs, container, myChart, dataset), true);
         }
@@ -3558,7 +3558,7 @@ function getToolboxFeatureBar(configs, container, myChart, dataset) {
     return configs.toolboxFeatureBar.value.toBoolean() ? {
         show: configs.toolboxFeatureBar.value.toBoolean(),
         title: '柱状图',
-        icon: __SYS_IMAGES_PATH__.bar,
+        icon: __SYS_IMAGES_SVG__.getPath("echarts_bar"),
         onclick: function () {
             myChart.setOption(getBarOption(configs, container, myChart, dataset), true);
         }
@@ -3569,7 +3569,7 @@ function getToolboxFeatureMultiGraph(configs, container, myChart, dataset) {
     return configs.toolboxFeatureMultiGraph.value.toBoolean() ? {
         show: configs.toolboxFeatureMultiGraph.value.toBoolean(),
         title: '基础组合图',
-        icon: __SYS_IMAGES_PATH__.multiGraph,
+        icon: __SYS_IMAGES_SVG__.getPath("echarts_multiGraph"),
         onclick: function () {
             myChart.setOption(getMultiGraphOption(configs, container, myChart, dataset), true);
         }
@@ -4250,7 +4250,7 @@ function getToolboxFeatureScatter(configs, container, myChart, dataset) {
     return configs.toolboxFeatureScatter.value.toBoolean() ? {
         show: configs.toolboxFeatureScatter.value.toBoolean(),
         title: '散点图',
-        icon: __SYS_IMAGES_PATH__.scatter,
+        icon: __SYS_IMAGES_SVG__.getPath("echarts_scatter"),
         onclick: function () {
             myChart.setOption(getScatterOption(configs, container, myChart, dataset), true);
         }
@@ -4371,7 +4371,7 @@ function getToolboxFeaturePie(configs, container, myChart, dataset) {
     return configs.toolboxFeaturePie.value.toBoolean() ? {
         show: configs.toolboxFeaturePie.value.toBoolean(),
         title: '饼图',
-        icon: __SYS_IMAGES_PATH__.pie,
+        icon: __SYS_IMAGES_SVG__.getPath("echarts_pie"),
         onclick: function () {
             myChart.setOption(getPieOption(configs, container, myChart, dataset), true);
         }
@@ -4482,7 +4482,7 @@ function getToolboxFeatureFunnel(configs, container, myChart, dataset) {
     return configs.toolboxFeatureFunnel.value.toBoolean() ? {
         show: configs.toolboxFeatureFunnel.value.toBoolean(),
         title: '漏斗图',
-        icon: __SYS_IMAGES_PATH__.funnel,
+        icon: __SYS_IMAGES_SVG__.getPath("echarts_funnel"),
         onclick: function () {
             myChart.setOption(getFunnelOption(configs, container, myChart, dataset), true);
         }
@@ -4617,7 +4617,7 @@ function getToolboxFeaturePolar(configs, container, myChart, dataset) {
     return configs.toolboxFeaturePolar.value.toBoolean() ? {
         show: configs.toolboxFeaturePolar.value.toBoolean(),
         title: '极坐标',
-        icon: __SYS_IMAGES_PATH__.polar,
+        icon: __SYS_IMAGES_SVG__.getPath("echarts_polar"),
         onclick: function () {
             myChart.setOption(getPolarOption(configs, container, myChart, dataset), true);
         }
@@ -4713,7 +4713,7 @@ function getToolboxFeatureTransversBar(configs, container, myChart, dataset) {
     return configs.toolboxFeatureTransversBar.value.toBoolean() ? {
         show: configs.toolboxFeatureTransversBar.value.toBoolean(),
         title: '条形图',
-        icon: __SYS_IMAGES_PATH__.transversBar,
+        icon: __SYS_IMAGES_SVG__.getPath("echarts_transversBar"),
         onclick: function () {
             myChart.setOption(getTransversBarOption(configs, container, myChart, dataset), true);
         }
@@ -4908,7 +4908,7 @@ function getToolboxFeatureGeoOfChina(configs, container, myChart, dataset) {
     return configs.toolboxFeatureGeoOfChina.value.toBoolean() ? {
         show: configs.toolboxFeatureGeoOfChina.value.toBoolean(),
         title: '中国地图',
-        icon: __SYS_IMAGES_PATH__.geo,
+        icon: __SYS_IMAGES_SVG__.getPath("echarts_geo"),
         onclick: function () {
             myChart.setOption(getGeoOfChinaOption(configs, container, myChart, dataset), true);
         }
@@ -5103,7 +5103,7 @@ function getToolboxFeatureGeoOfLocal(configs, container, myChart, dataset) {
     return configs.toolboxFeatureGeoOfLocal.value.toBoolean() ? {
         show: configs.toolboxFeatureGeoOfLocal.value.toBoolean(),
         title: '本地地图',
-        icon: __SYS_IMAGES_PATH__.geo,
+        icon: __SYS_IMAGES_SVG__.getPath("echarts_local_geo"),
         onclick: function () {
             myChart.setOption(getGeoOfLocalOption(configs, container, myChart, dataset), true);
         }
@@ -5194,6 +5194,11 @@ function getYAxis(configs,type,data,position, name) {
 }
 
 function getDataZoomXAxis(configs, xAxisIndex, type, start, end) {
+    let dataZoomHandleIcon = {
+        circle: 'M10.7,11.9v-1.3H9.3v1.3c-4.9,0.3-8.8,4.4-8.8,9.4c0,5,3.9,9.1,8.8,9.4v1.3h1.3v-1.3c4.9-0.3,8.8-4.4,8.8-9.4C19.5,16.3,15.6,12.2,10.7,11.9z M13.3,24.4H6.7V23h6.6V24.4z M13.3,19.6H6.7v-1.4h6.6V19.6z',
+        rect: 'M8.2,13.6V3.9H6.3v9.7H3.1v14.9h3.3v9.7h1.8v-9.7h3.3V13.6H8.2z M9.7,24.4H4.8v-1.4h4.9V24.4z M9.7,19.1H4.8v-1.4h4.9V19.1z',
+        emptyCircle: 'path://M30.9,53.2C16.8,53.2,5.3,41.7,5.3,27.6S16.8,2,30.9,2C45,2,56.4,13.5,56.4,27.6S45,53.2,30.9,53.2z M30.9,3.5C17.6,3.5,6.8,14.4,6.8,27.6c0,13.3,10.8,24.1,24.101,24.1C44.2,51.7,55,40.9,55,27.6C54.9,14.4,44.1,3.5,30.9,3.5z M36.9,35.8c0,0.601-0.4,1-0.9,1h-1.3c-0.5,0-0.9-0.399-0.9-1V19.5c0-0.6,0.4-1,0.9-1H36c0.5,0,0.9,0.4,0.9,1V35.8z M27.8,35.8 c0,0.601-0.4,1-0.9,1h-1.3c-0.5,0-0.9-0.399-0.9-1V19.5c0-0.6,0.4-1,0.9-1H27c0.5,0,0.9,0.4,0.9,1L27.8,35.8L27.8,35.8z',
+    };
     if (type == "inside") {
         return {
             type: type,
@@ -5214,7 +5219,7 @@ function getDataZoomXAxis(configs, xAxisIndex, type, start, end) {
             height: configs.dataZoomBarWidth.value,
             left: configs.gridLeft.value,
             top: (100 - percentage(configs.gridBottom.value)) + "%",
-            handleIcon: __SYS_IMAGES_PATH__.dataZoomHandleIcon[configs.dataZoomHandleIcon.value],
+            handleIcon: dataZoomHandleIcon[configs.dataZoomHandleIcon.value],
             handleSize: configs.dataZoomHandleSize.value,
             borderColor: configs.dataZoomBarColor.value,
             handleStyle: {
@@ -5230,6 +5235,11 @@ function getDataZoomXAxis(configs, xAxisIndex, type, start, end) {
 }
 
 function getDataZoomYAxis(configs, yAxisIndex, type,start ,end, containerWidth) {
+    let dataZoomHandleIcon = {
+        circle: 'M10.7,11.9v-1.3H9.3v1.3c-4.9,0.3-8.8,4.4-8.8,9.4c0,5,3.9,9.1,8.8,9.4v1.3h1.3v-1.3c4.9-0.3,8.8-4.4,8.8-9.4C19.5,16.3,15.6,12.2,10.7,11.9z M13.3,24.4H6.7V23h6.6V24.4z M13.3,19.6H6.7v-1.4h6.6V19.6z',
+        rect: 'M8.2,13.6V3.9H6.3v9.7H3.1v14.9h3.3v9.7h1.8v-9.7h3.3V13.6H8.2z M9.7,24.4H4.8v-1.4h4.9V24.4z M9.7,19.1H4.8v-1.4h4.9V19.1z',
+        emptyCircle: 'path://M30.9,53.2C16.8,53.2,5.3,41.7,5.3,27.6S16.8,2,30.9,2C45,2,56.4,13.5,56.4,27.6S45,53.2,30.9,53.2z M30.9,3.5C17.6,3.5,6.8,14.4,6.8,27.6c0,13.3,10.8,24.1,24.101,24.1C44.2,51.7,55,40.9,55,27.6C54.9,14.4,44.1,3.5,30.9,3.5z M36.9,35.8c0,0.601-0.4,1-0.9,1h-1.3c-0.5,0-0.9-0.399-0.9-1V19.5c0-0.6,0.4-1,0.9-1H36c0.5,0,0.9,0.4,0.9,1V35.8z M27.8,35.8 c0,0.601-0.4,1-0.9,1h-1.3c-0.5,0-0.9-0.399-0.9-1V19.5c0-0.6,0.4-1,0.9-1H27c0.5,0,0.9,0.4,0.9,1L27.8,35.8L27.8,35.8z',
+    };
     if (type == "inside") {
         return {
             type: type,
@@ -5251,7 +5261,7 @@ function getDataZoomYAxis(configs, yAxisIndex, type,start ,end, containerWidth) 
                 height: (100 - percentage(configs.gridTop.value) - percentage(configs.gridBottom.value)) + "%",
                 top: configs.gridTop.value,
                 right: (100 - percentage(configs.gridRight.value)) + "%",
-                handleIcon: __SYS_IMAGES_PATH__.dataZoomHandleIcon[configs.dataZoomHandleIcon.value],
+                handleIcon: dataZoomHandleIcon[configs.dataZoomHandleIcon.value],
                 handleSize: configs.dataZoomHandleSize.value,
                 borderColor: configs.dataZoomBarColor.value,
                 handleStyle: {
@@ -5273,7 +5283,7 @@ function getDataZoomYAxis(configs, yAxisIndex, type,start ,end, containerWidth) 
                 height: (100 - percentage(configs.gridTop.value) - percentage(configs.gridBottom.value)) + "%",
                 top: configs.gridTop.value,
                 right: (percentage(configs.gridRight.value) - configs.dataZoomBarWidth.value * 100 / containerWidth) + "%",
-                handleIcon: __SYS_IMAGES_PATH__.dataZoomHandleIcon[configs.dataZoomHandleIcon.value],
+                handleIcon: dataZoomHandleIcon[configs.dataZoomHandleIcon.value],
                 handleSize: configs.dataZoomHandleSize.value,
                 borderColor: configs.dataZoomBarColor.value,
                 handleStyle: {
@@ -8201,6 +8211,10 @@ function getGeoMigrateLinesOfChinaCity(container, width, height, dataset, config
         container.style.width = width;
         container.style.height = height;
     }
+    let symbol = {
+        plane: 'path://M1705.06,1318.313v-89.254l-319.9-221.799l0.073-208.063c0.521-84.662-26.629-121.796-63.961-121.491c-37.332-0.305-64.482,36.829-63.961,121.491l0.073,208.063l-319.9,221.799v89.254l330.343-157.288l12.238,241.308l-134.449,92.931l0.531,42.034l175.125-42.917l175.125,42.917l0.531-42.034l-134.449-92.931l12.238-241.308L1705.06,1318.313z',
+        rocket: 'path://M-244.396,44.399c0,0,0.47-2.931-2.427-6.512c2.819-8.221,3.21-15.709,3.21-15.709s5.795,1.383,5.795,7.325C-237.818,39.679-244.396,44.399-244.396,44.399z M-260.371,40.827c0,0-3.881-12.946-3.881-18.319c0-2.416,0.262-4.566,0.669-6.517h17.684c0.411,1.952,0.675,4.104,0.675,6.519c0,5.291-3.87,18.317-3.87,18.317H-260.371z M-254.745,18.951c-1.99,0-3.603,1.676-3.603,3.744c0,2.068,1.612,3.744,3.603,3.744c1.988,0,3.602-1.676,3.602-3.744S-252.757,18.951-254.745,18.951z M-255.521,2.228v-5.098h1.402v4.969c1.603,1.213,5.941,5.069,7.901,12.5h-17.05C-261.373,7.373-257.245,3.558-255.521,2.228zM-265.07,44.399c0,0-6.577-4.721-6.577-14.896c0-5.942,5.794-7.325,5.794-7.325s0.393,7.488,3.211,15.708C-265.539,41.469-265.07,44.399-265.07,44.399z M-252.36,45.15l-1.176-1.22L-254.789,48l-1.487-4.069l-1.019,2.116l-1.488-3.826h8.067L-252.36,45.15z',
+    };
 
     let myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value,renderer:configs.renderer.value});
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
@@ -8385,7 +8399,7 @@ function getGeoMigrateLinesOfChinaCity(container, width, height, dataset, config
                         period: configs.geoLinePeriod.value,
                         trailLength: 0,
                         //拖尾
-                        symbol: (configs.geoLineSymbol.value == "plane" || configs.geoLineSymbol.value == "rocket") ? __SYS_IMAGES_PATH__[configs.geoLineSymbol.value] : configs.geoLineSymbol.value,
+                        symbol: (configs.geoLineSymbol.value == "plane" || configs.geoLineSymbol.value == "rocket") ? symbol[configs.geoLineSymbol.value] : configs.geoLineSymbol.value,
                         symbolSize: configs.geoLineSymbolSize.value,
                     },
                     lineStyle: {
@@ -8780,7 +8794,7 @@ function getCategoryLineForLiqiud(container, width, height, dataset, configs) {
                 period: "auto",
                 //direction: i%2==0?"right":"left",
                 smooth: configs.lineSmooth.value.toBoolean(),
-                shape: configs.liqiudShape.value == "whale" ? __SYS_IMAGES_PATH__.whale : configs.liqiudShape.value,
+                shape: configs.liqiudShape.value == "whale" ? __SYS_IMAGES_SVG__.getPath("echarts") : configs.liqiudShape.value,
                 waveAnimation: true,
                 outline: {
                     show: true,
@@ -8870,7 +8884,7 @@ function getCategoryLineForLiqiud(container, width, height, dataset, configs) {
                     period: "auto",
                     //direction: i%2==0?"right":"left",
                     smooth: configs.lineSmooth.value.toBoolean(),
-                    shape: configs.liqiudShape.value == "whale" ? __SYS_IMAGES_PATH__.whale : configs.liqiudShape.value,
+                    shape: configs.liqiudShape.value == "whale" ? __SYS_IMAGES_SVG__.getPath("echarts") : configs.liqiudShape.value,
                     waveAnimation: true,
                     outline: {
                         show: true,
@@ -9964,8 +9978,7 @@ function getClock(container, width, height, dataset, configs) {
                 },
                 anchor: {
                     show: true,
-                    icon: __SYS_IMAGES_PATH__.whale,
-                    //icon: 'path://M532.8,70.8C532.8,70.8,532.8,70.8,532.8,70.8L532.8,70.8C532.7,70.8,532.8,70.8,532.8,70.8z M456.1,49.6c-2.2-6.2-8.1-10.6-15-10.6h-37.5v10.6h37.5l0,0c2.9,0,5.3,2.4,5.3,5.3c0,2.9-2.4,5.3-5.3,5.3v0h-22.5c-1.5,0.1-3,0.4-4.3,0.9c-4.5,1.6-8.1,5.2-9.7,9.8c-0.6,1.7-0.9,3.4-0.9,5.3v16h10.6v-16l0,0l0,0c0-2.7,2.1-5,4.7-5.3h10.3l10.4,21.2h11.8l-10.4-21.2h0c6.9,0,12.8-4.4,15-10.6c0.6-1.7,0.9-3.5,0.9-5.3C457,53,456.7,51.2,456.1,49.6z M388.9,92.1h11.3L381,39h-3.6h-11.3L346.8,92v0h11.3l3.9-10.7h7.3h7.7l3.9-10.6h-7.7h-7.3l7.7-21.2v0L388.9,92.1z M301,38.9h-10.6v53.1H301V70.8h28.4l3.7-10.6H301V38.9zM333.2,38.9v10.6v10.7v31.9h10.6V38.9H333.2z M249.5,81.4L249.5,81.4L249.5,81.4c-2.9,0-5.3-2.4-5.3-5.3h0V54.9h0l0,0c0-2.9,2.4-5.3,5.3-5.3l0,0l0,0h33.6l3.9-10.6h-37.5c-1.9,0-3.6,0.3-5.3,0.9c-4.5,1.6-8.1,5.2-9.7,9.7c-0.6,1.7-0.9,3.5-0.9,5.3l0,0v21.3c0,1.9,0.3,3.6,0.9,5.3c1.6,4.5,5.2,8.1,9.7,9.7c1.7,0.6,3.5,0.9,5.3,0.9h33.6l3.9-10.6H249.5z M176.8,38.9v10.6h49.6l3.9-10.6H176.8z M192.7,81.4L192.7,81.4L192.7,81.4c-2.9,0-5.3-2.4-5.3-5.3l0,0v-5.3h38.9l3.9-10.6h-53.4v10.6v5.3l0,0c0,1.9,0.3,3.6,0.9,5.3c1.6,4.5,5.2,8.1,9.7,9.7c1.7,0.6,3.4,0.9,5.3,0.9h23.4h10.2l3.9-10.6l0,0H192.7z M460.1,38.9v10.6h21.4v42.5h10.6V49.6h17.5l3.8-10.6H460.1z M541.6,68.2c-0.2,0.1-0.4,0.3-0.7,0.4C541.1,68.4,541.4,68.3,541.6,68.2L541.6,68.2z M554.3,60.2h-21.6v0l0,0c-2.9,0-5.3-2.4-5.3-5.3c0-2.9,2.4-5.3,5.3-5.3l0,0l0,0h33.6l3.8-10.6h-37.5l0,0c-6.9,0-12.8,4.4-15,10.6c-0.6,1.7-0.9,3.5-0.9,5.3c0,1.9,0.3,3.7,0.9,5.3c2.2,6.2,8.1,10.6,15,10.6h21.6l0,0c2.9,0,5.3,2.4,5.3,5.3c0,2.9-2.4,5.3-5.3,5.3l0,0h-37.5v10.6h37.5c6.9,0,12.8-4.4,15-10.6c0.6-1.7,0.9-3.5,0.9-5.3c0-1.9-0.3-3.7-0.9-5.3C567.2,64.6,561.3,60.2,554.3,60.2z',
+                    icon: __SYS_IMAGES_SVG__.getPath(__VERSION__.logo.name),
                     showAbove: false,
                     offsetCenter: [0, '-45%'],
                     size: 30,
@@ -12336,7 +12349,7 @@ function getSaveAsReport(configs, container, myChart) {
     return configs.toolboxSaveAsReport.value.toBoolean() ? {
         show: configs.toolboxSaveAsReport.value.toBoolean(),
         title: '导出报表',
-        icon: __SYS_IMAGES_PATH__.linedown,
+        icon: __SYS_IMAGES_SVG__.getPath("download"),
         onclick: function () {
             function getScript(main, jsPath, echartsPath, defaultThemes) {
                 let scripts = [
