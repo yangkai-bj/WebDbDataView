@@ -4,7 +4,7 @@ const __VERSION__ = {
     main: "WebDBDataView.js",
     echarts: "echarts/v5.3.2",
     version: "3.2.8",
-    date: "2022/05/04",
+    date: "2022/05/05",
     comment: [
         "-- 2021/03/08",
         "优化算法和压缩代码.",
@@ -301,7 +301,7 @@ var __LOGS__ = {
         let span = document.createElement("span");
         span.innerHTML = "● 日志设置 ";
         title.appendChild(span);
-        let close = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.close,__THEMES__.get().color, "24px", "24px", null, __THEMES__.get().hover);
+        let close = __SYS_IMAGES_SVG__.getImage("close",__THEMES__.get().color, "24px", "24px", null, __THEMES__.get().hover);
         close.className = "ui-container-close";
         title.appendChild(close);
         content.appendChild(title);
@@ -523,7 +523,7 @@ var __LOGS__ = {
 
         span.innerHTML = "● " + (typeof names[error.name] !== "undefined" ? names[error.name] : "其他未定义错误");
         title.appendChild(span);
-        let close = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.close,__THEMES__.get().color, "24px", "24px", null, __THEMES__.get().hover);
+        let close = __SYS_IMAGES_SVG__.getImage("close",__THEMES__.get().color, "24px", "24px", null, __THEMES__.get().hover);
         close.className = "ui-container-close";
         title.appendChild(close);
         content.appendChild(title);
@@ -1233,7 +1233,7 @@ var __XMLHTTP__ = {
          let span = document.createElement("span");
          span.innerHTML = "● 报表设置 ";
          title.appendChild(span);
-         let close = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.close, __THEMES__.get().color, "24px", "24px", null, __THEMES__.get().hover);
+         let close = __SYS_IMAGES_SVG__.getImage("close", __THEMES__.get().color, "24px", "24px", null, __THEMES__.get().hover);
          close.className = "ui-container-close";
          title.appendChild(close);
          content.appendChild(title);
@@ -1661,7 +1661,7 @@ var __XMLHTTP__ = {
          let span = document.createElement("span");
          span.innerHTML = "● 编辑器设置 ";
          title.appendChild(span);
-         let close = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.close,__THEMES__.get().color, "24px", "24px", null, __THEMES__.get().hover);
+         let close = __SYS_IMAGES_SVG__.getImage("close",__THEMES__.get().color, "24px", "24px", null, __THEMES__.get().hover);
          close.className = "ui-container-close";
          title.appendChild(close);
          content.appendChild(title);
@@ -1865,7 +1865,7 @@ function viewDatabases() {
         for (let name in __CONFIGS__.DATABASES) {
             let li = document.createElement("li");
             li.className = "database-list";
-            li.style.listStyleImage = __SYS_IMAGES_SVG__.getUrl(__SYS_IMAGES_SVG__.sqlite, __THEMES__.get().color, "24px", "24px");
+            li.style.listStyleImage = __SYS_IMAGES_SVG__.getUrl("sqlite", __THEMES__.get().color, "24px", "24px");
             let a = document.createElement("a");
             a.className = "list";
             a.innerText = name;
@@ -1901,7 +1901,7 @@ function viewDatabases() {
             };
             li.appendChild(a);
 
-            let del = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.del, __THEMES__.get().color, "18px", "18px", null, __THEMES__.get().hover);
+            let del = __SYS_IMAGES_SVG__.getImage("del", __THEMES__.get().color, "18px", "18px", null, __THEMES__.get().hover);
             del.setAttribute("index", name);
             del.style.cssFloat = "right";
             del.title = "删除";
@@ -1927,7 +1927,7 @@ function viewDatabases() {
             };
 
             li.appendChild(del);
-            let ed = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.edit, __THEMES__.get().color, "18px", "18px", null, __THEMES__.get().hover);
+            let ed = __SYS_IMAGES_SVG__.getImage("edit", __THEMES__.get().color, "18px", "18px", null, __THEMES__.get().hover);
             ed.setAttribute("index", name);
             ed.style.cssFloat = "right";
             ed.title = "编辑";
@@ -1989,7 +1989,7 @@ function viewTables(index) {
                     if (results.rows.item(i).tablename != "__WebKitDatabaseInfoTable__" && results.rows.item(i).tablename != "") {
                         let li = document.createElement("li");
                         li.className = "table-list";
-                        li.style.listStyleImage = __SYS_IMAGES_SVG__.getUrl(__SYS_IMAGES_SVG__.table, __THEMES__.get().color, "16px", "16px");
+                        li.style.listStyleImage = __SYS_IMAGES_SVG__.getUrl("table", __THEMES__.get().color, "16px", "16px");
                         let a = document.createElement("a");
                         li.appendChild(a);
                         a.className = "table-name";
@@ -2033,7 +2033,7 @@ function viewTables(index) {
                                                 let columns = [];
                                                 for (let m = 0; m < __CONFIGS__.CURRENT_TABLE.structure.data.length; m++) {
                                                     let l = document.createElement("li");
-                                                    l.style.listStyleImage = __SYS_IMAGES_SVG__.getUrl(__SYS_IMAGES_SVG__.field, __THEMES__.get().color, "16px", "16px");
+                                                    l.style.listStyleImage = __SYS_IMAGES_SVG__.getUrl("field", __THEMES__.get().color, "16px", "16px");
                                                     $("ul-tb-" + __CONFIGS__.CURRENT_TABLE.name).appendChild(l);
                                                     let col = document.createElement("div");
                                                     col.className = "column-name";
@@ -2075,7 +2075,7 @@ function viewTables(index) {
                             }
                             this.style.fontWeight = "bold";
                         };
-                        let del = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.del, __THEMES__.get().color, "18px", "18px", null, __THEMES__.get().hover);
+                        let del = __SYS_IMAGES_SVG__.getImage("del", __THEMES__.get().color, "18px", "18px", null, __THEMES__.get().hover);
                         del.setAttribute("type", results.rows.item(i).type);
                         del.setAttribute("name", results.rows.item(i).tablename);
 
@@ -2950,9 +2950,10 @@ function userLogin() {
                         "网址": {value: "URL", card: "URL"},
                         "备忘": {value: "NOTE", card: "NOTE"},
                     };
-                    let image = $("user").getElementsByTagName("img")[0];
-                    image.src = __SYS_IMAGES_SVG__.getSrc(__SYS_IMAGES_SVG__.logined_user,__THEMES__.get().color,"24px","24px");
-                    image.onclick = function () {
+                    $("user").innerText = "";
+                    let user = __SYS_IMAGES_SVG__.getImage("user_edit", __THEMES__.get().color, "32px", "32px", null, __THEMES__.get().hover);
+                    $("user").appendChild(user);
+                    user.onclick = function () {
                         if (typeof __LOGS__.user.name !== "undefined") {
                             let name = __LOGS__.user.name;
                             UI.password.show("修改 " + name + " 的登录密码", {
@@ -3121,14 +3122,14 @@ function init() {
                 __XMLHTTP__.certificate(false);
         }
 
-        let logo = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.getSVG(__VERSION__.logo.name), __THEMES__.get().color, "48px", "48px", __VERSION__.logo.transform, __THEMES__.get().hover);
+        let logo = __SYS_IMAGES_SVG__.getImage(__VERSION__.logo.name, __THEMES__.get().color, "48px", "48px", __VERSION__.logo.transform, __THEMES__.get().hover);
         logo.style.cssFloat = "left";
         $("main-title").appendChild(logo);
         $("main-title").ondblclick = function () {
             requestFullScreen(document.body);
         };
 
-        let user = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.user_add,  __THEMES__.get().color, "32px", "32px", null, __THEMES__.get().hover);
+        let user = __SYS_IMAGES_SVG__.getImage("user_add",  __THEMES__.get().color, "32px", "32px", null, __THEMES__.get().hover);
         user.onclick = function () {
             UI.prompt.show("创建用户", {"用户名称": ""}, "auto", function (values) {
                 let name = values["用户名称"].trim();
@@ -3161,7 +3162,7 @@ function init() {
         };
         $("user").appendChild(user);
 
-        getQRCode($("page"), 90, 90, __VERSION__.url, __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.getSVG(__VERSION__.logo.name),  __THEMES__.get().color, "48px","48px", null, __THEMES__.get().hover));
+        getQRCode($("page"), 90, 90, __VERSION__.url, __SYS_IMAGES_SVG__.getImage(__VERSION__.logo.name,  __THEMES__.get().color, "48px","48px", null, __THEMES__.get().hover));
 
         try {
             let users = getUserConfig("Users");
@@ -3345,7 +3346,7 @@ function initMenus() {
         crdb.className = "button";
         crdb.innerText = "新增";
         crdb.id = "create_database_connect";
-        crdb.appendChild(__SYS_IMAGES_SVG__.getHelp(__SYS_IMAGES_SVG__.add, crdb, crdb.id, "auto", "white", "16px", "16px"));
+        crdb.appendChild(__SYS_IMAGES_SVG__.getHelp("add", crdb, crdb.id, "auto", "white", "16px", "16px"));
         let help_crdb = $("help-create-database");
         crdb.onclick = help_crdb.onclick = function () {
             SQLite.dbManager("创建数据库", "auto", function(args, values) {
@@ -3376,7 +3377,7 @@ function initMenus() {
 
         let about = document.createElement("div");
         about.className = "charButton";
-        about.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__SYS_IMAGES_SVG__.help,"white","20px", "20px");
+        about.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("help", "white","20px", "20px");
         about.id = "about_and_help";
         about.style.cssFloat = "right";
         about.onclick = function () {
@@ -3403,10 +3404,10 @@ function initMenus() {
         crtb.className = "button";
         crtb.innerText = "新增";
         crtb.id = "create_new_table";
-        crtb.appendChild(__SYS_IMAGES_SVG__.getHelp(__SYS_IMAGES_SVG__.add, crtb, crtb.id, "auto", "white", "16px", "16px"));
+        crtb.appendChild(__SYS_IMAGES_SVG__.getHelp("add", crtb, crtb.id, "auto", "white", "16px", "16px"));
         let help_crtb = $("help-create-table");
         crtb.onclick = help_crtb.onclick = function () {
-            if (__CONFIGS__.CURRENT_DATABASE.service == null) {
+            if (__CONFIGS__.CURRENT_DATABASE.connect == null) {
                 UI.alert.show("注意", "请选择一个数据库.", "auto");
                 return;
             }
@@ -3438,10 +3439,10 @@ function initMenus() {
         importtb.className = "button";
         importtb.innerText = "导入";
         importtb.id = "import_data";
-        importtb.appendChild(__SYS_IMAGES_SVG__.getHelp(__SYS_IMAGES_SVG__.import, importtb, importtb.id, "auto", "white", "16px", "16px"));
+        importtb.appendChild(__SYS_IMAGES_SVG__.getHelp("import", importtb, importtb.id, "auto", "white", "16px", "16px"));
         let help_importtb = $("help-import-data");
         importtb.onclick = help_importtb.onclick = function () {
-            if (__CONFIGS__.CURRENT_DATABASE.service == null) {
+            if (__CONFIGS__.CURRENT_DATABASE.connect == null) {
                 UI.alert.show("注意", "请选择一个数据库连接.", "auto");
                 return;
             }
@@ -3455,9 +3456,9 @@ function initMenus() {
         exConstr.className = "button";
         exConstr.innerText = "结构";
         exConstr.id = "show_table_construct";
-        exConstr.appendChild(__SYS_IMAGES_SVG__.getHelp(__SYS_IMAGES_SVG__.construct, exConstr, exConstr.id, "auto", "white", "16px", "16px"));
+        exConstr.appendChild(__SYS_IMAGES_SVG__.getHelp("construct", exConstr, exConstr.id, "auto", "white", "16px", "16px"));
         exConstr.onclick = function () {
-            if (__CONFIGS__.CURRENT_DATABASE.service == null) {
+            if (__CONFIGS__.CURRENT_DATABASE.connect == null) {
                 UI.alert.show("注意", "请选择一个数据库连接.", "auto");
                 return;
             }
@@ -3492,7 +3493,7 @@ function initMenus() {
         newsql.className = "button";
         newsql.innerText = "新建";
         newsql.id = "create_new_sql";
-        newsql.appendChild(__SYS_IMAGES_SVG__.getHelp(__SYS_IMAGES_SVG__.add, newsql, newsql.id, "auto", "white", "16px", "16px"));
+        newsql.appendChild(__SYS_IMAGES_SVG__.getHelp("add", newsql, newsql.id, "auto", "white", "16px", "16px"));
         let help_createsql = $("help-create-sql");
         newsql.onclick = help_createsql.onclick = function () {
             let openfile = $("open-sql-file");
@@ -3544,7 +3545,7 @@ function initMenus() {
         opensql.className = "button";
         opensql.innerText = "打开";
         opensql.id = "open_sql";
-        opensql.appendChild(__SYS_IMAGES_SVG__.getHelp(__SYS_IMAGES_SVG__.open, opensql, opensql.id, "auto", "white", "16px", "16px"));
+        opensql.appendChild(__SYS_IMAGES_SVG__.getHelp("open", opensql, opensql.id, "auto", "white", "16px", "16px"));
         let help_opensql = $("help-open-sql");
         opensql.onclick = help_opensql.onclick = function () {
             UI.sqlManagerDialog.show("auto", function (args, values) {
@@ -3560,7 +3561,7 @@ function initMenus() {
         saveto.className = "button";
         saveto.innerText = "保存";
         saveto.id = "save_sql";
-        saveto.appendChild(__SYS_IMAGES_SVG__.getHelp(__SYS_IMAGES_SVG__.save, saveto, saveto.id, "auto", "white", "16px", "16px"));
+        saveto.appendChild(__SYS_IMAGES_SVG__.getHelp("save", saveto, saveto.id, "auto", "white", "16px", "16px"));
         let help_savesql = $("help-save-sql");
         saveto.onclick = help_savesql.onclick = function () {
             if (__SQLEDITOR__.title == null) {
@@ -3587,7 +3588,7 @@ function initMenus() {
         loadfile.className = "button";
         loadfile.innerText = "导入";
         loadfile.id = "load_sql_from_file";
-        loadfile.appendChild(__SYS_IMAGES_SVG__.getHelp(__SYS_IMAGES_SVG__.import, loadfile, loadfile.id, "auto", "white", "16px", "16px"));
+        loadfile.appendChild(__SYS_IMAGES_SVG__.getHelp("import", loadfile, loadfile.id, "auto", "white", "16px", "16px"));
         let help_loadsql = $("help-load-sql");
         loadfile.onclick = help_loadsql.onclick = function () {
             $("open-sql-file").click();
@@ -3599,7 +3600,7 @@ function initMenus() {
         saveas.className = "button";
         saveas.innerText = "导出";
         saveas.id = "save_sql_to_file";
-        saveas.appendChild(__SYS_IMAGES_SVG__.getHelp(__SYS_IMAGES_SVG__.export, saveas, saveas.id, "auto", "white", "16px", "16px"));
+        saveas.appendChild(__SYS_IMAGES_SVG__.getHelp("export", saveas, saveas.id, "auto", "white", "16px", "16px"));
         let help_downloadsql = $("help-download-sql");
         saveas.onclick = help_downloadsql.onclick = function () {
             UI.prompt.show("输入", {"文件名称": __SQLEDITOR__.title != null ? __SQLEDITOR__.title.split("_")[0] : ""}, "auto", function (args, values) {
@@ -3627,7 +3628,7 @@ function initMenus() {
         backup.className = "button";
         backup.innerText = "备份";
         backup.id = "backup_sql_to_file";
-        backup.appendChild(__SYS_IMAGES_SVG__.getHelp(__SYS_IMAGES_SVG__.backup, backup, backup.id, "auto", "white", "16px", "16px"));
+        backup.appendChild(__SYS_IMAGES_SVG__.getHelp("backup", backup, backup.id, "auto", "white", "16px", "16px"));
         backup.onclick = function () {
             UI.sqlManagerDialog.show("auto", function (args, values) {
 
@@ -3640,7 +3641,7 @@ function initMenus() {
         execsql.className = "button";
         execsql.innerText = "提交";
         execsql.id = "execute-sql";
-        execsql.appendChild(__SYS_IMAGES_SVG__.getHelp(__SYS_IMAGES_SVG__.execute, execsql, "execute_sql", "auto", "white", "16px", "16px"));
+        execsql.appendChild(__SYS_IMAGES_SVG__.getHelp("execute", execsql, "execute_sql", "auto", "white", "16px", "16px"));
         let help_execsql = $("help-execute-sql");
         execsql.onclick = help_execsql.onclick = function () {
             if (checkStorage()) {
@@ -3715,7 +3716,7 @@ function initMenus() {
         let tofull = document.createElement("div");
         sqltools.appendChild(tofull);
         tofull.className = "charButton";
-        tofull.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__SYS_IMAGES_SVG__.fullscreen,"white","20px", "20px");
+        tofull.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("fullscreen","white","20px", "20px");
         tofull.style.cssFloat = "right";
         tofull.id = "set-editer-to-full";
         tofull.onclick = function () {
@@ -3726,7 +3727,7 @@ function initMenus() {
         let editerSetting = document.createElement("div");
         sqltools.appendChild(editerSetting);
         editerSetting.className = "charButton";
-        editerSetting.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__SYS_IMAGES_SVG__.more,"white","20px", "20px");
+        editerSetting.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("more","white","20px", "20px");
         editerSetting.style.cssFloat = "right";
         editerSetting.id = "editer-setting";
         editerSetting.onclick = function () {
@@ -3752,7 +3753,7 @@ function initMenus() {
 
         let toDisplay = document.createElement("div");
         toDisplay.className = "charButton";
-        toDisplay.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__SYS_IMAGES_SVG__.display,"white","22px", "22px");
+        toDisplay.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("display","white","22px", "22px");
         toDisplay.id = "display-log";
         toDisplay.onclick = function () {
             if ($("detail").style.display != "none") {
@@ -3775,7 +3776,7 @@ function initMenus() {
 
         let clean = document.createElement("div");
         clean.className = "charButton";
-        clean.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__SYS_IMAGES_SVG__.clearLogs,"white","18px", "18px");
+        clean.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("clearLogs","white","18px", "18px");
         clean.id = "logs-clear";
         clean.onclick = function () {
             let msgbox = $("messageBox");
@@ -3787,7 +3788,7 @@ function initMenus() {
         let savelogs = document.createElement("div");
         savelogs.className = "charButton";
         savelogs.id = "save-logs";
-        savelogs.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__SYS_IMAGES_SVG__.download,"white","20px", "20px");
+        savelogs.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("download","white","20px", "20px");
         savelogs.style.cssFloat = "left";
         savelogs.onclick = function () {
             let logslist = {};
@@ -3821,7 +3822,7 @@ function initMenus() {
         logsets.id = "logs-records";
         detailtools.appendChild(logsets);
         logsets.className = "charButton";
-        logsets.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__SYS_IMAGES_SVG__.more,"white","20px", "20px");
+        logsets.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("more","white","20px", "20px");
         logsets.id = "logs-setting";
         logsets.style.cssFloat = "right";
         logsets.onclick = function () {
@@ -3922,7 +3923,7 @@ function initMenus() {
         let openEchartsFile = document.createElement("div");
         datatools.appendChild(openEchartsFile);
         openEchartsFile.className = "charButton";
-        openEchartsFile.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__SYS_IMAGES_SVG__.report,"white","20px", "20px");
+        openEchartsFile.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("report","white","20px", "20px");
         openEchartsFile.style.cssFloat = "left";
         openEchartsFile.onclick = $("open-html-report").onclick = function () {
             $("open-echarts-file").click();
@@ -3932,7 +3933,7 @@ function initMenus() {
         let dataReader = document.createElement("div");
         datatools.appendChild(dataReader);
         dataReader.className = "charButton";
-        dataReader.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__SYS_IMAGES_SVG__.onload,"white","20px", "20px");
+        dataReader.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("onload","white","20px", "20px");
         dataReader.style.cssFloat = "left";
         dataReader.id = "data-reader";
         dataReader.onclick = $("read-xls-file").onclick = function () {
@@ -3946,7 +3947,7 @@ function initMenus() {
         let datatran = document.createElement("div");
         datatools.appendChild(datatran);
         datatran.className = "charButton";
-        datatran.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__SYS_IMAGES_SVG__.datatran,"white","20px", "20px");
+        datatran.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("datatran","white","20px", "20px");
         datatran.id = "dataset-transpose";
         let help_datasettranspose = $("help-dataset-transpose");
         datatran.onclick = help_datasettranspose.onclick = function () {
@@ -3960,7 +3961,7 @@ function initMenus() {
         let dataslice = document.createElement("div");
         datatools.appendChild(dataslice);
         dataslice.className = "charButton";
-        dataslice.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__SYS_IMAGES_SVG__.slice,"white","20px", "20px");
+        dataslice.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("slice","white","20px", "20px");
         dataslice.id = "dataset-slice";
         let help_datasetslice = $("help-dataset-slice");
         dataslice.onclick = help_datasetslice.onclick = function () {
@@ -3978,7 +3979,7 @@ function initMenus() {
         let subtotal = document.createElement("div");
         datatools.appendChild(subtotal);
         subtotal.className = "charButton";
-        subtotal.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__SYS_IMAGES_SVG__.sum,"white","20px", "20px");
+        subtotal.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("sum","white","20px", "20px");
         subtotal.id = "dataset-subtotal";
         let help_datasetsubtotal = $("help-dataset-subtotal");
         subtotal.onclick = help_datasetsubtotal.onclick = function () {
@@ -3994,7 +3995,7 @@ function initMenus() {
         let download = document.createElement("div");
         datatools.appendChild(download);
         download.className = "charButton";
-        download.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__SYS_IMAGES_SVG__.download,"white","20px", "20px");
+        download.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("download","white","20px", "20px");
         download.id = "dataset-download";
         let help_datasetdownload = $("help-dataset-download");
         download.onclick = help_datasetdownload.onclick = function () {
@@ -4190,7 +4191,7 @@ function initMenus() {
         let remove = document.createElement("div");
         datatools.appendChild(remove);
         remove.className = "charButton";
-        remove.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__SYS_IMAGES_SVG__.remove,"white","20px", "20px");
+        remove.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("remove","white","20px", "20px");
         remove.id = "dataset-remove";
         let help_datasetremove = $("help-dataset-remove");
         remove.onclick = help_datasetremove.onclick = function () {
@@ -4213,7 +4214,7 @@ function initMenus() {
         let removeall = document.createElement("div");
         datatools.appendChild(removeall);
         removeall.className = "charButton";
-        removeall.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__SYS_IMAGES_SVG__.clearSets,"white","20px", "20px");
+        removeall.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("clearSets","white","20px", "20px");
         removeall.id = "dataset-removeall";
         removeall.onclick = function () {
             if (__DATASET__.result.length > 0) {
@@ -4234,7 +4235,7 @@ function initMenus() {
         let fileSecurity = document.createElement("div");
         datatools.appendChild(fileSecurity);
         fileSecurity.className = "charButton";
-        fileSecurity.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__SYS_IMAGES_SVG__.encrypt,"white","20px", "20px");
+        fileSecurity.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("encrypt","white","20px", "20px");
         fileSecurity.onclick = $("file-security").onclick = function () {
             getFileSecurity("auto");
         };
@@ -4243,7 +4244,7 @@ function initMenus() {
         let mailto = document.createElement("div");
         datatools.appendChild(mailto);
         mailto.className = "charButton";
-        mailto.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__SYS_IMAGES_SVG__.email,"white","20px", "20px");
+        mailto.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("email","white","20px", "20px");
         mailto.onclick = function () {
             getMailComponent("auto");
         };
@@ -4252,7 +4253,7 @@ function initMenus() {
         let blobsplit = document.createElement("div");
         datatools.appendChild(blobsplit);
         blobsplit.className = "charButton";
-        blobsplit.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__SYS_IMAGES_SVG__.datasplit,"white","20px", "20px");
+        blobsplit.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("datasplit","white","20px", "20px");
         blobsplit.onclick = function () {
             UI.splitFileBlob.show("大数据文件分割", "auto", function (args) {
                 let blob = new Blob([str2ab(args.result)], {type: "plain/text"});
@@ -4264,7 +4265,7 @@ function initMenus() {
         let datasetSetting = document.createElement("div");
         datatools.appendChild(datasetSetting);
         datasetSetting.className = "charButton";
-        datasetSetting.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__SYS_IMAGES_SVG__.more,"white","20px", "20px");
+        datasetSetting.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("more","white","20px", "20px");
         datasetSetting.id = "dataset-setting";
         datasetSetting.onclick = function () {
             __DATASET__.setConfigs("auto", function () {
@@ -4311,7 +4312,7 @@ function initMenus() {
         let toecharts = document.createElement("div");
         datatools.appendChild(toecharts);
         toecharts.className = "charButton";
-        toecharts.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__SYS_IMAGES_SVG__.fullscreen,"white","20px", "20px");
+        toecharts.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("fullscreen","white","20px", "20px");
         toecharts.style.cssFloat = "right";
         toecharts.id = "dataset-to-echarts";
         toecharts.onclick = function () {
@@ -4336,7 +4337,7 @@ function initMenus() {
         let toconfigs = document.createElement("div");
         datatools.appendChild(toconfigs);
         toconfigs.className = "charButton";
-        toconfigs.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__SYS_IMAGES_SVG__.more,"white","20px", "20px");
+        toconfigs.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("more","white","20px", "20px");
         toconfigs.style.cssFloat = "right";
         toconfigs.id = "dataset-to-configs";
         let help_echartsConfigs = $("help-select-echarts-configs");
@@ -4371,7 +4372,7 @@ function initMenus() {
         let toMultiEcharts = document.createElement("div");
         datatools.appendChild(toMultiEcharts);
         toMultiEcharts.className = "charButton";
-        toMultiEcharts.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__SYS_IMAGES_SVG__.multiview,"white","20px", "20px");
+        toMultiEcharts.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("multiview","white","20px", "20px");
         toMultiEcharts.style.cssFloat = "right";
         toMultiEcharts.id = "dataset-to-multi-echarts";
         toMultiEcharts.onclick = $("help-dataset-to-multi-echarts").onclick = function () {
@@ -4484,7 +4485,7 @@ function initMenus() {
         let getecharts = document.createElement("div");
         datatools.appendChild(getecharts);
         getecharts.className = "charButton";
-        getecharts.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__SYS_IMAGES_SVG__.getSVG(__VERSION__.logo.name),"white","20px", "20px");
+        getecharts.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name,"white","20px", "20px");
         getecharts.style.cssFloat = "right";
         getecharts.id = "dataset-to-charts";
         let help_echarts = $("help-dataset-echarts");
@@ -5591,7 +5592,7 @@ function getImageBase64Code(parent, img) {
     let span = document.createElement("span");
     span.innerHTML = "● 设置背景";
     title.appendChild(span);
-    let close = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.close,__THEMES__.get().color, "24px", "24px", null, __THEMES__.get().hover);
+    let close = __SYS_IMAGES_SVG__.getImage("close",__THEMES__.get().color, "24px", "24px", null, __THEMES__.get().hover);
     close.className = "ui-container-close";
     title.appendChild(close);
     content.appendChild(title);

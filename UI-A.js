@@ -223,7 +223,7 @@ var UI = {
             let span = document.createElement("span");
             span.innerHTML = "● " + this.title;
             title.appendChild(span);
-            let close = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.close,__THEMES__.get().color, "24px", "24px", null, __THEMES__.get().hover);
+            let close = __SYS_IMAGES_SVG__.getImage("close",__THEMES__.get().color, "24px", "24px", null, __THEMES__.get().hover);
             close.className = "ui-container-close";
             title.appendChild(close);
             content.appendChild(title);
@@ -576,7 +576,7 @@ var UI = {
         let span = document.createElement("span");
         span.innerHTML = "● " + message;
         title.appendChild(span);
-        let close = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.close,__THEMES__.get().color, "24px", "24px", null, __THEMES__.get().hover);
+        let close = __SYS_IMAGES_SVG__.getImage("close",__THEMES__.get().color, "24px", "24px", null, __THEMES__.get().hover);
         close.className = "ui-container-close";
         title.appendChild(close);
         content.appendChild(title);
@@ -804,7 +804,7 @@ var UI = {
         let span = document.createElement("span");
         span.innerHTML = "● 二维码";
         title.appendChild(span);
-        let close = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.close,__THEMES__.get().color, "24px", "24px", null, __THEMES__.get().hover);
+        let close = __SYS_IMAGES_SVG__.getImage("close",__THEMES__.get().color, "24px", "24px", null, __THEMES__.get().hover);
         close.className = "ui-container-close";
         title.appendChild(close);
         content.appendChild(title);
@@ -1028,7 +1028,7 @@ var UI = {
             let span = document.createElement("span");
             span.innerHTML = "● " + this.title;
             title.appendChild(span);
-            let close = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.close,__THEMES__.get().color, "24px", "24px", null, __THEMES__.get().hover);
+            let close = __SYS_IMAGES_SVG__.getImage("close",__THEMES__.get().color, "24px", "24px", null, __THEMES__.get().hover);
             close.className = "ui-container-close";
             title.appendChild(close);
             content.appendChild(title);
@@ -1040,7 +1040,7 @@ var UI = {
             let item = document.createElement("div");
             item.style.cssText = "width:100%;";
             let image = document.createElement("img");
-            image.src =__SYS_IMAGES_SVG__.getSrc(__SYS_IMAGES_SVG__.alert,__THEMES__.get().color,"100px","100px");
+            image.src =__SYS_IMAGES_SVG__.getSrc("alert",__THEMES__.get().color,"100px","100px");
             image.size = "25% auto";
             image.attachment = "fixed";
             image.style.cssText = "width:25%;float: left;" +
@@ -1122,7 +1122,7 @@ var UI = {
             let span = document.createElement("span");
             span.innerHTML = "● " + this.title;
             title.appendChild(span);
-            let close = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.close,__THEMES__.get().color, "24px", "24px", null, __THEMES__.get().hover);
+            let close = __SYS_IMAGES_SVG__.getImage("close",__THEMES__.get().color, "24px", "24px", null, __THEMES__.get().hover);
             close.className = "ui-container-close";
             title.appendChild(close);
             content.appendChild(title);
@@ -1134,7 +1134,7 @@ var UI = {
             let item = document.createElement("div");
             item.style.cssText = "width:100%;";
             let image = document.createElement("img");
-            image.src = __SYS_IMAGES_SVG__.getSrc(__SYS_IMAGES_SVG__.confirm,__THEMES__.get().color,"100px","100px");
+            image.src = __SYS_IMAGES_SVG__.getSrc("confirm",__THEMES__.get().color,"100px","100px");
             image.size = "25% auto";
             image.attachment = "fixed";
             image.style.cssText = "width:25%;float: left;" +
@@ -1242,7 +1242,7 @@ var UI = {
             let span = document.createElement("span");
             span.innerHTML = "● " + this.title;
             title.appendChild(span);
-            let close = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.close,__THEMES__.get().color, "24px", "24px", null, __THEMES__.get().hover);
+            let close = __SYS_IMAGES_SVG__.getImage("close",__THEMES__.get().color, "24px", "24px", null, __THEMES__.get().hover);
             close.className = "ui-container-close";
             title.appendChild(close);
             content.appendChild(title);
@@ -1255,7 +1255,7 @@ var UI = {
             itemcontent.style.cssText = "min-height: 100px;width:100%;";
             content.appendChild(itemcontent);
             let image = document.createElement("img");
-            image.src = __SYS_IMAGES_SVG__.getSrc(__SYS_IMAGES_SVG__.prompt,__THEMES__.get().color,"100px","100px");
+            image.src = __SYS_IMAGES_SVG__.getSrc("prompt",__THEMES__.get().color,"100px","100px");
             image.size = "25% auto";
             image.attachment = "fixed";
             image.style.cssText = "width:25%;float: left;" +
@@ -1358,7 +1358,7 @@ var UI = {
             let span = document.createElement("span");
             span.innerHTML = "● " + this.title;
             title.appendChild(span);
-            let close = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.close,__THEMES__.get().color, "24px", "24px", null, __THEMES__.get().hover);
+            let close = __SYS_IMAGES_SVG__.getImage("close",__THEMES__.get().color, "24px", "24px", null, __THEMES__.get().hover);
             close.className = "ui-container-close";
             title.appendChild(close);
             content.appendChild(title);
@@ -1372,7 +1372,7 @@ var UI = {
             content.appendChild(itemcontent);
 
             let image = document.createElement("img");
-            image.src = __SYS_IMAGES_SVG__.getSrc(__SYS_IMAGES_SVG__.choice,__THEMES__.get().color,"100px","100px");
+            image.src = __SYS_IMAGES_SVG__.getSrc("choice",__THEMES__.get().color,"100px","100px");
             image.size = "25% auto";
             image.attachment = "fixed";
             image.style.cssText = "width:25%;float: left;" +
@@ -1479,7 +1479,7 @@ var UI = {
             let span = document.createElement("span");
             span.innerHTML = "● " + this.title;
             title.appendChild(span);
-            let close = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.close,__THEMES__.get().color, "24px", "24px", null, __THEMES__.get().hover);
+            let close = __SYS_IMAGES_SVG__.getImage("close",__THEMES__.get().color, "24px", "24px", null, __THEMES__.get().hover);
             close.className = "ui-container-close";
             title.appendChild(close);
             content.appendChild(title);
@@ -1492,7 +1492,7 @@ var UI = {
             itemcontent.style.cssText = "min-height: 100px;width:100%;font-size:120%;";
             content.appendChild(itemcontent);
             let image = document.createElement("img");
-            image.src = __SYS_IMAGES_SVG__.getSrc(__SYS_IMAGES_SVG__.user,__THEMES__.get().color,"100px","100px");
+            image.src = __SYS_IMAGES_SVG__.getSrc("user",__THEMES__.get().color,"100px","100px");
             image.size = "25% auto";
             image.attachment = "fixed";
             image.style.cssText = "width:25%;float: left;" +
@@ -1515,7 +1515,7 @@ var UI = {
             input.id = "ui_user_login_value_name";
             input.value = "";
             input.placeholder = "名称";
-            input.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__SYS_IMAGES_SVG__.user,__THEMES__.get().color,"16px","16px");
+            input.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("user",__THEMES__.get().color,"16px","16px");
             input.style.backgroundRepeat = "no-repeat";
             input.style.backgroundPosition = "right";
             input.style.backgroundSize = "16px 16px";
@@ -1545,7 +1545,7 @@ var UI = {
             input.type = "password";
             input.value = "";
             input.placeholder = "☀☀☀☀☀☀☀☀";
-            input.style.backgroundImage =  __SYS_IMAGES_SVG__.getUrl(__SYS_IMAGES_SVG__.key,__THEMES__.get().color,"16px","16px");
+            input.style.backgroundImage =  __SYS_IMAGES_SVG__.getUrl("key",__THEMES__.get().color,"16px","16px");
             input.style.backgroundRepeat = "no-repeat";
             input.style.backgroundPosition = "right";
             input.style.backgroundSize = "16px 16px";
@@ -1637,7 +1637,7 @@ var UI = {
             let span = document.createElement("span");
             span.innerHTML = "● " + this.title;
             title.appendChild(span);
-            let close = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.close,__THEMES__.get().color, "24px", "24px", null, __THEMES__.get().hover);
+            let close = __SYS_IMAGES_SVG__.getImage("close",__THEMES__.get().color, "24px", "24px", null, __THEMES__.get().hover);
             close.className = "ui-container-close";
             title.appendChild(close);
             content.appendChild(title);
@@ -1650,7 +1650,7 @@ var UI = {
             itemcontent.style.cssText = "min-height: 100px;width:100%;";
             content.appendChild(itemcontent);
             let image = document.createElement("img");
-            image.src = __SYS_IMAGES_SVG__.getSrc(__SYS_IMAGES_SVG__.password,__THEMES__.get().color,"100px","100px")
+            image.src = __SYS_IMAGES_SVG__.getSrc("password",__THEMES__.get().color,"100px","100px")
             image.size = "25% auto";
             image.attachment = "fixed";
             image.style.cssText = "width:25%;float: left;" +
@@ -1676,7 +1676,7 @@ var UI = {
                 input.id = "ui_password_value_" + key;
                 input.placeholder = "☀☀☀☀☀☀☀☀";
                 input.title = placeholder;
-                input.style.backgroundImage =  __SYS_IMAGES_SVG__.getUrl(__SYS_IMAGES_SVG__.key,__THEMES__.get().color,"16px","16px");
+                input.style.backgroundImage =  __SYS_IMAGES_SVG__.getUrl("key",__THEMES__.get().color,"16px","16px");
                 input.style.backgroundRepeat = "no-repeat";
                 input.style.backgroundPosition = "right";
                 input.style.backgroundSize = "16px 16px";
@@ -1849,7 +1849,7 @@ var UI = {
             let span = document.createElement("span");
             span.innerHTML = "● 脚本管理 ";
             title.appendChild(span);
-            let close = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.close,__THEMES__.get().color, "24px", "24px", null, __THEMES__.get().hover);
+            let close = __SYS_IMAGES_SVG__.getImage("close",__THEMES__.get().color, "24px", "24px", null, __THEMES__.get().hover);
             close.className = "ui-container-close";
             title.appendChild(close);
             content.appendChild(title);
@@ -2252,7 +2252,7 @@ var UI = {
         let span = document.createElement("span");
         span.innerHTML = "● 分类计算";
         title.appendChild(span);
-        let close = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.close,__THEMES__.get().color, "24px", "24px", null, __THEMES__.get().hover);
+        let close = __SYS_IMAGES_SVG__.getImage("close",__THEMES__.get().color, "24px", "24px", null, __THEMES__.get().hover);
         close.className = "ui-container-close";
         title.appendChild(close);
         content.appendChild(title);
@@ -2550,7 +2550,7 @@ var UI = {
         let span = document.createElement("span");
         span.innerHTML = "● 数据切片";
         title.appendChild(span);
-        let close = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.close,__THEMES__.get().color, "24px", "24px", null, __THEMES__.get().hover);
+        let close = __SYS_IMAGES_SVG__.getImage("close",__THEMES__.get().color, "24px", "24px", null, __THEMES__.get().hover);
         close.className = "ui-container-close";
         title.appendChild(close);
         content.appendChild(title);
@@ -2734,7 +2734,7 @@ var UI = {
         let span = document.createElement("span");
         span.innerHTML = "● 筛选字段 [ " + columns[Number(colid)].name + " ]";
         title.appendChild(span);
-        let close = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.close,__THEMES__.get().color, "24px", "24px", null, __THEMES__.get().hover);
+        let close = __SYS_IMAGES_SVG__.getImage("close",__THEMES__.get().color, "24px", "24px", null, __THEMES__.get().hover);
         close.className = "ui-container-close";
         title.appendChild(close);
         content.appendChild(title);
@@ -2948,7 +2948,7 @@ var UI = {
         let span = document.createElement("span");
         span.innerHTML = "● 格式设置 [ " + columns[Number(colid)].name + " ]";
         title.appendChild(span);
-        let close = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.close,__THEMES__.get().color, "24px", "24px", null, __THEMES__.get().hover);
+        let close = __SYS_IMAGES_SVG__.getImage("close",__THEMES__.get().color, "24px", "24px", null, __THEMES__.get().hover);
         close.className = "ui-container-close";
         title.appendChild(close);
         content.appendChild(title);
@@ -3133,7 +3133,7 @@ var SQLite = {
                 value: "",
                 name: "库名称",
                 type: "text",
-                image: __SYS_IMAGES_SVG__.getUrl(__SYS_IMAGES_SVG__.database, __THEMES__.get().color, "16px", "16px")
+                image: __SYS_IMAGES_SVG__.getUrl("database", __THEMES__.get().color, "16px", "16px")
             },
             Database: {value: null, name: "库文件", type: "text"},
             Version: {value: 1.0, name: "版本号", type: "text"},
@@ -3170,7 +3170,7 @@ var SQLite = {
         let span = document.createElement("span");
         span.innerHTML = "● " + message +" ";
         title.appendChild(span);
-        let close = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.close,__THEMES__.get().color, "24px", "24px", null, __THEMES__.get().hover);
+        let close = __SYS_IMAGES_SVG__.getImage("close",__THEMES__.get().color, "24px", "24px", null, __THEMES__.get().hover);
         close.className = "ui-container-close";
         title.appendChild(close);
         content.appendChild(title);
@@ -3275,7 +3275,7 @@ var SQLite = {
         let span = document.createElement("span");
         span.innerHTML = "● 创建数据表 ";
         title.appendChild(span);
-        let close = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.close,__THEMES__.get().color, "24px", "24px", null, __THEMES__.get().hover);
+        let close = __SYS_IMAGES_SVG__.getImage("close",__THEMES__.get().color, "24px", "24px", null, __THEMES__.get().hover);
         close.className = "ui-container-close";
         title.appendChild(close);
         content.appendChild(title);
@@ -3895,7 +3895,7 @@ var SQLite = {
             let span = document.createElement("span");
             span.innerHTML = "● 导入数据";
             title.appendChild(span);
-            let close = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.close,__THEMES__.get().color, "24px", "24px", null, __THEMES__.get().hover);
+            let close = __SYS_IMAGES_SVG__.getImage("close",__THEMES__.get().color, "24px", "24px", null, __THEMES__.get().hover);
             close.className = "ui-container-close";
             title.appendChild(close);
             content.appendChild(title);

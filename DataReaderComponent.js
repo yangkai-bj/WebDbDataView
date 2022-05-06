@@ -110,7 +110,7 @@ function getDataReader(parent, callback) {
     let span = document.createElement("span");
     span.innerHTML = "● 读取外部数据";
     title.appendChild(span);
-    let close = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.close,__THEMES__.get().color, "24px", "24px", null, __THEMES__.get().hover);
+    let close = __SYS_IMAGES_SVG__.getImage("close", __THEMES__.get().color, "24px", "24px", null, __THEMES__.get().hover);
     close.className = "ui-container-close";
     title.appendChild(close);
     content.appendChild(title);

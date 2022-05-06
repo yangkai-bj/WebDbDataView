@@ -2005,7 +2005,7 @@ var __ECHARTS__ = {
         let span = document.createElement("span");
         span.innerHTML = "● 图形参数 ";
         title.appendChild(span);
-        let close = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.close,__THEMES__.get().color, "24px", "24px", null, __THEMES__.get().hover);
+        let close = __SYS_IMAGES_SVG__.getImage("close",__THEMES__.get().color, "24px", "24px", null, __THEMES__.get().hover);
         close.className = "ui-container-close";
         title.appendChild(close);
         content.appendChild(title);
@@ -2627,7 +2627,7 @@ var geoCoordMap = {
         let span = document.createElement("span");
         span.innerHTML = "● 地图设置 ";
         title.appendChild(span);
-        let close = __SYS_IMAGES_SVG__.getImage(__SYS_IMAGES_SVG__.close,__THEMES__.get().color, "24px", "24px", null, __THEMES__.get().hover);
+        let close = __SYS_IMAGES_SVG__.getImage("close",__THEMES__.get().color, "24px", "24px", null, __THEMES__.get().hover);
         close.className = "ui-container-close";
         title.appendChild(close);
         content.appendChild(title);
@@ -12514,10 +12514,10 @@ function getSaveAsReport(configs, container, myChart) {
                     "}\n" +
                     "if (state == '0'){\n" +
                     "this.setAttribute('state','1');\n" +
-                    "this.getElementsByTagName('span')[0].innerHTML = '<span class=exp-open>❀ </span>' + this.getAttribute('value');\n"+
+                    "this.getElementsByTagName('span')[0].innerHTML = '<span class=exp-open>❀ </span>' + this.getAttribute('value');\n" +
                     "} else {\n" +
                     "this.setAttribute('state','0');\n" +
-                    "this.getElementsByTagName('span')[0].innerHTML = '<span class=exp-close>☘ </span>' + this.getAttribute('value');\n"+
+                    "this.getElementsByTagName('span')[0].innerHTML = '<span class=exp-close>☘ </span>' + this.getAttribute('value');\n" +
                     "}\n" +
                     "}\n" +
                     "dl.appendChild(dt);\n" +
@@ -13121,7 +13121,7 @@ function getSaveAsReport(configs, container, myChart) {
                 "<meta name='app-version' content='" + __VERSION__.version + "'>\n" +
                 "<meta name='app-author' content='" + __VERSION__.author + "'>\n" +
                 "<meta name='app-url' content='" + __VERSION__.url + "'>\n" +
-                "<meta name='report-author' content='" + (typeof __LOGS__.user.name !== "undefined"? __LOGS__.user.name: "") + "'>\n" +
+                "<meta name='report-author' content='" + (typeof __LOGS__.user.name !== "undefined" ? __LOGS__.user.name : "") + "'>\n" +
                 "<meta name='report-create-time' content='" + time + "'>\n" +
                 "<style>\n" +
                 "body{margin-top:15px;font-family: Arial, Verdana;" +
@@ -13132,8 +13132,9 @@ function getSaveAsReport(configs, container, myChart) {
                 "background-image: -webkit-linear-gradient(45deg,rgba(255, 255, 255, 0.2) 25%,transparent 25%,transparent 50%,rgba(255, 255, 255, 0.2) 50%,rgba(255, 255, 255, 0.2) 75%,transparent 75%,transparent);\n" +
                 "}\n" +
                 "body ::-webkit-scrollbar-track {box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);background: transparent;border-radius: 3px;}\n" +
-                "h1{margin: auto;width: 80%;text-align: left;white-space: normal;word-break: break-all;word-wrap: break-word;}\n" +
-                "h2{margin: auto;width: 80%;text-align: left;white-space: normal;word-break: break-all;word-wrap: break-word;}\n" +
+                "div.TITLE{margin: auto;width: 80%;background-repeat:no-repeat;background-image:" + __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name, __THEMES__.get().color, "60px", "60px") + ";}\n" +
+                "h1{margin: auto;width: 100%;text-align: left;white-space: normal;word-break: break-all;word-wrap: break-word;}\n" +
+                "h3{margin: auto;width: 100%;text-align: left;white-space: normal;word-break: break-all;word-wrap: break-word;}\n" +
                 "h5{margin: auto;width: 80%;text-align: right;white-space: normal;word-break: break-all;word-wrap: break-word;}\n" +
                 "div.TABS{margin: auto;padding-left: 5px;padding-right: 5px;width: 80%;overflow: hidden;height: 100%}\n" +
                 "div.ECHART{margin: auto;padding-left: 5px;padding-right: 5px;width: 80%;border: 1px solid coral;border-radius: 5px;overflow: hidden;height: 100%;}\n" +
@@ -13189,8 +13190,10 @@ function getSaveAsReport(configs, container, myChart) {
                 getScript(__VERSION__.main, jsPath, __VERSION__.echarts, __DATASET__.configs.reportThemes.value) +
                 "</head>\n" +
                 "<body onload='init()'>\n" +
-                "<h1>" + title[0] + "</h1>\n" +
-                "<h2>" + (title.length > 1 ? title.slice(1, title.length).join("&emsp;") : "") + "</h2>\n" +
+                "<div class='TITLE'>\n" +
+                "<h1><span style='margin-left: 60px'>" + title[0] + "</span></h1>\n" +
+                "<h3><span style='margin-left: 60px'>" + (title.length > 1 ? title.slice(1, title.length).join("&emsp;") : "") + "</span></h3>\n" +
+                "</div>\n" +
                 "<div class='TABS'>\n" +
                 "<span class='tabButton-selected' id='ECHART' onclick='selectTab(this.id)'>数据视图</span>\n" +
                 "<span class='tabButton-unselected' id='TABLE' onclick='selectTab(this.id)'>数据报表</span>\n" +
@@ -13215,7 +13218,7 @@ function getSaveAsReport(configs, container, myChart) {
                 "<code>" + configs.hex_md5_hash() + "</code>\n" +
                 "</div>\n" +
                 "<h6>适用于<a href = 'https://www.google.cn/chrome/index.html' target='_blank'>Google Chrome</a>或<a href = 'https://www.microsoft.com/zh-cn/edge?form=MY01BV&OCID=MY01BV&r=1' target='_blank'>Microsoft Edge</a>浏览器&emsp;技术支持: <a href = '" + __VERSION__.url + "' target='_blank'>" +
-                __VERSION__.author +  "</a>&emsp;电话: " + __VERSION__.tel + "&emsp;邮箱: <a href='mailto:" + __VERSION__.email + "'>" + __VERSION__.email + "</a>&emsp;创建时间:" + time + "</h6>\n" +
+                __VERSION__.author + "</a>&emsp;电话: " + __VERSION__.tel + "&emsp;邮箱: <a href='mailto:" + __VERSION__.email + "'>" + __VERSION__.email + "</a>&emsp;创建时间:" + time + "</h6>\n" +
                 "</body>\n" +
                 "</html>";
             let blob = new Blob([str2ab(html)], {type: "text/html"});
