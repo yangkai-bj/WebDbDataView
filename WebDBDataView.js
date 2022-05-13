@@ -3,8 +3,8 @@ const __VERSION__ = {
     name: "Web DataView for SQLite Database of browser",
     main: "WebDBDataView.js",
     echarts: "echarts/v5.3.2",
-    version: "3.2.8",
-    date: "2022/05/05",
+    version: "3.2.9",
+    date: "2022/05/08",
     comment: [
         "-- 2021/03/08",
         "优化算法和压缩代码.",
@@ -85,6 +85,8 @@ const __VERSION__ = {
         "-- 2022/04/14",
         "优化主题.",
         "Echarts 5.3.2.",
+        "-- 2022/05/08",
+        "优化固定报表.",
     ],
     author: __SYS_LOGO_LINK__.author.decode(),
     url: __SYS_LOGO_LINK__.link.getee.decode(),
@@ -581,17 +583,16 @@ var __LOGS__ = {
         dt.type = "dt";
         dt.className = "dt";
         dt.id = dt.innerText = log.time.format("yyyy-MM-dd hh:mm:ss S");
-        let tocopy = document.createElement("span");
-        tocopy.innerHTML = "⇢";
-        tocopy.className = "copy";
-        tocopy.title = "复制";
-        tocopy.onclick = function () {
+        let copyto = __SYS_IMAGES_SVG__.getImage("copy", __THEMES__.get().color, "12px", '12px', null, __THEMES__.get().hover);
+        copyto.title = "复制";
+        copyto.style.cssFloat = "right";
+        copyto.onclick = function() {
             let target = this.parentNode.getElementsByClassName("message")[0];
             setClipboardListener(target);
             document.execCommand("copy");
             UI.alert.show("提示", "日志内容已复制到粘贴板.");
         };
-        dt.appendChild(tocopy);
+        dt.appendChild(copyto);
 
         if (this.configs.logsOrderby.value == "DESC") {
             let first = msgbox.firstChild;
@@ -3081,8 +3082,8 @@ function userLogin() {
 
 function init() {
     if (initConfigs()) {
-        initMenus();
         setPageThemes();
+        initMenus();
         viewDatabases();
         setDataPageTools(0);
         getEchartsClock();
@@ -3892,10 +3893,10 @@ function initMenus() {
                                         container.innerHTML = "";
                                         let echart_target = getEcharts(
                                             container,
-                                            _width,
-                                            _height,
                                             __DATASET__.result[__DATASET__.default.sheet],
-                                            report.configs);
+                                            report.configs,
+                                            _width,
+                                            _height);
                                         setDragNook(container, echart_target.getAttribute("_echarts_instance_"));
                                         $("open-echarts-file").value = "";
                                         __LOGS__.viewMessage("读取 " + file.name + " ...OK.");
@@ -4356,10 +4357,10 @@ function initMenus() {
                         container.innerHTML = "";
                         let echart_target = getEcharts(
                             container,
-                            _width,
-                            _height,
                             __DATASET__["result"][__DATASET__.default.sheet],
-                            configs);
+                            configs,
+                            _width,
+                            _height);
                         setDragNook(container, echart_target.getAttribute("_echarts_instance_"));
                     }
                 } catch (e) {
@@ -4430,10 +4431,10 @@ function initMenus() {
                     container.innerHTML = "";
                     let echart_target = getEcharts(
                         container,
-                        _width,
-                        _height,
                         __DATASET__.result[__DATASET__.default.sheet],
-                        __ECHARTS__.getConfigs());
+                        __ECHARTS__.getConfigs(),
+                        _width,
+                        _height);
                     setDragNook(container, echart_target.getAttribute("_echarts_instance_"));
                 }
             } catch (e) {
@@ -4469,10 +4470,10 @@ function initMenus() {
                     container.innerHTML = "";
                     let echart_target = getEcharts(
                         container,
-                        _width,
-                        _height,
                         __DATASET__.result[__DATASET__.default.sheet],
-                        __ECHARTS__.getConfigs());
+                        __ECHARTS__.getConfigs(),
+                        _width,
+                        _height);
                     setDragNook(container, echart_target.getAttribute("_echarts_instance_"));
                 }
             } catch (e) {
@@ -4504,10 +4505,10 @@ function initMenus() {
                     container.innerHTML = "";
                     let echart_target = getEcharts(
                         container,
-                        _width,
-                        _height,
                         dataset,
-                        __ECHARTS__.configs);
+                        __ECHARTS__.configs,
+                        _width,
+                        _height);
                     setDragNook(container, echart_target.getAttribute("_echarts_instance_"));
                 }
             } catch (e) {
@@ -4624,10 +4625,10 @@ function getEchartsClock() {
             configs.waterGraphEnable.value = "false";
             getEcharts(
                 container,
-                width,
-                height,
                 null,
-                configs);
+                configs,
+                width,
+                height);
         }
     } catch (e) {
         __LOGS__.viewError(e);
@@ -4653,7 +4654,7 @@ function getQRCode(parent,width,height,text,logoImage){
         logo.style.marginTop = (height-width/4.0)/2 + "px";
         qr.appendChild(logo);
         qr.ondblclick = function() {
-            UI.prompt.show("二维码", {内容: this.title, 宽度: 300, 高度: 300, 颜色: "#000000", 背景: "#FFFFFF"}, "auto", function (values) {
+            UI.prompt.show("二维码", {内容: this.title, 宽度: 300, 高度: 300, 颜色: __THEMES__.get().color, 背景: "#FFFFFF"}, "auto", function (values) {
                 let options = {
                     color: values["颜色"],
                     background: values["背景"],
@@ -4667,7 +4668,7 @@ function getQRCode(parent,width,height,text,logoImage){
             text: text,
             width: width,
             height: height,
-            colorDark: "#000000",
+            colorDark: __THEMES__.get().color,
             colorLight: "#FFFFFF",
             correctLevel: QRCode.CorrectLevel.H
         });
@@ -4883,10 +4884,10 @@ function setEchartDrag(ec) {
                     let _height = posi.height + "px";
                     let echart_target = getEcharts(
                         this,
-                        _width,
-                        _height,
                         history.dataset,
-                        history.configs);
+                        history.configs,
+                        _width,
+                        _height);
                     setDragNook(echart_target, echart_target.getAttribute("_echarts_instance_"));
                     setEchartDrag(this);
                 } catch (e) {
@@ -5298,10 +5299,10 @@ function setDragNook(parent, id) {
                         let _height = posi.height + "px";
                         let e = getEcharts(
                             parent,
-                            _width,
-                            _height,
                             history.dataset,
-                            history.configs);
+                            history.configs,
+                            _width,
+                            _height);
                         setDragNook(e, e.getAttribute("_echarts_instance_"));
                         setEchartDrag(parent);
                     } catch (e) {

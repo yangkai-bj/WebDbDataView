@@ -230,146 +230,144 @@ function getBackgroundColor(configs) {
     }
 }
 
-function getEcharts(container, width, height, dataset, configs) {
+function getEcharts(container, dataset, configs, width, height) {
     try {
         // $("copyright").innerHTML = getUserConfig("CopyRight");
         if (echarts.version >= "5.0.2") {
             switch (configs.echartsType.value) {
                 case "Bar":
-                    return getBar(container, width, height, dataset, configs);
+                    return getBar(container, dataset, configs, width, height);
                     break;
                 case "Polar":
-                    return getPolar(container, width, height, dataset, configs);
+                    return getPolar(container, dataset, configs, width, height);
                     break;
                 case "Line":
-                    return getLine(container, width, height, dataset, configs);
+                    return getLine(container, dataset, configs, width, height);
                     break;
                 case "Line3D":
-                    return getLine3D(container, width, height, dataset, configs);
+                    return getLine3D(container, dataset, configs, width, height);
                     break;
                 case "BarAndLine":
-                    return getBarAndLine(container, width, height, dataset, configs);
+                    return getBarAndLine(container, dataset, configs, width, height);
                     break;
                 case "AreaStyle":
-                    return getAreaStyle(container, width, height, dataset, configs);
+                    return getAreaStyle(container, dataset, configs, width, height);
                     break;
                 case "TransversBar":
-                    return getTransversBar(container, width, height, dataset, configs);
+                    return getTransversBar(container, dataset, configs, width, height);
                     break;
                 case "Pie":
-                    return getPie(container, width, height, dataset, configs);
+                    return getPie(container, dataset, configs, width, height);
                     break;
                 case "Gauge":
-                    return getCategoryLineForGauge(container, width, height, dataset, configs);
+                    return getCategoryLineForGauge(container, dataset, configs, width, height);
                     break;
                 case "Radar":
-                    return getRadar(container, width, height, dataset, configs);
+                    return getRadar(container, dataset, configs, width, height);
                     break;
                 case "Relation":
-                    return getRelation(container, width, height, dataset, configs);
+                    return getRelation(container, dataset, configs, width, height);
                     break;
                 case "Tree":
-                    return getTree(container, width, height, dataset, configs);
+                    return getTree(container, dataset, configs, width, height);
                     break;
                 case "WebkitDep":
-                    return getWebkitDep(container, width, height, dataset, configs);
+                    return getWebkitDep(container, dataset, configs, width, height);
                     break;
                 case "Scatter":
-                    return getScatter(container, width, height, dataset, configs);
+                    return getScatter(container, dataset, configs, width, height);
                     break;
                 case "Funnel":
-                    return getFunnel(container, width, height, dataset, configs);
+                    return getFunnel(container, dataset, configs, width, height);
                     break;
                 case "WordCloud":
-                    return getWordCloud(container, width, height, dataset, configs);
+                    return getWordCloud(container, dataset, configs, width, height);
                     break;
                 case "Liqiud":
-                    return getCategoryLineForLiqiud(container, width, height, dataset, configs);
+                    return getCategoryLineForLiqiud(container, dataset, configs, width, height);
                     break;
                 case "Calendar":
-                    return getCalendar(container, width, height, dataset, configs);
+                    return getCalendar(container, dataset, configs, width, height);
                     break;
                 case "GeoOfChina":
-                    //return getGeoOfChina(container, width, height, dataset,configs);
-                    return getCategoryLineForGeoOfChina(container, width, height, dataset, configs);
+                    return getCategoryLineForGeoOfChina(container, dataset, configs, width, height);
                     break;
                 case "GeoOfLocal":
-                    //return getGeoOfLocal(container, width, height, dataset,configs);
-                    return getCategoryLineForGeoOfLocal(container, width, height, dataset, configs);
+                    return getCategoryLineForGeoOfLocal(container, dataset, configs, width, height);
                     break;
                 case "Bar3D":
-                    return getBar3D(container, width, height, dataset, configs);
+                    return getBar3D(container, dataset, configs, width, height);
                     break;
                 case "Scatter3D":
-                    return getScatter3D(container, width, height, dataset, configs);
+                    return getScatter3D(container, dataset, configs, width, height);
                     break;
                 case "Pie3D":
-                    return getPie3D(container, width, height, dataset, configs);
+                    return getPie3D(container, dataset, configs, width, height);
                     break;
                 case "CategoryLine":
-                    return getCategoryLine(container, width, height, dataset, configs);
+                    return getCategoryLine(container, dataset, configs, width, height);
                     break;
                 case "FunctionLine":
-                    return getFunctionLine(container, width, height, dataset, configs);
+                    return getFunctionLine(container, dataset, configs, width, height);
                     break;
                 case "GeoMigrateLinesOfChinaCity":
-                    return getGeoMigrateLinesOfChinaCity(container, width, height, dataset, configs);
+                    return getGeoMigrateLinesOfChinaCity(container, dataset, configs, width, height);
                     break;
                 case "ScrollingScreen":
-                    return getScrollingScreen(container, width, height, dataset, configs);
+                    return getScrollingScreen(container, dataset, configs, width, height);
                     break;
                 case "WalkingLantern":
-                    return getWalkingLantern(container, width, height, dataset, configs);
+                    return getWalkingLantern(container, dataset, configs, width, height);
                     break;
                 case "WindowShades":
-                    return getWindowShades(container, width, height, dataset, configs);
+                    return getWindowShades(container, dataset, configs, width, height);
                     break;
                 case "Surface":
-                    return getSurface(container, width, height, dataset, configs);
+                    return getSurface(container, dataset, configs, width, height);
                     break;
                 case "Boxplot":
-                    return getBoxplot(container, width, height, dataset, configs);
+                    return getBoxplot(container, dataset, configs, width, height);
                     break;
                 case "Clock":
-                    return getClock(container, width, height, dataset, configs);
+                    return getClock(container, dataset, configs, width, height);
                     break;
                 case "Candlestick":
-                    return getCandlestick(container, width, height, dataset, configs);
+                    return getCandlestick(container, dataset, configs, width, height);
                     break;
                 case "Banners":
-                    return getBanners(container, width, height, dataset, configs);
+                    return getBanners(container, dataset, configs, width, height);
                     break;
                 case "Sunburst":
-                    return getSunburst(container, width, height, dataset, configs);
+                    return getSunburst(container, dataset, configs, width, height);
                     break;
                 case "Treemap":
-                    return getTreemap(container, width, height, dataset, configs);
+                    return getTreemap(container, dataset, configs, width, height);
                     break;
                 case "ParallelAxis":
-                    return getParallelAxis(container, width, height, dataset, configs);
+                    return getParallelAxis(container, dataset, configs, width, height);
                     break;
                 case "Sankey":
-                    return getSankey(container, width, height, dataset, configs);
+                    return getSankey(container, dataset, configs, width, height);
                     break;
                 case "ThemeRiver":
-                    return getThemeRiver(container, width, height, dataset, configs);
+                    return getThemeRiver(container, dataset, configs, width, height);
                     break;
                 case "SingeAxis":
-                    return getSingeAxis(container, width, height, dataset, configs);
+                    return getSingeAxis(container, dataset, configs, width, height);
                     break;
                 case "MathFunciton":
-                    return getFunctionLine(container, width, height, dataset, configs);
+                    return getFunctionLine(container, dataset, configs, width, height);
                     break;
                 case "BarRacing":
-                    return getBarRacing(container, width, height, dataset, configs);
+                    return getBarRacing(container, dataset, configs, width, height);
                     break;
                 case "Scrolling":
-                    return getScrolling(container, width, height, dataset, configs);
+                    return getScrolling(container, dataset, configs, width, height);
                     break;
                 case "MultiGraph":
-                    return getMultiGraph(container, width, height, dataset, configs);
+                    return getMultiGraph(container, dataset, configs, width, height);
                 case "DatasetImage":
-                    return getDatasetImage(container, width, height, dataset, configs);
+                    return getDatasetImage(container, dataset, configs, width, height);
                     break;
             }
         } else {
@@ -3641,7 +3639,6 @@ function getMultiGraphOption(configs, container, myChart, dataset) {
         dataZoom.push(getDataZoomYAxis(configs, i, "slider", 0, 100, myChart.getWidth() / axis.xAxis.length));
     };
 
-
     function getSeries(source, types, grids) {
         let series = [];
         for (let i = 0; i < source.dimensions.length - 1 && i < grids.length; i++) {
@@ -4017,10 +4014,13 @@ function getMultiGraphOption(configs, container, myChart, dataset) {
         toolbox: getToolbox(configs, container, dataset, myChart),
         title: getTitle(configs, dataset.title),
         tooltip: getTooltip(configs, "item", function (param) {
-            return [param.seriesName, "<hr style='background-color:" + param.color + "'>" +
-            param.marker + "&ensp;" + param.name +
-            ":&ensp;<span style='display:inline-block;min-width:110px;text-align:right;font-weight:bold'>" +
-            param.value + (param.seriesType == "pie" ? ("&ensp;(&ensp;" + param.percent + "%&ensp;)") : "") + "</span>"].join("<br>");
+            if (param.seriesName !== null) {
+                return ["<span style = 'float:left'>" + param.seriesName + "</span>", "<hr style='background-color:" + param.color + "'>" +
+                param.marker + "&ensp;" + param.name +
+                "&ensp;<span style='display:inline-block;min-width:110px;text-align:right;font-weight:bold'>" +
+                param.value + (param.seriesType == "pie" ? ("&ensp;(&ensp;" + param.percent + "%&ensp;)") : "") + "</span>"].join("<br>");
+            } else
+                return null;
         }),
         legend: getLegend(configs, legend),
         xAxis: axis.xAxis,
@@ -4353,7 +4353,7 @@ function getPieOption(configs, container, myChart, dataset) {
         legend: getLegend(configs, source.dimensions.slice(1, source.dimensions.length)),
         toolbox: getToolbox(configs, container, dataset, myChart),
         tooltip: getTooltip(configs, "item", function (param) {
-            return [param.seriesName,"<hr style='background-color:" + param.color + "'>" +
+            return ["<span style = 'float:left'>" + param.seriesName + "</span>","<hr style='background-color:" + param.color + "'>" +
                 param.marker + "&ensp;" + param.name +
                 ":&ensp;<span style='display:inline-block;min-width:110px;text-align:right;font-weight:bold'>" +
                 param.value + (param.seriesType == "pie" ? ("&ensp;(&ensp;" + param.percent + "%&ensp;)") : "") + "</span>"].join("<br>");
@@ -4464,7 +4464,8 @@ function getFunnelOption(configs, container, myChart, dataset) {
         backgroundColor: getBackgroundColor(configs),
         title: getTitle(configs, dataset.title),
         tooltip: getTooltip(configs, "item", function (param) {
-            return [param.seriesName,"<hr style='background-color:" + param.color + "'>" +
+            return ["<span style = 'float:left'>" + param.seriesName + "</span>",
+                "<hr style='background-color:" + param.color + "'>" +
                 param.marker + "&ensp;" + param.name +
                 ":&ensp;<span style='display:inline-block;min-width:110px;text-align:right;font-weight:bold'>" +
                 param.value + (param.seriesType == "pie" ? ("&ensp;(&ensp;" + param.percent + "%&ensp;)") : "") + "</span>"].join("<br>");
@@ -4788,7 +4789,7 @@ function getGeoOfChinaOption(configs, container, myChart, dataset) {
                     toolbox: getToolbox(configs, container, dataset, myChart),
                     tooltip: getTooltip(configs, "item", function (param) {
                         if (param.data !== undefined) {
-                            return param.name +
+                            return "<span style = 'float:left'>" + param.name + "</span>" +
                                 "<hr style='background-color:" + param.color + "'>" +
                                 param.marker +
                                 param.seriesName +
@@ -4978,7 +4979,7 @@ function getGeoOfLocalOption(configs, container, myChart, dataset) {
                     toolbox: getToolbox(configs, container, dataset, myChart),
                     tooltip: getTooltip(configs, "item", function (param) {
                         if (param.data !== undefined) {
-                            return param.name +
+                            return "<span style = 'float:left'>" + param.name + "</span>" +
                                 "<hr style='background-color:" + param.color + "'>" +
                                 param.marker +
                                 param.seriesName +
@@ -5594,7 +5595,6 @@ function setSeriesAnimation(series, configs, c) {
     } else {
         series.animationType = configs.pieAnimationType.value;
         series.animationTypeUpdate = configs.pieAnimationTypeUpdate.value;
-        //gauge
         series.animationThreshold = Number(configs.animationThreshold.value);
         series.animationEasing = getAnimationEasing(configs);
         series.animationEasingUpdate = getAnimationEasingUpdate(configs);
@@ -5605,30 +5605,79 @@ function setSeriesAnimation(series, configs, c) {
 function getMarkPoint(configs) {
     let markPoint = {data: []};
     if (configs.lineMarkPointMin.value.toBoolean())
-        markPoint.data.push({type: "min", name: configs.lineMarkPointMin.name});
+        markPoint.data.push({
+            type: "min",
+            name: configs.lineMarkPointMin.name,
+            label: {
+                position: "top",
+                distance: -24,
+                formatter: function (param) {
+                    return param.value+ "\n\n" + "MIN";
+                },
+            }
+        });
     if (configs.lineMarkPointMax.value.toBoolean())
-        markPoint.data.push({type: "max", name: configs.lineMarkPointMax.name});
+        markPoint.data.push({
+            type: "max",
+            name: configs.lineMarkPointMax.name,
+            label: {
+                position: "top",
+                distance: -24,
+                formatter: function (param) {
+                    return param.value + "\n\n" + "MAX";
+                },
+            }
+        });
     return markPoint;
 }
 
 function getMarkLine(configs) {
     let markLine = {data: []};
     if (configs.lineMarkLineMin.value.toBoolean())
-        markLine.data.push({type: "min", name: configs.lineMarkLineMin.name});
+        markLine.data.push({
+            type: "min",
+            name: configs.lineMarkLineMin.name,
+            label: {
+                show: true,
+                position: "end",
+                formatter: function (param) {
+                    return "MIN " + param.value;
+                },
+            }
+        });
     if (configs.lineMarkLineMax.value.toBoolean())
-        markLine.data.push({type: "max", name: configs.lineMarkLineMax.name});
+        markLine.data.push({
+            type: "max",
+            name: configs.lineMarkLineMax.name,
+            label: {
+                show: true,
+                position: "end",
+                formatter: function (param) {
+                    return "MAX " + param.value;
+                },
+            }
+        });
     if (configs.lineMarkLineAvg.value.toBoolean())
-        markLine.data.push({type: "average", name: configs.lineMarkLineAvg.name});
+        markLine.data.push({
+            type: "average",
+            name: configs.lineMarkLineAvg.name,
+            label: {
+                show: true,
+                position: "end",
+                // formatter: "{a}{b}{c}",
+                formatter: function (param) {
+                    return "AVG " + param.value;
+                },
+            }
+        });
     return markLine;
 }
 
-function getBar(container, width, height, dataset, configs) {
+function getBar(container, dataset, configs, width, height) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
         container.id = "echarts-container";
-        container.style.width = width;
-        container.style.height = height;
     }
 
     let myChart = echarts.init(container, configs.echartsTheme.value, {
@@ -5646,13 +5695,11 @@ function getBar(container, width, height, dataset, configs) {
     return container;
 }
 
-function getTransversBar(container, width, height, dataset, configs) {
+function getTransversBar(container, dataset, configs, width, height) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
         container.id = "echarts-container";
-        container.style.width = width;
-        container.style.height = height;
     }
 
     let myChart = echarts.init(container, configs.echartsTheme.value, {
@@ -5671,13 +5718,11 @@ function getTransversBar(container, width, height, dataset, configs) {
     return container;
 }
 
-function getLine(container, width, height, dataset, configs) {
+function getLine(container, dataset, configs, width, height) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
         container.id = "echarts-container";
-        container.style.width = width;
-        container.style.height = height;
     }
 
     let myChart = echarts.init(container, configs.echartsTheme.value, {
@@ -5695,13 +5740,11 @@ function getLine(container, width, height, dataset, configs) {
     return container;
 }
 
-function getBarAndLine(container, width, height, dataset, configs) {
+function getBarAndLine(container, dataset, configs, width, height) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
         container.id = "echarts-container";
-        container.style.width = width;
-        container.style.height = height;
     }
 
     let myChart = echarts.init(container, configs.echartsTheme.value, {
@@ -5841,13 +5884,11 @@ function getBarAndLine(container, width, height, dataset, configs) {
     return container;
 }
 
-function getAreaStyle(container, width, height, dataset, configs) {
+function getAreaStyle(container, dataset, configs, width, height) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
         container.id = "echarts-container";
-        container.style.width = width;
-        container.style.height = height;
     }
 
     let myChart = echarts.init(container, configs.echartsTheme.value, {
@@ -5956,16 +5997,14 @@ function getAreaStyle(container, width, height, dataset, configs) {
     return container;
 }
 
-function getPolar(container, width, height, dataset, configs) {
+function getPolar(container, dataset, configs, width, height) {
     if (configs.polarType.value == "heatmap") {
-        return getPolarHeatmap(container, width, height, dataset, configs);
+        return getPolarHeatmap(container, dataset, configs, width, height);
     } else {
         if (container == null) {
             container = document.createElement("div");
             container.className = "echarts-container";
             container.id = "echarts-container";
-            container.style.width = width;
-            container.style.height = height;
         }
         let myChart = echarts.init(container, configs.echartsTheme.value, {
             locale: configs.local.value,
@@ -5983,13 +6022,11 @@ function getPolar(container, width, height, dataset, configs) {
     }
 }
 
-function getPolarHeatmap(container, width, height, dataset, configs) {
+function getPolarHeatmap(container, dataset, configs, width, height) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
         container.id = "echarts-container";
-        container.style.width = width;
-        container.style.height = height;
     }
 
     let myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value,renderer:configs.renderer.value});
@@ -6138,7 +6175,7 @@ function getPolarHeatmap(container, width, height, dataset, configs) {
         legend: getLegend(configs, null),
         polar: {},
         tooltip: getTooltip(configs, "item", function (param) {
-            return [xAxis[param.value[1]], "<hr style='background-color:" + param.color + "'>" +
+            return ["<span style = 'float:left'>" + xAxis[param.value[1]] + "</span>", "<hr style='background-color:" + param.color + "'>" +
             param.marker + "&ensp;" + param.name + ":<span style='display:inline-block;min-width:110px;text-align:right;font-weight:bold;color:" + param.color + "'>&ensp;" + param.value[2] + "</span>"].join("<br>");
         }),
         visualMap: getVisualMap(configs, minValue, maxValue),
@@ -6217,13 +6254,11 @@ function getPieRichText(configs, colors) {
     }
 }
 
-function getPie(container, width, height, dataset, configs) {
+function getPie(container, dataset, configs, width, height) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
         container.id = "echarts-container";
-        container.style.width = width;
-        container.style.height = height;
     }
 
     let myChart = echarts.init(container, configs.echartsTheme.value, {
@@ -6241,13 +6276,11 @@ function getPie(container, width, height, dataset, configs) {
     return container;
 }
 
-function getRadar(container, width, height, dataset, configs) {
+function getRadar(container, dataset, configs, width, height) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
         container.id = "echarts-container";
-        container.style.width = width;
-        container.style.height = height;
     }
 
     let myChart = echarts.init(container, configs.echartsTheme.value, {
@@ -6355,13 +6388,11 @@ function getRadar(container, width, height, dataset, configs) {
     return container;
 }
 
-function getRelation(container, width, height, dataset, configs) {
+function getRelation(container, dataset, configs, width, height) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
         container.id = "echarts-container";
-        container.style.width = width;
-        container.style.height = height;
     }
 
     let myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value,renderer:configs.renderer.value});
@@ -6544,13 +6575,11 @@ function getRelation(container, width, height, dataset, configs) {
     return container;
 }
 
-function getTree(container, width, height, dataset, configs) {
+function getTree(container, dataset, configs, width, height) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
         container.id = "echarts-container";
-        container.style.width = width;
-        container.style.height = height;
     }
 
     let myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value,renderer:configs.renderer.value});
@@ -6690,13 +6719,11 @@ function getTree(container, width, height, dataset, configs) {
     return container;
 }
 
-function getWebkitDep(container, width, height, dataset, configs) {
+function getWebkitDep(container, dataset, configs, width, height) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
         container.id = "echarts-container";
-        container.style.width = width;
-        container.style.height = height;
     }
 
     let myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value,renderer:configs.renderer.value});
@@ -6809,13 +6836,11 @@ function getWebkitDep(container, width, height, dataset, configs) {
     return container;
 }
 
-function getScatter(container, width, height, dataset, configs) {
+function getScatter(container, dataset, configs, width, height) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
         container.id = "echarts-container";
-        container.style.width = width;
-        container.style.height = height;
     }
 
     let myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value,renderer:configs.renderer.value});
@@ -6831,13 +6856,11 @@ function getScatter(container, width, height, dataset, configs) {
     return container;
 }
 
-function getFunnel(container, width, height, dataset, configs) {
+function getFunnel(container, dataset, configs, width, height) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
         container.id = "echarts-container";
-        container.style.width = width;
-        container.style.height = height;
     }
 
     let myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value,renderer:configs.renderer.value});
@@ -6853,13 +6876,11 @@ function getFunnel(container, width, height, dataset, configs) {
 }
 
 
-function getCalendar(container, width, height, dataset, configs) {
+function getCalendar(container, dataset, configs, width, height) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
         container.id = "echarts-container";
-        container.style.width = width;
-        container.style.height = height;
     }
 
     let myChart = echarts.init(container, configs.echartsTheme.value, {
@@ -6971,7 +6992,7 @@ function getCalendar(container, width, height, dataset, configs) {
         title: getTitle(configs, dataset.title),
         tooltip: getTooltip(configs, "item", function (param) {
             let date = echarts.format.formatTime("yyyy-MM-dd", param.value[0]);
-            return [param.seriesName, "<hr style='background-color:" + param.color + "'>" +
+            return ["<span style = 'float:left'>" + param.seriesName + "</span>", "<hr style='background-color:" + param.color + "'>" +
             param.marker + "&ensp;" + date + ":<span style='display:inline-block;min-width:110px;text-align:right;font-weight:bold;color:" + param.color + "'>&ensp;" + param.value[1] + "</span>"].join("<br>");
         }),
         toolbox: getToolbox(configs, container, dataset, myChart),
@@ -6990,14 +7011,12 @@ function getCalendar(container, width, height, dataset, configs) {
     return container;
 }
 
-function getGeoOfChina(container, width, height, dataset, configs) {
+function getGeoOfChina(container, dataset, configs, width, height) {
     //未使用
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
         container.id = "echarts-container";
-        container.style.width = width;
-        container.style.height = height;
     }
 
     let myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value,renderer:configs.renderer.value});
@@ -7081,7 +7100,7 @@ function getGeoOfChina(container, width, height, dataset, configs) {
         title: getTitle(configs, dataset.title),
         toolbox: getToolbox(configs, container, dataset, myChart),
         tooltip: getTooltip(configs, "item", function (param) {
-            return param.name + "<hr style='background-color:" + param.color + "'>" +
+            return "<span style = 'float:left'>" + param.name + "</span>" + "<hr style='background-color:" + param.color + "'>" +
                 param.marker + param.seriesName + ":&emsp;<span style='display:inline-block;min-width:110px;text-align:right;font-weight:bold'>" + ((param["value"].length == 3) ? param.data["value"][2] : param.data["value"] + "</span>")
         }),
         visualMap: getVisualMap(configs, series[index].min, series[index].max),
@@ -7217,14 +7236,12 @@ function getGeoOfChina(container, width, height, dataset, configs) {
     return container;
 }
 
-function getGeoOfLocal(container, width, height, dataset, configs) {
+function getGeoOfLocal(container, dataset, configs, width, height) {
     //未使用
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
         container.id = "echarts-container";
-        container.style.width = width;
-        container.style.height = height;
     }
 
     let myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value,renderer:configs.renderer.value});
@@ -7305,7 +7322,7 @@ function getGeoOfLocal(container, width, height, dataset, configs) {
         title: getTitle(configs, dataset.title),
         toolbox: getToolbox(configs, container, dataset, myChart),
         tooltip: getTooltip(configs, "item", function (param) {
-            return param.name + "<hr style='background-color:" + param.color + "'>" +
+            return "<span style = 'float:left'>" + param.name + "</span>" + "<hr style='background-color:" + param.color + "'>" +
                 param.marker + param.seriesName + ":&emsp;<span style='display:inline-block;min-width:110px;text-align:right;font-weight:bold'>" + ((param["value"].length == 3) ? param.data["value"][2] : param.data["value"] + "</span>")
         }),
         visualMap: getVisualMap(configs, series[index].min, series[index].max),
@@ -7439,13 +7456,11 @@ function getGeoOfLocal(container, width, height, dataset, configs) {
     return container;
 }
 
-function getBar3D(container, width, height, dataset, configs) {
+function getBar3D(container, dataset, configs, width, height) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
         container.id = "echarts-container";
-        container.style.width = width;
-        container.style.height = height;
     }
 
     let myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value,renderer:configs.renderer.value == "svg"?"canvas":configs.renderer.value});
@@ -7524,7 +7539,7 @@ function getBar3D(container, width, height, dataset, configs) {
         title: getTitle(configs, dataset.title),
         legend: getLegend(configs, source.dimensions.slice(1, source.dimensions.length)),
         tooltip: getTooltip(configs, "item", function (param) {
-            return rows[param.value[0]] + "<hr style='background-color:" + param.color + "'>" +
+            return "<span style = 'float:left'>" + rows[param.value[0]] + "</span>" + "<hr style='background-color:" + param.color + "'>" +
                 param.marker + source.dimensions[param.value[1] + 1] + ":&emsp;<span style='display:inline-block;min-width:110px;text-align:right;font-weight:bold'>" + param.value[2] + "</span>";
         }),
         toolbox: getToolbox3D(configs, container, dataset, myChart),
@@ -7613,13 +7628,11 @@ function getBar3D(container, width, height, dataset, configs) {
     return container;
 }
 
-function getLine3D(container, width, height, dataset, configs) {
+function getLine3D(container, dataset, configs, width, height) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
         container.id = "echarts-container";
-        container.style.width = width;
-        container.style.height = height;
     }
 
     let myChart = echarts.init(container, configs.echartsTheme.value, {
@@ -7677,7 +7690,7 @@ function getLine3D(container, width, height, dataset, configs) {
         title: getTitle(configs, dataset.title),
         legend: getLegend(configs, source.dimensions.slice(1, source.dimensions.length)),
         tooltip: getTooltip(configs, "item", function (param) {
-            return rows[param.value[0]] + "<hr style='background-color:" + param.color + "'>" +
+            return "<span style = 'float:left'>" + rows[param.value[0]] + "</span>" + "<hr style='background-color:" + param.color + "'>" +
                 param.marker + source.dimensions[param.value[1] + 1] + ":&emsp;<span style='display:inline-block;min-width:110px;text-align:right;font-weight:bold'>" + param.value[2] + "</span>";
         }),
         toolbox: getToolbox3D(configs, container, dataset, myChart),
@@ -7780,13 +7793,11 @@ function getLine3D(container, width, height, dataset, configs) {
     return container;
 }
 
-function getScatter3D(container, width, height, dataset, configs) {
+function getScatter3D(container, dataset, configs, width, height) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
         container.id = "echarts-container";
-        container.style.width = width;
-        container.style.height = height;
     }
 
     let myChart = echarts.init(container, configs.echartsTheme.value, {
@@ -7857,7 +7868,7 @@ function getScatter3D(container, width, height, dataset, configs) {
         title: getTitle(configs, dataset.title),
         legend: getLegend(configs, source.dimensions.slice(1, source.dimensions.length)),
         tooltip: getTooltip(configs, "item", function (param) {
-            return rows[param.value[0]] + "<hr style='background-color:" + param.color + "'>" +
+            return "<span style = 'float:left'>" + rows[param.value[0]] + "</span>" + "<hr style='background-color:" + param.color + "'>" +
                 param.marker + source.dimensions[param.value[1] + 1] + ":&emsp;<span style='display:inline-block;min-width:110px;text-align:right;font-weight:bold'>" + param.value[2] + "</span>";
         }),
         toolbox: getToolbox3D(configs, container, dataset, myChart),
@@ -7960,13 +7971,11 @@ function getScatter3D(container, width, height, dataset, configs) {
     return container;
 }
 
-function getCategoryLine(container, width, height, dataset, configs) {
+function getCategoryLine(container, dataset, configs, width, height) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
         container.id = "echarts-container";
-        container.style.width = width;
-        container.style.height = height;
     }
 
     let myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value,renderer:configs.renderer.value});
@@ -8202,14 +8211,12 @@ function getCategoryLine(container, width, height, dataset, configs) {
     return container;
 }
 
-function getGeoMigrateLinesOfChinaCity(container, width, height, dataset, configs) {
+function getGeoMigrateLinesOfChinaCity(container, dataset, configs, width, height) {
     //数据结构:fromCity|toCity|value or text
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
         container.id = "echarts-container";
-        container.style.width = width;
-        container.style.height = height;
     }
     let symbol = {
         plane: 'path://M1705.06,1318.313v-89.254l-319.9-221.799l0.073-208.063c0.521-84.662-26.629-121.796-63.961-121.491c-37.332-0.305-64.482,36.829-63.961,121.491l0.073,208.063l-319.9,221.799v89.254l330.343-157.288l12.238,241.308l-134.449,92.931l0.531,42.034l175.125-42.917l175.125,42.917l0.531-42.034l-134.449-92.931l12.238-241.308L1705.06,1318.313z',
@@ -8496,13 +8503,11 @@ function getGeoMigrateLinesOfChinaCity(container, width, height, dataset, config
     return container;
 }
 
-function getCategoryLineForGauge(container, width, height, dataset, configs) {
+function getCategoryLineForGauge(container, dataset, configs, width, height) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
         container.id = "echarts-container";
-        container.style.width = width;
-        container.style.height = height;
     }
 
     let myChart = echarts.init(container, configs.echartsTheme.value, {
@@ -8684,7 +8689,7 @@ function getCategoryLineForGauge(container, width, height, dataset, configs) {
             title: getTitle(configs, dataset.title),
             timeline: getTimeline(configs, times),
             tooltip: getTooltip(configs, "item", function (param) {
-                return [param.seriesName,
+                return ["<span style = 'float:left'>" + param.seriesName + "</span>",
                     "<hr style='background-color:" + param.color + "'>" +
                     param.marker + param.name.split("\n\n")[1] + ":&emsp;<span style='display:inline-block;min-width:110px;text-align:right;font-weight:bold'>" + param.data.value + "</span>"].join("<br>");
             }),
@@ -8706,13 +8711,11 @@ function getCategoryLineForGauge(container, width, height, dataset, configs) {
     return container;
 }
 
-function getCategoryLineForLiqiud(container, width, height, dataset, configs) {
+function getCategoryLineForLiqiud(container, dataset, configs, width, height) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
         container.id = "echarts-container";
-        container.style.width = width;
-        container.style.height = height;
     }
 
     let myChart = echarts.init(container, configs.echartsTheme.value, {
@@ -8987,13 +8990,11 @@ function getCategoryLineForLiqiud(container, width, height, dataset, configs) {
     return container;
 }
 
-function getCategoryLineForGeoOfChina(container, width, height, dataset, configs) {
+function getCategoryLineForGeoOfChina(container, dataset, configs, width, height) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
         container.id = "echarts-container";
-        container.style.width = width;
-        container.style.height = height;
     }
 
     let myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value,renderer:configs.renderer.value});
@@ -9008,13 +9009,11 @@ function getCategoryLineForGeoOfChina(container, width, height, dataset, configs
     return container;
 }
 
-function getCategoryLineForGeoOfLocal(container, width, height, dataset, configs) {
+function getCategoryLineForGeoOfLocal(container, dataset, configs, width, height) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
         container.id = "echarts-container";
-        container.style.width = width;
-        container.style.height = height;
     }
 
     let myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value,renderer:configs.renderer.value});
@@ -9029,13 +9028,11 @@ function getCategoryLineForGeoOfLocal(container, width, height, dataset, configs
     return container;
 }
 
-function getScrollingScreen(container, width, height, dataset, configs) {
+function getScrollingScreen(container, dataset, configs, width, height) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
         container.id = "echarts-container";
-        container.style.width = width;
-        container.style.height = height;
     }
 
     let myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value,renderer:configs.renderer.value});
@@ -9201,13 +9198,11 @@ function getScrollingScreen(container, width, height, dataset, configs) {
     return container;
 }
 
-function getWalkingLantern(container, width, height, dataset, configs) {
+function getWalkingLantern(container, dataset, configs, width, height) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
         container.id = "echarts-container";
-        container.style.width = width;
-        container.style.height = height;
     }
 
     let myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value,renderer:configs.renderer.value});
@@ -9383,13 +9378,11 @@ function getWalkingLantern(container, width, height, dataset, configs) {
     return container;
 }
 
-function getWindowShades(container, width, height, dataset, configs) {
+function getWindowShades(container, dataset, configs, width, height) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
         container.id = "echarts-container";
-        container.style.width = width;
-        container.style.height = height;
     }
 
     let myChart = echarts.init(container, configs.echartsTheme.value);
@@ -9579,13 +9572,11 @@ function getWindowShades(container, width, height, dataset, configs) {
     return container;
 }
 
-function getSurface(container, width, height, dataset, configs) {
+function getSurface(container, dataset, configs, width, height) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
         container.id = "echarts-container";
-        container.style.width = width;
-        container.style.height = height;
     }
 
     let myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value,renderer:configs.renderer.value == "svg"?"canvas":configs.renderer.value});
@@ -9612,7 +9603,7 @@ function getSurface(container, width, height, dataset, configs) {
         title: getTitle(configs, dataset.title),
         legend: getLegend(configs, source.dimensions.slice(1, source.dimensions.length)),
         tooltip: getTooltip(configs, "item", function (param) {
-            return rows[param.value[0]] + "<hr style='background-color:" + param.color + "'>" +
+            return "<span style = 'float:left'>" + rows[param.value[0]] + "</span>" + "<hr style='background-color:" + param.color + "'>" +
                 param.marker + source.dimensions[param.value[1] + 1] + ":&emsp;<span style='display:inline-block;min-width:110px;text-align:right;font-weight:bold'>" + param.value[2] + "</span>";
         }),
         toolbox: getToolbox3D(configs, container, dataset, myChart),
@@ -9715,13 +9706,11 @@ function getSurface(container, width, height, dataset, configs) {
     return container;
 }
 
-function getBoxplot(container, width, height, dataset, configs) {
+function getBoxplot(container, dataset, configs, width, height) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
         container.id = "echarts-container";
-        container.style.width = width;
-        container.style.height = height;
     }
 
     let myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value,renderer:configs.renderer.value});
@@ -9877,13 +9866,11 @@ function getBoxplot(container, width, height, dataset, configs) {
     return container;
 }
 
-function getClock(container, width, height, dataset, configs) {
+function getClock(container, dataset, configs, width, height) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
         container.id = "echarts-container";
-        container.style.width = width;
-        container.style.height = height;
     }
 
     let myChart = echarts.init(container, configs.echartsTheme.value, {
@@ -10270,13 +10257,11 @@ function getClock(container, width, height, dataset, configs) {
     return container;
 }
 
-function getCandlestick(container, width, height, dataset, configs) {
+function getCandlestick(container, dataset, configs, width, height) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
         container.id = "echarts-container";
-        container.style.width = width;
-        container.style.height = height;
     }
 
     let myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value,renderer:configs.renderer.value});
@@ -10343,7 +10328,7 @@ function getCandlestick(container, width, height, dataset, configs) {
 
         tooltip: getTooltip(configs, "axis", function (param) {
             param = param[0];
-            return [param.name,"<hr style='background-color:" + param.color + "'>" +
+            return ["<span style = 'float:left'>" + param.name + "</span>","<hr style='background-color:" + param.color + "'>" +
                 param.marker + "&ensp;" + param.seriesName,
                 "<span style='color:" + param.color + " '>•</span>" + "&ensp;开盘价:&emsp;<span style='display:inline-block;min-width:110px;text-align:right;font-weight:bold'>" + param.data[1] + "</span>",
                 "<span style='color:" + param.color + " '>•</span>" + "&ensp;最低价:&emsp;<span style='display:inline-block;min-width:110px;text-align:right;font-weight:bold'>" + param.data[3] + "</span>",
@@ -10373,13 +10358,11 @@ function getCandlestick(container, width, height, dataset, configs) {
     return container;
 }
 
-function getBanners(container, width, height, dataset, configs) {
+function getBanners(container, dataset, configs, width, height) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
         container.id = "echarts-container";
-        container.style.width = width;
-        container.style.height = height;
     }
 
     let myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value,renderer:configs.renderer.value});
@@ -10462,13 +10445,11 @@ function getBanners(container, width, height, dataset, configs) {
     return container;
 }
 
-function getWordCloud(container, width, height, dataset, configs) {
+function getWordCloud(container, dataset, configs, width, height) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
         container.id = "echarts-container";
-        container.style.width = width;
-        container.style.height = height;
     }
 
     let myChart = echarts.init(container, configs.echartsTheme.value, {
@@ -10549,7 +10530,7 @@ function getWordCloud(container, width, height, dataset, configs) {
         grid: getGrids(configs),
         title: getTitle(configs, dataset.title),
         tooltip: getTooltip(configs, "item", function (param) {
-            return [param.seriesName, "<hr style='background-color:" + param.color + "'>" +
+            return ["<span style = 'float:left'>" + param.seriesName + "</span>", "<hr style='background-color:" + param.color + "'>" +
             param.marker + "&ensp;" + param.name + ":<span style='display:inline-block;min-width:110px;text-align:right;font-weight:bold'>&ensp;" + param.value + "</span>"].join("<br>");
         }),
         legend: getLegend(configs, source.dimensions.slice(1, source.dimensions.length)),
@@ -10567,13 +10548,11 @@ function getWordCloud(container, width, height, dataset, configs) {
     return container;
 }
 
-function getSunburst(container, width, height, dataset, configs) {
+function getSunburst(container, dataset, configs, width, height) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
         container.id = "echarts-container";
-        container.style.width = width;
-        container.style.height = height;
     }
 
     let myChart = echarts.init(container, configs.echartsTheme.value, {
@@ -10686,7 +10665,7 @@ function getSunburst(container, width, height, dataset, configs) {
         // grid: getGrids(configs),
         title: getTitle(configs, dataset.title),
         tooltip: getTooltip(configs, "item", function (param) {
-            return [param.seriesName, "<hr style='background-color:" + param.color + "'>" +
+            return ["<span style = 'float:left'>" + param.seriesName + "</span>", "<hr style='background-color:" + param.color + "'>" +
             param.marker + "&ensp;" + param.name + ":<span style='display:inline-block;min-width:110px;text-align:right;font-weight:bold'>&ensp;" + param.value + "</span>"].join("<br>");
         }),
         toolbox: getToolbox(configs, container, dataset, myChart),
@@ -10704,13 +10683,11 @@ function getSunburst(container, width, height, dataset, configs) {
     return container;
 }
 
-function getTreemap(container, width, height, dataset, configs) {
+function getTreemap(container, dataset, configs, width, height) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
         container.id = "echarts-container";
-        container.style.width = width;
-        container.style.height = height;
     }
 
     let myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value,renderer:configs.renderer.value});
@@ -10900,13 +10877,11 @@ function getTreemap(container, width, height, dataset, configs) {
     return container;
 }
 
-function getParallelAxis(container, width, height, dataset, configs) {
+function getParallelAxis(container, dataset, configs, width, height) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
         container.id = "echarts-container";
-        container.style.width = width;
-        container.style.height = height;
     }
 
     let myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value,renderer:configs.renderer.value});
@@ -11019,13 +10994,11 @@ function getParallelAxis(container, width, height, dataset, configs) {
     return container;
 }
 
-function getSankey(container, width, height, dataset, configs) {
+function getSankey(container, dataset, configs, width, height) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
         container.id = "echarts-container";
-        container.style.width = width;
-        container.style.height = height;
     }
 
     let myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value,renderer:configs.renderer.value});
@@ -11103,7 +11076,7 @@ function getSankey(container, width, height, dataset, configs) {
         grid: getGrids(configs),
         title: getTitle(configs, dataset.title),
         tooltip: getTooltip(configs, "item", function (param) {
-            let value = [param.seriesName, param.marker + "&ensp;" + param.name + ":&ensp;" + param.value];
+            let value = ["<span style = 'float:left'>" + param.seriesName + "</span>", "<hr style='background-color: '" + param.color + "'>", param.marker + "&ensp;" + param.name + ":&ensp;" + param.value];
             return value.join("<br>");
         }),
         toolbox: getToolbox(configs, container, dataset, myChart),
@@ -11121,13 +11094,11 @@ function getSankey(container, width, height, dataset, configs) {
     return container;
 }
 
-function getThemeRiver(container, width, height, dataset, configs) {
+function getThemeRiver(container, dataset, configs, width, height) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
         container.id = "echarts-container";
-        container.style.width = width;
-        container.style.height = height;
     }
 
     let myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value,renderer:configs.renderer.value});
@@ -11165,7 +11136,7 @@ function getThemeRiver(container, width, height, dataset, configs) {
         grid: getGrids(configs),
         title: getTitle(configs, dataset.title),
         tooltip: getTooltip(configs, "axis", function (param) {
-            let value = [param.seriesName, param.marker + "&ensp;" + param.value[2]];
+            let value = ["<span style = 'float:left'>" + param.seriesName + "</span>","<hr style='background-color: " + param.color + "'>", param.marker + "&ensp;" + param.value[2]];
             return value.join("<br>");
         }),
         toolbox: getToolbox(configs, container, dataset, myChart),
@@ -11206,13 +11177,11 @@ function getThemeRiver(container, width, height, dataset, configs) {
     return container;
 }
 
-function getPie3D(container, width, height, dataset, configs) {
+function getPie3D(container, dataset, configs, width, height) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
         container.id = "echarts-container";
-        container.style.width = width;
-        container.style.height = height;
     }
 
     let myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value,renderer:configs.renderer.value == "svg"?"canvas":configs.renderer.value});
@@ -11601,13 +11570,11 @@ function getPie3D(container, width, height, dataset, configs) {
     return container;
 }
 
-function getSingeAxis(container, width, height, dataset, configs) {
+function getSingeAxis(container, dataset, configs, width, height) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
         container.id = "echarts-container";
-        container.style.width = width;
-        container.style.height = height;
     }
 
     let myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value,renderer:configs.renderer.value});
@@ -11715,13 +11682,11 @@ function getSingeAxis(container, width, height, dataset, configs) {
     return container;
 }
 
-function getFunctionLine(container, width, height, dataset, configs) {
+function getFunctionLine(container, dataset, configs, width, height) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
         container.id = "echarts-container";
-        container.style.width = width;
-        container.style.height = height;
     }
     let myChart = echarts.init(container, configs.echartsTheme.value, {
         locale: configs.local.value,
@@ -11870,13 +11835,11 @@ function getFunctionLine(container, width, height, dataset, configs) {
     return container;
 }
 
-function getBarRacing(container, width, height, dataset, configs) {
+function getBarRacing(container, dataset, configs, width, height) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
         container.id = "echarts-container";
-        container.style.width = width;
-        container.style.height = height;
     }
 
     let myChart = echarts.init(container, configs.echartsTheme.value, {
@@ -11997,13 +11960,11 @@ function getBarRacing(container, width, height, dataset, configs) {
     return container;
 }
 
-function getScrolling(container, width, height, dataset, configs) {
+function getScrolling(container, dataset, configs, width, height) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
         container.id = "echarts-container";
-        container.style.width = width;
-        container.style.height = height;
     }
 
     let myChart = echarts.init(container, configs.echartsTheme.value, {
@@ -12131,13 +12092,11 @@ function getScrolling(container, width, height, dataset, configs) {
     return container;
 }
 
-function getMultiGraph(container, width, height, dataset, configs) {
+function getMultiGraph(container, dataset, configs, width, height) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
         container.id = "echarts-container";
-        container.style.width = width;
-        container.style.height = height;
     }
 
     var myChart = echarts.init(container, configs.echartsTheme.value, {
@@ -12155,13 +12114,11 @@ function getMultiGraph(container, width, height, dataset, configs) {
     return container;
 }
 
-function getDatasetImage(container, width, height, dataset, configs) {
+function getDatasetImage(container, dataset, configs, width, height) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
         container.id = "echarts-container";
-        container.style.width = width;
-        container.style.height = height;
     }
 
     var myChart = echarts.init(container, configs.echartsTheme.value, {
@@ -12393,15 +12350,16 @@ function getSaveAsReport(configs, container, myChart) {
                     "setStyleValue('span.page-tab-selected', 'backgroundColor', themes[name].selected);\n" +
                     "setStyleValue('span.page-tab:hover', 'backgroundColor', themes[name].hover);\n" +
                     "setStyleValue('span.page-tab-left:hover', 'backgroundColor', themes[name].hover);\n" +
-                    "setStyleValue('div.ECHART', 'border-color', themes[name].border);\n" +
-                    "setStyleValue('div.TABLE', 'border-color', themes[name].border);\n" +
-                    "setStyleValue('div.SCRIPT', 'border-color', themes[name].border);\n" +
-                    "setStyleValue('div.CONFIGS', 'border-color', themes[name].border);\n" +
+                    "setStyleValue('div#_ECHART', 'border-color', themes[name].border);\n" +
+                    "setStyleValue('div#_TABLE', 'border-color', themes[name].border);\n" +
+                    "setStyleValue('div#_SCRIPT', 'border-color', themes[name].border);\n" +
+                    "setStyleValue('div#_CONFIGS', 'border-color', themes[name].border);\n" +
                     "setStyleValue('span.theme-selected', 'border-color', themes[name].border);\n" +
                     "}\n" +
                     "var dataset = {title: null, columns: null, data: null, configs: null, sql: null};\n" +
                     "var report = null;\n" +
                     "var configs = {themes: '" + defaultThemes + "'};\n" +
+                    "var echarts_target = null\n" +
                     "var themes = {" +
                     "白色: {backgroundColor: '#C0C0C0', color: '#000000', selected: 'rgba(0, 0, 0, 0.3)', hover: 'rgba(0, 0, 0, 0.3)', border: '#008080', " +
                     "backgroundImage:'-webkit-linear-gradient(45deg,rgba(255, 255, 255, 0.25) 25%,transparent 25%,transparent 50%,rgba(255, 255, 255, 0.25) 50%,rgba(255, 255, 255, 0.25) 75%,transparent 75%,transparent)," +
@@ -12603,43 +12561,63 @@ function getSaveAsReport(configs, container, myChart) {
                     "</script>",
 
                     "<script type='text/javascript'>\n" +
-                    "function init(){\n" +
+                    "function resize(){\n" +
+                    "try{\n" +
                     "let size = getBrowserSize();\n" +
-                    "let codes = document.getElementsByClassName('CODES')[0].getElementsByTagName('code');\n" +
-                    "report = codes[0].innerText;\n" +
-                    "let hash = codes[1].innerText;\n" +
-                    "let configs = JSON.parse(codes[2].innerText);\n" +
-                    "report = JSON.parse(report);\n" +
-                    "dataset.title = report.dataset.title;\n" +
-                    "dataset.columns = report.dataset.columns;\n" +
-                    "dataset.data = report.dataset.data;\n" +
-                    "dataset.sql = report.dataset.sql;\n" +
-                    "dataset.configs = configs;\n" +
-                    "document.getElementsByClassName('ECHART')[0].style.minHeight = (size.height*0.80) + 'px';\n" +
-                    "document.getElementsByClassName('TABLE')[0].style.minHeight = (size.height*0.80) + 'px';\n" +
-                    "document.getElementsByClassName('SCRIPT')[0].style.minHeight = (size.height*0.80) + 'px';\n" +
-                    "document.getElementsByClassName('SCRIPT')[0].getElementsByTagName('code')[0].innerHTML = viewSql(dataset.sql);\n" +
-                    "document.getElementsByClassName('CONFIGS')[0].style.minHeight = (size.height*0.80) + 'px';\n" +
-                    "getConfigs(document.getElementsByClassName('CONFIGS')[0], report.configs);\n" +
-                    "getConfigs(document.getElementsByClassName('CONFIGS')[0], dataset.configs);\n" +
-                    "getThemes();\n" +
-                    "viewDataset(0);\n" +
+                    "document.getElementById('_ECHARTS').style.minHeight = (size.height*0.80) + 'px';\n" +
+                    "document.getElementById('_TABLE').style.minHeight = (size.height*0.80) + 'px';\n" +
+                    "document.getElementById('_SCRIPT').style.minHeight = (size.height*0.80) + 'px';\n" +
+                    "document.getElementById('_CONFIGS').style.minHeight = (size.height*0.80) + 'px';\n" +
                     "if (typeof getEcharts === 'function'){\n" +
-                    "let container = document.getElementsByClassName('ECHART')[0];\n" +
-                    "container.style.height = (size.height*0.80) + 'px';\n" +
-                    "report.configs.toolboxSaveAsReport.value = 'false';\n" +
-                    "getEcharts(container, (size.width*0.8) + 'px', (size.height*0.80) + 'px', dataset, report.configs);\n" +
+                    "let container = document.getElementById('_ECHARTS');\n" +
+                    "if (echarts_target == null){\n" +
+                    "getEcharts(container, dataset, report.configs, (size.width*0.8) + 'px', (size.height*0.80) + 'px');\n" +
+                    "echarts_target = echarts.getInstanceByDom(container);\n" +
+                    "} else\n" +
+                    "echarts_target.resize();\n" +
                     "} else {\n" +
                     "document.getElementById('report-system').innerHTML = '组件服务器未连接...';\n" +
                     "document.getElementById('report-system').removeAttribute('href');\n" +
                     "document.getElementById('report-system').removeAttribute('title');\n" +
+                    "let hw = Number(document.getElementById('echarts-image').getAttribute('height'))/Number(document.getElementById('echarts-image').getAttribute('width'));\n" +
+                    "document.getElementById('echarts-image').setAttribute('width',(size.width*0.795));\n" +
+                    "document.getElementById('echarts-image').setAttribute('height',(size.width*0.795)*hw);\n" +
+                    "}\n" +
+                    "}catch (e) {\n" +
+                    "echarts_target = null;\n" +
                     "}\n" +
                     "}\n" +
                     "</script>",
 
                     "<script type='text/javascript'>\n" +
+                    "function init(){\n" +
+                    "let codes = document.getElementById('_CODES').getElementsByTagName('code');\n" +
+                    "report = codes[0].innerText;\n" +
+                    "let hash = codes[1].innerText;\n" +
+                    "let configs = JSON.parse(codes[2].innerText);\n" +
+                    "report = JSON.parse(report);\n" +
+                    "report.configs.toolboxSaveAsReport.value = 'false';\n" +
+                    "dataset.title = report.dataset.title;\n" +
+                    "dataset.columns = report.dataset.columns;\n" +
+                    "dataset.data = report.dataset.data;\n" +
+                    "dataset.sql = report.dataset.sql;\n" +
+                    "dataset.configs = configs;\n" +
+                    "document.getElementById('sql').innerHTML = viewSql(dataset.sql);\n" +
+                    "getConfigs(document.getElementById('_CONFIGS'), report.configs);\n" +
+                    "getConfigs(document.getElementById('_CONFIGS'), dataset.configs);\n" +
+                    "getThemes();\n" +
+                    "viewDataset(0);\n" +
+                    "resize();\n" +
+                    "window.onresize = function () {\n" +
+                    "resize();\n" +
+                    "};\n" +
+                    "}\n" +
+                    "</script>",
+
+                    "<script type='text/javascript'>\n" +
                     "function getThemes(){\n" +
-                    "let content = document.getElementById('THEMES');\n" +
+                    "let content = document.getElementById('_THEMES');\n" +
+                    "content.innerText='';\n" +
                     "for (let key in themes){\n" +
                     "let theme = document.createElement('span');\n" +
                     "if (key == configs.themes)\n" +
@@ -12664,18 +12642,22 @@ function getSaveAsReport(configs, container, myChart) {
 
                     "<script type='text/javascript'>\n" +
                     "function selectTab(id){\n" +
-                    "let names = ['ECHART','TABLE','SCRIPT','CONFIGS'];\n" +
+                    "let names = ['ECHARTS','TABLE','SCRIPT','CONFIGS'];\n" +
                     "for (let i=0;i<names.length;i++){\n" +
                     "let tab = document.getElementById(names[i]);\n" +
-                    "let div = document.getElementsByClassName(names[i])[0];\n" +
+                    "let div = document.getElementById('_' + names[i]);\n" +
                     "if (names[i] == id){\n" +
                     "tab.className = 'tabButton-selected';\n" +
+                    "if (id == 'ECHARTS'){" +
+                    "div.style.display = 'table';\n" +
+                    "} else\n" +
                     "div.style.display = 'block';\n" +
                     "} else {\n" +
                     "tab.className = 'tabButton-unselected';\n" +
                     "div.style.display = 'none';\n" +
                     "}\n" +
                     "}\n" +
+                    "resize();\n" +
                     "}\n" +
                     "</script>",
 
@@ -12912,11 +12894,11 @@ function getSaveAsReport(configs, container, myChart) {
                     "tr.appendChild(td);\n" +
                     "}\n" +
                     "}\n" +
-                    "let container = document.getElementsByClassName('TABLE')[0];\n" +
+                    "let container = document.getElementById('_TABLE');\n" +
                     "container.innerHTML='';\n" +
                     "container.appendChild(table);\n" +
                     "let div = document.createElement('div');\n" +
-                    "div.className = 'PAGES';\n" +
+                    "div.id = '_PAGES';\n" +
                     "let groupindex = Math.floor(pageindex/10);\n" +
                     "container.appendChild(div);\n" +
                     "selectPageGroup(div, groupindex,pageindex,pages);\n" +
@@ -13101,7 +13083,7 @@ function getSaveAsReport(configs, container, myChart) {
             let id = container.getAttribute("_echarts_instance_");
             let report = JSON.parse(__ECHARTS__.history[id]);
             let title = report.dataset.title;
-            let link = "<a id = 'report-system' title='进入系统,使用「打开报表」功能可编辑此报表.' href='" + window.location.href.split("?")[0] + "'>" + __VERSION__.name + "</a>";
+            let link = "<a class='link' id= 'report-system' title='进入系统,使用「打开报表」功能可编辑此报表.' href='" + window.location.href.split("?")[0] + "'>" + __VERSION__.name + "</a>";
             report = JSON.stringify(report);
             report = report.encode();
             let configs = JSON.stringify(__DATASET__.configs).encode();
@@ -13132,22 +13114,24 @@ function getSaveAsReport(configs, container, myChart) {
                 "background-image: -webkit-linear-gradient(45deg,rgba(255, 255, 255, 0.2) 25%,transparent 25%,transparent 50%,rgba(255, 255, 255, 0.2) 50%,rgba(255, 255, 255, 0.2) 75%,transparent 75%,transparent);\n" +
                 "}\n" +
                 "body ::-webkit-scrollbar-track {box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);background: transparent;border-radius: 3px;}\n" +
-                "div.TITLE{margin: auto;width: 80%;background-repeat:no-repeat;background-image:" + __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name, __THEMES__.get().color, "60px", "60px") + ";}\n" +
-                "h1{margin: auto;width: 100%;text-align: left;white-space: normal;word-break: break-all;word-wrap: break-word;}\n" +
-                "h3{margin: auto;width: 100%;text-align: left;white-space: normal;word-break: break-all;word-wrap: break-word;}\n" +
-                "h5{margin: auto;width: 80%;text-align: right;white-space: normal;word-break: break-all;word-wrap: break-word;}\n" +
-                "div.TABS{margin: auto;padding-left: 5px;padding-right: 5px;width: 80%;overflow: hidden;height: 100%}\n" +
-                "div.ECHART{margin: auto;padding-left: 5px;padding-right: 5px;width: 80%;border: 1px solid coral;border-radius: 5px;overflow: hidden;height: 100%;}\n" +
-                "div.TABLE{margin: auto;padding-left: 5px;padding-right: 5px;width: 80%;border: 1px solid coral;border-radius: 5px;overflow: scroll;display: none}\n" +
-                "div.SCRIPT{margin: auto;font-size: 90%;padding-left: 5px;padding-right: 5px;width: 80%;border: 1px solid coral;border-radius: 5px;overflow: hidden;height: 100%;line-height: 2;display: none}\n" +
-                "div.CONFIGS{margin: auto;font-size: 80%;padding-left: 5px;padding-right: 5px;width: 80%;border: 1px solid coral;border-radius: 5px;overflow: hidden;height: 100%;display: none;" +
+                "div#_TITLE{margin: auto;width: 80%;overflow: hidden;}\n" +
+                "img#logo{margin: auto;float:left;width: 60px;height: 60px;}\n" +
+                "div#title{margin: auto;width:80%;float:left;}\n" +
+                "h1#main-title{margin: auto;width: 100%;text-align: left;white-space: normal;word-break: break-all;word-wrap: break-word;}\n" +
+                "h3#sub-title{margin: auto;width: 100%;text-align: left;white-space: normal;word-break: break-all;word-wrap: break-word;}\n" +
+                // "h5{margin: auto;width: 80%;text-align: right;white-space: normal;word-break: break-all;word-wrap: break-word;}\n" +
+                "h6#footer{margin: auto;width: 80%;text-align: center}\n" +
+                "div#_TABS{margin: auto;padding-left: 5px;padding-right: 5px;width: 80%;overflow: hidden;height: 100%}\n" +
+                "div#_ECHARTS{margin: auto;padding-left: 5px;padding-right: 5px;width: 80%;border: 1px solid coral;border-radius: 5px;overflow: hidden;height: 100%;display: table; text-align: center}\n" +
+                "div#_TABLE{margin: auto;padding-left: 5px;padding-right: 5px;width: 80%;border: 1px solid coral;border-radius: 5px;overflow: scroll;display: none}\n" +
+                "div#_SCRIPT{margin: auto;font-size: 90%;padding-left: 5px;padding-right: 5px;width: 80%;border: 1px solid coral;border-radius: 5px;overflow: hidden;height: 100%;line-height: 2;display: none}\n" +
+                "div#_CONFIGS{margin: auto;font-size: 80%;padding-left: 5px;padding-right: 5px;width: 80%;border: 1px solid coral;border-radius: 5px;overflow: hidden;height: 100%;display: none;" +
                 "-webkit-column-count: 2;column-count: 2;column-fill: auto}\n" +
-                "div.PAGES{margin: 5px;border-top:1px solid gray;}\n" +
-                "div.CODES{margin: auto;padding-left: 5px;padding-right: 5px;width: 80%;border: 1px solid coral;border-radius: 5px;overflow: hidden;height: 100%;display: none}\n" +
+                "div#_PAGES{margin: 5px;border-top:1px solid gray;}\n" +
+                "div#_CODES{margin: auto;padding-left: 5px;padding-right: 5px;width: 80%;border: 1px solid coral;border-radius: 5px;overflow: hidden;height: 100%;display: none}\n" +
                 "code{cursor: pointer;font-family: Verdana,Arial;font-size: 80%;width: 100%;white-space: normal;word-break: break-all;word-wrap: break-word;display:none}\n" +
-                "code.sql{cursor: pointer;font-family: Verdana,Arial;font-size: 80%;height: 100%;width: 100%;white-space: normal;word-break: break-all;word-wrap: break-word;display:block;margin:10px;}\n" +
-                "h6{margin: auto;width: 80%;text-align: center}\n" +
-                "a{font-size: 100%;padding-left: 5px;padding-right: 5px;background-color: sandybrown;outline-style: none;border-radius: 4px;text-decoration:none;}\n" +
+                "code#sql{cursor: pointer;font-family: Verdana,Arial;font-size: 80%;height: 100%;width: 100%;white-space: normal;word-break: break-all;word-wrap: break-word;display:block;margin:10px;}\n" +
+                "a.link{font-size: 100%;padding-left: 5px;padding-right: 5px;background-color: sandybrown;outline-style: none;border-radius: 4px;text-decoration:none;}\n" +
                 "span.tabButton-selected{cursor: pointer;font-size: 100%;padding-left: 5px;padding-right: 5px;background-color: #00A7AA;outline-style: none;border-top-left-radius: 4px;border-top-right-radius: 4px;border: 1px solid coral;border-bottom-width: 0px;}\n" +
                 "span.tabButton-unselected{cursor: pointer;font-size: 100%;padding-left: 5px;padding-right: 5px;outline-style: none;border-top-left-radius: 4px;border-top-right-radius: 4px;border: 1px solid gray;border-bottom-width: 0px;}\n" +
                 "span.tabButton-unselected:hover{background-color: sandybrown}\n" +
@@ -13169,7 +13153,7 @@ function getSaveAsReport(configs, container, myChart) {
                 "p.SQLWorde{cursor: pointer;margin-right:5px;margin-right:20px;padding-left: 5px;padding-right: 5px;background-color: rgba(0, 0, 0, 0.1);outline-style: none;border-radius: 4px;}\n" +
                 "span.SQLWordf{cursor: pointer;margin-left:0px;margin-right:0px;padding-left: 0px;padding-right: 0px;background-color: transparent;color: green;outline-style: none;font-weight:bold}\n" +
                 "span.SQLWordg{cursor: pointer;outline-style: none;color:mediumvioletred;font-weight: bolder}\n" +
-                "image{margin: auto;width: 80%;text-align: center}\n" +
+                "span#echarts{margin: auto;display: table-cell; vertical-align: middle;}\n" +
                 "table.table{font-size: 100%;margin: 6px;line-height:12px;border-collapse:collapse;cursor: pointer;position:relative;min-width: 33%;border-radius: 5px;background-color: transparent;}\n" +
                 "tr{height: 25px;background-color:rgba(0, 0, 0, 0);}\n" +
                 "tr:hover{background-color:rosybrown;}\n" +
@@ -13190,35 +13174,38 @@ function getSaveAsReport(configs, container, myChart) {
                 getScript(__VERSION__.main, jsPath, __VERSION__.echarts, __DATASET__.configs.reportThemes.value) +
                 "</head>\n" +
                 "<body onload='init()'>\n" +
-                "<div class='TITLE'>\n" +
-                "<h1><span style='margin-left: 60px'>" + title[0] + "</span></h1>\n" +
-                "<h3><span style='margin-left: 60px'>" + (title.length > 1 ? title.slice(1, title.length).join("&emsp;") : "") + "</span></h3>\n" +
+                "<div id='_TITLE'>\n" +
+                "<image id='logo' src = '" + __SYS_IMAGES_SVG__.getSrc(__VERSION__.logo.name, __THEMES__.get().color, "60px", "60px") + "'></image>\n" +
+                "<div id='title'>\n" +
+                "<h1 id='main-title'>" + title[0] + "</h1>\n" +
+                "<h3 id='sub-title'>" + (title.length > 1 ? title.slice(1, title.length).join("&emsp;") : "") + "</h3>\n" +
                 "</div>\n" +
-                "<div class='TABS'>\n" +
-                "<span class='tabButton-selected' id='ECHART' onclick='selectTab(this.id)'>数据视图</span>\n" +
+                "</div>\n" +
+                "<div id='_TABS'>\n" +
+                "<span class='tabButton-selected' id='ECHARTS' onclick='selectTab(this.id)'>数据视图</span>\n" +
                 "<span class='tabButton-unselected' id='TABLE' onclick='selectTab(this.id)'>数据报表</span>\n" +
                 "<span class='tabButton-unselected' id='SCRIPT' onclick='selectTab(this.id)'>数据脚本</span>\n" +
                 "<span class='tabButton-unselected' id='CONFIGS' onclick='selectTab(this.id)'>视图参数</span>\n" +
                 link +
-                "<span class='tabButton-theme' id='THEMES'>" +
+                "<span class='tabButton-theme' id='_THEMES'>" +
                 "</span>\n" +
                 "</div>\n" +
-                "<div class='ECHART'>\n" +
-                "<image src = '" + myChart.getDataURL({excludeComponents: ['toolbox']}) + "' width='100%' height='" + myChart.height + "'></image>" +
+                "<div id='_ECHARTS'>\n" +
+                "<span id='echarts'><image id='echarts-image' src = '" + myChart.getDataURL({excludeComponents: ['toolbox']}) + "' width = '" + myChart.getWidth() + "' height='" + myChart.getHeight() + "'></image></span>\n" +
                 "</div>\n" +
-                "<div class='TABLE'>\n" +
+                "<div id='_TABLE'>\n" +
                 "</div>\n" +
-                "<div class='CONFIGS'>\n" +
+                "<div id='_CONFIGS'>\n" +
                 "</div>\n" +
-                "<div class='SCRIPT'><code class='sql'></code></div>\n" +
-                "<div class='CODES'>\n" +
+                "<div id='_SCRIPT'><code id='sql'></code></div>\n" +
+                "<div id='_CODES'>\n" +
                 "<code>" + report + "</code>\n" +
                 "<code>" + report.hex_md5_hash() + "</code>\n" +
                 "<code>" + configs + "</code>\n" +
                 "<code>" + configs.hex_md5_hash() + "</code>\n" +
                 "</div>\n" +
-                "<h6>适用于<a href = 'https://www.google.cn/chrome/index.html' target='_blank'>Google Chrome</a>或<a href = 'https://www.microsoft.com/zh-cn/edge?form=MY01BV&OCID=MY01BV&r=1' target='_blank'>Microsoft Edge</a>浏览器&emsp;技术支持: <a href = '" + __VERSION__.url + "' target='_blank'>" +
-                __VERSION__.author + "</a>&emsp;电话: " + __VERSION__.tel + "&emsp;邮箱: <a href='mailto:" + __VERSION__.email + "'>" + __VERSION__.email + "</a>&emsp;创建时间:" + time + "</h6>\n" +
+                "<h6 id='footer'>适用于<a class='link' href = 'https://www.google.cn/chrome/index.html' target='_blank'>Google Chrome</a>或<a class='link' href = 'https://www.microsoft.com/zh-cn/edge?form=MY01BV&OCID=MY01BV&r=1' target='_blank'>Microsoft Edge</a>浏览器&emsp;技术支持: <a class='link' href = '" + __VERSION__.url + "' target='_blank'>" +
+                __VERSION__.author + "</a>&emsp;电话: " + __VERSION__.tel + "&emsp;邮箱: <a class='link' href='mailto:" + __VERSION__.email + "'>" + __VERSION__.email + "</a>&emsp;创建时间:" + time + "</h6>\n" +
                 "</body>\n" +
                 "</html>";
             let blob = new Blob([str2ab(html)], {type: "text/html"});
