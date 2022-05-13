@@ -191,7 +191,7 @@ function getMailComponent(parent) {
             for (let key in MAILS) {
                 MAILS[key].checked = this.checked;
             }
-            let checkboxes = document.getElementsByClassName("mail-checkbox");
+            let checkboxes = $1("mail-checkbox");
             for (let i = 0; i < checkboxes.length; i++) {
                 checkboxes[i].checked = this.checked;
                 this.checked ? checkboxes[i].setAttribute("checked", "checked") : checkboxes[i].removeAttribute("checked");
@@ -918,7 +918,7 @@ function getMailComponent(parent) {
     send.onclick = function () {
         $("mails-container").style.display = "block";
         $("mail-detail").style.display = "none";
-        let links = document.getElementsByClassName("mail-link");
+        let links = $1("mail-link");
         for (let i = 0; i < links.length; i++) {
             if (MAILS[links[i].innerText].checked) {
                 setTimeout(function () {

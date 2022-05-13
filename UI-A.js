@@ -1207,7 +1207,7 @@ var UI = {
             //items:{item:default,...}
             //return: items:{item:value,item:value,....}
             function setFocus(domid) {
-                let inputs = document.getElementsByClassName("ui-container-item-input");
+                let inputs = $1("ui-container-item-input");
                 let focus = -1;
                 for (let i = 0; i < inputs.length; i++) {
                     if (inputs[i].id === domid) {
@@ -1326,7 +1326,7 @@ var UI = {
             };
             tools.appendChild(button);
             setDialogDrag(title);
-            document.getElementsByClassName("ui-container-item-input")[0].focus();
+            $1("ui-container-item-input", 0).focus();
         },
     },
     choise: {
@@ -1602,7 +1602,7 @@ var UI = {
             //items:{item:null,...}
             //return: items:{item:password,item:password,....}
             function setFocus(domid) {
-                let inputs = document.getElementsByClassName("ui-container-item-input");
+                let inputs = $1("ui-container-item-input");
                 let focus = -1;
                 for (let i = 0; i < inputs.length; i++) {
                     if (inputs[i].id === domid) {
@@ -1727,7 +1727,7 @@ var UI = {
             };
             tools.appendChild(button);
             setDialogDrag(title);
-            document.getElementsByClassName("ui-container-item-input")[0].focus();
+            $1("ui-container-item-input", 0).focus();
         },
     },
     sqlManagerDialog: {
@@ -2380,8 +2380,8 @@ var UI = {
         confirm.onclick = function () {
             let merge = $("subtotal_merge").checked;
             let column = $("subtotal_groupby").value;
-            let obj = document.getElementsByClassName("subtotal_object");
-            let typ = document.getElementsByClassName("subtotal_type");
+            let obj = $1("subtotal_object");
+            let typ = $1("subtotal_type");
             let columns = [];
             let data = [];
             let sets = null;

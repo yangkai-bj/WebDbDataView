@@ -230,144 +230,143 @@ function getBackgroundColor(configs) {
     }
 }
 
-function getEcharts(container, dataset, configs, width, height) {
+function getEcharts(container, dataset, configs) {
     try {
-        // $("copyright").innerHTML = getUserConfig("CopyRight");
         if (echarts.version >= "5.0.2") {
             switch (configs.echartsType.value) {
                 case "Bar":
-                    return getBar(container, dataset, configs, width, height);
+                    return getBar(container, dataset, configs);
                     break;
                 case "Polar":
-                    return getPolar(container, dataset, configs, width, height);
+                    return getPolar(container, dataset, configs);
                     break;
                 case "Line":
-                    return getLine(container, dataset, configs, width, height);
+                    return getLine(container, dataset, configs);
                     break;
                 case "Line3D":
-                    return getLine3D(container, dataset, configs, width, height);
+                    return getLine3D(container, dataset, configs);
                     break;
                 case "BarAndLine":
-                    return getBarAndLine(container, dataset, configs, width, height);
+                    return getBarAndLine(container, dataset, configs);
                     break;
                 case "AreaStyle":
-                    return getAreaStyle(container, dataset, configs, width, height);
+                    return getAreaStyle(container, dataset, configs);
                     break;
                 case "TransversBar":
-                    return getTransversBar(container, dataset, configs, width, height);
+                    return getTransversBar(container, dataset, configs);
                     break;
                 case "Pie":
-                    return getPie(container, dataset, configs, width, height);
+                    return getPie(container, dataset, configs);
                     break;
                 case "Gauge":
-                    return getCategoryLineForGauge(container, dataset, configs, width, height);
+                    return getCategoryLineForGauge(container, dataset, configs);
                     break;
                 case "Radar":
-                    return getRadar(container, dataset, configs, width, height);
+                    return getRadar(container, dataset, configs);
                     break;
                 case "Relation":
-                    return getRelation(container, dataset, configs, width, height);
+                    return getRelation(container, dataset, configs);
                     break;
                 case "Tree":
-                    return getTree(container, dataset, configs, width, height);
+                    return getTree(container, dataset, configs);
                     break;
                 case "WebkitDep":
-                    return getWebkitDep(container, dataset, configs, width, height);
+                    return getWebkitDep(container, dataset, configs);
                     break;
                 case "Scatter":
-                    return getScatter(container, dataset, configs, width, height);
+                    return getScatter(container, dataset, configs);
                     break;
                 case "Funnel":
-                    return getFunnel(container, dataset, configs, width, height);
+                    return getFunnel(container, dataset, configs);
                     break;
                 case "WordCloud":
-                    return getWordCloud(container, dataset, configs, width, height);
+                    return getWordCloud(container, dataset, configs);
                     break;
                 case "Liqiud":
-                    return getCategoryLineForLiqiud(container, dataset, configs, width, height);
+                    return getCategoryLineForLiqiud(container, dataset, configs);
                     break;
                 case "Calendar":
-                    return getCalendar(container, dataset, configs, width, height);
+                    return getCalendar(container, dataset, configs);
                     break;
                 case "GeoOfChina":
-                    return getCategoryLineForGeoOfChina(container, dataset, configs, width, height);
+                    return getCategoryLineForGeoOfChina(container, dataset, configs);
                     break;
                 case "GeoOfLocal":
-                    return getCategoryLineForGeoOfLocal(container, dataset, configs, width, height);
+                    return getCategoryLineForGeoOfLocal(container, dataset, configs);
                     break;
                 case "Bar3D":
-                    return getBar3D(container, dataset, configs, width, height);
+                    return getBar3D(container, dataset, configs);
                     break;
                 case "Scatter3D":
-                    return getScatter3D(container, dataset, configs, width, height);
+                    return getScatter3D(container, dataset, configs);
                     break;
                 case "Pie3D":
-                    return getPie3D(container, dataset, configs, width, height);
+                    return getPie3D(container, dataset, configs);
                     break;
                 case "CategoryLine":
-                    return getCategoryLine(container, dataset, configs, width, height);
+                    return getCategoryLine(container, dataset, configs);
                     break;
                 case "FunctionLine":
-                    return getFunctionLine(container, dataset, configs, width, height);
+                    return getFunctionLine(container, dataset, configs);
                     break;
                 case "GeoMigrateLinesOfChinaCity":
-                    return getGeoMigrateLinesOfChinaCity(container, dataset, configs, width, height);
+                    return getGeoMigrateLinesOfChinaCity(container, dataset, configs);
                     break;
                 case "ScrollingScreen":
-                    return getScrollingScreen(container, dataset, configs, width, height);
+                    return getScrollingScreen(container, dataset, configs);
                     break;
                 case "WalkingLantern":
-                    return getWalkingLantern(container, dataset, configs, width, height);
+                    return getWalkingLantern(container, dataset, configs);
                     break;
                 case "WindowShades":
-                    return getWindowShades(container, dataset, configs, width, height);
+                    return getWindowShades(container, dataset, configs);
                     break;
                 case "Surface":
-                    return getSurface(container, dataset, configs, width, height);
+                    return getSurface(container, dataset, configs);
                     break;
                 case "Boxplot":
-                    return getBoxplot(container, dataset, configs, width, height);
+                    return getBoxplot(container, dataset, configs);
                     break;
                 case "Clock":
-                    return getClock(container, dataset, configs, width, height);
+                    return getClock(container, dataset, configs);
                     break;
                 case "Candlestick":
-                    return getCandlestick(container, dataset, configs, width, height);
+                    return getCandlestick(container, dataset, configs);
                     break;
                 case "Banners":
-                    return getBanners(container, dataset, configs, width, height);
+                    return getBanners(container, dataset, configs);
                     break;
                 case "Sunburst":
-                    return getSunburst(container, dataset, configs, width, height);
+                    return getSunburst(container, dataset, configs);
                     break;
                 case "Treemap":
-                    return getTreemap(container, dataset, configs, width, height);
+                    return getTreemap(container, dataset, configs);
                     break;
                 case "ParallelAxis":
-                    return getParallelAxis(container, dataset, configs, width, height);
+                    return getParallelAxis(container, dataset, configs);
                     break;
                 case "Sankey":
-                    return getSankey(container, dataset, configs, width, height);
+                    return getSankey(container, dataset, configs);
                     break;
                 case "ThemeRiver":
-                    return getThemeRiver(container, dataset, configs, width, height);
+                    return getThemeRiver(container, dataset, configs);
                     break;
                 case "SingeAxis":
-                    return getSingeAxis(container, dataset, configs, width, height);
+                    return getSingeAxis(container, dataset, configs);
                     break;
                 case "MathFunciton":
-                    return getFunctionLine(container, dataset, configs, width, height);
+                    return getFunctionLine(container, dataset, configs);
                     break;
                 case "BarRacing":
-                    return getBarRacing(container, dataset, configs, width, height);
+                    return getBarRacing(container, dataset, configs);
                     break;
                 case "Scrolling":
-                    return getScrolling(container, dataset, configs, width, height);
+                    return getScrolling(container, dataset, configs);
                     break;
                 case "MultiGraph":
-                    return getMultiGraph(container, dataset, configs, width, height);
+                    return getMultiGraph(container, dataset, configs);
                 case "DatasetImage":
-                    return getDatasetImage(container, dataset, configs, width, height);
+                    return getDatasetImage(container, dataset, configs);
                     break;
             }
         } else {
@@ -383,15 +382,13 @@ function getEcharts(container, dataset, configs, width, height) {
 
 var __ECHARTS__ = {
     history: {},
-    addHistory: function (container, configs, dataset, width, height) {
+    addHistory: function (container, configs, dataset) {
         let id = container.getAttribute("_echarts_instance_");
         this.history[id] = JSON.stringify({
             id: id,
             configs: configs,
             dataset: dataset,
             contrainer: container,
-            width: width,
-            height: height,
         });
     },
     clearHistory: function() {
@@ -657,6 +654,12 @@ var __ECHARTS__ = {
         toolboxFeatureBrush: {
             name: "区域选择",
             value: "false",
+            options: [new Option("是", "true"), new Option("否", "false")],
+            type: "select"
+        },
+        toolboxFeatureFullScreen: {
+            name: "全屏切换",
+            value: "true",
             options: [new Option("是", "true"), new Option("否", "false")],
             type: "select"
         },
@@ -3443,6 +3446,18 @@ function getLineOption(configs, container, myChart, dataset) {
     return option;
 }
 
+function getToolboxFeatureFullScreen(configs, container, myChart, dataset) {
+    return configs.toolboxFeatureFullScreen.value.toBoolean() ? {
+        show: configs.toolboxFeatureFullScreen.value.toBoolean(),
+        title: '全屏切换',
+        icon: __SYS_IMAGES_SVG__.getPath("echarts_fullscreen"),
+        onclick: function () {
+            requestFullScreen(container);
+            myChart.resize();
+        }
+    } : {};
+}
+
 function getToolboxFeatureLine(configs, container, myChart, dataset) {
     return configs.toolboxFeatureLine.value.toBoolean() ? {
         show: configs.toolboxFeatureLine.value.toBoolean(),
@@ -5408,24 +5423,32 @@ function getToolbox(configs, container, dataset, myChart) {
     return {
         show: configs.toolboxDisplay.value.toBoolean(),
         feature: {
+            restore: {
+                show: configs.toolboxFeatureRestore.value.toBoolean(),
+                title: '图像还原',
+                icon: __SYS_IMAGES_SVG__.getPath("echarts_restore"),
+            },
             saveAsImage: {
                 show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
                 excludeComponents: ["toolbox", "dataZoom", "timeline", "visualMap", "brush"],
                 backgroundColor: configs.toolboxFeatureSaveAsImageBackgroundColor.value,
                 pixelRatio: 5,
                 type: "png",
+                icon: __SYS_IMAGES_SVG__.getPath("echarts_saveAsImage"),
             },
-            restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
-            dataView: {
-                show: configs.toolboxFeatureDataView.value.toBoolean(),
-                readOnly: true,
-                backgroundColor: "transparent",
-                lang: [' ', '关闭', ' '],
-                optionToContent: function() {
-                    return getDataViewTable(null, dataset, configs, container.getAttribute("_echarts_instance_"));
+            mySaveAsReport: getSaveAsReport(configs, container, myChart),
+            dataZoom: {
+                show: configs.toolboxFeatureDataZoom.value.toBoolean(),
+                title: {
+                    zoom: "区域放大",
+                    back: "放大还原",
+                },
+                icon: {
+                    zoom: __SYS_IMAGES_SVG__.getPath("echarts_zoomIn"),
+                    back: __SYS_IMAGES_SVG__.getPath("echarts_zoomOut"),
                 }
             },
-            dataZoom: {show: configs.toolboxFeatureDataZoom.value.toBoolean(),},
+            myFeatureFullScreen: getToolboxFeatureFullScreen(configs, container, myChart, dataset),
             myFeatureLine: getToolboxFeatureLine(configs, container, myChart, dataset),
             myFeatureBar: getToolboxFeatureBar(configs, container, myChart, dataset),
             myFeatureTransversBar: getToolboxFeatureTransversBar(configs, container, myChart, dataset),
@@ -5437,7 +5460,16 @@ function getToolbox(configs, container, dataset, myChart) {
             myFeatureGeoOfChina: getToolboxFeatureGeoOfChina(configs, container, myChart, dataset),
             myFeatureGeoOfLocal: getToolboxFeatureGeoOfLocal(configs, container, myChart, dataset),
             myMultiScreen: getMultiScreen(configs, container),
-            mySaveAsReport: getSaveAsReport(configs, container, myChart),
+            dataView: {
+                show: configs.toolboxFeatureDataView.value.toBoolean(),
+                readOnly: true,
+                backgroundColor: "transparent",
+                icon: __SYS_IMAGES_SVG__.getPath("echarts_dataView"),
+                lang: [' ', '关闭', ' '],
+                optionToContent: function() {
+                    return getDataViewTable(null, dataset, configs, container.getAttribute("_echarts_instance_"));
+                }
+            },
         },
         top: configs.toolboxTop.value,
         left: configs.toolboxLeft.value,
@@ -5454,14 +5486,32 @@ function getToolbox3D(configs, container, dataset, myChart) {
     return {
         show: configs.toolboxDisplay.value.toBoolean(),
         feature: {
+            restore: {
+                show: configs.toolboxFeatureRestore.value.toBoolean(),
+                title: '图像还原',
+                icon: __SYS_IMAGES_SVG__.getPath("echarts_restore"),
+            },
             saveAsImage: {
                 show: configs.toolboxFeatureSaveAsImage.value.toBoolean(),
-                excludeComponents: ["toolbox", "timeline", "visualMap", "brush"],
+                excludeComponents: ["toolbox", "dataZoom", "timeline", "visualMap", "brush"],
                 backgroundColor: configs.toolboxFeatureSaveAsImageBackgroundColor.value,
                 pixelRatio: 5,
                 type: "png",
+                icon: __SYS_IMAGES_SVG__.getPath("echarts_saveAsImage"),
             },
-            restore: {show: configs.toolboxFeatureRestore.value.toBoolean()},
+            mySaveAsReport: getSaveAsReport(configs, container, myChart),
+            myFeatureFullScreen: getToolboxFeatureFullScreen(configs, container, myChart, dataset),
+            myFeatureLine: getToolboxFeatureLine(configs, container, myChart, dataset),
+            myFeatureBar: getToolboxFeatureBar(configs, container, myChart, dataset),
+            myFeatureTransversBar: getToolboxFeatureTransversBar(configs, container, myChart, dataset),
+            myFeatureScatter: getToolboxFeatureScatter(configs, container, myChart, dataset),
+            myFeaturePie: getToolboxFeaturePie(configs, container, myChart, dataset),
+            myFeatureFunnel: getToolboxFeatureFunnel(configs, container, myChart, dataset),
+            myFeatureMultiGraph: getToolboxFeatureMultiGraph(configs, container, myChart, dataset),
+            myFeaturePolar: getToolboxFeaturePolar(configs, container, myChart, dataset),
+            myFeatureGeoOfChina: getToolboxFeatureGeoOfChina(configs, container, myChart, dataset),
+            myFeatureGeoOfLocal: getToolboxFeatureGeoOfLocal(configs, container, myChart, dataset),
+            myMultiScreen: getMultiScreen(configs, container),
             dataView: {
                 show: configs.toolboxFeatureDataView.value.toBoolean(),
                 readOnly: true,
@@ -5471,8 +5521,6 @@ function getToolbox3D(configs, container, dataset, myChart) {
                     return getDataViewTable(null, dataset, configs, container.getAttribute("_echarts_instance_"));
                 }
             },
-            myMultiScreen: getMultiScreen(configs, container),
-            mySaveAsConfig: getSaveAsReport(configs, container, myChart),
         },
         top: configs.toolboxTop.value,
         left: configs.toolboxLeft.value,
@@ -5610,9 +5658,10 @@ function getMarkPoint(configs) {
             name: configs.lineMarkPointMin.name,
             label: {
                 position: "top",
-                distance: -24,
+                distance: -20,
+                fontSize: 10,
                 formatter: function (param) {
-                    return param.value+ "\n\n" + "MIN";
+                    return param.value+ "\n\nMIN";
                 },
             }
         });
@@ -5622,9 +5671,10 @@ function getMarkPoint(configs) {
             name: configs.lineMarkPointMax.name,
             label: {
                 position: "top",
-                distance: -24,
+                distance: -20,
+                fontSize: 10,
                 formatter: function (param) {
-                    return param.value + "\n\n" + "MAX";
+                    return param.value + "\n\nMAX";
                 },
             }
         });
@@ -5640,6 +5690,7 @@ function getMarkLine(configs) {
             label: {
                 show: true,
                 position: "end",
+                fontSize: 10,
                 formatter: function (param) {
                     return "MIN " + param.value;
                 },
@@ -5652,6 +5703,7 @@ function getMarkLine(configs) {
             label: {
                 show: true,
                 position: "end",
+                fontSize: 10,
                 formatter: function (param) {
                     return "MAX " + param.value;
                 },
@@ -5664,6 +5716,7 @@ function getMarkLine(configs) {
             label: {
                 show: true,
                 position: "end",
+                fontSize: 10,
                 // formatter: "{a}{b}{c}",
                 formatter: function (param) {
                     return "AVG " + param.value;
@@ -5673,7 +5726,7 @@ function getMarkLine(configs) {
     return markLine;
 }
 
-function getBar(container, dataset, configs, width, height) {
+function getBar(container, dataset, configs) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
@@ -5691,11 +5744,11 @@ function getBar(container, dataset, configs, width, height) {
         myChart.setOption(getBarOption(configs, container, myChart, dataset));
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.addHistory(container, configs, dataset, width, height);
+    __ECHARTS__.addHistory(container, configs, dataset);
     return container;
 }
 
-function getTransversBar(container, dataset, configs, width, height) {
+function getTransversBar(container, dataset, configs) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
@@ -5714,11 +5767,11 @@ function getTransversBar(container, dataset, configs, width, height) {
         myChart.setOption(getTransversBarOption(configs, container, myChart, dataset));
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.addHistory(container, configs, dataset, width, height);
+    __ECHARTS__.addHistory(container, configs, dataset);
     return container;
 }
 
-function getLine(container, dataset, configs, width, height) {
+function getLine(container, dataset, configs) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
@@ -5736,11 +5789,11 @@ function getLine(container, dataset, configs, width, height) {
         myChart.setOption(getLineOption(configs, container, myChart, dataset));
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.addHistory(container, configs, dataset, width, height);
+    __ECHARTS__.addHistory(container, configs, dataset);
     return container;
 }
 
-function getBarAndLine(container, dataset, configs, width, height) {
+function getBarAndLine(container, dataset, configs) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
@@ -5880,11 +5933,11 @@ function getBarAndLine(container, dataset, configs, width, height) {
         myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.addHistory(container, configs, dataset, width, height);
+    __ECHARTS__.addHistory(container, configs, dataset);
     return container;
 }
 
-function getAreaStyle(container, dataset, configs, width, height) {
+function getAreaStyle(container, dataset, configs) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
@@ -5993,13 +6046,13 @@ function getAreaStyle(container, dataset, configs, width, height) {
         myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.addHistory(container, configs, dataset, width, height);
+    __ECHARTS__.addHistory(container, configs, dataset);
     return container;
 }
 
-function getPolar(container, dataset, configs, width, height) {
+function getPolar(container, dataset, configs) {
     if (configs.polarType.value == "heatmap") {
-        return getPolarHeatmap(container, dataset, configs, width, height);
+        return getPolarHeatmap(container, dataset, configs);
     } else {
         if (container == null) {
             container = document.createElement("div");
@@ -6017,12 +6070,12 @@ function getPolar(container, dataset, configs, width, height) {
             myChart.setOption(getPolarOption(configs, container, myChart, dataset));
         }, Number(configs.loadingTimes.value) * 1000);
 
-        __ECHARTS__.addHistory(container, configs, dataset, width, height);
+        __ECHARTS__.addHistory(container, configs, dataset);
         return container;
     }
 }
 
-function getPolarHeatmap(container, dataset, configs, width, height) {
+function getPolarHeatmap(container, dataset, configs) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
@@ -6190,7 +6243,7 @@ function getPolarHeatmap(container, dataset, configs, width, height) {
         myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.addHistory(container, configs, dataset, width, height);
+    __ECHARTS__.addHistory(container, configs, dataset);
     return container;
 }
 
@@ -6254,7 +6307,7 @@ function getPieRichText(configs, colors) {
     }
 }
 
-function getPie(container, dataset, configs, width, height) {
+function getPie(container, dataset, configs) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
@@ -6272,11 +6325,11 @@ function getPie(container, dataset, configs, width, height) {
         myChart.setOption(getPieOption(configs, container, myChart, dataset));
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.addHistory(container, configs, dataset, width, height);
+    __ECHARTS__.addHistory(container, configs, dataset);
     return container;
 }
 
-function getRadar(container, dataset, configs, width, height) {
+function getRadar(container, dataset, configs) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
@@ -6384,11 +6437,11 @@ function getRadar(container, dataset, configs, width, height) {
         myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.addHistory(container, configs, dataset, width, height);
+    __ECHARTS__.addHistory(container, configs, dataset);
     return container;
 }
 
-function getRelation(container, dataset, configs, width, height) {
+function getRelation(container, dataset, configs) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
@@ -6571,11 +6624,11 @@ function getRelation(container, dataset, configs, width, height) {
 
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.addHistory(container, configs, dataset, width, height);
+    __ECHARTS__.addHistory(container, configs, dataset);
     return container;
 }
 
-function getTree(container, dataset, configs, width, height) {
+function getTree(container, dataset, configs) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
@@ -6715,11 +6768,11 @@ function getTree(container, dataset, configs, width, height) {
         myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.addHistory(container, configs, dataset, width, height);
+    __ECHARTS__.addHistory(container, configs, dataset);
     return container;
 }
 
-function getWebkitDep(container, dataset, configs, width, height) {
+function getWebkitDep(container, dataset, configs) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
@@ -6832,11 +6885,11 @@ function getWebkitDep(container, dataset, configs, width, height) {
         myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.addHistory(container, configs, dataset, width, height);
+    __ECHARTS__.addHistory(container, configs, dataset);
     return container;
 }
 
-function getScatter(container, dataset, configs, width, height) {
+function getScatter(container, dataset, configs) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
@@ -6852,11 +6905,11 @@ function getScatter(container, dataset, configs, width, height) {
         myChart.setOption(getScatterOption(configs, container, myChart, dataset), true);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.addHistory(container, configs, dataset, width, height);
+    __ECHARTS__.addHistory(container, configs, dataset);
     return container;
 }
 
-function getFunnel(container, dataset, configs, width, height) {
+function getFunnel(container, dataset, configs) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
@@ -6871,12 +6924,12 @@ function getFunnel(container, dataset, configs, width, height) {
         myChart.setOption(getFunnelOption(configs, container, myChart, dataset));
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.addHistory(container, configs, dataset, width, height);
+    __ECHARTS__.addHistory(container, configs, dataset);
     return container;
 }
 
 
-function getCalendar(container, dataset, configs, width, height) {
+function getCalendar(container, dataset, configs) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
@@ -7007,11 +7060,11 @@ function getCalendar(container, dataset, configs, width, height) {
         myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.addHistory(container, configs, dataset, width, height);
+    __ECHARTS__.addHistory(container, configs, dataset);
     return container;
 }
 
-function getGeoOfChina(container, dataset, configs, width, height) {
+function getGeoOfChina(container, dataset, configs) {
     //未使用
     if (container == null) {
         container = document.createElement("div");
@@ -7232,11 +7285,11 @@ function getGeoOfChina(container, dataset, configs, width, height) {
 
     setTimeout(startTimer, configs.seriesLoopPlayInterval.value * 1000);
 
-    __ECHARTS__.addHistory(container, configs, dataset, width, height);
+    __ECHARTS__.addHistory(container, configs, dataset);
     return container;
 }
 
-function getGeoOfLocal(container, dataset, configs, width, height) {
+function getGeoOfLocal(container, dataset, configs) {
     //未使用
     if (container == null) {
         container = document.createElement("div");
@@ -7322,7 +7375,7 @@ function getGeoOfLocal(container, dataset, configs, width, height) {
         title: getTitle(configs, dataset.title),
         toolbox: getToolbox(configs, container, dataset, myChart),
         tooltip: getTooltip(configs, "item", function (param) {
-            return "<span style = 'float:left'>" + param.name + "</span>" + "<hr style='background-color:" + param.color + "'>" +
+            return "<span style = 'float:left'>" + param.name + "</span><br>" + "<hr style='background-color:" + param.color + "'>" +
                 param.marker + param.seriesName + ":&emsp;<span style='display:inline-block;min-width:110px;text-align:right;font-weight:bold'>" + ((param["value"].length == 3) ? param.data["value"][2] : param.data["value"] + "</span>")
         }),
         visualMap: getVisualMap(configs, series[index].min, series[index].max),
@@ -7452,11 +7505,11 @@ function getGeoOfLocal(container, dataset, configs, width, height) {
 
     setTimeout(startTimer, configs.seriesLoopPlayInterval.value * 1000);
 
-    __ECHARTS__.addHistory(container, configs, dataset, width, height);
+    __ECHARTS__.addHistory(container, configs, dataset);
     return container;
 }
 
-function getBar3D(container, dataset, configs, width, height) {
+function getBar3D(container, dataset, configs) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
@@ -7539,7 +7592,7 @@ function getBar3D(container, dataset, configs, width, height) {
         title: getTitle(configs, dataset.title),
         legend: getLegend(configs, source.dimensions.slice(1, source.dimensions.length)),
         tooltip: getTooltip(configs, "item", function (param) {
-            return "<span style = 'float:left'>" + rows[param.value[0]] + "</span>" + "<hr style='background-color:" + param.color + "'>" +
+            return "<span style = 'float:left'>" + rows[param.value[0]] + "</span><br>" + "<hr style='background-color:" + param.color + "'>" +
                 param.marker + source.dimensions[param.value[1] + 1] + ":&emsp;<span style='display:inline-block;min-width:110px;text-align:right;font-weight:bold'>" + param.value[2] + "</span>";
         }),
         toolbox: getToolbox3D(configs, container, dataset, myChart),
@@ -7624,11 +7677,11 @@ function getBar3D(container, dataset, configs, width, height) {
         myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.addHistory(container, configs, dataset, width, height);
+    __ECHARTS__.addHistory(container, configs, dataset);
     return container;
 }
 
-function getLine3D(container, dataset, configs, width, height) {
+function getLine3D(container, dataset, configs) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
@@ -7690,7 +7743,7 @@ function getLine3D(container, dataset, configs, width, height) {
         title: getTitle(configs, dataset.title),
         legend: getLegend(configs, source.dimensions.slice(1, source.dimensions.length)),
         tooltip: getTooltip(configs, "item", function (param) {
-            return "<span style = 'float:left'>" + rows[param.value[0]] + "</span>" + "<hr style='background-color:" + param.color + "'>" +
+            return "<span style = 'float:left'>" + rows[param.value[0]] + "</span><br>" + "<hr style='background-color:" + param.color + "'>" +
                 param.marker + source.dimensions[param.value[1] + 1] + ":&emsp;<span style='display:inline-block;min-width:110px;text-align:right;font-weight:bold'>" + param.value[2] + "</span>";
         }),
         toolbox: getToolbox3D(configs, container, dataset, myChart),
@@ -7789,11 +7842,11 @@ function getLine3D(container, dataset, configs, width, height) {
         myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.addHistory(container, configs, dataset, width, height);
+    __ECHARTS__.addHistory(container, configs, dataset);
     return container;
 }
 
-function getScatter3D(container, dataset, configs, width, height) {
+function getScatter3D(container, dataset, configs) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
@@ -7868,7 +7921,7 @@ function getScatter3D(container, dataset, configs, width, height) {
         title: getTitle(configs, dataset.title),
         legend: getLegend(configs, source.dimensions.slice(1, source.dimensions.length)),
         tooltip: getTooltip(configs, "item", function (param) {
-            return "<span style = 'float:left'>" + rows[param.value[0]] + "</span>" + "<hr style='background-color:" + param.color + "'>" +
+            return "<span style = 'float:left'>" + rows[param.value[0]] + "</span><br>" + "<hr style='background-color:" + param.color + "'>" +
                 param.marker + source.dimensions[param.value[1] + 1] + ":&emsp;<span style='display:inline-block;min-width:110px;text-align:right;font-weight:bold'>" + param.value[2] + "</span>";
         }),
         toolbox: getToolbox3D(configs, container, dataset, myChart),
@@ -7967,11 +8020,11 @@ function getScatter3D(container, dataset, configs, width, height) {
         myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.addHistory(container, configs, dataset, width, height);
+    __ECHARTS__.addHistory(container, configs, dataset);
     return container;
 }
 
-function getCategoryLine(container, dataset, configs, width, height) {
+function getCategoryLine(container, dataset, configs) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
@@ -8207,11 +8260,11 @@ function getCategoryLine(container, dataset, configs, width, height) {
         myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.addHistory(container, configs, dataset, width, height);
+    __ECHARTS__.addHistory(container, configs, dataset);
     return container;
 }
 
-function getGeoMigrateLinesOfChinaCity(container, dataset, configs, width, height) {
+function getGeoMigrateLinesOfChinaCity(container, dataset, configs) {
     //数据结构:fromCity|toCity|value or text
     if (container == null) {
         container = document.createElement("div");
@@ -8499,11 +8552,11 @@ function getGeoMigrateLinesOfChinaCity(container, dataset, configs, width, heigh
         myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.addHistory(container, configs, dataset, width, height);
+    __ECHARTS__.addHistory(container, configs, dataset);
     return container;
 }
 
-function getCategoryLineForGauge(container, dataset, configs, width, height) {
+function getCategoryLineForGauge(container, dataset, configs) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
@@ -8707,11 +8760,11 @@ function getCategoryLineForGauge(container, dataset, configs, width, height) {
         myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.addHistory(container, configs, dataset, width, height);
+    __ECHARTS__.addHistory(container, configs, dataset);
     return container;
 }
 
-function getCategoryLineForLiqiud(container, dataset, configs, width, height) {
+function getCategoryLineForLiqiud(container, dataset, configs) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
@@ -8986,11 +9039,11 @@ function getCategoryLineForLiqiud(container, dataset, configs, width, height) {
         myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.addHistory(container, configs, dataset, width, height);
+    __ECHARTS__.addHistory(container, configs, dataset);
     return container;
 }
 
-function getCategoryLineForGeoOfChina(container, dataset, configs, width, height) {
+function getCategoryLineForGeoOfChina(container, dataset, configs) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
@@ -9005,11 +9058,11 @@ function getCategoryLineForGeoOfChina(container, dataset, configs, width, height
         myChart.setOption(getGeoOfChinaOption(configs, container, myChart, dataset), true);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.addHistory(container, configs, dataset, width, height);
+    __ECHARTS__.addHistory(container, configs, dataset);
     return container;
 }
 
-function getCategoryLineForGeoOfLocal(container, dataset, configs, width, height) {
+function getCategoryLineForGeoOfLocal(container, dataset, configs) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
@@ -9024,11 +9077,11 @@ function getCategoryLineForGeoOfLocal(container, dataset, configs, width, height
         myChart.setOption(getGeoOfLocalOption(configs, container, myChart, dataset), true);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.addHistory(container, configs, dataset, width, height);
+    __ECHARTS__.addHistory(container, configs, dataset);
     return container;
 }
 
-function getScrollingScreen(container, dataset, configs, width, height) {
+function getScrollingScreen(container, dataset, configs) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
@@ -9193,12 +9246,12 @@ function getScrollingScreen(container, dataset, configs, width, height) {
         }, Number(configs.scrollingScreenSpeed.value) * 1000);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.addHistory(container, configs, dataset, width, height);
+    __ECHARTS__.addHistory(container, configs, dataset);
 
     return container;
 }
 
-function getWalkingLantern(container, dataset, configs, width, height) {
+function getWalkingLantern(container, dataset, configs) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
@@ -9373,12 +9426,12 @@ function getWalkingLantern(container, dataset, configs, width, height) {
         }, Number(configs.walkingLanternSpeed.value) * 1000);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.addHistory(container, configs, dataset, width, height);
+    __ECHARTS__.addHistory(container, configs, dataset);
 
     return container;
 }
 
-function getWindowShades(container, dataset, configs, width, height) {
+function getWindowShades(container, dataset, configs) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
@@ -9568,11 +9621,11 @@ function getWindowShades(container, dataset, configs, width, height) {
         }, Number(configs.windowShadesSpeed.value) * 1000);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.addHistory(container, configs, dataset, width, height);
+    __ECHARTS__.addHistory(container, configs, dataset);
     return container;
 }
 
-function getSurface(container, dataset, configs, width, height) {
+function getSurface(container, dataset, configs) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
@@ -9702,11 +9755,11 @@ function getSurface(container, dataset, configs, width, height) {
         myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.addHistory(container, configs, dataset, width, height);
+    __ECHARTS__.addHistory(container, configs, dataset);
     return container;
 }
 
-function getBoxplot(container, dataset, configs, width, height) {
+function getBoxplot(container, dataset, configs) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
@@ -9862,11 +9915,11 @@ function getBoxplot(container, dataset, configs, width, height) {
         myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.addHistory(container, configs, dataset, width, height);
+    __ECHARTS__.addHistory(container, configs, dataset);
     return container;
 }
 
-function getClock(container, dataset, configs, width, height) {
+function getClock(container, dataset, configs) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
@@ -9900,7 +9953,7 @@ function getClock(container, dataset, configs, width, height) {
         grid: getGrids(configs),
         title: getTitle(configs, []),
         toolbox: getToolbox(configs, container, dataset, myChart),
-        graphic: getWaterGraphic(configs,__VERSION__),
+        graphic: getWaterGraphic(configs, __VERSION__),
         series: [
             {
                 //表盘
@@ -10012,7 +10065,7 @@ function getClock(container, dataset, configs, width, height) {
                 radius: configs.clockRadius.value,
                 center: configs.clockCenter.value.toArray(["50%", "50%"], ","),
                 startAngle: 90,
-                endAngle: echarts.version == "4.9.0" ? -269.99 : -270,
+                endAngle: -270,
                 min: 0,
                 max: 12,
                 axisLine: {
@@ -10073,7 +10126,7 @@ function getClock(container, dataset, configs, width, height) {
                 radius: configs.clockRadius.value,
                 center: configs.clockCenter.value.toArray(["50%", "50%"], ","),
                 startAngle: 90,
-                endAngle: echarts.version == "4.9.0" ? -269.99 : -270,
+                endAngle: -270,
                 min: 0,
                 max: 60,
                 axisLine: {
@@ -10132,7 +10185,7 @@ function getClock(container, dataset, configs, width, height) {
                 radius: configs.clockRadius.value,
                 center: configs.clockCenter.value.toArray(["50%", "50%"], ","),
                 startAngle: 90,
-                endAngle: echarts.version == "4.9.0" ? -269.99 : -270,
+                endAngle: -270,
                 min: 0,
                 max: 60,
                 animationEasingUpdate: 'bounceOut',
@@ -10223,10 +10276,8 @@ function getClock(container, dataset, configs, width, height) {
         }
         series.data[0].value = time;
         series.clockwise = true;
-        if (time === 0) {
-            timeUpdatedStatus[type] = true;
-            series.clockwise = false;
-        }
+        series.animation = (time !== 0);
+        timeUpdatedStatus[type] = (time == 0);
     }
 
     function updateClockSeries(series, title, value) {
@@ -10252,12 +10303,12 @@ function getClock(container, dataset, configs, width, height) {
     }, 1000);
 
     if (dataset != null) {
-        __ECHARTS__.addHistory(container, configs, dataset, width, height);
+        __ECHARTS__.addHistory(container, configs, dataset);
     }
     return container;
 }
 
-function getCandlestick(container, dataset, configs, width, height) {
+function getCandlestick(container, dataset, configs) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
@@ -10354,11 +10405,11 @@ function getCandlestick(container, dataset, configs, width, height) {
         myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.addHistory(container, configs, dataset, width, height);
+    __ECHARTS__.addHistory(container, configs, dataset);
     return container;
 }
 
-function getBanners(container, dataset, configs, width, height) {
+function getBanners(container, dataset, configs) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
@@ -10440,12 +10491,12 @@ function getBanners(container, dataset, configs, width, height) {
 
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.addHistory(container, configs, dataset, width, height);
+    __ECHARTS__.addHistory(container, configs, dataset);
 
     return container;
 }
 
-function getWordCloud(container, dataset, configs, width, height) {
+function getWordCloud(container, dataset, configs) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
@@ -10544,11 +10595,11 @@ function getWordCloud(container, dataset, configs, width, height) {
         myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.addHistory(container, configs, dataset, width, height);
+    __ECHARTS__.addHistory(container, configs, dataset);
     return container;
 }
 
-function getSunburst(container, dataset, configs, width, height) {
+function getSunburst(container, dataset, configs) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
@@ -10679,11 +10730,11 @@ function getSunburst(container, dataset, configs, width, height) {
         myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.addHistory(container, configs, dataset, width, height);
+    __ECHARTS__.addHistory(container, configs, dataset);
     return container;
 }
 
-function getTreemap(container, dataset, configs, width, height) {
+function getTreemap(container, dataset, configs) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
@@ -10873,11 +10924,11 @@ function getTreemap(container, dataset, configs, width, height) {
         myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.addHistory(container, configs, dataset, width, height);
+    __ECHARTS__.addHistory(container, configs, dataset);
     return container;
 }
 
-function getParallelAxis(container, dataset, configs, width, height) {
+function getParallelAxis(container, dataset, configs) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
@@ -10990,11 +11041,11 @@ function getParallelAxis(container, dataset, configs, width, height) {
         myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.addHistory(container, configs, dataset, width, height);
+    __ECHARTS__.addHistory(container, configs, dataset);
     return container;
 }
 
-function getSankey(container, dataset, configs, width, height) {
+function getSankey(container, dataset, configs) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
@@ -11090,11 +11141,11 @@ function getSankey(container, dataset, configs, width, height) {
         myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.addHistory(container, configs, dataset, width, height);
+    __ECHARTS__.addHistory(container, configs, dataset);
     return container;
 }
 
-function getThemeRiver(container, dataset, configs, width, height) {
+function getThemeRiver(container, dataset, configs) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
@@ -11173,11 +11224,11 @@ function getThemeRiver(container, dataset, configs, width, height) {
         myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.addHistory(container, configs, dataset, width, height);
+    __ECHARTS__.addHistory(container, configs, dataset);
     return container;
 }
 
-function getPie3D(container, dataset, configs, width, height) {
+function getPie3D(container, dataset, configs) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
@@ -11566,11 +11617,11 @@ function getPie3D(container, dataset, configs, width, height) {
         myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.addHistory(container, configs, dataset, width, height);
+    __ECHARTS__.addHistory(container, configs, dataset);
     return container;
 }
 
-function getSingeAxis(container, dataset, configs, width, height) {
+function getSingeAxis(container, dataset, configs) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
@@ -11678,11 +11729,11 @@ function getSingeAxis(container, dataset, configs, width, height) {
         myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.addHistory(container, configs, dataset, width, height);
+    __ECHARTS__.addHistory(container, configs, dataset);
     return container;
 }
 
-function getFunctionLine(container, dataset, configs, width, height) {
+function getFunctionLine(container, dataset, configs) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
@@ -11831,11 +11882,11 @@ function getFunctionLine(container, dataset, configs, width, height) {
         myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
 
-    __ECHARTS__.addHistory(container, configs, dataset, width, height);
+    __ECHARTS__.addHistory(container, configs, dataset);
     return container;
 }
 
-function getBarRacing(container, dataset, configs, width, height) {
+function getBarRacing(container, dataset, configs) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
@@ -11956,11 +12007,11 @@ function getBarRacing(container, dataset, configs, width, height) {
             clearInterval(myChart["IntervalId"]);
     }, Number(configs.barTimeout.value));
 
-    __ECHARTS__.addHistory(container, configs, dataset, width, height);
+    __ECHARTS__.addHistory(container, configs, dataset);
     return container;
 }
 
-function getScrolling(container, dataset, configs, width, height) {
+function getScrolling(container, dataset, configs) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
@@ -12088,11 +12139,11 @@ function getScrolling(container, dataset, configs, width, height) {
             clearInterval(myChart["IntervalId"]);
     }, Number(configs.scrollingTimeout.value));
 
-    __ECHARTS__.addHistory(container, configs, dataset, width, height);
+    __ECHARTS__.addHistory(container, configs, dataset);
     return container;
 }
 
-function getMultiGraph(container, dataset, configs, width, height) {
+function getMultiGraph(container, dataset, configs) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
@@ -12109,12 +12160,12 @@ function getMultiGraph(container, dataset, configs, width, height) {
         myChart.hideLoading();
         myChart.setOption(getMultiGraphOption(configs, container, myChart, dataset));
     }, Number(configs.loadingTimes.value) * 1000);
-    __ECHARTS__.addHistory(container, configs, dataset, width, height);
+    __ECHARTS__.addHistory(container, configs, dataset);
 
     return container;
 }
 
-function getDatasetImage(container, dataset, configs, width, height) {
+function getDatasetImage(container, dataset, configs) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
@@ -12297,7 +12348,7 @@ function getDatasetImage(container, dataset, configs, width, height) {
         myChart.hideLoading();
         myChart.setOption(option);
     }, Number(configs.loadingTimes.value) * 1000);
-    __ECHARTS__.addHistory(container, configs, dataset, width, height);
+    __ECHARTS__.addHistory(container, configs, dataset);
 
     return container;
 }
@@ -12305,912 +12356,985 @@ function getDatasetImage(container, dataset, configs, width, height) {
 function getSaveAsReport(configs, container, myChart) {
     return configs.toolboxSaveAsReport.value.toBoolean() ? {
         show: configs.toolboxSaveAsReport.value.toBoolean(),
-        title: '导出报表',
-        icon: __SYS_IMAGES_SVG__.getPath("download"),
+        title: '导出为报表',
+        icon: __SYS_IMAGES_SVG__.getPath("echarts_saveAsReport"),
         onclick: function () {
-            function getScript(main, jsPath, echartsPath, defaultThemes) {
-                let scripts = [
-                    "images.js",
-                    "FunctionsComponent.js",
-                    main,
-                    echartsPath + "/echarts.min.js",
-                    echartsPath + "/echarts-gl.min.js",
-                    echartsPath + "/echarts-wordcloud.min.js",
-                    echartsPath + "/ecStat.js",
-                    echartsPath + "/echarts-liquidfill.min.js",
-                    "echarts/map/world.js",
-                    "echarts/map/china-and-region.js",
-                    "echartsThemes.js",
-                    "echartsView.js",
-                ];
-
-                for (let i = 0; i < scripts.length; i++) {
-                    scripts[i] = "<script type='text/javascript' src='" + jsPath + "/" + scripts[i] + "'></script>";
-                }
-                scripts = scripts.concat([
-                    "<script type='text/javascript'>\n" +
-                    "function setStyleValue(selectorText, name, value){\n" +
-                    "for(let i=0;i<document.styleSheets[0].cssRules.length;i++){\n" +
-                    "if (document.styleSheets[0].cssRules[i].selectorText == selectorText){\n" +
-                    "document.styleSheets[0].cssRules[i].style[name] = value;\n" +
-                    "break;\n" +
-                    "}\n" +
-                    "}\n" +
-                    "}\n" +
-                    "function setThemes(name){\n" +
-                    "setStyleValue('body', 'backgroundColor', themes[name].backgroundColor);\n" +
-                    "setStyleValue('body', 'backgroundImage', themes[name].backgroundImage);\n" +
-                    "setStyleValue('body', 'color', themes[name].color);\n" +
-                    "setStyleValue('table.table', 'color', themes[name].color);\n" +
-                    "setStyleValue('th', 'backgroundColor', themes[name].selected);\n" +
-                    "setStyleValue('th', 'color', themes[name].color);\n" +
-                    "setStyleValue('th:hover', 'backgroundColor', themes[name].hover);\n" +
-                    "setStyleValue('span.tabButton-selected', 'backgroundColor', themes[name].selected);\n" +
-                    "setStyleValue('span.tabButton-unselected:hover', 'backgroundColor', themes[name].hover);\n" +
-                    "setStyleValue('span.page-tab-selected', 'backgroundColor', themes[name].selected);\n" +
-                    "setStyleValue('span.page-tab:hover', 'backgroundColor', themes[name].hover);\n" +
-                    "setStyleValue('span.page-tab-left:hover', 'backgroundColor', themes[name].hover);\n" +
-                    "setStyleValue('div#_ECHART', 'border-color', themes[name].border);\n" +
-                    "setStyleValue('div#_TABLE', 'border-color', themes[name].border);\n" +
-                    "setStyleValue('div#_SCRIPT', 'border-color', themes[name].border);\n" +
-                    "setStyleValue('div#_CONFIGS', 'border-color', themes[name].border);\n" +
-                    "setStyleValue('span.theme-selected', 'border-color', themes[name].border);\n" +
-                    "}\n" +
-                    "var dataset = {title: null, columns: null, data: null, configs: null, sql: null};\n" +
-                    "var report = null;\n" +
-                    "var configs = {themes: '" + defaultThemes + "'};\n" +
-                    "var echarts_target = null\n" +
-                    "var themes = {" +
-                    "白色: {backgroundColor: '#C0C0C0', color: '#000000', selected: 'rgba(0, 0, 0, 0.3)', hover: 'rgba(0, 0, 0, 0.3)', border: '#008080', " +
-                    "backgroundImage:'-webkit-linear-gradient(45deg,rgba(255, 255, 255, 0.25) 25%,transparent 25%,transparent 50%,rgba(255, 255, 255, 0.25) 50%,rgba(255, 255, 255, 0.25) 75%,transparent 75%,transparent)," +
-                    "-webkit-linear-gradient(-45deg,rgba(255, 255, 255, 0.25) 25%,transparent 25%,transparent 50%,rgba(255, 255, 255, 0.25) 50%,rgba(255, 255, 255, 0.25) 75%,transparent 75%,transparent)'},\n" +
-                    "浅灰: {backgroundColor: '#696969', color: '#F5F5F5', selected: 'rgba(0, 0, 0, 0.3)', hover: 'rgba(0, 0, 0, 0.3)', border: '#FF7F50'," +
-                    "backgroundImage:'-webkit-linear-gradient(45deg,rgba(255, 255, 255, 0.15) 25%,transparent 25%,transparent 50%,rgba(255, 255, 255, 0.15) 50%,rgba(255, 255, 255, 0.15) 75%,transparent 75%,transparent)," +
-                    "-webkit-linear-gradient(-45deg,rgba(255, 255, 255, 0.15) 25%,transparent 25%,transparent 50%,rgba(255, 255, 255, 0.15) 50%,rgba(255, 255, 255, 0.15) 75%,transparent 75%,transparent)'},\n" +
-                    "深灰: {backgroundColor: '#404040', color: '#F8F8F8', selected: 'rgba(0, 0, 0, 0.3)', hover: 'rgba(0, 0, 0, 0.3)', border: '#FF7F50'," +
-                    "backgroundImage:'-webkit-linear-gradient(45deg,rgba(255, 255, 255, 0.15) 25%,transparent 25%,transparent 50%,rgba(255, 255, 255, 0.15) 50%,rgba(255, 255, 255, 0.15) 75%,transparent 75%,transparent)," +
-                    "-webkit-linear-gradient(-45deg,rgba(255, 255, 255, 0.15) 25%,transparent 25%,transparent 50%,rgba(255, 255, 255, 0.15) 50%,rgba(255, 255, 255, 0.15) 75%,transparent 75%,transparent)'},\n" +
-                    "黑色: {backgroundColor: '#000000', color: '#F0FFFF', selected: '#303030', hover: 'rgba(0, 0, 0, 0.3)', border: '#F0FFFF'," +
-                    "backgroundImage:'-webkit-linear-gradient(45deg,rgba(255, 255, 255, 0.15) 25%,transparent 25%,transparent 50%,rgba(255, 255, 255, 0.15) 50%,rgba(255, 255, 255, 0.15) 75%,transparent 75%,transparent)'},\n" +
-                    "墨绿: {backgroundColor: '#2F4F4F', color: '#F0F8FF', selected: 'rgba(0, 0, 0, 0.3)', hover: 'rgba(0, 0, 0, 0.3)', border: '#FF7F50'," +
-                    "backgroundImage:'-webkit-linear-gradient(45deg,rgba(255, 255, 255, 0.15) 25%,transparent 25%,transparent 50%,rgba(255, 255, 255, 0.15) 50%,rgba(255, 255, 255, 0.15) 75%,transparent 75%,transparent)'},\n" +
-                    "深蓝: {backgroundColor: '#003355', color: '#F8F8F8', selected: 'rgba(0, 0, 0, 0.3)', hover: 'rgba(0, 0, 0, 0.3)', border: '#F0FFFF'," +
-                    "backgroundImage:'-webkit-linear-gradient(45deg,rgba(255, 255, 255, 0.15) 25%,transparent 25%,transparent 50%,rgba(255, 255, 255, 0.15) 50%,rgba(255, 255, 255, 0.15) 75%,transparent 75%,transparent)'},\n" +
-                    "红色: {backgroundColor: '#8B0000', color: '#FFFF00', selected: 'rgba(0, 0, 0, 0.3)', hover: 'rgba(0, 0, 0, 0.3)', border: '#FAFAD2'," +
-                    "backgroundImage:'-webkit-linear-gradient(45deg,rgba(255, 255, 255, 0.15) 25%,transparent 25%,transparent 50%,rgba(255, 255, 255, 0.15) 50%,rgba(255, 255, 255, 0.15) 75%,transparent 75%,transparent)'},\n" +
-                    "};\n" +
-                    "setThemes(configs.themes);\n" +
-                    "</script>",
-
-                    "<script type='text/javascript'>\n" +
-                    "function getBrowserSize(){\n" +
-                    "let winWidth = 0;\n" +
-                    "let winHeight = 0;\n" +
-                    "if (window.innerWidth) {\n" +
-                    "winWidth = window.innerWidth;\n" +
-                    "} else if ((document.body) && (document.body.clientWidth)) {\n" +
-                    "winWidth = document.body.clientWidth;\n" +
-                    "}\n" +
-                    "if (window.innerHeight) {\n" +
-                    "winHeight = window.innerHeight;\n" +
-                    "} else if ((document.body) && (document.body.clientHeight)) {\n" +
-                    "winHeight = document.body.clientHeight;\n" +
-                    "}\n" +
-                    "return {\n" +
-                    "width: winWidth,\n" +
-                    "height: winHeight\n" +
-                    "};\n" +
-                    "}\n" +
-                    "</script>",
-
-                    "<script type='text/javascript'>\n" +
-                    "function str2ab(str) {\n" +
-                    "let codes = [];\n" +
-                    "for (let i = 0; i != str.length; ++i) {\n" +
-                    "let code = str.charCodeAt(i);\n" +
-                    "if (0x00 <= code && code <= 0x7f) {\n" +
-                    "codes.push(code);\n" +
-                    "} else if (0x80 <= code && code <= 0x7ff) {\n" +
-                    "codes.push((192 | (31 & (code >> 6))));\n" +
-                    "codes.push((128 | (63 & code)))\n" +
-                    "} else if ((0x800 <= code && code <= 0xd7ff)\n" +
-                    "|| (0xe000 <= code && code <= 0xffff)) {\n" +
-                    "codes.push((224 | (15 & (code >> 12))));\n" +
-                    "codes.push((128 | (63 & (code >> 6))));\n" +
-                    "codes.push((128 | (63 & code)))\n" +
-                    "}\n" +
-                    "}\n" +
-                    "let buf = new ArrayBuffer(codes.length);\n" +
-                    "let result = new Uint8Array(buf);\n" +
-                    "for (let i = 0; i < codes.length; i++) {\n" +
-                    "result[i] = codes[i] & 0xff;\n" +
-                    "}\n" +
-                    "return result;\n" +
-                    "}" +
-                    "</script>",
-
-                    "<script type='text/javascript'>\n" +
-                    "function openDownloadDialog(url, saveName) {\n" +
-                    "if (typeof url == 'object' && url instanceof Blob) {\n" +
-                    "url = URL.createObjectURL(url);\n" +
-                    "}\n" +
-                    "let aLink = document.createElement('a');\n" +
-                    "aLink.href = url;\n" +
-                    "aLink.download = saveName || '';\n" +
-                    "let event;\n" +
-                    "if (window.MouseEvent) {\n" +
-                    "event = new MouseEvent('click');\n" +
-                    "} else {\n" +
-                    "event = document.createEvent('MouseEvents');\n" +
-                    "event.initMouseEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);\n" +
-                    "}\n" +
-                    "aLink.dispatchEvent(event);\n" +
-                    "}" +
-                    "</script>",
-
-                    "<script type='text/javascript'>\n" +
-                    "function getConfigs(container, configs) {\n" +
-                    "let dl = document.createElement('dl');\n" +
-                    "container.appendChild(dl);\n" +
-                    "let dt = null;\n" +
-                    "for (let name in configs) {\n" +
-                    "if (configs[name].type == 'hr') {\n" +
-                    "dt = document.createElement('dt');\n" +
-                    "let sp = document.createElement('span');\n" +
-                    "sp.innerHTML = '<span class=exp-close>☘ </span>' + configs[name].name;\n" +
-                    "dt.appendChild(sp);" +
-                    "dt.setAttribute('value', configs[name].name);\n" +
-                    "dt.setAttribute('state','0');\n" +
-                    "dt.onclick = function(){\n" +
-                    "let state = this.getAttribute('state');\n" +
-                    "let dds = this.getElementsByTagName('dd');\n" +
-                    "for(let i=0;i<dds.length;i++){\n" +
-                    "if (state == '0')\n" +
-                    "dds[i].style.display = 'block';\n" +
-                    "else\n" +
-                    "dds[i].style.display = 'none';\n" +
-                    "}\n" +
-                    "if (state == '0'){\n" +
-                    "this.setAttribute('state','1');\n" +
-                    "this.getElementsByTagName('span')[0].innerHTML = '<span class=exp-open>❀ </span>' + this.getAttribute('value');\n" +
-                    "} else {\n" +
-                    "this.setAttribute('state','0');\n" +
-                    "this.getElementsByTagName('span')[0].innerHTML = '<span class=exp-close>☘ </span>' + this.getAttribute('value');\n" +
-                    "}\n" +
-                    "}\n" +
-                    "dl.appendChild(dt);\n" +
-                    "} else {\n" +
-                    "let dd = document.createElement('dd');\n" +
-                    "dt.appendChild(dd);\n" +
-                    "let configsname = document.createElement('span');\n" +
-                    "configsname.className='configs-name';\n" +
-                    "configsname.innerText = configs[name].name;\n" +
-                    "let configsvalue = document.createElement('span');\n" +
-                    "configsvalue.className='configs-value';\n" +
-                    "configsvalue.innerText = configs[name].value;\n" +
-                    "dd.appendChild(configsname);\n" +
-                    "dd.appendChild(configsvalue);\n" +
-                    "}\n" +
-                    "}\n" +
-                    "}" +
-                    "</script>",
-
-                    "<script type='text/javascript'>\n" +
-                    "function viewSql(script){\n" +
-                    "let re = new RegExp(\'\\(\\\\/\\\\*[^\\\\*]\\*\\\\*\\\\/\\)|\\(\\-\\-[^.].\\*\\)\', 'gm');\n" +
-                    "let comments = script.match(re);\n" +
-                    "script = script.split(re);\n" +
-                    "let sqls = [];\n" +
-                    "for(let t=0;t<script.length;t++){\n" +
-                    "let sql = script[t];\n" +
-                    "if (sql !=='' && typeof sql != 'undefined' && (comments == null || comments.indexOf(sql) == -1)){\n" +
-                    "re = new RegExp('\\(\\\\\\'(.*?)\\\\\\')|(\\\\\\\"(.*?)\\\\\\\")', 'gm');\n" +
-                    "let constants = sql.match(re);\n" +
-                    "if (constants != null){\n" +
-                    "for(let i =0;i<constants.length;i++){\n" +
-                    "sql = sql.replace(new RegExp(constants[i],'g'), '&#60;span class&#61;SQLWordf&#62;' + constants[i]  + '&#60;&#47;span&#62;');\n" +
-                    "}\n" +
-                    "}\n" +
-
-                    "let words = [{key:'=',type:'d', value:'＝'},{key:\'\\\'\',type:'d'},{key:'\\\"\',type:'d'},\n" +
-                    "{key:\'\/\',type:'d', value:'&#47;'},{key:\'\>\',type:'d', value:'❯'},{key:\'\<\',type:'d', value:'❮'},\n" +
-                    "{key:':',type:'d', value:':'}, {key:',',type:'d'}, {key:\'\\\\+\',type:'d', value:'+'}, {key:'-',type:'d', value:'–'},\n" +
-                    "{key:\'\\\\*\',type:'d', value:'×'}, {key:\'\\\\(\',type:'d', value:'('}, {key:\'\\\\)\',type:'d', value:')'}, \n" +
-                    "{key:'ADD',type:'a'},{key:'BEFORE',type:'a'},{key:'GRANT',type:'a'},{key:'FOR',type:'a'},{key:'LOAD',type:'a'},{key:'ELSE',type:'a'},\n" +
-                    "{key:'WHEN',type:'a'},{key:'CASE',type:'a'},{key:'THEN',type:'a'},{key:'UNIQUE',type:'a'},{key:'DATABASE',type:'a'},{key:'END',type:'a'},\n" +
-                    "{key:'DECLARE',type:'a'},{key:'DROP',type:'a'},{key:'LIKE',type:'a'},{key:'LIMIT',type:'a'},{key:'DISTINCT',type:'a'},{key:'ELSEIF',type:'a'},\n" +
-                    "{key:'TABLE',type:'a'},{key:'VIEW',type:'a'},{key:'INDEX',type:'a'},{key:'PROCEDURE',type:'a'},{key:'TRIGGTER',type:'a'},{key:'CURSOR',type:'a'},\n" +
-                    "{key:'CREATE',type:'a'},{key:'DELETE',type:'a'}, {key:'UPDATE',type:'a'}, {key:'INSERT',type:'a'},{key:'AFTER',type:'a'},{key:'EACH',type:'a'},\n" +
-                    "{key:'INTO',type:'a'}, {key:'SELECT',type:'a'},{key:'FROM',type:'a'}, {key:'WHERE', type:'a'},{key:'PRIMARY',type:'a'},{key:'KEY',type:'a'},\n" +
-                    "{key:'GROUP',type:'a'},{key:'ORDER',type:'a'},{key:'BY',type:'a'},{key:'HAVING',type:'a'}, {key:'LEFT',type:'a'}, {key:'ENGINE',type:'a'},\n" +
-                    "{key:'VALUES',type:'a'},{key:'SET',type:'a'},{key:'RIGHT',type:'a'}, {key:'JOIN',type:'a'},{key:'ON',type:'a'},{key:'UNION',type:'a'}, \n" +
-                    "{key:'ALL',type:'a'},{key:'AS',type:'a'}, {key:'OUTER',type:'a'}, {key:'INNER',type:'a'},{key:'IS',type:'a'},{key:'NULL',type:'a'},\n" +
-                    "{key:'ASC',type:'a',value:'⇡'}, {key:'DESC',type:'a', value:'⇣'},{key:'NOT',type:'a'}, {key:'IN',type:'a'},{key:'BETWEEN',type:'a'},\n" +
-                    "{key:'AND',type:'b'}, {key:'OR',type:'b'},{key:'SUM',type:'c'},{key:'CONCAT',type:'c'}, {key:'REGEXP',type:'c'},\n" +
-                    "{key:'AVG',type:'c'}, {key:'COUNT',type:'c'},{key:'MIN',type:'c'}, {key:'MAX',type:'c'}, {key:'MONTH',type:'c'},{key:'REPLACE',type:'c'}, \n" +
-                    "{key:'YEAR',type:'c'},{key:'ROUND',type:'c'},{key:'IFNULL',type:'c'}, {key:'ABS',type:'c'}, {key:'POWER',type:'c'}, {key:'XOR',type:'c'},\n" +
-                    "{key:'DATE_FORMAT',type:'c'},{key:'STRFTIME',type:'c'},{key:'DATE',type:'c'},{key:'LENGTH',type:'c'},{key:'SUBSTR',type:'c'},{key:'MOD',type:'c'},\n" +
-                    "{key:'ADDDATE',type:'c'},{key:'ADDTIME',type:'c'},{key:'CURDATE',type:'c'},{key:'ADDTIME',type:'c'},{key:'DATE',type:'c'},{key:'CONVERT',type:'c'},\n" +
-                    "{key:'DATEDIFF',type:'c'},{key:'DATE_ADD',type:'c'},{key:'DAY',type:'c'},{key:'DAYOFWEEK',type:'c'},{key:'HOUR',type:'c'},{key:'MINUTE',type:'c'},\n" +
-                    "{key:'SECOND',type:'c'},{key:'TIME',type:'c'},{key:'LOCATE',type:'c'},{key:'LTRIM',type:'c'},{key:'RTRIM',type:'c'},{key:'SOUNDEX',type:'c'},\n" +
-                    "{key:'SUBSTRING',type:'c'},{key:'LOWER',type:'c'},{key:'UPPER',type:'c'},{key:'GETDATE',type:'c'},{key:'NOW',type:'c'},];\n" +
-                    "for(let i=0;i<words.length;i++){\n" +
-                    "re = new RegExp(words[i].key, 'g');\n" +
-                    "if (words[i].type !== 'd')\n" +
-                    "re = new RegExp(\'\\\\b\' + words[i].key + \'\\\\b\', 'gi');\n" +
-                    "sql = sql.replace(re,'&#60;span class&#61;SQLWord' + words[i].type + '&#62;' + (typeof words[i].value !== 'undefined'?words[i].value:words[i].key)  + '&#60;&#47;span&#62;');\n" +
-                    "}\n" +
-                    "sql = sql.replace(new RegExp('&#60;','g'), '<');\n" +
-                    "sql = sql.replace(new RegExp('&#61;','g'), '=');\n" +
-                    "sql = sql.replace(new RegExp('&#62;','g'), '>');\n" +
-                    "sql = sql.replace(new RegExp('&#47;','g'), '/');\n" +
-                    "sql = sql.replace(new RegExp(\'\\\\n\','g'), '<br>');\n" +
-                    "sql = sql.replace(new RegExp(\'\\\\t\','g'), '&emsp;&emsp;&emsp;&emsp;');\n" +
-                    "sqls.push(sql);\n" +
-                    "} else if (sql !=='' && typeof sql != 'undefined' && comments.indexOf(sql) !== -1){\n" +
-                    "sql = sql.replace(new RegExp(\'\\\\/\\\\*\','g'), '<span class=SQLWordg>•••</span>');\n" +
-                    "sql = sql.replace(new RegExp(\'\\\\*\\\\/\','g'), '');\n" +
-                    "sql = sql.replace(new RegExp(\'\\\\n\','g'), '<br>');\n" +
-                    "sql = sql.replace(new RegExp(\'\\\\t\','g'), '&emsp;&emsp;&emsp;&emsp;');\n" +
-                    "sql = '<p class=SQLWorde>' + sql + '</p>';\n" +
-                    "sqls.push(sql);\n" +
-                    "}\n" +
-                    "}\n" +
-                    "return sqls.join('');\n" +
-                    "}\n" +
-                    "</script>",
-
-                    "<script type='text/javascript'>\n" +
-                    "function resize(){\n" +
-                    "try{\n" +
-                    "let size = getBrowserSize();\n" +
-                    "document.getElementById('_ECHARTS').style.minHeight = (size.height*0.80) + 'px';\n" +
-                    "document.getElementById('_TABLE').style.minHeight = (size.height*0.80) + 'px';\n" +
-                    "document.getElementById('_SCRIPT').style.minHeight = (size.height*0.80) + 'px';\n" +
-                    "document.getElementById('_CONFIGS').style.minHeight = (size.height*0.80) + 'px';\n" +
-                    "if (typeof getEcharts === 'function'){\n" +
-                    "let container = document.getElementById('_ECHARTS');\n" +
-                    "if (echarts_target == null){\n" +
-                    "getEcharts(container, dataset, report.configs, (size.width*0.8) + 'px', (size.height*0.80) + 'px');\n" +
-                    "echarts_target = echarts.getInstanceByDom(container);\n" +
-                    "} else\n" +
-                    "echarts_target.resize();\n" +
-                    "} else {\n" +
-                    "document.getElementById('report-system').innerHTML = '组件服务器未连接...';\n" +
-                    "document.getElementById('report-system').removeAttribute('href');\n" +
-                    "document.getElementById('report-system').removeAttribute('title');\n" +
-                    "let hw = Number(document.getElementById('echarts-image').getAttribute('height'))/Number(document.getElementById('echarts-image').getAttribute('width'));\n" +
-                    "document.getElementById('echarts-image').setAttribute('width',(size.width*0.795));\n" +
-                    "document.getElementById('echarts-image').setAttribute('height',(size.width*0.795)*hw);\n" +
-                    "}\n" +
-                    "}catch (e) {\n" +
-                    "echarts_target = null;\n" +
-                    "}\n" +
-                    "}\n" +
-                    "</script>",
-
-                    "<script type='text/javascript'>\n" +
-                    "function init(){\n" +
-                    "let codes = document.getElementById('_CODES').getElementsByTagName('code');\n" +
-                    "report = codes[0].innerText;\n" +
-                    "let hash = codes[1].innerText;\n" +
-                    "let configs = JSON.parse(codes[2].innerText);\n" +
-                    "report = JSON.parse(report);\n" +
-                    "report.configs.toolboxSaveAsReport.value = 'false';\n" +
-                    "dataset.title = report.dataset.title;\n" +
-                    "dataset.columns = report.dataset.columns;\n" +
-                    "dataset.data = report.dataset.data;\n" +
-                    "dataset.sql = report.dataset.sql;\n" +
-                    "dataset.configs = configs;\n" +
-                    "document.getElementById('sql').innerHTML = viewSql(dataset.sql);\n" +
-                    "getConfigs(document.getElementById('_CONFIGS'), report.configs);\n" +
-                    "getConfigs(document.getElementById('_CONFIGS'), dataset.configs);\n" +
-                    "getThemes();\n" +
-                    "viewDataset(0);\n" +
-                    "resize();\n" +
-                    "window.onresize = function () {\n" +
-                    "resize();\n" +
-                    "};\n" +
-                    "}\n" +
-                    "</script>",
-
-                    "<script type='text/javascript'>\n" +
-                    "function getThemes(){\n" +
-                    "let content = document.getElementById('_THEMES');\n" +
-                    "content.innerText='';\n" +
-                    "for (let key in themes){\n" +
-                    "let theme = document.createElement('span');\n" +
-                    "if (key == configs.themes)\n" +
-                    "theme.className ='theme-selected';\n" +
-                    "else\n" +
-                    "theme.className = 'theme';\n" +
-                    "theme.title = key;\n" +
-                    "theme.style.backgroundColor = themes[key].backgroundColor;\n" +
-                    "theme.style.color = themes[key].color;\n" +
-                    "theme.style.borderColor = themes[key].borderColor;\n" +
-                    "theme.innerHTML = '&emsp;&emsp;';" +
-                    "theme.onclick = function(){\n" +
-                    "configs.themes = this.title;\n" +
-                    "document.getElementsByClassName('theme-selected')[0].className = 'theme';\n" +
-                    "this.className = 'theme-selected';\n" +
-                    "setThemes(configs.themes);\n" +
-                    "}\n" +
-                    "content.appendChild(theme);\n" +
-                    "}\n" +
-                    "}\n" +
-                    "</script>",
-
-                    "<script type='text/javascript'>\n" +
-                    "function selectTab(id){\n" +
-                    "let names = ['ECHARTS','TABLE','SCRIPT','CONFIGS'];\n" +
-                    "for (let i=0;i<names.length;i++){\n" +
-                    "let tab = document.getElementById(names[i]);\n" +
-                    "let div = document.getElementById('_' + names[i]);\n" +
-                    "if (names[i] == id){\n" +
-                    "tab.className = 'tabButton-selected';\n" +
-                    "if (id == 'ECHARTS'){" +
-                    "div.style.display = 'table';\n" +
-                    "} else\n" +
-                    "div.style.display = 'block';\n" +
-                    "} else {\n" +
-                    "tab.className = 'tabButton-unselected';\n" +
-                    "div.style.display = 'none';\n" +
-                    "}\n" +
-                    "}\n" +
-                    "resize();\n" +
-                    "}\n" +
-                    "</script>",
-
-                    "<script type='text/javascript'>\n" +
-                    "Number.prototype.format = function(pattern) {\n" +
-                    "let num = this;\n" +
-                    "let is = false;\n" +
-                    "if (num < 0)\n" +
-                    "is = true;\n" +
-                    "num = Math.abs(num);\n" +
-                    "let strarr = num ? num.toString().split('.') : ['0'];\n" +
-                    "let fmtarr = pattern ? pattern.split('.') : [''];\n" +
-                    "let retstr = '';\n" +
-                    "let str = strarr[0];\n" +
-                    "let fmt = fmtarr[0];\n" +
-                    "let i = str.length - 1;\n" +
-                    "let comma = false;\n" +
-                    "for (let f = fmt.length - 1; f >= 0; f--) {\n" +
-                    "switch (fmt.substr(f, 1)) {\n" +
-                    "case '#':\n" +
-                    "if (i >= 0) retstr = str.substr(i--, 1) + retstr;\n" +
-                    "break;\n" +
-                    "case '0':\n" +
-                    "if (i >= 0) retstr = str.substr(i--, 1) + retstr;\n" +
-                    "else retstr = '0' + retstr;\n" +
-                    "break;\n" +
-                    "case ',':\n" +
-                    "comma = true;\n" +
-                    "retstr = ',' + retstr;\n" +
-                    "break;\n" +
-                    "}\n" +
-                    "}\n" +
-                    "if (i >= 0) {\n" +
-                    "if (comma) {\n" +
-                    "let l = str.length;\n" +
-                    "for (; i >= 0; i--) {\n" +
-                    "retstr = str.substr(i, 1) + retstr;\n" +
-                    "if (i > 0 && ((l - i) % 3) == 0) retstr = ',' + retstr;\n" +
-                    "}\n" +
-                    "}\n" +
-                    "else retstr = str.substr(0, i + 1) + retstr;\n" +
-                    "}\n" +
-                    "retstr = retstr + '.';\n" +
-                    "str = strarr.length > 1 ? strarr[1] : '';\n" +
-                    "fmt = fmtarr.length > 1 ? fmtarr[1] : '';\n" +
-                    "i = 0;\n" +
-                    "for (let f = 0; f < fmt.length; f++) {\n" +
-                    "switch (fmt.substr(f, 1)) {\n" +
-                    "case '#':\n" +
-                    "if (i < str.length) retstr += str.substr(i++, 1);\n" +
-                    "break;\n" +
-                    "case '0':\n" +
-                    "if (i < str.length) retstr += str.substr(i++, 1);\n" +
-                    "else retstr += '0';\n" +
-                    "break;\n" +
-                    "}\n" +
-                    "}\n" +
-                    "return is ? '-' + retstr.replace(/^,+/, '').replace(/\\.$/, '') : retstr.replace(/^,+/, '').replace(/\\.$/, '');\n" +
-                    "};\n" +
-                    "</script>",
-
-                    "<script type='text/javascript'>\n" +
-                    "Date.prototype.format = function(fmt) {\n" +
-                    "let o = {\n" +
-                    "'M+': this.getMonth() + 1,\n" +
-                    "'d+': this.getDate(),\n" +
-                    "'h+': this.getHours(),\n" +
-                    "'m+': this.getMinutes(),\n" +
-                    "'s+': this.getSeconds(),\n" +
-                    "'q+': Math.floor((this.getMonth() + 3) / 3),\n" +
-                    "'S': this.getMilliseconds()\n" +
-                    "};\n" +
-                    "if (/(y+)/.test(fmt))\n" +
-                    "fmt = fmt.replace(RegExp.$1, (this.getFullYear() + '').substr(4 - RegExp.$1.length));\n" +
-                    "for (let k in o)\n" +
-                    "if (new RegExp('(' + k + ')').test(fmt))\n" +
-                    "fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (('00' + o[k]).substr(('' + o[k]).length)));\n" +
-                    "return fmt;\n" +
-                    "};\n" +
-                    "</script>",
-
-                    "<script type='text/javascript'>\n" +
-                    "function selectPageGroup(div, index, pageindex, pages){\n" +
-                    "div.innerHTML = ''\n" +
-                    "let transpose = document.createElement('span');\n" +
-                    "transpose.className = 'page-tab-left';\n" +
-                    "transpose.innerHTML = '&#9735';\n" +
-                    "transpose.title = '报表转置';\n" +
-                    "transpose.onclick = function(){\n" +
-                    "datasetTranspose();\n" +
-                    "}\n" +
-                    "div.appendChild(transpose);\n" +
-                    "let xml = document.createElement('span');\n" +
-                    "xml.className = 'page-tab';\n" +
-                    "xml.style.cssFloat = 'right';\n" +
-                    "xml.innerHTML = '&#8675';\n" +
-                    "xml.title = '导出XML';\n" +
-                    "xml.onclick = function(){\n" +
-                    "getXML(dataset.title, dataset.columns, dataset.data);\n" +
-                    "}\n" +
-                    "div.appendChild(xml);\n" +
-                    "if (index>0){\n" +
-                    "let span = document.createElement('span');\n" +
-                    "span.className = 'page-tab';\n" +
-                    "span.id = index-1;\n" +
-                    "span.innerText = '•••';\n" +
-                    "span.onclick = function(){\n" +
-                    "selectPageGroup(div, Number(this.id),pageindex, pages);\n" +
-                    "}\n" +
-                    "div.appendChild(span);\n" +
-                    "}\n" +
-                    "for (let i=index*10;i<pages&&i<(index+1)*10;i++){\n" +
-                    "let span = document.createElement('span');\n" +
-                    "span.className = 'page-tab';\n" +
-                    "span.id = i;\n" +
-                    "span.innerText = (i+1);\n" +
-                    "if (pageindex == i)\n" +
-                    "span.className = 'page-tab-selected';\n" +
-                    "span.onclick = function(){\n" +
-                    "viewDataset(Number(this.id));\n" +
-                    "}\n" +
-                    "div.appendChild(span);\n" +
-                    "}\n" +
-                    "if ((index+1)*10<pages){\n" +
-                    "let span = document.createElement('span');\n" +
-                    "span.className = 'page-tab';\n" +
-                    "span.id = index+1;\n" +
-                    "span.innerText = '•••';\n" +
-                    "span.onclick = function(){\n" +
-                    "selectPageGroup(div, Number(this.id),pageindex, pages);\n" +
-                    "}\n" +
-                    "div.appendChild(span);\n" +
-                    "}\n" +
-                    "}\n" +
-                    "</script>",
-
-                    "<script type='text/javascript'>\n" +
-                    "function viewDataset(pageindex) {\n" +
-                    "let columns = dataset.columns;\n" +
-                    "let data = dataset.data;\n" +
-                    "let configs = dataset.configs;\n" +
-                    "let pagesize = Number(configs.reportPageSize.value);\n" +
-                    "let pages = (data.length%pagesize==0?Math.floor(data.length/pagesize):Math.floor(data.length/pagesize) + 1);\n" +
-                    "let table = document.createElement('table');\n" +
-                    "table.className = table.id = 'table';\n" +
-                    "table.style.minWidth = configs.reportMinWidth.value;\n" +
-                    "table.style.maxWidth = configs.reportMaxWidth.value;\n" +
-                    "table.style.color = document.body.style.color;\n" +
-                    "table.style.fontSize = configs.reportFontSize.value;\n" +
-                    "if (configs.reportFontFamily.value != 'default')\n" +
-                    "table.style.fontFamily = configs.reportFontFamily.value;\n" +
-                    "if (configs.reportFontWeight.value != 'default')\n" +
-                    "table.style.fontWeight = configs.reportFontWeight.value;\n" +
-                    "if (configs.reportFontStyle.value != 'default')\n" +
-                    "table.style.fontStyle = configs.reportFontStyle.value;\n" +
-                    "\n" +
-                    "let tr = document.createElement('tr');\n" +
-                    "if (configs.reportRowHeight.value != 'default')\n" +
-                    "tr.style.height = configs.reportRowHeight.value;\n" +
-                    "table.appendChild(tr);\n" +
-                    "\n" +
-                    "for (let c = 0; c < columns.length; c++) {\n" +
-                    "let th = document.createElement('th');\n" +
-                    "th.style.textAlign = columns[c].style.textAlign;\n" +
-                    "switch (columns[c].order) {\n" +
-                    "case '':\n" +
-                    "th.innerText = '● ' + columns[c].name;\n" +
-                    "break;\n" +
-                    "case 'asc':\n" +
-                    "th.innerText = '▲ ' + columns[c].name;\n" +
-                    "break;\n" +
-                    "case 'desc':\n" +
-                    "th.innerText = '▼ ' + columns[c].name;\n" +
-                    "break;\n" +
-                    "}\n" +
-                    "th.title = columns[c].name;\n" +
-                    "th.setAttribute('colid', c);\n" +
-                    "th.onclick = function () {\n" +
-                    "orderDatasetBy(this.getAttribute('colid'));\n" +
-                    "viewDataset(0);\n" +
-                    "};\n" +
-                    "tr.appendChild(th);\n" +
-                    "}\n" +
-                    "let floatFormat = '#,##0.';\n" +
-                    "for (let i = 0; i < Number(configs.reportScale.value); i++) {\n" +
-                    "floatFormat += '0';\n" +
-                    "}\n" +
-                    "for (let i = pageindex * pagesize; i < data.length && i < (pageindex+1)* pagesize; i++) {\n" +
-                    "let tr = document.createElement('tr');\n" +
-                    "tr.type = 'tr';\n" +
-                    "if (configs.reportRowHeight.value != 'default')\n" +
-                    "tr.style.height =configs.reportRowHeight.value;\n" +
-                    "tr.id = i;\n" +
-                    "if (i % 2 > 0) {\n" +
-                    "tr.className = 'alt-line';\n" +
-                    "}\n" +
-                    "table.appendChild(tr);\n" +
-                    "let row = data[i];\n" +
-                    "for (let c = 0; c < columns.length; c++) {\n" +
-                    "let item = row[columns[c].name];\n" +
-                    "let td = document.createElement('td');\n" +
-                    "try {\n" +
-                    "if (item.value != null) {\n" +
-                    "if (item.type == 'number') {\n" +
-                    "let f = item.format;\n" +
-                    "if ((item.value + '').indexOf('.') !== -1) {\n" +
-                    "f = floatFormat;\n" +
-                    "item.value = Math.round(item.value * Math.pow(10,Number(configs.reportScale.value))) / Math.pow(10,Number(configs.reportScale.value));\n" +
-                    "} else {\n" +
-                    "if (columns[c]['format'] !== 'undefined') {\n" +
-                    "if (item.format != columns[c].format)\n" +
-                    "f = columns[c].format;\n" +
-                    "}\n" +
-                    "}\n" +
-                    "td.innerText = item.value.format(f);\n" +
-                    "item.format = columns[c]['format'] = f;\n" +
-                    "} else if (item.type == 'date' || item.type == 'datetime')\n" +
-                    "td.innerText = new Date(item.value).format(item.format);\n" +
-                    "else\n" +
-                    "td.innerText = item.value;\n" +
-                    "} else\n" +
-                    "td.innerText = '';\n" +
-                    "let style = '';\n" +
-                    "for (let key in item.style) {\n" +
-                    "if (key === 'color')" +
-                    "Number(row[columns[c].name].value) < 0?style += key + ': red': '';\n" +
-                    "else " +
-                    "style += key + ': ' + item.style[key] + ';';\n" +
-                    "}\n" +
-                    "td.style.cssText = style;\n" +
-                    "} catch (e) {\n" +
-                    "td.innerText = row[columns[c].name].value;\n" +
-                    "}\n" +
-                    "tr.appendChild(td);\n" +
-                    "}\n" +
-                    "}\n" +
-                    "let container = document.getElementById('_TABLE');\n" +
-                    "container.innerHTML='';\n" +
-                    "container.appendChild(table);\n" +
-                    "let div = document.createElement('div');\n" +
-                    "div.id = '_PAGES';\n" +
-                    "let groupindex = Math.floor(pageindex/10);\n" +
-                    "container.appendChild(div);\n" +
-                    "selectPageGroup(div, groupindex,pageindex,pages);\n" +
-                    "}\n" +
-                    "</script>",
-
-                    "<script type='text/javascript'>\n" +
-                    "function orderDatasetBy(colid) {\n" +
-                    "function exchange(r1, r2) {\n" +
-                    "for (col in r1) {\n" +
-                    "for (attr in r1[col]) {\n" +
-                    "if (attr != 'rowid' && attr != 'colid') {\n" +
-                    "let tmp = r1[col][attr];\n" +
-                    "r1[col][attr] = r2[col][attr];\n" +
-                    "r2[col][attr] = tmp;\n" +
-                    "}\n" +
-                    "}\n" +
-                    "}\n" +
-                    "}\n" +
-                    "let columns = dataset.columns;\n" +
-                    "let data = dataset.data;\n" +
-                    "switch (columns[colid].order) {\n" +
-                    "case '':\n" +
-                    "columns[colid].order = 'asc';\n" +
-                    "break;\n" +
-                    "case 'asc':\n" +
-                    "columns[colid].order = 'desc';\n" +
-                    "break;\n" +
-                    "case 'desc':\n" +
-                    "columns[colid].order = 'asc';\n" +
-                    "break;\n" +
-                    "}\n" +
-                    "for (let i = 0; i < data.length; i++) {\n" +
-                    "for (let x = 0; x < i; x++) {\n" +
-                    "switch (columns[colid].order) {\n" +
-                    "case 'asc':\n" +
-                    "if (data[i][columns[colid].name].type == 'number' && data[x][columns[colid].name].type == 'number') {\n" +
-                    "if (data[i][columns[colid].name].value < data[x][columns[colid].name].value) {\n" +
-                    "exchange(data[i], data[x]);\n" +
-                    "}\n" +
-                    "} else if (data[i][columns[colid].name].type == 'object' || data[x][columns[colid].name].type == 'object') {\n" +
-                    "//exchange(data[i], data[x]);\n" +
-                    "} else {\n" +
-                    "if (data[i][columns[colid].name].value.localeCompare(data[x][columns[colid].name].value) < 0 && data[i][columns[colid].name].type == data[x][columns[colid].name].type) {\n" +
-                    "exchange(data[i], data[x]);\n" +
-                    "}\n" +
-                    "}\n" +
-                    "break;\n" +
-                    "case 'desc':\n" +
-                    "if (data[i][columns[colid].name].type == 'number' && data[x][columns[colid].name].type == 'number') {\n" +
-                    "if (data[i][columns[colid].name].value > data[x][columns[colid].name].value) {\n" +
-                    "exchange(data[i], data[x]);\n" +
-                    "}\n" +
-                    "} else if (data[i][columns[colid].name].type == 'object' || data[x][columns[colid].name].type == 'object') {\n" +
-                    "//exchange(data[i], data[x]);\n" +
-                    "} else {\n" +
-                    "if (data[i][columns[colid].name].value.localeCompare(data[x][columns[colid].name].value) > 0 && data[i][columns[colid].name].type == data[x][columns[colid].name].type) {\n" +
-                    "exchange(data[i], data[x]);\n" +
-                    "}\n" +
-                    "}\n" +
-                    "break;\n" +
-                    "}\n" +
-                    "}\n" +
-                    "}\n" +
-                    "return dataset;\n" +
-                    "}\n" +
-                    "</script>",
-
-                    "<script type='text/javascript'>\n" +
-                    "function datasetTranspose(){\n" +
-                    "try {\n" +
-                    "let columns = dataset.columns;\n" +
-                    "let data = dataset.data;\n" +
-                    "let settmp = {columns: [], data: []};\n" +
-                    "let col = {\n" +
-                    "id: 0,\n" +
-                    "name: columns[0].name,\n" +
-                    "order: '',\n" +
-                    "type: 'string',\n" +
-                    "style: columns[0].style\n" +
-                    "};\n" +
-                    "settmp.columns.push(col);\n" +
-                    "for (let i = 0; i < data.length; i++) {\n" +
-                    "let row = data[i];\n" +
-                    "col = {\n" +
-                    "id: i + 1,\n" +
-                    "name: row[columns[0].name].value,\n" +
-                    "order: '',\n" +
-                    "type: row[columns[0].name].type,\n" +
-                    "style: row[columns[0].name].style\n" +
-                    "};\n" +
-                    "settmp.columns.push(col);\n" +
-                    "}\n" +
-                    "\n" +
-                    "for (let c = 1; c < columns.length; c++) {\n" +
-                    "let nr = {};\n" +
-                    "nr[columns[0].name] = {\n" +
-                    "rowid: c - 1,\n" +
-                    "colid: 0,\n" +
-                    "value: columns[c].name,\n" +
-                    "type: 'string',\n" +
-                    "style: columns[c].style\n" +
-                    "};\n" +
-                    "for (let i = 0; i < data.length; i++) {\n" +
-                    "let row = data[i];\n" +
-                    "nr[row[columns[0].name].value] = {\n" +
-                    "rowid: c - 1,\n" +
-                    "colid: i + 1,\n" +
-                    "value: row[columns[c].name].value,\n" +
-                    "type: row[columns[c].name].type,\n" +
-                    "style: row[columns[c].name].style\n" +
-                    "};\n" +
-                    "}\n" +
-                    "settmp.data.push(nr);\n" +
-                    "}\n" +
-                    "dataset.data = settmp.data;\n" +
-                    "dataset.columns = settmp.columns;\n" +
-                    "viewDataset(0);\n" +
-                    "} catch (e) {\n" +
-                    "console.log(e);\n" +
-                    "}\n" +
-                    "}" +
-                    "</script>",
-
-                    "<script type='text/javascript'>\n" +
-                    "function getXML(title, columns, dataset){\n" +
-                    "try{\n" +
-                    "let xml = '<?xml version=\"1.0\"?>" +
-                    "<?mso-application progid=\"Excel.Sheet\"?>" +
-                    "<Workbook xmlns=\"urn:schemas-microsoft-com:office:spreadsheet\"" +
-                    " xmlns:o=\"urn:schemas-microsoft-com:office:office\"" +
-                    " xmlns:x=\"urn:schemas-microsoft-com:office:excel\"" +
-                    " xmlns:ss=\"urn:schemas-microsoft-com:office:spreadsheet\"" +
-                    " xmlns:html=\"http://www.w3.org/TR/REC-html40\">" +
-                    "<DocumentProperties xmlns=\"urn:schemas-microsoft-com:office:office\">" +
-                    "<Author>杨凯</Author>" +
-                    "<LastAuthor></LastAuthor>" +
-                    "<Created>' + new Date() + '</Created>" +
-                    "<Version>1.0.0</Version>" +
-                    "</DocumentProperties>" +
-                    "<Styles>" +
-                    "<Style ss:ID=\"Default\" ss:Name=\"Normal\">" +
-                    "<Alignment ss:Vertical=\"Center\"/>" +
-                    "<Borders/>" +
-                    "<Font ss:FontName=\"宋体\" x:CharSet=\"134\" ss:Size=\"11\" ss:Color=\"#000000\"/>" +
-                    "<Interior/>" +
-                    "<NumberFormat ss:Format=\"#,##0.00_ \"/>" +
-                    "<Protection/>" +
-                    "</Style>" +
-                    "</Styles>';\n" +
-                    "xml += '<Worksheet ss:Name=\"' + title[title.length-1].split(\"<\").join(\"&lt;\").split(\">\").join(\"&gt;\").split(\"*\").join(\"#\").split(\"?\").join(\"#\").split(\"[\").join(\"#\").split(\"]\").join(\"#\").split(\"\\\\\").join(\"#\").split(\"/\").join(\"#\") + '\"><Table ss:ExpandedColumnCount=\"' + columns.length + '\" ss:ExpandedRowCount=\"' + (dataset.length + 1) + '\">';\n" +
-                    "let r = '<Row>';\n" +
-                    "for(let c = 0;c < columns.length; c++){\n" +
-                    "let ce = '<Cell><Data ss:Type=\"String\">'+ columns[c].name.split(\"<\").join(\"&lt;\").split(\">\").join(\"&gt;\") + '</Data></Cell>';\n" +
-                    "r += ce;\n" +
-                    "}\n" +
-                    "r += '</Row>';\n" +
-                    "xml += r;\n" +
-                    "for(let i = 0;i < dataset.length; i++){\n" +
-                    "let row = dataset[i];\n" +
-                    "r = '<Row>';\n" +
-                    "for(let c = 0;c < columns.length; c++){\n" +
-                    "let cell = row[columns[c].name];\n" +
-                    "let ce = '<Cell><Data ss:Type=\"' + (cell.type=='number'?'Number':'String') + '\">'+ (cell.type=='number'?cell.value:(typeof cell.value !== 'undefined'?cell.value.split(\"<\").join(\"&lt;\").split(\">\").join(\"&gt;\"):'')) + '</Data></Cell>';\n" +
-                    "r += ce;\n" +
-                    "}\n" +
-                    "r += '</Row>';\n" +
-                    "xml += r;\n" +
-                    "}\n" +
-                    "xml += '</Table></Worksheet></Workbook>';\n" +
-                    "let blob = new Blob([str2ab(xml)], {type: 'text/xml'});\n" +
-                    "openDownloadDialog(blob, title[0] + '.report.xml');\n" +
-                    "} catch (e) {\n" +
-                    "alert(e);\n" +
-                    "}\n" +
-                    "}" +
-                    "</script>",
-                ]).join("\n");
-                return scripts;
-            }
-
-            let id = container.getAttribute("_echarts_instance_");
-            let report = JSON.parse(__ECHARTS__.history[id]);
-            let title = report.dataset.title;
-            let link = "<a class='link' id= 'report-system' title='进入系统,使用「打开报表」功能可编辑此报表.' href='" + window.location.href.split("?")[0] + "'>" + __VERSION__.name + "</a>";
-            report = JSON.stringify(report);
-            report = report.encode();
-            let configs = JSON.stringify(__DATASET__.configs).encode();
-            let jsPath = __VERSION__.url + "/blob/master";
-            if (__DATASET__.configs.reportScopeOfUse.value === "intranet") {
-                jsPath = location.href.split("?")[0].split("/");
-                jsPath = jsPath.slice(0, jsPath.length - 1).join("/");
-            }
-            let time = getNow();
-            let html = "<!DOCTYPE html>\n" +
-                "<html>\n" +
-                "<head>\n" +
-                "<meta charset='utf-8'>\n" +
-                "<title>" + title[0] + "</title>\n" +
-                "<meta name='renderer' content='webkit'>\n" +
-                "<meta name='description' content='这是 " + __VERSION__.name + " 的固定报表'>\n" +
-                "<meta name='app-version' content='" + __VERSION__.version + "'>\n" +
-                "<meta name='app-author' content='" + __VERSION__.author + "'>\n" +
-                "<meta name='app-url' content='" + __VERSION__.url + "'>\n" +
-                "<meta name='report-author' content='" + (typeof __LOGS__.user.name !== "undefined" ? __LOGS__.user.name : "") + "'>\n" +
-                "<meta name='report-create-time' content='" + time + "'>\n" +
-                "<style>\n" +
-                "body{margin-top:15px;font-family: Arial, Verdana;" +
-                "background-image: -webkit-linear-gradient(45deg,rgba(255, 255, 255, 0.15) 25%,transparent 25%,transparent 50%,rgba(255, 255, 255, 0.15) 50%,rgba(255, 255, 255, 0.15) 75%,transparent 75%,transparent);}\n" +
-                "body ::-webkit-scrollbar {width: 5px;height: 4px;background: transparent;}\n" +
-                "body ::-webkit-scrollbar-thumb {" +
-                "border-radius: 3px;background-color: grey;" +
-                "background-image: -webkit-linear-gradient(45deg,rgba(255, 255, 255, 0.2) 25%,transparent 25%,transparent 50%,rgba(255, 255, 255, 0.2) 50%,rgba(255, 255, 255, 0.2) 75%,transparent 75%,transparent);\n" +
-                "}\n" +
-                "body ::-webkit-scrollbar-track {box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);background: transparent;border-radius: 3px;}\n" +
-                "div#_TITLE{margin: auto;width: 80%;overflow: hidden;}\n" +
-                "img#logo{margin: auto;float:left;width: 60px;height: 60px;}\n" +
-                "div#title{margin: auto;width:80%;float:left;}\n" +
-                "h1#main-title{margin: auto;width: 100%;text-align: left;white-space: normal;word-break: break-all;word-wrap: break-word;}\n" +
-                "h3#sub-title{margin: auto;width: 100%;text-align: left;white-space: normal;word-break: break-all;word-wrap: break-word;}\n" +
-                // "h5{margin: auto;width: 80%;text-align: right;white-space: normal;word-break: break-all;word-wrap: break-word;}\n" +
-                "h6#footer{margin: auto;width: 80%;text-align: center}\n" +
-                "div#_TABS{margin: auto;padding-left: 5px;padding-right: 5px;width: 80%;overflow: hidden;height: 100%}\n" +
-                "div#_ECHARTS{margin: auto;padding-left: 5px;padding-right: 5px;width: 80%;border: 1px solid coral;border-radius: 5px;overflow: hidden;height: 100%;display: table; text-align: center}\n" +
-                "div#_TABLE{margin: auto;padding-left: 5px;padding-right: 5px;width: 80%;border: 1px solid coral;border-radius: 5px;overflow: scroll;display: none}\n" +
-                "div#_SCRIPT{margin: auto;font-size: 90%;padding-left: 5px;padding-right: 5px;width: 80%;border: 1px solid coral;border-radius: 5px;overflow: hidden;height: 100%;line-height: 2;display: none}\n" +
-                "div#_CONFIGS{margin: auto;font-size: 80%;padding-left: 5px;padding-right: 5px;width: 80%;border: 1px solid coral;border-radius: 5px;overflow: hidden;height: 100%;display: none;" +
-                "-webkit-column-count: 2;column-count: 2;column-fill: auto}\n" +
-                "div#_PAGES{margin: 5px;border-top:1px solid gray;}\n" +
-                "div#_CODES{margin: auto;padding-left: 5px;padding-right: 5px;width: 80%;border: 1px solid coral;border-radius: 5px;overflow: hidden;height: 100%;display: none}\n" +
-                "code{cursor: pointer;font-family: Verdana,Arial;font-size: 80%;width: 100%;white-space: normal;word-break: break-all;word-wrap: break-word;display:none}\n" +
-                "code#sql{cursor: pointer;font-family: Verdana,Arial;font-size: 80%;height: 100%;width: 100%;white-space: normal;word-break: break-all;word-wrap: break-word;display:block;margin:10px;}\n" +
-                "a.link{font-size: 100%;padding-left: 5px;padding-right: 5px;background-color: sandybrown;outline-style: none;border-radius: 4px;text-decoration:none;}\n" +
-                "span.tabButton-selected{cursor: pointer;font-size: 100%;padding-left: 5px;padding-right: 5px;background-color: #00A7AA;outline-style: none;border-top-left-radius: 4px;border-top-right-radius: 4px;border: 1px solid coral;border-bottom-width: 0px;}\n" +
-                "span.tabButton-unselected{cursor: pointer;font-size: 100%;padding-left: 5px;padding-right: 5px;outline-style: none;border-top-left-radius: 4px;border-top-right-radius: 4px;border: 1px solid gray;border-bottom-width: 0px;}\n" +
-                "span.tabButton-unselected:hover{background-color: sandybrown}\n" +
-                "span.tabButton-theme{height: 100%;float: right;cursor: pointer;font-size: 100%;background-color: transparent;outline-style: none;}\n" +
-                "span.theme{height: 100%;cursor: pointer;font-size: 80%;width: 50px;outline-style: none;}\n" +
-                "span.theme-selected{height: 100%;cursor: pointer;font-size: 90%;width: 50px;outline-style: none;border:1px solid gray;border-radius: 2px}\n" +
-                "dl{padding-left: 5px;padding-right: 5px;}\n" +
-                "dt{cursor: pointer;outline-style: none;border-radius: 4px}\n" +
-                "dt:hover{background-color: rgba(0, 0, 0, 0.1);}\n" +
-                "span.exp-open{cursor: pointer;outline-style: none;color:mediumvioletred;font-weight: bolder}\n" +
-                "span.exp-close{cursor: pointer;outline-style: none;color:darkgreen;font-weight: bolder}\n" +
-                "dd{display:none;cursor: pointer;font-size: 100%;padding-left: 5px;padding-right: 5px;outline-style: none;border-radius: 4px;overflow: hidden;white-space: nowrap;word-break: keep-all;text-overflow: ellipsis;-o-text-overflow: ellipsis;}\n" +
-                "span.configs-name{cursor: pointer;font-size: 100%;padding-left: 5px;padding-right: 5px;background-color: sandybrown;outline-style: none;border-radius: 4px;border: 1px solid gray;}\n" +
-                "span.configs-value{cursor: pointer;font-size: 100%;padding-left: 5px;padding-right: 5px;background-color: #00A7AA;outline-style: none;border-radius: 4px;border: 1px solid gray;}\n" +
-                "span.SQLWorda{cursor: pointer;padding-left: 3px;padding-right: 3px;background-color: #00A7AA;outline-style: none;border-radius: 4px;}\n" +
-                "span.SQLWordb{cursor: pointer;padding-left: 3px;padding-right: 3px;background-color: sandybrown;outline-style: none;border-radius: 4px;}\n" +
-                "span.SQLWordc{cursor: pointer;padding-left: 3px;padding-right: 3px;background-color: rosybrown;outline-style: none;border-radius: 4px;}\n" +
-                "span.SQLWordd{cursor: pointer;margin-left:0px;margin-right:0px;padding-left: 0px;padding-right: 0px;background-color: transparent;color: coral;outline-style: none;font-weight:bold}\n" +
-                "p.SQLWorde{cursor: pointer;margin-right:5px;margin-right:20px;padding-left: 5px;padding-right: 5px;background-color: rgba(0, 0, 0, 0.1);outline-style: none;border-radius: 4px;}\n" +
-                "span.SQLWordf{cursor: pointer;margin-left:0px;margin-right:0px;padding-left: 0px;padding-right: 0px;background-color: transparent;color: green;outline-style: none;font-weight:bold}\n" +
-                "span.SQLWordg{cursor: pointer;outline-style: none;color:mediumvioletred;font-weight: bolder}\n" +
-                "span#echarts{margin: auto;display: table-cell; vertical-align: middle;}\n" +
-                "table.table{font-size: 100%;margin: 6px;line-height:12px;border-collapse:collapse;cursor: pointer;position:relative;min-width: 33%;border-radius: 5px;background-color: transparent;}\n" +
-                "tr{height: 25px;background-color:rgba(0, 0, 0, 0);}\n" +
-                "tr:hover{background-color:rosybrown;}\n" +
-                "tr.alt-line{background-color:rgba(0, 0, 0, 0.15);}\n" +
-                "tr.alt-line:hover{background-color:rosybrown;}\n" +
-                "th{border-radius: 4px;margin: 0px;padding: 3px 3px 2px 3px;white-space: nowrap;word-break: keep-all;overflow: hidden;" +
-                "text-overflow: ellipsis;-o-text-overflow: ellipsis;font-weight: bolder;text-align: center;background-color: #00A7AA;color: #DCDCDC}\n" +
-                "th:hover{background-color: #008080;}\n" +
-                "td{border-bottom:1px solid gray;margin: 2px;padding:3px 3px 2px 3px;white-space: nowrap; word-break: keep-all;" +
-                "overflow: hidden;text-overflow: ellipsis;-o-text-overflow: ellipsis;}\n" +
-                "td:hover{border-bottom:2px solid #00A7AA}\n" +
-                "span.page-tab{float:left;cursor: pointer;width: 50px;font-size: 80%;text-align: center;border-right:1px solid gray;border-bottom-left-radius: 6px;border-bottom-right-radius: 36px;}" +
-                "span.page-tab-selected{float:left;cursor: pointer;width: 50px;font-size: 80%;background-color: #00A7AA;text-align: center;border-right:1px solid gray;border-bottom-left-radius: 6px;border-bottom-right-radius: 36px;}" +
-                "span.page-tab:hover{background-color: sandybrown;}\n" +
-                "span.page-tab-left{float:left;cursor: pointer;width: 50px;font-size: 80%;text-align: center;border-left:1px solid gray;border-bottom-right-radius: 6px;border-bottom-left-radius: 36px;}" +
-                "span.page-tab-left:hover{background-color: sandybrown;}\n" +
-                "</style>\n" +
-                getScript(__VERSION__.main, jsPath, __VERSION__.echarts, __DATASET__.configs.reportThemes.value) +
-                "</head>\n" +
-                "<body onload='init()'>\n" +
-                "<div id='_TITLE'>\n" +
-                "<image id='logo' src = '" + __SYS_IMAGES_SVG__.getSrc(__VERSION__.logo.name, __THEMES__.get().color, "60px", "60px") + "'></image>\n" +
-                "<div id='title'>\n" +
-                "<h1 id='main-title'>" + title[0] + "</h1>\n" +
-                "<h3 id='sub-title'>" + (title.length > 1 ? title.slice(1, title.length).join("&emsp;") : "") + "</h3>\n" +
-                "</div>\n" +
-                "</div>\n" +
-                "<div id='_TABS'>\n" +
-                "<span class='tabButton-selected' id='ECHARTS' onclick='selectTab(this.id)'>数据视图</span>\n" +
-                "<span class='tabButton-unselected' id='TABLE' onclick='selectTab(this.id)'>数据报表</span>\n" +
-                "<span class='tabButton-unselected' id='SCRIPT' onclick='selectTab(this.id)'>数据脚本</span>\n" +
-                "<span class='tabButton-unselected' id='CONFIGS' onclick='selectTab(this.id)'>视图参数</span>\n" +
-                link +
-                "<span class='tabButton-theme' id='_THEMES'>" +
-                "</span>\n" +
-                "</div>\n" +
-                "<div id='_ECHARTS'>\n" +
-                "<span id='echarts'><image id='echarts-image' src = '" + myChart.getDataURL({excludeComponents: ['toolbox']}) + "' width = '" + myChart.getWidth() + "' height='" + myChart.getHeight() + "'></image></span>\n" +
-                "</div>\n" +
-                "<div id='_TABLE'>\n" +
-                "</div>\n" +
-                "<div id='_CONFIGS'>\n" +
-                "</div>\n" +
-                "<div id='_SCRIPT'><code id='sql'></code></div>\n" +
-                "<div id='_CODES'>\n" +
-                "<code>" + report + "</code>\n" +
-                "<code>" + report.hex_md5_hash() + "</code>\n" +
-                "<code>" + configs + "</code>\n" +
-                "<code>" + configs.hex_md5_hash() + "</code>\n" +
-                "</div>\n" +
-                "<h6 id='footer'>适用于<a class='link' href = 'https://www.google.cn/chrome/index.html' target='_blank'>Google Chrome</a>或<a class='link' href = 'https://www.microsoft.com/zh-cn/edge?form=MY01BV&OCID=MY01BV&r=1' target='_blank'>Microsoft Edge</a>浏览器&emsp;技术支持: <a class='link' href = '" + __VERSION__.url + "' target='_blank'>" +
-                __VERSION__.author + "</a>&emsp;电话: " + __VERSION__.tel + "&emsp;邮箱: <a class='link' href='mailto:" + __VERSION__.email + "'>" + __VERSION__.email + "</a>&emsp;创建时间:" + time + "</h6>\n" +
-                "</body>\n" +
-                "</html>";
-            let blob = new Blob([str2ab(html)], {type: "text/html"});
-            openDownloadDialog(blob, title[0] + ".report.html");
+            getEchartsReport(container, myChart);
         }
     } : {};
+}
+
+function getEchartsReport(container, myChart) {
+    function getScript(main, jsPath, echartsPath, defaultThemes) {
+        let scripts = [
+            "images.js",
+            "FunctionsComponent.js",
+            main,
+            echartsPath + "/echarts.min.js",
+            echartsPath + "/echarts-gl.min.js",
+            echartsPath + "/echarts-wordcloud.min.js",
+            echartsPath + "/ecStat.js",
+            echartsPath + "/echarts-liquidfill.min.js",
+            "echarts/map/world.js",
+            "echarts/map/china-and-region.js",
+            "echartsThemes.js",
+            "echartsView.js",
+        ];
+
+        for (let i = 0; i < scripts.length; i++) {
+            scripts[i] = "<script type='text/javascript' src='" + jsPath + "/" + scripts[i] + "'></script>";
+        }
+        scripts = scripts.concat([
+            "<script type='text/javascript'>\n" +
+            "function $(id) {\n" +
+            "return document.getElementById(id);\n" +
+            "}" +
+            "function $1(name, index) {\n" +
+            "return document.getElementsByClassName(name)[index];\n" +
+            "}" +
+            "</script>",
+
+            "<script type='text/javascript'>\n" +
+            "function getSVGBase(svg, color, width, height) {\n" +
+            "try {\n" +
+            "let domparser = new DOMParser();\n" +
+            "let xmldoc = domparser.parseFromString(svg, 'text/xml');\n" +
+            "if (xmldoc.documentElement.nodeName === 'svg') {\n" +
+            "xmldoc.documentElement.setAttribute('width', width);\n" +
+            "xmldoc.documentElement.setAttribute('height', height);\n" +
+            "let childNodes = xmldoc.documentElement.childNodes;\n" +
+            "for (let i = 0; i < childNodes.length; i++) {\n" +
+            "childNodes[i].setAttribute('fill', color);\n" +
+            "}\n" +
+            "return 'data:image/svg+xml;base64,' + window.btoa((new XMLSerializer()).serializeToString(xmldoc));\n" +
+            "} else {\n" +
+            "return '';\n" +
+            "}\n" +
+            "} catch (e) {\n" +
+            "return '';\n" +
+            "}\n" +
+            "}" +
+            "</script>",
+
+            "<script type='text/javascript'>\n" +
+            "function setStyleValue(selectorText, name, value){\n" +
+            "for(let i=0;i<document.styleSheets[0].cssRules.length;i++){\n" +
+            "if (document.styleSheets[0].cssRules[i].selectorText == selectorText){\n" +
+            "document.styleSheets[0].cssRules[i].style[name] = value;\n" +
+            "break;\n" +
+            "}\n" +
+            "}\n" +
+            "}\n" +
+            "</script>",
+
+            "<script type='text/javascript'>\n" +
+            "function setThemes(name){\n" +
+            "setStyleValue('body', 'backgroundColor', THEMES[name].backgroundColor);\n" +
+            "setStyleValue('body', 'backgroundImage', THEMES[name].backgroundImage);\n" +
+            "setStyleValue('body', 'color', THEMES[name].color);\n" +
+            "setStyleValue('table.table', 'color', THEMES[name].color);\n" +
+            "setStyleValue('th', 'backgroundColor', THEMES[name].selected);\n" +
+            "setStyleValue('th', 'color', THEMES[name].color);\n" +
+            "setStyleValue('th:hover', 'backgroundColor', THEMES[name].hover);\n" +
+            "setStyleValue('span.tabButton-selected', 'backgroundColor', THEMES[name].selected);\n" +
+            "setStyleValue('span.tabButton-unselected:hover', 'backgroundColor', THEMES[name].hover);\n" +
+            "setStyleValue('span.page-tab-selected', 'backgroundColor', THEMES[name].selected);\n" +
+            "setStyleValue('span.page-tab:hover', 'backgroundColor', THEMES[name].hover);\n" +
+            "setStyleValue('span.page-tab-left:hover', 'backgroundColor', THEMES[name].hover);\n" +
+            "setStyleValue('span.tabButton-selected', 'border-color', THEMES[name].border);\n" +
+            "setStyleValue('div#_ECHARTS', 'border-color', THEMES[name].border);\n" +
+            "setStyleValue('div#_TABLE', 'border-color', THEMES[name].border);\n" +
+            "setStyleValue('div#_SCRIPT', 'border-color', THEMES[name].border);\n" +
+            "setStyleValue('div#_CONFIGS', 'border-color', THEMES[name].border);\n" +
+            "setStyleValue('span.theme-selected', 'border-color', THEMES[name].border);\n" +
+            "$('logo').src = getSVGBase($('logo').getAttribute('svg'), $('logo').getAttribute('color'), '60px', '60px');\n" +
+            "$('_FULLSCREEN').src = getSVGBase($('_FULLSCREEN').getAttribute('svg'), THEMES[name].border, '20px', '20px');\n" +
+            "}\n" +
+            "</script>",
+
+            "<script type='text/javascript'>\n" +
+            "var DATASET = {title: null, columns: null, data: null, configs: null, sql: null};\n" +
+            "var REPORT = null;\n" +
+            "var CONFIGS = {themes: '" + defaultThemes + "'};\n" +
+            "var ECHARTS_TARGET = null;\n" +
+            "var THEMES = {" +
+            "白色: {backgroundColor: '#C0C0C0', color: '#000000', selected: 'rgba(0, 0, 0, 0.3)', hover: 'rgba(0, 0, 0, 0.3)', border: '#008080', " +
+            "backgroundImage:'-webkit-linear-gradient(45deg,rgba(255, 255, 255, 0.25) 25%,transparent 25%,transparent 50%,rgba(255, 255, 255, 0.25) 50%,rgba(255, 255, 255, 0.25) 75%,transparent 75%,transparent)," +
+            "-webkit-linear-gradient(-45deg,rgba(255, 255, 255, 0.25) 25%,transparent 25%,transparent 50%,rgba(255, 255, 255, 0.25) 50%,rgba(255, 255, 255, 0.25) 75%,transparent 75%,transparent)'},\n" +
+            "浅灰: {backgroundColor: '#696969', color: '#F5F5F5', selected: 'rgba(0, 0, 0, 0.3)', hover: 'rgba(0, 0, 0, 0.3)', border: '#FF7F50'," +
+            "backgroundImage:'-webkit-linear-gradient(45deg,rgba(255, 255, 255, 0.15) 25%,transparent 25%,transparent 50%,rgba(255, 255, 255, 0.15) 50%,rgba(255, 255, 255, 0.15) 75%,transparent 75%,transparent)," +
+            "-webkit-linear-gradient(-45deg,rgba(255, 255, 255, 0.15) 25%,transparent 25%,transparent 50%,rgba(255, 255, 255, 0.15) 50%,rgba(255, 255, 255, 0.15) 75%,transparent 75%,transparent)'},\n" +
+            "深灰: {backgroundColor: '#404040', color: '#F8F8F8', selected: 'rgba(0, 0, 0, 0.3)', hover: 'rgba(0, 0, 0, 0.3)', border: '#FF7F50'," +
+            "backgroundImage:'-webkit-linear-gradient(45deg,rgba(255, 255, 255, 0.15) 25%,transparent 25%,transparent 50%,rgba(255, 255, 255, 0.15) 50%,rgba(255, 255, 255, 0.15) 75%,transparent 75%,transparent)," +
+            "-webkit-linear-gradient(-45deg,rgba(255, 255, 255, 0.15) 25%,transparent 25%,transparent 50%,rgba(255, 255, 255, 0.15) 50%,rgba(255, 255, 255, 0.15) 75%,transparent 75%,transparent)'},\n" +
+            "黑色: {backgroundColor: '#000000', color: '#F0FFFF', selected: '#303030', hover: 'rgba(0, 0, 0, 0.3)', border: '#F0FFFF'," +
+            "backgroundImage:'-webkit-linear-gradient(45deg,rgba(255, 255, 255, 0.15) 25%,transparent 25%,transparent 50%,rgba(255, 255, 255, 0.15) 50%,rgba(255, 255, 255, 0.15) 75%,transparent 75%,transparent)'},\n" +
+            "墨绿: {backgroundColor: '#2F4F4F', color: '#F0F8FF', selected: 'rgba(0, 0, 0, 0.3)', hover: 'rgba(0, 0, 0, 0.3)', border: '#FF7F50'," +
+            "backgroundImage:'-webkit-linear-gradient(45deg,rgba(255, 255, 255, 0.15) 25%,transparent 25%,transparent 50%,rgba(255, 255, 255, 0.15) 50%,rgba(255, 255, 255, 0.15) 75%,transparent 75%,transparent)'},\n" +
+            "深蓝: {backgroundColor: '#003355', color: '#F8F8F8', selected: 'rgba(0, 0, 0, 0.3)', hover: 'rgba(0, 0, 0, 0.3)', border: '#008080'," +
+            "backgroundImage:'-webkit-linear-gradient(45deg,rgba(255, 255, 255, 0.15) 25%,transparent 25%,transparent 50%,rgba(255, 255, 255, 0.15) 50%,rgba(255, 255, 255, 0.15) 75%,transparent 75%,transparent)'},\n" +
+            "红色: {backgroundColor: '#8B0000', color: '#FFFF00', selected: 'rgba(0, 0, 0, 0.3)', hover: 'rgba(0, 0, 0, 0.3)', border: '#FAFAD2'," +
+            "backgroundImage:'-webkit-linear-gradient(45deg,rgba(255, 255, 255, 0.15) 25%,transparent 25%,transparent 50%,rgba(255, 255, 255, 0.15) 50%,rgba(255, 255, 255, 0.15) 75%,transparent 75%,transparent)'},\n" +
+            "};\n" +
+            "</script>",
+
+            "<script type='text/javascript'>\n" +
+            "function getBrowserSize(){\n" +
+            "let width = 0;\n" +
+            "let height = 0;\n" +
+            "if (window.innerWidth) {\n" +
+            "width = window.innerWidth;\n" +
+            "} else if ((document.body) && (document.body.clientWidth)) {\n" +
+            "width = document.body.clientWidth;\n" +
+            "}\n" +
+            "if (window.innerHeight) {\n" +
+            "height = window.innerHeight;\n" +
+            "} else if ((document.body) && (document.body.clientHeight)) {\n" +
+            "height = document.body.clientHeight;\n" +
+            "}\n" +
+            "return {\n" +
+            "width: width,\n" +
+            "height: height\n" +
+            "};\n" +
+            "}\n" +
+            "</script>",
+
+            "<script type='text/javascript'>\n" +
+            "function requestFullScreen(el) {\n" +
+            "if (document.fullscreen){\n" +
+            "if (document.exitFullscreen)\n" +
+            "document.exitFullscreen();\n" +
+            "} else {\n" +
+            "if (el.requestFullscreen)\n" +
+            "el.requestFullscreen();\n" +
+            "}\n" +
+            "}" +
+            "</script>",
+
+            "<script type='text/javascript'>\n" +
+            "function str2ab(str) {\n" +
+            "let codes = [];\n" +
+            "for (let i = 0; i != str.length; ++i) {\n" +
+            "let code = str.charCodeAt(i);\n" +
+            "if (0x00 <= code && code <= 0x7f) {\n" +
+            "codes.push(code);\n" +
+            "} else if (0x80 <= code && code <= 0x7ff) {\n" +
+            "codes.push((192 | (31 & (code >> 6))));\n" +
+            "codes.push((128 | (63 & code)))\n" +
+            "} else if ((0x800 <= code && code <= 0xd7ff)\n" +
+            "|| (0xe000 <= code && code <= 0xffff)) {\n" +
+            "codes.push((224 | (15 & (code >> 12))));\n" +
+            "codes.push((128 | (63 & (code >> 6))));\n" +
+            "codes.push((128 | (63 & code)))\n" +
+            "}\n" +
+            "}\n" +
+            "let buf = new ArrayBuffer(codes.length);\n" +
+            "let result = new Uint8Array(buf);\n" +
+            "for (let i = 0; i < codes.length; i++) {\n" +
+            "result[i] = codes[i] & 0xff;\n" +
+            "}\n" +
+            "return result;\n" +
+            "}" +
+            "</script>",
+
+            "<script type='text/javascript'>\n" +
+            "function openDownloadDialog(url, saveName) {\n" +
+            "if (typeof url == 'object' && url instanceof Blob) {\n" +
+            "url = URL.createObjectURL(url);\n" +
+            "}\n" +
+            "let aLink = document.createElement('a');\n" +
+            "aLink.href = url;\n" +
+            "aLink.download = saveName || '';\n" +
+            "let event;\n" +
+            "if (window.MouseEvent) {\n" +
+            "event = new MouseEvent('click');\n" +
+            "} else {\n" +
+            "event = document.createEvent('MouseEvents');\n" +
+            "event.initMouseEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);\n" +
+            "}\n" +
+            "aLink.dispatchEvent(event);\n" +
+            "}" +
+            "</script>",
+
+            "<script type='text/javascript'>\n" +
+            "function getConfigs(container, configs) {\n" +
+            "let dl = document.createElement('dl');\n" +
+            "container.appendChild(dl);\n" +
+            "let dt = null;\n" +
+            "for (let name in configs) {\n" +
+            "if (configs[name].type == 'hr') {\n" +
+            "dt = document.createElement('dt');\n" +
+            "let sp = document.createElement('span');\n" +
+            "sp.innerHTML = '<span class=exp-close>☘ </span>' + configs[name].name;\n" +
+            "dt.appendChild(sp);" +
+            "dt.setAttribute('value', configs[name].name);\n" +
+            "dt.setAttribute('state','0');\n" +
+            "dt.onclick = function(){\n" +
+            "let state = this.getAttribute('state');\n" +
+            "let dds = this.getElementsByTagName('dd');\n" +
+            "for(let i=0;i<dds.length;i++){\n" +
+            "if (state == '0')\n" +
+            "dds[i].style.display = 'block';\n" +
+            "else\n" +
+            "dds[i].style.display = 'none';\n" +
+            "}\n" +
+            "if (state == '0'){\n" +
+            "this.setAttribute('state','1');\n" +
+            "this.getElementsByTagName('span')[0].innerHTML = '<span class=exp-open>❀ </span>' + this.getAttribute('value');\n" +
+            "} else {\n" +
+            "this.setAttribute('state','0');\n" +
+            "this.getElementsByTagName('span')[0].innerHTML = '<span class=exp-close>☘ </span>' + this.getAttribute('value');\n" +
+            "}\n" +
+            "}\n" +
+            "dl.appendChild(dt);\n" +
+            "} else {\n" +
+            "let dd = document.createElement('dd');\n" +
+            "dt.appendChild(dd);\n" +
+            "let configsname = document.createElement('span');\n" +
+            "configsname.className='configs-name';\n" +
+            "configsname.innerText = configs[name].name;\n" +
+            "let configsvalue = document.createElement('span');\n" +
+            "configsvalue.className='configs-value';\n" +
+            "configsvalue.innerText = configs[name].value;\n" +
+            "dd.appendChild(configsname);\n" +
+            "dd.appendChild(configsvalue);\n" +
+            "}\n" +
+            "}\n" +
+            "}" +
+            "</script>",
+
+            "<script type='text/javascript'>\n" +
+            "function viewSql(script){\n" +
+            "let re = new RegExp(\'\\(\\\\/\\\\*[^\\\\*]\\*\\\\*\\\\/\\)|\\(\\-\\-[^.].\\*\\)\', 'gm');\n" +
+            "let comments = script.match(re);\n" +
+            "script = script.split(re);\n" +
+            "let sqls = [];\n" +
+            "for(let t=0;t<script.length;t++){\n" +
+            "let sql = script[t];\n" +
+            "if (sql !=='' && typeof sql != 'undefined' && (comments == null || comments.indexOf(sql) == -1)){\n" +
+            "re = new RegExp('\\(\\\\\\'(.*?)\\\\\\')|(\\\\\\\"(.*?)\\\\\\\")', 'gm');\n" +
+            "let constants = sql.match(re);\n" +
+            "if (constants != null){\n" +
+            "for(let i =0;i<constants.length;i++){\n" +
+            "sql = sql.replace(new RegExp(constants[i],'g'), '&#60;span class&#61;SQLWordf&#62;' + constants[i]  + '&#60;&#47;span&#62;');\n" +
+            "}\n" +
+            "}\n" +
+
+            "let words = [{key:'=',type:'d', value:'＝'},{key:\'\\\'\',type:'d'},{key:'\\\"\',type:'d'},\n" +
+            "{key:\'\/\',type:'d', value:'&#47;'},{key:\'\>\',type:'d', value:'❯'},{key:\'\<\',type:'d', value:'❮'},\n" +
+            "{key:':',type:'d', value:':'}, {key:',',type:'d'}, {key:\'\\\\+\',type:'d', value:'+'}, {key:'-',type:'d', value:'–'},\n" +
+            "{key:\'\\\\*\',type:'d', value:'×'}, {key:\'\\\\(\',type:'d', value:'('}, {key:\'\\\\)\',type:'d', value:')'}, \n" +
+            "{key:'ADD',type:'a'},{key:'BEFORE',type:'a'},{key:'GRANT',type:'a'},{key:'FOR',type:'a'},{key:'LOAD',type:'a'},{key:'ELSE',type:'a'},\n" +
+            "{key:'WHEN',type:'a'},{key:'CASE',type:'a'},{key:'THEN',type:'a'},{key:'UNIQUE',type:'a'},{key:'DATABASE',type:'a'},{key:'END',type:'a'},\n" +
+            "{key:'DECLARE',type:'a'},{key:'DROP',type:'a'},{key:'LIKE',type:'a'},{key:'LIMIT',type:'a'},{key:'DISTINCT',type:'a'},{key:'ELSEIF',type:'a'},\n" +
+            "{key:'TABLE',type:'a'},{key:'VIEW',type:'a'},{key:'INDEX',type:'a'},{key:'PROCEDURE',type:'a'},{key:'TRIGGTER',type:'a'},{key:'CURSOR',type:'a'},\n" +
+            "{key:'CREATE',type:'a'},{key:'DELETE',type:'a'}, {key:'UPDATE',type:'a'}, {key:'INSERT',type:'a'},{key:'AFTER',type:'a'},{key:'EACH',type:'a'},\n" +
+            "{key:'INTO',type:'a'}, {key:'SELECT',type:'a'},{key:'FROM',type:'a'}, {key:'WHERE', type:'a'},{key:'PRIMARY',type:'a'},{key:'KEY',type:'a'},\n" +
+            "{key:'GROUP',type:'a'},{key:'ORDER',type:'a'},{key:'BY',type:'a'},{key:'HAVING',type:'a'}, {key:'LEFT',type:'a'}, {key:'ENGINE',type:'a'},\n" +
+            "{key:'VALUES',type:'a'},{key:'SET',type:'a'},{key:'RIGHT',type:'a'}, {key:'JOIN',type:'a'},{key:'ON',type:'a'},{key:'UNION',type:'a'}, \n" +
+            "{key:'ALL',type:'a'},{key:'AS',type:'a'}, {key:'OUTER',type:'a'}, {key:'INNER',type:'a'},{key:'IS',type:'a'},{key:'NULL',type:'a'},\n" +
+            "{key:'ASC',type:'a',value:'⇡'}, {key:'DESC',type:'a', value:'⇣'},{key:'NOT',type:'a'}, {key:'IN',type:'a'},{key:'BETWEEN',type:'a'},\n" +
+            "{key:'AND',type:'b'}, {key:'OR',type:'b'},{key:'SUM',type:'c'},{key:'CONCAT',type:'c'}, {key:'REGEXP',type:'c'},\n" +
+            "{key:'AVG',type:'c'}, {key:'COUNT',type:'c'},{key:'MIN',type:'c'}, {key:'MAX',type:'c'}, {key:'MONTH',type:'c'},{key:'REPLACE',type:'c'}, \n" +
+            "{key:'YEAR',type:'c'},{key:'ROUND',type:'c'},{key:'IFNULL',type:'c'}, {key:'ABS',type:'c'}, {key:'POWER',type:'c'}, {key:'XOR',type:'c'},\n" +
+            "{key:'DATE_FORMAT',type:'c'},{key:'STRFTIME',type:'c'},{key:'DATE',type:'c'},{key:'LENGTH',type:'c'},{key:'SUBSTR',type:'c'},{key:'MOD',type:'c'},\n" +
+            "{key:'ADDDATE',type:'c'},{key:'ADDTIME',type:'c'},{key:'CURDATE',type:'c'},{key:'ADDTIME',type:'c'},{key:'DATE',type:'c'},{key:'CONVERT',type:'c'},\n" +
+            "{key:'DATEDIFF',type:'c'},{key:'DATE_ADD',type:'c'},{key:'DAY',type:'c'},{key:'DAYOFWEEK',type:'c'},{key:'HOUR',type:'c'},{key:'MINUTE',type:'c'},\n" +
+            "{key:'SECOND',type:'c'},{key:'TIME',type:'c'},{key:'LOCATE',type:'c'},{key:'LTRIM',type:'c'},{key:'RTRIM',type:'c'},{key:'SOUNDEX',type:'c'},\n" +
+            "{key:'SUBSTRING',type:'c'},{key:'LOWER',type:'c'},{key:'UPPER',type:'c'},{key:'GETDATE',type:'c'},{key:'NOW',type:'c'},];\n" +
+            "for(let i=0;i<words.length;i++){\n" +
+            "re = new RegExp(words[i].key, 'g');\n" +
+            "if (words[i].type !== 'd')\n" +
+            "re = new RegExp(\'\\\\b\' + words[i].key + \'\\\\b\', 'gi');\n" +
+            "sql = sql.replace(re,'&#60;span class&#61;SQLWord' + words[i].type + '&#62;' + (typeof words[i].value !== 'undefined'?words[i].value:words[i].key)  + '&#60;&#47;span&#62;');\n" +
+            "}\n" +
+            "sql = sql.replace(new RegExp('&#60;','g'), '<');\n" +
+            "sql = sql.replace(new RegExp('&#61;','g'), '=');\n" +
+            "sql = sql.replace(new RegExp('&#62;','g'), '>');\n" +
+            "sql = sql.replace(new RegExp('&#47;','g'), '/');\n" +
+            "sql = sql.replace(new RegExp(\'\\\\n\','g'), '<br>');\n" +
+            "sql = sql.replace(new RegExp(\'\\\\t\','g'), '&emsp;&emsp;&emsp;&emsp;');\n" +
+            "sqls.push(sql);\n" +
+            "} else if (sql !=='' && typeof sql != 'undefined' && comments.indexOf(sql) !== -1){\n" +
+            "sql = sql.replace(new RegExp(\'\\\\/\\\\*\','g'), '<span class=SQLWordg>•••</span>');\n" +
+            "sql = sql.replace(new RegExp(\'\\\\*\\\\/\','g'), '');\n" +
+            "sql = sql.replace(new RegExp(\'\\\\n\','g'), '<br>');\n" +
+            "sql = sql.replace(new RegExp(\'\\\\t\','g'), '&emsp;&emsp;&emsp;&emsp;');\n" +
+            "sql = '<p class=SQLWorde>' + sql + '</p>';\n" +
+            "sqls.push(sql);\n" +
+            "}\n" +
+            "}\n" +
+            "return sqls.join('');\n" +
+            "}\n" +
+            "</script>",
+
+            "<script type='text/javascript'>\n" +
+            "function resize(){\n" +
+            "try{\n" +
+            "let size = getBrowserSize();\n" +
+            "$('_ECHARTS').style.minHeight = (size.height*0.80) + 'px';\n" +
+            "$('_TABLE').style.minHeight = (size.height*0.80) + 'px';\n" +
+            "$('_SCRIPT').style.minHeight = (size.height*0.80) + 'px';\n" +
+            "$('_CONFIGS').style.minHeight = (size.height*0.80) + 'px';\n" +
+            "if (typeof getEcharts === 'function'){\n" +
+            "let container = $('_ECHARTS');\n" +
+            "if (ECHARTS_TARGET == null){\n" +
+            "getEcharts(container, DATASET, REPORT.configs);\n" +
+            "ECHARTS_TARGET = echarts.getInstanceByDom(container);\n" +
+            "}\n" +
+            "ECHARTS_TARGET.resize();\n" +
+            "} else {\n" +
+            "$('report-system').innerHTML = '组件服务器未连接...';\n" +
+            "$('report-system').removeAttribute('href');\n" +
+            "$('report-system').removeAttribute('title');\n" +
+            "let hw = Number($('echarts-image').getAttribute('height'))/Number($('echarts-image').getAttribute('width'));\n" +
+            "$('echarts-image').setAttribute('width',(size.width*0.78));\n" +
+            "$('echarts-image').setAttribute('height',(size.width*0.78)*hw);\n" +
+            "}\n" +
+            "}catch (e) {\n" +
+            "ECHARTS_TARGET = null;\n" +
+            "}\n" +
+            "}\n" +
+            "</script>",
+
+            "<script type='text/javascript'>\n" +
+            "function init(){\n" +
+            "setThemes(CONFIGS.themes);\n" +
+            "let codes = $('_CODES').getElementsByTagName('code');\n" +
+            "REPORT = codes[0].innerText;\n" +
+            "let hash = codes[1].innerText;\n" +
+            "let configs = JSON.parse(codes[2].innerText);\n" +
+            "REPORT = JSON.parse(REPORT);\n" +
+            "REPORT.configs.toolboxSaveAsReport.value = 'false';\n" +
+            "REPORT.configs.toolboxFeatureMultiScreen.value = 'false';\n" +
+            "REPORT.configs.toolboxFeatureDataView.value = 'false';\n" +
+            "DATASET.title = REPORT.dataset.title;\n" +
+            "DATASET.columns = REPORT.dataset.columns;\n" +
+            "DATASET.data = REPORT.dataset.data;\n" +
+            "DATASET.sql = REPORT.dataset.sql;\n" +
+            "DATASET.configs = configs;\n" +
+            "$('sql').innerHTML = viewSql(DATASET.sql);\n" +
+            "getConfigs($('_CONFIGS'), REPORT.configs);\n" +
+            "getConfigs($('_CONFIGS'), DATASET.configs);\n" +
+            "getThemes();\n" +
+
+            "$('_FULLSCREEN').onmouseenter = function(){\n" +
+            "this.src = getSVGBase(this.getAttribute('svg'), THEMES[CONFIGS.themes].color, '20px', '20px');\n" +
+            "};\n" +
+            "$('_FULLSCREEN').onmouseleave = function(){\n" +
+            "this.src = getSVGBase(this.getAttribute('svg'), THEMES[CONFIGS.themes].border, '20px', '20px');\n" +
+            "};\n" +
+            "$('_FULLSCREEN').onclick = function(){\n" +
+            "requestFullScreen(document.documentElement);\n" +
+            "}\n" +
+            "viewDataset(0);\n" +
+            "resize();\n" +
+            "window.onresize = function () {\n" +
+            "resize();\n" +
+            "};\n" +
+            "}\n" +
+            "</script>",
+
+            "<script type='text/javascript'>\n" +
+            "function getThemes(){\n" +
+            "let content = $('_THEMES');\n" +
+            "content.innerText='';\n" +
+            "for (let key in THEMES){\n" +
+            "let theme = document.createElement('span');\n" +
+            "if (key == CONFIGS.themes)\n" +
+            "theme.className ='theme-selected';\n" +
+            "else\n" +
+            "theme.className = 'theme';\n" +
+            "theme.title = key;\n" +
+            "theme.style.backgroundColor = THEMES[key].backgroundColor;\n" +
+            "theme.style.color = THEMES[key].color;\n" +
+            "theme.style.borderColor = THEMES[key].borderColor;\n" +
+            "theme.innerHTML = '&emsp;&emsp;';" +
+            "theme.onclick = function(){\n" +
+            "CONFIGS.themes = this.title;\n" +
+            "$1('theme-selected',0).className = 'theme';\n" +
+            "this.className = 'theme-selected';\n" +
+            "setThemes(CONFIGS.themes);\n" +
+            "}\n" +
+            "content.appendChild(theme);\n" +
+            "}\n" +
+            "}\n" +
+            "</script>",
+
+            "<script type='text/javascript'>\n" +
+            "function selectTab(id){\n" +
+            "let names = ['ECHARTS','TABLE','SCRIPT','CONFIGS'];\n" +
+            "for (let i=0;i<names.length;i++){\n" +
+            "let tab = $(names[i]);\n" +
+            "let div = $('_' + names[i]);\n" +
+            "if (names[i] == id){\n" +
+            "tab.className = 'tabButton-selected';\n" +
+            "if (id == 'ECHARTS'){" +
+            "div.style.display = 'table';\n" +
+            "} else\n" +
+            "div.style.display = 'block';\n" +
+            "} else {\n" +
+            "tab.className = 'tabButton-unselected';\n" +
+            "div.style.display = 'none';\n" +
+            "}\n" +
+            "}\n" +
+            "resize();\n" +
+            "}\n" +
+            "</script>",
+
+            "<script type='text/javascript'>\n" +
+            "Number.prototype.format = function(pattern) {\n" +
+            "let num = this;\n" +
+            "let is = false;\n" +
+            "if (num < 0)\n" +
+            "is = true;\n" +
+            "num = Math.abs(num);\n" +
+            "let strarr = num ? num.toString().split('.') : ['0'];\n" +
+            "let fmtarr = pattern ? pattern.split('.') : [''];\n" +
+            "let retstr = '';\n" +
+            "let str = strarr[0];\n" +
+            "let fmt = fmtarr[0];\n" +
+            "let i = str.length - 1;\n" +
+            "let comma = false;\n" +
+            "for (let f = fmt.length - 1; f >= 0; f--) {\n" +
+            "switch (fmt.substr(f, 1)) {\n" +
+            "case '#':\n" +
+            "if (i >= 0) retstr = str.substr(i--, 1) + retstr;\n" +
+            "break;\n" +
+            "case '0':\n" +
+            "if (i >= 0) retstr = str.substr(i--, 1) + retstr;\n" +
+            "else retstr = '0' + retstr;\n" +
+            "break;\n" +
+            "case ',':\n" +
+            "comma = true;\n" +
+            "retstr = ',' + retstr;\n" +
+            "break;\n" +
+            "}\n" +
+            "}\n" +
+            "if (i >= 0) {\n" +
+            "if (comma) {\n" +
+            "let l = str.length;\n" +
+            "for (; i >= 0; i--) {\n" +
+            "retstr = str.substr(i, 1) + retstr;\n" +
+            "if (i > 0 && ((l - i) % 3) == 0) retstr = ',' + retstr;\n" +
+            "}\n" +
+            "}\n" +
+            "else retstr = str.substr(0, i + 1) + retstr;\n" +
+            "}\n" +
+            "retstr = retstr + '.';\n" +
+            "str = strarr.length > 1 ? strarr[1] : '';\n" +
+            "fmt = fmtarr.length > 1 ? fmtarr[1] : '';\n" +
+            "i = 0;\n" +
+            "for (let f = 0; f < fmt.length; f++) {\n" +
+            "switch (fmt.substr(f, 1)) {\n" +
+            "case '#':\n" +
+            "if (i < str.length) retstr += str.substr(i++, 1);\n" +
+            "break;\n" +
+            "case '0':\n" +
+            "if (i < str.length) retstr += str.substr(i++, 1);\n" +
+            "else retstr += '0';\n" +
+            "break;\n" +
+            "}\n" +
+            "}\n" +
+            "return is ? '-' + retstr.replace(/^,+/, '').replace(/\\.$/, '') : retstr.replace(/^,+/, '').replace(/\\.$/, '');\n" +
+            "};\n" +
+            "</script>",
+
+            "<script type='text/javascript'>\n" +
+            "Date.prototype.format = function(fmt) {\n" +
+            "let o = {\n" +
+            "'M+': this.getMonth() + 1,\n" +
+            "'d+': this.getDate(),\n" +
+            "'h+': this.getHours(),\n" +
+            "'m+': this.getMinutes(),\n" +
+            "'s+': this.getSeconds(),\n" +
+            "'q+': Math.floor((this.getMonth() + 3) / 3),\n" +
+            "'S': this.getMilliseconds()\n" +
+            "};\n" +
+            "if (/(y+)/.test(fmt))\n" +
+            "fmt = fmt.replace(RegExp.$1, (this.getFullYear() + '').substr(4 - RegExp.$1.length));\n" +
+            "for (let k in o)\n" +
+            "if (new RegExp('(' + k + ')').test(fmt))\n" +
+            "fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (('00' + o[k]).substr(('' + o[k]).length)));\n" +
+            "return fmt;\n" +
+            "};\n" +
+            "</script>",
+
+            "<script type='text/javascript'>\n" +
+            "function selectPageGroup(div, index, pageindex, pages){\n" +
+            "div.innerHTML = ''\n" +
+            "let transpose = document.createElement('span');\n" +
+            "transpose.className = 'page-tab-left';\n" +
+            "transpose.innerHTML = '&#9735';\n" +
+            "transpose.title = '报表转置';\n" +
+            "transpose.onclick = function(){\n" +
+            "datasetTranspose();\n" +
+            "}\n" +
+            "div.appendChild(transpose);\n" +
+            "let xml = document.createElement('span');\n" +
+            "xml.className = 'page-tab';\n" +
+            "xml.style.cssFloat = 'right';\n" +
+            "xml.innerHTML = '&#8675';\n" +
+            "xml.title = '导出XML';\n" +
+            "xml.onclick = function(){\n" +
+            "getXML(DATASET.title, DATASET.columns, DATASET.data);\n" +
+            "}\n" +
+            "div.appendChild(xml);\n" +
+            "if (index>0){\n" +
+            "let span = document.createElement('span');\n" +
+            "span.className = 'page-tab';\n" +
+            "span.id = index-1;\n" +
+            "span.innerText = '•••';\n" +
+            "span.onclick = function(){\n" +
+            "selectPageGroup(div, Number(this.id),pageindex, pages);\n" +
+            "}\n" +
+            "div.appendChild(span);\n" +
+            "}\n" +
+            "for (let i=index*10;i<pages&&i<(index+1)*10;i++){\n" +
+            "let span = document.createElement('span');\n" +
+            "span.className = 'page-tab';\n" +
+            "span.id = i;\n" +
+            "span.innerText = (i+1);\n" +
+            "if (pageindex == i)\n" +
+            "span.className = 'page-tab-selected';\n" +
+            "span.onclick = function(){\n" +
+            "viewDataset(Number(this.id));\n" +
+            "}\n" +
+            "div.appendChild(span);\n" +
+            "}\n" +
+            "if ((index+1)*10<pages){\n" +
+            "let span = document.createElement('span');\n" +
+            "span.className = 'page-tab';\n" +
+            "span.id = index+1;\n" +
+            "span.innerText = '•••';\n" +
+            "span.onclick = function(){\n" +
+            "selectPageGroup(div, Number(this.id),pageindex, pages);\n" +
+            "}\n" +
+            "div.appendChild(span);\n" +
+            "}\n" +
+            "}\n" +
+            "</script>",
+
+            "<script type='text/javascript'>\n" +
+            "function viewDataset(pageindex) {\n" +
+            "let columns = DATASET.columns;\n" +
+            "let data = DATASET.data;\n" +
+            "let configs = DATASET.configs;\n" +
+            "let pagesize = Number(configs.reportPageSize.value);\n" +
+            "let pages = (data.length%pagesize==0?Math.floor(data.length/pagesize):Math.floor(data.length/pagesize) + 1);\n" +
+            "let table = document.createElement('table');\n" +
+            "table.className = table.id = 'table';\n" +
+            "table.style.minWidth = configs.reportMinWidth.value;\n" +
+            "table.style.maxWidth = configs.reportMaxWidth.value;\n" +
+            "table.style.color = document.body.style.color;\n" +
+            "table.style.fontSize = configs.reportFontSize.value;\n" +
+            "if (configs.reportFontFamily.value != 'default')\n" +
+            "table.style.fontFamily = configs.reportFontFamily.value;\n" +
+            "if (configs.reportFontWeight.value != 'default')\n" +
+            "table.style.fontWeight = configs.reportFontWeight.value;\n" +
+            "if (configs.reportFontStyle.value != 'default')\n" +
+            "table.style.fontStyle = configs.reportFontStyle.value;\n" +
+            "\n" +
+            "let tr = document.createElement('tr');\n" +
+            "if (configs.reportRowHeight.value != 'default')\n" +
+            "tr.style.height = configs.reportRowHeight.value;\n" +
+            "table.appendChild(tr);\n" +
+            "\n" +
+            "for (let c = 0; c < columns.length; c++) {\n" +
+            "let th = document.createElement('th');\n" +
+            "th.style.textAlign = columns[c].style.textAlign;\n" +
+            "switch (columns[c].order) {\n" +
+            "case '':\n" +
+            "th.innerText = '● ' + columns[c].name;\n" +
+            "break;\n" +
+            "case 'asc':\n" +
+            "th.innerText = '▲ ' + columns[c].name;\n" +
+            "break;\n" +
+            "case 'desc':\n" +
+            "th.innerText = '▼ ' + columns[c].name;\n" +
+            "break;\n" +
+            "}\n" +
+            "th.title = columns[c].name;\n" +
+            "th.setAttribute('colid', c);\n" +
+            "th.onclick = function () {\n" +
+            "orderDatasetBy(this.getAttribute('colid'));\n" +
+            "viewDataset(0);\n" +
+            "try {\n" +
+            "echarts.getInstanceByDom($('_ECHARTS')).clear();\n" +
+            "}catch (e) {\n" +
+            "}\n" +
+            "ECHARTS_TARGET = null;\n" +
+            "};\n" +
+            "tr.appendChild(th);\n" +
+            "}\n" +
+            "let floatFormat = '#,##0.';\n" +
+            "for (let i = 0; i < Number(configs.reportScale.value); i++) {\n" +
+            "floatFormat += '0';\n" +
+            "}\n" +
+            "for (let i = pageindex * pagesize; i < data.length && i < (pageindex+1)* pagesize; i++) {\n" +
+            "let tr = document.createElement('tr');\n" +
+            "tr.type = 'tr';\n" +
+            "if (configs.reportRowHeight.value != 'default')\n" +
+            "tr.style.height =configs.reportRowHeight.value;\n" +
+            "tr.id = i;\n" +
+            "if (i % 2 > 0) {\n" +
+            "tr.className = 'alt-line';\n" +
+            "}\n" +
+            "table.appendChild(tr);\n" +
+            "let row = data[i];\n" +
+            "for (let c = 0; c < columns.length; c++) {\n" +
+            "let item = row[columns[c].name];\n" +
+            "let td = document.createElement('td');\n" +
+            "try {\n" +
+            "if (item.value != null) {\n" +
+            "if (item.type == 'number') {\n" +
+            "let f = item.format;\n" +
+            "if ((item.value + '').indexOf('.') !== -1) {\n" +
+            "f = floatFormat;\n" +
+            "item.value = Math.round(item.value * Math.pow(10,Number(configs.reportScale.value))) / Math.pow(10,Number(configs.reportScale.value));\n" +
+            "} else {\n" +
+            "if (columns[c]['format'] !== 'undefined') {\n" +
+            "if (item.format != columns[c].format)\n" +
+            "f = columns[c].format;\n" +
+            "}\n" +
+            "}\n" +
+            "td.innerText = item.value.format(f);\n" +
+            "item.format = columns[c]['format'] = f;\n" +
+            "} else if (item.type == 'date' || item.type == 'datetime')\n" +
+            "td.innerText = new Date(item.value).format(item.format);\n" +
+            "else\n" +
+            "td.innerText = item.value;\n" +
+            "} else\n" +
+            "td.innerText = '';\n" +
+            "let style = '';\n" +
+            "for (let key in item.style) {\n" +
+            "if (key === 'color')" +
+            "Number(row[columns[c].name].value) < 0?style += key + ': red': '';\n" +
+            "else " +
+            "style += key + ': ' + item.style[key] + ';';\n" +
+            "}\n" +
+            "td.style.cssText = style;\n" +
+            "} catch (e) {\n" +
+            "td.innerText = row[columns[c].name].value;\n" +
+            "}\n" +
+            "tr.appendChild(td);\n" +
+            "}\n" +
+            "}\n" +
+            "let container = $('_TABLE');\n" +
+            "container.innerHTML='';\n" +
+            "container.appendChild(table);\n" +
+            "let div = document.createElement('div');\n" +
+            "div.id = '_PAGES';\n" +
+            "let groupindex = Math.floor(pageindex/10);\n" +
+            "container.appendChild(div);\n" +
+            "selectPageGroup(div, groupindex,pageindex,pages);\n" +
+            "}\n" +
+            "</script>",
+
+            "<script type='text/javascript'>\n" +
+            "function orderDatasetBy(colid) {\n" +
+            "function exchange(r1, r2) {\n" +
+            "for (col in r1) {\n" +
+            "for (attr in r1[col]) {\n" +
+            "if (attr != 'rowid' && attr != 'colid') {\n" +
+            "let tmp = r1[col][attr];\n" +
+            "r1[col][attr] = r2[col][attr];\n" +
+            "r2[col][attr] = tmp;\n" +
+            "}\n" +
+            "}\n" +
+            "}\n" +
+            "}\n" +
+            "let columns = DATASET.columns;\n" +
+            "let data = DATASET.data;\n" +
+            "switch (columns[colid].order) {\n" +
+            "case '':\n" +
+            "columns[colid].order = 'asc';\n" +
+            "break;\n" +
+            "case 'asc':\n" +
+            "columns[colid].order = 'desc';\n" +
+            "break;\n" +
+            "case 'desc':\n" +
+            "columns[colid].order = 'asc';\n" +
+            "break;\n" +
+            "}\n" +
+            "for (let i = 0; i < data.length; i++) {\n" +
+            "for (let x = 0; x < i; x++) {\n" +
+            "switch (columns[colid].order) {\n" +
+            "case 'asc':\n" +
+            "if (data[i][columns[colid].name].type == 'number' && data[x][columns[colid].name].type == 'number') {\n" +
+            "if (data[i][columns[colid].name].value < data[x][columns[colid].name].value) {\n" +
+            "exchange(data[i], data[x]);\n" +
+            "}\n" +
+            "} else if (data[i][columns[colid].name].type == 'object' || data[x][columns[colid].name].type == 'object') {\n" +
+            "//exchange(data[i], data[x]);\n" +
+            "} else {\n" +
+            "if (data[i][columns[colid].name].value.localeCompare(data[x][columns[colid].name].value) < 0 && data[i][columns[colid].name].type == data[x][columns[colid].name].type) {\n" +
+            "exchange(data[i], data[x]);\n" +
+            "}\n" +
+            "}\n" +
+            "break;\n" +
+            "case 'desc':\n" +
+            "if (data[i][columns[colid].name].type == 'number' && data[x][columns[colid].name].type == 'number') {\n" +
+            "if (data[i][columns[colid].name].value > data[x][columns[colid].name].value) {\n" +
+            "exchange(data[i], data[x]);\n" +
+            "}\n" +
+            "} else if (data[i][columns[colid].name].type == 'object' || data[x][columns[colid].name].type == 'object') {\n" +
+            "//exchange(data[i], data[x]);\n" +
+            "} else {\n" +
+            "if (data[i][columns[colid].name].value.localeCompare(data[x][columns[colid].name].value) > 0 && data[i][columns[colid].name].type == data[x][columns[colid].name].type) {\n" +
+            "exchange(data[i], data[x]);\n" +
+            "}\n" +
+            "}\n" +
+            "break;\n" +
+            "}\n" +
+            "}\n" +
+            "}\n" +
+            "return DATASET;\n" +
+            "}\n" +
+            "</script>",
+
+            "<script type='text/javascript'>\n" +
+            "function datasetTranspose(){\n" +
+            "try {\n" +
+            "let columns = DATASET.columns;\n" +
+            "let data = DATASET.data;\n" +
+            "let settmp = {columns: [], data: []};\n" +
+            "let col = {\n" +
+            "id: 0,\n" +
+            "name: columns[0].name,\n" +
+            "order: '',\n" +
+            "type: 'string',\n" +
+            "style: columns[0].style\n" +
+            "};\n" +
+            "settmp.columns.push(col);\n" +
+            "for (let i = 0; i < data.length; i++) {\n" +
+            "let row = data[i];\n" +
+            "col = {\n" +
+            "id: i + 1,\n" +
+            "name: row[columns[0].name].value,\n" +
+            "order: '',\n" +
+            "type: row[columns[0].name].type,\n" +
+            "style: row[columns[0].name].style\n" +
+            "};\n" +
+            "settmp.columns.push(col);\n" +
+            "}\n" +
+            "\n" +
+            "for (let c = 1; c < columns.length; c++) {\n" +
+            "let nr = {};\n" +
+            "nr[columns[0].name] = {\n" +
+            "rowid: c - 1,\n" +
+            "colid: 0,\n" +
+            "value: columns[c].name,\n" +
+            "type: 'string',\n" +
+            "style: columns[c].style\n" +
+            "};\n" +
+            "for (let i = 0; i < data.length; i++) {\n" +
+            "let row = data[i];\n" +
+            "nr[row[columns[0].name].value] = {\n" +
+            "rowid: c - 1,\n" +
+            "colid: i + 1,\n" +
+            "value: row[columns[c].name].value,\n" +
+            "type: row[columns[c].name].type,\n" +
+            "style: row[columns[c].name].style\n" +
+            "};\n" +
+            "}\n" +
+            "settmp.data.push(nr);\n" +
+            "}\n" +
+            "DATASET.data = settmp.data;\n" +
+            "DATASET.columns = settmp.columns;\n" +
+            "viewDataset(0);\n" +
+            "} catch (e) {\n" +
+            "console.log(e);\n" +
+            "}\n" +
+            "}" +
+            "</script>",
+
+            "<script type='text/javascript'>\n" +
+            "function getXML(title, columns, DATASET){\n" +
+            "try{\n" +
+            "let xml = '<?xml version=\"1.0\"?>" +
+            "<?mso-application progid=\"Excel.Sheet\"?>" +
+            "<Workbook xmlns=\"urn:schemas-microsoft-com:office:spreadsheet\"" +
+            " xmlns:o=\"urn:schemas-microsoft-com:office:office\"" +
+            " xmlns:x=\"urn:schemas-microsoft-com:office:excel\"" +
+            " xmlns:ss=\"urn:schemas-microsoft-com:office:spreadsheet\"" +
+            " xmlns:html=\"http://www.w3.org/TR/REC-html40\">" +
+            "<DocumentProperties xmlns=\"urn:schemas-microsoft-com:office:office\">" +
+            "<Author>杨凯</Author>" +
+            "<LastAuthor></LastAuthor>" +
+            "<Created>' + new Date() + '</Created>" +
+            "<Version>1.0.0</Version>" +
+            "</DocumentProperties>" +
+            "<Styles>" +
+            "<Style ss:ID=\"Default\" ss:Name=\"Normal\">" +
+            "<Alignment ss:Vertical=\"Center\"/>" +
+            "<Borders/>" +
+            "<Font ss:FontName=\"宋体\" x:CharSet=\"134\" ss:Size=\"11\" ss:Color=\"#000000\"/>" +
+            "<Interior/>" +
+            "<NumberFormat ss:Format=\"#,##0.00_ \"/>" +
+            "<Protection/>" +
+            "</Style>" +
+            "</Styles>';\n" +
+            "xml += '<Worksheet ss:Name=\"' + title[title.length-1].split(\"<\").join(\"&lt;\").split(\">\").join(\"&gt;\").split(\"*\").join(\"#\").split(\"?\").join(\"#\").split(\"[\").join(\"#\").split(\"]\").join(\"#\").split(\"\\\\\").join(\"#\").split(\"/\").join(\"#\") + '\"><Table ss:ExpandedColumnCount=\"' + columns.length + '\" ss:ExpandedRowCount=\"' + (DATASET.length + 1) + '\">';\n" +
+            "let r = '<Row>';\n" +
+            "for(let c = 0;c < columns.length; c++){\n" +
+            "let ce = '<Cell><Data ss:Type=\"String\">'+ columns[c].name.split(\"<\").join(\"&lt;\").split(\">\").join(\"&gt;\") + '</Data></Cell>';\n" +
+            "r += ce;\n" +
+            "}\n" +
+            "r += '</Row>';\n" +
+            "xml += r;\n" +
+            "for(let i = 0;i < DATASET.length; i++){\n" +
+            "let row = DATASET[i];\n" +
+            "r = '<Row>';\n" +
+            "for(let c = 0;c < columns.length; c++){\n" +
+            "let cell = row[columns[c].name];\n" +
+            "let ce = '<Cell><Data ss:Type=\"' + (cell.type=='number'?'Number':'String') + '\">'+ (cell.type=='number'?cell.value:(typeof cell.value !== 'undefined'?cell.value.split(\"<\").join(\"&lt;\").split(\">\").join(\"&gt;\"):'')) + '</Data></Cell>';\n" +
+            "r += ce;\n" +
+            "}\n" +
+            "r += '</Row>';\n" +
+            "xml += r;\n" +
+            "}\n" +
+            "xml += '</Table></Worksheet></Workbook>';\n" +
+            "let blob = new Blob([str2ab(xml)], {type: 'text/xml'});\n" +
+            "openDownloadDialog(blob, title[0] + '.report.xml');\n" +
+            "} catch (e) {\n" +
+            "alert(e);\n" +
+            "}\n" +
+            "}" +
+            "</script>",
+        ]).join("\n");
+        return scripts;
+    }
+
+    let id = container.getAttribute("_echarts_instance_");
+    let report = JSON.parse(__ECHARTS__.history[id]);
+    let title = report.dataset.title;
+    let link = "<a class='link' id= 'report-system' title='进入系统,使用「打开报表」功能可编辑此报表.' href='" + window.location.href.split("?")[0] + "'>" + __VERSION__.name + "</a>";
+    report = JSON.stringify(report);
+    report = report.encode();
+    let configs = JSON.stringify(__DATASET__.configs).encode();
+    let jsPath = __VERSION__.url + "/blob/master";
+    if (__DATASET__.configs.reportScopeOfUse.value === "intranet") {
+        jsPath = location.href.split("?")[0].split("/");
+        jsPath = jsPath.slice(0, jsPath.length - 1).join("/");
+    }
+    let time = getNow();
+    let html = "<!DOCTYPE html>\n" +
+        "<html>\n" +
+        "<head>\n" +
+        "<meta charset='utf-8'>\n" +
+        "<title>" + title[0] + "</title>\n" +
+        "<meta name='renderer' content='webkit'>\n" +
+        "<meta name='description' content='这是 " + __VERSION__.name + " 的固定报表'>\n" +
+        "<meta name='app-version' content='" + __VERSION__.version + "'>\n" +
+        "<meta name='app-author' content='" + __VERSION__.author + "'>\n" +
+        "<meta name='app-url' content='" + __VERSION__.url + "'>\n" +
+        "<meta name='report-author' content='" + (typeof __LOGS__.user.name !== "undefined" ? __LOGS__.user.name : "") + "'>\n" +
+        "<meta name='report-create-time' content='" + time + "'>\n" +
+        "<style>\n" +
+        "body{margin-top:15px;font-family: Arial, Verdana;" +
+        "background-image: -webkit-linear-gradient(45deg,rgba(255, 255, 255, 0.15) 25%,transparent 25%,transparent 50%,rgba(255, 255, 255, 0.15) 50%,rgba(255, 255, 255, 0.15) 75%,transparent 75%,transparent);}\n" +
+        "body ::-webkit-scrollbar {width: 5px;height: 4px;background: transparent;}\n" +
+        "body ::-webkit-scrollbar-thumb {" +
+        "border-radius: 3px;background-color: grey;" +
+        "background-image: -webkit-linear-gradient(45deg,rgba(255, 255, 255, 0.2) 25%,transparent 25%,transparent 50%,rgba(255, 255, 255, 0.2) 50%,rgba(255, 255, 255, 0.2) 75%,transparent 75%,transparent);\n" +
+        "}\n" +
+        "body ::-webkit-scrollbar-track {box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);background: transparent;border-radius: 3px;}\n" +
+        "div#_TITLE{margin: auto;width: 80%;overflow: hidden;}\n" +
+        "img#logo{margin: auto;float:left;width: 60px;height: 60px;transform: " + __VERSION__.logo.transform + "}\n" +
+        "div#title{margin: auto;width:80%;float:left;}\n" +
+        "h1#main-title{margin: auto;width: 100%;text-align: left;white-space: normal;word-break: break-all;word-wrap: break-word;}\n" +
+        "h3#sub-title{margin: auto;width: 100%;text-align: left;white-space: normal;word-break: break-all;word-wrap: break-word;}\n" +
+        "h6#footer{margin: auto;width: 80%;text-align: center}\n" +
+        "div#_TABS{margin: auto;padding-left: 5px;padding-right: 5px;width: 80%;overflow: hidden;height: 100%}\n" +
+        "div#_ECHARTS{margin: auto;padding-left: 5px;padding-right: 5px;width: 80%;border: 1px solid coral;border-radius: 5px;overflow: hidden;height: 100%;display: table; text-align: center}\n" +
+        "div#_TABLE{margin: auto;padding-left: 5px;padding-right: 5px;width: 80%;border: 1px solid coral;border-radius: 5px;overflow: scroll;display: none}\n" +
+        "div#_SCRIPT{margin: auto;font-size: 90%;padding-left: 5px;padding-right: 5px;width: 80%;border: 1px solid coral;border-radius: 5px;overflow: hidden;height: 100%;line-height: 2;display: none}\n" +
+        "div#_CONFIGS{margin: auto;font-size: 80%;padding-left: 5px;padding-right: 5px;width: 80%;border: 1px solid coral;border-radius: 5px;overflow: hidden;height: 100%;display: none;" +
+        "-webkit-column-count: 2;column-count: 2;column-fill: auto}\n" +
+        "img#_FULLSCREEN{padding:0px;cursor: pointer;margin-left: 20px;outline-style: none;border-bottom-width: 0px;float: right}\n" +
+        "div#_PAGES{margin: 5px;border-top:1px solid gray;}\n" +
+        "div#_CODES{margin: auto;padding-left: 5px;padding-right: 5px;width: 80%;border: 1px solid coral;border-radius: 5px;overflow: hidden;height: 100%;display: none}\n" +
+        "code{cursor: pointer;font-family: Verdana,Arial;font-size: 80%;width: 100%;white-space: normal;word-break: break-all;word-wrap: break-word;display:none}\n" +
+        "code#sql{cursor: pointer;font-family: Verdana,Arial;font-size: 80%;height: 100%;width: 100%;white-space: normal;word-break: break-all;word-wrap: break-word;display:block;margin:10px;}\n" +
+        "a.link{font-size: 100%;padding-left: 5px;padding-right: 5px;background-color: sandybrown;outline-style: none;border-radius: 4px;text-decoration:none;}\n" +
+        "span.tabButton-selected{cursor: pointer;font-size: 100%;padding-left: 5px;padding-right: 5px;background-color: #00A7AA;outline-style: none;border-top-left-radius: 4px;border-top-right-radius: 4px;border: 1px solid coral;border-bottom-width: 0px;}\n" +
+        "span.tabButton-unselected{cursor: pointer;font-size: 100%;padding-left: 5px;padding-right: 5px;outline-style: none;border-top-left-radius: 4px;border-top-right-radius: 4px;border: 1px solid gray;border-bottom-width: 0px;}\n" +
+        "span.tabButton-unselected:hover{background-color: sandybrown}\n" +
+        "span.tabButton-theme{height: 100%;float: right;cursor: pointer;font-size: 100%;background-color: transparent;outline-style: none;}\n" +
+        "span.theme{height: 100%;cursor: pointer;font-size: 80%;width: 50px;outline-style: none;}\n" +
+        "span.theme-selected{height: 100%;cursor: pointer;font-size: 90%;width: 50px;outline-style: none;border:1px solid gray;border-radius: 2px}\n" +
+        "dl{padding-left: 5px;padding-right: 5px;}\n" +
+        "dt{cursor: pointer;outline-style: none;border-radius: 4px}\n" +
+        "dt:hover{background-color: rgba(0, 0, 0, 0.1);}\n" +
+        "span.exp-open{cursor: pointer;outline-style: none;color:mediumvioletred;font-weight: bolder}\n" +
+        "span.exp-close{cursor: pointer;outline-style: none;color:darkgreen;font-weight: bolder}\n" +
+        "dd{display:none;cursor: pointer;font-size: 100%;padding-left: 5px;padding-right: 5px;outline-style: none;border-radius: 4px;overflow: hidden;white-space: nowrap;word-break: keep-all;text-overflow: ellipsis;-o-text-overflow: ellipsis;}\n" +
+        "span.configs-name{cursor: pointer;font-size: 100%;padding-left: 5px;padding-right: 5px;background-color: sandybrown;outline-style: none;border-radius: 4px;border: 1px solid gray;}\n" +
+        "span.configs-value{cursor: pointer;font-size: 100%;padding-left: 5px;padding-right: 5px;background-color: #00A7AA;outline-style: none;border-radius: 4px;border: 1px solid gray;}\n" +
+        "span.SQLWorda{cursor: pointer;padding-left: 3px;padding-right: 3px;background-color: #00A7AA;outline-style: none;border-radius: 4px;}\n" +
+        "span.SQLWordb{cursor: pointer;padding-left: 3px;padding-right: 3px;background-color: sandybrown;outline-style: none;border-radius: 4px;}\n" +
+        "span.SQLWordc{cursor: pointer;padding-left: 3px;padding-right: 3px;background-color: rosybrown;outline-style: none;border-radius: 4px;}\n" +
+        "span.SQLWordd{cursor: pointer;margin-left:0px;margin-right:0px;padding-left: 0px;padding-right: 0px;background-color: transparent;color: coral;outline-style: none;font-weight:bold}\n" +
+        "p.SQLWorde{cursor: pointer;margin-right:5px;margin-right:20px;padding-left: 5px;padding-right: 5px;background-color: rgba(0, 0, 0, 0.1);outline-style: none;border-radius: 4px;}\n" +
+        "span.SQLWordf{cursor: pointer;margin-left:0px;margin-right:0px;padding-left: 0px;padding-right: 0px;background-color: transparent;color: green;outline-style: none;font-weight:bold}\n" +
+        "span.SQLWordg{cursor: pointer;outline-style: none;color:mediumvioletred;font-weight: bolder}\n" +
+        "span#echarts{margin: auto;display: table-cell; vertical-align: middle;}\n" +
+        "table.table{font-size: 100%;margin: 6px;line-height:12px;border-collapse:collapse;cursor: pointer;position:relative;min-width: 33%;border-radius: 5px;background-color: transparent;}\n" +
+        "tr{height: 25px;background-color:rgba(0, 0, 0, 0);}\n" +
+        "tr:hover{background-color:rosybrown;}\n" +
+        "tr.alt-line{background-color:rgba(0, 0, 0, 0.15);}\n" +
+        "tr.alt-line:hover{background-color:rosybrown;}\n" +
+        "th{border-radius: 4px;margin: 0px;padding: 3px 3px 2px 3px;white-space: nowrap;word-break: keep-all;overflow: hidden;" +
+        "text-overflow: ellipsis;-o-text-overflow: ellipsis;font-weight: bolder;text-align: center;background-color: #00A7AA;color: #DCDCDC}\n" +
+        "th:hover{background-color: #008080;}\n" +
+        "td{border-bottom:1px solid gray;margin: 2px;padding:3px 3px 2px 3px;white-space: nowrap; word-break: keep-all;" +
+        "overflow: hidden;text-overflow: ellipsis;-o-text-overflow: ellipsis;}\n" +
+        "td:hover{border-bottom:2px solid #00A7AA}\n" +
+        "span.page-tab{float:left;cursor: pointer;width: 50px;font-size: 80%;text-align: center;border-right:1px solid gray;border-bottom-left-radius: 6px;border-bottom-right-radius: 36px;}" +
+        "span.page-tab-selected{float:left;cursor: pointer;width: 50px;font-size: 80%;background-color: #00A7AA;text-align: center;border-right:1px solid gray;border-bottom-left-radius: 6px;border-bottom-right-radius: 36px;}" +
+        "span.page-tab:hover{background-color: sandybrown;}\n" +
+        "span.page-tab-left{float:left;cursor: pointer;width: 50px;font-size: 80%;text-align: center;border-left:1px solid gray;border-bottom-right-radius: 6px;border-bottom-left-radius: 36px;}" +
+        "span.page-tab-left:hover{background-color: sandybrown;}\n" +
+        "</style>\n" +
+        getScript(__VERSION__.main, jsPath, __VERSION__.echarts, __DATASET__.configs.reportThemes.value) +
+        "</head>\n" +
+        "<body onload='init()'>\n" +
+        "<div id='_TITLE'>\n" +
+        "<image id='logo' svg='" + __SYS_IMAGES_SVG__.getSVG(__VERSION__.logo.name) + "' color='" + __THEMES__.get().color + "'></image>\n" +
+        "<div id='title'>\n" +
+        "<h1 id='main-title'>" + title[0] + "</h1>\n" +
+        "<h3 id='sub-title'>" + (title.length > 1 ? title.slice(1, title.length).join("&emsp;") : "") + "</h3>\n" +
+        "</div>\n" +
+        "</div>\n" +
+        "<div id='_TABS'>\n" +
+        "<span class='tabButton-selected' id='ECHARTS' onclick='selectTab(this.id)'>数据视图</span>\n" +
+        "<span class='tabButton-unselected' id='TABLE' onclick='selectTab(this.id)'>数据报表</span>\n" +
+        "<span class='tabButton-unselected' id='SCRIPT' onclick='selectTab(this.id)'>数据脚本</span>\n" +
+        "<span class='tabButton-unselected' id='CONFIGS' onclick='selectTab(this.id)'>视图参数</span>\n" +
+        link + "\n" +
+        "<image id='_FULLSCREEN' svg='" + __SYS_IMAGES_SVG__.getSVG("fullscreen") + "'></image>\n" +
+        "<span class='tabButton-theme' id='_THEMES'></span>\n" +
+        "</div>\n" +
+        "<div id='_ECHARTS'>\n" +
+        "<span id='echarts_content'><image id='echarts-image' src = '" + myChart.getDataURL({excludeComponents: ['toolbox']}) + "' width = '" + myChart.getWidth() + "' height='" + myChart.getHeight() + "'></image></span>\n" +
+        "</div>\n" +
+        "<div id='_TABLE'>\n" +
+        "</div>\n" +
+        "<div id='_CONFIGS'>\n" +
+        "</div>\n" +
+        "<div id='_SCRIPT'><code id='sql'></code></div>\n" +
+        "<div id='_CODES'>\n" +
+        "<code>" + report + "</code>\n" +
+        "<code>" + report.hex_md5_hash() + "</code>\n" +
+        "<code>" + configs + "</code>\n" +
+        "<code>" + configs.hex_md5_hash() + "</code>\n" +
+        "</div>\n" +
+        "<h6 id='footer'>适用于<a class='link' href = 'https://www.google.cn/chrome/index.html' target='_blank'>Google Chrome</a>或<a class='link' href = 'https://www.microsoft.com/zh-cn/edge?form=MY01BV&OCID=MY01BV&r=1' target='_blank'>Microsoft Edge</a>浏览器&emsp;技术支持: <a class='link' href = '" + __VERSION__.url + "' target='_blank'>" +
+        __VERSION__.author + "</a>&emsp;电话: " + __VERSION__.tel + "&emsp;邮箱: <a class='link' href='mailto:" + __VERSION__.email + "'>" + __VERSION__.email + "</a>&emsp;创建时间:" + time + "</h6>\n" +
+        "</body>\n" +
+        "</html>";
+    let blob = new Blob([str2ab(html)], {type: "text/html"});
+    openDownloadDialog(blob, title[0] + ".report.html");
 }
 

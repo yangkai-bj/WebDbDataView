@@ -126,7 +126,7 @@ img.title_close_button:hover{
 }
 
 .error-dialog {
-    font-size: 90%;
+    font-size: 100%;
     position: fixed;
     margin: 10px;
     padding: 10px;
@@ -157,7 +157,7 @@ img.title_close_button:hover{
 }
 
 .error-dialog .name{
-    font-size: 80%;
+    font-size: 100%;
     padding-left: 5px;
     padding-right: 5px;
     color: snow;
@@ -288,7 +288,7 @@ img.title_close_button:hover{
     white-space: nowrap;
     overflow: hidden;
     border-radius: 0px;
-    font-size: 135%;
+    font-size: 100%;
     /*border-top:1px solid var(--tab-border-color);*/
 }
 
@@ -296,7 +296,7 @@ img.title_close_button:hover{
     float: right;
     cursor: pointer;
     width: 60px;
-    font-size: 60%;
+    font-size: 100%;
     text-align: center;
 }
 
@@ -334,7 +334,7 @@ img.title_close_button:hover{
     float: left;
     cursor: pointer;
     width: 50px;
-    font-size: 60%;
+    font-size: 100%;
     text-align: center;
     color:var(--toolbar-background-color);
     border-right:1px solid var(--toolbar-background-color);
@@ -387,7 +387,7 @@ img.title_close_button:hover{
     height: 36px;
     width: 36px;
     text-align: center;
-    font-size: 140%;
+    font-size: 100%;
     line-height: 36px;
     margin: 0px;
     cursor: pointer;
@@ -1166,7 +1166,7 @@ textarea:enabled {
 
 .ui-container-scroll-div {
     position: relative;
-    font-size: 95%;
+    font-size: 100%;
     width: 100%;
     float: left;
     height: 300px;
@@ -1176,7 +1176,7 @@ textarea:enabled {
 .ui-container-item {
     position: relative;
     width: 100%;
-    min-height: 20px;
+    min-height: 24px;
     vertical-align: bottom;
 }
 
@@ -1209,7 +1209,7 @@ textarea:enabled {
 
 .ui-container-item-input {
     position: relative;
-    font-size: 90%;
+    font-size: 100%;
     padding: 0px;
     margin: 0px;
     width: 70%;
@@ -1220,7 +1220,7 @@ textarea:enabled {
 
 .ui-container-item-select {
     position: relative;
-    font-size: 90%;
+    font-size: 100%;
     padding: 0px;
     margin: 0px;
     width: 70%;
@@ -1245,7 +1245,7 @@ textarea:enabled {
     height: 1px;
     border-width: 0;
     color: gray;
-    background-color: #00A7AA;
+    background-color: var(--main-border-color);
     width: 100%;
 }
 

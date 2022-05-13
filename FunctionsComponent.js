@@ -1,9 +1,19 @@
 function $(id) {
-    try {
-        return document.getElementById(id);
-    } catch (e) {
-        return null;
-    }
+    return document.getElementById(id);
+}
+
+function $1(name, index) {
+    if (typeof index !== "undefined")
+        return document.getElementsByClassName(name)[index];
+    else
+        return document.getElementsByClassName(name);
+}
+
+function $2(name, index) {
+    if (typeof index !== "undefined")
+        return document.getElementsByTagName(name)[index];
+    else
+        return document.getElementsByTagName(name);
 }
 
 function sleep(delay) {

@@ -1072,7 +1072,7 @@ function getFileSecurity(parent) {
     cancel.className = "button";
     cancel.innerText = "退出";
     cancel.onclick = close.onclick = function () {
-        __XMLHTTP__.unhook(document.getElementsByClassName("http-server-datetime")[0]);
+        __XMLHTTP__.unhook($1("http-server-datetime",0));
         parent.removeChild($("ui_fileSecurity"));
     };
     tool.appendChild(cancel);

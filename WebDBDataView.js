@@ -3,8 +3,8 @@ const __VERSION__ = {
     name: "Web DataView for SQLite Database of browser",
     main: "WebDBDataView.js",
     echarts: "echarts/v5.3.2",
-    version: "3.2.9",
-    date: "2022/05/08",
+    version: "3.3.0",
+    date: "2022/05/12",
     comment: [
         "-- 2021/03/08",
         "优化算法和压缩代码.",
@@ -451,7 +451,7 @@ var __LOGS__ = {
             ['Get help from:', __VERSION__.url],
         ];
         let aoa = [];
-        let columns = ["日期", "时间", "日志", "警告"];
+        let columns = ["日期", "时间", "日志", "警告", "允许复制"];
         aoa.push(columns);
         try {
             let logs = this.data[date];
@@ -461,6 +461,7 @@ var __LOGS__ = {
                 row.push(log.time);
                 row.push(log.message.decode());
                 row.push(log.warning);
+                row.push(log.copyto);
                 aoa.push(row);
             }
         } catch (e) {
@@ -571,11 +572,12 @@ var __LOGS__ = {
         tool.appendChild(help);
         setDialogDrag(title);
     },
-    viewMessage: function (msg, warning) {
+    viewMessage: function (msg, warning, copyto) {
         let log = {
             time: new Date(),
             message: msg,
-            warning: typeof warning == "undefined" ? false : warning
+            warning: typeof warning == "undefined" ? false : warning,
+            copyto: typeof copyto === 'undefined' ? false : ((typeof warning == "undefined" ? false : warning) ? true : copyto)
         };
 
         let msgbox = $("messageBox");
@@ -583,16 +585,18 @@ var __LOGS__ = {
         dt.type = "dt";
         dt.className = "dt";
         dt.id = dt.innerText = log.time.format("yyyy-MM-dd hh:mm:ss S");
-        let copyto = __SYS_IMAGES_SVG__.getImage("copy", __THEMES__.get().color, "12px", '12px', null, __THEMES__.get().hover);
-        copyto.title = "复制";
-        copyto.style.cssFloat = "right";
-        copyto.onclick = function() {
-            let target = this.parentNode.getElementsByClassName("message")[0];
-            setClipboardListener(target);
-            document.execCommand("copy");
-            UI.alert.show("提示", "日志内容已复制到粘贴板.");
-        };
-        dt.appendChild(copyto);
+        if (log.copyto) {
+            let copyto = __SYS_IMAGES_SVG__.getImage("copy", __THEMES__.get().color, "18px", '18px', null, __THEMES__.get().hover);
+            copyto.title = "复制";
+            copyto.style.cssFloat = "right";
+            copyto.onclick = function () {
+                let target = this.parentNode.getElementsByClassName("message")[0];
+                setClipboardListener(target);
+                document.execCommand("copy");
+                UI.alert.show("提示", "日志内容已复制到粘贴板.");
+            };
+            dt.appendChild(copyto);
+        }
 
         if (this.configs.logsOrderby.value == "DESC") {
             let first = msgbox.firstChild;
@@ -2391,27 +2395,27 @@ function viewDataset(index, pageindex, syncSql) {
     container.appendChild(table);
 }
 
-function fillSqlParam(sql) {
-    let reg = new RegExp(/\{[a-zA-Z0-9\u4e00-\u9fa5]+\}/, "g");
-    let params = sql.match(reg);
-    if (params != null) {
-        //参数去重
-        let temp = [];
-        for (let i = 0; i < params.length; i++) {
-            if (temp.indexOf(params[i]) === -1)
-                temp.push(params[i]);
-        }
-        params = temp.slice(0);
-        for (let i = 0; i < params.length; i++) {
-            let param = params[i].toString();
-            param = param.substring(param.indexOf("{") + 1, param.indexOf("}"));
-            let value = prompt(param + " : ");
-            if (value != null)
-                sql = sql.replaceAll(params[i].toString(), value.toString());
-        }
-    }
-    return sql;
-}
+// function fillSqlParam(sql) {
+//     let reg = new RegExp(/\{[a-zA-Z0-9\u4e00-\u9fa5]+\}/, "g");
+//     let params = sql.match(reg);
+//     if (params != null) {
+//         //参数去重
+//         let temp = [];
+//         for (let i = 0; i < params.length; i++) {
+//             if (temp.indexOf(params[i]) === -1)
+//                 temp.push(params[i]);
+//         }
+//         params = temp.slice(0);
+//         for (let i = 0; i < params.length; i++) {
+//             let param = params[i].toString();
+//             param = param.substring(param.indexOf("{") + 1, param.indexOf("}"));
+//             let value = prompt(param + " : ");
+//             if (value != null)
+//                 sql = sql.replaceAll(params[i].toString(), value.toString());
+//         }
+//     }
+//     return sql;
+// }
 
 function execute(title) {
     if (__CONFIGS__.CURRENT_DATABASE.connect != null) {
@@ -2421,9 +2425,9 @@ function execute(title) {
                 selection = __SQLEDITOR__.codeMirror.getSelection();
             else
                 selection = __SQLEDITOR__.codeMirror.getValue();
-            if (__SQLEDITOR__.parameter == null)
-                selection = fillSqlParam(selection);
-            else {
+            if (__SQLEDITOR__.parameter !== null) {
+                //     selection = fillSqlParam(selection);
+                // } else {
                 for (let param in __SQLEDITOR__.parameter) {
                     selection = selection.replaceAll("{" + param.toString() + "}", __SQLEDITOR__.parameter[param].toString())
                     title = title.replaceAll("{" + param.toString() + "}", __SQLEDITOR__.parameter[param].toString());
@@ -2434,7 +2438,7 @@ function execute(title) {
 
             let sqls = [];
             if (selection.trim() != "") {
-                __LOGS__.viewMessage(selection);
+                __LOGS__.viewMessage(selection, false, true);
                 sqls = selection.split(";");
 
                 for (let s = 0; s < sqls.length; s++) {
@@ -2571,11 +2575,11 @@ function executeFunction(title) {
         selection = __SQLEDITOR__.codeMirror.getSelection();
     else
         selection = __SQLEDITOR__.codeMirror.getValue();
-    if (__SQLEDITOR__.parameter == null)
-        selection = fillSqlParam(selection);
-    else {
+    if (__SQLEDITOR__.parameter !== null) {
+        //     selection = fillSqlParam(selection);
+        // } else {
         for (let param in __SQLEDITOR__.parameter) {
-            selection = selection.replaceAll("{" + param.toString() + "}", __SQLEDITOR__.parameter[param].toString())
+            selection = selection.replaceAll("{" + param.toString() + "}", __SQLEDITOR__.parameter[param].toString());
             title = title.replaceAll("{" + param.toString() + "}", __SQLEDITOR__.parameter[param].toString());
         }
     }
@@ -2585,7 +2589,7 @@ function executeFunction(title) {
     let funs = [];
     if (selection.trim() != "") {
         funs = selection.split(";");
-        __LOGS__.viewMessage(selection);
+        __LOGS__.viewMessage(selection, false, true);
 
         let data = [];
         let xRange = __ECHARTS__.configs.mathFunctionXRange.value.toArray([-100, 100], ",");
@@ -3127,7 +3131,7 @@ function init() {
         logo.style.cssFloat = "left";
         $("main-title").appendChild(logo);
         $("main-title").ondblclick = function () {
-            requestFullScreen(document.body);
+            requestFullScreen(document.documentElement);
         };
 
         let user = __SYS_IMAGES_SVG__.getImage("user_add",  __THEMES__.get().color, "32px", "32px", null, __THEMES__.get().hover);
@@ -3231,7 +3235,7 @@ function initConfigs() {
                 }
             }
 
-            let helpurl = document.getElementsByClassName("help-url");
+            let helpurl = $1("help-url");
             for (let i = 0; i < helpurl.length; i++) {
                 helpurl[i].href = helpurl[i].innerHTML = __VERSION__.url;
             }
@@ -3440,7 +3444,7 @@ function initMenus() {
         importtb.className = "button";
         importtb.innerText = "导入";
         importtb.id = "import_data";
-        importtb.appendChild(__SYS_IMAGES_SVG__.getHelp("import", importtb, importtb.id, "auto", "white", "16px", "16px"));
+        importtb.appendChild(__SYS_IMAGES_SVG__.getHelp("import", importtb, importtb.id, "auto", "white", "14px", "14px"));
         let help_importtb = $("help-import-data");
         importtb.onclick = help_importtb.onclick = function () {
             if (__CONFIGS__.CURRENT_DATABASE.connect == null) {
@@ -3457,7 +3461,7 @@ function initMenus() {
         exConstr.className = "button";
         exConstr.innerText = "结构";
         exConstr.id = "show_table_construct";
-        exConstr.appendChild(__SYS_IMAGES_SVG__.getHelp("construct", exConstr, exConstr.id, "auto", "white", "16px", "16px"));
+        exConstr.appendChild(__SYS_IMAGES_SVG__.getHelp("construct", exConstr, exConstr.id, "auto", "white", "14px", "14px"));
         exConstr.onclick = function () {
             if (__CONFIGS__.CURRENT_DATABASE.connect == null) {
                 UI.alert.show("注意", "请选择一个数据库连接.", "auto");
@@ -3589,7 +3593,7 @@ function initMenus() {
         loadfile.className = "button";
         loadfile.innerText = "导入";
         loadfile.id = "load_sql_from_file";
-        loadfile.appendChild(__SYS_IMAGES_SVG__.getHelp("import", loadfile, loadfile.id, "auto", "white", "16px", "16px"));
+        loadfile.appendChild(__SYS_IMAGES_SVG__.getHelp("import", loadfile, loadfile.id, "auto", "white", "14px", "14px"));
         let help_loadsql = $("help-load-sql");
         loadfile.onclick = help_loadsql.onclick = function () {
             $("open-sql-file").click();
@@ -3601,7 +3605,7 @@ function initMenus() {
         saveas.className = "button";
         saveas.innerText = "导出";
         saveas.id = "save_sql_to_file";
-        saveas.appendChild(__SYS_IMAGES_SVG__.getHelp("export", saveas, saveas.id, "auto", "white", "16px", "16px"));
+        saveas.appendChild(__SYS_IMAGES_SVG__.getHelp("export", saveas, saveas.id, "auto", "white", "13px", "13px"));
         let help_downloadsql = $("help-download-sql");
         saveas.onclick = help_downloadsql.onclick = function () {
             UI.prompt.show("输入", {"文件名称": __SQLEDITOR__.title != null ? __SQLEDITOR__.title.split("_")[0] : ""}, "auto", function (args, values) {
@@ -3629,7 +3633,7 @@ function initMenus() {
         backup.className = "button";
         backup.innerText = "备份";
         backup.id = "backup_sql_to_file";
-        backup.appendChild(__SYS_IMAGES_SVG__.getHelp("backup", backup, backup.id, "auto", "white", "16px", "16px"));
+        backup.appendChild(__SYS_IMAGES_SVG__.getHelp("backup", backup, backup.id, "auto", "white", "14px", "14px"));
         backup.onclick = function () {
             UI.sqlManagerDialog.show("auto", function (args, values) {
 
@@ -3642,7 +3646,7 @@ function initMenus() {
         execsql.className = "button";
         execsql.innerText = "提交";
         execsql.id = "execute-sql";
-        execsql.appendChild(__SYS_IMAGES_SVG__.getHelp("execute", execsql, "execute_sql", "auto", "white", "16px", "16px"));
+        execsql.appendChild(__SYS_IMAGES_SVG__.getHelp("execute", execsql, "execute_sql", "auto", "white", "14px", "14px"));
         let help_execsql = $("help-execute-sql");
         execsql.onclick = help_execsql.onclick = function () {
             if (checkStorage()) {
@@ -3931,10 +3935,28 @@ function initMenus() {
         };
         UI.tooltip(openEchartsFile,　"打开固定报表");
 
+        let getReport = document.createElement("div");
+        datatools.appendChild(getReport);
+        getReport.className = "charButton";
+        getReport.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("report_download","white","20px", "20px");
+        getReport.style.cssFloat = "left";
+        getReport.onclick = $("download-html-report").onclick = function () {
+            let container = $("tableContainer");
+            let myEcharts = echarts.getInstanceByDom(container);
+            if (typeof myEcharts !== "undefined") {
+                if (typeof  __ECHARTS__.history[myEcharts.id] !== "undefined")
+                    getEchartsReport(container, myEcharts);
+                else
+                    UI.alert.show("提示","请生成数据视图后再下载固定报表.","auto");
+            } else
+                UI.alert.show("提示","请生成数据视图后再下载固定报表.","auto");
+        };
+        UI.tooltip(getReport, "下载固定报表");
+
         let dataReader = document.createElement("div");
         datatools.appendChild(dataReader);
         dataReader.className = "charButton";
-        dataReader.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("onload","white","20px", "20px");
+        dataReader.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("onload","white","18px", "18px");
         dataReader.style.cssFloat = "left";
         dataReader.id = "data-reader";
         dataReader.onclick = $("read-xls-file").onclick = function () {
@@ -3948,7 +3970,7 @@ function initMenus() {
         let datatran = document.createElement("div");
         datatools.appendChild(datatran);
         datatran.className = "charButton";
-        datatran.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("datatran","white","20px", "20px");
+        datatran.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("datatran","white","18px", "18px");
         datatran.id = "dataset-transpose";
         let help_datasettranspose = $("help-dataset-transpose");
         datatran.onclick = help_datasettranspose.onclick = function () {
@@ -3962,7 +3984,7 @@ function initMenus() {
         let dataslice = document.createElement("div");
         datatools.appendChild(dataslice);
         dataslice.className = "charButton";
-        dataslice.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("slice","white","20px", "20px");
+        dataslice.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("slice","white","16px", "16px");
         dataslice.id = "dataset-slice";
         let help_datasetslice = $("help-dataset-slice");
         dataslice.onclick = help_datasetslice.onclick = function () {
@@ -3996,7 +4018,7 @@ function initMenus() {
         let download = document.createElement("div");
         datatools.appendChild(download);
         download.className = "charButton";
-        download.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("download","white","20px", "20px");
+        download.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("multi_download","white","18px", "18px");
         download.id = "dataset-download";
         let help_datasetdownload = $("help-dataset-download");
         download.onclick = help_datasetdownload.onclick = function () {
@@ -4215,7 +4237,7 @@ function initMenus() {
         let removeall = document.createElement("div");
         datatools.appendChild(removeall);
         removeall.className = "charButton";
-        removeall.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("clearSets","white","20px", "20px");
+        removeall.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("removeall","white","18px", "18px");
         removeall.id = "dataset-removeall";
         removeall.onclick = function () {
             if (__DATASET__.result.length > 0) {
@@ -4245,7 +4267,7 @@ function initMenus() {
         let mailto = document.createElement("div");
         datatools.appendChild(mailto);
         mailto.className = "charButton";
-        mailto.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("email","white","20px", "20px");
+        mailto.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("email","white","18px", "18px");
         mailto.onclick = function () {
             getMailComponent("auto");
         };
