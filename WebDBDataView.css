@@ -861,7 +861,7 @@ hr {
     height:1px;
     border-width:0;
     color:gray;
-    background-color:#00A7AA;
+    background-color:var(--main-border-color);
     width: 100%;
     position: static;
 }
@@ -1142,6 +1142,7 @@ textarea:enabled {
 }
 
 .ui-container-body {
+    line-height: 20px;
     font-size: 90%;
     position: absolute;
     top: 50%;
@@ -1158,7 +1159,6 @@ textarea:enabled {
     box-shadow: inset 0px 0 12px 0px rgba(0,0,0,0.75);
     -moz-box-shadow: 0px 0 12px 0px rgba(0,0,0,0.75);
     -webkit-box-shadow: 0px 0 12px 0px rgba(0,0,0,0.75);
-    line-height: 20px;
     z-index: 9999;
     -webkit-animation: content-show 1s 1;
     animation: content-show 1s 1;
@@ -1174,15 +1174,14 @@ textarea:enabled {
 }
 
 .ui-container-item {
-    position: relative;
+    line-height: 16px;
     width: 100%;
-    min-height: 24px;
+    min-height: 26px;
     vertical-align: bottom;
 }
 
 .ui-container-item-name {
-    width:30%;
-    position: relative;
+    width: 30%;
     text-align: left;
     float: left;
     overflow: hidden;
@@ -1195,50 +1194,67 @@ textarea:enabled {
     background-color: transparent;
     color: var(--main-title-color);
     cursor: pointer;
+    vertical-align: bottom;
 }
 
-.ui-container-item-checkbox{
-    position: relative;
-    float:left;
+.ui-container-item-checkbox {
+    float: left;
+    vertical-align: bottom;
 }
 
-.ui-container-item-radio{
-    position: relative;
-    float:left;
+.ui-container-item-radio {
+    float: left;
+    vertical-align: bottom;
 }
 
 .ui-container-item-input {
-    position: relative;
     font-size: 100%;
     padding: 0px;
     margin: 0px;
     width: 70%;
     float: left;
     height: 100%;
-
+    vertical-align: bottom;
 }
 
 .ui-container-item-select {
-    position: relative;
     font-size: 100%;
     padding: 0px;
     margin: 0px;
     width: 70%;
     float: left;
     height: 100%;
+    vertical-align: bottom;
 }
 
 .ui-container-title{
     width: 100%;
     cursor: move;
-    height: 22px;
+    line-height: 24px;
+    height: 24px;
     color: var(--toolbar-background-color);
-    border-radius: 10px;
+    border-radius: 12px;
+    display: table;
+    background-repeat: no-repeat;
 }
 
 .ui-container-title:hover{
     background-color: var(--toolbar-button-hover-background-color);
     color: whitesmoke;
+}
+
+.ui-container-title span {
+    height: 100%;
+    display: table-cell;
+    vertical-align: middle;
+    float: left;
+    margin-left: 24px;
+}
+
+ui-container-logo {
+    float: left;
+    display: table-cell;
+    vertical-align: middle;
 }
 
 .ui-container-hr{
@@ -1250,6 +1266,8 @@ textarea:enabled {
 }
 
 .ui-container-close{
+    display: table-cell;
+    vertical-align: middle;
     cursor: pointer;
     float: right;
 }

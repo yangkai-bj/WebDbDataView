@@ -107,8 +107,10 @@ function getDataReader(parent, callback) {
 
     let title = document.createElement("div");
     title.className = "ui-container-title";
+    title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name,__THEMES__.get().color, "24px", "24px");
+
     let span = document.createElement("span");
-    span.innerHTML = "● 读取外部数据";
+    span.innerHTML = "读取外部数据";
     title.appendChild(span);
     let close = __SYS_IMAGES_SVG__.getImage("close", __THEMES__.get().color, "24px", "24px", null, __THEMES__.get().hover);
     close.className = "ui-container-close";

@@ -220,8 +220,10 @@ var UI = {
 
             let title = document.createElement("div");
             title.className = "ui-container-title";
+            title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name,__THEMES__.get().color, "24px", "24px");
+
             let span = document.createElement("span");
-            span.innerHTML = "● " + this.title;
+            span.innerHTML = this.title;
             title.appendChild(span);
             let close = __SYS_IMAGES_SVG__.getImage("close",__THEMES__.get().color, "24px", "24px", null, __THEMES__.get().hover);
             close.className = "ui-container-close";
@@ -573,8 +575,10 @@ var UI = {
 
         let title = document.createElement("div");
         title.className = "ui-container-title";
+        title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name,__THEMES__.get().color, "24px", "24px");
+
         let span = document.createElement("span");
-        span.innerHTML = "● " + message;
+        span.innerHTML = message;
         title.appendChild(span);
         let close = __SYS_IMAGES_SVG__.getImage("close",__THEMES__.get().color, "24px", "24px", null, __THEMES__.get().hover);
         close.className = "ui-container-close";
@@ -801,8 +805,10 @@ var UI = {
 
         let title = document.createElement("div");
         title.className = "ui-container-title";
+        title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name,__THEMES__.get().color, "24px", "24px");
+
         let span = document.createElement("span");
-        span.innerHTML = "● 二维码";
+        span.innerHTML = "二维码";
         title.appendChild(span);
         let close = __SYS_IMAGES_SVG__.getImage("close",__THEMES__.get().color, "24px", "24px", null, __THEMES__.get().hover);
         close.className = "ui-container-close";
@@ -1025,8 +1031,10 @@ var UI = {
 
             let title = document.createElement("div");
             title.className = "ui-container-title";
+            title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name,__THEMES__.get().color, "24px", "24px");
+
             let span = document.createElement("span");
-            span.innerHTML = "● " + this.title;
+            span.innerHTML = this.title;
             title.appendChild(span);
             let close = __SYS_IMAGES_SVG__.getImage("close",__THEMES__.get().color, "24px", "24px", null, __THEMES__.get().hover);
             close.className = "ui-container-close";
@@ -1119,8 +1127,10 @@ var UI = {
 
             let title = document.createElement("div");
             title.className = "ui-container-title";
+            title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name,__THEMES__.get().color, "24px", "24px");
+
             let span = document.createElement("span");
-            span.innerHTML = "● " + this.title;
+            span.innerHTML = this.title;
             title.appendChild(span);
             let close = __SYS_IMAGES_SVG__.getImage("close",__THEMES__.get().color, "24px", "24px", null, __THEMES__.get().hover);
             close.className = "ui-container-close";
@@ -1239,8 +1249,9 @@ var UI = {
 
             let title = document.createElement("div");
             title.className = "ui-container-title";
+            title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name,__THEMES__.get().color, "24px", "24px");
             let span = document.createElement("span");
-            span.innerHTML = "● " + this.title;
+            span.innerHTML = this.title;
             title.appendChild(span);
             let close = __SYS_IMAGES_SVG__.getImage("close",__THEMES__.get().color, "24px", "24px", null, __THEMES__.get().hover);
             close.className = "ui-container-close";
@@ -1355,8 +1366,9 @@ var UI = {
 
             let title = document.createElement("div");
             title.className = "ui-container-title";
+            title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name,__THEMES__.get().color, "24px", "24px");
             let span = document.createElement("span");
-            span.innerHTML = "● " + this.title;
+            span.innerHTML = this.title;
             title.appendChild(span);
             let close = __SYS_IMAGES_SVG__.getImage("close",__THEMES__.get().color, "24px", "24px", null, __THEMES__.get().hover);
             close.className = "ui-container-close";
@@ -1476,8 +1488,9 @@ var UI = {
 
             let title = document.createElement("div");
             title.className = "ui-container-title";
+            title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name,__THEMES__.get().color, "24px", "24px");
             let span = document.createElement("span");
-            span.innerHTML = "● " + this.title;
+            span.innerHTML = this.title;
             title.appendChild(span);
             let close = __SYS_IMAGES_SVG__.getImage("close",__THEMES__.get().color, "24px", "24px", null, __THEMES__.get().hover);
             close.className = "ui-container-close";
@@ -1634,8 +1647,9 @@ var UI = {
 
             let title = document.createElement("div");
             title.className = "ui-container-title";
+            title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name,__THEMES__.get().color, "24px", "24px");
             let span = document.createElement("span");
-            span.innerHTML = "● " + this.title;
+            span.innerHTML = this.title;
             title.appendChild(span);
             let close = __SYS_IMAGES_SVG__.getImage("close",__THEMES__.get().color, "24px", "24px", null, __THEMES__.get().hover);
             close.className = "ui-container-close";
@@ -1846,8 +1860,9 @@ var UI = {
 
             let title = document.createElement("div");
             title.className = "ui-container-title";
+            title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name,__THEMES__.get().color, "24px", "24px");
             let span = document.createElement("span");
-            span.innerHTML = "● 脚本管理 ";
+            span.innerHTML = "脚本管理";
             title.appendChild(span);
             let close = __SYS_IMAGES_SVG__.getImage("close",__THEMES__.get().color, "24px", "24px", null, __THEMES__.get().hover);
             close.className = "ui-container-close";
@@ -2249,8 +2264,9 @@ var UI = {
 
         let title = document.createElement("div");
         title.className = "ui-container-title";
+        title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name,__THEMES__.get().color, "24px", "24px");
         let span = document.createElement("span");
-        span.innerHTML = "● 分类计算";
+        span.innerHTML = "分类计算";
         title.appendChild(span);
         let close = __SYS_IMAGES_SVG__.getImage("close",__THEMES__.get().color, "24px", "24px", null, __THEMES__.get().hover);
         close.className = "ui-container-close";
@@ -2547,8 +2563,9 @@ var UI = {
 
         let title = document.createElement("div");
         title.className = "ui-container-title";
+        title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name,__THEMES__.get().color, "24px", "24px");
         let span = document.createElement("span");
-        span.innerHTML = "● 数据切片";
+        span.innerHTML = "数据切片";
         title.appendChild(span);
         let close = __SYS_IMAGES_SVG__.getImage("close",__THEMES__.get().color, "24px", "24px", null, __THEMES__.get().hover);
         close.className = "ui-container-close";
@@ -2731,8 +2748,9 @@ var UI = {
 
         let title = document.createElement("div");
         title.className = "ui-container-title";
+        title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name,__THEMES__.get().color, "24px", "24px");
         let span = document.createElement("span");
-        span.innerHTML = "● 筛选字段 [ " + columns[Number(colid)].name + " ]";
+        span.innerHTML = "筛选字段 [ " + columns[Number(colid)].name + " ]";
         title.appendChild(span);
         let close = __SYS_IMAGES_SVG__.getImage("close",__THEMES__.get().color, "24px", "24px", null, __THEMES__.get().hover);
         close.className = "ui-container-close";
@@ -2945,8 +2963,9 @@ var UI = {
 
         let title = document.createElement("div");
         title.className = "ui-container-title";
+        title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name,__THEMES__.get().color, "24px", "24px");
         let span = document.createElement("span");
-        span.innerHTML = "● 格式设置 [ " + columns[Number(colid)].name + " ]";
+        span.innerHTML = "格式设置 [ " + columns[Number(colid)].name + " ]";
         title.appendChild(span);
         let close = __SYS_IMAGES_SVG__.getImage("close",__THEMES__.get().color, "24px", "24px", null, __THEMES__.get().hover);
         close.className = "ui-container-close";
@@ -3167,8 +3186,9 @@ var SQLite = {
 
         let title = document.createElement("div");
         title.className = "ui-container-title";
+        title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name,__THEMES__.get().color, "24px", "24px");
         let span = document.createElement("span");
-        span.innerHTML = "● " + message +" ";
+        span.innerHTML = message +" ";
         title.appendChild(span);
         let close = __SYS_IMAGES_SVG__.getImage("close",__THEMES__.get().color, "24px", "24px", null, __THEMES__.get().hover);
         close.className = "ui-container-close";
@@ -3272,8 +3292,9 @@ var SQLite = {
 
         let title = document.createElement("div");
         title.className = "ui-container-title";
+        title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name,__THEMES__.get().color, "24px", "24px");
         let span = document.createElement("span");
-        span.innerHTML = "● 创建数据表 ";
+        span.innerHTML = "创建数据表 ";
         title.appendChild(span);
         let close = __SYS_IMAGES_SVG__.getImage("close",__THEMES__.get().color, "24px", "24px", null, __THEMES__.get().hover);
         close.className = "ui-container-close";
@@ -3892,8 +3913,9 @@ var SQLite = {
 
             let title = document.createElement("div");
             title.className = "ui-container-title";
+            title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name,__THEMES__.get().color, "24px", "24px");
             let span = document.createElement("span");
-            span.innerHTML = "● 导入数据";
+            span.innerHTML = "导入数据";
             title.appendChild(span);
             let close = __SYS_IMAGES_SVG__.getImage("close",__THEMES__.get().color, "24px", "24px", null, __THEMES__.get().hover);
             close.className = "ui-container-close";

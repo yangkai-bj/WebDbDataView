@@ -92,7 +92,7 @@ const __VERSION__ = {
     url: __SYS_LOGO_LINK__.link.getee.decode(),
     tel: __SYS_LOGO_LINK__.tel.decode(),
     email: __SYS_LOGO_LINK__.email.decode(),
-    logo: {name: "mouse", transform: "rotateY(180deg)"},
+    logo: {name: "squirrel", transform: "rotateY(0deg)"},
     notes: "",
     helps: {
         create_database_connect: "在浏览器中创建一个数据库(SQLite)。",
@@ -300,8 +300,10 @@ var __LOGS__ = {
 
         let title = document.createElement("div");
         title.className = "ui-container-title";
+        title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name,__THEMES__.get().color, "24px", "24px");
+
         let span = document.createElement("span");
-        span.innerHTML = "● 日志设置 ";
+        span.innerHTML = "日志设置 ";
         title.appendChild(span);
         let close = __SYS_IMAGES_SVG__.getImage("close",__THEMES__.get().color, "24px", "24px", null, __THEMES__.get().hover);
         close.className = "ui-container-close";
@@ -521,10 +523,11 @@ var __LOGS__ = {
 
         let title = document.createElement("div");
         title.className = "ui-container-title";
+        title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name,__THEMES__.get().color, "24px", "24px");
         let span = document.createElement("span");
         span.className = span.id = "error-title";
 
-        span.innerHTML = "● " + (typeof names[error.name] !== "undefined" ? names[error.name] : "其他未定义错误");
+        span.innerHTML = (typeof names[error.name] !== "undefined" ? names[error.name] : "其他未定义错误");
         title.appendChild(span);
         let close = __SYS_IMAGES_SVG__.getImage("close",__THEMES__.get().color, "24px", "24px", null, __THEMES__.get().hover);
         close.className = "ui-container-close";
@@ -1235,8 +1238,9 @@ var __XMLHTTP__ = {
 
          let title = document.createElement("div");
          title.className = "ui-container-title";
+         title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name,__THEMES__.get().color, "24px", "24px");
          let span = document.createElement("span");
-         span.innerHTML = "● 报表设置 ";
+         span.innerHTML = "报表设置";
          title.appendChild(span);
          let close = __SYS_IMAGES_SVG__.getImage("close", __THEMES__.get().color, "24px", "24px", null, __THEMES__.get().hover);
          close.className = "ui-container-close";
@@ -1663,8 +1667,9 @@ var __XMLHTTP__ = {
 
          let title = document.createElement("div");
          title.className = "ui-container-title";
+         title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name,__THEMES__.get().color, "24px", "24px");
          let span = document.createElement("span");
-         span.innerHTML = "● 编辑器设置 ";
+         span.innerHTML = "编辑器设置 ";
          title.appendChild(span);
          let close = __SYS_IMAGES_SVG__.getImage("close",__THEMES__.get().color, "24px", "24px", null, __THEMES__.get().hover);
          close.className = "ui-container-close";
@@ -5612,8 +5617,9 @@ function getImageBase64Code(parent, img) {
 
     let title = document.createElement("div");
     title.className = "ui-container-title";
+    title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name,__THEMES__.get().color, "24px", "24px");
     let span = document.createElement("span");
-    span.innerHTML = "● 设置背景";
+    span.innerHTML = "设置背景";
     title.appendChild(span);
     let close = __SYS_IMAGES_SVG__.getImage("close",__THEMES__.get().color, "24px", "24px", null, __THEMES__.get().hover);
     close.className = "ui-container-close";
