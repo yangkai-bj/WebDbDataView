@@ -4,7 +4,7 @@ const __VERSION__ = {
     main: "WebDBDataView.js",
     echarts: "echarts/v5.3.2",
     version: "3.3.0",
-    date: "2022/05/12",
+    date: "2022/05/19",
     comment: [
         "-- 2021/03/08",
         "优化算法和压缩代码.",
@@ -92,7 +92,7 @@ const __VERSION__ = {
     url: __SYS_LOGO_LINK__.link.getee.decode(),
     tel: __SYS_LOGO_LINK__.tel.decode(),
     email: __SYS_LOGO_LINK__.email.decode(),
-    logo: {name: "squirrel", transform: "rotateY(0deg)"},
+    logo: {name: "squirrel", flip: 0},
     notes: "",
     helps: {
         create_database_connect: "在浏览器中创建一个数据库(SQLite)。",
@@ -300,12 +300,12 @@ var __LOGS__ = {
 
         let title = document.createElement("div");
         title.className = "ui-container-title";
-        title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name,__THEMES__.get().color, "24px", "24px");
+        title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name,__THEMES__.get().color, "24px", "24px", __VERSION__.logo.flip);
 
         let span = document.createElement("span");
         span.innerHTML = "日志设置 ";
         title.appendChild(span);
-        let close = __SYS_IMAGES_SVG__.getImage("close",__THEMES__.get().color, "24px", "24px", null, __THEMES__.get().hover);
+        let close = __SYS_IMAGES_SVG__.getImage("close",__THEMES__.get().color, "24px", "24px", __THEMES__.get().hover);
         close.className = "ui-container-close";
         title.appendChild(close);
         content.appendChild(title);
@@ -523,13 +523,13 @@ var __LOGS__ = {
 
         let title = document.createElement("div");
         title.className = "ui-container-title";
-        title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name,__THEMES__.get().color, "24px", "24px");
+        title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name,__THEMES__.get().color, "24px", "24px", __VERSION__.logo.flip);
         let span = document.createElement("span");
         span.className = span.id = "error-title";
 
         span.innerHTML = (typeof names[error.name] !== "undefined" ? names[error.name] : "其他未定义错误");
         title.appendChild(span);
-        let close = __SYS_IMAGES_SVG__.getImage("close",__THEMES__.get().color, "24px", "24px", null, __THEMES__.get().hover);
+        let close = __SYS_IMAGES_SVG__.getImage("close",__THEMES__.get().color, "24px", "24px", __THEMES__.get().hover);
         close.className = "ui-container-close";
         title.appendChild(close);
         content.appendChild(title);
@@ -1238,11 +1238,11 @@ var __XMLHTTP__ = {
 
          let title = document.createElement("div");
          title.className = "ui-container-title";
-         title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name,__THEMES__.get().color, "24px", "24px");
+         title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name,__THEMES__.get().color, "24px", "24px", __VERSION__.logo.flip);
          let span = document.createElement("span");
          span.innerHTML = "报表设置";
          title.appendChild(span);
-         let close = __SYS_IMAGES_SVG__.getImage("close", __THEMES__.get().color, "24px", "24px", null, __THEMES__.get().hover);
+         let close = __SYS_IMAGES_SVG__.getImage("close", __THEMES__.get().color, "24px", "24px", __THEMES__.get().hover);
          close.className = "ui-container-close";
          title.appendChild(close);
          content.appendChild(title);
@@ -1667,11 +1667,11 @@ var __XMLHTTP__ = {
 
          let title = document.createElement("div");
          title.className = "ui-container-title";
-         title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name,__THEMES__.get().color, "24px", "24px");
+         title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name,__THEMES__.get().color, "24px", "24px", __VERSION__.logo.flip);
          let span = document.createElement("span");
          span.innerHTML = "编辑器设置 ";
          title.appendChild(span);
-         let close = __SYS_IMAGES_SVG__.getImage("close",__THEMES__.get().color, "24px", "24px", null, __THEMES__.get().hover);
+         let close = __SYS_IMAGES_SVG__.getImage("close",__THEMES__.get().color, "24px", "24px", __THEMES__.get().hover);
          close.className = "ui-container-close";
          title.appendChild(close);
          content.appendChild(title);
@@ -1911,7 +1911,7 @@ function viewDatabases() {
             };
             li.appendChild(a);
 
-            let del = __SYS_IMAGES_SVG__.getImage("del", __THEMES__.get().color, "18px", "18px", null, __THEMES__.get().hover);
+            let del = __SYS_IMAGES_SVG__.getImage("del", __THEMES__.get().color, "18px", "18px", __THEMES__.get().hover);
             del.setAttribute("index", name);
             del.style.cssFloat = "right";
             del.title = "删除";
@@ -1937,7 +1937,7 @@ function viewDatabases() {
             };
 
             li.appendChild(del);
-            let ed = __SYS_IMAGES_SVG__.getImage("edit", __THEMES__.get().color, "18px", "18px", null, __THEMES__.get().hover);
+            let ed = __SYS_IMAGES_SVG__.getImage("edit", __THEMES__.get().color, "18px", "18px", __THEMES__.get().hover);
             ed.setAttribute("index", name);
             ed.style.cssFloat = "right";
             ed.title = "编辑";
@@ -2085,7 +2085,7 @@ function viewTables(index) {
                             }
                             this.style.fontWeight = "bold";
                         };
-                        let del = __SYS_IMAGES_SVG__.getImage("del", __THEMES__.get().color, "18px", "18px", null, __THEMES__.get().hover);
+                        let del = __SYS_IMAGES_SVG__.getImage("del", __THEMES__.get().color, "18px", "18px", __THEMES__.get().hover);
                         del.setAttribute("type", results.rows.item(i).type);
                         del.setAttribute("name", results.rows.item(i).tablename);
 
@@ -2961,7 +2961,7 @@ function userLogin() {
                         "备忘": {value: "NOTE", card: "NOTE"},
                     };
                     $("user").innerText = "";
-                    let user = __SYS_IMAGES_SVG__.getImage("user_edit", __THEMES__.get().color, "32px", "32px", null, __THEMES__.get().hover);
+                    let user = __SYS_IMAGES_SVG__.getImage("user_edit", __THEMES__.get().color, "32px", "32px", __THEMES__.get().hover);
                     $("user").appendChild(user);
                     user.onclick = function () {
                         if (typeof __LOGS__.user.name !== "undefined") {
@@ -3132,14 +3132,14 @@ function init() {
                 __XMLHTTP__.certificate(false);
         }
 
-        let logo = __SYS_IMAGES_SVG__.getImage(__VERSION__.logo.name, __THEMES__.get().color, "48px", "48px", __VERSION__.logo.transform, __THEMES__.get().hover);
+        let logo = __SYS_IMAGES_SVG__.getImage(__VERSION__.logo.name, __THEMES__.get().color, "48px", "48px", __THEMES__.get().hover, __VERSION__.logo.flip);
         logo.style.cssFloat = "left";
         $("main-title").appendChild(logo);
         $("main-title").ondblclick = function () {
             requestFullScreen(document.documentElement);
         };
 
-        let user = __SYS_IMAGES_SVG__.getImage("user_add",  __THEMES__.get().color, "32px", "32px", null, __THEMES__.get().hover);
+        let user = __SYS_IMAGES_SVG__.getImage("user_add",  __THEMES__.get().color, "32px", "32px", __THEMES__.get().hover);
         user.onclick = function () {
             UI.prompt.show("创建用户", {"用户名称": ""}, "auto", function (values) {
                 let name = values["用户名称"].trim();
@@ -3172,7 +3172,7 @@ function init() {
         };
         $("user").appendChild(user);
 
-        getQRCode($("page"), 90, 90, __VERSION__.url, __SYS_IMAGES_SVG__.getImage(__VERSION__.logo.name,  __THEMES__.get().color, "48px","48px", null, __THEMES__.get().hover));
+        getQRCode($("page"), 90, 90, __VERSION__.url, __SYS_IMAGES_SVG__.getImage(__VERSION__.logo.name,  __THEMES__.get().color, "48px","48px", __THEMES__.get().hover, __VERSION__.logo.flip));
 
         try {
             let users = getUserConfig("Users");
@@ -4513,7 +4513,7 @@ function initMenus() {
         let getecharts = document.createElement("div");
         datatools.appendChild(getecharts);
         getecharts.className = "charButton";
-        getecharts.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name,"white","20px", "20px");
+        getecharts.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name,"white","20px", "20px", __VERSION__.logo.flip);
         getecharts.style.cssFloat = "right";
         getecharts.id = "dataset-to-charts";
         let help_echarts = $("help-dataset-echarts");
@@ -5617,11 +5617,11 @@ function getImageBase64Code(parent, img) {
 
     let title = document.createElement("div");
     title.className = "ui-container-title";
-    title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name,__THEMES__.get().color, "24px", "24px");
+    title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name,__THEMES__.get().color, "24px", "24px", __VERSION__.logo.flip);
     let span = document.createElement("span");
     span.innerHTML = "设置背景";
     title.appendChild(span);
-    let close = __SYS_IMAGES_SVG__.getImage("close",__THEMES__.get().color, "24px", "24px", null, __THEMES__.get().hover);
+    let close = __SYS_IMAGES_SVG__.getImage("close",__THEMES__.get().color, "24px", "24px", __THEMES__.get().hover);
     close.className = "ui-container-close";
     title.appendChild(close);
     content.appendChild(title);

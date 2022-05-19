@@ -2003,13 +2003,13 @@ var __ECHARTS__ = {
 
         let title = document.createElement("div");
         title.className = "ui-container-title";
-        title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name,__THEMES__.get().color, "24px", "24px");
+        title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name,__THEMES__.get().color, "24px", "24px", __VERSION__.logo.flip);
 
         let span = document.createElement("span");
         span.innerHTML = "图形参数";
         title.appendChild(span);
 
-        let close = __SYS_IMAGES_SVG__.getImage("close",__THEMES__.get().color, "24px", "24px", null, __THEMES__.get().hover);
+        let close = __SYS_IMAGES_SVG__.getImage("close",__THEMES__.get().color, "24px", "24px", __THEMES__.get().hover);
         close.className = "ui-container-close";
         title.appendChild(close);
         content.appendChild(title);
@@ -2628,12 +2628,12 @@ var geoCoordMap = {
 
         let title = document.createElement("div");
         title.className = "ui-container-title";
-        title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name,__THEMES__.get().color, "24px", "24px");
+        title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name,__THEMES__.get().color, "24px", "24px", __VERSION__.logo.flip);
 
         let span = document.createElement("span");
         span.innerHTML = "地图设置";
         title.appendChild(span);
-        let close = __SYS_IMAGES_SVG__.getImage("close",__THEMES__.get().color, "24px", "24px", null, __THEMES__.get().hover);
+        let close = __SYS_IMAGES_SVG__.getImage("close",__THEMES__.get().color, "24px", "24px", __THEMES__.get().hover);
         close.className = "ui-container-close";
         title.appendChild(close);
         content.appendChild(title);
@@ -12400,16 +12400,24 @@ function getEchartsReport(container, myChart) {
             "</script>",
 
             "<script type='text/javascript'>\n" +
-            "function getSVGBase(svg, color, width, height) {\n" +
+            "function getSVGBase(svg, color, width, height, flip) {\n" +
             "try {\n" +
             "let domparser = new DOMParser();\n" +
             "let xmldoc = domparser.parseFromString(svg, 'text/xml');\n" +
             "if (xmldoc.documentElement.nodeName === 'svg') {\n" +
             "xmldoc.documentElement.setAttribute('width', width);\n" +
             "xmldoc.documentElement.setAttribute('height', height);\n" +
-            "let childNodes = xmldoc.documentElement.childNodes;\n" +
-            "for (let i = 0; i < childNodes.length; i++) {\n" +
-            "childNodes[i].setAttribute('fill', color);\n" +
+            "let viewBox = xmldoc.documentElement.getAttribute('viewBox').split(' ');\n" +
+            "let g = xmldoc.documentElement.childNodes[0];\n" +
+            "if (typeof flip !== 'undefined') {\n" +
+            "if (Number(flip) == 1)\n" +
+            "g.setAttribute('transform', 'scale(1, -1) translate(0, -' + viewBox[3] + ')');\n" +
+            "if (Number(flip) == 2)\n" +
+            "g.setAttribute('transform', 'scale(-1, 1) translate(-' + viewBox[2] + ', 0)');\n" +
+            "}\n" +
+            "let pathNodes = g.childNodes;\n" +
+            "for (let i = 0; i < pathNodes.length; i++) {\n" +
+            "pathNodes[i].setAttribute('fill', color);\n" +
             "}\n" +
             "return 'data:image/svg+xml;base64,' + window.btoa((new XMLSerializer()).serializeToString(xmldoc));\n" +
             "} else {\n" +
@@ -12452,7 +12460,7 @@ function getEchartsReport(container, myChart) {
             "setStyleValue('div#_SCRIPT', 'border-color', THEMES[name].border);\n" +
             "setStyleValue('div#_CONFIGS', 'border-color', THEMES[name].border);\n" +
             "setStyleValue('span.theme-selected', 'border-color', THEMES[name].border);\n" +
-            "$('logo').src = getSVGBase($('logo').getAttribute('svg'), $('logo').getAttribute('color'), '60px', '60px');\n" +
+            "$('logo').src = getSVGBase($('logo').getAttribute('svg'), $('logo').getAttribute('color'), '60px', '60px', $('logo').getAttribute('flip'));\n" +
             "$('_FULLSCREEN').src = getSVGBase($('_FULLSCREEN').getAttribute('svg'), THEMES[name].border, '20px', '20px');\n" +
             "}\n" +
             "</script>",
@@ -13246,11 +13254,11 @@ function getEchartsReport(container, myChart) {
         "}\n" +
         "body ::-webkit-scrollbar-track {box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);background: transparent;border-radius: 3px;}\n" +
         "div#_TITLE{margin: auto;width: 80%;overflow: hidden;}\n" +
-        "img#logo{margin: auto;float:left;width: 60px;height: 60px;transform: " + __VERSION__.logo.transform + "}\n" +
+        "img#logo{margin: auto;float:left;width: 60px;height: 60px;}\n" +
         "div#title{margin: auto;width:80%;float:left;}\n" +
-        "h1#main-title{margin: auto;width: 100%;text-align: left;white-space: normal;word-break: break-all;word-wrap: break-word;}\n" +
-        "h3#sub-title{margin: auto;width: 100%;text-align: left;white-space: normal;word-break: break-all;word-wrap: break-word;}\n" +
-        "h6#footer{margin: auto;width: 80%;text-align: center}\n" +
+        "h1#main-title{margin: auto;width: 100%;cursor: pointer;text-align: left;white-space: normal;word-break: break-all;word-wrap: break-word;}\n" +
+        "h3#sub-title{margin: auto;width: 100%;cursor: pointer;text-align: left;white-space: normal;word-break: break-all;word-wrap: break-word;}\n" +
+        "h6#footer{margin: auto;width: 80%;cursor: pointer;text-align: center}\n" +
         "div#_TABS{margin: auto;padding-left: 5px;padding-right: 5px;width: 80%;overflow: hidden;height: 100%}\n" +
         "div#_ECHARTS{margin: auto;padding-left: 5px;padding-right: 5px;width: 80%;border: 1px solid coral;border-radius: 5px;overflow: hidden;height: 100%;display: table; text-align: center}\n" +
         "div#_TABLE{margin: auto;padding-left: 5px;padding-right: 5px;width: 80%;border: 1px solid coral;border-radius: 5px;overflow: scroll;display: none}\n" +
@@ -13306,7 +13314,7 @@ function getEchartsReport(container, myChart) {
         "</head>\n" +
         "<body onload='init()'>\n" +
         "<div id='_TITLE'>\n" +
-        "<image id='logo' svg='" + __SYS_IMAGES_SVG__.getSVG(__VERSION__.logo.name) + "' color='" + __THEMES__.get().color + "'></image>\n" +
+        "<image id='logo' svg='" + __SYS_IMAGES_SVG__.getSVG(__VERSION__.logo.name) + "' color='" + __THEMES__.get().color + "' flip='" + __VERSION__.logo.flip + "'></image>\n" +
         "<div id='title'>\n" +
         "<h1 id='main-title'>" + title[0] + "</h1>\n" +
         "<h3 id='sub-title'>" + (title.length > 1 ? title.slice(1, title.length).join("&emsp;") : "") + "</h3>\n" +

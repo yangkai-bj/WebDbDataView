@@ -380,12 +380,12 @@ function getMailComponent(parent) {
 
     let title = document.createElement("div");
     title.className = "ui-container-title";
-    title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name,__THEMES__.get().color, "24px", "24px");
+    title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name,__THEMES__.get().color, "24px", "24px", __VERSION__.logo.flip);
 
     let span = document.createElement("span");
     span.innerHTML = "邮件编辑";
     title.appendChild(span);
-    let close = __SYS_IMAGES_SVG__.getImage("close", __THEMES__.get().color, "24px", "24px", null, __THEMES__.get().hover);
+    let close = __SYS_IMAGES_SVG__.getImage("close", __THEMES__.get().color, "24px", "24px", __THEMES__.get().hover);
     close.className = "ui-container-close";
     title.appendChild(close);
     content.appendChild(title);
@@ -690,7 +690,7 @@ function getMailComponent(parent) {
 
     span = document.createElement("span");
     span.className = "ui-container-item-name";
-    span.appendChild(__SYS_IMAGES_SVG__.getImage("add", __THEMES__.get().color,"20px", "20px", null, __THEMES__.get().hover));
+    span.appendChild(__SYS_IMAGES_SVG__.getImage("add", __THEMES__.get().color,"20px", "20px", __THEMES__.get().hover));
     //span.innerHTML = "[➕]";
     span.title = "上传附件";
     span.style.cssText = "width:100%;height:26%;margin:0px;cursor:pointer;text-align:center;color: brown;font-weight: bolder;";
@@ -736,7 +736,7 @@ function getMailComponent(parent) {
     div.appendChild(span);
     span = document.createElement("span");
     span.className = "ui-container-item-name";
-    span.appendChild(__SYS_IMAGES_SVG__.getImage("subtract", __THEMES__.get().color,"20px", "20px", null, __THEMES__.get().hover));
+    span.appendChild(__SYS_IMAGES_SVG__.getImage("subtract", __THEMES__.get().color,"20px", "20px", __THEMES__.get().hover));
     // span.innerHTML = "[➖]";
     span.title = "删除附件";
     span.style.cssText = "width:100%;height:26%;margin:0px;cursor:pointer;text-align:center;color: brown;font-weight: bolder;";
@@ -753,7 +753,7 @@ function getMailComponent(parent) {
     div.appendChild(span);
     span = document.createElement("span");
     span.className = "ui-container-item-name";
-    span.appendChild(__SYS_IMAGES_SVG__.getImage("del", __THEMES__.get().color,"20px", "20px", null, __THEMES__.get().hover));
+    span.appendChild(__SYS_IMAGES_SVG__.getImage("del", __THEMES__.get().color,"20px", "20px", __THEMES__.get().hover));
     // span.innerHTML = "[❌]";
     span.title = "清空附件";
     span.style.cssText = "width:100%;height:26%;margin:0px;cursor:pointer;text-align:center;color: brown;font-weight: bolder;";
