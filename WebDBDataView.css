@@ -1390,6 +1390,7 @@ ui-container-logo {
 }
 
 .ui-container-help .message {
+    margin-left: 26px;
     width: 85%;
     float: left;
     white-space: normal;
