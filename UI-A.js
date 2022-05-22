@@ -975,20 +975,28 @@ var UI = {
                 parent = document.body;
             }
         }
-        let parentposi = getAbsolutePosition(parent);
+         let parentposi = getAbsolutePosition(parent);
         parent.appendChild(container);
         let content = document.createElement("div");
         content.className = "ui-container-help";
-        content.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name, "#ffffff", "28px", "28px", __THEMES__.get().hover, __VERSION__.logo.flip) + "," + "url(" + __SYS_IMAGES_PNG__.mouse.image + ")";
+        content.style.backgroundImage = "url(" + __SYS_IMAGES_PNG__.mouse.image + ")";
         content.style.backgroundRepeat = "no-repeat";
-        content.style.backgroundPosition = "left top, right bottom";
-        content.style.backgroundSize = "28px 28px, 46px 46px";
+        content.style.backgroundPosition = "right bottom";
+        content.style.backgroundSize = "46px 46px";
         container.appendChild(content);
 
         let msg = document.createElement("div");
+        msg.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name, __THEMES__.get().hover, "28px", "28px", __VERSION__.logo.flip);
+        msg.style.backgroundRepeat = "no-repeat";
+        msg.style.backgroundPosition = "left top";
+        msg.style.backgroundSize = "28px 28px";
         msg.className = "message";
-        msg.innerHTML = (typeof __VERSION__.helps[key] !== "undefined" ? __VERSION__.helps[key] : (typeof message == "undefined" ? __VERSION__.helps["other"] : message)) +
+        let ms = document.createElement("div");
+        ms.innerHTML = (typeof __VERSION__.helps[key] !== "undefined" ? __VERSION__.helps[key] : (typeof message == "undefined" ? __VERSION__.helps["other"] : message)) +
             "<hr><span style='font-size: 30%'>" + getUserConfig("CopyRight") + "</span>";
+        ms.style.marginLeft = '30px';
+        ms.style.marginRight = '30px';
+        msg.appendChild(ms);
         msg.onclick = function () {
             if (typeof callback !== "undefined")
                 callback();

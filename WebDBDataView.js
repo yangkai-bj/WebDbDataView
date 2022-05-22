@@ -3737,7 +3737,7 @@ function initMenus() {
         let editerSetting = document.createElement("div");
         sqltools.appendChild(editerSetting);
         editerSetting.className = "charButton";
-        editerSetting.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("more","white","20px", "20px");
+        editerSetting.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("more","white","24px", "24px");
         editerSetting.style.cssFloat = "right";
         editerSetting.id = "editer-setting";
         editerSetting.onclick = function () {
@@ -3832,7 +3832,7 @@ function initMenus() {
         logsets.id = "logs-records";
         detailtools.appendChild(logsets);
         logsets.className = "charButton";
-        logsets.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("more","white","20px", "20px");
+        logsets.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("more","white","24px", "24px");
         logsets.id = "logs-setting";
         logsets.style.cssFloat = "right";
         logsets.onclick = function () {
@@ -4293,7 +4293,7 @@ function initMenus() {
         let datasetSetting = document.createElement("div");
         datatools.appendChild(datasetSetting);
         datasetSetting.className = "charButton";
-        datasetSetting.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("more","white","20px", "20px");
+        datasetSetting.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("more","white","24px", "24px");
         datasetSetting.id = "dataset-setting";
         datasetSetting.onclick = function () {
             __DATASET__.setConfigs("auto", function () {
@@ -4365,7 +4365,7 @@ function initMenus() {
         let toconfigs = document.createElement("div");
         datatools.appendChild(toconfigs);
         toconfigs.className = "charButton";
-        toconfigs.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("more","white","20px", "20px");
+        toconfigs.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("more","white","24px", "24px");
         toconfigs.style.cssFloat = "right";
         toconfigs.id = "dataset-to-configs";
         let help_echartsConfigs = $("help-select-echarts-configs");
