@@ -18,6 +18,8 @@
     --main-background-image-repeat: repeat;
     --main-background-image-attachment: scroll;
 
+    --hr-color: sandybrown;
+
     --toolbar-background-color: #C71585;
     /*工具条背景颜色default:#A52A2A*/
     --toolbar-color:whitesmoke;

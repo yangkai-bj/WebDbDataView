@@ -26,6 +26,8 @@
     --main-background-image-repeat: repeat;
     --main-background-image-attachment: scroll;
 
+    --hr-color: salmon;
+
     --toolbar-background-color: lightseagreen;
     /*工具条背景颜色default:#A52A2A*/
     --toolbar-color:whitesmoke;
