@@ -3763,7 +3763,7 @@ function initMenus() {
 
         let toDisplay = document.createElement("div");
         toDisplay.className = "charButton";
-        toDisplay.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("display","white","22px", "22px");
+        toDisplay.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("display","white","20px", "20px");
         toDisplay.id = "display-log";
         toDisplay.onclick = function () {
             if ($("detail").style.display != "none") {
@@ -4513,7 +4513,7 @@ function initMenus() {
         let getecharts = document.createElement("div");
         datatools.appendChild(getecharts);
         getecharts.className = "charButton";
-        getecharts.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name,"white","20px", "20px", __VERSION__.logo.flip);
+        getecharts.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name,"white","22px", "22px", __VERSION__.logo.flip);
         getecharts.style.cssFloat = "right";
         getecharts.id = "dataset-to-charts";
         let help_echarts = $("help-dataset-echarts");

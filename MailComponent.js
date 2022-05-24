@@ -505,7 +505,7 @@ function getMailComponent(parent) {
     contentContainer.id = "mails-container";
     contentContainer.style.overflow = "hidden";
     contentContainer.style.width = "100%";
-    contentContainer.style.height = "370.8px";
+    contentContainer.style.height = "385.8px";
     content.appendChild(contentContainer);
 
     let mailscontainer = document.createElement("div");
@@ -528,7 +528,7 @@ function getMailComponent(parent) {
     maildetail.className = "tabToolbar-content-container";
     maildetail.id = "mail-detail";
     maildetail.style.cssText = "width: 100%;\n" +
-        "height: 370.8px;\n" +
+        "height: 385.8px;\n" +
         "display: none;padding-top:6px";
     content.appendChild(maildetail);
 
