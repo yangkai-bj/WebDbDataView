@@ -4,7 +4,7 @@ const __VERSION__ = {
     main: "WebDBDataView.js",
     echarts: "echarts/v5.3.2",
     version: "3.3.0",
-    date: "2022/05/19",
+    date: "2022/05/27",
     comment: [
         "-- 2021/03/08",
         "优化算法和压缩代码.",

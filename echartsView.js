@@ -4029,6 +4029,7 @@ function getMultiGraphOption(configs, container, myChart, dataset) {
 
     var option = {
         backgroundColor: getBackgroundColor(configs),
+        aria: getAria(configs),
         grid: grids,
         brush: getBrush(configs),
         toolbox: getToolbox(configs, container, dataset, myChart),
