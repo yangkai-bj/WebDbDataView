@@ -1338,30 +1338,28 @@ function getFileUrlByBase64(dataurl) {
     return url;
 }
 
-function requestFullScreen(element) {
+function requestFullScreen(element, style) {
     //全屏显示,
-    if (document.fullscreen){
-        if (document.exitFullscreen) {
-            document.exitFullscreen();
-        } else if (document.mozCancelFullScreen) {
-            document.mozCancelFullScreen();
-        } else if (document.webkitCancelFullScreen) {
-            document.webkitCancelFullScreen();
-        }
-        __CONFIGS__.FULLSCREEN.element = null;
+    if (document.fullscreen) {
+        document.exitFullscreen();
     } else {
-        if (element.requestFullscreen){
-            element.requestFullscreen();
-        }
-        //FireFox
-        else if (element.mozRequestFullScreen) {
-            element.mozRequestFullScreen();
-        }
-        //Chrome等
-        else if (element.webkitRequestFullScreen) {
-            element.webkitRequestFullScreen();
-        }
+        element.requestFullscreen();
         __CONFIGS__.FULLSCREEN.element = element;
+        if (element !== document.documentElement) {
+            if (typeof style !== "undefined") {
+                for (let key in style) {
+                    element.style[key] = style[key];
+                }
+                let mo = setInterval(function () {
+                    if (!document.fullscreen) {
+                        for (let key in style) {
+                            element.style[key] = null;
+                        }
+                        clearInterval(mo);
+                    }
+                }, 500);
+            }
+        }
     }
 }
 

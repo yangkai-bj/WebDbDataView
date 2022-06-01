@@ -660,10 +660,6 @@ img.title_close_button:hover{
     float: left;
     height: 61%;
     overflow: scroll;
-    background-image: var(--themes-type-image);
-    background-repeat: no-repeat;
-    background-position: right bottom;
-    background-size:100px 100px;
 }
 
 .table {
@@ -1178,6 +1174,10 @@ textarea:enabled {
     width: 100%;
     min-height: 26px;
     vertical-align: bottom;
+}
+
+.ui-container-item:hover {
+    font-weight: bolder;
 }
 
 .ui-container-item-name {

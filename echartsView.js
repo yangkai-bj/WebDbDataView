@@ -12516,11 +12516,22 @@ function getEchartsReport(container, myChart) {
             "<script type='text/javascript'>\n" +
             "function requestFullScreen(el) {\n" +
             "if (document.fullscreen){\n" +
-            "if (document.exitFullscreen)\n" +
             "document.exitFullscreen();\n" +
             "} else {\n" +
-            "if (el.requestFullscreen)\n" +
             "el.requestFullscreen();\n" +
+            "if (el == $('_ECHARTS')){\n" +
+            "el.style.backgroundImage = THEMES[CONFIGS.themes].backgroundImage;\n" +
+            "el.style.backgroundColor = THEMES[CONFIGS.themes].backgroundColor;\n" +
+            "el.style.borderWidth = '0px';\n" +
+            "let mo = setInterval(function(){\n" +
+            "if (!document.fullscreen){\n" +
+            "el.style.backgroundImage = null;\n" +
+            "el.style.backgroundColor = 'transparent';\n" +
+            "el.style.borderWidth = '1px';\n" +
+            "clearInterval(mo);\n" +
+            "}\n" +
+            "},500);" +
+            "}\n" +
             "}\n" +
             "}" +
             "</script>",

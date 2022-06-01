@@ -4,7 +4,7 @@ const __VERSION__ = {
     main: "WebDBDataView.js",
     echarts: "echarts/v5.3.2",
     version: "3.3.0",
-    date: "2022/05/27",
+    date: "2022/05/31",
     comment: [
         "-- 2021/03/08",
         "优化算法和压缩代码.",
@@ -3496,7 +3496,11 @@ function initMenus() {
         //#######################################
         let sqltools = $("sql-tools");
         sqltools.ondblclick = function () {
-            requestFullScreen($("main"));
+            let style = {
+                        backgroundImage: document.body.style.backgroundImage,
+                        backgroundColor: __THEMES__.get().color,
+                    };
+            requestFullScreen($("main"), style);
         };
 
         let newsql = document.createElement("div");
@@ -3758,7 +3762,11 @@ function initMenus() {
         //#######################################
         let detailtools = $("detail-tools");
         detailtools.ondblclick = function () {
-            requestFullScreen($("detail"));
+            let style = {
+                        backgroundImage: document.body.style.backgroundImage,
+                        backgroundColor: __THEMES__.get().color,
+                    };
+            requestFullScreen($("detail"), style);
         };
 
         let toDisplay = document.createElement("div");
@@ -3853,7 +3861,11 @@ function initMenus() {
         //#######################################
         let datatools = $("data-tools");
         datatools.ondblclick = function () {
-            requestFullScreen($("main"));
+            let style = {
+                        backgroundImage: document.body.style.backgroundImage,
+                        backgroundColor: __THEMES__.get().color,
+                    };
+            requestFullScreen($("main"), style);
         };
 
         input = document.createElement("input");
@@ -4347,13 +4359,17 @@ function initMenus() {
             setTimeout(function () {
                 try {
                     let echart_target = echarts.getInstanceByDom($("tableContainer"));
+                    let style = {
+                        backgroundImage: document.body.style.backgroundImage,
+                        backgroundColor: __THEMES__.get().color,
+                    };
                     if (typeof echart_target !== "undefined") {
-                        requestFullScreen($("tableContainer"));
+                        requestFullScreen($("tableContainer"), style);
                         echart_target.resize();
                     } else if ($("multi-echarts") != null) {
-                        requestFullScreen($("tableContainer"));
+                        requestFullScreen($("tableContainer"), style);
                     } else {
-                        requestFullScreen($("main"));
+                        requestFullScreen($("main"), style);
                     }
                 } catch (e) {
                     __LOGS__.viewError("auto", e);
