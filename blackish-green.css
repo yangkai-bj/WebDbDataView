@@ -1,0 +1,70 @@
+:root{
+    --main-font-family: sans-serif, Arial,"Microsoft Yahei","微软雅黑";
+    --main-font-size: 14px;
+    --main-border-color:#ccc;
+
+    --main-title-color:lightseagreen;
+    --sub-title-color:lightseagreen;
+
+    --main-background-color: #2F4F4F;
+    /*主背景颜色default:#383838*/
+    /*--main-background-image: url('data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAeAB4AAD/2wBDAAIBAQIBAQICAgICAgICAwUDAwMDAwYEBAMFBwYHBwcGBwcICQsJCAgKCAcHCg0KCgsMDAwMBwkODw0MDgsMDAz/2wBDAQICAgMDAwYDAwYMCAcIDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAz/wAARCABkAGQDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD8j6KKK+kPxsKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooA//2Q==');*/
+    --main-background-image: -webkit-linear-gradient(45deg,rgba(255, 255, 255, 0.15) 25%,transparent 25%,transparent 50%,rgba(255, 255, 255, 0.15) 50%,rgba(255, 255, 255, 0.15) 75%,transparent 75%,transparent);
+    /*CSS3 IE10以下不支持*/
+    /*主背景图片,default:url(background.jpg)*/
+    --main-background-image-size: auto;
+    --main-background-image-repeat: no-repeat;
+    --main-background-image-attachment: scroll;
+
+    --hr-color: salmon;
+
+    --toolbar-background-color: #2F4F4F;
+    /*工具条背景颜色default:#A52A2A*/
+    --toolbar-color:whitesmoke;
+    /*工具条颜色default:white*/
+    --toolbar-button-hover-background-color:darkgoldenrod;
+    /*工具条按钮背景颜色default:#A52A2A*/
+    --toolbar-button-hover-color:whitesmoke;
+    /*工具条按钮颜色default:#A52A2A*/
+    --toolbar-button-tooltip-background-color:#2F4F4F;
+    --toolbar-button-tooltip-color:whitesmoke;
+
+    --database-list-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABu0lEQVQ4T42TQXLaQBBFXws52yg3mBuE3IAcADksLFdWkBPEPoGVE5icIGKVQl6A4QDBN8AnyNwgZGsLdarHEoVJmbI2Gqmn//z+/4/QPG720xHHQ1R7QBdImtIGWCOyoqomfvDZtz32FjebJXQer4GPIGOENVW89oOBNRLqcdVFDVQvgF9sTy7burhFOUdk4/tno33kl9ZueVNYrd1vAOrTTF7TvBt3rycAAIVPsy+vAQkMVIftoU8AIpMgnsgPVFdsT+6fadB5fI9ID9URInf/ARhacCGKbEMvCCa8DYyUv0FYA67rwlxwi3Ll08zcomGgA98/nx8boaVubPcFbzW4B/6gzMNpzQhueWO0h6jlgNyn2Tt3W5q9V4ixlMnOBbecfqKWXigoXX+aJW5R+pANrRPqN2PTJeQierhAoo3l4ugI7rYcg2786Xke1sJXVL89fU9zkOToCCGJjWDBrS0f6DD3aeba/8dHeMZgmiMyQrU4ZOCt4Ptnq0MXggbKNZEkVPH3nQadhytUPMKluFnZpYPl+zeqdi+8T7O7QN9cgFFwQTUPwpoLInkQG4rdHTh0wYK0f0deysE/cG8faqtuZ5cAAAAASUVORK5CYII=);
+    --table-list-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAhUlEQVQ4T2NkoBAwUqifAWyAwubV9eQY9MA3tJG6BoBMJMYlMBejuuD/fwdiNMPVMDIewPTCnz8HwQqYmesZ/v5FuAadz8JiD1KGYQDMCwqbVu0HGfAgMPIAOJDR+dBAp7ILqBEGFHuBYgPgUQTyDiMjOADBAJ0PFaZeSiQpAaEppjg3AgClJogRvsOsQAAAAABJRU5ErkJggg==);
+    --column-list-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABE0lEQVQ4T2NkoBAwUqifAW6AwubV9Qz//juDDWRk+A8xGEQxQtkgJuN/hv//GRj+/m18EBh5AKIUChQ2rdoPkuD6zXzsF88vDgYGNvb/v/5y/Gdm5WD4+4+Dgekfxx8GJnYmRoYihj9/J+E0ACaBy2sKm1e3Mfz5swubAfMZGBgSiAqTv38dMQxQ2bZK9O/v/5r/GRkZGf7+ZWRiYX16zzfkNiEDkQJx1SaG/wy8SBoUHviFKSpsWoUIRJgkI2PDA9/QRqyBCHMaSOMDvzCC0YwRC+gGgKMXDfxj/r/6kVfYNaJcQLEBxAciKCGhAgdQGBAdiCrblvD9+clsBDODhZ3tzh2v4CdEu4CQQlzyBKOJkMEARZmZEdg589AAAAAASUVORK5CYII=);
+
+    --list-color:whitesmoke;
+    --list-hover-color:sandybrown;
+
+    --detail-dt-color:#79d2a6;
+    --detail-message-color:whitesmoke;
+    --detail-message-hover-color:salmon;
+
+    --footer-color:whitesmoke;
+    --footer-dt-hover-color:sandybrown;
+
+    --table-border-color:#98bf21;
+    --table-background-color:#FFFACD;
+    --table-th-before-color:#DCDCDC;
+    --table-td-before-color:black;
+    --table-th-background-color: #2F4F4F;
+    --table-tr-background-color:#FFFACD;
+    --table-alt-tr-background-color:#c2f0c2;
+    --table-tr-hover-background-color:#79d2a6;
+    --table-td-border-color: #2eb82e;
+    --table-td-hover-border-color:salmon;
+
+    --drag-border-color: darkgoldenrod;
+
+    --copyright_color:gray;
+    /*版权说明颜色*/
+    --copyright_hover_color:#FF8000;
+    /*版权说明热点颜色*/
+
+    --tab-border-color: whitesmoke;
+    --tab-color: whitesmoke;
+    --tab-selected-color: red;
+    --tab-selected-backgroud-color: #79d2a6;
+    --tab-hover-color: salmon;
+
+}
