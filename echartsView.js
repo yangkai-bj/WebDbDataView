@@ -3454,10 +3454,10 @@ function getLineOption(configs, container, myChart, dataset) {
 function getToolboxFeatureFullScreen(configs, container, myChart, dataset) {
     return configs.toolboxFeatureFullScreen.value.toBoolean() ? {
         show: configs.toolboxFeatureFullScreen.value.toBoolean(),
-        title: '全屏切换',
+        title: "全屏切换",
         icon: __SYS_IMAGES_SVG__.getPath("echarts_fullscreen"),
         onclick: function () {
-            requestFullScreen(container);
+            requestFullScreen(container, {backgroundImage: document.body.style.backgroundImage});
             myChart.resize();
         }
     } : {};

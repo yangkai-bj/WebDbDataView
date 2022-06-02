@@ -2268,6 +2268,7 @@ function viewDataset(index, pageindex, syncSql) {
     try {
         container.removeAttribute("_echarts_instance_");
         echarts.getInstanceByDom(container).clear();
+        echartsInstance.dispose();
     } catch (e) {
     }
 
@@ -3899,6 +3900,7 @@ function initMenus() {
                                         try {
                                             container.removeAttribute("_echarts_instance_");
                                             echarts.getInstanceByDom(container).clear();
+                                            echartsInstance.dispose();
                                         } catch (e) {
                                         }
                                         __DATASET__.result.push(report.dataset);
@@ -4393,6 +4395,7 @@ function initMenus() {
                         try {
                             container.removeAttribute("_echarts_instance_");
                             echarts.getInstanceByDom(container).clear();
+                            echartsInstance.dispose();
                         } catch (e) {
                         }
                         let _width = (getAbsolutePosition(container).width * 1) + "px";
@@ -4467,6 +4470,7 @@ function initMenus() {
                     try {
                         container.removeAttribute("_echarts_instance_");
                         echarts.getInstanceByDom(container).clear();
+                        echartsInstance.dispose();
                     } catch (e) {
                     }
                     let _width = (getAbsolutePosition(container).width * 1) + "px";
@@ -4505,7 +4509,8 @@ function initMenus() {
                     let container = $("tableContainer");
                     try {
                         container.removeAttribute("_echarts_instance_");
-                        echarts.getInstanceByDom(container).clear();
+                        echarts.getInstanceByDom(container).clear()
+                        echartsInstance.dispose();
                     } catch (e) {
                     }
                     let _width = (getAbsolutePosition(container).width * 1) + "px";
@@ -4540,6 +4545,7 @@ function initMenus() {
                     try {
                         container.removeAttribute("_echarts_instance_");
                         echarts.getInstanceByDom(container).clear();
+                        echartsInstance.dispose();
                     } catch (e) {
                     }
                     let dataset = __DATASET__.result[__DATASET__.default.sheet];
@@ -4653,6 +4659,7 @@ function getEchartsClock() {
             try {
                 container.removeAttribute("_echarts_instance_");
                 echarts.getInstanceByDom(container).clear();
+                echartsInstance.dispose();
             } catch (e) {
             }
             let container = $("tableContainer");
@@ -4914,6 +4921,7 @@ function setEchartDrag(ec) {
         if (event.target.className == "multi-echarts-view-contain") {
             try {
                 echarts.getInstanceByDom(this).clear();
+                echartsInstance.dispose();
             } catch (e) {
             }
             event.target.style.border = "0px dotted  sandybrown";
@@ -5294,6 +5302,7 @@ function getMultiEcharts(parent) {
                             setTimeout(function () {
                                 try {
                                     echarts.getInstanceByDom(mul[i]).clear();
+                                    echartsInstance.dispose();
                                     mul[i].parentNode.removeChild(mul[i]);
                                 } catch (e) {
                                 }
@@ -5329,6 +5338,7 @@ function setDragNook(parent, id) {
                 let parent = this.parentNode;
                 try {
                     echarts.getInstanceByDom(parent).clear();
+                    echartsInstance.dispose();
                 } catch (e) {
                 }
                 parent.style.border = "0px dotted var(--main-border-color)";
