@@ -64,11 +64,15 @@ var UI = {
 
         let list = document.createElement("select");
         list.id = id + "-list";
-        list.style.cssFloat = "left";
         list.type = "select";
+        list.style.cssText = "display:inline-block;" +
+            "overflow: hidden;" +
+            "text-overflow: ellipsis;" +
+            "white-space: nowrap;";
+        list.style.cssFloat = "left";
         list.style.cssFloat = "right";
         list.style.marginLeft = "22px";
-        list.style.minWidth = "90%";
+        list.style.width = "90%";
         container.appendChild(list);
 
         return container;
@@ -4041,47 +4045,6 @@ var SQLite = {
                             }
                             $("ui-progress-container").innerText = "";
                         });
-
-                    // itemvalue = document.createElement("input");
-                    // itemvalue.className = "ui-container-item-input";
-                    // itemvalue.id = name;
-                    // itemvalue.type = SQLite.import.configs[name].type;
-                    // if (itemvalue.type == "file") {
-                    //     itemvalue.accept = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,text/plain,.csv";
-                    //     itemvalue.onchange = function () {
-                    //         if (window.FileReader) {
-                    //             try {
-                    //                 let file = this.files[0];
-                    //                 let filetype = file.name.split(".")[1];
-                    //                 SQLite.import.configs.SourceFile.value = file.name;
-                    //                 SQLite.import.configs.SourceFile.data = [];
-                    //                 let selectDataSet = $("SelectedDataSet");
-                    //                 for (let i = selectDataSet.length - 1; i >= 0; i--) {
-                    //                     selectDataSet.remove(i);
-                    //                 }
-                    //                 if (filetype.toUpperCase() == "TXT" || filetype.toUpperCase() == "CSV") {
-                    //                     let reader = new FileReader();
-                    //                     reader.onload = function () {
-                    //                         SQLite.import.configs.SourceFile.data.push(this.result);
-                    //                         selectDataSet.options.add(new Option("默认", 0));
-                    //                         SQLite.import.configs.SelectedDataSet.value = selectDataSet.selectedIndex = 0;
-                    //                     };
-                    //                     reader.readAsText(file, SQLite.import.configs.Charset.options[SQLite.import.configs.Charset.value]);
-                    //                 } else if (filetype.toUpperCase() == "XLS" || filetype.toUpperCase() == "XLSX") {
-                    //                     SQLite.import.readExcelFile(file, selectDataSet);
-                    //                 } else {
-                    //                     UI.alert.show("提示", "仅适用于XLSX、XLS、TXT和CSV文件。");
-                    //                     return;
-                    //                 }
-                    //             } catch (e) {
-                    //                 UI.alert.show("提示", "请选择需要导入的文件.")
-                    //             }
-                    //             $("ui-progress-container").innerText = "";
-                    //         } else {
-                    //             UI.alert.show("提示", "本应用适用于Chrome或Edge浏览器。")
-                    //         }
-                    //     };
-                    // }
                 }
                 item.appendChild(itemvalue);
             }

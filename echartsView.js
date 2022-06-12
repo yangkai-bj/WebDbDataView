@@ -13271,7 +13271,7 @@ function getEchartsReport(container, myChart) {
         "h1#main-title{margin: auto;width: 100%;cursor: pointer;text-align: left;white-space: normal;word-break: break-all;word-wrap: break-word;}\n" +
         "h3#sub-title{margin: auto;width: 100%;cursor: pointer;text-align: left;white-space: normal;word-break: break-all;word-wrap: break-word;}\n" +
         "h6#footer{margin: auto;width: 80%;cursor: pointer;text-align: center}\n" +
-        "div#_TABS{margin: auto;padding-left: 5px;padding-right: 5px;width: 80%;overflow: hidden;height: 100%}\n" +
+        "div#_TABS{margin: auto;padding-left: 5px;padding-right: 5px;width: 80%;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;height: 100%}\n" +
         "div#_ECHARTS{margin: auto;padding-left: 5px;padding-right: 5px;width: 80%;border: 1px solid coral;border-radius: 5px;overflow: hidden;height: 100%;display: table; text-align: center}\n" +
         "div#_TABLE{margin: auto;padding-left: 5px;padding-right: 5px;width: 80%;border: 1px solid coral;border-radius: 5px;overflow: scroll;display: none}\n" +
         "div#_SCRIPT{margin: auto;font-size: 90%;padding-left: 5px;padding-right: 5px;width: 80%;border: 1px solid coral;border-radius: 5px;overflow: hidden;height: 100%;line-height: 2;display: none}\n" +
@@ -13286,7 +13286,7 @@ function getEchartsReport(container, myChart) {
         "span.tabButton-selected{cursor: pointer;font-size: 100%;padding-left: 5px;padding-right: 5px;background-color: #00A7AA;outline-style: none;border-top-left-radius: 4px;border-top-right-radius: 4px;border: 1px solid coral;border-bottom-width: 0px;}\n" +
         "span.tabButton-unselected{cursor: pointer;font-size: 100%;padding-left: 5px;padding-right: 5px;outline-style: none;border-top-left-radius: 4px;border-top-right-radius: 4px;border: 1px solid gray;border-bottom-width: 0px;}\n" +
         "span.tabButton-unselected:hover{background-color: sandybrown}\n" +
-        "span.tabButton-theme{height: 100%;float: right;cursor: pointer;font-size: 100%;background-color: transparent;outline-style: none;}\n" +
+        "span#_THEMES{height: 100%;float: right;cursor: pointer;font-size: 100%;background-color: transparent;outline-style: none;}\n" +
         "span.theme{height: 100%;cursor: pointer;font-size: 80%;width: 50px;outline-style: none;}\n" +
         "span.theme-selected{height: 100%;cursor: pointer;font-size: 90%;width: 50px;outline-style: none;border:1px solid gray;border-radius: 2px}\n" +
         "dl{padding-left: 5px;padding-right: 5px;}\n" +
@@ -13294,7 +13294,7 @@ function getEchartsReport(container, myChart) {
         "dt:hover{background-color: rgba(0, 0, 0, 0.1);}\n" +
         "span.exp-open{cursor: pointer;outline-style: none;color:mediumvioletred;font-weight: bolder}\n" +
         "span.exp-close{cursor: pointer;outline-style: none;color:darkgreen;font-weight: bolder}\n" +
-        "dd{display:none;cursor: pointer;font-size: 100%;padding-left: 5px;padding-right: 5px;outline-style: none;border-radius: 4px;overflow: hidden;white-space: nowrap;word-break: keep-all;text-overflow: ellipsis;-o-text-overflow: ellipsis;}\n" +
+        "dd{display:none;cursor: pointer;font-size: 100%;padding-left: 5px;padding-right: 5px;outline-style: none;border-radius: 4px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;}\n" +
         "span.configs-name{cursor: pointer;font-size: 100%;padding-left: 5px;padding-right: 5px;background-color: sandybrown;outline-style: none;border-radius: 4px;border: 1px solid gray;}\n" +
         "span.configs-value{cursor: pointer;font-size: 100%;padding-left: 5px;padding-right: 5px;background-color: #00A7AA;outline-style: none;border-radius: 4px;border: 1px solid gray;}\n" +
         "span.SQLWorda{cursor: pointer;padding-left: 3px;padding-right: 3px;background-color: #00A7AA;outline-style: none;border-radius: 4px;}\n" +
@@ -13310,11 +13310,9 @@ function getEchartsReport(container, myChart) {
         "tr:hover{background-color:rosybrown;}\n" +
         "tr.alt-line{background-color:rgba(0, 0, 0, 0.15);}\n" +
         "tr.alt-line:hover{background-color:rosybrown;}\n" +
-        "th{border-radius: 4px;margin: 0px;padding: 3px 3px 2px 3px;white-space: nowrap;word-break: keep-all;overflow: hidden;" +
-        "text-overflow: ellipsis;-o-text-overflow: ellipsis;font-weight: bolder;text-align: center;background-color: #00A7AA;color: #DCDCDC}\n" +
+        "th{border-radius: 4px;margin: 0px;padding: 3px 3px 2px 3px;max-width: 150px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;font-weight: bolder;text-align: center;background-color: #00A7AA;color: #DCDCDC}\n" +
         "th:hover{background-color: #008080;}\n" +
-        "td{border-bottom:1px solid gray;margin: 2px;padding:3px 3px 2px 3px;white-space: nowrap; word-break: keep-all;" +
-        "overflow: hidden;text-overflow: ellipsis;-o-text-overflow: ellipsis;}\n" +
+        "td{border-bottom:1px solid gray;margin: 2px;padding:3px 3px 2px 3px;max-width: 150px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap}\n" +
         "td:hover{border-bottom:2px solid #00A7AA}\n" +
         "span.page-tab{float:left;cursor: pointer;width: 50px;font-size: 80%;text-align: center;border-right:1px solid gray;border-bottom-left-radius: 6px;border-bottom-right-radius: 36px;}" +
         "span.page-tab-selected{float:left;cursor: pointer;width: 50px;font-size: 80%;background-color: #00A7AA;text-align: center;border-right:1px solid gray;border-bottom-left-radius: 6px;border-bottom-right-radius: 36px;}" +
@@ -13339,7 +13337,7 @@ function getEchartsReport(container, myChart) {
         "<span class='tabButton-unselected' id='CONFIGS' onclick='selectTab(this.id)'>视图参数</span>\n" +
         link + "\n" +
         "<image id='_FULLSCREEN' svg='" + __SYS_IMAGES_SVG__.getSVG("fullscreen") + "'></image>\n" +
-        "<span class='tabButton-theme' id='_THEMES'></span>\n" +
+        "<span id='_THEMES'></span>\n" +
         "</div>\n" +
         "<div id='_ECHARTS'>\n" +
         "<span id='echarts_content'><image id='echarts-image' src = '" + myChart.getDataURL({excludeComponents: ['toolbox']}) + "' width = '" + myChart.getWidth() + "' height='" + myChart.getHeight() + "'></image></span>\n" +

@@ -145,45 +145,39 @@ function getDataReader(parent, callback) {
                 __DATA_READER__[this.id].value = this.value;
             };
         } else if (name == "SourceFile") {
-            itemvalue = document.createElement("input");
-            itemvalue.className = "ui-container-item-input";
-            itemvalue.id = name;
-            itemvalue.type = __DATA_READER__[name].type;
-            if (itemvalue.type == "file") {
-                itemvalue.accept = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,text/plain,.csv";
-                itemvalue.onchange = function () {
-                    if (window.FileReader) {
-                        try {
-                            let file = this.files[0];
-                            let filetype = file.name.split(".")[1];
-                            __DATA_READER__.SourceFile.value = file.name;
-                            __DATA_READER__.SourceFile.data = [];
-                            let selectDataSet = $("Selected");
-                            for (let i = selectDataSet.length - 1; i >= 0; i--) {
-                                selectDataSet.remove(i);
-                            }
-                            if (filetype.toUpperCase() == "TXT" || filetype.toUpperCase() == "CSV") {
-                                let reader = new FileReader();
-                                reader.onload = function () {
-                                    __DATA_READER__.SourceFile.data.push(this.result);
-                                    selectDataSet.options.add(new Option("默认", 0));
-                                    __DATA_READER__.Selected.value = selectDataSet.selectedIndex = 0;
-                                };
-                                reader.readAsText(file, __DATA_READER__.Charset.options[__DATA_READER__.Charset.value]);
-                            } else if (filetype.toUpperCase() == "XLS" || filetype.toUpperCase() == "XLSX") {
-                                readExcelFile(file, selectDataSet);
-                            } else {
-                                UI.alert.show("提示", "仅适用于XLSX、XLS、TXT和CSV文件。");
-                                return;
-                            }
-                        } catch (e) {
-                            UI.alert.show("提示", "请选择需要读取的文件.")
+            itemvalue = UI.fileChoice(name,
+                "70%",
+                "right",
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,text/plain,.csv",
+                false,
+                function (files) {
+                    try {
+                        let file = files[0];
+                        let filetype = file.name.split(".")[1];
+                        __DATA_READER__.SourceFile.value = file.name;
+                        __DATA_READER__.SourceFile.data = [];
+                        let selectDataSet = $("Selected");
+                        for (let i = selectDataSet.length - 1; i >= 0; i--) {
+                            selectDataSet.remove(i);
                         }
-                    } else {
-                        UI.alert.show("提示", "本应用适用于Chrome或Edge浏览器。")
+                        if (filetype.toUpperCase() == "TXT" || filetype.toUpperCase() == "CSV") {
+                            let reader = new FileReader();
+                            reader.onload = function () {
+                                __DATA_READER__.SourceFile.data.push(this.result);
+                                selectDataSet.options.add(new Option("默认", 0));
+                                __DATA_READER__.Selected.value = selectDataSet.selectedIndex = 0;
+                            };
+                            reader.readAsText(file, __DATA_READER__.Charset.options[__DATA_READER__.Charset.value]);
+                        } else if (filetype.toUpperCase() == "XLS" || filetype.toUpperCase() == "XLSX") {
+                            readExcelFile(file, selectDataSet);
+                        } else {
+                            UI.alert.show("提示", "仅适用于XLSX、XLS、TXT和CSV文件。");
+                            return;
+                        }
+                    } catch (e) {
+                        UI.alert.show("提示", "请选择需要读取的文件.")
                     }
-                };
-            }
+                });
         }
         item.appendChild(itemvalue);
     }

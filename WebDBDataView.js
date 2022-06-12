@@ -4,7 +4,7 @@ const __VERSION__ = {
     main: "WebDBDataView.js",
     echarts: "echarts/v5.3.2",
     version: "3.3.0",
-    date: "2022/05/31",
+    date: "2022/06/12",
     comment: [
         "-- 2021/03/08",
         "优化算法和压缩代码.",
@@ -2043,7 +2043,6 @@ function viewTables(index) {
                                                 let columns = [];
                                                 for (let m = 0; m < __CONFIGS__.CURRENT_TABLE.structure.data.length; m++) {
                                                     let l = document.createElement("li");
-                                                    l.style.listStyleImage = __SYS_IMAGES_SVG__.getUrl("field", __THEMES__.get().color, "16px", "16px");
                                                     $("ul-tb-" + __CONFIGS__.CURRENT_TABLE.name).appendChild(l);
                                                     let col = document.createElement("div");
                                                     col.className = "column-name";

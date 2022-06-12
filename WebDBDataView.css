@@ -414,15 +414,13 @@ img.title_close_button:hover{
     transform: translate(-50%, -50%);
     height: 20px;
     min-width: 150px;
-    max-width: 250px;
+    max-width: 300px;
     text-align: center;
     font-size: 90%;
     vertical-align: middle;
     overflow: hidden;
-    white-space: nowrap;
-    word-break: keep-all;
     text-overflow: ellipsis;
-    -o-text-overflow: ellipsis;
+    white-space: nowrap;
     line-height: 20px;
     cursor: pointer;
     border: 1px solid var(--toolbar-background-color);
@@ -460,7 +458,11 @@ img.title_close_button:hover{
     background-color: var(--toolbar-background-color);
     color: var(--toolbar-color);
     height: 100%;
-    width: 60px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 60px;
+    max-width: 100px;
     text-align: center;
     line-height: 36px;
     margin-right: 1px;
@@ -481,6 +483,10 @@ img.title_close_button:hover{
 
 .toolbar select {
     background-color: var(--toolbar-background-color);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 100px;
     float: right;
     height: 100%;
     color: var(--toolbar-color);
@@ -547,7 +553,6 @@ img.title_close_button:hover{
 
 .database-list {
     list-style-type: disc;
-    list-style-image: var(--database-list-image);
 }
 
 .database-list li {
@@ -577,7 +582,6 @@ img.title_close_button:hover{
 
 .table-list {
     list-style-type: disc;
-    list-style-image: var(--table-list-image);
 }
 
 .table-list .table-name {
@@ -600,8 +604,8 @@ img.title_close_button:hover{
 }
 
 .table-list li {
-    list-style-type: circle;
-    list-style-image: var(--column-list-image);
+    list-style-type: disc;
+    list-style-image: none;
     font-size: 90%;
 }
 
