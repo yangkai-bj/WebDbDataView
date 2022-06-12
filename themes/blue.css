@@ -39,9 +39,6 @@
     --toolbar-button-tooltip-background-color: #0c7ab2;
     --toolbar-button-tooltip-color: whitesmoke;
 
-    --database-list-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABu0lEQVQ4T42TQXLaQBBFXws52yg3mBuE3IAcADksLFdWkBPEPoGVE5icIGKVQl6A4QDBN8AnyNwgZGsLdarHEoVJmbI2Gqmn//z+/4/QPG720xHHQ1R7QBdImtIGWCOyoqomfvDZtz32FjebJXQer4GPIGOENVW89oOBNRLqcdVFDVQvgF9sTy7burhFOUdk4/tno33kl9ZueVNYrd1vAOrTTF7TvBt3rycAAIVPsy+vAQkMVIftoU8AIpMgnsgPVFdsT+6fadB5fI9ID9URInf/ARhacCGKbEMvCCa8DYyUv0FYA67rwlxwi3Ll08zcomGgA98/nx8boaVubPcFbzW4B/6gzMNpzQhueWO0h6jlgNyn2Tt3W5q9V4ixlMnOBbecfqKWXigoXX+aJW5R+pANrRPqN2PTJeQierhAoo3l4ugI7rYcg2786Xke1sJXVL89fU9zkOToCCGJjWDBrS0f6DD3aeba/8dHeMZgmiMyQrU4ZOCt4Ptnq0MXggbKNZEkVPH3nQadhytUPMKluFnZpYPl+zeqdi+8T7O7QN9cgFFwQTUPwpoLInkQG4rdHTh0wYK0f0deysE/cG8faqtuZ5cAAAAASUVORK5CYII=);
-    --table-list-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAhUlEQVQ4T2NkoBAwUqifAWyAwubV9eQY9MA3tJG6BoBMJMYlMBejuuD/fwdiNMPVMDIewPTCnz8HwQqYmesZ/v5FuAadz8JiD1KGYQDMCwqbVu0HGfAgMPIAOJDR+dBAp7ILqBEGFHuBYgPgUQTyDiMjOADBAJ0PFaZeSiQpAaEppjg3AgClJogRvsOsQAAAAABJRU5ErkJggg==);
-    --column-list-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABE0lEQVQ4T2NkoBAwUqifAW6AwubV9Qz//juDDWRk+A8xGEQxQtkgJuN/hv//GRj+/m18EBh5AKIUChQ2rdoPkuD6zXzsF88vDgYGNvb/v/5y/Gdm5WD4+4+Dgekfxx8GJnYmRoYihj9/J+E0ACaBy2sKm1e3Mfz5swubAfMZGBgSiAqTv38dMQxQ2bZK9O/v/5r/GRkZGf7+ZWRiYX16zzfkNiEDkQJx1SaG/wy8SBoUHviFKSpsWoUIRJgkI2PDA9/QRqyBCHMaSOMDvzCC0YwRC+gGgKMXDfxj/r/6kVfYNaJcQLEBxAciKCGhAgdQGBAdiCrblvD9+clsBDODhZ3tzh2v4CdEu4CQQlzyBKOJkMEARZmZEdg589AAAAAASUVORK5CYII=);
 
     --list-color: #0c7ab2;
     --list-hover-color: sandybrown;
