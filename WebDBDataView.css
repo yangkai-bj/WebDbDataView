@@ -553,6 +553,7 @@ img.title_close_button:hover{
 
 .database-list {
     list-style-type: disc;
+    color:var(--list-color);
 }
 
 .database-list li {
@@ -564,11 +565,8 @@ img.title_close_button:hover{
 .database-list .list {
     width: 100%;
     overflow: hidden;
-    white-space: nowrap;
-    word-break: keep-all;
     text-overflow: ellipsis;
-    -o-text-overflow: ellipsis;
-    color:var(--list-color);
+    white-space: nowrap;
     margin: auto;
     cursor: pointer;
     -webkit-animation: content-show 2s 1;
@@ -582,16 +580,14 @@ img.title_close_button:hover{
 
 .table-list {
     list-style-type: disc;
+    color:var(--list-color);
 }
 
 .table-list .table-name {
     width: 100%;
     overflow: hidden;
-    white-space: nowrap;
-    word-break: keep-all;
     text-overflow: ellipsis;
-    -o-text-overflow: ellipsis;
-    color:var(--list-color);
+    white-space: nowrap;
     margin: auto;
     cursor: pointer;
     -webkit-animation: content-show 2s 1;
@@ -613,11 +609,8 @@ img.title_close_button:hover{
     float: left;
     width: 60%;
     overflow: hidden;
-    white-space: nowrap;
-    word-break: keep-all;
     text-overflow: ellipsis;
-    -o-text-overflow: ellipsis;
-    color:var(--list-color);
+    white-space: nowrap;
     cursor: pointer;
     -webkit-animation: content-show 2s 1;
     animation: content-show 2s 1;
@@ -631,13 +624,10 @@ img.title_close_button:hover{
 .table-list .column-type {
     width: 40%;
     overflow: hidden;
-    white-space: nowrap;
-    word-break: keep-all;
     text-overflow: ellipsis;
-    -o-text-overflow: ellipsis;
+    white-space: nowrap;
     cursor: pointer;
     text-align: left;
-    color: var(--list-color);
     -webkit-animation: content-show 2s 1;
     animation: content-show 2s 1;
 }
@@ -704,11 +694,9 @@ img.title_close_button:hover{
     margin: 2px;
     border:1px solid var(--table-td-border-color);
     padding:3px 3px 2px 3px;
-    white-space: nowrap;
-    word-break: keep-all;
     overflow: hidden;
     text-overflow: ellipsis;
-    -o-text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .table td:hover {
@@ -719,11 +707,9 @@ img.title_close_button:hover{
     margin: 0px;
     border: 1px solid var(--table-td-border-color);
     padding: 3px 3px 2px 3px;
-    white-space: nowrap;
-    word-break: keep-all;
     overflow: hidden;
     text-overflow: ellipsis;
-    -o-text-overflow: ellipsis;
+    white-space: nowrap;
     font-weight: bolder;
     text-align: center;
 
@@ -887,15 +873,12 @@ hr.br{
     height: 100%;
     overflow: hidden;
     border: 0px solid var(--main-border-color);
-    background-color: whitesmoke;
     border-radius: 4px;
     box-sizing: border-box;
     line-height: 100%;
     z-index: 99;
     -webkit-animation: content-show 1s 1;
     animation: content-show 1s 1;
-    background-color: var(--main-background-color);
-    background-image: var(--main-background-image);
 }
 
 .multi-echarts-list{
@@ -1189,10 +1172,8 @@ textarea:enabled {
     text-align: left;
     float: left;
     overflow: hidden;
-    white-space: nowrap;
-    word-break: keep-all;
     text-overflow: ellipsis;
-    -o-text-overflow: ellipsis;
+    white-space: nowrap;
     font-size: 100%;
     height: 100%;
     background-color: transparent;

@@ -4,7 +4,7 @@ const __VERSION__ = {
     main: "WebDBDataView.js",
     echarts: "echarts/v5.3.2",
     version: "3.3.0",
-    date: "2022/06/12",
+    date: "2022/06/15",
     comment: [
         "-- 2021/03/08",
         "优化算法和压缩代码.",
@@ -2274,7 +2274,7 @@ function viewDataset(index, pageindex, syncSql) {
     if (typeof syncSql === "undefined")
         syncSql = true;
     if (syncSql) {
-        __SQLEDITOR__.title = $("sql-title").innerText = __DATASET__.result[index].title[0];
+        __SQLEDITOR__.title = $("sql-title").innerText = $("sql-title").title = __DATASET__.result[index].title[0];
         __SQLEDITOR__.codeMirror.setValue(__DATASET__.result[index].sql);
     }
 
@@ -2400,29 +2400,17 @@ function viewDataset(index, pageindex, syncSql) {
     container.appendChild(table);
 }
 
-// function fillSqlParam(sql) {
-//     let reg = new RegExp(/\{[a-zA-Z0-9\u4e00-\u9fa5]+\}/, "g");
-//     let params = sql.match(reg);
-//     if (params != null) {
-//         //参数去重
-//         let temp = [];
-//         for (let i = 0; i < params.length; i++) {
-//             if (temp.indexOf(params[i]) === -1)
-//                 temp.push(params[i]);
-//         }
-//         params = temp.slice(0);
-//         for (let i = 0; i < params.length; i++) {
-//             let param = params[i].toString();
-//             param = param.substring(param.indexOf("{") + 1, param.indexOf("}"));
-//             let value = prompt(param + " : ");
-//             if (value != null)
-//                 sql = sql.replaceAll(params[i].toString(), value.toString());
-//         }
-//     }
-//     return sql;
-// }
+function execute(name) {
+    function fillParams(str) {
+        let s = str;
+        if (__SQLEDITOR__.parameter !== null) {
+            for (let param in __SQLEDITOR__.parameter) {
+                s = s.replaceAll("{" + param.toString() + "}", __SQLEDITOR__.parameter[param].toString());
+            }
+        }
+        return s;
+    }
 
-function execute(title) {
     if (__CONFIGS__.CURRENT_DATABASE.connect != null) {
         __CONFIGS__.CURRENT_DATABASE.connect.transaction(function (tx) {
             let selection = "";
@@ -2430,16 +2418,8 @@ function execute(title) {
                 selection = __SQLEDITOR__.codeMirror.getSelection();
             else
                 selection = __SQLEDITOR__.codeMirror.getValue();
-            if (__SQLEDITOR__.parameter !== null) {
-                //     selection = fillSqlParam(selection);
-                // } else {
-                for (let param in __SQLEDITOR__.parameter) {
-                    selection = selection.replaceAll("{" + param.toString() + "}", __SQLEDITOR__.parameter[param].toString())
-                    title = title.replaceAll("{" + param.toString() + "}", __SQLEDITOR__.parameter[param].toString());
-                }
-            }
 
-            title = title.split("_");
+            let title = fillParams(name).split("_");
 
             let sqls = [];
             if (selection.trim() != "") {
@@ -2450,7 +2430,7 @@ function execute(title) {
                     let sql = sqls[s].slice(0).trim();
                     if (sql.trim() == "")
                         continue;
-                    tx.executeSql(sql, [],
+                    tx.executeSql(fillParams(sql), [],
                         function (tx, results) {
                             let aff = results.rowsAffected;
                             let len = results.rows.length;
@@ -2529,6 +2509,7 @@ function execute(title) {
                                 }
                                 __DATASET__.result.push({
                                     eventid: getEventIndex(),
+                                    name: name,
                                     title: title,
                                     sql: sql,
                                     type: __SQLEDITOR__.configs.codeMirrorMode.value,
@@ -2574,22 +2555,24 @@ function fixMathFunctionString(str) {
     return str;
 }
 
-function executeFunction(title) {
+function executeFunction(name) {
+    function fillParams(str) {
+        let s = str;
+        if (__SQLEDITOR__.parameter !== null) {
+            for (let param in __SQLEDITOR__.parameter) {
+                s = s.replaceAll("{" + param.toString() + "}", __SQLEDITOR__.parameter[param].toString());
+            }
+        }
+        return s;
+    }
     let selection = "";
     if (__SQLEDITOR__.codeMirror.somethingSelected())
         selection = __SQLEDITOR__.codeMirror.getSelection();
     else
         selection = __SQLEDITOR__.codeMirror.getValue();
-    if (__SQLEDITOR__.parameter !== null) {
-        //     selection = fillSqlParam(selection);
-        // } else {
-        for (let param in __SQLEDITOR__.parameter) {
-            selection = selection.replaceAll("{" + param.toString() + "}", __SQLEDITOR__.parameter[param].toString());
-            title = title.replaceAll("{" + param.toString() + "}", __SQLEDITOR__.parameter[param].toString());
-        }
-    }
+    selection = fillParams(selection);
 
-    title = title.split("_");
+    let title = fillParams(name).split("_");
 
     let funs = [];
     if (selection.trim() != "") {
@@ -2616,7 +2599,7 @@ function executeFunction(title) {
             }
             data.push(row);
         }
-        __DATASET__.result.push(transferResultDataset(funs, data, title, __SQLEDITOR__.parameter));
+        __DATASET__.result.push(transferResultDataset(name, funs, data, title, __SQLEDITOR__.parameter));
 
         if (__DATASET__.result.length > 0) {
             viewDataset(__DATASET__.result.length - 1, 0, false);
@@ -2624,7 +2607,7 @@ function executeFunction(title) {
     }
 }
 
-function transferResultDataset(funs, dataset, title, parameter) {
+function transferResultDataset(name, funs, dataset, title, parameter) {
     let col = ["X"].concat(funs);
     let columns = [];
     for (let i = 0; i < col.length; i++) {
@@ -2689,6 +2672,7 @@ function transferResultDataset(funs, dataset, title, parameter) {
 
     return {
         eventid: getEventIndex(),
+        name: name,
         title: title,
         sql: funs.join(";\n"),
         type: __SQLEDITOR__.configs.codeMirrorMode.value,
@@ -2803,6 +2787,7 @@ function getTableStructure(sql) {
     }
     return {
         eventid: getEventIndex(),
+        name: "table structure",
         columns: columns,
         data: data,
         title: ["table structure"],
@@ -3479,6 +3464,7 @@ function initMenus() {
             }
             let result = __CONFIGS__.CURRENT_TABLE.structure;
             result["eventid"] = getEventIndex();
+            result["name"] = __CONFIGS__.CURRENT_TABLE.name,
             result["title"] = [__CONFIGS__.CURRENT_TABLE.name];
             result["sql"] = __CONFIGS__.CURRENT_TABLE.sql;
             result["parameter"] = null;
@@ -3497,9 +3483,9 @@ function initMenus() {
         let sqltools = $("sql-tools");
         sqltools.ondblclick = function () {
             let style = {
-                        backgroundImage: document.body.style.backgroundImage,
-                        backgroundColor: __THEMES__.get().color,
-                    };
+                backgroundImage: getCss(document.body,"background-image"),
+                backgroundColor: getCss(document.body,"background-color"),
+            };
             requestFullScreen($("main"), style);
         };
 
@@ -3514,6 +3500,7 @@ function initMenus() {
             openfile.value = "";
             __SQLEDITOR__.title = null;
             $("sql-title").innerText = "";
+            $("sql-title").title = "";
             __SQLEDITOR__.codeMirror.setValue("");
             if (this.id == "help-create-sql") {
                 let sql = "/*脚本案例*/\r\n" +
@@ -3542,7 +3529,7 @@ function initMenus() {
                     let reader = new FileReader();
                     reader.onload = function () {
                         __SQLEDITOR__.codeMirror.setValue(this.result);
-                        __SQLEDITOR__.title = $("sql-title").innerText = file.name.split(".")[0];
+                        __SQLEDITOR__.title = $("sql-title").innerText = $("sql-title").title = file.name.split(".")[0];
                     };
                     reader.readAsText(file, __SQLEDITOR__.configs.codeMirrorCharset.value);
                 } catch (e) {
@@ -3563,7 +3550,7 @@ function initMenus() {
         let help_opensql = $("help-open-sql");
         opensql.onclick = help_opensql.onclick = function () {
             UI.sqlManagerDialog.show("auto", function (args, values) {
-                __SQLEDITOR__.title = $("sql-title").innerText = values.title;
+                __SQLEDITOR__.title = $("sql-title").innerText = $("sql-title").title = values.title;
                 __LOGS__.viewMessage("Open " + __SQLEDITOR__.configs.codeMirrorMode.value + " : " + __SQLEDITOR__.title);
                 __SQLEDITOR__.codeMirror.setValue(values.sql);
             }, {type: UI.sqlManagerDialog.type.open, charset: __SQLEDITOR__.configs.codeMirrorCharset.value});
@@ -3580,7 +3567,7 @@ function initMenus() {
         saveto.onclick = help_savesql.onclick = function () {
             if (__SQLEDITOR__.title == null) {
                 UI.sqlManagerDialog.show("auto", function (args, values) {
-                    __SQLEDITOR__.title = $("sql-title").innerText = values.title;
+                    __SQLEDITOR__.title = $("sql-title").innerText = $("sql-title").title = values.title;
                     __LOGS__.viewMessage("Save " + __SQLEDITOR__.configs.codeMirrorMode.value + " : " + __SQLEDITOR__.title);
                 }, {type: UI.sqlManagerDialog.type.save, sql: __SQLEDITOR__.codeMirror.getValue(), charset: __SQLEDITOR__.configs.codeMirrorCharset.value});
             } else {
@@ -3617,7 +3604,7 @@ function initMenus() {
         saveas.appendChild(__SYS_IMAGES_SVG__.getHelp("export", saveas, saveas.id, "auto", "white", "13px", "13px"));
         let help_downloadsql = $("help-download-sql");
         saveas.onclick = help_downloadsql.onclick = function () {
-            UI.prompt.show("输入", {"文件名称": __SQLEDITOR__.title != null ? __SQLEDITOR__.title.split("_")[0] : ""}, "auto", function (args, values) {
+            UI.prompt.show("输入", {"文件名称": __SQLEDITOR__.title != null ? __SQLEDITOR__.title: ""}, "auto", function (args, values) {
                 let title = values["文件名称"];
                 if (title != null && title.trim() != "") {
                     let blob = null;
@@ -3682,36 +3669,36 @@ function initMenus() {
                                 __SQLEDITOR__.parameter[key] = values[key];
                             }
                             if (__SQLEDITOR__.title != null) {
-                                let title = __SQLEDITOR__.title;
+                                let name = __SQLEDITOR__.title;
                                 if (__SQLEDITOR__.configs.codeMirrorMode.value == "text/x-sqlite")
-                                    execute(title);
+                                    execute(name);
                                 if (__SQLEDITOR__.configs.codeMirrorMode.value == "text/javascript")
-                                    executeFunction(title)
+                                    executeFunction(name)
                             } else {
                                 UI.prompt.show("输入", {"集合名称": ""}, "auto", function (args, values) {
-                                    let title = __SQLEDITOR__.title = $("sql-title").innerText = values["集合名称"];
+                                    let name = __SQLEDITOR__.title = $("sql-title").innerText = $("sql-title").title = values["集合名称"];
                                     if (__SQLEDITOR__.configs.codeMirrorMode.value == "text/x-sqlite")
-                                        execute(title);
+                                        execute(name);
                                     if (__SQLEDITOR__.configs.codeMirrorMode.value == "text/javascript")
-                                        executeFunction(title);
+                                        executeFunction(name);
                                 }, {})
                             }
 
                         }, {});
                     } else {
                         if (__SQLEDITOR__.title != null) {
-                            let title = __SQLEDITOR__.title;
+                            let name = __SQLEDITOR__.title;
                             if (__SQLEDITOR__.configs.codeMirrorMode.value == "text/x-sqlite")
-                                execute(title);
+                                execute(name);
                             if (__SQLEDITOR__.configs.codeMirrorMode.value == "text/javascript")
-                                executeFunction(title)
+                                executeFunction(name)
                         } else {
                             UI.prompt.show("输入", {"集合名称": ""}, "auto", function (args, values) {
-                                let title = __SQLEDITOR__.title = values["集合名称"];
+                                let name = __SQLEDITOR__.title = values["集合名称"];
                                 if (__SQLEDITOR__.configs.codeMirrorMode.value == "text/x-sqlite")
-                                    execute(title);
+                                    execute(name);
                                 if (__SQLEDITOR__.configs.codeMirrorMode.value == "text/javascript")
-                                    executeFunction(title);
+                                    executeFunction(name);
                             }, {})
                         }
                     }
@@ -3763,9 +3750,9 @@ function initMenus() {
         let detailtools = $("detail-tools");
         detailtools.ondblclick = function () {
             let style = {
-                        backgroundImage: document.body.style.backgroundImage,
-                        backgroundColor: __THEMES__.get().color,
-                    };
+                backgroundImage: getCss(document.body,"background-image"),
+                backgroundColor: getCss(document.body,"background-color"),
+            };
             requestFullScreen($("detail"), style);
         };
 
@@ -3862,9 +3849,9 @@ function initMenus() {
         let datatools = $("data-tools");
         datatools.ondblclick = function () {
             let style = {
-                        backgroundImage: document.body.style.backgroundImage,
-                        backgroundColor: __THEMES__.get().color,
-                    };
+                backgroundImage: getCss(document.body,"background-image"),
+                backgroundColor: getCss(document.body,"background-color"),
+            };
             requestFullScreen($("main"), style);
         };
 
@@ -3907,7 +3894,7 @@ function initMenus() {
                                         $("open-sql-file").value = "";
                                         $("dataset-select-echarts-theme").value = __ECHARTS__.configs.echartsTheme.value = report.configs.echartsTheme.value;
                                         $("dataset-select-echarts-type").value = __ECHARTS__.configs.echartsType.value = report.configs.echartsType.value;
-                                        __SQLEDITOR__.title = $("sql-title").innerText = report.dataset.title.join("_");
+                                        __SQLEDITOR__.title = $("sql-title").innerText = $("sql-title").title = report.dataset.name;
                                         __SQLEDITOR__.codeMirror.setValue(report.dataset.sql);
                                         viewDataset(__DATASET__.default.sheet, 0, false);
                                         let _width = (getAbsolutePosition(container).width * 1) + "px";
@@ -4361,8 +4348,8 @@ function initMenus() {
                 try {
                     let echart_target = echarts.getInstanceByDom($("tableContainer"));
                     let style = {
-                        backgroundImage: document.body.style.backgroundImage,
-                        backgroundColor: __THEMES__.get().color,
+                        backgroundImage: getCss(document.body, "background-image"),
+                        backgroundColor: getCss(document.body, "background-color"),
                     };
                     if (typeof echart_target !== "undefined") {
                         requestFullScreen($("tableContainer"), style);
@@ -5429,14 +5416,6 @@ var dragParams = {
 };
 //拖拽的实现
 function setDialogDrag(bar, callback) {
-    //获取相关CSS属性
-    function getCss(o, key) {
-        if (o)
-            return o.currentStyle ? o.currentStyle[key] : document.defaultView.getComputedStyle(o, false)[key];
-        else
-            return null;
-    }
-
     bar.onmousedown = function (event) {
         dragParams.flag = true;
         if (dragParams.target !=null)

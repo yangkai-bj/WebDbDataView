@@ -1485,3 +1485,11 @@ function jsonParse(message) {
         return null;
     }
 }
+
+//获取相关CSS属性
+function getCss(element, key) {
+    if (element)
+        return element.currentStyle ? element.currentStyle[key] : document.defaultView.getComputedStyle(element, false)[key];
+    else
+        return null;
+}
