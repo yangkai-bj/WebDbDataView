@@ -1,15 +1,15 @@
-:root{
-    --main-font-family: sans-serif, Arial,"Microsoft Yahei","微软雅黑";
+:root {
+    --main-font-family: sans-serif, Arial, "Microsoft Yahei", "微软雅黑";
     --main-font-size: 14px;
-    --main-border-color:#ccc;
+    --main-border-color: #ccc;
 
-    --main-title-color:lightseagreen;
-    --sub-title-color:lightseagreen;
+    --main-title-color: lightseagreen;
+    --sub-title-color: lightseagreen;
 
     --main-background-color: #2F4F4F;
     /*主背景颜色default:#383838*/
     /*--main-background-image: url('data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAeAB4AAD/2wBDAAIBAQIBAQICAgICAgICAwUDAwMDAwYEBAMFBwYHBwcGBwcICQsJCAgKCAcHCg0KCgsMDAwMBwkODw0MDgsMDAz/2wBDAQICAgMDAwYDAwYMCAcIDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAz/wAARCABkAGQDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD8j6KKK+kPxsKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooA//2Q==');*/
-    --main-background-image: -webkit-linear-gradient(45deg,rgba(255, 255, 255, 0.15) 25%,transparent 25%,transparent 50%,rgba(255, 255, 255, 0.15) 50%,rgba(255, 255, 255, 0.15) 75%,transparent 75%,transparent);
+    --main-background-image: -webkit-linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
     /*CSS3 IE10以下不支持*/
     /*主背景图片,default:url(background.jpg)*/
     --main-background-image-size: auto;
@@ -20,42 +20,41 @@
 
     --toolbar-background-color: #2F4F4F;
     /*工具条背景颜色default:#A52A2A*/
-    --toolbar-color:whitesmoke;
+    --toolbar-color: whitesmoke;
     /*工具条颜色default:white*/
-    --toolbar-button-hover-background-color:darkgoldenrod;
+    --toolbar-button-hover-background-color: darkgoldenrod;
     /*工具条按钮背景颜色default:#A52A2A*/
-    --toolbar-button-hover-color:whitesmoke;
+    --toolbar-button-hover-color: whitesmoke;
     /*工具条按钮颜色default:#A52A2A*/
-    --toolbar-button-tooltip-background-color:#2F4F4F;
-    --toolbar-button-tooltip-color:whitesmoke;
+    --toolbar-button-tooltip-background-color: #2F4F4F;
+    --toolbar-button-tooltip-color: whitesmoke;
 
+    --list-color: whitesmoke;
+    --list-hover-color: sandybrown;
 
-    --list-color:whitesmoke;
-    --list-hover-color:sandybrown;
+    --detail-dt-color: #79d2a6;
+    --detail-message-color: whitesmoke;
+    --detail-message-hover-color: salmon;
 
-    --detail-dt-color:#79d2a6;
-    --detail-message-color:whitesmoke;
-    --detail-message-hover-color:salmon;
+    --footer-color: whitesmoke;
+    --footer-dt-hover-color: sandybrown;
 
-    --footer-color:whitesmoke;
-    --footer-dt-hover-color:sandybrown;
-
-    --table-border-color:#98bf21;
-    --table-background-color:#FFFACD;
-    --table-th-before-color:#DCDCDC;
-    --table-td-before-color:black;
+    --table-border-color: #98bf21;
+    --table-background-color: #FFFACD;
+    --table-th-before-color: #DCDCDC;
+    --table-td-before-color: black;
     --table-th-background-color: #2F4F4F;
-    --table-tr-background-color:#FFFACD;
-    --table-alt-tr-background-color:#c2f0c2;
-    --table-tr-hover-background-color:#79d2a6;
+    --table-tr-background-color: #FFFACD;
+    --table-alt-tr-background-color: #c2f0c2;
+    --table-tr-hover-background-color: #79d2a6;
     --table-td-border-color: #2eb82e;
-    --table-td-hover-border-color:salmon;
+    --table-td-hover-border-color: salmon;
 
     --drag-border-color: darkgoldenrod;
 
-    --copyright_color:gray;
+    --copyright_color: gray;
     /*版权说明颜色*/
-    --copyright_hover_color:#FF8000;
+    --copyright_hover_color: #FF8000;
     /*版权说明热点颜色*/
 
     --tab-border-color: whitesmoke;
