@@ -2,9 +2,8 @@
 const __VERSION__ = {
     name: "Web DataView for SQLite Database of browser",
     main: "WebDBDataView.js",
-    echarts: "echarts/v5.3.2",
-    version: "3.3.0",
-    date: "2022/06/15",
+    version: "3.3.2",
+    date: "2022/06/22",
     comment: [
         "-- 2021/03/08",
         "优化算法和压缩代码.",
@@ -84,8 +83,12 @@ const __VERSION__ = {
         "优化系统资源库.",
         "-- 2022/04/14",
         "优化主题.",
-        "Echarts 5.3.2.",
+        "ECharts 5.3.2.",
         "-- 2022/05/08",
+        "优化固定报表.",
+        "-- 2022/05/16",
+        "ECharts 5.3.3.",
+        "-- 2022/06/22",
         "优化固定报表.",
     ],
     author: __SYS_LOGO_LINK__.author.decode(),
@@ -363,19 +366,60 @@ var __LOGS__ = {
                     input.title = this.configs[name].name;
                 item.appendChild(input);
             } else if (this.configs[name].type == "color") {
-                let input = document.createElement("input");
+                let input = UI.colorChoice(name, this.configs[name].value, function (value) {
+                    __LOGS__.configs[this.id].value = this.value;
+                });
                 input.style.cssFloat = "right";
                 input.id = name;
-                input.type = "color";
-                input.className = "ui-container-item-input";
-                input.value = this.configs[name].value;
-                input.onchange = function () {
-                    __LOGS__.configs[this.id].value = this.value;
-                };
+                input.className = "ui-container-item-color";
                 if (typeof this.configs[name].title != "undefined")
                     input.title = this.configs[name].title;
                 else
                     input.title = this.configs[name].name;
+                item.appendChild(input);
+            } else if (this.configs[name].type == "boolean") {
+                let input = UI.booleanChoice(this.configs[name].value.toBoolean(), function (value) {
+                     __LOGS__.configs[name].value = (value ? "true" : "false");
+                });
+                input.id = name;
+                input.className = "ui-container-item-boolean";
+                if (typeof this.configs[name].title != "undefined")
+                    input.title = this.configs[name].title;
+                else
+                    input.title = this.configs[name].name;
+                item.appendChild(input);
+            } else if (this.configs[name].type == "range") {
+                let input = document.createElement("input");
+                input.style.cssFloat = "right";
+                input.id = name;
+                input.type = "range";
+                input.min = __LOGS__.configs[name].attribute.min;
+                input.max = __LOGS__.configs[name].attribute.max;
+                input.step = __LOGS__.configs[name].attribute.step;
+                input.className = "ui-container-item-range";
+                input.title = __LOGS__.configs[name].value;
+                input.value = Number(__LOGS__.configs[name].value.replace(new RegExp(__LOGS__.configs[name].attribute.unit,"g"), ""));
+                input.onchange = function () {
+                    __LOGS__.configs[this.id].value = this.title = (this.value + __LOGS__.configs[this.id].attribute.unit);
+                };
+                item.appendChild(input);
+            } else if (this.configs[name].type == "number") {
+                let input = document.createElement("input");
+                input.style.cssFloat = "right";
+                input.id = name;
+                input.type = "number";
+                input.min = __LOGS__.configs[name].attribute.min;
+                input.max = __LOGS__.configs[name].attribute.max;
+                input.step = __LOGS__.configs[name].attribute.step;
+                input.className = "ui-container-item-number";
+                input.title = __LOGS__.configs[name].value;
+                input.value = __LOGS__.configs[name].value;
+                input.onkeypress = function(){
+                    return false;
+                };
+                input.onchange = function () {
+                    __LOGS__.configs[this.id].value = this.title = this.value;
+                };
                 item.appendChild(input);
             } else if (this.configs[name].type == "hr") {
                 span.innerHTML = "[ " + this.configs[name].name + " ]";
@@ -730,7 +774,6 @@ var __XMLHTTP__ = {
         }
     },
     certificate: function (byServer) {
-        let echartsPath = __VERSION__.echarts;
         let title = document.title;
         let scripts = [
             {name: "主程序", src: "WebDBDataView.js", type: "text/javascript", element: "script", load: false},
@@ -741,7 +784,7 @@ var __XMLHTTP__ = {
             {name: "公共函数", src: "FunctionsComponent.js", type: "text/javascript", element: "script", load: false},
             {
                 name: "Echarts",
-                src: echartsPath + "/echarts.min.js",
+                src: __ECHARTS__.configs.version.value,
                 type: "text/javascript",
                 element: "script",
                 load: false
@@ -828,26 +871,26 @@ var __XMLHTTP__ = {
             {name: "批量邮件组件", src: "MailComponent.js", type: "text/javascript", element: "script", load: true},
             {
                 name: "Echarts",
-                src: echartsPath + "/echarts-gl.min.js",
+                src: "echarts/echarts-gl.min.js",
                 type: "text/javascript",
                 element: "script",
                 load: true
             },
             {
                 name: "Echarts",
-                src: echartsPath + "/echarts-wordcloud.min.js",
+                src: "echarts/echarts-wordcloud.min.js",
                 type: "text/javascript",
                 element: "script",
                 load: true
             },
             {
                 name: "Echarts",
-                src: echartsPath + "/echarts-liquidfill.min.js",
+                src: "echarts/echarts-liquidfill.min.js",
                 type: "text/javascript",
                 element: "script",
                 load: true
             },
-            {name: "回归函数组件", src: echartsPath + "/ecStat.js", type: "text/javascript", element: "script", load: true},
+            {name: "回归函数组件", src: "echarts/ecStat.js", type: "text/javascript", element: "script", load: true},
             {name: "世界地图组件", src: "echarts/map/world.js", type: "text/javascript", element: "script", load: true},
             {
                 name: "中国地图组件",
@@ -1032,7 +1075,7 @@ var __XMLHTTP__ = {
          reportScale: {
              name: "小数位数",
              value: 6,
-             type: "input"
+             type: "number", attribute: {min: 0, max: 6, step: 1}
          },
          hr_page: {name: "分页设置", value: "", type: "hr"},
          reportPageSize: {
@@ -1078,7 +1121,7 @@ var __XMLHTTP__ = {
          reportDownloadDelay: {
              name: "下载延时(毫秒)",
              value: 1000,
-             type: "input"
+             type: "number", attribute: {min: 1000, max: 5000, step: 1000}
          },
      },
      result: [
@@ -1238,9 +1281,10 @@ var __XMLHTTP__ = {
 
          let title = document.createElement("div");
          title.className = "ui-container-title";
-         title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name,__THEMES__.get().color, "24px", "24px", __VERSION__.logo.flip);
+         title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name, __THEMES__.get().color, "24px", "24px", __VERSION__.logo.flip);
+
          let span = document.createElement("span");
-         span.innerHTML = "报表设置";
+         span.innerHTML = "报表设置 ";
          title.appendChild(span);
          let close = __SYS_IMAGES_SVG__.getImage("close", __THEMES__.get().color, "24px", "24px", __THEMES__.get().hover);
          close.className = "ui-container-close";
@@ -1300,19 +1344,59 @@ var __XMLHTTP__ = {
                      input.title = this.configs[name].name;
                  item.appendChild(input);
              } else if (this.configs[name].type == "color") {
-                 let input = document.createElement("input");
-                 input.style.cssFloat = "right";
+                 let input = UI.colorChoice(name, this.configs[name].value, function (value) {
+                     __DATASET__.configs[name].value = value;
+                 });
                  input.id = name;
-                 input.type = "color";
-                 input.className = "ui-container-item-input";
-                 input.value = this.configs[name].value;
-                 input.onchange = function () {
-                     __DATASET__.configs[this.id].value = this.value;
-                 };
+                 input.className = "ui-container-item-color";
                  if (typeof this.configs[name].title != "undefined")
                      input.title = this.configs[name].title;
                  else
                      input.title = this.configs[name].name;
+                 item.appendChild(input);
+             } else if (this.configs[name].type == "boolean") {
+                 let input = UI.booleanChoice(this.configs[name].value.toBoolean(), function (value) {
+                     __DATASET__.configs[name].value = (value ? "true" : "false");
+                 });
+                 input.id = name;
+                 input.className = "ui-container-item-boolean";
+                 if (typeof this.configs[name].title != "undefined")
+                     input.title = this.configs[name].title;
+                 else
+                     input.title = this.configs[name].name;
+                 item.appendChild(input);
+             } else if (this.configs[name].type == "range") {
+                 let input = document.createElement("input");
+                 input.style.cssFloat = "right";
+                 input.id = name;
+                 input.type = "range";
+                 input.min = __DATASET__.configs[name].attribute.min;
+                 input.max = __DATASET__.configs[name].attribute.max;
+                 input.step = __DATASET__.configs[name].attribute.step;
+                 input.className = "ui-container-item-range";
+                 input.title = __DATASET__.configs[name].value;
+                 input.value = Number(__DATASET__.configs[name].value.replace(new RegExp(__DATASET__.configs[name].attribute.unit, "g"), ""));
+                 input.onchange = function () {
+                     __DATASET__.configs[this.id].value = this.title = (this.value + __DATASET__.configs[this.id].attribute.unit);
+                 };
+                 item.appendChild(input);
+             } else if (this.configs[name].type == "number") {
+                 let input = document.createElement("input");
+                 input.style.cssFloat = "right";
+                 input.id = name;
+                 input.type = "number";
+                 input.min = __DATASET__.configs[name].attribute.min;
+                 input.max = __DATASET__.configs[name].attribute.max;
+                 input.step = __DATASET__.configs[name].attribute.step;
+                 input.className = "ui-container-item-number";
+                 input.title = __DATASET__.configs[name].value;
+                 input.value = __DATASET__.configs[name].value;
+                 input.onkeypress = function(){
+                    return false;
+                };
+                 input.onchange = function () {
+                     __DATASET__.configs[this.id].value = this.title = this.value;
+                 };
                  item.appendChild(input);
              } else if (this.configs[name].type == "hr") {
                  span.innerHTML = "[ " + this.configs[name].name + " ]";
@@ -1417,7 +1501,10 @@ var __XMLHTTP__ = {
                  new Option("默认", JSON.stringify({name: "default", href: "codemirror/theme/default.css"})),
                  new Option("黑色", JSON.stringify({name: "black", href: "codemirror/theme/black.css"})),
                  new Option("粉色", JSON.stringify({name: "pink", href: "codemirror/theme/pink.css"})),
-                 new Option("墨绿", JSON.stringify({name: "blackish-green", href: "codemirror/theme/blackish-green.css"})),
+                 new Option("墨绿", JSON.stringify({
+                     name: "blackish-green",
+                     href: "codemirror/theme/blackish-green.css"
+                 })),
                  new Option("蓝色", JSON.stringify({name: "cobalt", href: "codemirror/theme/cobalt.css"})),
                  new Option("深蓝", JSON.stringify({name: "duotone-light", href: "codemirror/theme/duotone-light.css"})),
                  new Option("幻想", JSON.stringify({name: "rubyblue", href: "codemirror/theme/rubyblue.css"})),
@@ -1450,43 +1537,38 @@ var __XMLHTTP__ = {
          },
          codeMirrorRulers: {
              name: "标尺数量",
-             value: "6",
-             type: "input"
+             value: 6,
+             type: "number", attribute: {min: 0, max: 10, step: 1}
          },
          codeMirrorRulerWidth: {
              name: "标尺宽度",
              value: "40",
-             type: "input"
+             type: "number", attribute: {min: 10, max: 100, step: 1}
          },
          codeMirrorLineNumber: {
-             name: "行号",
+             name: "显示行号",
              value: "true",
-             options: [new Option("显示", "true"), new Option("不显示", "false")],
-             type: "select"
+             type: "boolean"
          },
          codeMirrorSmartIndent: {
              name: "智能缩进",
              value: "true",
-             options: [new Option("开启", "true"), new Option("关闭", "false")],
-             type: "select"
+             type: "boolean"
          },
          codeMirrorMatchBrackets: {
              name: "匹配括号",
              value: "true",
-             options: [new Option("开启", "true"), new Option("关闭", "false")],
-             type: "select"
+             type: "boolean"
          },
          codeMirrorAutofocus: {
              name: "自动焦点",
              value: "true",
-             options: [new Option("开启", "true"), new Option("关闭", "false")],
-             type: "select"
+             type: "boolean"
          },
          codeMirrorBreakpoints: {
-             name: "断点",
+             name: "显示断点",
              value: "false",
-             options: [new Option("显示", "true"), new Option("不显示", "false")],
-             type: "select"
+             type: "boolean"
          },
          codeMirrorCharset: {
              name: "字符集",
@@ -1496,28 +1578,28 @@ var __XMLHTTP__ = {
          },
      },
 
-     getConfigItems: function(){
-        let configs = {};
-        for(let key in this.configs){
-            configs[key]  = this.configs[key].value;
-        }
-        return configs;
-    },
+     getConfigItems: function () {
+         let configs = {};
+         for (let key in this.configs) {
+             configs[key] = this.configs[key].value;
+         }
+         return configs;
+     },
 
-     getConfigs: function(){
-        let configs = {};
-        for(let key in this.configs) {
-            let config = this.configs[key];
-            configs[key] = {
-                name: config.name,
-                type: config.type,
-                value: config.value
-            };
-        }
-        return configs;
-    },
+     getConfigs: function () {
+         let configs = {};
+         for (let key in this.configs) {
+             let config = this.configs[key];
+             configs[key] = {
+                 name: config.name,
+                 type: config.type,
+                 value: config.value
+             };
+         }
+         return configs;
+     },
 
-     reset: function() {
+     reset: function () {
          try {
              if (this.codeMirror != null) {
                  this.codeMirror.setOption("mode", (this.configs.codeMirrorMode.value == "text/html" ? "text/javascript" : this.configs.codeMirrorMode.value));
@@ -1667,11 +1749,11 @@ var __XMLHTTP__ = {
 
          let title = document.createElement("div");
          title.className = "ui-container-title";
-         title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name,__THEMES__.get().color, "24px", "24px", __VERSION__.logo.flip);
+         title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name, __THEMES__.get().color, "24px", "24px", __VERSION__.logo.flip);
          let span = document.createElement("span");
-         span.innerHTML = "编辑器设置 ";
+         span.innerHTML = "编辑器设置";
          title.appendChild(span);
-         let close = __SYS_IMAGES_SVG__.getImage("close",__THEMES__.get().color, "24px", "24px", __THEMES__.get().hover);
+         let close = __SYS_IMAGES_SVG__.getImage("close", __THEMES__.get().color, "24px", "24px", __THEMES__.get().hover);
          close.className = "ui-container-close";
          title.appendChild(close);
          content.appendChild(title);
@@ -1729,19 +1811,59 @@ var __XMLHTTP__ = {
                      input.title = this.configs[name].name;
                  item.appendChild(input);
              } else if (this.configs[name].type == "color") {
-                 let input = document.createElement("input");
-                 input.style.cssFloat = "right";
+                 let input = UI.colorChoice(name, this.configs[name].value, function (value) {
+                     __SQLEDITOR__.configs[name].value = value;
+                 });
                  input.id = name;
-                 input.type = "color";
-                 input.className = "ui-container-item-input";
-                 input.value = this.configs[name].value;
-                 input.onchange = function () {
-                     __SQLEDITOR__.configs[this.id].value = this.value;
-                 };
+                 input.className = "ui-container-item-color";
                  if (typeof this.configs[name].title != "undefined")
                      input.title = this.configs[name].title;
                  else
                      input.title = this.configs[name].name;
+                 item.appendChild(input);
+             } else if (this.configs[name].type == "boolean") {
+                 let input = UI.booleanChoice(this.configs[name].value.toBoolean(), function (value) {
+                     __SQLEDITOR__.configs[name].value = (value ? "true" : "false");
+                 });
+                 input.id = name;
+                 input.className = "ui-container-item-boolean";
+                 if (typeof this.configs[name].title != "undefined")
+                     input.title = this.configs[name].title;
+                 else
+                     input.title = this.configs[name].name;
+                 item.appendChild(input);
+             } else if (this.configs[name].type == "range") {
+                 let input = document.createElement("input");
+                 input.style.cssFloat = "right";
+                 input.id = name;
+                 input.type = "range";
+                 input.min = __SQLEDITOR__.configs[name].attribute.min;
+                 input.max = __SQLEDITOR__.configs[name].attribute.max;
+                 input.step = __SQLEDITOR__.configs[name].attribute.step;
+                 input.className = "ui-container-item-range";
+                 input.title = __SQLEDITOR__.configs[name].value;
+                 input.value = Number(__SQLEDITOR__.configs[name].value.replace(new RegExp(__SQLEDITOR__.configs[name].attribute.unit, "g"), ""));
+                 input.onchange = function () {
+                     __SQLEDITOR__.configs[this.id].value = this.title = (this.value + __SQLEDITOR__.configs[this.id].attribute.unit);
+                 };
+                 item.appendChild(input);
+             } else if (this.configs[name].type == "number") {
+                 let input = document.createElement("input");
+                 input.style.cssFloat = "right";
+                 input.id = name;
+                 input.type = "number";
+                 input.min = __SQLEDITOR__.configs[name].attribute.min;
+                 input.max = __SQLEDITOR__.configs[name].attribute.max;
+                 input.step = __SQLEDITOR__.configs[name].attribute.step;
+                 input.className = "ui-container-item-number";
+                 input.title = __SQLEDITOR__.configs[name].value;
+                 input.value = __SQLEDITOR__.configs[name].value;
+                 input.onkeypress = function(){
+                    return false;
+                };
+                 input.onchange = function () {
+                     __SQLEDITOR__.configs[this.id].value = this.title = this.value;
+                 };
                  item.appendChild(input);
              } else if (this.configs[name].type == "hr") {
                  span.innerHTML = "[ " + this.configs[name].name + " ]";
@@ -2996,7 +3118,10 @@ function userLogin() {
                             function () {
                                 let items = {};
                                 for (let key in USER_INFOR) {
-                                    items[key] = (typeof __LOGS__.user.attribute[USER_INFOR[key].value] !== "undefined" ? __LOGS__.user.attribute[USER_INFOR[key].value] : "")
+                                    items[key] = {
+                                        value: (typeof __LOGS__.user.attribute[USER_INFOR[key].value] !== "undefined" ? __LOGS__.user.attribute[USER_INFOR[key].value] : ""),
+                                        type: "input"
+                                    };
                                 }
                                 UI.prompt.show(__LOGS__.user.name + " 用户信息",
                                     items, "auto", function (values) {
@@ -3014,10 +3139,10 @@ function userLogin() {
                                                 values[key] !== "" ? (mecard += USER_INFOR[key].card + ":" + values[key] + ";") : mecard += "";
                                             }
                                             UI.prompt.show("二维码参数", {
-                                                "颜色": "#000000",
-                                                "背景": "#FFFFFF",
-                                                "宽度": "300",
-                                                "高度": "300"
+                                                "颜色": {value: __THEMES__.get().color, type: "color"},
+                                                "背景": {value: "#ffffff", type: "color"},
+                                                "宽度": {value: "300", type: "input"},
+                                                "高度": {value: "300", type: "input"},
                                             }, "auto", function (args, values) {
                                                 let options = {
                                                     color: values["颜色"],
@@ -3126,7 +3251,7 @@ function init() {
 
         let user = __SYS_IMAGES_SVG__.getImage("user_add",  __THEMES__.get().color, "32px", "32px", __THEMES__.get().hover);
         user.onclick = function () {
-            UI.prompt.show("创建用户", {"用户名称": ""}, "auto", function (values) {
+            UI.prompt.show("创建用户", {"用户名称": {value: "", type: "input"}}, "auto", function (values) {
                 let name = values["用户名称"].trim();
                 if (name.length >= 2) {
                     UI.password.show("用户 " + name + " 的登录密码", {
@@ -3163,7 +3288,7 @@ function init() {
             let users = getUserConfig("Users");
             if (users == null) {
                 UI.confirm.show("注意", "您没有创建系统用户,是否需要立即创建?", "auto", function () {
-                    UI.prompt.show("创建用户", {"用户名称": ""}, "auto", function (values) {
+                    UI.prompt.show("创建用户", {"用户名称": {value: "", type: "input"}}, "auto", function (values) {
                         let name = values["用户名称"].trim();
                         if (name.length >= 2) {
                             UI.password.show("用户 " + name + " 的登录密码", {
@@ -3232,7 +3357,7 @@ function initConfigs() {
 
             $("main-version").innerText = __VERSION__.version;
             $("main-version").onmouseenter = function () {
-                UI.help($("main-version"), "none", "auto", "发布日期: " + __VERSION__.date + "<br><span style='font-size: 50%'>● ...<br> ● " + __VERSION__.comment.splice(__VERSION__.comment.length % 10 + (Math.floor(__VERSION__.comment.length / 10) - 1) * 10).join("<br>● ") + "</span>");
+                UI.help($("main-version"), "none", "auto", "发布日期: " + __VERSION__.date + "<br><span style='font-size: 50%'>ECharts " + echarts.version + "<hr>● ...<br> ● " + __VERSION__.comment.splice(__VERSION__.comment.length % 10 + (Math.floor(__VERSION__.comment.length / 10) - 1) * 10).join("<br>● ") + "</span>");
             };
             let copyright = __VERSION__.author + " ☎ " + __VERSION__.tel + " ✉ <a href='mailto:" + __VERSION__.email + "' target='_blank'>" + __VERSION__.email + "</a>";
             setUserConfig("CopyRight", copyright);
@@ -3604,7 +3729,12 @@ function initMenus() {
         saveas.appendChild(__SYS_IMAGES_SVG__.getHelp("export", saveas, saveas.id, "auto", "white", "13px", "13px"));
         let help_downloadsql = $("help-download-sql");
         saveas.onclick = help_downloadsql.onclick = function () {
-            UI.prompt.show("输入", {"文件名称": __SQLEDITOR__.title != null ? __SQLEDITOR__.title: ""}, "auto", function (args, values) {
+            UI.prompt.show("输入", {
+                "文件名称": {
+                    value: __SQLEDITOR__.title != null ? __SQLEDITOR__.title : "",
+                    type: "input"
+                }
+            }, "auto", function (args, values) {
                 let title = values["文件名称"];
                 if (title != null && title.trim() != "") {
                     let blob = null;
@@ -3661,7 +3791,10 @@ function initMenus() {
                         let temp = {};
                         for (let i = 0; i < params.length; i++) {
                             let key = params[i].substring(params[i].indexOf("{") + 1, params[i].indexOf("}"));
-                            temp[key] = typeof __SQLEDITOR__.parameter[key] !== "undefined" ? __SQLEDITOR__.parameter[key] : "";
+                            temp[key] = {
+                                value: typeof __SQLEDITOR__.parameter[key] !== "undefined" ? __SQLEDITOR__.parameter[key] : "",
+                                type: "input"
+                            };
                         }
                         params = temp;
                         UI.prompt.show("输入脚本参数", params, "auto", function (args, values) {
@@ -3675,7 +3808,7 @@ function initMenus() {
                                 if (__SQLEDITOR__.configs.codeMirrorMode.value == "text/javascript")
                                     executeFunction(name)
                             } else {
-                                UI.prompt.show("输入", {"集合名称": ""}, "auto", function (args, values) {
+                                UI.prompt.show("输入", {"集合名称": {value:"",type:"input"}}, "auto", function (args, values) {
                                     let name = __SQLEDITOR__.title = $("sql-title").innerText = $("sql-title").title = values["集合名称"];
                                     if (__SQLEDITOR__.configs.codeMirrorMode.value == "text/x-sqlite")
                                         execute(name);
@@ -3693,7 +3826,7 @@ function initMenus() {
                             if (__SQLEDITOR__.configs.codeMirrorMode.value == "text/javascript")
                                 executeFunction(name)
                         } else {
-                            UI.prompt.show("输入", {"集合名称": ""}, "auto", function (args, values) {
+                            UI.prompt.show("输入", {"集合名称": {value:"",type:"input"}}, "auto", function (args, values) {
                                 let name = __SQLEDITOR__.title = values["集合名称"];
                                 if (__SQLEDITOR__.configs.codeMirrorMode.value == "text/x-sqlite")
                                     execute(name);
@@ -4090,7 +4223,12 @@ function initMenus() {
                             sheetNames = removingRedundant(sheetNames, dataset.title[dataset.title.length - 1]);
                             sheets.push(comment);
                             sheetNames = removingRedundant(sheetNames, "Comment");
-                            UI.prompt.show("输入", {"文件名称": dataset.title.join("_")}, "auto", function (args, values) {
+                            UI.prompt.show("输入", {
+                                "文件名称": {
+                                    value: dataset.title.join("_"),
+                                    type: "input"
+                                }
+                            }, "auto", function (args, values) {
                                 let title = fixFileName(values["文件名称"]);
                                 if (title.trim() != "") {
                                     openDownloadDialog(workbook2blob(args.sheets, args.sheetNames), title + ".xlsx");
@@ -4099,7 +4237,12 @@ function initMenus() {
                             break;
                         case "xml":
                             dataset = __DATASET__.result[__DATASET__.default.sheet];
-                            UI.prompt.show("输入", {"文件名称": dataset.title.join("_")}, "auto", function (args, values) {
+                            UI.prompt.show("输入", {
+                                "文件名称": {
+                                    value: dataset.title.join("_"),
+                                    type: "input"
+                                }
+                            }, "auto", function (args, values) {
                                 let title = fixFileName(values["文件名称"]);
                                 if (title.trim() != "")
                                     getXMLFile(title, args.dataset);
@@ -4135,7 +4278,7 @@ function initMenus() {
                                         }
                                         sheets.push(comment);
                                         sheetNames = removingRedundant(sheetNames, "Comment");
-                                        UI.prompt.show("输入", {"文件名称": ""}, "auto", function (args, values) {
+                                        UI.prompt.show("输入", {"文件名称": {value:"",type:"input"}}, "auto", function (args, values) {
                                             let title = fixFileName(values["文件名称"]);
                                             if (title.trim() != "") {
                                                 openDownloadDialog(workbook2blob(args.sheets, args.sheetNames), title + ".xlsx");
@@ -4143,7 +4286,7 @@ function initMenus() {
                                         }, {sheets: sheets, sheetNames: sheetNames});
                                         break;
                                     case "xml":
-                                        UI.prompt.show("输入", {"文件名称": ""}, "auto", function (args, values) {
+                                        UI.prompt.show("输入", {"文件名称": {value:"",type:"input"}}, "auto", function (args, values) {
                                             let title = fixFileName(values["文件名称"]);
                                             if (title.trim() != "")
                                                 getXMLFile(title, args["dataset"]);
@@ -4558,7 +4701,7 @@ function initMenus() {
         };
         //创建系统用户
         $("create-sys-user").onclick = function () {
-            UI.prompt.show("创建用户", {"用户名称": ""}, "auto", function (values) {
+            UI.prompt.show("创建用户", {"用户名称": {value:"",type:"input"}}, "auto", function (values) {
                 let name = values["用户名称"].trim();
                 if (name.length >= 2) {
                     let users = {};
@@ -4642,13 +4785,13 @@ function initMenus() {
 function getEchartsClock() {
     try {
         if (__DATASET__.result.length == 0) {
+            let container = $("tableContainer");
             try {
                 container.removeAttribute("_echarts_instance_");
                 echarts.getInstanceByDom(container).clear();
                 echartsInstance.dispose();
             } catch (e) {
             }
-            let container = $("tableContainer");
             let width = (getAbsolutePosition(container).width * 1) + "px";
             let height = (getAbsolutePosition(container).height * 1) + "px";
             let configs = JSON.stringify(__ECHARTS__.configs);
@@ -4671,7 +4814,7 @@ function getEchartsClock() {
     }
 }
 
-function getQRCode(parent,width,height,text,logoImage){
+function getQRCode(parent,width,height,text,logoImage) {
     try {
         let qr = document.createElement("div");
         qr.id = qr.className = "qrcode";
@@ -4684,13 +4827,19 @@ function getQRCode(parent,width,height,text,logoImage){
         let logo = logoImage;
         logo.id = "qrcode_logo";
         logo.style.backgroundColor = "white";
-        logo.style.width = width/4.0 + "px";
-        logo.style.height = width/4.0  + "px";
-        logo.style.marginLeft = (width-width/4.0)/2 + "px";
-        logo.style.marginTop = (height-width/4.0)/2 + "px";
+        logo.style.width = width / 4.0 + "px";
+        logo.style.height = width / 4.0 + "px";
+        logo.style.marginLeft = (width - width / 4.0) / 2 + "px";
+        logo.style.marginTop = (height - width / 4.0) / 2 + "px";
         qr.appendChild(logo);
-        qr.ondblclick = function() {
-            UI.prompt.show("二维码", {内容: this.title, 宽度: 300, 高度: 300, 颜色: __THEMES__.get().color, 背景: "#FFFFFF"}, "auto", function (values) {
+        qr.ondblclick = function () {
+            UI.prompt.show("二维码", {
+                内容: {value: this.title, type: "input"},
+                颜色: {value: __THEMES__.get().color, type: "color"},
+                背景: {value: "#FFFFFF", type: "color"},
+                宽度: {value: "300", type: "input"},
+                高度: {value: "300", type: "input"}
+            }, "auto", function (values) {
                 let options = {
                     color: values["颜色"],
                     background: values["背景"],
@@ -4708,7 +4857,7 @@ function getQRCode(parent,width,height,text,logoImage){
             colorLight: "#FFFFFF",
             correctLevel: QRCode.CorrectLevel.H
         });
-    }catch (e) {
+    } catch (e) {
         __LOGS__.viewError("auto", e);
     }
 }
@@ -4794,8 +4943,10 @@ function getColumnMenu(colid) {
     li.setAttribute("colid", colid);
     li.onclick = function () {
         if (__DATASET__.result.length > 0) {
-            let datafilter = getDataFilter(this.getAttribute("colid"));
-            setCenterPosition($("main"),datafilter);
+            UI.getDataFilter("auto", this.getAttribute("colid"),function(values){
+                __DATASET__.result.push(values);
+                viewDataset(__DATASET__.result.length - 1, 0, false);
+            });
         }
     };
     ul.appendChild(li);
@@ -4805,8 +4956,9 @@ function getColumnMenu(colid) {
     li.innerHTML = "&emsp;● 格式";
     li.setAttribute("colid", colid);
     li.onclick = function () {
-        let formater = getFormat(this.getAttribute("colid"));
-        setCenterPosition($("main"),formater);
+        UI.setColumnFormat("auto", this.getAttribute("colid"), function(index){
+           viewDataset(index, 0, false);
+        });
     };
     ul.appendChild(li);
 
@@ -4815,14 +4967,15 @@ function getColumnMenu(colid) {
     li.innerHTML = "&emsp;● 分类计算";
     li.setAttribute("colid", colid);
     li.onclick = function () {
-        let subtotal = getSubtotal(Number(this.getAttribute("colid")));
-        setCenterPosition($("main"),subtotal);
+        UI.getSubtotal("auto", Number(this.getAttribute("colid")), function(values) {
+            __DATASET__.result.push(values);
+            viewDataset(__DATASET__.result.length - 1, 0, false);
+        });
     };
     ul.appendChild(li);
 
     return ul;
 }
-
 function setPageThemes() {
     let message = __LOGS__.viewMessage("设置应用页面主题...");
     try {
@@ -4985,7 +5138,7 @@ function getLayoutslist(parent) {
     b.className = "button";
     b.innerHTML = "新增";
     b.onclick = function () {
-        UI.prompt.show("输入", {"布局名称": ""}, "auto", function (args, values) {
+        UI.prompt.show("输入", {"布局名称": {value:"", type:"input"}}, "auto", function (args, values) {
             let name = values["布局名称"];
             let ex = false;
             if (name != "") {

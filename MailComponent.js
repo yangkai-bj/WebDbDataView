@@ -903,7 +903,7 @@ function getMailComponent(parent) {
         }
 
         sheets.push(aoa);
-        UI.prompt.show("输入", {"文件名称": ""}, "auto", function (args, values) {
+        UI.prompt.show("输入", {"文件名称": {value:"", type:"input"}}, "auto", function (args, values) {
             let title = fixFileName(values["文件名称"]);
             if (title.trim() != "") {
                 openDownloadDialog(workbook2blob(args.sheets, args.sheetNames), title + ".xlsx");

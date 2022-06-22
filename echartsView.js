@@ -232,147 +232,143 @@ function getBackgroundColor(configs) {
 
 function getEcharts(container, dataset, configs) {
     try {
-        if (echarts.version >= "5.0.2") {
-            switch (configs.echartsType.value) {
-                case "Bar":
-                    return getBar(container, dataset, configs);
-                    break;
-                case "Polar":
-                    return getPolar(container, dataset, configs);
-                    break;
-                case "Line":
-                    return getLine(container, dataset, configs);
-                    break;
-                case "Line3D":
-                    return getLine3D(container, dataset, configs);
-                    break;
-                case "BarAndLine":
-                    return getBarAndLine(container, dataset, configs);
-                    break;
-                case "AreaStyle":
-                    return getAreaStyle(container, dataset, configs);
-                    break;
-                case "TransversBar":
-                    return getTransversBar(container, dataset, configs);
-                    break;
-                case "Pie":
-                    return getPie(container, dataset, configs);
-                    break;
-                case "Gauge":
-                    return getCategoryLineForGauge(container, dataset, configs);
-                    break;
-                case "Radar":
-                    return getRadar(container, dataset, configs);
-                    break;
-                case "Relation":
-                    return getRelation(container, dataset, configs);
-                    break;
-                case "Tree":
-                    return getTree(container, dataset, configs);
-                    break;
-                case "WebkitDep":
-                    return getWebkitDep(container, dataset, configs);
-                    break;
-                case "Scatter":
-                    return getScatter(container, dataset, configs);
-                    break;
-                case "Funnel":
-                    return getFunnel(container, dataset, configs);
-                    break;
-                case "WordCloud":
-                    return getWordCloud(container, dataset, configs);
-                    break;
-                case "Liqiud":
-                    return getCategoryLineForLiqiud(container, dataset, configs);
-                    break;
-                case "Calendar":
-                    return getCalendar(container, dataset, configs);
-                    break;
-                case "GeoOfChina":
-                    return getCategoryLineForGeoOfChina(container, dataset, configs);
-                    break;
-                case "GeoOfLocal":
-                    return getCategoryLineForGeoOfLocal(container, dataset, configs);
-                    break;
-                case "Bar3D":
-                    return getBar3D(container, dataset, configs);
-                    break;
-                case "Scatter3D":
-                    return getScatter3D(container, dataset, configs);
-                    break;
-                case "Pie3D":
-                    return getPie3D(container, dataset, configs);
-                    break;
-                case "CategoryLine":
-                    return getCategoryLine(container, dataset, configs);
-                    break;
-                case "FunctionLine":
-                    return getFunctionLine(container, dataset, configs);
-                    break;
-                case "GeoMigrateLinesOfChinaCity":
-                    return getGeoMigrateLinesOfChinaCity(container, dataset, configs);
-                    break;
-                case "ScrollingScreen":
-                    return getScrollingScreen(container, dataset, configs);
-                    break;
-                case "WalkingLantern":
-                    return getWalkingLantern(container, dataset, configs);
-                    break;
-                case "WindowShades":
-                    return getWindowShades(container, dataset, configs);
-                    break;
-                case "Surface":
-                    return getSurface(container, dataset, configs);
-                    break;
-                case "Boxplot":
-                    return getBoxplot(container, dataset, configs);
-                    break;
-                case "Clock":
-                    return getClock(container, dataset, configs);
-                    break;
-                case "Candlestick":
-                    return getCandlestick(container, dataset, configs);
-                    break;
-                case "Banners":
-                    return getBanners(container, dataset, configs);
-                    break;
-                case "Sunburst":
-                    return getSunburst(container, dataset, configs);
-                    break;
-                case "Treemap":
-                    return getTreemap(container, dataset, configs);
-                    break;
-                case "ParallelAxis":
-                    return getParallelAxis(container, dataset, configs);
-                    break;
-                case "Sankey":
-                    return getSankey(container, dataset, configs);
-                    break;
-                case "ThemeRiver":
-                    return getThemeRiver(container, dataset, configs);
-                    break;
-                case "SingeAxis":
-                    return getSingeAxis(container, dataset, configs);
-                    break;
-                case "MathFunciton":
-                    return getFunctionLine(container, dataset, configs);
-                    break;
-                case "BarRacing":
-                    return getBarRacing(container, dataset, configs);
-                    break;
-                case "Scrolling":
-                    return getScrolling(container, dataset, configs);
-                    break;
-                case "MultiGraph":
-                    return getMultiGraph(container, dataset, configs);
-                case "DatasetImage":
-                    return getDatasetImage(container, dataset, configs);
-                    break;
-            }
-        } else {
-            UI.alert.show("提示","本模块支持Echarts5.0.2及以上版本,您目前使用的版本是" + echarts.version + ".");
+        switch (configs.echartsType.value) {
+            case "Bar":
+                return getBar(container, dataset, configs);
+                break;
+            case "Polar":
+                return getPolar(container, dataset, configs);
+                break;
+            case "Line":
+                return getLine(container, dataset, configs);
+                break;
+            case "Line3D":
+                return getLine3D(container, dataset, configs);
+                break;
+            case "BarAndLine":
+                return getBarAndLine(container, dataset, configs);
+                break;
+            case "AreaStyle":
+                return getAreaStyle(container, dataset, configs);
+                break;
+            case "TransversBar":
+                return getTransversBar(container, dataset, configs);
+                break;
+            case "Pie":
+                return getPie(container, dataset, configs);
+                break;
+            case "Gauge":
+                return getCategoryLineForGauge(container, dataset, configs);
+                break;
+            case "Radar":
+                return getRadar(container, dataset, configs);
+                break;
+            case "Relation":
+                return getRelation(container, dataset, configs);
+                break;
+            case "Tree":
+                return getTree(container, dataset, configs);
+                break;
+            case "WebkitDep":
+                return getWebkitDep(container, dataset, configs);
+                break;
+            case "Scatter":
+                return getScatter(container, dataset, configs);
+                break;
+            case "Funnel":
+                return getFunnel(container, dataset, configs);
+                break;
+            case "WordCloud":
+                return getWordCloud(container, dataset, configs);
+                break;
+            case "Liqiud":
+                return getCategoryLineForLiqiud(container, dataset, configs);
+                break;
+            case "Calendar":
+                return getCalendar(container, dataset, configs);
+                break;
+            case "GeoOfChina":
+                return getCategoryLineForGeoOfChina(container, dataset, configs);
+                break;
+            case "GeoOfLocal":
+                return getCategoryLineForGeoOfLocal(container, dataset, configs);
+                break;
+            case "Bar3D":
+                return getBar3D(container, dataset, configs);
+                break;
+            case "Scatter3D":
+                return getScatter3D(container, dataset, configs);
+                break;
+            case "Pie3D":
+                return getPie3D(container, dataset, configs);
+                break;
+            case "CategoryLine":
+                return getCategoryLine(container, dataset, configs);
+                break;
+            case "FunctionLine":
+                return getFunctionLine(container, dataset, configs);
+                break;
+            case "GeoMigrateLinesOfChinaCity":
+                return getGeoMigrateLinesOfChinaCity(container, dataset, configs);
+                break;
+            case "ScrollingScreen":
+                return getScrollingScreen(container, dataset, configs);
+                break;
+            case "WalkingLantern":
+                return getWalkingLantern(container, dataset, configs);
+                break;
+            case "WindowShades":
+                return getWindowShades(container, dataset, configs);
+                break;
+            case "Surface":
+                return getSurface(container, dataset, configs);
+                break;
+            case "Boxplot":
+                return getBoxplot(container, dataset, configs);
+                break;
+            case "Clock":
+                return getClock(container, dataset, configs);
+                break;
+            case "Candlestick":
+                return getCandlestick(container, dataset, configs);
+                break;
+            case "Banners":
+                return getBanners(container, dataset, configs);
+                break;
+            case "Sunburst":
+                return getSunburst(container, dataset, configs);
+                break;
+            case "Treemap":
+                return getTreemap(container, dataset, configs);
+                break;
+            case "ParallelAxis":
+                return getParallelAxis(container, dataset, configs);
+                break;
+            case "Sankey":
+                return getSankey(container, dataset, configs);
+                break;
+            case "ThemeRiver":
+                return getThemeRiver(container, dataset, configs);
+                break;
+            case "SingeAxis":
+                return getSingeAxis(container, dataset, configs);
+                break;
+            case "MathFunciton":
+                return getFunctionLine(container, dataset, configs);
+                break;
+            case "BarRacing":
+                return getBarRacing(container, dataset, configs);
+                break;
+            case "Scrolling":
+                return getScrolling(container, dataset, configs);
+                break;
+            case "MultiGraph":
+                return getMultiGraph(container, dataset, configs);
+            case "DatasetImage":
+                return getDatasetImage(container, dataset, configs);
+                break;
         }
-    }catch (e) {
+    } catch (e) {
         if (typeof __LOGS__ !== "undefined")
             __LOGS__.viewError("auto", e);
         else
@@ -470,10 +466,10 @@ var __ECHARTS__ = {
     configs: {
         hr_echarts_basic: {name: "基本参数", value: "", type: "hr"},
         version: {
-            name: "Echars版本",
-            value: echarts.version,
+            name: "ECharts",
+            value: "echarts/v5.3.3/echarts.min.js",
             options: [
-                new Option(echarts.version, echarts.version)
+                new Option("5.3.3", "echarts/v5.3.3/echarts.min.js"),
             ],
             type: "select"
         },
@@ -485,7 +481,7 @@ var __ECHARTS__ = {
                 new Option("中文", "ZH")],
             type: "select"
         },
-        loadingTimes: {name: "载入时间(秒)", value: 2, type: "input"},
+        loadingTimes: {name: "载入时间(秒)", value: 2, type: "number", attribute: {min: 1, max: 5, step: 1}},
         renderer: {
             name: "渲染方式",
             value: "canvas",
@@ -571,8 +567,7 @@ var __ECHARTS__ = {
         ariaEnable: {
             name: "无障碍访问",
             value: "false",
-            options: [new Option("开启", "true"), new Option("关闭", "false")],
-            type: "select"
+            type: "boolean"
         },
 
         hr_grid: {name: "整体布局", value: "", type: "hr"},
@@ -586,29 +581,26 @@ var __ECHARTS__ = {
         gradientReverse: {
             name: "渐变反转",
             value: "false",
-            options: [new Option("否", "false"), new Option("是", "true")],
-            type: "select"
+            type: "boolean"
         },
-        gridTop: {name: "上边距(%)", value: "10%", type: "input"},
-        gridBottom: {name: "下边距(%)", value: "10%", type: "input"},
-        gridLeft: {name: "左边距(%)", value: "10%", type: "input"},
-        gridRight: {name: "右边距(%)", value: "10%", type: "input"},
+        gridTop: {name: "上边距(%)", value: "10%", type: "range", attribute: {min: 0, max: 30, step: 1, unit: "%"}},
+        gridBottom: {name: "下边距(%)", value: "10%", type: "range", attribute: {min: 0, max: 30, step: 1, unit: "%"}},
+        gridLeft: {name: "左边距(%)", value: "10%", type: "range", attribute: {min: 0, max: 30, step: 1, unit: "%"}},
+        gridRight: {name: "右边距(%)", value: "10%", type: "range", attribute: {min: 0, max: 30, step: 1, unit: "%"}},
         gridContainLabel: {
             name: "包含轴标签",
             value: "true",
-            options: [new Option("是", "true"), new Option("否", "false")],
-            type: "select"
+            type: "boolean"
         },
 
         hr_toolbox: {name: "视图工具", value: "", type: "hr"},
         toolboxDisplay: {
             name: "是否显示",
             value: "true",
-            options: [new Option("是", "true"), new Option("否", "false")],
-            type: "select"
+            type: "boolean"
         },
-        toolboxTop: {name: "上边距(%)", value: "5%", type: "input"},
-        toolboxLeft: {name: "左边距(%)", value: "97%", type: "input"},
+        toolboxTop: {name: "上边距(%)", value: "5%", type: "range", attribute: {min: 0, max: 50, step: 1, unit: "%"}},
+        toolboxLeft: {name: "左边距(%)", value: "97%", type: "range", attribute: {min: 0, max: 100, step: 1, unit: "%"}},
         toolboxOrient: {
             name: "布局方向",
             value: "vertical",
@@ -624,8 +616,7 @@ var __ECHARTS__ = {
         toolboxFeatureSaveAsImage: {
             name: "保存图像",
             value: "true",
-            options: [new Option("是", "true"), new Option("否", "false")],
-            type: "select"
+            type: "boolean"
         },
         toolboxFeatureSaveAsImageBackgroundColor: {
             name: "图像背景",
@@ -636,113 +627,95 @@ var __ECHARTS__ = {
         toolboxFeatureRestore: {
             name: "图像还原",
             value: "true",
-            options: [new Option("是", "true"), new Option("否", "false")],
-            type: "select"
+            type: "boolean"
         },
         toolboxFeatureDataView: {
             name: "数据视图",
             value: "false",
-            options: [new Option("是", "true"), new Option("否", "false")],
-            type: "select"
+            type: "boolean"
         },
         toolboxFeatureDataZoom: {
             name: "数据缩放",
             value: "true",
-            options: [new Option("是", "true"), new Option("否", "false")],
-            type: "select"
+            type: "boolean"
         },
         toolboxFeatureBrush: {
             name: "区域选择",
             value: "false",
-            options: [new Option("是", "true"), new Option("否", "false")],
-            type: "select"
+            type: "boolean"
         },
         toolboxFeatureFullScreen: {
             name: "全屏切换",
             value: "true",
-            options: [new Option("是", "true"), new Option("否", "false")],
-            type: "select"
+            type: "boolean"
         },
         toolboxFeatureLine: {
             name: "切换至线形图",
             value: "true",
-            options: [new Option("是", "true"), new Option("否", "false")],
-            type: "select"
+            type: "boolean"
         },
         toolboxFeatureBar: {
             name: "切换至柱状图",
             value: "true",
-            options: [new Option("是", "true"), new Option("否", "false")],
-            type: "select"
+            type: "boolean"
         },
         toolboxFeatureTransversBar: {
             name: "切换至条形图",
             value: "true",
-            options: [new Option("是", "true"), new Option("否", "false")],
-            type: "select"
+            type: "boolean"
         },
         toolboxFeatureScatter: {
             name: "切换至散点图",
             value: "true",
-            options: [new Option("是", "true"), new Option("否", "false")],
-            type: "select"
+            type: "boolean"
         },
         toolboxFeaturePie: {
             name: "切换至饼图",
             value: "true",
-            options: [new Option("是", "true"), new Option("否", "false")],
-            type: "select"
+            type: "boolean"
         },
         toolboxFeatureFunnel: {
             name: "切换至金字塔图",
             value: "true",
-            options: [new Option("是", "true"), new Option("否", "false")],
-            type: "select"
+            type: "boolean"
         },
         toolboxFeatureMultiGraph: {
             name: "切换至基础组合图",
             value: "true",
-            options: [new Option("是", "true"), new Option("否", "false")],
-            type: "select"
+            type: "boolean"
         },
         toolboxFeaturePolar: {
             name: "切换至极坐标",
             value: "false",
-            options: [new Option("是", "true"), new Option("否", "false")],
-            type: "select"
+            type: "boolean"
         },
         toolboxFeatureGeoOfChina: {
             name: "切换至中国地图",
             value: "false",
-            options: [new Option("是", "true"), new Option("否", "false")],
-            type: "select"
+            type: "boolean"
         },
         toolboxFeatureGeoOfLocal: {
             name: "切换至本地地图",
             value: "false",
-            options: [new Option("是", "true"), new Option("否", "false")],
-            type: "select"
+            type: "boolean"
         },
         toolboxFeatureMultiScreen: {
             name: "视图组合",
             value: "false",
-            options: [new Option("是", "true"), new Option("否", "false")],
-            type: "select"
+            type: "boolean"
         },
 
         toolboxSaveAsReport: {
             name: "导出报表",
             value: "true",
-            options: [new Option("是", "true"), new Option("否", "false")],
-            type: "select"
+            type: "boolean"
         },
 
         hr_tooltip: {name: "提示组件", value: "", type: "hr"},
         tooltipDisplay: {
             name: "是否显示",
             value: "true",
-            options: [new Option("是", "true"), new Option("否", "false")],
-            type: "select"
+            type: "boolean"
         },
         axisPointerType: {
             name: "指示器类型",
@@ -755,8 +728,7 @@ var __ECHARTS__ = {
         titleDisplay: {
             name: "是否显示",
             value: "true",
-            options: [new Option("是", "true"), new Option("否", "false")],
-            type: "select"
+            type: "boolean"
         },
         titlePosition: {
             name: "标题位置",
@@ -765,18 +737,17 @@ var __ECHARTS__ = {
             type: "select"
         },
         titleTextColor: {value: "auto", name: "主标题颜色", type: "color"},
-        titleTextFontSize: {name: "主标题字号", value: 16, type: "input"},
+        titleTextFontSize: {name: "主标题字号", value: 16, type: "number", attribute: {min: 12, max: 30, step: 1}},
         titleTextLink: {name: "主标题超链接", value: "", type: "input"},
         titleSubTextColor: {value: "auto", name: "副标题颜色", type: "color"},
-        titleSubTextFontSize: {name: "副标题字号", value: 12, type: "input"},
+        titleSubTextFontSize: {name: "副标题字号", value: 12, type: "number", attribute: {min: 8, max: 20, step: 1}},
         titleSubTextLink: {name: "副标题超链接", value: "", type: "input"},
 
         hr_legend: {name: "图例", value: "", type: "hr"},
         legendDisplay: {
             name: "是否显示",
             value: "true",
-            options: [new Option("是", "true"), new Option("否", "false")],
-            type: "select"
+            type: "boolean"
         },
         legendIcon: {
             name: "图标",
@@ -800,8 +771,18 @@ var __ECHARTS__ = {
             options: [new Option("单选", "single"), new Option("多选", "multiple")],
             type: "select"
         },
-        legendPositionTop: {name: "上边距(%)", value: "1%", type: "input"},
-        legendPositionLeft: {name: "左边距(%)", value: "50%", type: "input"},
+        legendPositionTop: {
+            name: "上边距(%)",
+            value: "1%",
+            type: "range",
+            attribute: {min: 0, max: 30, step: 1, unit: "%"}
+        },
+        legendPositionLeft: {
+            name: "左边距(%)",
+            value: "50%",
+            type: "range",
+            attribute: {min: 0, max: 100, step: 1, unit: "%"}
+        },
         legendType: {
             name: "显示类型",
             value: "plain",
@@ -825,58 +806,52 @@ var __ECHARTS__ = {
         },
         axisColor: {name: "轴线颜色", value: "auto", type: "color"},
         axisTextColor: {name: "标签颜色", value: "auto", type: "color"},
-        axisTextFontSize: {name: "标签字号", value: 12, type: "input"},
+        axisTextFontSize: {name: "标签字号", value: 12, type: "number", attribute: {min: 1, max: 30, step: 1}},
         splitXLineDisplay: {
             name: "显示X轴分隔线",
             value: "false",
-            options: [new Option("是", "true"), new Option("否", "false")],
-            type: "select"
+            type: "boolean"
         },
         splitYLineDisplay: {
             name: "显示Y轴分隔线",
             value: "false",
-            options: [new Option("是", "true"), new Option("否", "false")],
-            type: "select"
+            type: "boolean"
         },
         splitXAreaDisplay: {
             name: "显示X轴分割区",
             value: "false",
-            options: [new Option("是", "true"), new Option("否", "false")],
-            type: "select"
+            type: "boolean"
         },
         splitYAreaDisplay: {
             name: "显示Y轴分割区",
             value: "false",
-            options: [new Option("是", "true"), new Option("否", "false")],
-            type: "select"
+            type: "boolean"
         },
-        xAxisLabelRotate: {name: "X轴标签角度", value: 0, type: "input"},
-        yAxisLabelRotate: {name: "Y轴标签角度", value: 0, type: "input"},
+        xAxisLabelRotate: {name: "X轴标签角度", value: 0, type: "number", attribute: {min: -90, max: 90, step: 1}},
+        yAxisLabelRotate: {name: "Y轴标签角度", value: 0, type: "number", attribute: {min: -90, max: 90, step: 1}},
         xAxisInverse: {
             name: "X轴反向",
             value: "false",
-            options: [new Option("是", "true"), new Option("否", "false")],
-            type: "select"
+            type: "boolean"
         },
         yAxisInverse: {
             name: "Y轴反向",
             value: "false",
-            options: [new Option("是", "true"), new Option("否", "false")],
-            type: "select"
+            type: "boolean"
         },
 
         hr_clock: {name: "时钟", value: "", type: "hr"},
-        clockRadius: {name: "表盘半径", value: "75%", type: "input"},
+        clockRadius: {name: "表盘半径", value: "75%", type: "range", attribute: {min: 1, max: 100, step: 1, unit: "%"}},
         clockCenter: {name: "表盘位置", value: '["50%","50%"]', type: "input"},
         clockFontSize: {
             name: "字号",
             value: "16",
-            type: "input"
+            type: "number", attribute: {min: 1, max: 30, step: 1}
         },
         clockAxisLabelDistance: {
             name: "标签位置",
             value: "15",
-            type: "input"
+            type: "number", attribute: {min: 0, max: 20, step: 1}
         },
 
         hr_bar: {name: "柱状图", value: "", type: "hr"},
@@ -889,18 +864,16 @@ var __ECHARTS__ = {
         barLabelDisplay: {
             name: "显示标签",
             value: "false",
-            options: [new Option("是", "true"), new Option("否", "false")],
-            type: "select"
+            type: "boolean"
         },
-        barItemStyleBorderRadius: {name: "圆角半径", value: 0, type: "input"},
+        barItemStyleBorderRadius: {name: "圆角半径", value: 0, type: "number", attribute: {min: 0, max: 30, step: 1}},
         barEmphasisLabelDisplay: {
             name: "显示热点标签",
             value: "true",
-            options: [new Option("是", "true"), new Option("否", "false")],
-            type: "select"
+            type: "boolean"
         },
         barLabelTextColor: {name: "标签颜色", value: "auto", type: "color"},
-        barLabelFontSize: {name: "标签字号", value: 12, type: "input"},
+        barLabelFontSize: {name: "标签字号", value: 12, type: "number", attribute: {min: 1, max: 30, step: 1}},
         barLabelPosition: {
             name: "标签位置",
             value: "top",
@@ -908,14 +881,13 @@ var __ECHARTS__ = {
                 new Option("内部顶部", "insideTop"), new Option("内部左边", "insideLeft"), new Option("内部右边", "insideRight"), new Option("内部底部", "insideBottom")],
             type: "select"
         },
-        barLabelRotate: {name: "标签旋转度数", value: 0, type: "input"},
-        barStackTimes: {name: "堆叠分组", value: 1, type: "input"},
+        barLabelRotate: {name: "标签旋转度数", value: 0, type: "number", attribute: {min: -90, max: 90, step: 1}},
+        barStackTimes: {name: "堆叠分组", value: 1, type: "number", attribute: {min: 1, max: 4, step: 1}},
 
         barRegLineDisplay: {
             name: "显示回归曲线",
             value: "false",
-            options: [new Option("是", "true"), new Option("否", "false")],
-            type: "select"
+            type: "boolean"
         },
 
         hr_line: {name: "线形图", value: "", type: "hr"},
@@ -925,27 +897,24 @@ var __ECHARTS__ = {
             options: [new Option("序列", "series"), new Option("数据", "data")],
             type: "select"
         },
-        lineStyleWidth: {name: "线条宽度", value: 2, type: "input"},
+        lineStyleWidth: {name: "线条宽度", value: 2, type: "number", attribute: {min: 1, max: 10, step: 1}},
         lineLabelDisplay: {
             name: "显示标签",
             value: "false",
-            options: [new Option("是", "true"), new Option("否", "false")],
-            type: "select"
+            type: "boolean"
         },
         lineEmphasisLabelDisplay: {
             name: "显示热点标签",
             value: "true",
-            options: [new Option("是", "true"), new Option("否", "false")],
-            type: "select"
+            type: "boolean"
         },
         lineLabelTextColor: {name: "标签颜色", value: "auto", type: "color"},
-        lineLabelFontSize: {name: "标签字号", value: 12, type: "input"},
-        lineLabelRotate: {name: "标签旋转度数", value: 0, type: "input"},
+        lineLabelFontSize: {name: "标签字号", value: 12, type: "number", attribute: {min: 1, max: 30, step: 1}},
+        lineLabelRotate: {name: "标签旋转度数", value: 0, type: "number", attribute: {min: -90, max: 90, step: 1}},
         lineSmooth: {
             name: "使用平滑线",
             value: "true",
-            options: [new Option("是", "true"), new Option("否", "false")],
-            type: "select"
+            type: "boolean"
         },
         lineSymbol: {
             name: "数据符号",
@@ -964,48 +933,41 @@ var __ECHARTS__ = {
             ],
             type: "select"
         },
-        lineSymbolSize: {name: "符号大小", value: 5, type: "input"},
+        lineSymbolSize: {name: "符号大小", value: 5, type: "number", attribute: {min: 1, max: 30, step: 1}},
         lineMarkPointMin: {
             name: "最小值点",
             value: "false",
-            options: [new Option("是", "true"), new Option("否", "false")],
-            type: "select"
+            type: "boolean"
         },
         lineMarkPointMax: {
             name: "最大值点",
             value: "false",
-            options: [new Option("是", "true"), new Option("否", "false")],
-            type: "select"
+            type: "boolean"
         },
         lineMarkLineMin: {
             name: "最小值线",
             value: "false",
-            options: [new Option("是", "true"), new Option("否", "false")],
-            type: "select"
+            type: "boolean"
         },
         lineMarkLineMax: {
             name: "最大值线",
             value: "false",
-            options: [new Option("是", "true"), new Option("否", "false")],
-            type: "select"
+            type: "boolean"
         },
         lineMarkLineAvg: {
             name: "平均值线",
             value: "false",
-            options: [new Option("是", "true"), new Option("否", "false")],
-            type: "select"
+            type: "boolean"
         },
         lineDisplayEndLabel: {
             name: "尾部标签",
             value: "false",
-            options: [new Option("是", "true"), new Option("否", "false")],
-            type: "select"
+            type: "boolean"
         },
         lineRegLineDisplay: {
             name: "显示回归曲线",
             value: "false",
-            options: [new Option("是", "true"), new Option("否", "false")],
-            type: "select"
+            type: "boolean"
         },
 
         hr_AreaStyle: {name: "面积图", value: "", type: "hr"},
@@ -1018,14 +980,12 @@ var __ECHARTS__ = {
         areaStyleStack: {
             name: "是否堆积",
             value: "false",
-            options: [new Option("否", "false"), new Option("是", "true")],
-            type: "select"
+            type: "boolean"
         },
         areaStyleGradientColor: {
             name: "启用渐变颜色",
             value: "false",
-            options: [new Option("否", "false"), new Option("是", "true")],
-            type: "select"
+            type: "boolean"
         },
 
         hr_scatter: {name: "散点图", value: "", type: "hr"},
@@ -1038,11 +998,10 @@ var __ECHARTS__ = {
         scatterLabelDisplay: {
             name: "显示标签",
             value: "false",
-            options: [new Option("是", "true"), new Option("否", "false")],
-            type: "select"
+            type: "boolean"
         },
         scatterLabelTextColor: {name: "标签颜色", value: "auto", type: "color"},
-        scatterLabelFontSize: {name: "标签字号", value: 12, type: "input"},
+        scatterLabelFontSize: {name: "标签字号", value: 12, type: "number", attribute: {min: 1, max: 30, step: 1}},
         scatterType: {
             name: "节点类型",
             value: "scatter",
@@ -1059,8 +1018,7 @@ var __ECHARTS__ = {
         scatterRegLineDisplay: {
             name: "显示回归曲线",
             value: "false",
-            options: [new Option("是", "true"), new Option("否", "false")],
-            type: "select"
+            type: "boolean"
         },
 
         hr_pie: {name: "饼图", value: "", type: "hr"},
@@ -1089,8 +1047,8 @@ var __ECHARTS__ = {
             ],
             type: "select"
         },
-        pieInRadius: {name: "内半径(%)", value: "35%", type: "input"},
-        pieOutRadius: {name: "外半径(%)", value: "70%", type: "input"},
+        pieInRadius: {name: "内半径(%)", value: "35%", type: "range", attribute: {min: 1, max: 50, step: 1, unit: "%"}},
+        pieOutRadius: {name: "外半径(%)", value: "70%", type: "range", attribute: {min: 30, max: 100, step: 1, unit: "%"}},
         pieSelectedMode: {
             name: "选择模式",
             value: "single",
@@ -1100,11 +1058,10 @@ var __ECHARTS__ = {
         pieLabelDisplay: {
             name: "显示标签",
             value: "true",
-            options: [new Option("是", "true"), new Option("否", "false")],
-            type: "select"
+            type: "boolean"
         },
         pieLabelTextColor: {name: "标签颜色", value: "auto", type: "color"},
-        pieLabelFontSize: {name: "标签字号", value: 12, type: "input"},
+        pieLabelFontSize: {name: "标签字号", value: 12, type: "number", attribute: {min: 1, max: 30, step: 1}},
         pieLabelPosition: {
             name: "标签位置",
             value: "outside",
@@ -1112,9 +1069,9 @@ var __ECHARTS__ = {
             type: "select"
         },
         pieItemStyleBorderRadius: {
-            name: "圆角半径", value: 0, type: "input"
+            name: "圆角半径", value: 0, type: "number", attribute: {min: 0, max: 30, step: 1}
         },
-        pieLabelFontSize: {name: "标签字号", value: 12, type: "input"},
+        pieLabelFontSize: {name: "标签字号", value: 12, type: "number", attribute: {min: 1, max: 30, step: 1}},
         pieLabelAlignTo: {
             name: "标签对齐方式",
             value: "none",
@@ -1130,10 +1087,9 @@ var __ECHARTS__ = {
         richTextLabel: {
             name: "富文本标签",
             value: "false",
-            options: [new Option("是", "true"), new Option("否", "false")],
-            type: "select"
+            type: "boolean"
         },
-        pieGroupWith: {name: "序列分组", value: 2, type: "input"},
+        pieGroupWith: {name: "序列分组", value: 2, type: "number", attribute: {min: 1, max: 4, step: 1}},
         pieGrids: {
             name: "布局方式", value: "auto",
             options: [
@@ -1179,9 +1135,9 @@ var __ECHARTS__ = {
             options: [new Option("原始", "none"), new Option("顺序", "ascending"), new Option("倒序", "descending")],
             type: "select"
         },
-        funnelGap: {name: "间距", value: 2, type: "input"},
-        funnelMinSize: {name: "最小比例", value: "5%", type: "input"},
-        funnelLabelFontSize: {name: "标签字号", value: 12, type: "input"},
+        funnelGap: {name: "间距", value: 2, type: "number", attribute: {min: 1, max: 5, step: 1}},
+        funnelMinSize: {name: "最小比例", value: "5%", type: "range", attribute: {min: 1, max: 10, step: 1, unit: "%"}},
+        funnelLabelFontSize: {name: "标签字号", value: 12, type: "number", attribute: {min: 1, max: 30, step: 1}},
         funnelLabelTextColor: {name: "标签颜色", value: "auto", type: "color"},
         funnelLabelPosition: {
             name: "标签位置",
@@ -1189,7 +1145,7 @@ var __ECHARTS__ = {
             options: [new Option("居中", "inside"), new Option("居左", "left"), new Option("居右", "right")],
             type: "select"
         },
-        funnelGroupWith: {name: "序列分组", value: 2, type: "input"},
+        funnelGroupWith: {name: "序列分组", value: 2, type: "number", attribute: {min: 1, max: 4, step: 1}},
         funnelGrids: {
             name: "布局方式", value: "auto",
             options: [
@@ -1211,25 +1167,22 @@ var __ECHARTS__ = {
             options: [new Option("纵向", "vertical"), new Option("横向", "horizontal")],
             type: "select"
         },
-        barTimeout: {name: "动态延时(毫秒)", value: 3000, type: "input"},
+        barTimeout: {name: "动态延时(毫秒)", value: 3000, type: "number", attribute: {min: 1000, max: 5000, step: 1000}},
         barRealtimeSort: {
             name: "动态排序",
             value: "true",
-            options: [new Option("是", "true"), new Option("否", "false")],
-            type: "select"
+            type: "boolean"
         },
         barValueAnimation: {
             name: "动态标签",
             value: "true",
-            options: [new Option("是", "true"), new Option("否", "false")],
-            type: "select"
+            type: "boolean"
         },
-        barMax: {name: "动态显示", value: 10, type: "input"},
+        barMax: {name: "动态显示", value: 10, type: "number", attribute: {min: 1, max: 100, step: 1}},
         barLoop: {
             name: "循环",
             value: "false",
-            options: [new Option("是", "true"), new Option("否", "false")],
-            type: "select"
+            type: "boolean"
         },
 
         hr_scrolling: {name: "基础滚动图", value: "", type: "hr"},
@@ -1239,13 +1192,12 @@ var __ECHARTS__ = {
             options: [new Option("柱状图", "bar"), new Option("线型图", "line"), new Option("面积图", "area")],
             type: "select"
         },
-        scrollingTimeout: {name: "动态延时(毫秒)", value: 500, type: "input"},
-        scrollingMax: {name: "动态显示", value: 10, type: "input"},
+        scrollingTimeout: {name: "动态延时(毫秒)", value: 500, type: "number", attribute: {min: 100, max: 1000, step: 100}},
+        scrollingMax: {name: "动态显示", value: 10, type: "number", attribute: {min: 1, max: 100, step: 1}},
         scrollingLoop: {
             name: "循环",
             value: "false",
-            options: [new Option("是", "true"), new Option("否", "false")],
-            type: "select"
+            type: "boolean"
         },
         hr_multiGraph: {name: "基础组合图", value: "", type: "hr"},
         multiGraphTypes: {name: "图形组合", value: "['bar', 'line', 'pie', 'scatter', 'funnel', 'other']", type: "input"},
@@ -1262,19 +1214,24 @@ var __ECHARTS__ = {
             ],
             type: "select"
         },
-        multiGraphGroup: {name: "序列分组", value: 2, type: "input"},
+        multiGraphGroup: {name: "序列分组", value: 2, type: "number", attribute: {min: 1, max: 4, step: 1}},
 
         hr_gauge: {name: "仪表盘", value: "", type: "hr"},
-        gaugeOutRadius: {name: "外半径(%)", value: "70%", type: "input"},
-        gaugeAxisLabelFontSize: {name: "刻度字号", value: 10, type: "input"},
-        gaugeAxisLabelDistance: {name: "刻度位置", value: 15, type: "input"},
-        gaugeTitleFontSize: {name: "标题字号", value: 14, type: "input"},
+        gaugeOutRadius: {
+            name: "外半径(%)",
+            value: "70%",
+            type: "range",
+            attribute: {min: 30, max: 100, step: 1, unit: "%"}
+        },
+        gaugeAxisLabelFontSize: {name: "刻度字号", value: 10, type: "number", attribute: {min: 1, max: 30, step: 1}},
+        gaugeAxisLabelDistance: {name: "刻度位置", value: 15, type: "number", attribute: {min: 1, max: 30, step: 1}},
+        gaugeTitleFontSize: {name: "标题字号", value: 14, type: "number", attribute: {min: 1, max: 30, step: 1}},
         gaugeTitleColor: {value: "auto", name: "标题颜色", type: "color"},
-        gaugeLabelFontSize: {name: "数据字号", value: 18, type: "input"},
-        gaugeAxisLineWidth: {name: "圆轴宽度", value: 10, type: "input"},
-        gaugeStartAngle: {name: "起始角度", value: 225, type: "input"},
-        gaugeEndAngle: {name: "结束角度", value: -45, type: "input"},
-        gaugeGroupWith: {name: "序列分组", value: 2, type: "input"},
+        gaugeLabelFontSize: {name: "数据字号", value: 18, type: "number", attribute: {min: 1, max: 30, step: 1}},
+        gaugeAxisLineWidth: {name: "圆轴宽度", value: 10, type: "number", attribute: {min: 1, max: 30, step: 1}},
+        gaugeStartAngle: {name: "起始角度", value: 225, type: "number", attribute: {min: 1, max: 360, step: 1}},
+        gaugeEndAngle: {name: "结束角度", value: -45, type: "number", attribute: {min: -90, max: 90, step: 1}},
+        gaugeGroupWith: {name: "序列分组", value: 2, type: "number", attribute: {min: 1, max: 4, step: 1}},
         gaugeGrids: {
             name: "布局方式", value: "auto",
             options: [
@@ -1303,19 +1260,17 @@ var __ECHARTS__ = {
             type: "select"
         },
         polarStackTimes: {
-            name: "堆叠分组", value: 1, type: "input"
+            name: "堆叠分组", value: 1, type: "number", attribute: {min: 1, max: 4, step: 1}
         },
         polarRoundCap: {
             name: "圆角",
             value: "false",
-            options: [new Option("否", "false"), new Option("是", "true")],
-            type: "select"
+            type: "boolean"
         },
         polarShowLabel: {
             name: "显示标签",
             value: "false",
-            options: [new Option("否", "false"), new Option("是", "true")],
-            type: "select"
+            type: "boolean"
         },
         polarLabelPosition: {
             name: "标签位置",
@@ -1335,22 +1290,19 @@ var __ECHARTS__ = {
         radarAreaDisplay: {
             name: "显示分区",
             value: "true",
-            options: [new Option("是", "true"), new Option("否", "false")],
-            type: "select"
+            type: "boolean"
         },
         radarNameDisplay: {
             name: "显示名称",
             value: "true",
-            options: [new Option("是", "true"), new Option("否", "false")],
-            type: "select"
+            type: "boolean"
         },
-        radarLabelRotate: {name: "标签旋转度数", value: 0, type: "input"},
-        radarSplitNumber: {name: "分割段数", value: 5, type: "input"},
+        radarLabelRotate: {name: "标签旋转度数", value: 0, type: "number", attribute: {min: -90, max: 90, step: 1}},
+        radarSplitNumber: {name: "分割段数", value: 5, type: "number", attribute: {min: 1, max: 10, step: 1}},
         radarSameMax: {
             name: "同基比较",
             value: "false",
-            options: [new Option("是", "true"), new Option("否", "false")],
-            type: "select"
+            type: "boolean"
         },
 
         hr_wordCloud: {name: "词云图", value: "", type: "hr"},
@@ -1362,7 +1314,7 @@ var __ECHARTS__ = {
         },
         wordCloudSizeRange: {name: "字号区间", value: "[16, 60]", type: "input"},
         wordCloudRotationRange: {name: "角度区间", value: "[-45, 45]", type: "input"},
-        wordCloudGroupWith: {name: "序列分组", value: 2, type: "input"},
+        wordCloudGroupWith: {name: "序列分组", value: 2, type: "number", attribute: {min: 1, max: 4, step: 1}},
         wordCloudGrids: {
             name: "布局方式", value: "auto",
             options: [
@@ -1378,14 +1330,19 @@ var __ECHARTS__ = {
         },
 
         hr_liqiud: {name: "水球图", value: "", type: "hr"},
-        liqiudOutRadius: {name: "外半径(%)", value: "70%", type: "input"},
+        liqiudOutRadius: {
+            name: "外半径(%)",
+            value: "70%",
+            type: "range",
+            attribute: {min: 30, max: 100, step: 1, unit: "%"}
+        },
         liqiudShape: {
             name: "形状",
             value: "circle",
             options: [new Option("圆形", "circle"), new Option("四边形", "rect"), new Option("圆角四边形", "roundRect"), new Option("三角形", "triangle"), new Option("菱形", "diamond"), new Option("图钉", "pin"), new Option("箭头", "arrow"), new Option("容器", "container"), new Option("鲸鱼", "whale")],
             type: "select"
         },
-        liqiudFontSize: {name: "标题字号", value: 16, type: "input"},
+        liqiudFontSize: {name: "标题字号", value: 16, type: "number", attribute: {min: 1, max: 30, step: 1}},
         liqiudLabeColor: {
             name: "标签颜色",
             value: "auto",
@@ -1394,8 +1351,7 @@ var __ECHARTS__ = {
         liqiudIsStack: {
             name: "是否堆积",
             value: "false",
-            options: [new Option("是", "true"), new Option("否", "false")],
-            type: "select"
+            type: "boolean"
         },
         liqiudDirection: {
             name: "波浪方向",
@@ -1403,8 +1359,8 @@ var __ECHARTS__ = {
             options: [new Option("自动", "auto"), new Option("向右", "right"), new Option("向左", "left")],
             type: "select"
         },
-        liqiudOpacity: {name: "透明度", value: 0.6, type: "input"},
-        liqiudGroupWith: {name: "序列分组", value: 2, type: "input"},
+        liqiudOpacity: {name: "透明度", value: 0.6, type: "number", attribute: {min: 0, max: 1, step: 0.1}},
+        liqiudGroupWith: {name: "序列分组", value: 2, type: "number", attribute: {min: 1, max: 4, step: 1}},
         liqiudGrids: {
             name: "布局方式", value: "auto",
             options: [
@@ -1420,9 +1376,19 @@ var __ECHARTS__ = {
         },
 
         hr_sunburst: {name: "旭日图", value: "", type: "hr"},
-        sunburstInRadius: {name: "内半径(%)", value: "15%", type: "input"},
-        sunburstOutRadius: {name: "外半径(%)", value: "70%", type: "input"},
-        sunburstGroupWith: {name: "序列分组", value: 2, type: "input"},
+        sunburstInRadius: {
+            name: "内半径(%)",
+            value: "15%",
+            type: "range",
+            attribute: {min: 1, max: 50, step: 1, unit: "%"}
+        },
+        sunburstOutRadius: {
+            name: "外半径(%)",
+            value: "70%",
+            type: "range",
+            attribute: {min: 30, max: 100, step: 1, unit: "%"}
+        },
+        sunburstGroupWith: {name: "序列分组", value: 2, type: "number", attribute: {min: 1, max: 4, step: 1}},
         sunburstGrids: {
             name: "布局方式", value: "auto",
             options: [
@@ -1454,7 +1420,7 @@ var __ECHARTS__ = {
             options: [new Option("靠内", "left"), new Option("居中", "center"), new Option("靠外", "right")],
             type: "select"
         },
-        sunburstItemStyleBorderRadius: {name: "圆角半径", value: 0, type: "input"},
+        sunburstItemStyleBorderRadius: {name: "圆角半径", value: 0, type: "number", attribute: {min: 0, max: 30, step: 1}},
         sunburstHighlightPolicy: {
             name: "高亮显示",
             value: "self",
@@ -1463,16 +1429,16 @@ var __ECHARTS__ = {
         },
 
         hr_treemap: {name: "矩形树图", value: "", type: "hr"},
-        treemapWidth: {name: "组件宽度", value: "80%", type: "input"},
-        treemapHeight: {name: "组件高度", value: "80%", type: "input"},
-        treemapLabelFontSize: {name: "标签字号", value: "22", type: "input"},
+        treemapWidth: {name: "组件宽度", value: "80%", type: "range", attribute: {min: 1, max: 100, step: 1, unit: "%"}},
+        treemapHeight: {name: "组件高度", value: "80%", type: "range", attribute: {min: 1, max: 100, step: 1, unit: "%"}},
+        treemapLabelFontSize: {name: "标签字号", value: "22", type: "number", attribute: {min: 1, max: 30, step: 1}},
         treemapLabelPosition: {
             name: "位置",
             value: '["5%","5%"]',
             type: "input"
         },
         treemapItemStyleBorderRadius: {
-            name: "圆角半径", value: 0, type: "input"
+            name: "圆角半径", value: 0, type: "number", attribute: {min: 0, max: 30, step: 1}
         },
 
         hr_calendar: {name: "日历图", value: "", type: "hr"},
@@ -1515,14 +1481,12 @@ var __ECHARTS__ = {
         boxplotNormalDisplay: {
             name: "显示正常数据",
             value: "false",
-            options: [new Option("是", "true"), new Option("否", "false")],
-            type: "select"
+            type: "boolean"
         },
         boxplotOutlierDisplay: {
             name: "显示异常数据",
             value: "true",
-            options: [new Option("是", "true"), new Option("否", "false")],
-            type: "select"
+            type: "boolean"
         },
 
         hr_candlestick: {name: "K线图", value: "", type: "hr"},
@@ -1532,24 +1496,22 @@ var __ECHARTS__ = {
         candlestickDownBorderColor: {name: "阴线边线", value: '#008F28', type: "color"},
 
         hr_3D: {name: "3D图形", value: "", type: "hr"},
-        BoxHeightFor3D: {name: "高度(X轴)", value: 20, type: "input"},
-        BoxWidthFor3D: {name: "宽度(X轴)", value: 200, type: "input"},
-        BoxDepthFor3D: {name: "深度(Y轴)", value: 80, type: "input"},
+        BoxHeightFor3D: {name: "高度(X轴)", value: 20, type: "number", attribute: {min: 1, max: 1024, step: 1}},
+        BoxWidthFor3D: {name: "宽度(X轴)", value: 200, type: "number", attribute: {min: 1, max: 1024, step: 1}},
+        BoxDepthFor3D: {name: "深度(Y轴)", value: 80, type: "number", attribute: {min: 1, max: 1024, step: 1}},
         AutoRotateFor3D: {
             name: "自动旋转",
             value: "true",
-            options: [new Option("是", "true"), new Option("否", "false")],
-            type: "select"
+            type: "boolean"
         },
-        AutoRotateSpeedFor3D: {name: "旋转速度", value: 10, type: "input"},
+        AutoRotateSpeedFor3D: {name: "旋转速度", value: 10, type: "number", attribute: {min: 1, max: 30, step: 1}},
         labelOf3DDisplay: {
             name: "显示标签",
             value: "false",
-            options: [new Option("是", "true"), new Option("否", "false")],
-            type: "select"
+            type: "boolean"
         },
         label3DTextColor: {name: "标签颜色", value: "auto", type: "color"},
-        label3DFontSize: {name: "标签字号", value: 12, type: "input"},
+        label3DFontSize: {name: "标签字号", value: 12, type: "number", attribute: {min: 1, max: 30, step: 1}},
         scatterSymbolSizeFor3D: {name: "节点大小", value: "[6,18]", type: "input"},
         scatterSymbolShapeFor3D: {
             name: "节点形状",
@@ -1557,20 +1519,23 @@ var __ECHARTS__ = {
             options: [new Option("圆形", "circle"), new Option("四边形", "rect"), new Option("圆角四边形", "roundRect"), new Option("三角形", "triangle"), new Option("菱形", "diamond"), new Option("图钉", "pin"), new Option("箭头", "arrow"), new Option("不设置", "none")],
             type: "select"
         },
-        itemStyleOpacityFor3D: {name: "透明度", value: 1, type: "input"},
+        itemStyleOpacityFor3D: {name: "透明度", value: 1, type: "number", attribute: {min: 0, max: 1, step: 0.1}},
         lightShadowFor3D: {
             name: "显示光线阴影",
             value: "true",
-            options: [new Option("是", "true"), new Option("否", "false")],
-            type: "select"
+            type: "boolean"
         },
         axisPointerDisplay: {
             name: "坐标轴指示器",
             value: "false",
-            options: [new Option("是", "true"), new Option("否", "false")],
-            type: "select"
+            type: "boolean"
         },
-        ringInRadiusFor3D: {name: "内半径(%)", value: "30%", type: "input"},
+        ringInRadiusFor3D: {
+            name: "内半径(%)",
+            value: "30%",
+            type: "range",
+            attribute: {min: 1, max: 50, step: 1, unit: "%"}
+        },
 
         hr_geo: {name: "地图", value: "", type: "hr"},
         geoAreaColor: {value: "auto", name: "区域颜色", type: "color"},
@@ -1579,8 +1544,7 @@ var __ECHARTS__ = {
         geoAreaNameDisplay: {
             name: "显示地区名称",
             value: "false",
-            options: [new Option("是", "true"), new Option("否", "false")],
-            type: "select"
+            type: "boolean"
         },
         geoAreaNameColor: {name: "地区名称颜色", value: "auto", type: "color"},
         geoLineSymbol: {
@@ -1589,7 +1553,7 @@ var __ECHARTS__ = {
             options: [new Option("飞机", "plane"), new Option("火箭", "rocket"), new Option("箭头", "arrow"), new Option("图钉", "pin"), new Option("三角型", "triangle"), new Option("菱形", "diamond")],
             type: "select"
         },
-        geoLineSymbolSize: {name: "符号大小", value: 10, type: "input"},
+        geoLineSymbolSize: {name: "符号大小", value: 10, type: "number", attribute: {min: 1, max: 30, step: 1}},
         geoScatterSymbolSize: {name: "节点大小", value: "[6,18]", type: "input"},
         geoScatterType: {
             name: "节点类型",
@@ -1597,8 +1561,8 @@ var __ECHARTS__ = {
             options: [new Option("静态散点", "scatter"), new Option("效应散点", "effectScatter")],
             type: "select"
         },
-        geoLineCurveness: {name: "线路曲率", value: 0.2, type: "input"},
-        geoLinePeriod: {name: "周期速度(秒)", value: 5, type: "input"},
+        geoLineCurveness: {name: "线路曲率", value: 0.2, type: "number", attribute: {min: 0, max: 1, step: 0.1}},
+        geoLinePeriod: {name: "周期速度(秒)", value: 5, type: "number", attribute: {min: 1, max: 10, step: 1}},
 
         hr_tree: {name: "树形结构", value: "", type: "hr"},
         treeLayout: {
@@ -1620,17 +1584,16 @@ var __ECHARTS__ = {
             type: "select"
         },
         treeLineColor: {value: "auto", name: "线条颜色", type: "color"},
-        treeLineWidth: {name: "线条宽度", value: 1.5, type: "input"},
-        treeLineCurveness: {name: "线条曲率", value: 0.5, type: "input"},
+        treeLineWidth: {name: "线条宽度", value: 1.5, type: "number", attribute: {min: 0, max: 10, step: 0.1}},
+        treeLineCurveness: {name: "线条曲率", value: 0.5, type: "number", attribute: {min: 0, max: 1, step: 0.1}},
         treeLabelShow: {
             name: "显示标签",
             value: "true",
-            options: [new Option("是", "true"), new Option("否", "false")],
-            type: "select"
+            type: "boolean"
         },
-        treeLabelRotate: {name: "标签旋转度数", value: 0, type: "input"},
+        treeLabelRotate: {name: "标签旋转度数", value: 0, type: "number", attribute: {min: -90, max: 90, step: 1}},
         treeLabelColor: {value: "auto", name: "标签颜色", type: "color"},
-        treeSymbolSize: {name: "节点大小", value: 7, type: "input"},
+        treeSymbolSize: {name: "节点大小", value: 7, type: "number", attribute: {min: 1, max: 30, step: 1}},
         treeEmphasisColor: {value: "auto", name: "节点颜色", type: "color"},
 
         hr_relation: {name: "关系图", value: "", type: "hr"},
@@ -1641,50 +1604,53 @@ var __ECHARTS__ = {
             type: "select"
         },
         relationColor: {value: "auto", name: "节点颜色", type: "color"},
-        relationLineWidth: {name: "线条宽度", value: 1.5, type: "input"},
+        relationLineWidth: {name: "线条宽度", value: 1.5, type: "number", attribute: {min: 1, max: 30, step: 0.1}},
         relationLineColor: {value: "auto", name: "线条颜色", type: "color"},
-        relationLineCurveness: {name: "线条曲率", value: 0.2, type: "input"},
-        relationSymbolSize: {name: "节点大小", value: 40, type: "input"},
-        relationRepulsion: {name: "排斥力", value: 100, type: "input"},
-        relationGravity: {name: "引力", value: 0.4, type: "input"},
-        relationEdgeLength: {name: "节点距离", value: 200, type: "input"},
+        relationLineCurveness: {name: "线条曲率", value: 0.2, type: "number", attribute: {min: 0, max: 1, step: 0.1}},
+        relationSymbolSize: {name: "节点大小", value: 40, type: "number", attribute: {min: 1, max: 30, step: 1}},
+        relationRepulsion: {name: "排斥力", value: 100, type: "number", attribute: {min: 1, max: 200, step: 1}},
+        relationGravity: {name: "引力", value: 0.4, type: "number", attribute: {min: 0, max: 1, step: 0.1}},
+        relationEdgeLength: {name: "节点距离", value: 200, type: "number", attribute: {min: 1, max: 500, step: 1}},
         relationLabelShow: {
             name: "显示标签",
             value: "false",
-            options: [new Option("是", "true"), new Option("否", "false")],
-            type: "select"
+            type: "boolean"
         },
-        relationLabelFontSize: {name: "标签字号", value: 12, type: "input"},
+        relationLabelFontSize: {name: "标签字号", value: 12, type: "number", attribute: {min: 1, max: 30, step: 1}},
         relationLabelColor: {value: "auto", name: "标签颜色", type: "color"},
         relationLineFocusNodeAdjacency: {
             name: "凸显相邻关系",
             value: "false",
-            options: [new Option("是", "true"), new Option("否", "false")],
-            type: "select"
+            type: "boolean"
         },
 
         hr_webkitDep: {name: "分类集中", value: "", type: "hr"},
-        webkitDepSymbolSize: {name: "节点大小", value: 10, type: "input"},
-        webkitDepRepulsion: {name: "排斥力", value: 100, type: "input"},
-        webkitDepGravity: {name: "引力", value: 0.4, type: "input"},
-        webkitDepEdgeLength: {name: "节点距离", value: 50, type: "input"},
+        webkitDepSymbolSize: {name: "节点大小", value: 10, type: "number", attribute: {min: 1, max: 30, step: 1}},
+        webkitDepRepulsion: {name: "排斥力", value: 100, type: "number", attribute: {min: 1, max: 200, step: 1}},
+        webkitDepGravity: {name: "引力", value: 0.4, type: "number", attribute: {min: 0, max: 1, step: 0.1}},
+        webkitDepEdgeLength: {name: "节点距离", value: 50, type: "number", attribute: {min: 1, max: 500, step: 1}},
 
         hr_banner: {name: "横幅标语", value: "", type: "hr"},
         bannerBackgroundColor: {value: "transparent", name: "背景颜色", type: "color"},
         bannerTextColor: {value: "auto", name: "文本颜色", type: "color"},
         bannerFontFamily: {name: "字体", value: "sans-serif", type: "input"},
-        bannerFontSize: {name: "字号", value: 100, type: "input"},
-        bannerShadesSpeed: {name: "速度(秒)", value: 3, type: "input"},
+        bannerFontSize: {name: "字号", value: 100, type: "number", attribute: {min: 1, max: 30, step: 1}},
+        bannerShadesSpeed: {name: "速度(秒)", value: 3, type: "number", attribute: {min: 1, max: 5, step: 1}},
 
         hr_scrollingScreen: {name: "数据滚屏", value: "", type: "hr"},
-        scrollingScreenLeft: {name: "左边距(%)", value: "20%", type: "input"},
-        scrollingScreenWidth: {name: "宽度", value: 800, type: "input"},
+        scrollingScreenLeft: {
+            name: "左边距(%)",
+            value: "20%",
+            type: "range",
+            attribute: {min: 0, max: 30, step: 1, unit: "%"}
+        },
+        scrollingScreenWidth: {name: "宽度", value: 800, type: "number", attribute: {min: 1, max: 1024, step: 1}},
         scrollingScreenBackColor: {value: "transparent", name: "背景颜色", type: "color"},
         scrollingScreenBorderColor: {value: "transparent", name: "边框颜色", type: "color"},
         scrollingScreenColumnFontFillColor: {value: "auto", name: "表头颜色", type: "color"},
-        scrollingScreenOpacity: {value: 0.4, name: "透明度", type: "input"},
-        scrollingScreenFontSize: {name: "字号", value: 16, type: "input"},
-        scrollingScreenSpeed: {name: "速度(秒)", value: 0.01, type: "input"},
+        scrollingScreenOpacity: {value: 0.4, name: "透明度", type: "number", attribute: {min: 0, max: 1, step: 0.1}},
+        scrollingScreenFontSize: {name: "字号", value: 16, type: "number", attribute: {min: 1, max: 30, step: 1}},
+        scrollingScreenSpeed: {name: "速度(秒)", value: 0.01, type: "number", attribute: {min: 0, max: 1, step: 0.01}},
 
         hr_walkingLantern: {name: "数据走马灯", value: "", type: "hr"},
         walkingLanternDirection: {
@@ -1692,34 +1658,48 @@ var __ECHARTS__ = {
             options: [new Option("左向右", "LR"), new Option("右向左", "RL")],
             type: "select"
         },
-        walkingLanternTop: {name: "上边距(%)", value: "20%", type: "input"},
-        walkingLanternWidth: {name: "宽度", value: 800, type: "input"},
+        walkingLanternTop: {
+            name: "上边距(%)",
+            value: "20%",
+            type: "range",
+            attribute: {min: 0, max: 30, step: 1, unit: "%"}
+        },
+        walkingLanternWidth: {name: "宽度", value: 800, type: "number", attribute: {min: 1, max: 2048, step: 1}},
         walkingLanternBackColor: {value: "transparent", name: "背景颜色", type: "color"},
         walkingLanternBorderColor: {value: "transparent", name: "边框颜色", type: "color"},
         walkingLanternColumnFontFillColor: {value: "auto", name: "表头颜色", type: "color"},
-        walkingLanternOpacity: {value: 0.4, name: "透明度", type: "input"},
-        walkingLanternFontSize: {name: "字号", value: 16, type: "input"},
-        walkingLanternLines: {name: "显示行数", value: 10, type: "input"},
-        walkingLanternSpeed: {name: "速度(秒)", value: 0.01, type: "input"},
+        walkingLanternOpacity: {value: 0.4, name: "透明度", type: "number", attribute: {min: 0, max: 1, step: 0.1}},
+        walkingLanternFontSize: {name: "字号", value: 16, type: "number", attribute: {min: 1, max: 30, step: 1}},
+        walkingLanternLines: {name: "显示行数", value: 10, type: "number", attribute: {min: 1, max: 30, step: 1}},
+        walkingLanternSpeed: {name: "速度(秒)", value: 0.01, type: "number", attribute: {min: 0, max: 1, step: 0.01}},
 
         hr_windowShades: {name: "数据百叶窗", value: "", type: "hr"},
-        windowShadesTop: {name: "上边距(%)", value: "20%", type: "input"},
-        windowShadesLeft: {name: "左边距(%)", value: "20%", type: "input"},
-        windowShadesWidth: {name: "宽度", value: 800, type: "input"},
+        windowShadesTop: {
+            name: "上边距(%)",
+            value: "20%",
+            type: "range",
+            attribute: {min: 0, max: 30, step: 1, unit: "%"}
+        },
+        windowShadesLeft: {
+            name: "左边距(%)",
+            value: "20%",
+            type: "range",
+            attribute: {min: 0, max: 30, step: 1, unit: "%"}
+        },
+        windowShadesWidth: {name: "宽度", value: 800, type: "number", attribute: {min: 1, max: 2048, step: 1}},
         windowShadesBackColor: {value: "transparent", name: "背景颜色", type: "color"},
         windowShadesBorderColor: {value: "transparent", name: "边框颜色", type: "color"},
         windowShadesColumnFontFillColor: {value: "auto", name: "表头颜色", type: "color"},
-        windowShadesOpacity: {value: 0.4, name: "透明度", type: "input"},
-        windowShadesFontSize: {name: "字号", value: 16, type: "input"},
-        windowShadesLines: {name: "显示行数", value: 10, type: "input"},
-        windowShadesSpeed: {name: "速度(秒)", value: 0.01, type: "input"},
+        windowShadesOpacity: {value: 0.4, name: "透明度", type: "number", attribute: {min: 0, max: 1, step: 0.1}},
+        windowShadesFontSize: {name: "字号", value: 16, type: "number", attribute: {min: 1, max: 30, step: 1}},
+        windowShadesLines: {name: "显示行数", value: 10, type: "number", attribute: {min: 1, max: 30, step: 1}},
+        windowShadesSpeed: {name: "速度(秒)", value: 0.01, type: "number", attribute: {min: 0, max: 1, step: 0.01}},
 
         hr_timeline: {name: "类目轴", value: "", type: "hr"},
         timelineDisplay: {
             name: "是否显示",
             value: "true",
-            options: [new Option("是", "true"), new Option("否", "false")],
-            type: "select"
+            type: "boolean"
         },
         timelineOrient: {
             name: "布局",
@@ -1727,12 +1707,17 @@ var __ECHARTS__ = {
             options: [new Option("横向", "horizontal"), new Option("纵向", "vertical")],
             type: "select"
         },
-        timelineLeft: {name: "左边距(%)", value: "15%", type: "input"},
-        timelineRight: {name: "右边距(%)", value: "15%", type: "input"},
-        timelineTop: {name: "上边距(%)", value: "90%", type: "input"},
-        timelineBottom: {name: "下边距(%)", value: "10%", type: "input"},
+        timelineLeft: {name: "左边距(%)", value: "15%", type: "range", attribute: {min: 0, max: 30, step: 1, unit: "%"}},
+        timelineRight: {name: "右边距(%)", value: "15%", type: "range", attribute: {min: 0, max: 30, step: 1, unit: "%"}},
+        timelineTop: {name: "上边距(%)", value: "90%", type: "range", attribute: {min: 0, max: 100, step: 1, unit: "%"}},
+        timelineBottom: {
+            name: "下边距(%)",
+            value: "10%",
+            type: "range",
+            attribute: {min: 0, max: 100, step: 1, unit: "%"}
+        },
         timelineLabelColor: {value: "auto", name: "标签颜色", type: "color"},
-        timelineLabelFontSize: {name: "字号", value: 12, type: "input"},
+        timelineLabelFontSize: {name: "字号", value: 12, type: "number", attribute: {min: 1, max: 30, step: 1}},
         timelineStyleColor: {value: "auto", name: "轴线颜色", type: "color"},
         timelineEmphasisColor: {value: "auto", name: "热点颜色", type: "color"},
         categoryLineType: {
@@ -1741,15 +1726,14 @@ var __ECHARTS__ = {
             options: [new Option("柱状图", "bar"), new Option("线型图", "line"), new Option("面积图", "areaStyle"), new Option("饼图", "pie")],
             type: "select"
         },
-        seriesLoopPlayInterval: {name: "间隔(秒)", value: 3, type: "input"},
+        seriesLoopPlayInterval: {name: "间隔(秒)", value: 3, type: "number", attribute: {min: 0, max: 5, step: 1}},
 
         hr_parallelAxis: {name: "平行坐标", value: "", type: "hr"},
-        parallelAxisLineWidth: {name: "线宽", value: 2, type: "input"},
+        parallelAxisLineWidth: {name: "线宽", value: 2, type: "number", attribute: {min: 1, max: 30, step: 1}},
         parallelSmooth: {
             name: "平滑线",
             value: "false",
-            options: [new Option("是", "true"), new Option("否", "false")],
-            type: "select"
+            type: "boolean"
         },
         parallelAxisLabelInside: {
             name: "标签位置",
@@ -1787,7 +1771,7 @@ var __ECHARTS__ = {
             options: [new Option("一般散点", "scatter"), new Option("效应散点", "effectScatter")],
             type: "select"
         },
-        singeAxisSymbolSize: {name: "散点最大值", value: 45, type: "input"},
+        singeAxisSymbolSize: {name: "散点最大值", value: 45, type: "number", attribute: {min: 1, max: 100, step: 1}},
 
         hr_mathFunction: {name: "函数图像", value: "", type: "hr"},
         mathFunctionXRange: {
@@ -1798,7 +1782,7 @@ var __ECHARTS__ = {
         mathFunctionXGrainSize: {
             name: "X粒度",
             value: 1,
-            type: "input",
+            type: "number", attribute: {min: 1, max: 100, step: 1}
         },
         mathFunctionYRange: {
             name: "Y区间",
@@ -1808,13 +1792,12 @@ var __ECHARTS__ = {
 
         hr_regression: {name: "回归参数", value: "", type: "hr"},
         regressionType: {name: "回归类型", value: "直线", options: ["直线", "指数", "对数", "多项式"], type: "select"},
-        regressionPolynomialOrder: {name: "多项式阶数", value: 2, type: "input"},
-        regressionForwardPeroids: {name: "前推周期", value: 0, type: "input"},
+        regressionPolynomialOrder: {name: "多项式阶数", value: 2, type: "number", attribute: {min: 1, max: 100, step: 1}},
+        regressionForwardPeroids: {name: "前推周期", value: 0, type: "number", attribute: {min: 1, max: 100, step: 1}},
         regressionExpressionDisplay: {
             name: "显示表达式",
             value: "false",
-            options: [new Option("是", "true"), new Option("否", "false")],
-            type: "select"
+            type: "boolean"
         },
         regressionExpressionColor: {name: "表达式颜色", value: "auto", type: "color"},
 
@@ -1822,11 +1805,10 @@ var __ECHARTS__ = {
         dataZoomBarDisplay: {
             name: "是否显示",
             value: "false",
-            options: [new Option("是", "true"), new Option("否", "false")],
-            type: "select"
+            type: "boolean"
         },
         dataZoomBarColor: {value: "auto", name: "组件颜色", type: "color"},
-        dataZoomBarWidth: {name: "宽度", value: 45, type: "input"},
+        dataZoomBarWidth: {name: "宽度", value: 45, type: "number", attribute: {min: 1, max: 50, step: 1}},
         dataZoomFilterMode: {
             name: "模式",
             value: "filter",
@@ -1839,14 +1821,18 @@ var __ECHARTS__ = {
             options: [new Option("长方形", "rect"), new Option("实心圆", "circle"), new Option("空心圆", "emptyCircle")],
             type: "select"
         },
-        dataZoomHandleSize: {name: "手柄大小", value: "100%", type: "input"},
+        dataZoomHandleSize: {
+            name: "手柄大小",
+            value: "100%",
+            type: "range",
+            attribute: {min: 1, max: 100, step: 1, unit: "%"}
+        },
 
         hr_visualMap: {name: "视觉映射", value: "", type: "hr"},
         visualMapDisplay: {
             name: "是否显示",
             value: "false",
-            options: [new Option("是", "true"), new Option("否", "false")],
-            type: "select"
+            type: "boolean"
         },
         visualMap_type: {
             name: "类型",
@@ -1854,8 +1840,8 @@ var __ECHARTS__ = {
             options: [new Option("连续", "continuous"), new Option("分段", "piecewise")],
             type: "select"
         },
-        visualMap_left: {name: "左边距(%)", value: "1%", type: "input"},
-        visualMap_top: {name: "上边距(%)", value: "10%", type: "input"},
+        visualMap_left: {name: "左边距(%)", value: "1%", type: "range", attribute: {min: 0, max: 30, step: 1, unit: "%"}},
+        visualMap_top: {name: "上边距(%)", value: "10%", type: "range", attribute: {min: 0, max: 30, step: 1, unit: "%"}},
         visualMap_orient: {
             name: "布局方向",
             value: "horizontal",
@@ -1863,14 +1849,13 @@ var __ECHARTS__ = {
             type: "select"
         },
         visualMap_textColor: {name: "标签颜色", value: "auto", type: "color"},
-        visualMap_piecewise_splitNumber: {name: "分段", value: "5", type: "input"},
+        visualMap_piecewise_splitNumber: {name: "分段", value: 5, type: "number", attribute: {min: 1, max: 10, step: 1}},
 
         hr_animation: {name: "动画设置", value: "", type: "hr"},
         animation: {
             name: "启用动画",
             value: "true",
-            options: [new Option("是", "true"), new Option("否", "false")],
-            type: "select"
+            type: "boolean"
         },
         universalTransition: {
             name: "全局过渡动画",
@@ -1878,7 +1863,12 @@ var __ECHARTS__ = {
             options: [new Option("开启", "true"), new Option("关闭", "false")],
             type: "select"
         },
-        animationThreshold: {name: "启动动画阈值(毫秒)", value: 1000, type: "input"},
+        animationThreshold: {
+            name: "启动动画阈值(毫秒)",
+            value: 1000,
+            type: "number",
+            attribute: {min: 500, max: 2000, step: 100}
+        },
         animationEasing: {
             name: "初始动画名称",
             value: "linear",
@@ -1887,8 +1877,13 @@ var __ECHARTS__ = {
                 new Option("倒退", "back"), new Option("反弹", "bounce")],
             type: "select"
         },
-        animationDuration: {name: "初始动画时长(毫秒)", value: 500, type: "input"},
-        animationDelay: {name: "初始动画延时(毫秒)", value: 6, type: "input"},
+        animationDuration: {
+            name: "初始动画时长(毫秒)",
+            value: 500,
+            type: "number",
+            attribute: {min: 100, max: 1000, step: 100}
+        },
+        animationDelay: {name: "初始动画延时(毫秒)", value: 6, type: "number", attribute: {min: 1, max: 30, step: 1}},
         animationEasingUpdate: {
             name: "更新动画名称",
             value: "linear",
@@ -1897,8 +1892,13 @@ var __ECHARTS__ = {
                 new Option("倒退", "back"), new Option("反弹", "bounce")],
             type: "select"
         },
-        animationDurationUpdate: {name: "更新动画时长(毫秒)", value: 500, type: "input"},
-        animationDelayUpdate: {name: "更新动画延时(毫秒)", value: 6, type: "input"},
+        animationDurationUpdate: {
+            name: "更新动画时长(毫秒)",
+            value: 500,
+            type: "number",
+            attribute: {min: 100, max: 1000, step: 100}
+        },
+        animationDelayUpdate: {name: "更新动画延时(毫秒)", value: 6, type: "number", attribute: {min: 1, max: 30, step: 1}},
         animationFunctionType: {
             name: "波动方式",
             value: "In",
@@ -1909,8 +1909,7 @@ var __ECHARTS__ = {
         waterGraphEnable: {
             name: "显示水印",
             value: "true",
-            options: [new Option("是", "true"), new Option("否", "false")],
-            type: "select"
+            type: "boolean"
         },
         waterGraphText: {
             name: "水印文本",
@@ -1919,8 +1918,8 @@ var __ECHARTS__ = {
         },
         waterGraphTextFontSize: {
             name: "文本字号",
-            value: "auto",
-            type: "input"
+            value: 24,
+            type: "number", attribute: {min: 1, max: 60, step: 1}
         },
         waterGraphUrl: {
             name: "水印链接",
@@ -1930,23 +1929,23 @@ var __ECHARTS__ = {
         waterGraphColor: {value: "auto", name: "水印颜色", type: "color"},
         waterGraphRotation: {
             name: "旋转角度",
-            value: "auto",
-            type: "input"
+            value: -45,
+            type: "number", attribute: {min: -90, max: 90, step: 1}
         },
         waterGraphRight: {
             name: "右边距",
-            value: "auto",
-            type: "input"
+            value: 300,
+            type: "number", attribute: {min: 1, max: 1000, step: 1}
         },
         waterGraphBottom: {
             name: "下边距",
-            value: "auto",
-            type: "input"
+            value: 30,
+            type: "number", attribute: {min: 1, max: 500, step: 1}
         },
         waterGraphOpacity: {
             name: "透明度",
-            value: "0.4",
-            type: "input"
+            value: 0.4,
+            type: "number", attribute: {min: 0, max: 1, step: 0.1}
         },
     },
 
@@ -2088,46 +2087,64 @@ var __ECHARTS__ = {
                     input.title = this.configs[name].name;
                 item.appendChild(input);
             } else if (this.configs[name].type == "color") {
-                let input = document.createElement("input");
-                input.style.cssFloat = "right";
-                input.style.minHeight = "130%";
+                let color = null;
+                if (this.configs[name].value == "auto")
+                    color = "#ffffff";
+                else
+                    color = this.configs[name].value;
+                let input = UI.colorChoice(name, color, function(value){
+                    __ECHARTS__.configs[name].value = value;
+                });
                 input.id = name;
-                input.type = "color";
-                input.className = "ui-container-item-input";
+                input.className = "ui-container-item-color";
                 if (typeof this.configs[name].title != "undefined")
                     input.title = this.configs[name].title;
                 else
                     input.title = this.configs[name].name;
-                if (this.configs[name].value == "auto")
-                    input.style.backgroundColor = input.value = "#FFFFFF";
-                else if (this.configs[name].value == "transparent")
-                    input.style.backgroundColor =input.value = "#000000";
+                item.appendChild(input);
+            } else if (this.configs[name].type == "boolean") {
+                let input = UI.booleanChoice(__ECHARTS__.configs[name].value.toBoolean(), function (value) {
+                    __ECHARTS__.configs[name].value = (value ? "true" : "false");
+                });
+                input.id = name;
+                input.className = "ui-container-item-boolean";
+                if (typeof this.configs[name].title != "undefined")
+                    input.title = this.configs[name].title;
                 else
-                    input.style.backgroundColor =input.value = this.configs[name].value;
-
+                    input.title = this.configs[name].name;
+                item.appendChild(input);
+            } else if (this.configs[name].type == "range") {
+                let input = document.createElement("input");
+                input.style.cssFloat = "right";
+                input.id = name;
+                input.type = "range";
+                input.min = __ECHARTS__.configs[name].attribute.min;
+                input.max = __ECHARTS__.configs[name].attribute.max;
+                input.step = __ECHARTS__.configs[name].attribute.step;
+                input.className = "ui-container-item-range";
+                input.title = this.configs[name].value;
+                input.value = Number(this.configs[name].value.replace(new RegExp(this.configs[name].attribute.unit,"g"), ""));
                 input.onchange = function () {
-                    this.style.backgroundColor =__ECHARTS__.configs[this.id].value = this.value;
+                    __ECHARTS__.configs[this.id].value = this.title = (this.value + __ECHARTS__.configs[this.id].attribute.unit);
                 };
-                input.title = "[Esc]:透明;[Del]:自动";
-                function colorSetKeydown(event){
-                    if (event.keyCode == 46) {
-                        event.target.value = "#FFFFFF";
-                        __ECHARTS__.configs[event.target.id].value = "auto";
-                        if (typeof __LOGS__ !== "undefined")
-                            __LOGS__.viewMessage(__ECHARTS__.configs[event.target.id].name + " 设置为自动.", false);
-                        else
-                            alert(__ECHARTS__.configs[event.target.id].name + " 设置为自动.");
-
-                    } else if (event.keyCode == 27) {
-                        event.target.value = "#000000";
-                        __ECHARTS__.configs[event.target.id].value = "transparent";
-                        if (typeof __LOGS__ !== "undefined")
-                            __LOGS__.viewMessage(__ECHARTS__.configs[event.target.id].name + " 设置为透明.", false);
-                        else
-                            alert(__ECHARTS__.configs[event.target.id].name + " 设置为透明.");
-                    }
-                }
-                input.addEventListener("keydown",colorSetKeydown);
+                item.appendChild(input);
+            } else if (this.configs[name].type == "number") {
+                let input = document.createElement("input");
+                input.style.cssFloat = "right";
+                input.id = name;
+                input.type = "number";
+                input.min = __ECHARTS__.configs[name].attribute.min;
+                input.max = __ECHARTS__.configs[name].attribute.max;
+                input.step = __ECHARTS__.configs[name].attribute.step;
+                input.className = "ui-container-item-number";
+                input.title = this.configs[name].value;
+                input.value = this.configs[name].value;
+                input.onkeypress = function(){
+                    return false;
+                };
+                input.onchange = function () {
+                    __ECHARTS__.configs[this.id].value = this.title = this.value;
+                };
                 item.appendChild(input);
             } else if (this.configs[name].type == "hr") {
                 span.innerHTML = "[ " + this.configs[name].name + " ]";
@@ -3021,7 +3038,7 @@ var geoCoordMap = {
     },
 
     addGeoCoord: function (table, coords) {
-        UI.prompt.show("输入", {"城市或地区名称": ""}, "auto", function (args, values) {
+        UI.prompt.show("输入", {"城市或地区名称": {value:"", type:"input"}}, "auto", function (args, values) {
             let city = values["城市或地区名称"];
             let ex = false;
             for (coord in coords) {
@@ -9972,7 +9989,7 @@ function getClock(container, dataset, configs) {
                 radius: configs.clockRadius.value,
                 center: configs.clockCenter.value.toArray(["50%", "50%"], ","),
                 startAngle: 90,
-                endAngle: echarts.version == "4.9.0" ? -269.99 : -270,
+                endAngle: -270,
                 min: 0,
                 max: 12,
                 splitNumber: 12,
@@ -10041,7 +10058,7 @@ function getClock(container, dataset, configs) {
                     show: false
                 },
                 detail: {
-                    show: echarts.version != "4.9.0",
+                    show: true,
                     color: colors[1],
                     fontSize: Number(configs.clockFontSize.value) * 0.6,
                     borderColor: colors[2],
@@ -10091,14 +10108,14 @@ function getClock(container, dataset, configs) {
                     show: false
                 },
                 itemStyle: {
-                    color: echarts.version == "4.9.0" ? colors[2] : null,
+                    color: null,
                     shadowColor: 'rgba(0, 0, 0, 0.3)',
                     shadowBlur: 8,
                     shadowOffsetX: 2,
                     shadowOffsetY: 4
                 },
                 emphasis: {
-                    color: echarts.version == "4.9.0" ? colors[2] : null,
+                    color: null,
                     shadowColor: 'rgba(0, 0, 0, 0.3)',
                     shadowBlur: 8,
                     shadowOffsetX: 2,
@@ -10152,14 +10169,14 @@ function getClock(container, dataset, configs) {
                     show: false
                 },
                 itemStyle: {
-                    color: echarts.version == "4.9.0" ? colors[3] : null,
+                    color: null,
                     shadowColor: 'rgba(0, 0, 0, 0.3)',
                     shadowBlur: 8,
                     shadowOffsetX: 2,
                     shadowOffsetY: 4
                 },
                 emphasis: {
-                    color: echarts.version == "4.9.0" ? colors[3] : null,
+                    color: null,
                     shadowColor: 'rgba(0, 0, 0, 0.3)',
                     shadowBlur: 8,
                     shadowOffsetX: 2,
@@ -10212,14 +10229,14 @@ function getClock(container, dataset, configs) {
                     show: false
                 },
                 itemStyle: {
-                    color: echarts.version == "4.9.0" ? colors[4] : null,
+                    color: null,
                     shadowColor: 'rgba(0, 0, 0, 0.3)',
                     shadowBlur: 8,
                     shadowOffsetX: 2,
                     shadowOffsetY: 4
                 },
                 emphasis: {
-                    color: echarts.version == "4.9.0" ? colors[4] : null,
+                    color: null,
                     shadowColor: 'rgba(0, 0, 0, 0.3)',
                     shadowBlur: 8,
                     shadowOffsetX: 2,
@@ -12375,19 +12392,20 @@ function getSaveAsReport(configs, container, myChart) {
 }
 
 function getEchartsReport(container, myChart) {
-    function getScript(main, jsPath, echartsPath, defaultThemes) {
+    function getScript(main, jsPath, echarts, ui, defaultThemes) {
         let scripts = [
             "images.js",
             "FunctionsComponent.js",
             main,
-            echartsPath + "/echarts.min.js",
-            echartsPath + "/echarts-gl.min.js",
-            echartsPath + "/echarts-wordcloud.min.js",
-            echartsPath + "/ecStat.js",
-            echartsPath + "/echarts-liquidfill.min.js",
+            echarts,
+            "echartsThemes.js",
+            ui,
+            "echarts/echarts-gl.min.js",
+            "echarts/echarts-wordcloud.min.js",
+            "echarts/ecStat.js",
+            "echarts/echarts-liquidfill.min.js",
             "echarts/map/world.js",
             "echarts/map/china-and-region.js",
-            "echartsThemes.js",
             "echartsView.js",
         ];
 
@@ -12398,7 +12416,7 @@ function getEchartsReport(container, myChart) {
             "<script type='text/javascript'>\n" +
             "function $(id) {\n" +
             "return document.getElementById(id);\n" +
-            "}" +
+            "}\n" +
             "function $1(name, index) {\n" +
             "return document.getElementsByClassName(name)[index];\n" +
             "}" +
@@ -12436,6 +12454,7 @@ function getEchartsReport(container, myChart) {
 
             "<script type='text/javascript'>\n" +
             "function setStyleValue(selectorText, name, value){\n" +
+            "console.log(document.styleSheets[0]);" +
             "for(let i=0;i<document.styleSheets[0].cssRules.length;i++){\n" +
             "if (document.styleSheets[0].cssRules[i].selectorText == selectorText){\n" +
             "document.styleSheets[0].cssRules[i].style[name] = value;\n" +
@@ -12459,12 +12478,16 @@ function getEchartsReport(container, myChart) {
             "setStyleValue('span.page-tab-selected', 'backgroundColor', THEMES[name].selected);\n" +
             "setStyleValue('span.page-tab:hover', 'backgroundColor', THEMES[name].hover);\n" +
             "setStyleValue('span.page-tab-left:hover', 'backgroundColor', THEMES[name].hover);\n" +
-            "setStyleValue('span.tabButton-selected', 'border-color', THEMES[name].border);\n" +
-            "setStyleValue('div#_ECHARTS', 'border-color', THEMES[name].border);\n" +
-            "setStyleValue('div#_TABLE', 'border-color', THEMES[name].border);\n" +
-            "setStyleValue('div#_SCRIPT', 'border-color', THEMES[name].border);\n" +
-            "setStyleValue('div#_CONFIGS', 'border-color', THEMES[name].border);\n" +
-            "setStyleValue('span.theme-selected', 'border-color', THEMES[name].border);\n" +
+            "setStyleValue('span.tabButton-selected', 'borderColor', THEMES[name].border);\n" +
+            "setStyleValue('div#_ECHARTS', 'borderColor', THEMES[name].border);\n" +
+            "setStyleValue('div#_TABLE', 'borderColor', THEMES[name].border);\n" +
+            "setStyleValue('div#_SCRIPT', 'borderColor', THEMES[name].border);\n" +
+            "setStyleValue('div#_CONFIGS', 'borderColor', THEMES[name].border);\n" +
+            "setStyleValue('span.theme-selected', 'borderColor', THEMES[name].border);\n" +
+            "setStyleValue('span.configs-name', 'backgroundColor', THEMES[name].selected);\n" +
+            "setStyleValue('input[type=\\\"range\\\"]::-webkit-slider-thumb', 'borderColor', THEMES[name].value);\n" +
+            "setStyleValue('span.exp-open:hover', 'color', THEMES[name].border);\n" +
+            "setStyleValue('span.exp-close:hover', 'color', THEMES[name].border);\n" +
             "$('logo').src = getSVGBase($('logo').getAttribute('svg'), $('logo').getAttribute('color'), '60px', '60px', $('logo').getAttribute('flip'));\n" +
             "$('_FULLSCREEN').src = getSVGBase($('_FULLSCREEN').getAttribute('svg'), THEMES[name].border, '20px', '20px');\n" +
             "}\n" +
@@ -12476,19 +12499,19 @@ function getEchartsReport(container, myChart) {
             "var CONFIGS = {themes: '" + defaultThemes + "'};\n" +
             "var ECHARTS_TARGET = null;\n" +
             "var THEMES = {" +
-            "白色: {backgroundColor: '#C0C0C0', color: '#000000', selected: 'rgba(0, 0, 0, 0.3)', hover: 'rgba(0, 0, 0, 0.3)', border: '#008080', " +
+            "白色: {backgroundColor: '#C0C0C0', color: '#000000', selected: 'rgba(0, 0, 0, 0.3)', hover: 'rgba(0, 0, 0, 0.3)', border: '#008080', value: '#FF7F50', " +
             "backgroundImage:'-webkit-linear-gradient(45deg,rgba(255, 255, 255, 0.25) 25%,transparent 25%,transparent 50%,rgba(255, 255, 255, 0.25) 50%,rgba(255, 255, 255, 0.25) 75%,transparent 75%,transparent)'},\n" +
-            "浅灰: {backgroundColor: '#696969', color: '#F5F5F5', selected: 'rgba(0, 0, 0, 0.3)', hover: 'rgba(0, 0, 0, 0.3)', border: '#FF7F50'," +
+            "浅灰: {backgroundColor: '#696969', color: '#F5F5F5', selected: 'rgba(0, 0, 0, 0.3)', hover: 'rgba(0, 0, 0, 0.3)', border: '#FF7F50', value: '#FF7F50', " +
             "backgroundImage:'-webkit-linear-gradient(45deg,rgba(255, 255, 255, 0.15) 25%,transparent 25%,transparent 50%,rgba(255, 255, 255, 0.15) 50%,rgba(255, 255, 255, 0.15) 75%,transparent 75%,transparent)'},\n" +
-            "深灰: {backgroundColor: '#404040', color: '#F8F8F8', selected: 'rgba(0, 0, 0, 0.3)', hover: 'rgba(0, 0, 0, 0.3)', border: '#FF7F50'," +
+            "深灰: {backgroundColor: '#404040', color: '#F8F8F8', selected: 'rgba(0, 0, 0, 0.3)', hover: 'rgba(0, 0, 0, 0.3)', border: '#FF7F50', value: '#FF7F50', " +
             "backgroundImage:'-webkit-linear-gradient(45deg,rgba(255, 255, 255, 0.15) 25%,transparent 25%,transparent 50%,rgba(255, 255, 255, 0.15) 50%,rgba(255, 255, 255, 0.15) 75%,transparent 75%,transparent)'},\n" +
-            "黑色: {backgroundColor: '#000000', color: '#F0FFFF', selected: '#303030', hover: 'rgba(0, 0, 0, 0.3)', border: '#F0FFFF'," +
+            "黑色: {backgroundColor: '#000000', color: '#F0FFFF', selected: '#303030', hover: 'rgba(0, 0, 0, 0.3)', border: '#F0FFFF', value: '#FF7F50', " +
             "backgroundImage:'-webkit-linear-gradient(45deg,rgba(255, 255, 255, 0.15) 25%,transparent 25%,transparent 50%,rgba(255, 255, 255, 0.15) 50%,rgba(255, 255, 255, 0.15) 75%,transparent 75%,transparent)'},\n" +
-            "墨绿: {backgroundColor: '#2F4F4F', color: '#F0F8FF', selected: 'rgba(0, 0, 0, 0.3)', hover: 'rgba(0, 0, 0, 0.3)', border: '#FF7F50'," +
+            "墨绿: {backgroundColor: '#2F4F4F', color: '#F0F8FF', selected: 'rgba(0, 0, 0, 0.3)', hover: 'rgba(0, 0, 0, 0.3)', border: '#FF7F50', value: '#FF7F50', " +
             "backgroundImage:'-webkit-linear-gradient(45deg,rgba(255, 255, 255, 0.15) 25%,transparent 25%,transparent 50%,rgba(255, 255, 255, 0.15) 50%,rgba(255, 255, 255, 0.15) 75%,transparent 75%,transparent)'},\n" +
-            "深蓝: {backgroundColor: '#003355', color: '#F8F8F8', selected: 'rgba(0, 0, 0, 0.3)', hover: 'rgba(0, 0, 0, 0.3)', border: '#008080'," +
+            "深蓝: {backgroundColor: '#003355', color: '#F8F8F8', selected: 'rgba(0, 0, 0, 0.3)', hover: 'rgba(0, 0, 0, 0.3)', border: '#008080', value: '#FF7F50', " +
             "backgroundImage:'-webkit-linear-gradient(45deg,rgba(255, 255, 255, 0.15) 25%,transparent 25%,transparent 50%,rgba(255, 255, 255, 0.15) 50%,rgba(255, 255, 255, 0.15) 75%,transparent 75%,transparent)'},\n" +
-            "红色: {backgroundColor: '#8B0000', color: '#FFFF00', selected: 'rgba(0, 0, 0, 0.3)', hover: 'rgba(0, 0, 0, 0.3)', border: '#FAFAD2'," +
+            "红色: {backgroundColor: '#8B0000', color: '#FFFF00', selected: 'rgba(0, 0, 0, 0.3)', hover: 'rgba(0, 0, 0, 0.3)', border: '#FAFAD2', value: '#FF7F50', " +
             "backgroundImage:'-webkit-linear-gradient(45deg,rgba(255, 255, 255, 0.15) 25%,transparent 25%,transparent 50%,rgba(255, 255, 255, 0.15) 50%,rgba(255, 255, 255, 0.15) 75%,transparent 75%,transparent)'},\n" +
             "};\n" +
             "</script>",
@@ -12583,19 +12606,37 @@ function getEchartsReport(container, myChart) {
             "</script>",
 
             "<script type='text/javascript'>\n" +
-            "function getConfigs(container, configs) {\n" +
+            "function reset(type){\n" +
+            "if (type === 'echarts'){\n" +
+            "try {\n" +
+            "echarts.getInstanceByDom($('_ECHARTS')).clear();\n" +
+            "$('_ECHARTS').removeAttribute('_echarts_instance_');\n" +
+            "}catch (e) {\n" +
+            "}\n" +
+            "ECHARTS_TARGET = null;\n" +
+            "}\n" +
+            "if (type === 'table' )\n" +
+            "viewDataset(0);\n" +
+            "}\n" +
+            "</script>",
+
+            "<script type='text/javascript'>\n" +
+            "function getConfigs(container, type, configs, __configs__) {\n" +
             "let dl = document.createElement('dl');\n" +
             "container.appendChild(dl);\n" +
             "let dt = null;\n" +
             "for (let name in configs) {\n" +
+            "if (name === 'toolboxFeatureMultiScreen' || name === 'toolboxSaveAsReport' || name === 'toolboxFeatureDataView')\n" +
+            "continue;\n" +
             "if (configs[name].type == 'hr') {\n" +
             "dt = document.createElement('dt');\n" +
             "let sp = document.createElement('span');\n" +
-            "sp.innerHTML = '<span class=exp-close>☘ </span>' + configs[name].name;\n" +
+            "sp.innerHTML = '<span class=exp-close>+ </span>' + configs[name].name;\n" +
             "dt.appendChild(sp);" +
             "dt.setAttribute('value', configs[name].name);\n" +
             "dt.setAttribute('state','0');\n" +
             "dt.onclick = function(){\n" +
+            "if (event.target.className == 'exp-close' || event.target.className == 'exp-open'){\n" +
             "let state = this.getAttribute('state');\n" +
             "let dds = this.getElementsByTagName('dd');\n" +
             "for(let i=0;i<dds.length;i++){\n" +
@@ -12606,10 +12647,11 @@ function getEchartsReport(container, myChart) {
             "}\n" +
             "if (state == '0'){\n" +
             "this.setAttribute('state','1');\n" +
-            "this.getElementsByTagName('span')[0].innerHTML = '<span class=exp-open>❀ </span>' + this.getAttribute('value');\n" +
+            "this.getElementsByTagName('span')[0].innerHTML = '<span class=exp-open>− </span>' + this.getAttribute('value');\n" +
             "} else {\n" +
             "this.setAttribute('state','0');\n" +
-            "this.getElementsByTagName('span')[0].innerHTML = '<span class=exp-close>☘ </span>' + this.getAttribute('value');\n" +
+            "this.getElementsByTagName('span')[0].innerHTML = '<span class=exp-close>+ </span>' + this.getAttribute('value');\n" +
+            "}\n" +
             "}\n" +
             "}\n" +
             "dl.appendChild(dt);\n" +
@@ -12619,11 +12661,100 @@ function getEchartsReport(container, myChart) {
             "let configsname = document.createElement('span');\n" +
             "configsname.className='configs-name';\n" +
             "configsname.innerText = configs[name].name;\n" +
+            "dd.appendChild(configsname);\n" +
+            "if (__configs__ === null){\n" +
             "let configsvalue = document.createElement('span');\n" +
             "configsvalue.className='configs-value';\n" +
             "configsvalue.innerText = configs[name].value;\n" +
-            "dd.appendChild(configsname);\n" +
             "dd.appendChild(configsvalue);\n" +
+            "} else {\n" +
+            "if (__configs__[name].type == 'input') {\n" +
+            "let input = document.createElement('input');\n" +
+            "input.style.cssFloat = 'right';\n" +
+            "input.id = name;\n" +
+            "input.type = 'input';\n" +
+            "input.className = 'ui-container-item-input';\n" +
+            "input.value = configs[name].value;\n" +
+            "input.onchange = function () {\n" +
+            "configs[this.id].value = this.value;\n" +
+            "reset(type);\n" +
+            "};\n" +
+            "\n" +
+            "dd.appendChild(input);\n" +
+            "} else if (__configs__[name].type == 'select') {\n" +
+            "let input = document.createElement('select');\n" +
+            "input.style.cssFloat = 'right';\n" +
+            "input.id = name;\n" +
+            "input.type = 'select';\n" +
+            "input.className = 'ui-container-item-input';\n" +
+            "for (let i = 0; i < __configs__[name].options.length; i++) {\n" +
+            "if (typeof __configs__[name].options[i] === 'object')\n" +
+            "input.options.add(__configs__[name].options[i]);\n" +
+            "else\n" +
+            "input.options.add(new Option(__configs__[name].options[i]));\n" +
+            "}\n" +
+            "input.value = configs[name].value;\n" +
+            "input.onchange = function () {\n" +
+            "configs[this.id].value = this.value;\n" +
+            "reset(type);\n" +
+            "};\n" +
+            "\n" +
+            "dd.appendChild(input);\n" +
+            "} else if (__configs__[name].type == 'color') {\n" +
+            "let input = UI.colorChoice(name, configs[name].value, function (value) {\n" +
+            "configs[name].value = value;\n" +
+            "reset(type);\n" +
+            "},'#FF7F50');\n" +
+            "input.id = name;\n" +
+            "input.className = 'ui-container-item-color';\n" +
+            "\n" +
+            "dd.appendChild(input);\n" +
+            "} else if (__configs__[name].type == 'boolean') {\n" +
+            "let input = UI.booleanChoice(configs[name].value.toBoolean(), function (value) {\n" +
+            "configs[name].value = (value ? 'true' : 'false');\n" +
+            "reset(type);\n" +
+            "},'#FF7F50');\n" +
+            "input.id = name;\n" +
+            "input.className = 'ui-container-item-boolean';\n" +
+            "\n" +
+            "dd.appendChild(input);\n" +
+            "} else if (__configs__[name].type == 'range') {\n" +
+            "let input = document.createElement('input');\n" +
+            "input.style.cssFloat = 'right';\n" +
+            "input.id = name;\n" +
+            "input.type = 'range';\n" +
+            "input.min = __configs__[name].attribute.min;\n" +
+            "input.max = __configs__[name].attribute.max;\n" +
+            "input.step = __configs__[name].attribute.step;\n" +
+            "input.className = 'ui-container-item-range';\n" +
+            "input.title = configs[name].value;\n" +
+            "input.value = Number(configs[name].value.replace(new RegExp(__configs__[name].attribute.unit,'g'), ''));\n" +
+            "input.onchange = function () {\n" +
+            "configs[this.id].value = this.title = (this.value + __configs__[this.id].attribute.unit);\n" +
+            "reset(type);\n" +
+            "};\n" +
+            "dd.appendChild(input);\n" +
+            "} else if (configs[name].type == 'number') {\n" +
+            "let input = document.createElement('input');\n" +
+            "input.style.cssFloat = 'right';\n" +
+            "input.id = name;\n" +
+            "input.type = 'number';\n" +
+            "input.min = __configs__[name].attribute.min;\n" +
+            "input.max = __configs__[name].attribute.max;\n" +
+            "input.step = __configs__[name].attribute.step;\n" +
+            "input.className = 'ui-container-item-number';\n" +
+            "input.title = __configs__[name].value;\n" +
+            "input.value = __configs__[name].value;\n" +
+            "input.onkeypress = function(){\n" +
+            "return false;\n" +
+            "};\n" +
+            "input.onchange = function () {\n" +
+            "configs[this.id].value = this.title = this.value;\n" +
+            "reset(type);\n" +
+            "};\n" +
+            "dd.appendChild(input);\n" +
+            "}\n" +
+            "}\n" +
             "}\n" +
             "}\n" +
             "}" +
@@ -12703,10 +12834,8 @@ function getEchartsReport(container, myChart) {
             "$('_SCRIPT').style.minHeight = (size.height*0.80) + 'px';\n" +
             "$('_CONFIGS').style.minHeight = (size.height*0.80) + 'px';\n" +
             "if (typeof getEcharts === 'function'){\n" +
-            "let container = $('_ECHARTS');\n" +
             "if (ECHARTS_TARGET == null){\n" +
-            "getEcharts(container, DATASET, REPORT.configs);\n" +
-            "ECHARTS_TARGET = echarts.getInstanceByDom(container);\n" +
+            "ECHARTS_TARGET = echarts.getInstanceByDom(getEcharts($('_ECHARTS'), DATASET, REPORT.configs));\n" +
             "}\n" +
             "ECHARTS_TARGET.resize();\n" +
             "} else {\n" +
@@ -12740,8 +12869,8 @@ function getEchartsReport(container, myChart) {
             "DATASET.sql = REPORT.dataset.sql;\n" +
             "DATASET.configs = configs;\n" +
             "$('sql').innerHTML = viewSql(DATASET.sql);\n" +
-            "getConfigs($('_CONFIGS'), REPORT.configs);\n" +
-            "getConfigs($('_CONFIGS'), DATASET.configs);\n" +
+            "getConfigs($('_CONFIGS'), 'echarts', REPORT.configs, typeof getEcharts === 'function'?__ECHARTS__.configs: null);\n" +
+            "getConfigs($('_CONFIGS'), 'table', DATASET.configs, typeof getEcharts === 'function'?__DATASET__.configs: null);\n" +
             "getThemes();\n" +
 
             "$('_FULLSCREEN').onmouseenter = function(){\n" +
@@ -12985,11 +13114,7 @@ function getEchartsReport(container, myChart) {
             "th.onclick = function () {\n" +
             "orderDatasetBy(this.getAttribute('colid'));\n" +
             "viewDataset(0);\n" +
-            "try {\n" +
-            "echarts.getInstanceByDom($('_ECHARTS')).clear();\n" +
-            "}catch (e) {\n" +
-            "}\n" +
-            "ECHARTS_TARGET = null;\n" +
+            "reset('echarts');\n" +
             "};\n" +
             "tr.appendChild(th);\n" +
             "}\n" +
@@ -13169,6 +13294,7 @@ function getEchartsReport(container, myChart) {
             "DATASET.data = settmp.data;\n" +
             "DATASET.columns = settmp.columns;\n" +
             "viewDataset(0);\n" +
+            "reset('echarts');\n" +
             "} catch (e) {\n" +
             "console.log(e);\n" +
             "}\n" +
@@ -13293,9 +13419,11 @@ function getEchartsReport(container, myChart) {
         "dl{padding-left: 5px;padding-right: 5px;}\n" +
         "dt{cursor: pointer;outline-style: none;border-radius: 4px}\n" +
         "dt:hover{background-color: rgba(0, 0, 0, 0.1);}\n" +
-        "span.exp-open{cursor: pointer;outline-style: none;color:mediumvioletred;font-weight: bolder}\n" +
-        "span.exp-close{cursor: pointer;outline-style: none;color:darkgreen;font-weight: bolder}\n" +
-        "dd{display:none;cursor: pointer;font-size: 100%;padding-left: 5px;padding-right: 5px;outline-style: none;border-radius: 4px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;}\n" +
+        "span.exp-open{cursor: pointer;outline-style: none;font-size:110%;font-weight: bolder}\n" +
+        "span.exp-open:hover{color:coral}\n" +
+        "span.exp-close{cursor: pointer;outline-style: none;font-size:110%;font-weight: bolder}\n" +
+        "span.exp-close:hover{color:coral}\n" +
+        "dd{display:none;min-height: 24px;cursor: pointer;font-size: 100%;padding-left: 5px;padding-right: 5px;outline-style: none;border-radius: 4px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;}\n" +
         "span.configs-name{cursor: pointer;font-size: 100%;padding-left: 5px;padding-right: 5px;background-color: sandybrown;outline-style: none;border-radius: 4px;border: 1px solid gray;}\n" +
         "span.configs-value{cursor: pointer;font-size: 100%;padding-left: 5px;padding-right: 5px;background-color: #00A7AA;outline-style: none;border-radius: 4px;border: 1px solid gray;}\n" +
         "span.SQLWorda{cursor: pointer;padding-left: 3px;padding-right: 3px;background-color: #00A7AA;outline-style: none;border-radius: 4px;}\n" +
@@ -13320,8 +13448,19 @@ function getEchartsReport(container, myChart) {
         "span.page-tab:hover{background-color: sandybrown;}\n" +
         "span.page-tab-left{float:left;cursor: pointer;width: 50px;font-size: 80%;text-align: center;border-left:1px solid gray;border-bottom-right-radius: 6px;border-bottom-left-radius: 36px;}" +
         "span.page-tab-left:hover{background-color: sandybrown;}\n" +
+        "input, select {background-color: transparent;color: coral;outline-style: none;border: 0px;border-bottom: 1px solid #00A7AA;box-sizing: border-box;}\n" +
+        ".ui-container-item-checkbox {float: right;vertical-align: bottom;}\n" +
+        ".ui-container-item-radio {float: right;vertical-align: bottom;}\n" +
+        "input[type=range] {-webkit-appearance: none;}\n" +
+        "input[type='range']::-webkit-slider-thumb {-webkit-appearance: none;border: 6px solid #00A7AA;height: 16px;width: 16px;border-radius: 8px;cursor: pointer;}\n" +
+        ".ui-container-item-range {float: right;width: 70%;vertical-align: middle;}\n" +
+        ".ui-container-item-number {float: left;width: 70%;vertical-align: middle;}\n" +
+        ".ui-container-item-input {cursor: pointer;font-size: 100%;padding: 0px;margin: 0px;width: 70%;float: right;height: 100%;vertical-align: bottom;}\n" +
+        ".ui-container-item-color {cursor: pointer;font-size: 90%;padding: 0px;margin: 0px;width: 70%;float: right;height: 100%;vertical-align: bottom;border-bottom: 1px solid #00A7AA;}\n" +
+        ".ui-container-item-select {cursor: pointer;font-size: 100%;padding: 0px;margin: 0px;width: 70%;float: right;height: 100%;vertical-align: bottom;border-bottom: 1px solid #00A7AA;}\n" +
+        ".ui-container-item-boolean {cursor: pointer;font-size: 100%;padding: 0px;margin: 0px;width: 70%;float: right;min-height: 16px;height: 100%;vertical-align: bottom;border-bottom: 1px solid #00A7AA;}\n" +
         "</style>\n" +
-        getScript(__VERSION__.main, jsPath, __VERSION__.echarts, __DATASET__.configs.reportThemes.value) +
+        getScript(__VERSION__.main, jsPath, __ECHARTS__.configs.version.value, $("UI").src.split("/")[$("UI").src.split("/").length - 1], __DATASET__.configs.reportThemes.value) +
         "</head>\n" +
         "<body onload='init()'>\n" +
         "<div id='_TITLE'>\n" +

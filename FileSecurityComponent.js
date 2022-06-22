@@ -829,7 +829,7 @@ function getFileSecurity(parent) {
                         } else if (pattern.test(key) == false) {
                             UI.alert.show("提示", "请输入8位密码,且必须包含英文字母和数字.");
                         } else {
-                            UI.prompt.show("输入", {"打包文件名称": ""}, "auto", function (args, values) {
+                            UI.prompt.show("输入", {"打包文件名称": {value:"", type:"input"}}, "auto", function (args, values) {
                                 let pkname = values["打包文件名称"];
                                 let mode = args["mode"];
                                 let js = args["js"];

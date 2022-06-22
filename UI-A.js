@@ -32,11 +32,83 @@ function saveStorageSql(key, sql) {
 }
 
 var UI = {
-    fileChoice: function(id, width, cssfloat, accept, multiple, callback) {
+    booleanChoice: function(value, callback, color) {
+        let container = document.createElement("div");
+        container.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(value ? "booleanTrue" : "booleanFalse", (typeof color === 'undefined' ? __THEMES__.get().color : color), "16px", "16px");
+        container.style.backgroundRepeat = "no-repeat";
+        container.style.backgroundPosition = "left bottom";
+        container.style.backgroundSize = "16px 16px";
+        container.setAttribute("value", value ? "true" : "false");
+        container.onclick = function () {
+            if (event.target == this) {
+                value = (value ? false : true);
+                container.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(value ? "booleanTrue" : "booleanFalse", (typeof color === 'undefined' ? __THEMES__.get().color : color), "16px", "16px");
+                container.setAttribute("value", value ? "true" : "false");
+                if (typeof callback !== "undefined")
+                    callback(value);
+            }
+        };
+        return container;
+    },
+
+    colorChoice: function(id, value, callback, color) {
+        let container = document.createElement("div");
+        container.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("opencolor", (typeof color === 'undefined' ? __THEMES__.get().color : color), "18px", "18px");
+        container.style.backgroundRepeat = "no-repeat";
+        container.style.backgroundPosition = "left bottom";
+        container.style.backgroundSize = "18px 18px";
+        container.setAttribute("value", color === "#000000"? "transparent": value);
+        container.onclick = function () {
+            if (event.target == this)
+                $("colorChoice-" + id).click();
+        };
+        let colors = document.createElement("input");
+        colors.type = "color";
+        colors.id = "colorChoice-" + id;
+        colors.style.cssFloat = "left";
+        colors.style.visibility = "hidden";
+        colors.style.width = "0px";
+        colors.style.height = "0px";
+        colors.value = value;
+        colors.onchange = function () {
+            container.setAttribute("value", this.value);
+            $("colorChoice-span-color-" + id).style.backgroundColor = $("colorChoice-span-color-" + id).innerText = (this.value === "#000000" ? "transparent" : this.value);
+            if (typeof callback !== "undefined")
+                callback(this.value);
+        };
+        container.appendChild(colors);
+        let span = document.createElement("span");
+        span.id = "colorChoice-span-color-" + id;
+        span.style.width = "80%";
+        span.style.height = "18px";
+        span.style.cssFloat = "left";
+        span.style.color = (typeof color === 'undefined' ? __THEMES__.get().color : color);
+        span.style.backgroundColor = span.innerText = (value === "#000000"? "transparent": value);
+        span.style.textAlign = "center";
+        span.style.marginLeft = "20px";
+        span.style.borderRadius = "10px";
+        span.style.outlineStyle = "none";
+        span.style.textShadow = "-1px 1px 0 gray, 1px 1px 0 gray";
+        span.style.borderLeft = span.style.borderRight = "1px solid gray";
+        container.appendChild(span);
+
+        let restore = __SYS_IMAGES_SVG__.getImage("restore", (typeof color === 'undefined' ? __THEMES__.get().color : color), "18px", "18px", __THEMES__.get().hover);
+        restore.style.cssFloat = "right";
+        restore.onclick = function () {
+            container.setAttribute("value","transparent");
+            $("colorChoice-span-color-" + id).style.backgroundColor = $("colorChoice-span-color-" + id).innerText = $("colorChoice-" + id).value = "transparent";
+            if (typeof callback !== "undefined")
+                callback("transparent");
+        };
+        container.appendChild(restore);
+        return container;
+    },
+
+    fileChoice: function(id, width, cssfloat, accept, multiple, callback, color) {
         let container = document.createElement("div");
         container.style.width = width;
         container.style.cssFloat = cssfloat;
-        container.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("openfile", __THEMES__.get().color, "18px", "18px");
+        container.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("openfile", (typeof color === 'undefined' ? __THEMES__.get().color : color), "18px", "18px");
         container.style.backgroundRepeat = "no-repeat";
         container.style.backgroundPosition = "left bottom";
         container.style.backgroundSize = "18px 18px";
@@ -74,7 +146,6 @@ var UI = {
         list.style.marginLeft = "22px";
         list.style.width = "90%";
         container.appendChild(list);
-
         return container;
     },
 
@@ -1268,7 +1339,7 @@ var UI = {
         title: null,
         items: {},
         show: function (message, items, parent, callback, args) {
-            //items:{item:default,...}
+            //items:{item:{value:default,type:'input'},item:{value:default,type:'color'},item:{value:default,type:'select'}...}
             //return: items:{item:value,item:value,....}
             function setFocus(domid) {
                 let inputs = $1("ui-container-item-input");
@@ -1299,11 +1370,13 @@ var UI = {
             parent.appendChild(container);
             let content = document.createElement("div");
             content.className = "ui-container-body";
+            content.style.width = "450px";
             container.appendChild(content);
 
             let title = document.createElement("div");
             title.className = "ui-container-title";
             title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name,__THEMES__.get().color, "24px", "24px", __VERSION__.logo.flip);
+
             let span = document.createElement("span");
             span.innerHTML = this.title;
             title.appendChild(span);
@@ -1340,10 +1413,18 @@ var UI = {
                 span.title = key;
                 span.innerText = key + " : ";
                 item.appendChild(span);
-                let input = document.createElement("input");
-                input.className = "ui-container-item-input";
-                input.id = "ui_prompt_value_" + key;
-                input.value = it;
+                let input = null;
+                if (it.type === 'input') {
+                    input = document.createElement("input");
+                    input.className = "ui-container-item-input";
+                    input.id = "ui_prompt_value_" + key;
+                    input.value = it.value;
+                }
+                if (it.type === "color"){
+                    input = UI.colorChoice("ui_prompt_value_" + key, it.value);
+                    input.className = "ui-container-item-color";
+                    input.id = "ui_prompt_value_" + key;
+                }
                 input.onkeypress = function(event) {
                 let keyCode = event.keyCode ? event.keyCode : event.which ?
                     event.which : event.charCode;
@@ -1379,7 +1460,10 @@ var UI = {
             button.style.cssText = "float: right;margin-left:10px";
             button.onclick = function () {
                 for (let key in UI.prompt.items) {
-                    UI.prompt.items[key] = document.getElementById("ui_prompt_value_" + key).value;
+                    if (UI.prompt.items[key].type === "input")
+                        UI.prompt.items[key] = document.getElementById("ui_prompt_value_" + key).value;
+                    if (UI.prompt.items[key].type === "color")
+                        UI.prompt.items[key] = document.getElementById("ui_prompt_value_" + key).getAttribute("value");
                 }
                 if (typeof callback == "function") {
                     if (typeof args == "undefined")
@@ -1391,7 +1475,7 @@ var UI = {
             };
             tools.appendChild(button);
             setDialogDrag(title);
-            $1("ui-container-item-input", 0).focus();
+            $1("ui-container-item-input",0).focus();
         },
     },
     choise: {
@@ -2096,7 +2180,7 @@ var UI = {
                 rename.innerText = "重命名";
                 rename.onclick = function () {
                     let title = $("sql-Manager-Content-name").value;
-                    UI.prompt.show("输入", {"新的脚本名称": title}, "auto", function (args, values) {
+                    UI.prompt.show("输入", {"新的脚本名称": {value: title, type:"input"}}, "auto", function (args, values) {
                         let newname = values["新的脚本名称"];
                         let title = args["title"];
                         let storage = window.localStorage;
@@ -3062,11 +3146,9 @@ var UI = {
         name.className = "ui-container-item-name";
         name.innerText = "颜色 : ";
         item.appendChild(name);
-        param = document.createElement("input");
+        param = UI.colorChoice(param.id, style["color"]);
         param.className = "ui-container-item-select";
         param.id = "color";
-        param.type = "color";
-        param.value = style[param.id];
         item.appendChild(param);
         items.appendChild(item);
 
@@ -3154,7 +3236,10 @@ var UI = {
             let param = $("table-data-format").getElementsByClassName("ui-container-item-select");
             let format = {};
             for (let i = 0; i < param.length; i++) {
-                format[param[i].id] = param[i].value;
+                if (typeof param[i].value !== "undefined")
+                    format[param[i].id] = param[i].value;
+                else
+                    format[param[i].id] = param[i].getAttribute("value");
             }
             let data = __DATASET__.result[__DATASET__.default.sheet].data;
             for (let i = 0; i < data.length; i++) {
