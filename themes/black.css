@@ -2,10 +2,9 @@
 :root{
     --main-font-family: sans-serif, Arial,"Microsoft Yahei","微软雅黑";
     --main-font-size: 14px;
-    --main-border-color:#ccc;
-
-    --main-title-color:lightseagreen;
-    --sub-title-color:lightseagreen;
+    --main-border-color: lightseagreen;
+    --main-title-color: lightseagreen;
+    --sub-title-color: lightseagreen;
 
     --main-background-color:'';
     /*主背景颜色default:#383838*/
