@@ -195,7 +195,7 @@ var __DATASET__ = {
          reportScopeOfUse: {
              name: "应用环境",
              value: "intranet",
-             options: [new Option("内部网络", "intranet"), new Option("静态文件", "internet")],
+             options: [new Option("局域网", "intranet"), new Option("互联网", "internet")],
              type: "select"
          },
          reportThemes: {
