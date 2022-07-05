@@ -2,14 +2,14 @@ function $(id) {
     return document.getElementById(id);
 }
 
-function $1(name, index) {
+function $class(name, index) {
     if (typeof index !== "undefined")
         return document.getElementsByClassName(name)[index];
     else
         return document.getElementsByClassName(name);
 }
 
-function $2(name, index) {
+function $tag(name, index) {
     if (typeof index !== "undefined")
         return document.getElementsByTagName(name)[index];
     else
@@ -1345,7 +1345,7 @@ function requestFullScreen(element, style) {
     } else {
         element.requestFullscreen();
         __CONFIGS__.FULLSCREEN.element = element;
-        if (element !== document.documentElement) {
+        if (element !== document.documentElement && element !== document.body) {
             if (typeof style !== "undefined") {
                 for (let key in style) {
                     element.style[key] = style[key];

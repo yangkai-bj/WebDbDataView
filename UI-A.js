@@ -1141,7 +1141,6 @@ var UI = {
             let container = document.createElement("div");
             container.id = "ui_alert";
             container.className = "ui-container-background";
-
             if (parent === "auto" || parent == null || typeof parent == "undefined") {
                 if (document.fullscreen && typeof __CONFIGS__.FULLSCREEN.element == "object") {
                     parent = __CONFIGS__.FULLSCREEN.element;
@@ -1173,7 +1172,7 @@ var UI = {
             let item = document.createElement("div");
             item.style.cssText = "width:100%;";
             let image = document.createElement("img");
-            image.src =__SYS_IMAGES_SVG__.getSrc("alert",__THEMES__.get().color,"100px","100px");
+            image.src = __SYS_IMAGES_SVG__.getSrc("alert",__THEMES__.get().color,"100px","100px");
             image.size = "25% auto";
             image.attachment = "fixed";
             image.style.cssText = "width:25%;float: left;" +
@@ -1184,22 +1183,21 @@ var UI = {
             item.appendChild(image);
             let msg = document.createElement("div");
             msg.style.cssText = "cursor: pointer;" +
-                "width:70%;" +
+                "width:75%;" +
                 "float: left;" +
                 //"white-space: auto;" +
                 "white-space: normal;word-break: break-all;word-wrap: break-word;" +
                 "text-overflow: ellipsis;" +
                 "-o-text-overflow: ellipsis;" +
-                "color: var(--main-title-color);" +
                 "line-height: 1.5;" +
                 "display: inline-block;" +
                 "vertical-align: middle;" +
                 "text-align: left;" +
                 "font-size: 100%;" +
                 "background-color: transparent;" +
-                "color: var(--main-title-color);" +
-                "min-height: 100px;max-height:200px;" +
-                "overflow:scroll;";
+                "color: " + __THEMES__.get().color + ";" +
+                "min-height: 100px;" +
+                "overflow:none;";
             msg.innerHTML = message;
             item.appendChild(msg);
             content.appendChild(item);
@@ -1238,7 +1236,7 @@ var UI = {
             let container = document.createElement("div");
             container.id = "ui_confirm";
             container.className = "ui-container-background";
-            if (parent == "auto" || parent == null) {
+            if (parent === "auto" || parent == null || typeof parent == "undefined") {
                 if (document.fullscreen && typeof __CONFIGS__.FULLSCREEN.element == "object") {
                     parent = __CONFIGS__.FULLSCREEN.element;
                 } else {
@@ -1276,7 +1274,7 @@ var UI = {
                 "text-align: center;" +
                 "font-size: 90%;" +
                 "background-color: transparent;" +
-                "color: var(--main-title-color);";
+                "color: " + __THEMES__.get().color + ";";
             item.appendChild(image);
             let msg = document.createElement("span");
             msg.style.cssText = "cursor: pointer;" +
@@ -1285,14 +1283,13 @@ var UI = {
                 "white-space: auto;" +
                 "text-overflow: ellipsis;" +
                 "-o-text-overflow: ellipsis;" +
-                "color: var(--main-title-color);" +
                 "line-height: 1.5;" +
                 "display: inline-block;" +
                 "vertical-align: middle;" +
                 "text-align: left;" +
                 "font-size: 100%;" +
                 "background-color: transparent;" +
-                "color: var(--main-title-color);" +
+                "color: " + __THEMES__.get().color + ";" +
                 "min-height: 100px;";
             msg.innerHTML = message;
             item.appendChild(msg);
@@ -1342,7 +1339,7 @@ var UI = {
             //items:{item:{value:default,type:'input'},item:{value:default,type:'color'},item:{value:default,type:'select'}...}
             //return: items:{item:value,item:value,....}
             function setFocus(domid) {
-                let inputs = $1("ui-container-item-input");
+                let inputs = $class("ui-container-item-input");
                 let focus = -1;
                 for (let i = 0; i < inputs.length; i++) {
                     if (inputs[i].id === domid) {
@@ -1360,7 +1357,7 @@ var UI = {
             let container = document.createElement("div");
             container.id = "ui_prompt";
             container.className = "ui-container-background";
-            if (parent == "auto" || parent == null) {
+            if (parent === "auto" || parent == null || typeof parent == "undefined") {
                 if (document.fullscreen && typeof __CONFIGS__.FULLSCREEN.element == "object") {
                     parent = __CONFIGS__.FULLSCREEN.element;
                 } else {
@@ -1399,7 +1396,7 @@ var UI = {
             image.style.cssText = "width:25%;float: left;" +
                 "text-align: center;" +
                 "background-color: transparent;" +
-                "color: var(--main-title-color);";
+                "color: " + __THEMES__.get().color + ";";
             itemcontent.appendChild(image);
 
             for (let key in this.items) {
@@ -1475,7 +1472,7 @@ var UI = {
             };
             tools.appendChild(button);
             setDialogDrag(title);
-            $1("ui-container-item-input",0).focus();
+            $class("ui-container-item-input",0).focus();
         },
     },
     choise: {
@@ -1490,7 +1487,7 @@ var UI = {
             let container = document.createElement("div");
             container.id = "ui_choise";
             container.className = "ui-container-background";
-            if (parent == "auto" || parent == null) {
+            if (parent === "auto" || parent == null || typeof parent == "undefined") {
                 if (document.fullscreen && typeof __CONFIGS__.FULLSCREEN.element == "object") {
                     parent = __CONFIGS__.FULLSCREEN.element;
                 } else {
@@ -1505,6 +1502,7 @@ var UI = {
             let title = document.createElement("div");
             title.className = "ui-container-title";
             title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name,__THEMES__.get().color, "24px", "24px", __VERSION__.logo.flip);
+
             let span = document.createElement("span");
             span.innerHTML = this.title;
             title.appendChild(span);
@@ -1541,8 +1539,10 @@ var UI = {
                 input.type = type;
                 if (type == "checkbox")
                     input.className = "ui-container-item-checkbox";
-                else
+                else {
                     input.className = "ui-container-item-radio";
+                    input.style.cssText = "vertical-align:-3px;";
+                }
                 input.name = "ui_choise_value";
                 input.id = input.value = key;
                 input.checked = it.checked;
@@ -1753,7 +1753,7 @@ var UI = {
             //items:{item:null,...}
             //return: items:{item:password,item:password,....}
             function setFocus(domid) {
-                let inputs = $1("ui-container-item-input");
+                let inputs = $class("ui-container-item-input");
                 let focus = -1;
                 for (let i = 0; i < inputs.length; i++) {
                     if (inputs[i].id === domid) {
@@ -1879,7 +1879,7 @@ var UI = {
             };
             tools.appendChild(button);
             setDialogDrag(title);
-            $1("ui-container-item-input", 0).focus();
+            $class("ui-container-item-input", 0).focus();
         },
     },
     sqlManagerDialog: {
@@ -2162,13 +2162,15 @@ var UI = {
                 del.onclick = function () {
                     let title = $("sql-Manager-Content-name").value;
                     if (title != "") {
-                        let storage = window.localStorage;
-                        let sqllist = JSON.parse(storage.getItem(__CONFIGS__.STORAGE.SCRIPTS));
-                        delete sqllist[title];
-                        storage.setItem(__CONFIGS__.STORAGE.SCRIPTS, JSON.stringify(sqllist));
-                        getSQLList($("sql-Manager-Content-table"));
-                        $("table-container").style.display = "block";
-                        $("edit-container").style.display = "none";
+                        UI.confirm.show("警告", "您确定要删除脚本吗?", "auto", function (args) {
+                            let storage = window.localStorage;
+                            let sqllist = JSON.parse(storage.getItem(__CONFIGS__.STORAGE.SCRIPTS));
+                            delete sqllist[args.title];
+                            storage.setItem(__CONFIGS__.STORAGE.SCRIPTS, JSON.stringify(sqllist));
+                            getSQLList($("sql-Manager-Content-table"));
+                            $("table-container").style.display = "block";
+                            $("edit-container").style.display = "none";
+                        }, {title: title});
                     }
                 };
                 tool.appendChild(del);
@@ -2534,8 +2536,8 @@ var UI = {
         confirm.onclick = function () {
             let merge = $("subtotal_merge").checked;
             let column = $("subtotal_groupby").value;
-            let obj = $1("subtotal_object");
-            let typ = $1("subtotal_type");
+            let obj = $class("subtotal_object");
+            let typ = $class("subtotal_type");
             let columns = [];
             let data = [];
             let sets = null;

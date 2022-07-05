@@ -920,7 +920,7 @@ function getMailComponent(parent) {
     send.onclick = function () {
         $("mails-container").style.display = "block";
         $("mail-detail").style.display = "none";
-        let links = $1("mail-link");
+        let links = $class("mail-link");
         for (let i = 0; i < links.length; i++) {
             if (MAILS[links[i].innerText].checked) {
                 setTimeout(function () {

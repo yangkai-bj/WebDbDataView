@@ -801,8 +801,7 @@ var __ECHARTS__ = {
         axisLineDisplay: {
             name: "是否显示",
             value: "true",
-            options: [new Option("是", "true"), new Option("否", "false")],
-            type: "select"
+            type: "boolean"
         },
         axisColor: {name: "轴线颜色", value: "auto", type: "color"},
         axisTextColor: {name: "标签颜色", value: "auto", type: "color"},
@@ -1022,6 +1021,25 @@ var __ECHARTS__ = {
         },
 
         hr_pie: {name: "饼图", value: "", type: "hr"},
+        pieGrids: {
+            name: "布局方式", value: "auto",
+            options: [
+                new Option("自动", "auto"),
+                new Option("R(1 + 2)", "[[5,10,90,40],[5,55,40,40],[55,55,40,40]]"),
+                new Option("R(1 + 3)", "[[5,10,90,40],[5,55,26.67,40],[36.66,55,26.66,40],[68.33,55,26.67,40]]"),
+                new Option("R(2 + 1)", "[[5,10,40,40],[55,10,40,40],[5,55,90,40]]"),
+                new Option("R(2 + 3)", "[[5,10,40,40],[55,10,40,40],[5,55,26.67,40],[36.67,55,26.66,40],[68.33,55,26.67,40]]"),
+                new Option("R(3 + 1)", "[[5,10,26.67,40],[36.67,10,26.67,40],[68.33,10,26.67,40],[5,55,90,40]]"),
+                new Option("R(3 + 2)", "[[5,10,26.67,40],[36.67,10,26.67,40],[68.33,10,26.67,40],[5,55,40,40],[55,55,40,40]]"),
+                new Option("C(1 + 2)", "[[5,10,40,80],[55,10,40,37.5],[55,52.5,40,37.5]]"),
+                new Option("C(1 + 3)", "[[5,10,40,80],[55,10,40,23.33],[55,38.33,40,23.33],[55,66.34,40,23.34]]"),
+                new Option("C(2 + 3)", "[[5,10,40,37.5],[5,52.5,40,37.5],[55,10,40,23.33],[55,38.33,40,23.33],[55,66.34,40,23.34]]"),
+                new Option("C(2 + 1)", "[[5,10,40,37.5],[5,52.5,40,37.5],[55,10,40,80]]"),
+                new Option("C(3 + 1)", "[[5,10,40,23.33],[5,38.33,40,23.33],[5,66.34,40,23.34],[55,10,40,80]]"),
+                new Option("C(3 + 2)", "[[5,10,40,23.33],[5,38.33,40,23.33],[5,66.34,40,23.34],[55,10,40,37.5],[55,52.5,40,37.5]]"),
+            ],
+            type: "select"
+        },
         pieColorby: {
             name: "配色方式",
             value: "series",
@@ -1090,19 +1108,6 @@ var __ECHARTS__ = {
             type: "boolean"
         },
         pieGroupWith: {name: "序列分组", value: 2, type: "number", attribute: {min: 1, max: 4, step: 1}},
-        pieGrids: {
-            name: "布局方式", value: "auto",
-            options: [
-                new Option("自动", "auto"),
-                new Option("1 + 2", "[[10,10,80,40],[10,50,40,40],[50,50,40,40]]"),
-                new Option("1 + 3", "[[10,10,80,40],[10,50,26.67,40],[36.67,50,26.66,40],[63.33,50,26.67,40]]"),
-                new Option("2 + 1", "[[10,10,40,40],[50,10,40,40],[10,50,80,40]]"),
-                new Option("2 + 3", "[[10,10,40,40],[50,10,40,40],[10,50,26.67,40],[36.67,50,26.66,40],[63.33,50,26.67,40]]"),
-                new Option("3 + 1", "[[10,10,26.67,40],[36.67,10,26.67,40],[63.33,10,26.67,40],[10,50,80,40]]"),
-                new Option("3 + 2", "[[10,10,26.67,40],[36.67,10,26.67,40],[63.33,10,26.67,40],[10,50,40,40],[50,50,40,40]]")
-            ],
-            type: "select"
-        },
         pieAnimationType: {
             name: "初始动画",
             value: "expansion",
@@ -1117,6 +1122,25 @@ var __ECHARTS__ = {
         },
 
         hr_funnel: {name: "漏斗图", value: "", type: "hr"},
+        funnelGrids: {
+            name: "布局方式", value: "auto",
+            options: [
+                new Option("自动", "auto"),
+                new Option("R(1 + 2)", "[[5,10,90,40],[5,55,40,40],[55,55,40,40]]"),
+                new Option("R(1 + 3)", "[[5,10,90,40],[5,55,26.67,40],[36.66,55,26.66,40],[68.33,55,26.67,40]]"),
+                new Option("R(2 + 1)", "[[5,10,40,40],[55,10,40,40],[5,55,90,40]]"),
+                new Option("R(2 + 3)", "[[5,10,40,40],[55,10,40,40],[5,55,26.67,40],[36.67,55,26.66,40],[68.33,55,26.67,40]]"),
+                new Option("R(3 + 1)", "[[5,10,26.67,40],[36.67,10,26.67,40],[68.33,10,26.67,40],[5,55,90,40]]"),
+                new Option("R(3 + 2)", "[[5,10,26.67,40],[36.67,10,26.67,40],[68.33,10,26.67,40],[5,55,40,40],[55,55,40,40]]"),
+                new Option("C(1 + 2)", "[[5,10,40,80],[55,10,40,37.5],[55,52.5,40,37.5]]"),
+                new Option("C(1 + 3)", "[[5,10,40,80],[55,10,40,23.33],[55,38.33,40,23.33],[55,66.34,40,23.34]]"),
+                new Option("C(2 + 3)", "[[5,10,40,37.5],[5,52.5,40,37.5],[55,10,40,23.33],[55,38.33,40,23.33],[55,66.34,40,23.34]]"),
+                new Option("C(2 + 1)", "[[5,10,40,37.5],[5,52.5,40,37.5],[55,10,40,80]]"),
+                new Option("C(3 + 1)", "[[5,10,40,23.33],[5,38.33,40,23.33],[5,66.34,40,23.34],[55,10,40,80]]"),
+                new Option("C(3 + 2)", "[[5,10,40,23.33],[5,38.33,40,23.33],[5,66.34,40,23.34],[55,10,40,37.5],[55,52.5,40,37.5]]"),
+            ],
+            type: "select"
+        },
         funelColorby: {
             name: "配色方式",
             value: "series",
@@ -1146,19 +1170,6 @@ var __ECHARTS__ = {
             type: "select"
         },
         funnelGroupWith: {name: "序列分组", value: 2, type: "number", attribute: {min: 1, max: 4, step: 1}},
-        funnelGrids: {
-            name: "布局方式", value: "auto",
-            options: [
-                new Option("自动", "auto"),
-                new Option("1 + 2", "[[10,10,80,40],[10,50,40,40],[50,50,40,40]]"),
-                new Option("1 + 3", "[[10,10,80,40],[10,50,26.67,40],[36.67,50,26.66,40],[63.33,50,26.67,40]]"),
-                new Option("2 + 1", "[[10,10,40,40],[50,10,40,40],[10,50,80,40]]"),
-                new Option("2 + 3", "[[10,10,40,40],[50,10,40,40],[10,50,26.67,40],[36.67,50,26.66,40],[63.33,50,26.67,40]]"),
-                new Option("3 + 1", "[[10,10,26.67,40],[36.67,10,26.67,40],[63.33,10,26.67,40],[10,50,80,40]]"),
-                new Option("3 + 2", "[[10,10,26.67,40],[36.67,10,26.67,40],[63.33,10,26.67,40],[10,50,40,40],[50,50,40,40]]")
-            ],
-            type: "select"
-        },
 
         hr_dynamicBar: {name: "基础动态图", value: "", type: "hr"},
         barType: {
@@ -1200,23 +1211,48 @@ var __ECHARTS__ = {
             type: "boolean"
         },
         hr_multiGraph: {name: "基础组合图", value: "", type: "hr"},
-        multiGraphTypes: {name: "图形组合", value: "['bar', 'line', 'pie', 'scatter', 'funnel', 'other']", type: "input"},
         multiGraphGrids: {
             name: "布局方式", value: "auto",
             options: [
                 new Option("自动", "auto"),
-                new Option("1 + 2", "[[10,10,80,40],[10,50,40,40],[50,50,40,40]]"),
-                new Option("1 + 3", "[[10,10,80,40],[10,50,26.67,40],[36.67,50,26.66,40],[63.33,50,26.67,40]]"),
-                new Option("2 + 1", "[[10,10,40,40],[50,10,40,40],[10,50,80,40]]"),
-                new Option("2 + 3", "[[10,10,40,40],[50,10,40,40],[10,50,26.67,40],[36.67,50,26.66,40],[63.33,50,26.67,40]]"),
-                new Option("3 + 1", "[[10,10,26.67,40],[36.67,10,26.67,40],[63.33,10,26.67,40],[10,50,80,40]]"),
-                new Option("3 + 2", "[[10,10,26.67,40],[36.67,10,26.67,40],[63.33,10,26.67,40],[10,50,40,40],[50,50,40,40]]")
+                new Option("R(1 + 2)", "[[5,10,90,40],[5,55,40,40],[55,55,40,40]]"),
+                new Option("R(1 + 3)", "[[5,10,90,40],[5,55,26.67,40],[36.66,55,26.66,40],[68.33,55,26.67,40]]"),
+                new Option("R(2 + 1)", "[[5,10,40,40],[55,10,40,40],[5,55,90,40]]"),
+                new Option("R(2 + 3)", "[[5,10,40,40],[55,10,40,40],[5,55,26.67,40],[36.67,55,26.66,40],[68.33,55,26.67,40]]"),
+                new Option("R(3 + 1)", "[[5,10,26.67,40],[36.67,10,26.67,40],[68.33,10,26.67,40],[5,55,90,40]]"),
+                new Option("R(3 + 2)", "[[5,10,26.67,40],[36.67,10,26.67,40],[68.33,10,26.67,40],[5,55,40,40],[55,55,40,40]]"),
+                new Option("C(1 + 2)", "[[5,10,40,80],[55,10,40,37.5],[55,52.5,40,37.5]]"),
+                new Option("C(1 + 3)", "[[5,10,40,80],[55,10,40,23.33],[55,38.33,40,23.33],[55,66.34,40,23.34]]"),
+                new Option("C(2 + 3)", "[[5,10,40,37.5],[5,52.5,40,37.5],[55,10,40,23.33],[55,38.33,40,23.33],[55,66.34,40,23.34]]"),
+                new Option("C(2 + 1)", "[[5,10,40,37.5],[5,52.5,40,37.5],[55,10,40,80]]"),
+                new Option("C(3 + 1)", "[[5,10,40,23.33],[5,38.33,40,23.33],[5,66.34,40,23.34],[55,10,40,80]]"),
+                new Option("C(3 + 2)", "[[5,10,40,23.33],[5,38.33,40,23.33],[5,66.34,40,23.34],[55,10,40,37.5],[55,52.5,40,37.5]]"),
             ],
             type: "select"
         },
+        multiGraphTypes: {name: "图形组合", value: "['bar', 'line', 'pie', 'scatter', 'funnel', 'other']", type: "input"},
         multiGraphGroup: {name: "序列分组", value: 2, type: "number", attribute: {min: 1, max: 4, step: 1}},
 
         hr_gauge: {name: "仪表盘", value: "", type: "hr"},
+        gaugeGrids: {
+            name: "布局方式", value: "auto",
+            options: [
+                new Option("自动", "auto"),
+                new Option("R(1 + 2)", "[[5,10,90,40],[5,55,40,40],[55,55,40,40]]"),
+                new Option("R(1 + 3)", "[[5,10,90,40],[5,55,26.67,40],[36.66,55,26.66,40],[68.33,55,26.67,40]]"),
+                new Option("R(2 + 1)", "[[5,10,40,40],[55,10,40,40],[5,55,90,40]]"),
+                new Option("R(2 + 3)", "[[5,10,40,40],[55,10,40,40],[5,55,26.67,40],[36.67,55,26.66,40],[68.33,55,26.67,40]]"),
+                new Option("R(3 + 1)", "[[5,10,26.67,40],[36.67,10,26.67,40],[68.33,10,26.67,40],[5,55,90,40]]"),
+                new Option("R(3 + 2)", "[[5,10,26.67,40],[36.67,10,26.67,40],[68.33,10,26.67,40],[5,55,40,40],[55,55,40,40]]"),
+                new Option("C(1 + 2)", "[[5,10,40,80],[55,10,40,37.5],[55,52.5,40,37.5]]"),
+                new Option("C(1 + 3)", "[[5,10,40,80],[55,10,40,23.33],[55,38.33,40,23.33],[55,66.34,40,23.34]]"),
+                new Option("C(2 + 3)", "[[5,10,40,37.5],[5,52.5,40,37.5],[55,10,40,23.33],[55,38.33,40,23.33],[55,66.34,40,23.34]]"),
+                new Option("C(2 + 1)", "[[5,10,40,37.5],[5,52.5,40,37.5],[55,10,40,80]]"),
+                new Option("C(3 + 1)", "[[5,10,40,23.33],[5,38.33,40,23.33],[5,66.34,40,23.34],[55,10,40,80]]"),
+                new Option("C(3 + 2)", "[[5,10,40,23.33],[5,38.33,40,23.33],[5,66.34,40,23.34],[55,10,40,37.5],[55,52.5,40,37.5]]"),
+            ],
+            type: "select"
+        },
         gaugeOutRadius: {
             name: "外半径(%)",
             value: "70%",
@@ -1232,19 +1268,6 @@ var __ECHARTS__ = {
         gaugeStartAngle: {name: "起始角度", value: 225, type: "number", attribute: {min: 1, max: 360, step: 1}},
         gaugeEndAngle: {name: "结束角度", value: -45, type: "number", attribute: {min: -90, max: 90, step: 1}},
         gaugeGroupWith: {name: "序列分组", value: 2, type: "number", attribute: {min: 1, max: 4, step: 1}},
-        gaugeGrids: {
-            name: "布局方式", value: "auto",
-            options: [
-                new Option("自动", "auto"),
-                new Option("1 + 2", "[[10,10,80,40],[10,50,40,40],[50,50,40,40]]"),
-                new Option("1 + 3", "[[10,10,80,40],[10,50,26.67,40],[36.67,50,26.66,40],[63.33,50,26.67,40]]"),
-                new Option("2 + 1", "[[10,10,40,40],[50,10,40,40],[10,50,80,40]]"),
-                new Option("2 + 3", "[[10,10,40,40],[50,10,40,40],[10,50,26.67,40],[36.67,50,26.66,40],[63.33,50,26.67,40]]"),
-                new Option("3 + 1", "[[10,10,26.67,40],[36.67,10,26.67,40],[63.33,10,26.67,40],[10,50,80,40]]"),
-                new Option("3 + 2", "[[10,10,26.67,40],[36.67,10,26.67,40],[63.33,10,26.67,40],[10,50,40,40],[50,50,40,40]]")
-            ],
-            type: "select"
-        },
 
         hr_polar: {name: "极坐标", value: "", type: "hr"},
         polarColorby: {
@@ -1306,6 +1329,25 @@ var __ECHARTS__ = {
         },
 
         hr_wordCloud: {name: "词云图", value: "", type: "hr"},
+        wordCloudGrids: {
+            name: "布局方式", value: "auto",
+            options: [
+                new Option("自动", "auto"),
+                new Option("R(1 + 2)", "[[5,10,90,40],[5,55,40,40],[55,55,40,40]]"),
+                new Option("R(1 + 3)", "[[5,10,90,40],[5,55,26.67,40],[36.66,55,26.66,40],[68.33,55,26.67,40]]"),
+                new Option("R(2 + 1)", "[[5,10,40,40],[55,10,40,40],[5,55,90,40]]"),
+                new Option("R(2 + 3)", "[[5,10,40,40],[55,10,40,40],[5,55,26.67,40],[36.67,55,26.66,40],[68.33,55,26.67,40]]"),
+                new Option("R(3 + 1)", "[[5,10,26.67,40],[36.67,10,26.67,40],[68.33,10,26.67,40],[5,55,90,40]]"),
+                new Option("R(3 + 2)", "[[5,10,26.67,40],[36.67,10,26.67,40],[68.33,10,26.67,40],[5,55,40,40],[55,55,40,40]]"),
+                new Option("C(1 + 2)", "[[5,10,40,80],[55,10,40,37.5],[55,52.5,40,37.5]]"),
+                new Option("C(1 + 3)", "[[5,10,40,80],[55,10,40,23.33],[55,38.33,40,23.33],[55,66.34,40,23.34]]"),
+                new Option("C(2 + 3)", "[[5,10,40,37.5],[5,52.5,40,37.5],[55,10,40,23.33],[55,38.33,40,23.33],[55,66.34,40,23.34]]"),
+                new Option("C(2 + 1)", "[[5,10,40,37.5],[5,52.5,40,37.5],[55,10,40,80]]"),
+                new Option("C(3 + 1)", "[[5,10,40,23.33],[5,38.33,40,23.33],[5,66.34,40,23.34],[55,10,40,80]]"),
+                new Option("C(3 + 2)", "[[5,10,40,23.33],[5,38.33,40,23.33],[5,66.34,40,23.34],[55,10,40,37.5],[55,52.5,40,37.5]]"),
+            ],
+            type: "select"
+        },
         wordCloudShape: {
             name: "形状",
             value: "circle",
@@ -1315,21 +1357,27 @@ var __ECHARTS__ = {
         wordCloudSizeRange: {name: "字号区间", value: "[16, 60]", type: "input"},
         wordCloudRotationRange: {name: "角度区间", value: "[-45, 45]", type: "input"},
         wordCloudGroupWith: {name: "序列分组", value: 2, type: "number", attribute: {min: 1, max: 4, step: 1}},
-        wordCloudGrids: {
+
+        hr_liqiud: {name: "水球图", value: "", type: "hr"},
+        liqiudGrids: {
             name: "布局方式", value: "auto",
             options: [
                 new Option("自动", "auto"),
-                new Option("1 + 2", "[[10,10,80,40],[10,50,40,40],[50,50,40,40]]"),
-                new Option("1 + 3", "[[10,10,80,40],[10,50,26.67,40],[36.67,50,26.66,40],[63.33,50,26.67,40]]"),
-                new Option("2 + 1", "[[10,10,40,40],[50,10,40,40],[10,50,80,40]]"),
-                new Option("2 + 3", "[[10,10,40,40],[50,10,40,40],[10,50,26.67,40],[36.67,50,26.66,40],[63.33,50,26.67,40]]"),
-                new Option("3 + 1", "[[10,10,26.67,40],[36.67,10,26.67,40],[63.33,10,26.67,40],[10,50,80,40]]"),
-                new Option("3 + 2", "[[10,10,26.67,40],[36.67,10,26.67,40],[63.33,10,26.67,40],[10,50,40,40],[50,50,40,40]]")
+                new Option("R(1 + 2)", "[[5,10,90,40],[5,55,40,40],[55,55,40,40]]"),
+                new Option("R(1 + 3)", "[[5,10,90,40],[5,55,26.67,40],[36.66,55,26.66,40],[68.33,55,26.67,40]]"),
+                new Option("R(2 + 1)", "[[5,10,40,40],[55,10,40,40],[5,55,90,40]]"),
+                new Option("R(2 + 3)", "[[5,10,40,40],[55,10,40,40],[5,55,26.67,40],[36.67,55,26.66,40],[68.33,55,26.67,40]]"),
+                new Option("R(3 + 1)", "[[5,10,26.67,40],[36.67,10,26.67,40],[68.33,10,26.67,40],[5,55,90,40]]"),
+                new Option("R(3 + 2)", "[[5,10,26.67,40],[36.67,10,26.67,40],[68.33,10,26.67,40],[5,55,40,40],[55,55,40,40]]"),
+                new Option("C(1 + 2)", "[[5,10,40,80],[55,10,40,37.5],[55,52.5,40,37.5]]"),
+                new Option("C(1 + 3)", "[[5,10,40,80],[55,10,40,23.33],[55,38.33,40,23.33],[55,66.34,40,23.34]]"),
+                new Option("C(2 + 3)", "[[5,10,40,37.5],[5,52.5,40,37.5],[55,10,40,23.33],[55,38.33,40,23.33],[55,66.34,40,23.34]]"),
+                new Option("C(2 + 1)", "[[5,10,40,37.5],[5,52.5,40,37.5],[55,10,40,80]]"),
+                new Option("C(3 + 1)", "[[5,10,40,23.33],[5,38.33,40,23.33],[5,66.34,40,23.34],[55,10,40,80]]"),
+                new Option("C(3 + 2)", "[[5,10,40,23.33],[5,38.33,40,23.33],[5,66.34,40,23.34],[55,10,40,37.5],[55,52.5,40,37.5]]"),
             ],
             type: "select"
         },
-
-        hr_liqiud: {name: "水球图", value: "", type: "hr"},
         liqiudOutRadius: {
             name: "外半径(%)",
             value: "70%",
@@ -1361,21 +1409,27 @@ var __ECHARTS__ = {
         },
         liqiudOpacity: {name: "透明度", value: 0.6, type: "number", attribute: {min: 0, max: 1, step: 0.1}},
         liqiudGroupWith: {name: "序列分组", value: 2, type: "number", attribute: {min: 1, max: 4, step: 1}},
-        liqiudGrids: {
+
+        hr_sunburst: {name: "旭日图", value: "", type: "hr"},
+        sunburstGrids: {
             name: "布局方式", value: "auto",
             options: [
                 new Option("自动", "auto"),
-                new Option("1 + 2", "[[10,10,80,40],[10,50,40,40],[50,50,40,40]]"),
-                new Option("1 + 3", "[[10,10,80,40],[10,50,26.67,40],[36.67,50,26.66,40],[63.33,50,26.67,40]]"),
-                new Option("2 + 1", "[[10,10,40,40],[50,10,40,40],[10,50,80,40]]"),
-                new Option("2 + 3", "[[10,10,40,40],[50,10,40,40],[10,50,26.67,40],[36.67,50,26.66,40],[63.33,50,26.67,40]]"),
-                new Option("3 + 1", "[[10,10,26.67,40],[36.67,10,26.67,40],[63.33,10,26.67,40],[10,50,80,40]]"),
-                new Option("3 + 2", "[[10,10,26.67,40],[36.67,10,26.67,40],[63.33,10,26.67,40],[10,50,40,40],[50,50,40,40]]")
+                new Option("R(1 + 2)", "[[5,10,90,40],[5,55,40,40],[55,55,40,40]]"),
+                new Option("R(1 + 3)", "[[5,10,90,40],[5,55,26.67,40],[36.66,55,26.66,40],[68.33,55,26.67,40]]"),
+                new Option("R(2 + 1)", "[[5,10,40,40],[55,10,40,40],[5,55,90,40]]"),
+                new Option("R(2 + 3)", "[[5,10,40,40],[55,10,40,40],[5,55,26.67,40],[36.67,55,26.66,40],[68.33,55,26.67,40]]"),
+                new Option("R(3 + 1)", "[[5,10,26.67,40],[36.67,10,26.67,40],[68.33,10,26.67,40],[5,55,90,40]]"),
+                new Option("R(3 + 2)", "[[5,10,26.67,40],[36.67,10,26.67,40],[68.33,10,26.67,40],[5,55,40,40],[55,55,40,40]]"),
+                new Option("C(1 + 2)", "[[5,10,40,80],[55,10,40,37.5],[55,52.5,40,37.5]]"),
+                new Option("C(1 + 3)", "[[5,10,40,80],[55,10,40,23.33],[55,38.33,40,23.33],[55,66.34,40,23.34]]"),
+                new Option("C(2 + 3)", "[[5,10,40,37.5],[5,52.5,40,37.5],[55,10,40,23.33],[55,38.33,40,23.33],[55,66.34,40,23.34]]"),
+                new Option("C(2 + 1)", "[[5,10,40,37.5],[5,52.5,40,37.5],[55,10,40,80]]"),
+                new Option("C(3 + 1)", "[[5,10,40,23.33],[5,38.33,40,23.33],[5,66.34,40,23.34],[55,10,40,80]]"),
+                new Option("C(3 + 2)", "[[5,10,40,23.33],[5,38.33,40,23.33],[5,66.34,40,23.34],[55,10,40,37.5],[55,52.5,40,37.5]]"),
             ],
             type: "select"
         },
-
-        hr_sunburst: {name: "旭日图", value: "", type: "hr"},
         sunburstInRadius: {
             name: "内半径(%)",
             value: "15%",
@@ -1389,19 +1443,6 @@ var __ECHARTS__ = {
             attribute: {min: 30, max: 100, step: 1, unit: "%"}
         },
         sunburstGroupWith: {name: "序列分组", value: 2, type: "number", attribute: {min: 1, max: 4, step: 1}},
-        sunburstGrids: {
-            name: "布局方式", value: "auto",
-            options: [
-                new Option("自动", "auto"),
-                new Option("1 + 2", "[[10,10,80,40],[10,50,40,40],[50,50,40,40]]"),
-                new Option("1 + 3", "[[10,10,80,40],[10,50,26.67,40],[36.67,50,26.66,40],[63.33,50,26.67,40]]"),
-                new Option("2 + 1", "[[10,10,40,40],[50,10,40,40],[10,50,80,40]]"),
-                new Option("2 + 3", "[[10,10,40,40],[50,10,40,40],[10,50,26.67,40],[36.67,50,26.66,40],[63.33,50,26.67,40]]"),
-                new Option("3 + 1", "[[10,10,26.67,40],[36.67,10,26.67,40],[63.33,10,26.67,40],[10,50,80,40]]"),
-                new Option("3 + 2", "[[10,10,26.67,40],[36.67,10,26.67,40],[63.33,10,26.67,40],[10,50,40,40],[50,50,40,40]]")
-            ],
-            type: "select"
-        },
         sunburstSort: {
             name: "排序方式",
             value: "null",
@@ -3628,7 +3669,7 @@ function getMultiGraphOption(configs, container, myChart, dataset) {
     let source = getSource(dataset);
     let lines = Math.ceil((source.dimensions.length - 1) / cols);
     let legend = source.dimensions.slice(1, source.dimensions.length);
-    let grids = getGrids(configs, source.dimensions.length, cols, lines, configs.pieGrids.value);
+    let grids = getGrids(configs, source.dimensions.length, cols, lines, configs.multiGraphGrids.value);
 
     function getRadius(grid) {
         let width = Number(grid.width.split("%")[0]);
@@ -12392,11 +12433,11 @@ function getSaveAsReport(configs, container, myChart) {
 }
 
 function getEchartsReport(container, myChart) {
-    function getScript(main, jsPath, echarts, ui, defaultThemes) {
+    function getScript(jsPath, echarts, ui, defaultThemes) {
         let scripts = [
-            "images.js",
             "FunctionsComponent.js",
-            main,
+            "configs.js",
+            "resources.js",
             echarts,
             "echartsThemes.js",
             ui,
@@ -12417,9 +12458,18 @@ function getEchartsReport(container, myChart) {
             "function $(id) {\n" +
             "return document.getElementById(id);\n" +
             "}\n" +
-            "function $1(name, index) {\n" +
+            "function $class(name, index) {\n" +
+            "if (typeof index !== 'undefined')\n" +
             "return document.getElementsByClassName(name)[index];\n" +
-            "}" +
+            "else\n" +
+            "return document.getElementsByClassName(name)\n" +
+            "}\n" +
+            "function $tag(name, index) {\n" +
+            "if (typeof index !== 'undefined')\n" +
+            "return document.getElementsByTagName(name)[index];\n" +
+            "else\n" +
+            "return document.getElementsByTagName(name)\n" +
+            "}\n" +
             "</script>",
 
             "<script type='text/javascript'>\n" +
@@ -12454,7 +12504,6 @@ function getEchartsReport(container, myChart) {
 
             "<script type='text/javascript'>\n" +
             "function setStyleValue(selectorText, name, value){\n" +
-            "console.log(document.styleSheets[0]);" +
             "for(let i=0;i<document.styleSheets[0].cssRules.length;i++){\n" +
             "if (document.styleSheets[0].cssRules[i].selectorText == selectorText){\n" +
             "document.styleSheets[0].cssRules[i].style[name] = value;\n" +
@@ -12485,7 +12534,8 @@ function getEchartsReport(container, myChart) {
             "setStyleValue('div#_CONFIGS', 'borderColor', THEMES[name].border);\n" +
             "setStyleValue('span.theme-selected', 'borderColor', THEMES[name].border);\n" +
             "setStyleValue('span.configs-name', 'backgroundColor', THEMES[name].selected);\n" +
-            "setStyleValue('input[type=\\\"range\\\"]::-webkit-slider-thumb', 'borderColor', THEMES[name].value);\n" +
+            "setStyleValue('input, select', 'color', __CONFIGS__.colors[0]);\n" +
+            "setStyleValue('input[type=\\\"range\\\"]::-webkit-slider-thumb', 'borderColor', __CONFIGS__.colors[0]);\n" +
             "setStyleValue('span.exp-open:hover', 'color', THEMES[name].border);\n" +
             "setStyleValue('span.exp-close:hover', 'color', THEMES[name].border);\n" +
             "$('logo').src = getSVGBase($('logo').getAttribute('svg'), $('logo').getAttribute('color'), '60px', '60px', $('logo').getAttribute('flip'));\n" +
@@ -12496,22 +12546,24 @@ function getEchartsReport(container, myChart) {
             "<script type='text/javascript'>\n" +
             "var DATASET = {title: null, columns: null, data: null, configs: null, sql: null};\n" +
             "var REPORT = null;\n" +
-            "var CONFIGS = {themes: '" + defaultThemes + "'};\n" +
+            "var __CONFIGS__ = {themes: '" + defaultThemes + "', colors: ['#FF7F50'], FULLSCREEN: {element: null}};\n" +
+            "if (typeof getEcharts !== 'function')\n" +
+            "alert('提示:\\n未连接到组件服务器,报表切换至静态模式.\\n\\n" + jsPath + "');\n" +
             "var ECHARTS_TARGET = null;\n" +
-            "var THEMES = {" +
-            "白色: {backgroundColor: '#C0C0C0', color: '#000000', selected: 'rgba(0, 0, 0, 0.3)', hover: 'rgba(0, 0, 0, 0.3)', border: '#008080', value: '#FF7F50', " +
+            "var THEMES = {\n" +
+            "白色: {backgroundColor: '#C0C0C0', color: '#000000', selected: 'rgba(0, 0, 0, 0.3)', hover: 'rgba(0, 0, 0, 0.3)', border: '#008080', " +
             "backgroundImage:'-webkit-linear-gradient(45deg,rgba(255, 255, 255, 0.25) 25%,transparent 25%,transparent 50%,rgba(255, 255, 255, 0.25) 50%,rgba(255, 255, 255, 0.25) 75%,transparent 75%,transparent)'},\n" +
-            "浅灰: {backgroundColor: '#696969', color: '#F5F5F5', selected: 'rgba(0, 0, 0, 0.3)', hover: 'rgba(0, 0, 0, 0.3)', border: '#FF7F50', value: '#FF7F50', " +
+            "浅灰: {backgroundColor: '#696969', color: '#F5F5F5', selected: 'rgba(0, 0, 0, 0.3)', hover: 'rgba(0, 0, 0, 0.3)', border: '#FF7F50', " +
             "backgroundImage:'-webkit-linear-gradient(45deg,rgba(255, 255, 255, 0.15) 25%,transparent 25%,transparent 50%,rgba(255, 255, 255, 0.15) 50%,rgba(255, 255, 255, 0.15) 75%,transparent 75%,transparent)'},\n" +
-            "深灰: {backgroundColor: '#404040', color: '#F8F8F8', selected: 'rgba(0, 0, 0, 0.3)', hover: 'rgba(0, 0, 0, 0.3)', border: '#FF7F50', value: '#FF7F50', " +
+            "深灰: {backgroundColor: '#404040', color: '#F8F8F8', selected: 'rgba(0, 0, 0, 0.3)', hover: 'rgba(0, 0, 0, 0.3)', border: '#FF7F50', " +
             "backgroundImage:'-webkit-linear-gradient(45deg,rgba(255, 255, 255, 0.15) 25%,transparent 25%,transparent 50%,rgba(255, 255, 255, 0.15) 50%,rgba(255, 255, 255, 0.15) 75%,transparent 75%,transparent)'},\n" +
-            "黑色: {backgroundColor: '#000000', color: '#F0FFFF', selected: '#303030', hover: 'rgba(0, 0, 0, 0.3)', border: '#F0FFFF', value: '#FF7F50', " +
+            "黑色: {backgroundColor: '#000000', color: '#F0FFFF', selected: '#303030', hover: 'rgba(0, 0, 0, 0.3)', border: '#F0FFFF', " +
             "backgroundImage:'-webkit-linear-gradient(45deg,rgba(255, 255, 255, 0.15) 25%,transparent 25%,transparent 50%,rgba(255, 255, 255, 0.15) 50%,rgba(255, 255, 255, 0.15) 75%,transparent 75%,transparent)'},\n" +
-            "墨绿: {backgroundColor: '#2F4F4F', color: '#F0F8FF', selected: 'rgba(0, 0, 0, 0.3)', hover: 'rgba(0, 0, 0, 0.3)', border: '#FF7F50', value: '#FF7F50', " +
+            "墨绿: {backgroundColor: '#2F4F4F', color: '#F0F8FF', selected: 'rgba(0, 0, 0, 0.3)', hover: 'rgba(0, 0, 0, 0.3)', border: '#FF7F50', " +
             "backgroundImage:'-webkit-linear-gradient(45deg,rgba(255, 255, 255, 0.15) 25%,transparent 25%,transparent 50%,rgba(255, 255, 255, 0.15) 50%,rgba(255, 255, 255, 0.15) 75%,transparent 75%,transparent)'},\n" +
-            "深蓝: {backgroundColor: '#003355', color: '#F8F8F8', selected: 'rgba(0, 0, 0, 0.3)', hover: 'rgba(0, 0, 0, 0.3)', border: '#008080', value: '#FF7F50', " +
+            "深蓝: {backgroundColor: '#003355', color: '#F8F8F8', selected: 'rgba(0, 0, 0, 0.3)', hover: 'rgba(0, 0, 0, 0.3)', border: '#008080', " +
             "backgroundImage:'-webkit-linear-gradient(45deg,rgba(255, 255, 255, 0.15) 25%,transparent 25%,transparent 50%,rgba(255, 255, 255, 0.15) 50%,rgba(255, 255, 255, 0.15) 75%,transparent 75%,transparent)'},\n" +
-            "红色: {backgroundColor: '#8B0000', color: '#FFFF00', selected: 'rgba(0, 0, 0, 0.3)', hover: 'rgba(0, 0, 0, 0.3)', border: '#FAFAD2', value: '#FF7F50', " +
+            "红色: {backgroundColor: '#8B0000', color: '#FFFF00', selected: 'rgba(0, 0, 0, 0.3)', hover: 'rgba(0, 0, 0, 0.3)', border: '#FAFAD2', " +
             "backgroundImage:'-webkit-linear-gradient(45deg,rgba(255, 255, 255, 0.15) 25%,transparent 25%,transparent 50%,rgba(255, 255, 255, 0.15) 50%,rgba(255, 255, 255, 0.15) 75%,transparent 75%,transparent)'},\n" +
             "};\n" +
             "</script>",
@@ -12543,9 +12595,10 @@ function getEchartsReport(container, myChart) {
             "document.exitFullscreen();\n" +
             "} else {\n" +
             "el.requestFullscreen();\n" +
+            "__CONFIGS__.FULLSCREEN.element = el;\n" +
             "if (el == $('_ECHARTS')){\n" +
-            "el.style.backgroundImage = THEMES[CONFIGS.themes].backgroundImage;\n" +
-            "el.style.backgroundColor = THEMES[CONFIGS.themes].backgroundColor;\n" +
+            "el.style.backgroundImage = THEMES[__CONFIGS__.themes].backgroundImage;\n" +
+            "el.style.backgroundColor = THEMES[__CONFIGS__.themes].backgroundColor;\n" +
             "el.style.borderWidth = '0px';\n" +
             "let mo = setInterval(function(){\n" +
             "if (!document.fullscreen){\n" +
@@ -12553,6 +12606,7 @@ function getEchartsReport(container, myChart) {
             "el.style.backgroundColor = 'transparent';\n" +
             "el.style.borderWidth = '1px';\n" +
             "clearInterval(mo);\n" +
+            "__CONFIGS__.FULLSCREEN.element = null;\n" +
             "}\n" +
             "},500);" +
             "}\n" +
@@ -12704,7 +12758,7 @@ function getEchartsReport(container, myChart) {
             "let input = UI.colorChoice(name, configs[name].value, function (value) {\n" +
             "configs[name].value = value;\n" +
             "reset(type);\n" +
-            "},'#FF7F50');\n" +
+            "}, __CONFIGS__.colors[0]);\n" +
             "input.id = name;\n" +
             "input.className = 'ui-container-item-color';\n" +
             "\n" +
@@ -12713,7 +12767,7 @@ function getEchartsReport(container, myChart) {
             "let input = UI.booleanChoice(configs[name].value.toBoolean(), function (value) {\n" +
             "configs[name].value = (value ? 'true' : 'false');\n" +
             "reset(type);\n" +
-            "},'#FF7F50');\n" +
+            "}, __CONFIGS__.colors[0]);\n" +
             "input.id = name;\n" +
             "input.className = 'ui-container-item-boolean';\n" +
             "\n" +
@@ -12826,7 +12880,7 @@ function getEchartsReport(container, myChart) {
             "</script>",
 
             "<script type='text/javascript'>\n" +
-            "function resize(){\n" +
+            "function resize(r){\n" +
             "try{\n" +
             "let size = getBrowserSize();\n" +
             "$('_ECHARTS').style.minHeight = (size.height*0.80) + 'px';\n" +
@@ -12834,10 +12888,12 @@ function getEchartsReport(container, myChart) {
             "$('_SCRIPT').style.minHeight = (size.height*0.80) + 'px';\n" +
             "$('_CONFIGS').style.minHeight = (size.height*0.80) + 'px';\n" +
             "if (typeof getEcharts === 'function'){\n" +
+            "if (typeof r == 'undefined'? true:r){\n" +
             "if (ECHARTS_TARGET == null){\n" +
             "ECHARTS_TARGET = echarts.getInstanceByDom(getEcharts($('_ECHARTS'), DATASET, REPORT.configs));\n" +
             "}\n" +
             "ECHARTS_TARGET.resize();\n" +
+            "}\n" +
             "} else {\n" +
             "$('report-system').innerHTML = '组件服务器未连接...';\n" +
             "$('report-system').removeAttribute('href');\n" +
@@ -12854,7 +12910,7 @@ function getEchartsReport(container, myChart) {
 
             "<script type='text/javascript'>\n" +
             "function init(){\n" +
-            "setThemes(CONFIGS.themes);\n" +
+            "setThemes(__CONFIGS__.themes);\n" +
             "let codes = $('_CODES').getElementsByTagName('code');\n" +
             "REPORT = codes[0].innerText;\n" +
             "let hash = codes[1].innerText;\n" +
@@ -12874,17 +12930,17 @@ function getEchartsReport(container, myChart) {
             "getThemes();\n" +
 
             "$('_FULLSCREEN').onmouseenter = function(){\n" +
-            "this.src = getSVGBase(this.getAttribute('svg'), THEMES[CONFIGS.themes].color, '20px', '20px');\n" +
+            "this.src = getSVGBase(this.getAttribute('svg'), THEMES[__CONFIGS__.themes].color, '20px', '20px');\n" +
             "};\n" +
             "$('_FULLSCREEN').onmouseleave = function(){\n" +
-            "this.src = getSVGBase(this.getAttribute('svg'), THEMES[CONFIGS.themes].border, '20px', '20px');\n" +
+            "this.src = getSVGBase(this.getAttribute('svg'), THEMES[__CONFIGS__.themes].border, '20px', '20px');\n" +
             "};\n" +
             "$('_FULLSCREEN').onclick = function(){\n" +
             "requestFullScreen(document.documentElement);\n" +
             "}\n" +
             "viewDataset(0);\n" +
             "resize();\n" +
-            "window.onresize = function () {\n" +
+            "window.onresize = function(){\n" +
             "resize();\n" +
             "};\n" +
             "}\n" +
@@ -12896,7 +12952,7 @@ function getEchartsReport(container, myChart) {
             "content.innerText='';\n" +
             "for (let key in THEMES){\n" +
             "let theme = document.createElement('span');\n" +
-            "if (key == CONFIGS.themes)\n" +
+            "if (key == __CONFIGS__.themes)\n" +
             "theme.className ='theme-selected';\n" +
             "else\n" +
             "theme.className = 'theme';\n" +
@@ -12906,10 +12962,10 @@ function getEchartsReport(container, myChart) {
             "theme.style.borderColor = THEMES[key].borderColor;\n" +
             "theme.innerHTML = '&emsp;&emsp;';" +
             "theme.onclick = function(){\n" +
-            "CONFIGS.themes = this.title;\n" +
-            "$1('theme-selected',0).className = 'theme';\n" +
+            "__CONFIGS__.themes = this.title;\n" +
+            "$class('theme-selected',0).className = 'theme';\n" +
             "this.className = 'theme-selected';\n" +
-            "setThemes(CONFIGS.themes);\n" +
+            "setThemes(__CONFIGS__.themes);\n" +
             "}\n" +
             "content.appendChild(theme);\n" +
             "}\n" +
@@ -12933,7 +12989,7 @@ function getEchartsReport(container, myChart) {
             "div.style.display = 'none';\n" +
             "}\n" +
             "}\n" +
-            "resize();\n" +
+            "resize(id == 'ECHARTS');\n" +
             "}\n" +
             "</script>",
 
@@ -13386,12 +13442,11 @@ function getEchartsReport(container, myChart) {
         "<style>\n" +
         "body{margin-top:15px;font-family: Arial, Verdana;" +
         "background-image: -webkit-linear-gradient(45deg,rgba(255, 255, 255, 0.15) 25%,transparent 25%,transparent 50%,rgba(255, 255, 255, 0.15) 50%,rgba(255, 255, 255, 0.15) 75%,transparent 75%,transparent);}\n" +
-        "body ::-webkit-scrollbar {width: 5px;height: 4px;background: transparent;}\n" +
-        "body ::-webkit-scrollbar-thumb {" +
-        "border-radius: 3px;background-color: grey;" +
+        "::-webkit-scrollbar {width: 5px;height: 4px;background: transparent;}\n" +
+        "::-webkit-scrollbar-thumb {border-radius: 3px;background-color: grey;" +
         "background-image: -webkit-linear-gradient(45deg,rgba(255, 255, 255, 0.2) 25%,transparent 25%,transparent 50%,rgba(255, 255, 255, 0.2) 50%,rgba(255, 255, 255, 0.2) 75%,transparent 75%,transparent);\n" +
         "}\n" +
-        "body ::-webkit-scrollbar-track {box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);background: transparent;border-radius: 3px;}\n" +
+        "::-webkit-scrollbar-track {box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);background: transparent;border-radius: 3px;}\n" +
         "div#_TITLE{margin: auto;width: 80%;overflow: hidden;}\n" +
         "img#logo{margin: auto;float:left;width: 60px;height: 60px;}\n" +
         "div#title{margin: auto;width:80%;float:left;}\n" +
@@ -13404,6 +13459,7 @@ function getEchartsReport(container, myChart) {
         "div#_SCRIPT{margin: auto;font-size: 90%;padding-left: 5px;padding-right: 5px;width: 80%;border: 1px solid coral;border-radius: 5px;overflow: hidden;height: 100%;line-height: 2;display: none}\n" +
         "div#_CONFIGS{margin: auto;font-size: 80%;padding-left: 5px;padding-right: 5px;width: 80%;border: 1px solid coral;border-radius: 5px;overflow: hidden;height: 100%;display: none;" +
         "-webkit-column-count: 2;column-count: 2;column-fill: auto}\n" +
+        "img#echarts-image{position: absolute;top: 50%;left: 50%;transform: translate(-50%, -50%)}\n" +
         "img#_FULLSCREEN{padding:0px;cursor: pointer;margin-left: 20px;outline-style: none;border-bottom-width: 0px;float: right}\n" +
         "div#_PAGES{margin: 5px;border-top:1px solid gray;}\n" +
         "div#_CODES{margin: auto;padding-left: 5px;padding-right: 5px;width: 80%;border: 1px solid coral;border-radius: 5px;overflow: hidden;height: 100%;display: none}\n" +
@@ -13431,7 +13487,7 @@ function getEchartsReport(container, myChart) {
         "span.SQLWordc{cursor: pointer;padding-left: 3px;padding-right: 3px;background-color: rosybrown;outline-style: none;border-radius: 4px;}\n" +
         "span.SQLWordd{cursor: pointer;margin-left:0px;margin-right:0px;padding-left: 0px;padding-right: 0px;background-color: transparent;color: coral;outline-style: none;font-weight:bold}\n" +
         "p.SQLWorde{cursor: pointer;margin-right:5px;margin-right:20px;padding-left: 5px;padding-right: 5px;background-color: rgba(0, 0, 0, 0.1);outline-style: none;border-radius: 4px;}\n" +
-        "span.SQLWordf{cursor: pointer;margin-left:0px;margin-right:0px;padding-left: 0px;padding-right: 0px;background-color: transparent;color: green;outline-style: none;font-weight:bold}\n" +
+        "span.SQLWordf{cursor: pointer;margin-left:0px;margin-right:0px;padding-left: 0px;padding-right: 0px;background-color: transparent;color: #008080;outline-style: none;font-weight:bold}\n" +
         "span.SQLWordg{cursor: pointer;outline-style: none;color:mediumvioletred;font-weight: bolder}\n" +
         "span#echarts{margin: auto;display: table-cell; vertical-align: middle;}\n" +
         "table.table{font-size: 100%;margin: 6px;line-height:12px;border-collapse:collapse;cursor: pointer;position:relative;min-width: 33%;border-radius: 5px;background-color: transparent;}\n" +
@@ -13448,7 +13504,16 @@ function getEchartsReport(container, myChart) {
         "span.page-tab:hover{background-color: sandybrown;}\n" +
         "span.page-tab-left{float:left;cursor: pointer;width: 50px;font-size: 80%;text-align: center;border-left:1px solid gray;border-bottom-right-radius: 6px;border-bottom-left-radius: 36px;}" +
         "span.page-tab-left:hover{background-color: sandybrown;}\n" +
-        "input, select {background-color: transparent;color: coral;outline-style: none;border: 0px;border-bottom: 1px solid #00A7AA;box-sizing: border-box;}\n" +
+        ".ui-container-background {position: fixed;left: 0px;top: 0px;width: 100%;height: 100%;background: rgba(0, 0, 0, 0.1);z-index: 999}\n" +
+        ".ui-container-body {line-height: 20px;font-size: 90%;position: absolute;top: 50%;left: 50%;transform: translate(-50%, -50%);margin: 10px;padding: 10px;width: 350px;border: 1px solid #00A7AA;;background-color: whitesmoke;border-bottom-left-radius: 20px;border-top-right-radius: 20px;box-shadow: inset 0px 0 12px 0px rgba(0,0,0,0.75);-moz-box-shadow: 0px 0 12px 0px rgba(0,0,0,0.75);-webkit-box-shadow: 0px 0 12px 0px rgba(0,0,0,0.75);z-index: 9999;}\n" +
+        ".ui-container-title{width: 100%;cursor: move;line-height: 24px;height: 24px;background-color:transparent;color: #00A7AA;border-radius: 12px;display: table;background-repeat: no-repeat;}\n" +
+        ".ui-container-title:hover{background-color: rosybrown;color: whitesmoke;}\n" +
+        ".ui-container-title span {height: 100%;display: table-cell;vertical-align: middle;float: left;margin-left: 24px;}\n" +
+        "ui-container-logo {float: left;display: table-cell;vertical-align: middle;}\n" +
+        ".ui-container-close{display: table-cell;vertical-align: middle;cursor: pointer;float: right;}\n" +
+        ".ui-container-hr{height: 1px;border-width: 0;color: gray;background-color: #00A7AA;;width: 100%;}\n" +
+        ".ui-container-scroll-div {position: relative;font-size: 100%;width: 100%;float: left;height: 300px;overflow: scroll;}" +
+        "input, select {background-color: transparent;;outline-style: none;border: 0px;border-bottom: 1px solid #00A7AA;box-sizing: border-box;}\n" +
         ".ui-container-item-checkbox {float: right;vertical-align: bottom;}\n" +
         ".ui-container-item-radio {float: right;vertical-align: bottom;}\n" +
         "input[type=range] {-webkit-appearance: none;}\n" +
@@ -13460,7 +13525,7 @@ function getEchartsReport(container, myChart) {
         ".ui-container-item-select {cursor: pointer;font-size: 100%;padding: 0px;margin: 0px;width: 70%;float: right;height: 100%;vertical-align: bottom;border-bottom: 1px solid #00A7AA;}\n" +
         ".ui-container-item-boolean {cursor: pointer;font-size: 100%;padding: 0px;margin: 0px;width: 70%;float: right;min-height: 16px;height: 100%;vertical-align: bottom;border-bottom: 1px solid #00A7AA;}\n" +
         "</style>\n" +
-        getScript(__VERSION__.main, jsPath, __ECHARTS__.configs.version.value, $("UI").src.split("/")[$("UI").src.split("/").length - 1], __DATASET__.configs.reportThemes.value) +
+        getScript(jsPath, __ECHARTS__.configs.version.value, $("UI").src.split("/")[$("UI").src.split("/").length - 1], __DATASET__.configs.reportThemes.value) +
         "</head>\n" +
         "<body onload='init()'>\n" +
         "<div id='_TITLE'>\n" +
@@ -13480,7 +13545,7 @@ function getEchartsReport(container, myChart) {
         "<span id='_THEMES'></span>\n" +
         "</div>\n" +
         "<div id='_ECHARTS'>\n" +
-        "<span id='echarts_content'><image id='echarts-image' src = '" + myChart.getDataURL({excludeComponents: ['toolbox']}) + "' width = '" + myChart.getWidth() + "' height='" + myChart.getHeight() + "'></image></span>\n" +
+        "<image id='echarts-image' src = '" + myChart.getDataURL({excludeComponents: ['toolbox']}) + "' width = '" + myChart.getWidth() + "' height='" + myChart.getHeight() + "'></image>\n" +
         "</div>\n" +
         "<div id='_TABLE'>\n" +
         "</div>\n" +

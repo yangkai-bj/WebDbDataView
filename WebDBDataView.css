@@ -1,19 +1,15 @@
-body {
-    background-color: var(--main-background-color);
-    background-image: var(--main-background-image);
-    background-repeat: var(--main-background-image-repeat);
-    background-size: var(--main-background-image-size);
-    background-attachment: var(--main-background-image-attachment);
+:root {
     font-family: var(--main-font-family);
     font-size: var(--main-font-size);
+    zoom: 1;
 }
 
-body ::-webkit-scrollbar {
+::-webkit-scrollbar {
     width: 5px;
     height: 4px;
     background: transparent;
 }
-body ::-webkit-scrollbar-thumb {
+::-webkit-scrollbar-thumb {
     border-radius: 3px;
     background-color: var(--toolbar-background-color);
     background-image: -webkit-linear-gradient(
@@ -27,10 +23,18 @@ body ::-webkit-scrollbar-thumb {
             transparent
     );
 }
-body ::-webkit-scrollbar-track {
+::-webkit-scrollbar-track {
     box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
     background: transparent;
     border-radius: 3px;
+}
+
+body {
+    background-color: var(--main-background-color);
+    background-image: var(--main-background-image);
+    background-repeat: var(--main-background-image-repeat);
+    background-size: var(--main-background-image-size);
+    background-attachment: var(--main-background-image-attachment);
 }
 
 .header{
@@ -1147,6 +1151,51 @@ textarea:enabled {
     animation: content-show 1s 1;
 }
 
+.ui-container-title{
+    width: 100%;
+    cursor: move;
+    line-height: 24px;
+    height: 24px;
+    color: var(--toolbar-background-color);
+    border-radius: 12px;
+    display: table;
+    background-repeat: no-repeat;
+}
+
+.ui-container-title:hover{
+    background-color: var(--toolbar-button-hover-background-color);
+    color: whitesmoke;
+}
+
+.ui-container-title span {
+    height: 100%;
+    display: table-cell;
+    vertical-align: middle;
+    float: left;
+    margin-left: 24px;
+}
+
+ui-container-logo {
+    float: left;
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.ui-container-hr{
+    height: 1px;
+    border-width: 0;
+    color: gray;
+    background-color: var(--main-border-color);
+    width: 100%;
+}
+
+.ui-container-close{
+    display: table-cell;
+    vertical-align: middle;
+    cursor: pointer;
+    float: right;
+}
+
 .ui-container-scroll-div {
     position: relative;
     font-size: 100%;
@@ -1263,51 +1312,6 @@ input[type='range']::-webkit-slider-thumb {
     height: 100%;
     vertical-align: bottom;
     border-bottom: 1px solid var(--main-border-color);
-}
-
-.ui-container-title{
-    width: 100%;
-    cursor: move;
-    line-height: 24px;
-    height: 24px;
-    color: var(--toolbar-background-color);
-    border-radius: 12px;
-    display: table;
-    background-repeat: no-repeat;
-}
-
-.ui-container-title:hover{
-    background-color: var(--toolbar-button-hover-background-color);
-    color: whitesmoke;
-}
-
-.ui-container-title span {
-    height: 100%;
-    display: table-cell;
-    vertical-align: middle;
-    float: left;
-    margin-left: 24px;
-}
-
-ui-container-logo {
-    float: left;
-    display: table-cell;
-    vertical-align: middle;
-}
-
-.ui-container-hr{
-    height: 1px;
-    border-width: 0;
-    color: gray;
-    background-color: var(--main-border-color);
-    width: 100%;
-}
-
-.ui-container-close{
-    display: table-cell;
-    vertical-align: middle;
-    cursor: pointer;
-    float: right;
 }
 
 #ui-progress {
