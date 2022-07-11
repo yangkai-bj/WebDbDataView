@@ -32,6 +32,227 @@ function saveStorageSql(key, sql) {
 }
 
 var UI = {
+    echartsChoice: function(values, callback) {
+        try {
+            values = values.split(",");
+        } catch (e) {
+            values = [];
+        }
+
+        let items = {
+            "线形图": {value: "line", checked: false},
+            "柱状图": {value: "bar", checked: false},
+            "散点图": {value: "scatter", checked: false},
+            "面积图": {value: "area", checked: false},
+            "饼图": {value: "pie", checked: false},
+            "日历图": {value: "calendar", checked: false},
+            "漏斗图": {value: "funnel", checked: false}
+        };
+        let container = document.createElement("div");
+        container.setAttribute("value", values.join(","));
+        let add = __SYS_IMAGES_SVG__.getImage("add", __THEMES__.get().color, "16px", "16px", __THEMES__.get().hover);
+        container.appendChild(add);
+        add.style.cssFloat = "left";
+        add.style.width = "16px";
+        add.title = "增加";
+        add.onclick = function () {
+            if (event.target == this) {
+                UI.choise.show("请选择图形",
+                    items,
+                    "radio",
+                    "auto",
+                    function (args, items) {
+                        for (let key in items) {
+                            if (items[key].checked)
+                                args.values.splice(args.index + 1, 0, items[key].value);
+                        }
+                        container.setAttribute("value", args.values);
+                        $("echarts_choise_list").innerHTML = "";
+                        for (let i = 0; i < args.values.length; i++) {
+                            for (let key in items) {
+                                if (args.values[i] == items[key].value)
+                                    $("echarts_choise_list").options.add(new Option(key, args.values[i]));
+                            }
+                        }
+                        $("echarts_choise_list").selectedIndex = args.index + 1;
+                        if (typeof callback !== "undefined")
+                            callback(args.values.wash().join(","));
+                    },
+                    {
+                        values: values,
+                        index: $("echarts_choise_list").selectedIndex
+                    }
+                );
+            }
+        };
+        let toup = __SYS_IMAGES_SVG__.getImage("toup", __THEMES__.get().color, "16px", "16px", __THEMES__.get().hover);
+        container.appendChild(toup);
+        toup.style.cssFloat = "left";
+        toup.style.width = "16px";
+        toup.title = "上移";
+        toup.onclick = function () {
+            let index = $("echarts_choise_list").selectedIndex;
+            let tmp;
+            if (index > 0) {
+                tmp = values[index - 1];
+                values[index - 1] = values[index];
+                values[index] = tmp;
+
+                $("echarts_choise_list").innerHTML = "";
+                for (let i = 0; i < values.length; i++) {
+                    for (let key in items) {
+                        if (values[i] == items[key].value)
+                            $("echarts_choise_list").options.add(new Option(key, values[i]));
+                    }
+                }
+
+                $("echarts_choise_list").selectedIndex = index - 1;
+                if (typeof callback !== "undefined")
+                    callback(values.wash().join(","));
+            }
+        };
+        let todown = __SYS_IMAGES_SVG__.getImage("todown", __THEMES__.get().color, "16px", "16px", __THEMES__.get().hover);
+        container.appendChild(todown);
+        todown.style.cssFloat = "left";
+        todown.style.width = "16px";
+        todown.title = "下移";
+        todown.onclick = function () {
+            let index = $("echarts_choise_list").selectedIndex;
+            let tmp;
+            if (index < values.length - 1) {
+                tmp = values[index + 1];
+                values[index + 1] = values[index];
+                values[index] = tmp;
+
+                $("echarts_choise_list").innerHTML = "";
+                for (let i = 0; i < values.length; i++) {
+                    for (let key in items) {
+                        if (values[i] == items[key].value)
+                            $("echarts_choise_list").options.add(new Option(key, values[i]));
+                    }
+                }
+                $("echarts_choise_list").size = values.length;
+                $("echarts_choise_list").selectedIndex = index + 1;
+                if (typeof callback !== "undefined")
+                    callback(values.wash().join(","));
+            }
+        };
+
+        let remove = __SYS_IMAGES_SVG__.getImage("subtract", __THEMES__.get().color, "16px", "16px", __THEMES__.get().hover);
+        container.appendChild(remove);
+        remove.style.cssFloat = "left";
+        remove.style.width = "16px";
+        remove.title = "删除";
+        remove.onclick = function () {
+            let index = $("echarts_choise_list").selectedIndex;
+            let tmp = [];
+            for (let i = 0; i < values.length; i++) {
+                if (i !== index)
+                    tmp.push(values[i]);
+            }
+            values = tmp;
+            container.setAttribute("value", values.join(","));
+            $("echarts_choise_list").innerHTML = "";
+            for (let i = 0; i < values.length; i++) {
+                for (let key in items) {
+                    if (values[i] == items[key].value)
+                        $("echarts_choise_list").options.add(new Option(key, values[i]));
+                }
+            }
+            $("echarts_choise_list").selectedIndex = (index == 0 ? 0 : index - 1);
+            if (typeof callback !== "undefined")
+                callback(values.wash().join(","));
+        };
+        let list = document.createElement("select");
+        list.id = "echarts_choise_list";
+        for (let i = 0; i < values.length; i++) {
+            for (let key in items) {
+                if (values[i] == items[key].value)
+                    list.options.add(new Option(key, values[i]));
+            }
+        }
+        container.appendChild(list);
+        list.style.cssFloat = "right";
+        list.style.borderWidth = "0px";
+        list.style.minWidth = "70%";
+
+        container.onmouseenter = function(){
+            $("echarts_choise_list").size = values.length;
+        };
+        container.onmouseleave = function(){
+            $("echarts_choise_list").size = 1;
+        };
+
+        return container;
+    },
+
+    rangesChoice: function(min, max, unit, range, callback) {
+        let rmin, rmax;
+        try {
+            range = range.replace(new RegExp(unit, "g"), "").toArray([min, max], ",");
+        } catch (e) {
+            range = [min, max];
+        }
+
+        function getString(range, unit) {
+            return range.reduce(function (tmp, item) {
+                tmp.push(item + unit);
+                return tmp;
+            }, []).join(",");
+        }
+
+        let container = document.createElement("div");
+        container.className = "ui-container-item-ranges";
+        container.setAttribute("value", getString(range, unit));
+        rmin = document.createElement("input");
+        rmin.type = "range";
+        container.appendChild(rmin);
+        rmin.style.cssFloat = "left";
+        rmin.style.width = "45%";
+        rmin.style.borderWidth = "0px";
+        rmin.style.borderRadius = "10px";
+        rmin.style.borderLeft = "1px solid gray";
+        rmin.min = min;
+        rmin.max = range[1];
+        rmin.value = range[0];
+        rmin.title = (range[0] + unit);
+        rmin.onchange = function () {
+            rmax.min = range[0] = this.value;
+            this.title = (this.value + unit);
+            container.setAttribute("value", getString(range, unit));
+            if (rmax.value < this.value) {
+                rmax.value = range[1] = this.value;
+                rmax.title = (this.value + unit);
+            }
+            if (typeof callback !== "undefined")
+                callback(getString(range, unit));
+        };
+        rmax = document.createElement("input");
+        rmax.type = "range";
+        container.appendChild(rmax);
+        rmax.style.cssFloat = "right";
+        rmax.style.width = "45%";
+        rmax.style.borderWidth = "0px";
+        rmax.style.borderRadius = "10px";
+        rmax.style.borderRight = "1px solid gray";
+        rmax.min = range[0];
+        rmax.max = max;
+        rmax.value = range[1];
+        rmax.title = (range[1] + unit);
+        rmax.onchange = function () {
+            rmin.max = range[1] = this.value;
+            this.title = (this.value + unit);
+            container.setAttribute("value", getString(range, unit));
+            if (rmin.value > this.value) {
+                rmin.value = range[0] = this.value;
+                rmin.title = (this.value + unit);
+            }
+            if (typeof callback !== "undefined")
+                callback(getString(range, unit));
+        };
+        return container;
+    },
+
     booleanChoice: function(value, callback, color) {
         let container = document.createElement("div");
         container.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(value ? "booleanTrue" : "booleanFalse", (typeof color === 'undefined' ? __THEMES__.get().color : color), "16px", "16px");
@@ -4155,7 +4376,7 @@ var SQLite = {
             b.id = "import-button";
             b.innerHTML = "导入";
             b.onclick = function () {
-                if (__CONFIGS__.CURRENT_TABLE.name == "" || __CONFIGS__.CURRENT_TABLE.type == "view") {
+                if (__CONFIGS__.CURRENT_TABLE.name == null || __CONFIGS__.CURRENT_TABLE.type == "view") {
                     UI.confirm.show("注意", "您没有选择数据表，是否要根据数据结构创建一个名称为 " + SQLite.import.configs.SourceFile.value.split(".")[0] + " 的新表?", "auto", function () {
                         let title = SQLite.import.configs.SourceFile.value.split(".")[0];
                         SQLite.createTable("auto", {"title": title, "stru": SQLite.import.dataStruct()}, function(values) {

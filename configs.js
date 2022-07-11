@@ -13,8 +13,8 @@ var __SYS_LOGO_LINK__ = {
 const __VERSION__ = {
     name: "Web DataView for SQLite Database of browser",
     main: "WebDBDataView.js",
-    version: "3.3.4",
-    date: "2022/07/01",
+    version: "3.3.5",
+    date: "2022/07/08",
     comment: [
         "-- 2021/03/08",
         "优化算法和压缩代码.",
@@ -479,6 +479,22 @@ var __DATASET__ = {
                      __DATASET__.configs[this.id].value = this.title = (this.value + __DATASET__.configs[this.id].attribute.unit);
                  };
                  item.appendChild(input);
+             } else if (this.configs[name].type == "ranges") {
+                let input = UI.rangesChoice(
+                    __DATASET__.configs[name].attribute.min,
+                    __DATASET__.configs[name].attribute.max,
+                    __DATASET__.configs[name].attribute.unit,
+                    __DATASET__.configs[name].value,
+                    function (value) {
+                        __DATASET__.configs[name].value = value;
+                    });
+                input.id = name;
+                input.className = "ui-container-item-ranges";
+                if (typeof this.configs[name].title != "undefined")
+                    input.title = this.configs[name].title;
+                else
+                    input.title = this.configs[name].name;
+                item.appendChild(input);
              } else if (this.configs[name].type == "number") {
                  let input = document.createElement("input");
                  input.style.cssFloat = "right";

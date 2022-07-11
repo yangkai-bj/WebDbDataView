@@ -93,26 +93,44 @@ function getSource(dataset) {
             return data;
         },
 
-        getMinMaxValue: function (key) {
+        getMinMaxValue: function (key, type) {
             let min = +Infinity;
             let max = -Infinity;
             if (typeof key === "undefined") {
                 for (let i = 0; i < this.source.length; i++) {
                     let row = this.source[i];
                     for (let c = 1; c < this.dimensions.length; c++) {
-                        if (min > row[this.dimensions[c]])
-                            min = row[this.dimensions[c]];
-                        if (max < row[this.dimensions[c]])
-                            max = row[this.dimensions[c]];
+                        if (typeof type === "undefined") {
+                            if (min > row[this.dimensions[c]])
+                                min = row[this.dimensions[c]];
+                            if (max < row[this.dimensions[c]])
+                                max = row[this.dimensions[c]];
+                        } else {
+                            if (typeof row[this.dimensions[c]] === type) {
+                                if (min > row[this.dimensions[c]])
+                                    min = row[this.dimensions[c]];
+                                if (max < row[this.dimensions[c]])
+                                    max = row[this.dimensions[c]];
+                            }
+                        }
                     }
                 }
             } else {
                 for (let i = 0; i < this.source.length; i++) {
                     let row = this.source[i];
-                    if (min > row[key])
-                        min = row[key];
-                    if (max < row[key])
-                        max = row[key];
+                    if (typeof type ==="undefined") {
+                        if (min > row[key])
+                            min = row[key];
+                        if (max < row[key])
+                            max = row[key];
+                    } else {
+                        if (typeof row[key] === type) {
+                            if (min > row[key])
+                                min = row[key];
+                            if (max < row[key])
+                                max = row[key];
+                        }
+                    }
                 }
             }
             return {min: min, max: max};
@@ -481,7 +499,7 @@ var __ECHARTS__ = {
                 new Option("中文", "ZH")],
             type: "select"
         },
-        loadingTimes: {name: "载入时间(秒)", value: 2, type: "number", attribute: {min: 1, max: 5, step: 1}},
+        loadingTimes: {name: "载入时间(毫秒)", value: 2000, type: "number", attribute: {min: 1000, max: 5000, step: 1000}},
         renderer: {
             name: "渲染方式",
             value: "canvas",
@@ -841,7 +859,7 @@ var __ECHARTS__ = {
 
         hr_clock: {name: "时钟", value: "", type: "hr"},
         clockRadius: {name: "表盘半径", value: "75%", type: "range", attribute: {min: 1, max: 100, step: 1, unit: "%"}},
-        clockCenter: {name: "表盘位置", value: '["50%","50%"]', type: "input"},
+        clockCenter: {name: "表盘位置", value: "50%,50%", type: "ranges",attribute: {min: 1, max: 100, step: 1, unit: "%"}},
         clockFontSize: {
             name: "字号",
             value: "16",
@@ -1007,7 +1025,7 @@ var __ECHARTS__ = {
             options: [new Option("静态散点", "scatter"), new Option("效应散点", "effectScatter")],
             type: "select"
         },
-        scatterSymbolSize: {name: "节点大小", value: "[6,18]", type: "input"},
+        scatterSymbolSize: {name: "节点大小", value: "6,18", type: "ranges", attribute: {min: 1, max: 30, step: 1, unit:""}},
         scatterSymbolShape: {
             name: "节点形状",
             value: "circle",
@@ -1025,18 +1043,26 @@ var __ECHARTS__ = {
             name: "布局方式", value: "auto",
             options: [
                 new Option("自动", "auto"),
-                new Option("R(1 + 2)", "[[5,10,90,40],[5,55,40,40],[55,55,40,40]]"),
+                new Option("R(1 + 2)", "[[5,10,85,40],[5,55,40,40],[50,55,40,40]]"),
                 new Option("R(1 + 3)", "[[5,10,90,40],[5,55,26.67,40],[36.66,55,26.66,40],[68.33,55,26.67,40]]"),
-                new Option("R(2 + 1)", "[[5,10,40,40],[55,10,40,40],[5,55,90,40]]"),
+                new Option("R(2 + 1)", "[[5,10,40,40],[50,10,40,40],[5,55,85,40]]"),
                 new Option("R(2 + 3)", "[[5,10,40,40],[55,10,40,40],[5,55,26.67,40],[36.67,55,26.66,40],[68.33,55,26.67,40]]"),
                 new Option("R(3 + 1)", "[[5,10,26.67,40],[36.67,10,26.67,40],[68.33,10,26.67,40],[5,55,90,40]]"),
                 new Option("R(3 + 2)", "[[5,10,26.67,40],[36.67,10,26.67,40],[68.33,10,26.67,40],[5,55,40,40],[55,55,40,40]]"),
-                new Option("C(1 + 2)", "[[5,10,40,80],[55,10,40,37.5],[55,52.5,40,37.5]]"),
-                new Option("C(1 + 3)", "[[5,10,40,80],[55,10,40,23.33],[55,38.33,40,23.33],[55,66.34,40,23.34]]"),
-                new Option("C(2 + 3)", "[[5,10,40,37.5],[5,52.5,40,37.5],[55,10,40,23.33],[55,38.33,40,23.33],[55,66.34,40,23.34]]"),
-                new Option("C(2 + 1)", "[[5,10,40,37.5],[5,52.5,40,37.5],[55,10,40,80]]"),
-                new Option("C(3 + 1)", "[[5,10,40,23.33],[5,38.33,40,23.33],[5,66.34,40,23.34],[55,10,40,80]]"),
-                new Option("C(3 + 2)", "[[5,10,40,23.33],[5,38.33,40,23.33],[5,66.34,40,23.34],[55,10,40,37.5],[55,52.5,40,37.5]]"),
+                new Option("C(1 + 2)", "[[5,10,40,80],[50,10,40,37.5],[50,52.5,40,37.5]]"),
+                new Option("C(1 + 3)", "[[5,10,40,80],[50,10,40,23.33],[50,38.33,40,23.33],[50,66.34,40,23.34]]"),
+                new Option("C(2 + 3)", "[[5,10,40,37.5],[5,52.5,40,37.5],[50,10,40,23.33],[50,38.33,40,23.33],[50,66.34,40,23.34]]"),
+                new Option("C(2 + 1)", "[[5,10,40,37.5],[5,52.5,40,37.5],[50,10,40,80]]"),
+                new Option("C(3 + 1)", "[[5,10,40,23.33],[5,38.33,40,23.33],[5,66.34,40,23.34],[50,10,40,80]]"),
+                new Option("C(3 + 2)", "[[5,10,40,23.33],[5,38.33,40,23.33],[5,66.34,40,23.34],[50,10,40,37.5],[50,52.5,40,37.5]]"),
+                new Option("C(1/1 + 2/1)", "[[5,10,40,40],[50,10,40,55],[5,55,40,40],[50,70,40,25]]"),
+                new Option("C(1/2 + 1/2)", "[[5,10,40,25],[50,10,40,25],[5,40,40,50],[50,40,40,50]]"),
+                new Option("C(1/2 + 2/1)", "[[5,10,40,25],[50,10,40,50],[5,40,40,50],[50,65,40,25]]"),
+                new Option("C(2/1 + 1/1)", "[[5,10,40,55],[50,10,40,40],[5,70,40,25],[50,55,40,40]]"),
+                new Option("C(2/1 + 2/1)", "[[5,10,40,50],[50,10,40,50],[5,65,40,25],[50,65,40,25]]"),
+                new Option("C(2/1 + 1/2)", "[[5,10,40,50],[50,10,40,25],[5,65,40,25],[50,40,40,50]]"),
+                new Option("C(2/1/1 + 2/1/1)", "[[5,10,40,35],[50,10,40,35],[5,50,40,17.5],[50,50,40,17.5],[5,72.5,40,17.5],[50,72.5,40,17.5]]"),
+                new Option("C(1/1/2 + 1/1/2)", "[[5,10,40,17.5],[50,10,40,17.5],[5,32.5,40,17.5],[50,32.5,40,17.5],[5,55,40,35],[50,55,40,35]]"),
             ],
             type: "select"
         },
@@ -1126,18 +1152,26 @@ var __ECHARTS__ = {
             name: "布局方式", value: "auto",
             options: [
                 new Option("自动", "auto"),
-                new Option("R(1 + 2)", "[[5,10,90,40],[5,55,40,40],[55,55,40,40]]"),
+                new Option("R(1 + 2)", "[[5,10,85,40],[5,55,40,40],[50,55,40,40]]"),
                 new Option("R(1 + 3)", "[[5,10,90,40],[5,55,26.67,40],[36.66,55,26.66,40],[68.33,55,26.67,40]]"),
-                new Option("R(2 + 1)", "[[5,10,40,40],[55,10,40,40],[5,55,90,40]]"),
+                new Option("R(2 + 1)", "[[5,10,40,40],[50,10,40,40],[5,55,85,40]]"),
                 new Option("R(2 + 3)", "[[5,10,40,40],[55,10,40,40],[5,55,26.67,40],[36.67,55,26.66,40],[68.33,55,26.67,40]]"),
                 new Option("R(3 + 1)", "[[5,10,26.67,40],[36.67,10,26.67,40],[68.33,10,26.67,40],[5,55,90,40]]"),
                 new Option("R(3 + 2)", "[[5,10,26.67,40],[36.67,10,26.67,40],[68.33,10,26.67,40],[5,55,40,40],[55,55,40,40]]"),
-                new Option("C(1 + 2)", "[[5,10,40,80],[55,10,40,37.5],[55,52.5,40,37.5]]"),
-                new Option("C(1 + 3)", "[[5,10,40,80],[55,10,40,23.33],[55,38.33,40,23.33],[55,66.34,40,23.34]]"),
-                new Option("C(2 + 3)", "[[5,10,40,37.5],[5,52.5,40,37.5],[55,10,40,23.33],[55,38.33,40,23.33],[55,66.34,40,23.34]]"),
-                new Option("C(2 + 1)", "[[5,10,40,37.5],[5,52.5,40,37.5],[55,10,40,80]]"),
-                new Option("C(3 + 1)", "[[5,10,40,23.33],[5,38.33,40,23.33],[5,66.34,40,23.34],[55,10,40,80]]"),
-                new Option("C(3 + 2)", "[[5,10,40,23.33],[5,38.33,40,23.33],[5,66.34,40,23.34],[55,10,40,37.5],[55,52.5,40,37.5]]"),
+                new Option("C(1 + 2)", "[[5,10,40,80],[50,10,40,37.5],[50,52.5,40,37.5]]"),
+                new Option("C(1 + 3)", "[[5,10,40,80],[50,10,40,23.33],[50,38.33,40,23.33],[50,66.34,40,23.34]]"),
+                new Option("C(2 + 3)", "[[5,10,40,37.5],[5,52.5,40,37.5],[50,10,40,23.33],[50,38.33,40,23.33],[50,66.34,40,23.34]]"),
+                new Option("C(2 + 1)", "[[5,10,40,37.5],[5,52.5,40,37.5],[50,10,40,80]]"),
+                new Option("C(3 + 1)", "[[5,10,40,23.33],[5,38.33,40,23.33],[5,66.34,40,23.34],[50,10,40,80]]"),
+                new Option("C(3 + 2)", "[[5,10,40,23.33],[5,38.33,40,23.33],[5,66.34,40,23.34],[50,10,40,37.5],[50,52.5,40,37.5]]"),
+                new Option("C(1/1 + 2/1)", "[[5,10,40,40],[50,10,40,55],[5,55,40,40],[50,70,40,25]]"),
+                new Option("C(1/2 + 1/2)", "[[5,10,40,25],[50,10,40,25],[5,40,40,50],[50,40,40,50]]"),
+                new Option("C(1/2 + 2/1)", "[[5,10,40,25],[50,10,40,50],[5,40,40,50],[50,65,40,25]]"),
+                new Option("C(2/1 + 1/1)", "[[5,10,40,55],[50,10,40,40],[5,70,40,25],[50,55,40,40]]"),
+                new Option("C(2/1 + 2/1)", "[[5,10,40,50],[50,10,40,50],[5,65,40,25],[50,65,40,25]]"),
+                new Option("C(2/1 + 1/2)", "[[5,10,40,50],[50,10,40,25],[5,65,40,25],[50,40,40,50]]"),
+                new Option("C(2/1/1 + 2/1/1)", "[[5,10,40,35],[50,10,40,35],[5,50,40,17.5],[50,50,40,17.5],[5,72.5,40,17.5],[50,72.5,40,17.5]]"),
+                new Option("C(1/1/2 + 1/1/2)", "[[5,10,40,17.5],[50,10,40,17.5],[5,32.5,40,17.5],[50,32.5,40,17.5],[5,55,40,35],[50,55,40,35]]"),
             ],
             type: "select"
         },
@@ -1215,22 +1249,30 @@ var __ECHARTS__ = {
             name: "布局方式", value: "auto",
             options: [
                 new Option("自动", "auto"),
-                new Option("R(1 + 2)", "[[5,10,90,40],[5,55,40,40],[55,55,40,40]]"),
+                new Option("R(1 + 2)", "[[5,10,85,40],[5,55,40,40],[50,55,40,40]]"),
                 new Option("R(1 + 3)", "[[5,10,90,40],[5,55,26.67,40],[36.66,55,26.66,40],[68.33,55,26.67,40]]"),
-                new Option("R(2 + 1)", "[[5,10,40,40],[55,10,40,40],[5,55,90,40]]"),
+                new Option("R(2 + 1)", "[[5,10,40,40],[50,10,40,40],[5,55,85,40]]"),
                 new Option("R(2 + 3)", "[[5,10,40,40],[55,10,40,40],[5,55,26.67,40],[36.67,55,26.66,40],[68.33,55,26.67,40]]"),
                 new Option("R(3 + 1)", "[[5,10,26.67,40],[36.67,10,26.67,40],[68.33,10,26.67,40],[5,55,90,40]]"),
                 new Option("R(3 + 2)", "[[5,10,26.67,40],[36.67,10,26.67,40],[68.33,10,26.67,40],[5,55,40,40],[55,55,40,40]]"),
-                new Option("C(1 + 2)", "[[5,10,40,80],[55,10,40,37.5],[55,52.5,40,37.5]]"),
-                new Option("C(1 + 3)", "[[5,10,40,80],[55,10,40,23.33],[55,38.33,40,23.33],[55,66.34,40,23.34]]"),
-                new Option("C(2 + 3)", "[[5,10,40,37.5],[5,52.5,40,37.5],[55,10,40,23.33],[55,38.33,40,23.33],[55,66.34,40,23.34]]"),
-                new Option("C(2 + 1)", "[[5,10,40,37.5],[5,52.5,40,37.5],[55,10,40,80]]"),
-                new Option("C(3 + 1)", "[[5,10,40,23.33],[5,38.33,40,23.33],[5,66.34,40,23.34],[55,10,40,80]]"),
-                new Option("C(3 + 2)", "[[5,10,40,23.33],[5,38.33,40,23.33],[5,66.34,40,23.34],[55,10,40,37.5],[55,52.5,40,37.5]]"),
+                new Option("C(1 + 2)", "[[5,10,40,80],[50,10,40,37.5],[50,52.5,40,37.5]]"),
+                new Option("C(1 + 3)", "[[5,10,40,80],[50,10,40,23.33],[50,38.33,40,23.33],[50,66.34,40,23.34]]"),
+                new Option("C(2 + 3)", "[[5,10,40,37.5],[5,52.5,40,37.5],[50,10,40,23.33],[50,38.33,40,23.33],[50,66.34,40,23.34]]"),
+                new Option("C(2 + 1)", "[[5,10,40,37.5],[5,52.5,40,37.5],[50,10,40,80]]"),
+                new Option("C(3 + 1)", "[[5,10,40,23.33],[5,38.33,40,23.33],[5,66.34,40,23.34],[50,10,40,80]]"),
+                new Option("C(3 + 2)", "[[5,10,40,23.33],[5,38.33,40,23.33],[5,66.34,40,23.34],[50,10,40,37.5],[50,52.5,40,37.5]]"),
+                new Option("C(1/1 + 2/1)", "[[5,10,40,40],[50,10,40,55],[5,55,40,40],[50,70,40,25]]"),
+                new Option("C(1/2 + 1/2)", "[[5,10,40,25],[50,10,40,25],[5,40,40,50],[50,40,40,50]]"),
+                new Option("C(1/2 + 2/1)", "[[5,10,40,25],[50,10,40,50],[5,40,40,50],[50,65,40,25]]"),
+                new Option("C(2/1 + 1/1)", "[[5,10,40,55],[50,10,40,40],[5,70,40,25],[50,55,40,40]]"),
+                new Option("C(2/1 + 2/1)", "[[5,10,40,50],[50,10,40,50],[5,65,40,25],[50,65,40,25]]"),
+                new Option("C(2/1 + 1/2)", "[[5,10,40,50],[50,10,40,25],[5,65,40,25],[50,40,40,50]]"),
+                new Option("C(2/1/1 + 2/1/1)", "[[5,10,40,35],[50,10,40,35],[5,50,40,17.5],[50,50,40,17.5],[5,72.5,40,17.5],[50,72.5,40,17.5]]"),
+                new Option("C(1/1/2 + 1/1/2)", "[[5,10,40,17.5],[50,10,40,17.5],[5,32.5,40,17.5],[50,32.5,40,17.5],[5,55,40,35],[50,55,40,35]]"),
             ],
             type: "select"
         },
-        multiGraphTypes: {name: "图形组合", value: "['bar', 'line', 'pie', 'scatter', 'funnel', 'other']", type: "input"},
+        multiGraphTypes: {name: "图形组合", value: "bar,line,pie,scatter,calendar,funnel,area", type: "echarts"},
         multiGraphGroup: {name: "序列分组", value: 2, type: "number", attribute: {min: 1, max: 4, step: 1}},
 
         hr_gauge: {name: "仪表盘", value: "", type: "hr"},
@@ -1238,18 +1280,26 @@ var __ECHARTS__ = {
             name: "布局方式", value: "auto",
             options: [
                 new Option("自动", "auto"),
-                new Option("R(1 + 2)", "[[5,10,90,40],[5,55,40,40],[55,55,40,40]]"),
+                new Option("R(1 + 2)", "[[5,10,85,40],[5,55,40,40],[50,55,40,40]]"),
                 new Option("R(1 + 3)", "[[5,10,90,40],[5,55,26.67,40],[36.66,55,26.66,40],[68.33,55,26.67,40]]"),
-                new Option("R(2 + 1)", "[[5,10,40,40],[55,10,40,40],[5,55,90,40]]"),
+                new Option("R(2 + 1)", "[[5,10,40,40],[50,10,40,40],[5,55,85,40]]"),
                 new Option("R(2 + 3)", "[[5,10,40,40],[55,10,40,40],[5,55,26.67,40],[36.67,55,26.66,40],[68.33,55,26.67,40]]"),
                 new Option("R(3 + 1)", "[[5,10,26.67,40],[36.67,10,26.67,40],[68.33,10,26.67,40],[5,55,90,40]]"),
                 new Option("R(3 + 2)", "[[5,10,26.67,40],[36.67,10,26.67,40],[68.33,10,26.67,40],[5,55,40,40],[55,55,40,40]]"),
-                new Option("C(1 + 2)", "[[5,10,40,80],[55,10,40,37.5],[55,52.5,40,37.5]]"),
-                new Option("C(1 + 3)", "[[5,10,40,80],[55,10,40,23.33],[55,38.33,40,23.33],[55,66.34,40,23.34]]"),
-                new Option("C(2 + 3)", "[[5,10,40,37.5],[5,52.5,40,37.5],[55,10,40,23.33],[55,38.33,40,23.33],[55,66.34,40,23.34]]"),
-                new Option("C(2 + 1)", "[[5,10,40,37.5],[5,52.5,40,37.5],[55,10,40,80]]"),
-                new Option("C(3 + 1)", "[[5,10,40,23.33],[5,38.33,40,23.33],[5,66.34,40,23.34],[55,10,40,80]]"),
-                new Option("C(3 + 2)", "[[5,10,40,23.33],[5,38.33,40,23.33],[5,66.34,40,23.34],[55,10,40,37.5],[55,52.5,40,37.5]]"),
+                new Option("C(1 + 2)", "[[5,10,40,80],[50,10,40,37.5],[50,52.5,40,37.5]]"),
+                new Option("C(1 + 3)", "[[5,10,40,80],[50,10,40,23.33],[50,38.33,40,23.33],[50,66.34,40,23.34]]"),
+                new Option("C(2 + 3)", "[[5,10,40,37.5],[5,52.5,40,37.5],[50,10,40,23.33],[50,38.33,40,23.33],[50,66.34,40,23.34]]"),
+                new Option("C(2 + 1)", "[[5,10,40,37.5],[5,52.5,40,37.5],[50,10,40,80]]"),
+                new Option("C(3 + 1)", "[[5,10,40,23.33],[5,38.33,40,23.33],[5,66.34,40,23.34],[50,10,40,80]]"),
+                new Option("C(3 + 2)", "[[5,10,40,23.33],[5,38.33,40,23.33],[5,66.34,40,23.34],[50,10,40,37.5],[50,52.5,40,37.5]]"),
+                new Option("C(1/1 + 2/1)", "[[5,10,40,40],[50,10,40,55],[5,55,40,40],[50,70,40,25]]"),
+                new Option("C(1/2 + 1/2)", "[[5,10,40,25],[50,10,40,25],[5,40,40,50],[50,40,40,50]]"),
+                new Option("C(1/2 + 2/1)", "[[5,10,40,25],[50,10,40,50],[5,40,40,50],[50,65,40,25]]"),
+                new Option("C(2/1 + 1/1)", "[[5,10,40,55],[50,10,40,40],[5,70,40,25],[50,55,40,40]]"),
+                new Option("C(2/1 + 2/1)", "[[5,10,40,50],[50,10,40,50],[5,65,40,25],[50,65,40,25]]"),
+                new Option("C(2/1 + 1/2)", "[[5,10,40,50],[50,10,40,25],[5,65,40,25],[50,40,40,50]]"),
+                new Option("C(2/1/1 + 2/1/1)", "[[5,10,40,35],[50,10,40,35],[5,50,40,17.5],[50,50,40,17.5],[5,72.5,40,17.5],[50,72.5,40,17.5]]"),
+                new Option("C(1/1/2 + 1/1/2)", "[[5,10,40,17.5],[50,10,40,17.5],[5,32.5,40,17.5],[50,32.5,40,17.5],[5,55,40,35],[50,55,40,35]]"),
             ],
             type: "select"
         },
@@ -1333,18 +1383,26 @@ var __ECHARTS__ = {
             name: "布局方式", value: "auto",
             options: [
                 new Option("自动", "auto"),
-                new Option("R(1 + 2)", "[[5,10,90,40],[5,55,40,40],[55,55,40,40]]"),
+                new Option("R(1 + 2)", "[[5,10,85,40],[5,55,40,40],[50,55,40,40]]"),
                 new Option("R(1 + 3)", "[[5,10,90,40],[5,55,26.67,40],[36.66,55,26.66,40],[68.33,55,26.67,40]]"),
-                new Option("R(2 + 1)", "[[5,10,40,40],[55,10,40,40],[5,55,90,40]]"),
+                new Option("R(2 + 1)", "[[5,10,40,40],[50,10,40,40],[5,55,85,40]]"),
                 new Option("R(2 + 3)", "[[5,10,40,40],[55,10,40,40],[5,55,26.67,40],[36.67,55,26.66,40],[68.33,55,26.67,40]]"),
                 new Option("R(3 + 1)", "[[5,10,26.67,40],[36.67,10,26.67,40],[68.33,10,26.67,40],[5,55,90,40]]"),
                 new Option("R(3 + 2)", "[[5,10,26.67,40],[36.67,10,26.67,40],[68.33,10,26.67,40],[5,55,40,40],[55,55,40,40]]"),
-                new Option("C(1 + 2)", "[[5,10,40,80],[55,10,40,37.5],[55,52.5,40,37.5]]"),
-                new Option("C(1 + 3)", "[[5,10,40,80],[55,10,40,23.33],[55,38.33,40,23.33],[55,66.34,40,23.34]]"),
-                new Option("C(2 + 3)", "[[5,10,40,37.5],[5,52.5,40,37.5],[55,10,40,23.33],[55,38.33,40,23.33],[55,66.34,40,23.34]]"),
-                new Option("C(2 + 1)", "[[5,10,40,37.5],[5,52.5,40,37.5],[55,10,40,80]]"),
-                new Option("C(3 + 1)", "[[5,10,40,23.33],[5,38.33,40,23.33],[5,66.34,40,23.34],[55,10,40,80]]"),
-                new Option("C(3 + 2)", "[[5,10,40,23.33],[5,38.33,40,23.33],[5,66.34,40,23.34],[55,10,40,37.5],[55,52.5,40,37.5]]"),
+                new Option("C(1 + 2)", "[[5,10,40,80],[50,10,40,37.5],[50,52.5,40,37.5]]"),
+                new Option("C(1 + 3)", "[[5,10,40,80],[50,10,40,23.33],[50,38.33,40,23.33],[50,66.34,40,23.34]]"),
+                new Option("C(2 + 3)", "[[5,10,40,37.5],[5,52.5,40,37.5],[50,10,40,23.33],[50,38.33,40,23.33],[50,66.34,40,23.34]]"),
+                new Option("C(2 + 1)", "[[5,10,40,37.5],[5,52.5,40,37.5],[50,10,40,80]]"),
+                new Option("C(3 + 1)", "[[5,10,40,23.33],[5,38.33,40,23.33],[5,66.34,40,23.34],[50,10,40,80]]"),
+                new Option("C(3 + 2)", "[[5,10,40,23.33],[5,38.33,40,23.33],[5,66.34,40,23.34],[50,10,40,37.5],[50,52.5,40,37.5]]"),
+                new Option("C(1/1 + 2/1)", "[[5,10,40,40],[50,10,40,55],[5,55,40,40],[50,70,40,25]]"),
+                new Option("C(1/2 + 1/2)", "[[5,10,40,25],[50,10,40,25],[5,40,40,50],[50,40,40,50]]"),
+                new Option("C(1/2 + 2/1)", "[[5,10,40,25],[50,10,40,50],[5,40,40,50],[50,65,40,25]]"),
+                new Option("C(2/1 + 1/1)", "[[5,10,40,55],[50,10,40,40],[5,70,40,25],[50,55,40,40]]"),
+                new Option("C(2/1 + 2/1)", "[[5,10,40,50],[50,10,40,50],[5,65,40,25],[50,65,40,25]]"),
+                new Option("C(2/1 + 1/2)", "[[5,10,40,50],[50,10,40,25],[5,65,40,25],[50,40,40,50]]"),
+                new Option("C(2/1/1 + 2/1/1)", "[[5,10,40,35],[50,10,40,35],[5,50,40,17.5],[50,50,40,17.5],[5,72.5,40,17.5],[50,72.5,40,17.5]]"),
+                new Option("C(1/1/2 + 1/1/2)", "[[5,10,40,17.5],[50,10,40,17.5],[5,32.5,40,17.5],[50,32.5,40,17.5],[5,55,40,35],[50,55,40,35]]"),
             ],
             type: "select"
         },
@@ -1354,8 +1412,8 @@ var __ECHARTS__ = {
             options: [new Option("圆形", "circle"), new Option("心形", "cardioid"), new Option("菱形", "diamond"), new Option("三角形", "triangle"), new Option("右向三角形", "triangle-forward"), new Option("五边形", "pentagon"), new Option("星形", "star")],
             type: "select"
         },
-        wordCloudSizeRange: {name: "字号区间", value: "[16, 60]", type: "input"},
-        wordCloudRotationRange: {name: "角度区间", value: "[-45, 45]", type: "input"},
+        wordCloudSizeRange: {name: "字号区间", value: "16,60", type: "ranges",attribute: {min: 1, max: 100, step: 1, unit: ""}},
+        wordCloudRotationRange: {name: "角度区间", value: "-45,45", type: "ranges",attribute: {min: -360, max: 360, step: 1, unit: ""}},
         wordCloudGroupWith: {name: "序列分组", value: 2, type: "number", attribute: {min: 1, max: 4, step: 1}},
 
         hr_liqiud: {name: "水球图", value: "", type: "hr"},
@@ -1363,18 +1421,26 @@ var __ECHARTS__ = {
             name: "布局方式", value: "auto",
             options: [
                 new Option("自动", "auto"),
-                new Option("R(1 + 2)", "[[5,10,90,40],[5,55,40,40],[55,55,40,40]]"),
+                new Option("R(1 + 2)", "[[5,10,85,40],[5,55,40,40],[50,55,40,40]]"),
                 new Option("R(1 + 3)", "[[5,10,90,40],[5,55,26.67,40],[36.66,55,26.66,40],[68.33,55,26.67,40]]"),
-                new Option("R(2 + 1)", "[[5,10,40,40],[55,10,40,40],[5,55,90,40]]"),
+                new Option("R(2 + 1)", "[[5,10,40,40],[50,10,40,40],[5,55,85,40]]"),
                 new Option("R(2 + 3)", "[[5,10,40,40],[55,10,40,40],[5,55,26.67,40],[36.67,55,26.66,40],[68.33,55,26.67,40]]"),
                 new Option("R(3 + 1)", "[[5,10,26.67,40],[36.67,10,26.67,40],[68.33,10,26.67,40],[5,55,90,40]]"),
                 new Option("R(3 + 2)", "[[5,10,26.67,40],[36.67,10,26.67,40],[68.33,10,26.67,40],[5,55,40,40],[55,55,40,40]]"),
-                new Option("C(1 + 2)", "[[5,10,40,80],[55,10,40,37.5],[55,52.5,40,37.5]]"),
-                new Option("C(1 + 3)", "[[5,10,40,80],[55,10,40,23.33],[55,38.33,40,23.33],[55,66.34,40,23.34]]"),
-                new Option("C(2 + 3)", "[[5,10,40,37.5],[5,52.5,40,37.5],[55,10,40,23.33],[55,38.33,40,23.33],[55,66.34,40,23.34]]"),
-                new Option("C(2 + 1)", "[[5,10,40,37.5],[5,52.5,40,37.5],[55,10,40,80]]"),
-                new Option("C(3 + 1)", "[[5,10,40,23.33],[5,38.33,40,23.33],[5,66.34,40,23.34],[55,10,40,80]]"),
-                new Option("C(3 + 2)", "[[5,10,40,23.33],[5,38.33,40,23.33],[5,66.34,40,23.34],[55,10,40,37.5],[55,52.5,40,37.5]]"),
+                new Option("C(1 + 2)", "[[5,10,40,80],[50,10,40,37.5],[50,52.5,40,37.5]]"),
+                new Option("C(1 + 3)", "[[5,10,40,80],[50,10,40,23.33],[50,38.33,40,23.33],[50,66.34,40,23.34]]"),
+                new Option("C(2 + 3)", "[[5,10,40,37.5],[5,52.5,40,37.5],[50,10,40,23.33],[50,38.33,40,23.33],[50,66.34,40,23.34]]"),
+                new Option("C(2 + 1)", "[[5,10,40,37.5],[5,52.5,40,37.5],[50,10,40,80]]"),
+                new Option("C(3 + 1)", "[[5,10,40,23.33],[5,38.33,40,23.33],[5,66.34,40,23.34],[50,10,40,80]]"),
+                new Option("C(3 + 2)", "[[5,10,40,23.33],[5,38.33,40,23.33],[5,66.34,40,23.34],[50,10,40,37.5],[50,52.5,40,37.5]]"),
+                new Option("C(1/1 + 2/1)", "[[5,10,40,40],[50,10,40,55],[5,55,40,40],[50,70,40,25]]"),
+                new Option("C(1/2 + 1/2)", "[[5,10,40,25],[50,10,40,25],[5,40,40,50],[50,40,40,50]]"),
+                new Option("C(1/2 + 2/1)", "[[5,10,40,25],[50,10,40,50],[5,40,40,50],[50,65,40,25]]"),
+                new Option("C(2/1 + 1/1)", "[[5,10,40,55],[50,10,40,40],[5,70,40,25],[50,55,40,40]]"),
+                new Option("C(2/1 + 2/1)", "[[5,10,40,50],[50,10,40,50],[5,65,40,25],[50,65,40,25]]"),
+                new Option("C(2/1 + 1/2)", "[[5,10,40,50],[50,10,40,25],[5,65,40,25],[50,40,40,50]]"),
+                new Option("C(2/1/1 + 2/1/1)", "[[5,10,40,35],[50,10,40,35],[5,50,40,17.5],[50,50,40,17.5],[5,72.5,40,17.5],[50,72.5,40,17.5]]"),
+                new Option("C(1/1/2 + 1/1/2)", "[[5,10,40,17.5],[50,10,40,17.5],[5,32.5,40,17.5],[50,32.5,40,17.5],[5,55,40,35],[50,55,40,35]]"),
             ],
             type: "select"
         },
@@ -1415,18 +1481,26 @@ var __ECHARTS__ = {
             name: "布局方式", value: "auto",
             options: [
                 new Option("自动", "auto"),
-                new Option("R(1 + 2)", "[[5,10,90,40],[5,55,40,40],[55,55,40,40]]"),
+                new Option("R(1 + 2)", "[[5,10,85,40],[5,55,40,40],[50,55,40,40]]"),
                 new Option("R(1 + 3)", "[[5,10,90,40],[5,55,26.67,40],[36.66,55,26.66,40],[68.33,55,26.67,40]]"),
-                new Option("R(2 + 1)", "[[5,10,40,40],[55,10,40,40],[5,55,90,40]]"),
+                new Option("R(2 + 1)", "[[5,10,40,40],[50,10,40,40],[5,55,85,40]]"),
                 new Option("R(2 + 3)", "[[5,10,40,40],[55,10,40,40],[5,55,26.67,40],[36.67,55,26.66,40],[68.33,55,26.67,40]]"),
                 new Option("R(3 + 1)", "[[5,10,26.67,40],[36.67,10,26.67,40],[68.33,10,26.67,40],[5,55,90,40]]"),
                 new Option("R(3 + 2)", "[[5,10,26.67,40],[36.67,10,26.67,40],[68.33,10,26.67,40],[5,55,40,40],[55,55,40,40]]"),
-                new Option("C(1 + 2)", "[[5,10,40,80],[55,10,40,37.5],[55,52.5,40,37.5]]"),
-                new Option("C(1 + 3)", "[[5,10,40,80],[55,10,40,23.33],[55,38.33,40,23.33],[55,66.34,40,23.34]]"),
-                new Option("C(2 + 3)", "[[5,10,40,37.5],[5,52.5,40,37.5],[55,10,40,23.33],[55,38.33,40,23.33],[55,66.34,40,23.34]]"),
-                new Option("C(2 + 1)", "[[5,10,40,37.5],[5,52.5,40,37.5],[55,10,40,80]]"),
-                new Option("C(3 + 1)", "[[5,10,40,23.33],[5,38.33,40,23.33],[5,66.34,40,23.34],[55,10,40,80]]"),
-                new Option("C(3 + 2)", "[[5,10,40,23.33],[5,38.33,40,23.33],[5,66.34,40,23.34],[55,10,40,37.5],[55,52.5,40,37.5]]"),
+                new Option("C(1 + 2)", "[[5,10,40,80],[50,10,40,37.5],[50,52.5,40,37.5]]"),
+                new Option("C(1 + 3)", "[[5,10,40,80],[50,10,40,23.33],[50,38.33,40,23.33],[50,66.34,40,23.34]]"),
+                new Option("C(2 + 3)", "[[5,10,40,37.5],[5,52.5,40,37.5],[50,10,40,23.33],[50,38.33,40,23.33],[50,66.34,40,23.34]]"),
+                new Option("C(2 + 1)", "[[5,10,40,37.5],[5,52.5,40,37.5],[50,10,40,80]]"),
+                new Option("C(3 + 1)", "[[5,10,40,23.33],[5,38.33,40,23.33],[5,66.34,40,23.34],[50,10,40,80]]"),
+                new Option("C(3 + 2)", "[[5,10,40,23.33],[5,38.33,40,23.33],[5,66.34,40,23.34],[50,10,40,37.5],[50,52.5,40,37.5]]"),
+                new Option("C(1/1 + 2/1)", "[[5,10,40,40],[50,10,40,55],[5,55,40,40],[50,70,40,25]]"),
+                new Option("C(1/2 + 1/2)", "[[5,10,40,25],[50,10,40,25],[5,40,40,50],[50,40,40,50]]"),
+                new Option("C(1/2 + 2/1)", "[[5,10,40,25],[50,10,40,50],[5,40,40,50],[50,65,40,25]]"),
+                new Option("C(2/1 + 1/1)", "[[5,10,40,55],[50,10,40,40],[5,70,40,25],[50,55,40,40]]"),
+                new Option("C(2/1 + 2/1)", "[[5,10,40,50],[50,10,40,50],[5,65,40,25],[50,65,40,25]]"),
+                new Option("C(2/1 + 1/2)", "[[5,10,40,50],[50,10,40,25],[5,65,40,25],[50,40,40,50]]"),
+                new Option("C(2/1/1 + 2/1/1)", "[[5,10,40,35],[50,10,40,35],[5,50,40,17.5],[50,50,40,17.5],[5,72.5,40,17.5],[50,72.5,40,17.5]]"),
+                new Option("C(1/1/2 + 1/1/2)", "[[5,10,40,17.5],[50,10,40,17.5],[5,32.5,40,17.5],[50,32.5,40,17.5],[5,55,40,35],[50,55,40,35]]"),
             ],
             type: "select"
         },
@@ -1475,28 +1549,40 @@ var __ECHARTS__ = {
         treemapLabelFontSize: {name: "标签字号", value: "22", type: "number", attribute: {min: 1, max: 30, step: 1}},
         treemapLabelPosition: {
             name: "位置",
-            value: '["5%","5%"]',
-            type: "input"
+            value: '5%,5%',
+            type: "ranges",attribute: {min: 1, max: 100, step: 1, unit: "%"}
         },
         treemapItemStyleBorderRadius: {
             name: "圆角半径", value: 0, type: "number", attribute: {min: 0, max: 30, step: 1}
         },
 
         hr_calendar: {name: "日历图", value: "", type: "hr"},
-        calendarType: {
-            name: "类型",
-            value: "heatmap",
-            options: [new Option("热图", "heatmap"), new Option("散点", "scatter"), new Option("效应散点", "effectScatter")],
-            type: "select"
-        },
         calendarOrient: {
             name: "布局方向",
             value: "vertical",
             options: [new Option("横向", "horizontal"), new Option("纵向", "vertical")],
             type: "select"
         },
+        calendarType: {
+            name: "类型",
+            value: "heatmap",
+            options: [new Option("热图", "heatmap"), new Option("散点", "scatter"), new Option("效应散点", "effectScatter")],
+            type: "select"
+        },
         calendarLabelColor: {
             value: "auto", name: "标签颜色", type: "color"
+        },
+        calendarSplitLineWidth:{
+            name: "分割线宽度", value: 1, type: "number", attribute: {min: 0, max: 5, step: 0.1}
+        },
+        calendarSplitLineColor: {
+            value: "auto", name: "分割线颜色", type: "color"
+        },
+        calendarBorderWidth:{
+            name: "边框宽度", value: 0.5, type: "number", attribute: {min: 0, max: 2.5, step: 0.1}
+        },
+        calendarBorderColor: {
+            value: "auto", name: "边框颜色", type: "color"
         },
 
         hr_Boxplot: {name: "盒须图", value: "", type: "hr"},
@@ -1512,7 +1598,7 @@ var __ECHARTS__ = {
             options: [new Option("静态散点", "scatter"), new Option("效应散点", "effectScatter")],
             type: "select"
         },
-        boxplotScatterSymbolSize: {name: "节点大小", value: "[6,18]", type: "input"},
+        boxplotScatterSymbolSize: {name: "节点大小", value: "6,18", type: "ranges",attribute: {min: 1, max: 50, step: 1, unit: ""}},
         boxplotScatterSymbolShape: {
             name: "节点形状",
             value: "circle",
@@ -1553,7 +1639,7 @@ var __ECHARTS__ = {
         },
         label3DTextColor: {name: "标签颜色", value: "auto", type: "color"},
         label3DFontSize: {name: "标签字号", value: 12, type: "number", attribute: {min: 1, max: 30, step: 1}},
-        scatterSymbolSizeFor3D: {name: "节点大小", value: "[6,18]", type: "input"},
+        scatterSymbolSizeFor3D: {name: "节点大小", value: "6,18", type: "ranges",attribute: {min: 1, max: 50, step: 1, unit: "%"}},
         scatterSymbolShapeFor3D: {
             name: "节点形状",
             value: "circle",
@@ -1595,7 +1681,7 @@ var __ECHARTS__ = {
             type: "select"
         },
         geoLineSymbolSize: {name: "符号大小", value: 10, type: "number", attribute: {min: 1, max: 30, step: 1}},
-        geoScatterSymbolSize: {name: "节点大小", value: "[6,18]", type: "input"},
+        geoScatterSymbolSize: {name: "节点大小", value: "6,18", type: "ranges",attribute: {min: 1, max: 50, step: 1, unit: ""}},
         geoScatterType: {
             name: "节点类型",
             value: "scatter",
@@ -1603,7 +1689,7 @@ var __ECHARTS__ = {
             type: "select"
         },
         geoLineCurveness: {name: "线路曲率", value: 0.2, type: "number", attribute: {min: 0, max: 1, step: 0.1}},
-        geoLinePeriod: {name: "周期速度(秒)", value: 5, type: "number", attribute: {min: 1, max: 10, step: 1}},
+        geoLinePeriod: {name: "周期速度(毫秒)", value: 5000, type: "number", attribute: {min: 1000, max: 10000, step: 1000}},
 
         hr_tree: {name: "树形结构", value: "", type: "hr"},
         treeLayout: {
@@ -1676,7 +1762,7 @@ var __ECHARTS__ = {
         bannerTextColor: {value: "auto", name: "文本颜色", type: "color"},
         bannerFontFamily: {name: "字体", value: "sans-serif", type: "input"},
         bannerFontSize: {name: "字号", value: 100, type: "number", attribute: {min: 1, max: 30, step: 1}},
-        bannerShadesSpeed: {name: "速度(秒)", value: 3, type: "number", attribute: {min: 1, max: 5, step: 1}},
+        bannerShadesSpeed: {name: "速度(毫秒)", value: 3000, type: "number", attribute: {min: 1000, max: 5000, step: 100}},
 
         hr_scrollingScreen: {name: "数据滚屏", value: "", type: "hr"},
         scrollingScreenLeft: {
@@ -1691,7 +1777,7 @@ var __ECHARTS__ = {
         scrollingScreenColumnFontFillColor: {value: "auto", name: "表头颜色", type: "color"},
         scrollingScreenOpacity: {value: 0.4, name: "透明度", type: "number", attribute: {min: 0, max: 1, step: 0.1}},
         scrollingScreenFontSize: {name: "字号", value: 16, type: "number", attribute: {min: 1, max: 30, step: 1}},
-        scrollingScreenSpeed: {name: "速度(秒)", value: 0.01, type: "number", attribute: {min: 0, max: 1, step: 0.01}},
+        scrollingScreenSpeed: {name: "速度(毫秒)", value: 10, type: "number", attribute: {min: 0, max: 2000, step: 10}},
 
         hr_walkingLantern: {name: "数据走马灯", value: "", type: "hr"},
         walkingLanternDirection: {
@@ -1712,7 +1798,7 @@ var __ECHARTS__ = {
         walkingLanternOpacity: {value: 0.4, name: "透明度", type: "number", attribute: {min: 0, max: 1, step: 0.1}},
         walkingLanternFontSize: {name: "字号", value: 16, type: "number", attribute: {min: 1, max: 30, step: 1}},
         walkingLanternLines: {name: "显示行数", value: 10, type: "number", attribute: {min: 1, max: 30, step: 1}},
-        walkingLanternSpeed: {name: "速度(秒)", value: 0.01, type: "number", attribute: {min: 0, max: 1, step: 0.01}},
+        walkingLanternSpeed: {name: "速度(毫秒)", value: 10, type: "number", attribute: {min: 0, max: 2000, step: 10}},
 
         hr_windowShades: {name: "数据百叶窗", value: "", type: "hr"},
         windowShadesTop: {
@@ -1734,7 +1820,7 @@ var __ECHARTS__ = {
         windowShadesOpacity: {value: 0.4, name: "透明度", type: "number", attribute: {min: 0, max: 1, step: 0.1}},
         windowShadesFontSize: {name: "字号", value: 16, type: "number", attribute: {min: 1, max: 30, step: 1}},
         windowShadesLines: {name: "显示行数", value: 10, type: "number", attribute: {min: 1, max: 30, step: 1}},
-        windowShadesSpeed: {name: "速度(秒)", value: 0.01, type: "number", attribute: {min: 0, max: 1, step: 0.01}},
+        windowShadesSpeed: {name: "速度(毫秒)", value: 10, type: "number", attribute: {min: 0, max: 2000, step: 10}},
 
         hr_timeline: {name: "类目轴", value: "", type: "hr"},
         timelineDisplay: {
@@ -1767,7 +1853,7 @@ var __ECHARTS__ = {
             options: [new Option("柱状图", "bar"), new Option("线型图", "line"), new Option("面积图", "areaStyle"), new Option("饼图", "pie")],
             type: "select"
         },
-        seriesLoopPlayInterval: {name: "间隔(秒)", value: 3, type: "number", attribute: {min: 0, max: 5, step: 1}},
+        seriesLoopPlayInterval: {name: "间隔(毫秒)", value: 3000, type: "number", attribute: {min: 0, max: 5000, step: 100}},
 
         hr_parallelAxis: {name: "平行坐标", value: "", type: "hr"},
         parallelAxisLineWidth: {name: "线宽", value: 2, type: "number", attribute: {min: 1, max: 30, step: 1}},
@@ -1817,8 +1903,8 @@ var __ECHARTS__ = {
         hr_mathFunction: {name: "函数图像", value: "", type: "hr"},
         mathFunctionXRange: {
             name: "X区间",
-            value: "[-100, 100]",
-            type: "input"
+            value: "-100,100",
+            type: "ranges",attribute: {min: -100, max: 100, step: 1, unit: ""}
         },
         mathFunctionXGrainSize: {
             name: "X粒度",
@@ -1827,8 +1913,8 @@ var __ECHARTS__ = {
         },
         mathFunctionYRange: {
             name: "Y区间",
-            value: "[-100, 100]",
-            type: "input"
+            value: "-100,100",
+            type: "ranges",attribute: {min: -100, max: 100, step: 1, unit: ""}
         },
 
         hr_regression: {name: "回归参数", value: "", type: "hr"},
@@ -2169,6 +2255,22 @@ var __ECHARTS__ = {
                     __ECHARTS__.configs[this.id].value = this.title = (this.value + __ECHARTS__.configs[this.id].attribute.unit);
                 };
                 item.appendChild(input);
+            } else if (this.configs[name].type == "ranges") {
+                let input = UI.rangesChoice(
+                    __ECHARTS__.configs[name].attribute.min,
+                    __ECHARTS__.configs[name].attribute.max,
+                    __ECHARTS__.configs[name].attribute.unit,
+                    __ECHARTS__.configs[name].value,
+                    function (value) {
+                        __ECHARTS__.configs[name].value = value;
+                    });
+                input.id = name;
+                input.className = "ui-container-item-ranges";
+                if (typeof this.configs[name].title != "undefined")
+                    input.title = this.configs[name].title;
+                else
+                    input.title = this.configs[name].name;
+                item.appendChild(input);
             } else if (this.configs[name].type == "number") {
                 let input = document.createElement("input");
                 input.style.cssFloat = "right";
@@ -2180,13 +2282,25 @@ var __ECHARTS__ = {
                 input.className = "ui-container-item-number";
                 input.title = this.configs[name].value;
                 input.value = this.configs[name].value;
-                input.onkeypress = function(){
+                input.onkeypress = function () {
                     return false;
                 };
                 input.onchange = function () {
                     __ECHARTS__.configs[this.id].value = this.title = this.value;
                 };
                 item.appendChild(input);
+            } else if (this.configs[name].type == "echarts"){
+                let input = UI.echartsChoice(__ECHARTS__.configs[name].value, function (value) {
+                    __ECHARTS__.configs[name].value = value;
+                });
+                input.id = name;
+                input.className = "ui-container-item-echarts-choice";
+                if (typeof this.configs[name].title != "undefined")
+                    input.title = this.configs[name].title;
+                else
+                    input.title = this.configs[name].name;
+                item.appendChild(input);
+
             } else if (this.configs[name].type == "hr") {
                 span.innerHTML = "[ " + this.configs[name].name + " ]";
                 span.style.color = "var(--main-title-color)";
@@ -3664,12 +3778,14 @@ function getMultiGraphOption(configs, container, myChart, dataset) {
     } catch (e) {
     }
 
-    let types = configs.multiGraphTypes.value.toArray(['bar', 'line', 'pie', 'scatter', 'funnel', 'areaStyle'], ",");
+    let types = configs.multiGraphTypes.value.split(",");
     let cols = configs.multiGraphGroup.value;
     let source = getSource(dataset);
     let lines = Math.ceil((source.dimensions.length - 1) / cols);
     let legend = source.dimensions.slice(1, source.dimensions.length);
     let grids = getGrids(configs, source.dimensions.length, cols, lines, configs.multiGraphGrids.value);
+    let calendars = [];
+    let visualMaps = [];
 
     function getRadius(grid) {
         let width = Number(grid.width.split("%")[0]);
@@ -3689,7 +3805,7 @@ function getMultiGraphOption(configs, container, myChart, dataset) {
         let yAxis = [];
         for (let i = 0; i < source.dimensions.length - 1 && i < grids.length; i++) {
             let type = types[i % types.length];
-            if (type == "pie" || type == "funnel") {
+            if (type == "pie" || type == "funnel" || type == "calendar") {
                 xAxis.push(null);
                 yAxis.push(null);
             } else {
@@ -3725,62 +3841,9 @@ function getMultiGraphOption(configs, container, myChart, dataset) {
         let series = [];
         for (let i = 0; i < source.dimensions.length - 1 && i < grids.length; i++) {
             let type = types[i % types.length];
-            let ia = source.getMinMaxValue(source.dimensions[i + 1]);
+            let ia = source.getMinMaxValue(source.dimensions[i + 1], "number");
             let colorindex = i % colors.length;
-            let serie = {
-                id: source.dimensions[i + 1],
-                name: source.dimensions[i + 1],
-                colorBy: configs.lineColorby.value,
-                type: "line",
-                areaStyle: configs.areaStyleGradientColor.value.toBoolean() ? {
-                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-                        offset: 0,
-                        color: colors[colorindex]
-                    }, {
-                        offset: 1,
-                        color: colors[colorindex + 1]
-                    }])
-                } : {},
-                sampling: "average",
-                data: source.getItems(source.dimensions[i + 1]),
-                label: {
-                    show: configs.lineLabelDisplay.value.toBoolean(),
-                    align: "center",
-                    verticalAlign: "middle",
-                    position: "top",
-                    distance: 15,
-                    formatter: "{value|{c}}",
-                    rotate: configs.lineLabelRotate.value,
-                    rich: {
-                        value: {
-                            color: configs.lineLabelTextColor.value,
-                            fontSize: configs.lineLabelFontSize.value,
-                        }
-                    }
-                },
-                itemStyle: {},
-                lineStyle: {
-                    width: Number(configs.lineStyleWidth.value),
-                },
-                emphasis: {
-                    label: {
-                        show: configs.lineEmphasisLabelDisplay.value.toBoolean(),
-                        rich: {
-                            value: {
-                                fontWeight: "bold",
-                            }
-                        }
-                    }
-                },
-                symbol: configs.lineSymbol.value,
-                symbolSize: configs.lineSymbolSize.value,
-                smooth: configs.lineSmooth.value.toBoolean(),
-                markPoint: getMarkPoint(configs),
-                markLine: getMarkLine(configs),
-                markArea: {},
-                xAxisIndex: i,
-                yAxisIndex: i,
-            };
+            let serie = null;
             switch (type) {
                 case "pie":
                     let radius = getRadius(grids[i]);
@@ -4082,9 +4145,192 @@ function getMultiGraphOption(configs, container, myChart, dataset) {
                         }
                     }
                     break;
+                case "calendar":
+                    let visualMap = {
+                        show: false,
+                        min: ia.min,
+                        max: ia.max,
+                        seriesIndex: i,
+                        dimension: 1,
+                    };
+                    visualMaps.push(visualMap);
+
+                    let rangeMin = "NaN-NaN-NaN";
+                    let rangeMax = "NaN-NaN-NaN";
+                    let data = source.getValues(source.dimensions[i + 1]);
+                    for (let i = 0; i < data.length; i++) {
+                        if (rangeMin == "NaN-NaN-NaN" || rangeMax == "NaN-NaN-NaN") {
+                            rangeMin = rangeMax = echarts.format.formatTime("yyyy-MM-dd", data[i][0]);
+                        } else {
+                            rangeMin = echarts.format.formatTime("yyyy-MM-dd", data[i][0]) < rangeMin ? echarts.format.formatTime("yyyy-MM-dd", data[i][0]) : rangeMin;
+                            rangeMax = echarts.format.formatTime("yyyy-MM-dd", data[i][0]) > rangeMax ? echarts.format.formatTime("yyyy-MM-dd", data[i][0]) : rangeMax;
+                        }
+                    }
+                    if (rangeMin != "NaN-NaN-NaN" && rangeMax != "NaN-NaN-NaN") {
+                        let calendar = {
+                            orient: configs.calendarOrient.value, //"vertical",//"horizontal"
+                            top: grids[i].top,
+                            bottom: grids[i].bottom,
+                            left: grids[i].left,
+                            right: grids[i].right,
+                            cellSize: ["auto", "auto"],
+                            splitLine: {
+                                lineStyle: {
+                                    color: configs.calendarSplitLineColor.value,
+                                    width: configs.calendarSplitLineWidth.value
+                                }
+                            },
+                            itemStyle: {
+                                borderColor: configs.calendarBorderColor.value,
+                                borderWidth: configs.calendarBorderWidth.value,
+                            },
+                            range: [rangeMin, rangeMax],
+                            yearLabel: {
+                                show: true,
+                                color: configs.calendarLabelColor.value,
+                                margin: 20
+                            },
+                            dayLabel: {
+                                nameMap: "cn",
+                                color: configs.calendarLabelColor.value,
+                                margin: 5
+                            },
+                            monthLabel: {
+                                nameMap: "cn",
+                                color: configs.calendarLabelColor.value
+                            },
+                        };
+                        calendars.push(calendar);
+                        serie = {
+                            id: source.dimensions[i + 1],
+                            name: source.dimensions[i + 1],
+                            type: configs.calendarType.value, //["heatmap","scatter","effectScatter"]
+                            coordinateSystem: "calendar",
+                            calendarIndex: calendars.length - 1,
+                            data: data,
+                        };
+                    } else if (typeof __LOGS__ !== "undefined")
+                        __LOGS__.viewMessage("日期序列( " + source.dimensions[0] + " )异常,无法完成日历视图绘制.", true);
+                    else
+                        UI.alert.show("注意", "日期序列( " + source.dimensions[0] + " )异常,无法完成日历视图绘制.", "auto");
+                    break;
+                case "area":
+                    serie = {
+                        id: source.dimensions[i + 1],
+                        name: source.dimensions[i + 1],
+                        colorBy: configs.lineColorby.value,
+                        type: "line",
+                        areaStyle: configs.areaStyleGradientColor.value.toBoolean() ? {
+                            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                                offset: 0,
+                                color: colors[colorindex]
+                            }, {
+                                offset: 1,
+                                color: colors[colorindex + 1]
+                            }])
+                        } : {},
+                        sampling: "average",
+                        data: source.getItems(source.dimensions[i + 1]),
+                        label: {
+                            show: configs.lineLabelDisplay.value.toBoolean(),
+                            align: "center",
+                            verticalAlign: "middle",
+                            position: "top",
+                            distance: 15,
+                            formatter: "{value|{c}}",
+                            rotate: configs.lineLabelRotate.value,
+                            rich: {
+                                value: {
+                                    color: configs.lineLabelTextColor.value,
+                                    fontSize: configs.lineLabelFontSize.value,
+                                }
+                            }
+                        },
+                        itemStyle: {},
+                        lineStyle: {
+                            width: Number(configs.lineStyleWidth.value),
+                        },
+                        emphasis: {
+                            label: {
+                                show: configs.lineEmphasisLabelDisplay.value.toBoolean(),
+                                rich: {
+                                    value: {
+                                        fontWeight: "bold",
+                                    }
+                                }
+                            }
+                        },
+                        symbol: configs.lineSymbol.value,
+                        symbolSize: configs.lineSymbolSize.value,
+                        smooth: configs.lineSmooth.value.toBoolean(),
+                        markPoint: getMarkPoint(configs),
+                        markLine: getMarkLine(configs),
+                        markArea: {},
+                        xAxisIndex: i,
+                        yAxisIndex: i,
+                    };
+                    break;
+                default:
+                    serie = {
+                        id: source.dimensions[i + 1],
+                        name: source.dimensions[i + 1],
+                        colorBy: configs.lineColorby.value,
+                        type: "line",
+                        areaStyle: configs.areaStyleGradientColor.value.toBoolean() ? {
+                            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                                offset: 0,
+                                color: colors[colorindex]
+                            }, {
+                                offset: 1,
+                                color: colors[colorindex + 1]
+                            }])
+                        } : {},
+                        sampling: "average",
+                        data: source.getItems(source.dimensions[i + 1]),
+                        label: {
+                            show: configs.lineLabelDisplay.value.toBoolean(),
+                            align: "center",
+                            verticalAlign: "middle",
+                            position: "top",
+                            distance: 15,
+                            formatter: "{value|{c}}",
+                            rotate: configs.lineLabelRotate.value,
+                            rich: {
+                                value: {
+                                    color: configs.lineLabelTextColor.value,
+                                    fontSize: configs.lineLabelFontSize.value,
+                                }
+                            }
+                        },
+                        itemStyle: {},
+                        lineStyle: {
+                            width: Number(configs.lineStyleWidth.value),
+                        },
+                        emphasis: {
+                            label: {
+                                show: configs.lineEmphasisLabelDisplay.value.toBoolean(),
+                                rich: {
+                                    value: {
+                                        fontWeight: "bold",
+                                    }
+                                }
+                            }
+                        },
+                        symbol: configs.lineSymbol.value,
+                        symbolSize: configs.lineSymbolSize.value,
+                        smooth: configs.lineSmooth.value.toBoolean(),
+                        markPoint: getMarkPoint(configs),
+                        markLine: getMarkLine(configs),
+                        markArea: {},
+                        xAxisIndex: i,
+                        yAxisIndex: i,
+                    };
+                    break;
             }
-            setSeriesAnimation(serie, configs, -1);
-            series.push(serie);
+            if (serie !== null) {
+                setSeriesAnimation(serie, configs, -1);
+                series.push(serie);
+            }
         }
         return series;
     }
@@ -4099,15 +4345,19 @@ function getMultiGraphOption(configs, container, myChart, dataset) {
         tooltip: getTooltip(configs, "item", function (param) {
             if (param.seriesName !== null) {
                 return ["<span style = 'float:left'>" + param.seriesName + "</span>", "<hr style='background-color:" + param.color + "'>" +
-                param.marker + "&ensp;" + param.name +
+                param.marker + "&ensp;" +
+                (typeof param.value == 'object' ? param.value[0] : param.name) +
                 "&ensp;<span style='display:inline-block;min-width:110px;text-align:right;font-weight:bold'>" +
-                param.value + (param.seriesType == "pie" ? ("&ensp;(&ensp;" + param.percent + "%&ensp;)") : "") + "</span>"].join("<br>");
+                (typeof param.value == 'object' ? param.value[1] : param.value) +
+                (param.seriesType == "pie" ? ("&ensp;(&ensp;" + param.percent + "%&ensp;)") : "") + "</span>"].join("<br>");
             } else
                 return null;
         }),
         legend: getLegend(configs, legend),
         xAxis: axis.xAxis,
         yAxis: axis.yAxis,
+        visualMap: visualMaps,
+        calendar: calendars,
         series: getSeries(source, types, grids),
         dataZoom: dataZoom,
         graphic:  getWaterGraphic(configs,__VERSION__)
@@ -5632,7 +5882,7 @@ function getTimeline(configs, times) {
         autoPlay: true,
         //自动播放
         // currentIndex: 2,
-        playInterval: configs.seriesLoopPlayInterval.value * 1000,
+        playInterval: configs.seriesLoopPlayInterval.value,
         // controlStyle: {
         //     position: "left"
         // },
@@ -5810,7 +6060,7 @@ function getBar(container, dataset, configs) {
     setTimeout(() => {
         myChart.hideLoading();
         myChart.setOption(getBarOption(configs, container, myChart, dataset));
-    }, Number(configs.loadingTimes.value) * 1000);
+    }, Number(configs.loadingTimes.value));
 
     __ECHARTS__.addHistory(container, configs, dataset);
     return container;
@@ -5833,7 +6083,7 @@ function getTransversBar(container, dataset, configs) {
     setTimeout(() => {
         myChart.hideLoading();
         myChart.setOption(getTransversBarOption(configs, container, myChart, dataset));
-    }, Number(configs.loadingTimes.value) * 1000);
+    }, Number(configs.loadingTimes.value));
 
     __ECHARTS__.addHistory(container, configs, dataset);
     return container;
@@ -5855,7 +6105,7 @@ function getLine(container, dataset, configs) {
     setTimeout(() => {
         myChart.hideLoading();
         myChart.setOption(getLineOption(configs, container, myChart, dataset));
-    }, Number(configs.loadingTimes.value) * 1000);
+    }, Number(configs.loadingTimes.value));
 
     __ECHARTS__.addHistory(container, configs, dataset);
     return container;
@@ -5999,7 +6249,7 @@ function getBarAndLine(container, dataset, configs) {
     setTimeout(() => {
         myChart.hideLoading();
         myChart.setOption(option);
-    }, Number(configs.loadingTimes.value) * 1000);
+    }, Number(configs.loadingTimes.value));
 
     __ECHARTS__.addHistory(container, configs, dataset);
     return container;
@@ -6112,7 +6362,7 @@ function getAreaStyle(container, dataset, configs) {
     setTimeout(() => {
         myChart.hideLoading();
         myChart.setOption(option);
-    }, Number(configs.loadingTimes.value) * 1000);
+    }, Number(configs.loadingTimes.value));
 
     __ECHARTS__.addHistory(container, configs, dataset);
     return container;
@@ -6136,7 +6386,7 @@ function getPolar(container, dataset, configs) {
         setTimeout(() => {
             myChart.hideLoading();
             myChart.setOption(getPolarOption(configs, container, myChart, dataset));
-        }, Number(configs.loadingTimes.value) * 1000);
+        }, Number(configs.loadingTimes.value));
 
         __ECHARTS__.addHistory(container, configs, dataset);
         return container;
@@ -6309,7 +6559,7 @@ function getPolarHeatmap(container, dataset, configs) {
     setTimeout(() => {
         myChart.hideLoading();
         myChart.setOption(option);
-    }, Number(configs.loadingTimes.value) * 1000);
+    }, Number(configs.loadingTimes.value));
 
     __ECHARTS__.addHistory(container, configs, dataset);
     return container;
@@ -6391,7 +6641,7 @@ function getPie(container, dataset, configs) {
     setTimeout(() => {
         myChart.hideLoading();
         myChart.setOption(getPieOption(configs, container, myChart, dataset));
-    }, Number(configs.loadingTimes.value) * 1000);
+    }, Number(configs.loadingTimes.value));
 
     __ECHARTS__.addHistory(container, configs, dataset);
     return container;
@@ -6503,7 +6753,7 @@ function getRadar(container, dataset, configs) {
     setTimeout(() => {
         myChart.hideLoading();
         myChart.setOption(option);
-    }, Number(configs.loadingTimes.value) * 1000);
+    }, Number(configs.loadingTimes.value));
 
     __ECHARTS__.addHistory(container, configs, dataset);
     return container;
@@ -6690,7 +6940,7 @@ function getRelation(container, dataset, configs) {
         myChart.on("dataZoom", updatePosition);
         myChart.on("graphRoam", updatePosition);
 
-    }, Number(configs.loadingTimes.value) * 1000);
+    }, Number(configs.loadingTimes.value));
 
     __ECHARTS__.addHistory(container, configs, dataset);
     return container;
@@ -6834,7 +7084,7 @@ function getTree(container, dataset, configs) {
     setTimeout(() => {
         myChart.hideLoading();
         myChart.setOption(option);
-    }, Number(configs.loadingTimes.value) * 1000);
+    }, Number(configs.loadingTimes.value));
 
     __ECHARTS__.addHistory(container, configs, dataset);
     return container;
@@ -6951,7 +7201,7 @@ function getWebkitDep(container, dataset, configs) {
     setTimeout(() => {
         myChart.hideLoading();
         myChart.setOption(option);
-    }, Number(configs.loadingTimes.value) * 1000);
+    }, Number(configs.loadingTimes.value));
 
     __ECHARTS__.addHistory(container, configs, dataset);
     return container;
@@ -6971,7 +7221,7 @@ function getScatter(container, dataset, configs) {
     setTimeout(() => {
         myChart.hideLoading();
         myChart.setOption(getScatterOption(configs, container, myChart, dataset), true);
-    }, Number(configs.loadingTimes.value) * 1000);
+    }, Number(configs.loadingTimes.value));
 
     __ECHARTS__.addHistory(container, configs, dataset);
     return container;
@@ -6990,7 +7240,7 @@ function getFunnel(container, dataset, configs) {
     setTimeout(() => {
         myChart.hideLoading();
         myChart.setOption(getFunnelOption(configs, container, myChart, dataset));
-    }, Number(configs.loadingTimes.value) * 1000);
+    }, Number(configs.loadingTimes.value));
 
     __ECHARTS__.addHistory(container, configs, dataset);
     return container;
@@ -7061,14 +7311,21 @@ function getCalendar(container, dataset, configs) {
                     left: "10%",
                     right: "10%",
                     cellSize: ["auto", "auto"],
+                    splitLine:{
+                        lineStyle:{
+                            color: configs.calendarSplitLineColor.value,
+                            width: configs.calendarSplitLineWidth.value
+                        }
+                    },
                     itemStyle: {
-                        borderWidth: 0.5,
+                        borderColor: configs.calendarBorderColor.value,
+                        borderWidth: configs.calendarBorderWidth.value,
                     },
                     yearLabel: {show: true, color: configs.calendarLabelColor.value, margin: 20},
                     dayLabel: {nameMap: "cn", color: configs.calendarLabelColor.value, margin: 5},
                     monthLabel: {nameMap: "cn", color: configs.calendarLabelColor.value},
                 };
-                let ia = source.getMinMaxValue(source.dimensions[c]);
+                let ia = source.getMinMaxValue(source.dimensions[c], "number");
                 visualMap.min = ia.min;
                 visualMap.max = ia.max;
                 visualMap.show = configs.visualMapDisplay.value.toBoolean();
@@ -7126,7 +7383,7 @@ function getCalendar(container, dataset, configs) {
     setTimeout(() => {
         myChart.hideLoading();
         myChart.setOption(option);
-    }, Number(configs.loadingTimes.value) * 1000);
+    }, Number(configs.loadingTimes.value));
 
     __ECHARTS__.addHistory(container, configs, dataset);
     return container;
@@ -7311,7 +7568,7 @@ function getGeoOfChina(container, dataset, configs) {
     setTimeout(() => {
         myChart.hideLoading();
         myChart.setOption(option);
-    }, Number(configs.loadingTimes.value) * 1000);
+    }, Number(configs.loadingTimes.value));
 
     myChart.on("mouseover", function (param) {
         stopTimer();
@@ -7338,7 +7595,7 @@ function getGeoOfChina(container, dataset, configs) {
         setTimeout(() => {
             myChart.hideLoading();
             myChart.setOption(option);
-        }, Number(configs.loadingTimes.value) * 1000);
+        }, Number(configs.loadingTimes.value));
         if (myChart._disposed)
             clearInterval(myChart["IntervalId"]);
     }
@@ -7534,7 +7791,7 @@ function getGeoOfLocal(container, dataset, configs) {
     setTimeout(() => {
         myChart.hideLoading();
         myChart.setOption(option);
-    }, Number(configs.loadingTimes.value) * 1000);
+    }, Number(configs.loadingTimes.value));
 
     myChart.on("mouseover", function (param) {
         stopTimer();
@@ -7743,7 +8000,7 @@ function getBar3D(container, dataset, configs) {
     setTimeout(() => {
         myChart.hideLoading();
         myChart.setOption(option);
-    }, Number(configs.loadingTimes.value) * 1000);
+    }, Number(configs.loadingTimes.value));
 
     __ECHARTS__.addHistory(container, configs, dataset);
     return container;
@@ -7908,7 +8165,7 @@ function getLine3D(container, dataset, configs) {
     setTimeout(() => {
         myChart.hideLoading();
         myChart.setOption(option);
-    }, Number(configs.loadingTimes.value) * 1000);
+    }, Number(configs.loadingTimes.value));
 
     __ECHARTS__.addHistory(container, configs, dataset);
     return container;
@@ -8086,7 +8343,7 @@ function getScatter3D(container, dataset, configs) {
     setTimeout(() => {
         myChart.hideLoading();
         myChart.setOption(option);
-    }, Number(configs.loadingTimes.value) * 1000);
+    }, Number(configs.loadingTimes.value));
 
     __ECHARTS__.addHistory(container, configs, dataset);
     return container;
@@ -8326,7 +8583,7 @@ function getCategoryLine(container, dataset, configs) {
     setTimeout(() => {
         myChart.hideLoading();
         myChart.setOption(option);
-    }, Number(configs.loadingTimes.value) * 1000);
+    }, Number(configs.loadingTimes.value));
 
     __ECHARTS__.addHistory(container, configs, dataset);
     return container;
@@ -8498,7 +8755,7 @@ function getGeoMigrateLinesOfChinaCity(container, dataset, configs) {
                     zlevel: 1,
                     effect: {
                         show: true,
-                        period: configs.geoLinePeriod.value,
+                        period: configs.geoLinePeriod.value/1000,
                         trailLength: 0.2,
                         //拖尾
                         color: "#fff",
@@ -8524,7 +8781,7 @@ function getGeoMigrateLinesOfChinaCity(container, dataset, configs) {
                     symbolSize: 5,
                     effect: {
                         show: true,
-                        period: configs.geoLinePeriod.value,
+                        period: configs.geoLinePeriod.value/1000,
                         trailLength: 0,
                         //拖尾
                         symbol: (configs.geoLineSymbol.value == "plane" || configs.geoLineSymbol.value == "rocket") ? symbol[configs.geoLineSymbol.value] : configs.geoLineSymbol.value,
@@ -8618,7 +8875,7 @@ function getGeoMigrateLinesOfChinaCity(container, dataset, configs) {
     setTimeout(() => {
         myChart.hideLoading();
         myChart.setOption(option);
-    }, Number(configs.loadingTimes.value) * 1000);
+    }, Number(configs.loadingTimes.value));
 
     __ECHARTS__.addHistory(container, configs, dataset);
     return container;
@@ -8826,7 +9083,7 @@ function getCategoryLineForGauge(container, dataset, configs) {
     setTimeout(() => {
         myChart.hideLoading();
         myChart.setOption(option);
-    }, Number(configs.loadingTimes.value) * 1000);
+    }, Number(configs.loadingTimes.value));
 
     __ECHARTS__.addHistory(container, configs, dataset);
     return container;
@@ -9105,7 +9362,7 @@ function getCategoryLineForLiqiud(container, dataset, configs) {
     setTimeout(() => {
         myChart.hideLoading();
         myChart.setOption(option);
-    }, Number(configs.loadingTimes.value) * 1000);
+    }, Number(configs.loadingTimes.value));
 
     __ECHARTS__.addHistory(container, configs, dataset);
     return container;
@@ -9124,7 +9381,7 @@ function getCategoryLineForGeoOfChina(container, dataset, configs) {
     setTimeout(() => {
         myChart.hideLoading();
         myChart.setOption(getGeoOfChinaOption(configs, container, myChart, dataset), true);
-    }, Number(configs.loadingTimes.value) * 1000);
+    }, Number(configs.loadingTimes.value));
 
     __ECHARTS__.addHistory(container, configs, dataset);
     return container;
@@ -9143,7 +9400,7 @@ function getCategoryLineForGeoOfLocal(container, dataset, configs) {
     setTimeout(() => {
         myChart.hideLoading();
         myChart.setOption(getGeoOfLocalOption(configs, container, myChart, dataset), true);
-    }, Number(configs.loadingTimes.value) * 1000);
+    }, Number(configs.loadingTimes.value));
 
     __ECHARTS__.addHistory(container, configs, dataset);
     return container;
@@ -9311,8 +9568,8 @@ function getScrollingScreen(container, dataset, configs) {
             }
             if (myChart._disposed)
                 clearInterval(myChart["IntervalId"]);
-        }, Number(configs.scrollingScreenSpeed.value) * 1000);
-    }, Number(configs.loadingTimes.value) * 1000);
+        }, Number(configs.scrollingScreenSpeed.value));
+    }, Number(configs.loadingTimes.value));
 
     __ECHARTS__.addHistory(container, configs, dataset);
 
@@ -9491,8 +9748,8 @@ function getWalkingLantern(container, dataset, configs) {
             }
             if (myChart._disposed)
                 clearInterval(myChart["IntervalId"]);
-        }, Number(configs.walkingLanternSpeed.value) * 1000);
-    }, Number(configs.loadingTimes.value) * 1000);
+        }, Number(configs.walkingLanternSpeed.value));
+    }, Number(configs.loadingTimes.value));
 
     __ECHARTS__.addHistory(container, configs, dataset);
 
@@ -9686,8 +9943,8 @@ function getWindowShades(container, dataset, configs) {
             }
             if (myChart._disposed)
                 clearInterval(myChart["IntervalId"]);
-        }, Number(configs.windowShadesSpeed.value) * 1000);
-    }, Number(configs.loadingTimes.value) * 1000);
+        }, Number(configs.windowShadesSpeed.value));
+    }, Number(configs.loadingTimes.value));
 
     __ECHARTS__.addHistory(container, configs, dataset);
     return container;
@@ -9821,7 +10078,7 @@ function getSurface(container, dataset, configs) {
     setTimeout(() => {
         myChart.hideLoading();
         myChart.setOption(option);
-    }, Number(configs.loadingTimes.value) * 1000);
+    }, Number(configs.loadingTimes.value));
 
     __ECHARTS__.addHistory(container, configs, dataset);
     return container;
@@ -9981,7 +10238,7 @@ function getBoxplot(container, dataset, configs) {
     setTimeout(() => {
         myChart.hideLoading();
         myChart.setOption(option);
-    }, Number(configs.loadingTimes.value) * 1000);
+    }, Number(configs.loadingTimes.value));
 
     __ECHARTS__.addHistory(container, configs, dataset);
     return container;
@@ -10013,7 +10270,6 @@ function getClock(container, dataset, configs) {
         }, []);
         title = dataset["data"][0][columns[0]].value;
     }
-
     let option = {
         colors: colors,
         aria: getAria(configs),
@@ -10325,7 +10581,7 @@ function getClock(container, dataset, configs) {
     setTimeout(() => {
         myChart.hideLoading();
         myChart.setOption(option);
-    }, Number(configs.loadingTimes.value) * 1000);
+    }, Number(configs.loadingTimes.value));
 
 
     let timeUpdatedStatus = {
@@ -10471,7 +10727,7 @@ function getCandlestick(container, dataset, configs) {
     setTimeout(() => {
         myChart.hideLoading();
         myChart.setOption(option);
-    }, Number(configs.loadingTimes.value) * 1000);
+    }, Number(configs.loadingTimes.value));
 
     __ECHARTS__.addHistory(container, configs, dataset);
     return container;
@@ -10555,9 +10811,9 @@ function getBanners(container, dataset, configs) {
             if (myChart._disposed)
                 clearInterval(myChart["IntervalId"]);
 
-        }, Number(configs.bannerShadesSpeed.value) * 1000);
+        }, Number(configs.bannerShadesSpeed.value));
 
-    }, Number(configs.loadingTimes.value) * 1000);
+    }, Number(configs.loadingTimes.value));
 
     __ECHARTS__.addHistory(container, configs, dataset);
 
@@ -10661,7 +10917,7 @@ function getWordCloud(container, dataset, configs) {
     setTimeout(() => {
         myChart.hideLoading();
         myChart.setOption(option);
-    }, Number(configs.loadingTimes.value) * 1000);
+    }, Number(configs.loadingTimes.value));
 
     __ECHARTS__.addHistory(container, configs, dataset);
     return container;
@@ -10796,7 +11052,7 @@ function getSunburst(container, dataset, configs) {
     setTimeout(() => {
         myChart.hideLoading();
         myChart.setOption(option);
-    }, Number(configs.loadingTimes.value) * 1000);
+    }, Number(configs.loadingTimes.value));
 
     __ECHARTS__.addHistory(container, configs, dataset);
     return container;
@@ -10990,7 +11246,7 @@ function getTreemap(container, dataset, configs) {
     setTimeout(() => {
         myChart.hideLoading();
         myChart.setOption(option);
-    }, Number(configs.loadingTimes.value) * 1000);
+    }, Number(configs.loadingTimes.value));
 
     __ECHARTS__.addHistory(container, configs, dataset);
     return container;
@@ -11107,7 +11363,7 @@ function getParallelAxis(container, dataset, configs) {
     setTimeout(() => {
         myChart.hideLoading();
         myChart.setOption(option);
-    }, Number(configs.loadingTimes.value) * 1000);
+    }, Number(configs.loadingTimes.value));
 
     __ECHARTS__.addHistory(container, configs, dataset);
     return container;
@@ -11207,7 +11463,7 @@ function getSankey(container, dataset, configs) {
     setTimeout(() => {
         myChart.hideLoading();
         myChart.setOption(option);
-    }, Number(configs.loadingTimes.value) * 1000);
+    }, Number(configs.loadingTimes.value));
 
     __ECHARTS__.addHistory(container, configs, dataset);
     return container;
@@ -11290,7 +11546,7 @@ function getThemeRiver(container, dataset, configs) {
     setTimeout(() => {
         myChart.hideLoading();
         myChart.setOption(option);
-    }, Number(configs.loadingTimes.value) * 1000);
+    }, Number(configs.loadingTimes.value));
 
     __ECHARTS__.addHistory(container, configs, dataset);
     return container;
@@ -11683,7 +11939,7 @@ function getPie3D(container, dataset, configs) {
     setTimeout(() => {
         myChart.hideLoading();
         myChart.setOption(option);
-    }, Number(configs.loadingTimes.value) * 1000);
+    }, Number(configs.loadingTimes.value));
 
     __ECHARTS__.addHistory(container, configs, dataset);
     return container;
@@ -11795,7 +12051,7 @@ function getSingeAxis(container, dataset, configs) {
     setTimeout(() => {
         myChart.hideLoading();
         myChart.setOption(option);
-    }, Number(configs.loadingTimes.value) * 1000);
+    }, Number(configs.loadingTimes.value));
 
     __ECHARTS__.addHistory(container, configs, dataset);
     return container;
@@ -11948,7 +12204,7 @@ function getFunctionLine(container, dataset, configs) {
     setTimeout(function () {
         myChart.hideLoading();
         myChart.setOption(option);
-    }, Number(configs.loadingTimes.value) * 1000);
+    }, Number(configs.loadingTimes.value));
 
     __ECHARTS__.addHistory(container, configs, dataset);
     return container;
@@ -12067,7 +12323,7 @@ function getBarRacing(container, dataset, configs) {
     setTimeout(() => {
         myChart.hideLoading();
         myChart.setOption(option);
-    }, Number(configs.loadingTimes.value) * 1000);
+    }, Number(configs.loadingTimes.value));
 
     myChart["IntervalId"] = setInterval(function () {
         run();
@@ -12188,7 +12444,7 @@ function getScrolling(container, dataset, configs) {
     setTimeout(() => {
         myChart.hideLoading();
         myChart.setOption(option);
-    }, Number(configs.loadingTimes.value) * 1000);
+    }, Number(configs.loadingTimes.value));
 
     myChart["IntervalId"] = setInterval(function () {
         if (start + max > source.getItems(source.dimensions[0]).length)
@@ -12227,7 +12483,7 @@ function getMultiGraph(container, dataset, configs) {
     setTimeout(function () {
         myChart.hideLoading();
         myChart.setOption(getMultiGraphOption(configs, container, myChart, dataset));
-    }, Number(configs.loadingTimes.value) * 1000);
+    }, Number(configs.loadingTimes.value));
     __ECHARTS__.addHistory(container, configs, dataset);
 
     return container;
@@ -12415,7 +12671,7 @@ function getDatasetImage(container, dataset, configs) {
     setTimeout(function () {
         myChart.hideLoading();
         myChart.setOption(option);
-    }, Number(configs.loadingTimes.value) * 1000);
+    }, Number(configs.loadingTimes.value));
     __ECHARTS__.addHistory(container, configs, dataset);
 
     return container;
@@ -12733,7 +12989,6 @@ function getEchartsReport(container, myChart) {
             "configs[this.id].value = this.value;\n" +
             "reset(type);\n" +
             "};\n" +
-            "\n" +
             "dd.appendChild(input);\n" +
             "} else if (__configs__[name].type == 'select') {\n" +
             "let input = document.createElement('select');\n" +
@@ -12752,7 +13007,14 @@ function getEchartsReport(container, myChart) {
             "configs[this.id].value = this.value;\n" +
             "reset(type);\n" +
             "};\n" +
-            "\n" +
+            "dd.appendChild(input);\n" +
+            "} else if (__configs__[name].type == 'echarts'){\n" +
+            "let input = UI.echartsChoice(configs[name].value, function (value) {\n" +
+            "configs[name].value = value;\n" +
+            "reset(type);\n" +
+            "});\n" +
+            "input.id = name;\n" +
+            "input.className = 'ui-container-item-echarts-choice';\n" +
             "dd.appendChild(input);\n" +
             "} else if (__configs__[name].type == 'color') {\n" +
             "let input = UI.colorChoice(name, configs[name].value, function (value) {\n" +
@@ -12761,7 +13023,6 @@ function getEchartsReport(container, myChart) {
             "}, __CONFIGS__.colors[0]);\n" +
             "input.id = name;\n" +
             "input.className = 'ui-container-item-color';\n" +
-            "\n" +
             "dd.appendChild(input);\n" +
             "} else if (__configs__[name].type == 'boolean') {\n" +
             "let input = UI.booleanChoice(configs[name].value.toBoolean(), function (value) {\n" +
@@ -12770,7 +13031,6 @@ function getEchartsReport(container, myChart) {
             "}, __CONFIGS__.colors[0]);\n" +
             "input.id = name;\n" +
             "input.className = 'ui-container-item-boolean';\n" +
-            "\n" +
             "dd.appendChild(input);\n" +
             "} else if (__configs__[name].type == 'range') {\n" +
             "let input = document.createElement('input');\n" +
@@ -12787,6 +13047,19 @@ function getEchartsReport(container, myChart) {
             "configs[this.id].value = this.title = (this.value + __configs__[this.id].attribute.unit);\n" +
             "reset(type);\n" +
             "};\n" +
+            "dd.appendChild(input);\n" +
+            "} else if (__configs__[name].type == 'ranges') {\n" +
+            "let input = UI.rangesChoice(\n" +
+            "__configs__[name].attribute.min,\n" +
+            "__configs__[name].attribute.max,\n" +
+            "__configs__[name].attribute.unit,\n" +
+            "__configs__[name].value,\n" +
+            "function (value) {\n" +
+            "configs[name].value = value;\n" +
+            "reset(type);\n" +
+            "});\n" +
+            "input.id = name;\n" +
+            "input.className = 'ui-container-item-ranges';\n" +
             "dd.appendChild(input);\n" +
             "} else if (configs[name].type == 'number') {\n" +
             "let input = document.createElement('input');\n" +
@@ -13514,16 +13787,17 @@ function getEchartsReport(container, myChart) {
         ".ui-container-hr{height: 1px;border-width: 0;color: gray;background-color: #00A7AA;;width: 100%;}\n" +
         ".ui-container-scroll-div {position: relative;font-size: 100%;width: 100%;float: left;height: 300px;overflow: scroll;}" +
         "input, select {background-color: transparent;;outline-style: none;border: 0px;border-bottom: 1px solid #00A7AA;box-sizing: border-box;}\n" +
-        ".ui-container-item-checkbox {float: right;vertical-align: bottom;}\n" +
-        ".ui-container-item-radio {float: right;vertical-align: bottom;}\n" +
         "input[type=range] {-webkit-appearance: none;}\n" +
         "input[type='range']::-webkit-slider-thumb {-webkit-appearance: none;border: 6px solid #00A7AA;height: 16px;width: 16px;border-radius: 8px;cursor: pointer;}\n" +
+        ".ui-container-item {color: #00A7AA;}\n" +
         ".ui-container-item-range {float: right;width: 70%;vertical-align: middle;}\n" +
         ".ui-container-item-number {float: left;width: 70%;vertical-align: middle;}\n" +
         ".ui-container-item-input {cursor: pointer;font-size: 100%;padding: 0px;margin: 0px;width: 70%;float: right;height: 100%;vertical-align: bottom;}\n" +
-        ".ui-container-item-color {cursor: pointer;font-size: 90%;padding: 0px;margin: 0px;width: 70%;float: right;height: 100%;vertical-align: bottom;border-bottom: 1px solid #00A7AA;}\n" +
+        ".ui-container-item-color,.ui-container-item-echarts-choice,.ui-container-item-ranges{cursor: pointer;font-size: 90%;padding: 0px;margin: 0px;width: 70%;float: right;height: 100%;vertical-align: bottom;border-bottom: 1px solid #00A7AA;}\n" +
         ".ui-container-item-select {cursor: pointer;font-size: 100%;padding: 0px;margin: 0px;width: 70%;float: right;height: 100%;vertical-align: bottom;border-bottom: 1px solid #00A7AA;}\n" +
         ".ui-container-item-boolean {cursor: pointer;font-size: 100%;padding: 0px;margin: 0px;width: 70%;float: right;min-height: 16px;height: 100%;vertical-align: bottom;border-bottom: 1px solid #00A7AA;}\n" +
+        ".ui-container-item-checkbox {float: left;vertical-align: bottom;}\n" +
+        ".ui-container-item-radio {float: left;vertical-align: bottom;}\n" +
         "</style>\n" +
         getScript(jsPath, __ECHARTS__.configs.version.value, $("UI").src.split("/")[$("UI").src.split("/").length - 1], __DATASET__.configs.reportThemes.value) +
         "</head>\n" +

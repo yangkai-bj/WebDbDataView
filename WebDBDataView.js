@@ -240,6 +240,22 @@ var __LOGS__ = {
                     __LOGS__.configs[this.id].value = this.title = (this.value + __LOGS__.configs[this.id].attribute.unit);
                 };
                 item.appendChild(input);
+            } else if (this.configs[name].type == "ranges") {
+                let input = UI.rangesChoice(
+                    __LOGS__.configs[name].attribute.min,
+                    __LOGS__.configs[name].attribute.max,
+                    __LOGS__.configs[name].attribute.unit,
+                    __LOGS__.configs[name].value,
+                    function (value) {
+                        __LOGS__.configs[name].value = value;
+                    });
+                input.id = name;
+                input.className = "ui-container-item-ranges";
+                if (typeof this.configs[name].title != "undefined")
+                    input.title = this.configs[name].title;
+                else
+                    input.title = this.configs[name].name;
+                item.appendChild(input);
             } else if (this.configs[name].type == "number") {
                 let input = document.createElement("input");
                 input.style.cssFloat = "right";
@@ -1224,6 +1240,22 @@ var __XMLHTTP__ = {
                      __SQLEDITOR__.configs[this.id].value = this.title = (this.value + __SQLEDITOR__.configs[this.id].attribute.unit);
                  };
                  item.appendChild(input);
+             } else if (this.configs[name].type == "ranges") {
+                let input = UI.rangesChoice(
+                    __SQLEDITOR__.configs[name].attribute.min,
+                    __SQLEDITOR__.configs[name].attribute.max,
+                    __SQLEDITOR__.configs[name].attribute.unit,
+                    __SQLEDITOR__.configs[name].value,
+                    function (value) {
+                        __SQLEDITOR__.configs[name].value = value;
+                    });
+                input.id = name;
+                input.className = "ui-container-item-ranges";
+                if (typeof this.configs[name].title != "undefined")
+                    input.title = this.configs[name].title;
+                else
+                    input.title = this.configs[name].name;
+                item.appendChild(input);
              } else if (this.configs[name].type == "number") {
                  let input = document.createElement("input");
                  input.style.cssFloat = "right";
@@ -4933,64 +4965,6 @@ function setDragNook(parent, id) {
     nook.style.borderRight = "2px solid var(--drag-border-color)";
     parent.appendChild(nook);
     setDrag(nook);
-}
-
-//用于处理对话框拖动
-var dragParams = {
-    target: null,
-    left: 0,
-    top: 0,
-    currentX: 0,
-    currentY: 0,
-    flag: false
-};
-//拖拽的实现
-function setDialogDrag(bar, callback) {
-    bar.onmousedown = function (event) {
-        dragParams.flag = true;
-        if (dragParams.target !=null)
-            dragParams.target.style.zIndex = 9998;
-        dragParams.target = this.parentNode;
-        dragParams.target.style.zIndex = 9999;
-        if (getCss(dragParams.target, "left") !== "auto") {
-            dragParams.left = getCss(dragParams.target, "left");
-        }
-        if (getCss(dragParams.target, "top") !== "auto") {
-            dragParams.top = getCss(dragParams.target, "top");
-        }
-        if (!event) {
-            event = window.event;
-            //防止IE文字选中
-            bar.onselectstart = function () {
-                return false;
-            }
-        }
-        let e = event;
-        dragParams.currentX = e.clientX;
-        dragParams.currentY = e.clientY;
-    };
-    document.onmouseup = function () {
-        dragParams.flag = false;
-        if (getCss(dragParams.target, "left") !== "auto") {
-            dragParams.left = getCss(dragParams.target, "left");
-        }
-        if (getCss(dragParams.target, "top") !== "auto") {
-            dragParams.top = getCss(dragParams.target, "top");
-        }
-    };
-    document.onmousemove = function (event) {
-        let e = event ? event : window.event;
-        if (dragParams.flag) {
-            let nowX = e.clientX, nowY = e.clientY;
-            let disX = nowX - dragParams.currentX, disY = nowY - dragParams.currentY;
-            dragParams.target.style.left = parseInt(dragParams.left) + disX + "px";
-            dragParams.target.style.top = parseInt(dragParams.top) + disY + "px";
-        }
-
-        if (typeof callback == "function") {
-            callback(parseInt(dragParams.left) + disX, parseInt(dragParams.top) + disY);
-        }
-    }
 }
 
 function setDataPageTools(index) {
