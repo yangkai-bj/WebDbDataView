@@ -32,7 +32,197 @@ function saveStorageSql(key, sql) {
 }
 
 var UI = {
-    echartsChoice: function(values, callback) {
+    gridsChoice: function(index, value, callback, color) {
+        let data = {
+            "自动": "auto",
+            "R(1 + 2)": "[[5,10,85,40],[5,55,40,40],[50,55,40,40]]",
+            "R(1 + 3)": "[[5,10,90,40],[5,55,26.67,40],[36.66,55,26.66,40],[68.33,55,26.67,40]]",
+            "R(2 + 1)": "[[5,10,40,40],[50,10,40,40],[5,55,85,40]]",
+            "R(2 + 3)": "[[5,10,42.5,40],[52.5,10,42.5,40],[5,55,26.67,40],[36.67,55,26.66,40],[68.33,55,26.67,40]]",
+            "R(3 + 1)": "[[5,10,26.67,40],[36.67,10,26.67,40],[68.33,10,26.67,40],[5,55,90,40]]",
+            "R(3 + 2)": "[[5,10,26.67,40],[36.67,10,26.67,40],[68.33,10,26.67,40],[5,55,42.5,40],[52.5,55,42.5,40]]",
+            "C(1 + 2)": "[[5,10,40,80],[50,10,40,37.5],[50,52.5,40,37.5]]",
+            "C(1 + 3)": "[[5,10,40,80],[50,10,40,23.33],[50,38.33,40,23.33],[50,66.34,40,23.34]]",
+            "C(2 + 3)": "[[5,10,40,37.5],[5,52.5,40,37.5],[50,10,40,23.33],[50,38.33,40,23.33],[50,66.34,40,23.34]]",
+            "C(2 + 1)": "[[5,10,40,37.5],[5,52.5,40,37.5],[50,10,40,80]]",
+            "C(3 + 1)": "[[5,10,40,23.33],[5,38.33,40,23.33],[5,66.34,40,23.34],[50,10,40,80]]",
+            "C(3 + 2)": "[[5,10,40,23.33],[5,38.33,40,23.33],[5,66.34,40,23.34],[50,10,40,37.5],[50,52.5,40,37.5]]",
+            "C(1/1 + 2/1)": "[[5,10,40,40],[50,10,40,55],[5,55,40,40],[50,70,40,25]]",
+            "C(1/2 + 1/2)": "[[5,10,40,25],[50,10,40,25],[5,40,40,50],[50,40,40,50]]",
+            "C(1/2 + 2/1)": "[[5,10,40,25],[50,10,40,50],[5,40,40,50],[50,65,40,25]]",
+            "C(2/1 + 1/1)": "[[5,10,40,55],[50,10,40,40],[5,70,40,25],[50,55,40,40]]",
+            "C(2/1 + 2/1)": "[[5,10,40,50],[50,10,40,50],[5,65,40,25],[50,65,40,25]]",
+            "C(2/1 + 1/2)": "[[5,10,40,50],[50,10,40,25],[5,65,40,25],[50,40,40,50]]",
+            "C(2/1/1 + 2/1/1)": "[[5,10,40,35],[50,10,40,35],[5,50,40,17.5],[50,50,40,17.5],[5,72.5,40,17.5],[50,72.5,40,17.5]]",
+            "C(1/1/2 + 1/1/2)": "[[5,10,40,17.5],[50,10,40,17.5],[5,32.5,40,17.5],[50,32.5,40,17.5],[5,55,40,35],[50,55,40,35]]",
+        };
+
+        function getGrid(parent, index, value, callback) {
+            function showGrid(content, grid) {
+                content.innerHTML = "";
+                if (grid.length == 1 && grid[0] === "auto") {
+                    content.innerHTML = "<span style = 'max-width: 100%; cursor: pointer;position: absolute;top: 50%;left: 50%;transform: translate(-50%, -50%);font-size: 4px; overflow: hidden;text-overflow: ellipsis;white-space: nowrap;color: red;'>auto</span>";
+                } else {
+                    for (let i = 0; i < grid.length; i++) {
+                        let g = document.createElement("div");
+                        g.style.position = "absolute";
+                        g.style.border = "1px dotted red";
+                        g.style.textAlign = "center";
+                        if (grid[i].length == 4) {
+                            g.style.left = grid[i][0] + "%";
+                            g.style.top = grid[i][1] + "%";
+                            g.style.width = grid[i][2] + "%";
+                            g.style.height = grid[i][3] + "%";
+                            g.innerHTML = "<span style = 'max-width: 100%; cursor: pointer;position: absolute;top: 50%;left: 50%;transform: translate(-50%, -50%);font-size: 4px; overflow: hidden;text-overflow: ellipsis;white-space: nowrap;'>" + grid[i].join("%,") + "%</span>";
+                        } else {
+                            g.style.border = "0px dotted red";
+                            g.style.left = "0%";
+                            g.style.top = "0%";
+                            g.style.width = "100%";
+                            g.style.height = "100%";
+                            g.style.backgroundColor = "rgba(0,0,0,0.4)";
+                            g.style.zIndex = grid.length+1;
+                            g.innerHTML = "<span style = ';max-width: 100%; cursor: pointer;position: absolute;top: 50%;left: 50%;transform: translate(-50%, -50%);font-size: 4px; overflow: hidden;text-overflow: ellipsis;white-space: nowrap;color: red;'>[" + grid[i].join("%,") + "%]<br>框架定义错误<br>[left,top,width,height]</span>";
+                        }
+                        content.appendChild(g);
+                    }
+                }
+            }
+
+            let container = document.createElement("div");
+            container.id = "ui_grids_choice";
+            container.className = "ui-container-background";
+            if (parent == "auto") {
+                if (document.fullscreen && typeof __CONFIGS__.FULLSCREEN.element == "object") {
+                    parent = __CONFIGS__.FULLSCREEN.element;
+                } else {
+                    parent = document.body;
+                }
+            }
+            parent.appendChild(container);
+            let content = document.createElement("div");
+            content.className = "ui-container-body";
+            container.appendChild(content);
+
+            let title = document.createElement("div");
+            title.className = "ui-container-title";
+            title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name, __THEMES__.get().color, "24px", "24px", __VERSION__.logo.flip);
+
+            let span = document.createElement("span");
+            span.innerHTML = "选择布局";
+            title.appendChild(span);
+            let close = __SYS_IMAGES_SVG__.getImage("close", __THEMES__.get().color, "24px", "24px", __THEMES__.get().hover);
+            close.className = "ui-container-close";
+            title.appendChild(close);
+            content.appendChild(title);
+
+            let hr = document.createElement("hr");
+            hr.className = "ui-container-hr";
+            content.appendChild(hr);
+
+            let item = document.createElement("div");
+            item.className = "ui-container-item";
+            let list = document.createElement("select");
+            list.style.width = "100%";
+            for (let key in data) {
+                list.add(new Option(key, data[key]));
+            }
+            list.value = value;
+            list.onchange = function () {
+                showGrid($("grids-content-" + index), this.value.toArray([], ",").wash());
+            };
+            item.appendChild(list);
+            content.appendChild(item);
+
+            item = document.createElement("div");
+            item.className = "ui-container-item";
+            let gds = document.createElement("div");
+            gds.id = "grids-content-" + index;
+            gds.style.position = "relative";
+            gds.style.width = "100%";
+            gds.style.height = "150px";
+            gds.style.marginTop = "5px";
+            gds.style.padding = "0px";
+            gds.style.border = "1px dotted gray";
+            item.appendChild(gds);
+            content.appendChild(item);
+            showGrid(gds, value.toArray([], ",").wash());
+
+            hr = document.createElement("hr");
+            hr.className = "ui-container-hr";
+            content.appendChild(hr);
+
+            let tools = document.createElement("div");
+            tools.className = "groupbar";
+            tools.style.width = "90%";
+            content.appendChild(tools);
+
+            let button = document.createElement("button");
+            button.className = "button";
+            button.id = "ui-ui_grids_choice-no";
+            button.innerText = "取消";
+            button.style.cssText = "float: right;margin-left:10px";
+            button.onclick = close.onclick = function () {
+                parent.removeChild($("ui_grids_choice"));
+            };
+            tools.appendChild(button);
+
+            button = document.createElement("button");
+            button.className = "button";
+            button.id = "ui-ui_grids_choice-ok";
+            button.innerText = "确定";
+            button.style.cssFloat = "right";
+            button.onclick = function () {
+                if (typeof callback === "function") {
+                    callback(list.value);
+                }
+                parent.removeChild($("ui_grids_choice"));
+            };
+            tools.appendChild(button);
+
+            setDialogDrag(title);
+            $("ui-ui_grids_choice-ok").focus();
+        }
+
+        let container = document.createElement("div");
+        container.className = "ui-container-item";
+        container.setAttribute("value", value);
+        let choice = __SYS_IMAGES_SVG__.getImage("grids", (typeof color === 'undefined' ? __THEMES__.get().color : color), "16px", "16px", __THEMES__.get().hover);
+        container.appendChild(choice);
+        choice.style.cssFloat = "left";
+        choice.title = "选择";
+        choice.onclick = function () {
+            getGrid("auto", index, $("choice-grid-list-" + index).value, function (value) {
+                $("choice-grid-list-" + index).value = value;
+                container.setAttribute("value", value);
+                if (typeof callback === "function") {
+                    callback(value);
+                }
+            });
+        };
+
+        let list = document.createElement("select");
+        list.id = "choice-grid-list-" + index;
+        list.style.cssFloat = "right";
+        list.style.width = "90%";
+        list.style.textAlign = "left";
+        list.style.borderWidth = "0px";
+        for (let key in data) {
+            list.add(new Option(key, data[key]));
+        }
+        list.value = value;
+        list.onchange = function () {
+            container.setAttribute("value", this.value);
+            if (typeof callback === "function") {
+                callback(this.value);
+            }
+        };
+        container.appendChild(list);
+
+        return container;
+    },
+
+    echartsChoice: function(values, callback, color) {
         try {
             values = values.split(",");
         } catch (e) {
@@ -50,7 +240,7 @@ var UI = {
         };
         let container = document.createElement("div");
         container.setAttribute("value", values.join(","));
-        let add = __SYS_IMAGES_SVG__.getImage("add", __THEMES__.get().color, "16px", "16px", __THEMES__.get().hover);
+        let add = __SYS_IMAGES_SVG__.getImage("add", (typeof color === 'undefined' ? __THEMES__.get().color : color), "16px", "16px", __THEMES__.get().hover);
         container.appendChild(add);
         add.style.cssFloat = "left";
         add.style.width = "16px";
@@ -85,7 +275,7 @@ var UI = {
                 );
             }
         };
-        let toup = __SYS_IMAGES_SVG__.getImage("toup", __THEMES__.get().color, "16px", "16px", __THEMES__.get().hover);
+        let toup = __SYS_IMAGES_SVG__.getImage("toup", (typeof color === 'undefined' ? __THEMES__.get().color : color), "16px", "16px", __THEMES__.get().hover);
         container.appendChild(toup);
         toup.style.cssFloat = "left";
         toup.style.width = "16px";
@@ -111,7 +301,7 @@ var UI = {
                     callback(values.wash().join(","));
             }
         };
-        let todown = __SYS_IMAGES_SVG__.getImage("todown", __THEMES__.get().color, "16px", "16px", __THEMES__.get().hover);
+        let todown = __SYS_IMAGES_SVG__.getImage("todown", (typeof color === 'undefined' ? __THEMES__.get().color : color), "16px", "16px", __THEMES__.get().hover);
         container.appendChild(todown);
         todown.style.cssFloat = "left";
         todown.style.width = "16px";
@@ -138,7 +328,7 @@ var UI = {
             }
         };
 
-        let remove = __SYS_IMAGES_SVG__.getImage("subtract", __THEMES__.get().color, "16px", "16px", __THEMES__.get().hover);
+        let remove = __SYS_IMAGES_SVG__.getImage("subtract", (typeof color === 'undefined' ? __THEMES__.get().color : color), "16px", "16px", __THEMES__.get().hover);
         container.appendChild(remove);
         remove.style.cssFloat = "left";
         remove.style.width = "16px";
@@ -211,7 +401,7 @@ var UI = {
         rmin.style.width = "45%";
         rmin.style.borderWidth = "0px";
         rmin.style.borderRadius = "10px";
-        rmin.style.borderLeft = "1px solid gray";
+        rmin.style.borderLeft = rmin.style.borderRight = "1px solid gray";
         rmin.min = min;
         rmin.max = range[1];
         rmin.value = range[0];
@@ -234,7 +424,7 @@ var UI = {
         rmax.style.width = "45%";
         rmax.style.borderWidth = "0px";
         rmax.style.borderRadius = "10px";
-        rmax.style.borderRight = "1px solid gray";
+        rmax.style.borderLeft = rmax.style.borderRight = "1px solid gray";
         rmax.min = range[0];
         rmax.max = max;
         rmax.value = range[1];
