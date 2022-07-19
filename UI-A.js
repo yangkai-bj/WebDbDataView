@@ -180,7 +180,10 @@ var UI = {
             };
             tools.appendChild(button);
 
-            setDialogDrag(title);
+            dragControl.hook(title, content, function(left, top){
+                content.style.left = left + "px";
+                content.style.top = top + "px"
+            });
             $("ui-ui_grids_choice-ok").focus();
         }
 
@@ -961,7 +964,10 @@ var UI = {
                 parent.removeChild($("ui_read_file_blob"));
             };
 
-            setDialogDrag(title);
+            dragControl.hook(title, content, function(left, top){
+                content.style.left = left + "px";
+                content.style.top = top + "px"
+            });
         },
     },
 
@@ -1103,12 +1109,12 @@ var UI = {
 
         let title = document.createElement("div");
         title.className = "ui-container-title";
-        title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name,__THEMES__.get().color, "24px", "24px", __VERSION__.logo.flip);
+        title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name, __THEMES__.get().color, "24px", "24px", __VERSION__.logo.flip);
 
         let span = document.createElement("span");
         span.innerHTML = message;
         title.appendChild(span);
-        let close = __SYS_IMAGES_SVG__.getImage("close",__THEMES__.get().color, "24px", "24px", __THEMES__.get().hover);
+        let close = __SYS_IMAGES_SVG__.getImage("close", __THEMES__.get().color, "24px", "24px", __THEMES__.get().hover);
         close.className = "ui-container-close";
         title.appendChild(close);
         content.appendChild(title);
@@ -1308,7 +1314,10 @@ var UI = {
             parent.removeChild($("ui_upload_file"));
         };
         tools.appendChild(button);
-        setDialogDrag(title);
+        dragControl.hook(title, content, function (left, top) {
+            content.style.left = left + "px";
+            content.style.top = top + "px"
+        });
         $("ui-upload-file-ok").focus();
     },
 
@@ -1333,12 +1342,12 @@ var UI = {
 
         let title = document.createElement("div");
         title.className = "ui-container-title";
-        title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name,__THEMES__.get().color, "24px", "24px", __VERSION__.logo.flip);
+        title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name, __THEMES__.get().color, "24px", "24px", __VERSION__.logo.flip);
 
         let span = document.createElement("span");
         span.innerHTML = "二维码";
         title.appendChild(span);
-        let close = __SYS_IMAGES_SVG__.getImage("close",__THEMES__.get().color, "24px", "24px", __THEMES__.get().hover);
+        let close = __SYS_IMAGES_SVG__.getImage("close", __THEMES__.get().color, "24px", "24px", __THEMES__.get().hover);
         close.className = "ui-container-close";
         title.appendChild(close);
         content.appendChild(title);
@@ -1440,7 +1449,10 @@ var UI = {
         close.onclick = function () {
             parent.removeChild($("ui-qrcode-component"));
         };
-        setDialogDrag(title);
+        dragControl.hook(title, content, function (left, top) {
+            content.style.left = left + "px";
+            content.style.top = top + "px"
+        });
         setTimeout(function () {
             let img = $("qrcode-image").getElementsByTagName("img")[0];
             $("ui_qrcode_code").value = img.src;
@@ -1632,7 +1644,10 @@ var UI = {
                 parent.removeChild($("ui_alert"));
             };
             tools.appendChild(button);
-            setDialogDrag(title);
+            dragControl.hook(title, content, function(left, top){
+                content.style.left = left + "px";
+                content.style.top = top + "px"
+            });
             $("ui-alert-ok").focus();
         },
     },
@@ -1739,7 +1754,10 @@ var UI = {
                 }
             };
             tools.appendChild(button);
-            setDialogDrag(title);
+            dragControl.hook(title, content, function(left, top){
+                content.style.left = left + "px";
+                content.style.top = top + "px"
+            });
             $("ui-confirm-no").focus();
         },
     },
@@ -1882,7 +1900,10 @@ var UI = {
                 parent.removeChild($("ui_prompt"));
             };
             tools.appendChild(button);
-            setDialogDrag(title);
+            dragControl.hook(title, content, function(left, top){
+                content.style.left = left + "px";
+                content.style.top = top + "px"
+            });
             $class("ui-container-item-input",0).focus();
         },
     },
@@ -2012,7 +2033,10 @@ var UI = {
                 parent.removeChild($("ui_choise"));
             };
             tools.appendChild(button);
-            setDialogDrag(title);
+            dragControl.hook(title, content, function(left, top){
+                content.style.left = left + "px";
+                content.style.top = top + "px"
+            });
         },
     },
     userLogin: {
@@ -2153,7 +2177,10 @@ var UI = {
                 parent.removeChild($("ui_user_login"));
             };
             tools.appendChild(button);
-            setDialogDrag(title);
+            dragControl.hook(title, content, function(left, top){
+                content.style.left = left + "px";
+                content.style.top = top + "px"
+            });
             $("ui_user_login_value_name").focus();
         },
     },
@@ -2289,7 +2316,10 @@ var UI = {
                 parent.removeChild($("ui_password"));
             };
             tools.appendChild(button);
-            setDialogDrag(title);
+            dragControl.hook(title, content, function(left, top){
+                content.style.left = left + "px";
+                content.style.top = top + "px"
+            });
             $class("ui-container-item-input", 0).focus();
         },
     },
@@ -2727,7 +2757,10 @@ var UI = {
                 parent.removeChild($("ui_sqlManagerDialog"));
             };
             tool.appendChild(exit);
-            setDialogDrag(title);
+            dragControl.hook(title, content, function(left, top){
+                content.style.left = left + "px";
+                content.style.top = top + "px"
+            });
         }
     },
 
@@ -2815,11 +2848,11 @@ var UI = {
 
         let title = document.createElement("div");
         title.className = "ui-container-title";
-        title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name,__THEMES__.get().color, "24px", "24px", __VERSION__.logo.flip);
+        title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name, __THEMES__.get().color, "24px", "24px", __VERSION__.logo.flip);
         let span = document.createElement("span");
         span.innerHTML = "分类计算";
         title.appendChild(span);
-        let close = __SYS_IMAGES_SVG__.getImage("close",__THEMES__.get().color, "24px", "24px", __THEMES__.get().hover);
+        let close = __SYS_IMAGES_SVG__.getImage("close", __THEMES__.get().color, "24px", "24px", __THEMES__.get().hover);
         close.className = "ui-container-close";
         title.appendChild(close);
         content.appendChild(title);
@@ -3007,7 +3040,10 @@ var UI = {
             parent.removeChild($("ui_subtotal"));
         };
         tool.appendChild(cancel);
-        setDialogDrag(title);
+        dragControl.hook(title, content, function (left, top) {
+            content.style.left = left + "px";
+            content.style.top = top + "px"
+        });
     },
 
 
@@ -3114,11 +3150,11 @@ var UI = {
 
         let title = document.createElement("div");
         title.className = "ui-container-title";
-        title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name,__THEMES__.get().color, "24px", "24px", __VERSION__.logo.flip);
+        title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name, __THEMES__.get().color, "24px", "24px", __VERSION__.logo.flip);
         let span = document.createElement("span");
         span.innerHTML = "数据切片";
         title.appendChild(span);
-        let close = __SYS_IMAGES_SVG__.getImage("close",__THEMES__.get().color, "24px", "24px", __THEMES__.get().hover);
+        let close = __SYS_IMAGES_SVG__.getImage("close", __THEMES__.get().color, "24px", "24px", __THEMES__.get().hover);
         close.className = "ui-container-close";
         title.appendChild(close);
         content.appendChild(title);
@@ -3271,8 +3307,10 @@ var UI = {
         };
         tool.appendChild(cancel);
 
-        setDialogDrag(title);
-
+        dragControl.hook(title, content, function (left, top) {
+            content.style.left = left + "px";
+            content.style.top = top + "px"
+        });
     },
 
     getDataFilter: function (parent, colid, callback) {
@@ -3299,11 +3337,11 @@ var UI = {
 
         let title = document.createElement("div");
         title.className = "ui-container-title";
-        title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name,__THEMES__.get().color, "24px", "24px", __VERSION__.logo.flip);
+        title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name, __THEMES__.get().color, "24px", "24px", __VERSION__.logo.flip);
         let span = document.createElement("span");
         span.innerHTML = "筛选字段 [ " + columns[Number(colid)].name + " ]";
         title.appendChild(span);
-        let close = __SYS_IMAGES_SVG__.getImage("close",__THEMES__.get().color, "24px", "24px", __THEMES__.get().hover);
+        let close = __SYS_IMAGES_SVG__.getImage("close", __THEMES__.get().color, "24px", "24px", __THEMES__.get().hover);
         close.className = "ui-container-close";
         title.appendChild(close);
         content.appendChild(title);
@@ -3483,7 +3521,10 @@ var UI = {
         };
         tool.appendChild(cancel);
 
-        setDialogDrag(title);
+        dragControl.hook(title, content, function (left, top) {
+            content.style.left = left + "px";
+            content.style.top = top + "px"
+        });
     },
 
     setColumnFormat: function (parent, colid, callback) {
@@ -3514,11 +3555,11 @@ var UI = {
 
         let title = document.createElement("div");
         title.className = "ui-container-title";
-        title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name,__THEMES__.get().color, "24px", "24px", __VERSION__.logo.flip);
+        title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name, __THEMES__.get().color, "24px", "24px", __VERSION__.logo.flip);
         let span = document.createElement("span");
         span.innerHTML = "格式设置 [ " + columns[Number(colid)].name + " ]";
         title.appendChild(span);
-        let close = __SYS_IMAGES_SVG__.getImage("close",__THEMES__.get().color, "24px", "24px", __THEMES__.get().hover);
+        let close = __SYS_IMAGES_SVG__.getImage("close", __THEMES__.get().color, "24px", "24px", __THEMES__.get().hover);
         close.className = "ui-container-close";
         title.appendChild(close);
         content.appendChild(title);
@@ -3675,7 +3716,10 @@ var UI = {
             parent.removeChild($("ui_columnFormat"));
         };
         tool.appendChild(cancel);
-        setDialogDrag(title);
+        dragControl.hook(title, content, function (left, top) {
+            content.style.left = left + "px";
+            content.style.top = top + "px"
+        });
     },
 };
 
@@ -3738,11 +3782,11 @@ var SQLite = {
 
         let title = document.createElement("div");
         title.className = "ui-container-title";
-        title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name,__THEMES__.get().color, "24px", "24px", __VERSION__.logo.flip);
+        title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name, __THEMES__.get().color, "24px", "24px", __VERSION__.logo.flip);
         let span = document.createElement("span");
-        span.innerHTML = message +" ";
+        span.innerHTML = message + " ";
         title.appendChild(span);
-        let close = __SYS_IMAGES_SVG__.getImage("close",__THEMES__.get().color, "24px", "24px", __THEMES__.get().hover);
+        let close = __SYS_IMAGES_SVG__.getImage("close", __THEMES__.get().color, "24px", "24px", __THEMES__.get().hover);
         close.className = "ui-container-close";
         title.appendChild(close);
         content.appendChild(title);
@@ -3819,7 +3863,10 @@ var SQLite = {
         };
         tool.appendChild(b);
 
-        setDialogDrag(title);
+        dragControl.hook(title, content, function (left, top) {
+            content.style.left = left + "px";
+            content.style.top = top + "px"
+        });
     },
 
     createTable:function(parent, structure, callback) {
@@ -3844,11 +3891,11 @@ var SQLite = {
 
         let title = document.createElement("div");
         title.className = "ui-container-title";
-        title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name,__THEMES__.get().color, "24px", "24px", __VERSION__.logo.flip);
+        title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name, __THEMES__.get().color, "24px", "24px", __VERSION__.logo.flip);
         let span = document.createElement("span");
         span.innerHTML = "创建数据表 ";
         title.appendChild(span);
-        let close = __SYS_IMAGES_SVG__.getImage("close",__THEMES__.get().color, "24px", "24px", __THEMES__.get().hover);
+        let close = __SYS_IMAGES_SVG__.getImage("close", __THEMES__.get().color, "24px", "24px", __THEMES__.get().hover);
         close.className = "ui-container-close";
         title.appendChild(close);
         content.appendChild(title);
@@ -4063,7 +4110,7 @@ var SQLite = {
                 if (title.value != "") {
                     let sql = SQLite.getTableSQL(title.value, stru);
                     __LOGS__.viewMessage(sql);
-                    callback({title: title.value,sql:sql});
+                    callback({title: title.value, sql: sql});
                 } else
                     UI.alert.show("提示", "请输入数据表名称.");
             }
@@ -4078,7 +4125,10 @@ var SQLite = {
         };
         tool.appendChild(b);
 
-        setDialogDrag(title);
+        dragControl.hook(title, content, function (left, top) {
+            content.style.left = left + "px";
+            content.style.top = top + "px"
+        });
     },
     import: {
         configs: {
@@ -4609,7 +4659,10 @@ var SQLite = {
             };
             tool.appendChild(b);
 
-            setDialogDrag(title);
+            dragControl.hook(title, content, function(left, top){
+                content.style.left = left + "px";
+                content.style.top = top + "px"
+            });
         },
     },
     structInspect: function (data, sep) {

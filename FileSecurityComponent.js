@@ -535,12 +535,12 @@ function getFileSecurity(parent) {
 
     let title = document.createElement("div");
     title.className = "ui-container-title";
-    title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name,__THEMES__.get().color, "24px", "24px", __VERSION__.logo.flip);
+    title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name, __THEMES__.get().color, "24px", "24px", __VERSION__.logo.flip);
 
     let span = document.createElement("span");
     span.innerHTML = "文件加密/解密";
     title.appendChild(span);
-    let close = __SYS_IMAGES_SVG__.getImage("close",__THEMES__.get().color, "24px", "24px", __THEMES__.get().hover);
+    let close = __SYS_IMAGES_SVG__.getImage("close", __THEMES__.get().color, "24px", "24px", __THEMES__.get().hover);
     close.className = "ui-container-close";
     title.appendChild(close);
     content.appendChild(title);
@@ -829,7 +829,12 @@ function getFileSecurity(parent) {
                         } else if (pattern.test(key) == false) {
                             UI.alert.show("提示", "请输入8位密码,且必须包含英文字母和数字.");
                         } else {
-                            UI.prompt.show("输入", {"打包文件名称": {value:"", type:"input"}}, "auto", function (args, values) {
+                            UI.prompt.show("输入", {
+                                "打包文件名称": {
+                                    value: "",
+                                    type: "input"
+                                }
+                            }, "auto", function (args, values) {
                                 let pkname = values["打包文件名称"];
                                 let mode = args["mode"];
                                 let js = args["js"];
@@ -1074,12 +1079,15 @@ function getFileSecurity(parent) {
     cancel.className = "button";
     cancel.innerText = "退出";
     cancel.onclick = close.onclick = function () {
-        __XMLHTTP__.unhook($1("http-server-datetime",0));
+        __XMLHTTP__.unhook($class("http-server-datetime", 0));
         parent.removeChild($("ui_fileSecurity"));
     };
     tool.appendChild(cancel);
 
-    setDialogDrag(title);
+    dragControl.hook(title, content, function (left, top) {
+        content.style.left = left + "px";
+        content.style.top = top + "px"
+    });
 
     return container;
 }

@@ -140,12 +140,12 @@ var __LOGS__ = {
 
         let title = document.createElement("div");
         title.className = "ui-container-title";
-        title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name,__THEMES__.get().color, "24px", "24px", __VERSION__.logo.flip);
+        title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name, __THEMES__.get().color, "24px", "24px", __VERSION__.logo.flip);
 
         let span = document.createElement("span");
         span.innerHTML = "日志设置 ";
         title.appendChild(span);
-        let close = __SYS_IMAGES_SVG__.getImage("close",__THEMES__.get().color, "24px", "24px", __THEMES__.get().hover);
+        let close = __SYS_IMAGES_SVG__.getImage("close", __THEMES__.get().color, "24px", "24px", __THEMES__.get().hover);
         close.className = "ui-container-close";
         title.appendChild(close);
         content.appendChild(title);
@@ -216,7 +216,7 @@ var __LOGS__ = {
                 item.appendChild(input);
             } else if (this.configs[name].type == "boolean") {
                 let input = UI.booleanChoice(this.configs[name].value.toBoolean(), function (value) {
-                     __LOGS__.configs[name].value = (value ? "true" : "false");
+                    __LOGS__.configs[name].value = (value ? "true" : "false");
                 });
                 input.id = name;
                 input.className = "ui-container-item-boolean";
@@ -235,7 +235,7 @@ var __LOGS__ = {
                 input.step = __LOGS__.configs[name].attribute.step;
                 input.className = "ui-container-item-range";
                 input.title = __LOGS__.configs[name].value;
-                input.value = Number(__LOGS__.configs[name].value.replace(new RegExp(__LOGS__.configs[name].attribute.unit,"g"), ""));
+                input.value = Number(__LOGS__.configs[name].value.replace(new RegExp(__LOGS__.configs[name].attribute.unit, "g"), ""));
                 input.onchange = function () {
                     __LOGS__.configs[this.id].value = this.title = (this.value + __LOGS__.configs[this.id].attribute.unit);
                 };
@@ -267,7 +267,7 @@ var __LOGS__ = {
                 input.className = "ui-container-item-number";
                 input.title = __LOGS__.configs[name].value;
                 input.value = __LOGS__.configs[name].value;
-                input.onkeypress = function(){
+                input.onkeypress = function () {
                     return false;
                 };
                 input.onchange = function () {
@@ -330,7 +330,10 @@ var __LOGS__ = {
         };
         c.appendChild(b);
 
-        setDialogDrag(title);
+        dragControl.hook(title, content, function (left, top) {
+            content.style.left = left + "px";
+            content.style.top = top + "px"
+        });
     },
 
     delete: function (date) {
@@ -420,13 +423,13 @@ var __LOGS__ = {
 
         let title = document.createElement("div");
         title.className = "ui-container-title";
-        title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name,__THEMES__.get().color, "24px", "24px", __VERSION__.logo.flip);
+        title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name, __THEMES__.get().color, "24px", "24px", __VERSION__.logo.flip);
         let span = document.createElement("span");
         span.className = span.id = "error-title";
 
         span.innerHTML = (typeof names[error.name] !== "undefined" ? names[error.name] : "其他未定义错误");
         title.appendChild(span);
-        let close = __SYS_IMAGES_SVG__.getImage("close",__THEMES__.get().color, "24px", "24px", __THEMES__.get().hover);
+        let close = __SYS_IMAGES_SVG__.getImage("close", __THEMES__.get().color, "24px", "24px", __THEMES__.get().hover);
         close.className = "ui-container-close";
         title.appendChild(close);
         content.appendChild(title);
@@ -470,7 +473,10 @@ var __LOGS__ = {
             window.open(__VERSION__.url);
         };
         tool.appendChild(help);
-        setDialogDrag(title);
+        dragControl.hook(title, content, function (left, top) {
+            content.style.left = left + "px";
+            content.style.top = top + "px"
+        });
     },
     viewMessage: function (msg, warning, copyto) {
         let log = {
@@ -918,26 +924,15 @@ var __XMLHTTP__ = {
              options: [new Option("MySQL", "text/x-mysql"), new Option("SQLite", "text/x-sqlite"), new Option("HTML", "text/html"), new Option("函数", "text/javascript")],
              type: "select"
          },
-         codeMirrorFontSize: {
-             name: "字号",
-             value: "100%",
-             options: [
-                 new Option("100%", "100%"), new Option("110%", "110%"),
-                 new Option("120%", "120%"), new Option("130%", "130%"),
-                 new Option("140%", "140%"), new Option("150%", "150%"),
-             ],
-             type: "select"
-         },
+         codeMirrorHeight: {name: "高度", value: "250px", type: "range", attribute: {min: 250, max: 500, step: 10, unit: "px"}},
+         codeMirrorFontSize: {name: "字号", value: "90%", type: "range", attribute: {min: 90, max: 150, step: 10, unit: "%"}},
          codeMirrorRulers: {
              name: "标尺数量",
              value: 6,
              type: "number", attribute: {min: 0, max: 10, step: 1}
          },
-         codeMirrorRulerWidth: {
-             name: "标尺宽度",
-             value: "40",
-             type: "number", attribute: {min: 10, max: 100, step: 1}
-         },
+         codeMirrorRulerWidth: {name: "标尺宽度", value: "40", type: "range", attribute: {min: 10, max: 100, step: 10, unit: ""}},
+
          codeMirrorLineNumber: {
              name: "显示行号",
              value: "true",
@@ -1020,11 +1015,12 @@ var __XMLHTTP__ = {
                      this.configs.codeMirrorLineNumber.value.toBoolean() ? "CodeMirror-linenumbers" : "",
                      this.configs.codeMirrorBreakpoints.value.toBoolean() ? "breakpoints" : ""
                  ]);
-                 let sqleditor = $("sqlContainer").getElementsByTagName("div");
-                 for (let i = 0; i < sqleditor.length; i++) {
-                     let div = sqleditor[i];
-                     if (div.className.split(" ")[0] == "CodeMirror")
-                         div.style.fontSize = this.configs.codeMirrorFontSize.value;
+                 let mirr = $("sqlContainer").getElementsByTagName("div");
+                 for (let i = 0; i < mirr.length; i++) {
+                     if (mirr[i].className.split(" ")[0] == "CodeMirror") {
+                         mirr[i].style.fontSize = this.configs.codeMirrorFontSize.value;
+                         mirr[i].style.height = "100%";
+                     }
                  }
              }
          } catch (e) {
@@ -1098,11 +1094,12 @@ var __XMLHTTP__ = {
                  let info = cm.lineInfo(n);
                  cm.setGutterMarker(n, "breakpoints", info.gutterMarkers ? null : marker());
              });
-             let sqleditor = $("sqlContainer").getElementsByTagName("div");
-             for (let i = 0; i < sqleditor.length; i++) {
-                 let div = sqleditor[i];
-                 if (div.className.split(" ")[0] == "CodeMirror")
-                     div.style.fontSize = this.configs.codeMirrorFontSize.value;
+             let mirr = $("sqlContainer").getElementsByTagName("div");
+             for (let i = 0; i < mirr.length; i++) {
+                 if (mirr[i].className.split(" ")[0] == "CodeMirror") {
+                     mirr[i].style.fontSize = this.configs.codeMirrorFontSize.value;
+                     mirr[i].style.height = "100%";
+                 }
              }
              messasge.innerText += "OK.";
          } catch (e) {
@@ -1241,21 +1238,21 @@ var __XMLHTTP__ = {
                  };
                  item.appendChild(input);
              } else if (this.configs[name].type == "ranges") {
-                let input = UI.rangesChoice(
-                    __SQLEDITOR__.configs[name].attribute.min,
-                    __SQLEDITOR__.configs[name].attribute.max,
-                    __SQLEDITOR__.configs[name].attribute.unit,
-                    __SQLEDITOR__.configs[name].value,
-                    function (value) {
-                        __SQLEDITOR__.configs[name].value = value;
-                    });
-                input.id = name;
-                input.className = "ui-container-item-ranges";
-                if (typeof this.configs[name].title != "undefined")
-                    input.title = this.configs[name].title;
-                else
-                    input.title = this.configs[name].name;
-                item.appendChild(input);
+                 let input = UI.rangesChoice(
+                     __SQLEDITOR__.configs[name].attribute.min,
+                     __SQLEDITOR__.configs[name].attribute.max,
+                     __SQLEDITOR__.configs[name].attribute.unit,
+                     __SQLEDITOR__.configs[name].value,
+                     function (value) {
+                         __SQLEDITOR__.configs[name].value = value;
+                     });
+                 input.id = name;
+                 input.className = "ui-container-item-ranges";
+                 if (typeof this.configs[name].title != "undefined")
+                     input.title = this.configs[name].title;
+                 else
+                     input.title = this.configs[name].name;
+                 item.appendChild(input);
              } else if (this.configs[name].type == "number") {
                  let input = document.createElement("input");
                  input.style.cssFloat = "right";
@@ -1267,9 +1264,9 @@ var __XMLHTTP__ = {
                  input.className = "ui-container-item-number";
                  input.title = __SQLEDITOR__.configs[name].value;
                  input.value = __SQLEDITOR__.configs[name].value;
-                 input.onkeypress = function(){
-                    return false;
-                };
+                 input.onkeypress = function () {
+                     return false;
+                 };
                  input.onchange = function () {
                      __SQLEDITOR__.configs[this.id].value = this.title = this.value;
                  };
@@ -1304,8 +1301,10 @@ var __XMLHTTP__ = {
          b.innerHTML = "确定";
          b.onclick = function () {
              setUserConfig("codeMirrorConfig", JSON.stringify(__SQLEDITOR__.getConfigItems()));
+             $("sqlContainer").style.height = __SQLEDITOR__.configs.codeMirrorHeight.value;
              callback();
              parent.removeChild($("ui_codeMirrorConfigs"));
+             resize();
          };
          c.appendChild(b);
 
@@ -1330,7 +1329,10 @@ var __XMLHTTP__ = {
          };
          c.appendChild(b);
 
-         setDialogDrag(title);
+         dragControl.hook(title, content, function (left, top) {
+             content.style.left = left + "px";
+             content.style.top = top + "px"
+         });
      },
  };
 
@@ -2773,20 +2775,6 @@ function initConfigs() {
             $("copyright").innerHTML = copyright;
 
             $("footer").style.display = getUserConfig("help");
-            $("detail").style.display = getUserConfig("displayLogs");
-            if ($("detail").style.display == "none") {
-                $("page").onmousemove = function () {
-                    let active = 3;
-                    if (event.x > getAbsolutePosition($("page")).width - active) {
-                        $("detail").style.display = "block";
-                        setUserConfig("displayLogs", "block");
-                        $("page").onmousemove = null;
-                    }
-                    resize();
-                };
-            }
-
-            resize();
 
             let config = getUserConfig("codeMirrorConfig");
             if (config != null) {
@@ -2800,6 +2788,26 @@ function initConfigs() {
             } else {
                 setUserConfig("codeMirrorConfig", JSON.stringify(__SQLEDITOR__.getConfigItems()));
             }
+            //#######################################
+            //必须先行实体化编辑器,否则不能预埋参数
+            //#######################################
+            $("sqlContainer").style.height = __SQLEDITOR__.configs.codeMirrorHeight.value;
+            $("sqlediter").style.width = (getAbsolutePosition($("sqlContainer")).width - 2) + "px";
+            __SQLEDITOR__.init($("sqlediter"));
+
+            $("detail").style.display = getUserConfig("displayLogs");
+            if ($("detail").style.display == "none") {
+                $("page").onmousemove = function () {
+                    let active = 3;
+                    if (event.x > getAbsolutePosition($("page")).width - active) {
+                        $("detail").style.display = "block";
+                        setUserConfig("displayLogs", "block");
+                        $("page").onmousemove = null;
+                    }
+                    resize();
+                };
+            }
+            resize();
 
             config = getUserConfig("echartsconfig");
             if (config != null) {
@@ -2929,6 +2937,14 @@ function initMenus() {
         //#######################################
         let tbstools = $("sidebar-tbs-tools");
         tbstools.innerText = "";
+        tbstools.style.cursor = "ns-resize";
+        splitControl.hook(tbstools, $("sidebar-dbs"), function(value) {
+            if (value < getAbsolutePosition($("sidebar")).height - getAbsolutePosition(tbstools).height - getAbsolutePosition($("sidebar-dbs-tools")).height) {
+                $("sidebar-dbs").style.height = value + "px";
+                resize();
+            }
+        });
+
         let crtb = document.createElement("div");
         crtb.className = "button";
         crtb.innerText = "新增";
@@ -3281,12 +3297,6 @@ function initMenus() {
         UI.tooltip(editerSetting, "编辑器设置");
 
         //#######################################
-        //必须先行实体化编辑器,否则不能预埋参数
-        //#######################################
-        $("sqlediter").style.width = (getAbsolutePosition($("sqlContainer")).width - 2) + "px";
-        __SQLEDITOR__.init($("sqlediter"));
-
-        //#######################################
         //初始化消息菜单
         //#######################################
         let detailtools = $("detail-tools");
@@ -3396,6 +3406,13 @@ function initMenus() {
             };
             requestFullScreen($("main"), style);
         };
+        datatools.style.cursor = "ns-resize";
+        splitControl.hook(datatools, $("sqlContainer"), function(value) {
+            if (value < getAbsolutePosition($("main")).height - getAbsolutePosition(datatools).height - getAbsolutePosition($("data-page-tools")).height - getAbsolutePosition($("sql-tools")).height) {
+                $("sqlContainer").style.height = value + "px";
+                resize();
+            }
+        });
 
         input = document.createElement("input");
         input.type = "file";
@@ -4280,6 +4297,7 @@ function resize() {
     $("header").style.width = $("footer").style.width = (getBrowserSize().width - 15) + "px";
     $("MainContainer").style.height = (getBrowserSize().height - getAbsolutePosition($("header")).height - getAbsolutePosition($("footer")).height - 32) + "px";
     $("main").style.width = (getBrowserSize().width - getAbsolutePosition($("sidebar")).width - getAbsolutePosition($("detail")).width - 15) + "px";
+    __SQLEDITOR__.reset();
     $("tableContainer").style.height = (getAbsolutePosition($("main")).height -
         getAbsolutePosition($("sql-tools")).height -
         getAbsolutePosition($("sqlContainer")).height -
@@ -5125,11 +5143,11 @@ function getImageBase64Code(parent, img) {
 
     let title = document.createElement("div");
     title.className = "ui-container-title";
-    title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name,__THEMES__.get().color, "24px", "24px", __VERSION__.logo.flip);
+    title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name, __THEMES__.get().color, "24px", "24px", __VERSION__.logo.flip);
     let span = document.createElement("span");
     span.innerHTML = "设置背景";
     title.appendChild(span);
-    let close = __SYS_IMAGES_SVG__.getImage("close",__THEMES__.get().color, "24px", "24px", __THEMES__.get().hover);
+    let close = __SYS_IMAGES_SVG__.getImage("close", __THEMES__.get().color, "24px", "24px", __THEMES__.get().hover);
     close.className = "ui-container-close";
     title.appendChild(close);
     content.appendChild(title);
@@ -5197,9 +5215,9 @@ function getImageBase64Code(parent, img) {
     filecontainer.id = "image-container";
     filecontainer.style.width = "100%";
     filecontainer.style.height = "370.8px";
-        if (typeof img !== "undefined") {
-            filecontainer.appendChild(getImage(img.src));
-        }
+    if (typeof img !== "undefined") {
+        filecontainer.appendChild(getImage(img.src));
+    }
     content.appendChild(filecontainer);
 
     let imagecode = document.createElement("textarea");
@@ -5331,7 +5349,10 @@ function getImageBase64Code(parent, img) {
         parent.removeChild($("ui_imageBase"));
     };
     tool.appendChild(cancel);
-    setDialogDrag(title);
+    dragControl.hook(title, content, function (left, top) {
+        content.style.left = left + "px";
+        content.style.top = top + "px"
+    });
 }
 
 function  setClipboardListener(target) {
@@ -5426,3 +5447,49 @@ function getXMLFile(title, workbook) {
         __LOGS__.viewError(e);
     }
 }
+
+var splitControl = {
+    configs: {
+    },
+    hook: function (control, target, callback) {
+        control.onmousedown = function (event) {
+            splitControl.configs[control.id] = {
+                control: control,
+                target: target,
+                flag: true,
+                height: getAbsolutePosition(target).height,
+                currentY: 0,
+                callback: callback,
+            };
+            if (!event) {
+                event = window.event;
+                control.onselectstart = function () {
+                    return false;
+                }
+            }
+            splitControl.configs[control.id].currentY = event.clientY;
+        };
+
+        document.documentElement.onmouseup = function (event) {
+            for(let key in splitControl.configs) {
+                if (splitControl.configs[key].flag) {
+                    splitControl.configs[key].flag = false;
+                    splitControl.configs.height = getAbsolutePosition(splitControl.configs[key].target).height;
+                }
+            }
+        };
+
+        document.documentElement.onmousemove = function (event) {
+            let e = event ? event : window.event;
+            for(let key in splitControl.configs) {
+                if (splitControl.configs[key].flag) {
+                    let nowY = e.clientY;
+                    let disY = nowY - splitControl.configs[key].currentY;
+                    if (typeof splitControl.configs[key].callback !== "undefined") {
+                        splitControl.configs[key].callback(splitControl.configs[key].height + disY);
+                    }
+                }
+            }
+        }
+    }
+};

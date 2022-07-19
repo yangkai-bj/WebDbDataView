@@ -1493,59 +1493,57 @@ function getCss(element, key) {
 }
 
 //用于处理对话框拖动
-var dragParams = {
-    target: null,
-    left: 0,
-    top: 0,
-    currentX: 0,
-    currentY: 0,
-    flag: false
-};
-//拖拽的实现
-function setDialogDrag(bar, callback) {
-    bar.onmousedown = function (event) {
-        dragParams.flag = true;
-        if (dragParams.target !=null)
-            dragParams.target.style.zIndex = 9998;
-        dragParams.target = this.parentNode;
-        dragParams.target.style.zIndex = 9999;
-        if (getCss(dragParams.target, "left") !== "auto") {
-            dragParams.left = getCss(dragParams.target, "left");
-        }
-        if (getCss(dragParams.target, "top") !== "auto") {
-            dragParams.top = getCss(dragParams.target, "top");
-        }
-        if (!event) {
-            event = window.event;
-            //防止IE文字选中
-            bar.onselectstart = function () {
-                return false;
+var dragControl = {
+    configs: {
+        target: null,
+        left: 0,
+        top: 0,
+        currentX: 0,
+        currentY: 0,
+        flag: false
+    },
+
+    hook: function (control, target, callback) {
+        control.onmousedown = function (event) {
+            dragControl.configs.flag = true;
+            if (dragControl.configs.target != null)
+                dragControl.configs.target.style.zIndex = 9998;
+            dragControl.configs.target = target;
+            dragControl.configs.target.style.zIndex = 9999;
+            if (getCss(dragControl.configs.target, "left") !== "auto") {
+                dragControl.configs.left = getCss(dragControl.configs.target, "left");
+            }
+            if (getCss(dragControl.configs.target, "top") !== "auto") {
+                dragControl.configs.top = getCss(dragControl.configs.target, "top");
+            }
+            if (!event) {
+                event = window.event;
+                //防止IE文字选中
+                control.onselectstart = function () {
+                    return false;
+                }
+            }
+            dragControl.configs.currentX = event.clientX;
+            dragControl.configs.currentY = event.clientY;
+        };
+        document.onmouseup = function () {
+            dragControl.configs.flag = false;
+            if (getCss(dragControl.configs.target, "left") !== "auto") {
+                dragControl.configs.left = getCss(dragControl.configs.target, "left");
+            }
+            if (getCss(dragControl.configs.target, "top") !== "auto") {
+                dragControl.configs.top = getCss(dragControl.configs.target, "top");
+            }
+        };
+        document.onmousemove = function (event) {
+            let e = event ? event : window.event;
+            if (dragControl.configs.flag) {
+                let nowX = e.clientX, nowY = e.clientY;
+                let disX = nowX - dragControl.configs.currentX, disY = nowY - dragControl.configs.currentY;
+                if (typeof callback == "function") {
+                    callback(parseInt(dragControl.configs.left) + disX, parseInt(dragControl.configs.top) + disY);
+                }
             }
         }
-        let e = event;
-        dragParams.currentX = e.clientX;
-        dragParams.currentY = e.clientY;
-    };
-    document.onmouseup = function () {
-        dragParams.flag = false;
-        if (getCss(dragParams.target, "left") !== "auto") {
-            dragParams.left = getCss(dragParams.target, "left");
-        }
-        if (getCss(dragParams.target, "top") !== "auto") {
-            dragParams.top = getCss(dragParams.target, "top");
-        }
-    };
-    document.onmousemove = function (event) {
-        let e = event ? event : window.event;
-        if (dragParams.flag) {
-            let nowX = e.clientX, nowY = e.clientY;
-            let disX = nowX - dragParams.currentX, disY = nowY - dragParams.currentY;
-            dragParams.target.style.left = parseInt(dragParams.left) + disX + "px";
-            dragParams.target.style.top = parseInt(dragParams.top) + disY + "px";
-        }
-
-        if (typeof callback == "function") {
-            callback(parseInt(dragParams.left) + disX, parseInt(dragParams.top) + disY);
-        }
     }
-}
+};

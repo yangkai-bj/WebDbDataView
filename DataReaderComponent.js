@@ -107,7 +107,7 @@ function getDataReader(parent, callback) {
 
     let title = document.createElement("div");
     title.className = "ui-container-title";
-    title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name,__THEMES__.get().color, "24px", "24px", __VERSION__.logo.flip);
+    title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name, __THEMES__.get().color, "24px", "24px", __VERSION__.logo.flip);
 
     let span = document.createElement("span");
     span.innerHTML = "读取外部数据";
@@ -217,7 +217,10 @@ function getDataReader(parent, callback) {
     };
     tool.appendChild(b);
 
-    setDialogDrag(title);
+    dragControl.hook(title, content, function (left, top) {
+        content.style.left = left + "px";
+        content.style.top = top + "px"
+    });
 }
 
 function checkColumnName(columns, name, count) {

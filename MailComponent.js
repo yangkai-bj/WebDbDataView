@@ -126,13 +126,13 @@ function getMailComponent(parent) {
         }
     }
 
-    function checkMailFormat(maillist){
+    function checkMailFormat(maillist) {
         let pattern = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
-        let result = maillist.reduce(function(rel,item) {
+        let result = maillist.reduce(function (rel, item) {
             if (pattern.test(item) != true)
                 rel.push(item);
             return rel;
-        },[]);
+        }, []);
         return result;
     }
 
@@ -160,7 +160,7 @@ function getMailComponent(parent) {
         if (mail.subject.length > 0)
             items.push("subject=" + mail.subject.toString());
         let body = [];
-            body.push("❀" + key + "%0D%0A");
+        body.push("❀" + key + "%0D%0A");
         if (mail.body.length > 0 || mail.attach.length > 0) {
             if (mail.body.length > 0 && mail.body.trim() != "")
                 body.push(mail.body.toString());
@@ -380,7 +380,7 @@ function getMailComponent(parent) {
 
     let title = document.createElement("div");
     title.className = "ui-container-title";
-    title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name,__THEMES__.get().color, "24px", "24px", __VERSION__.logo.flip);
+    title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name, __THEMES__.get().color, "24px", "24px", __VERSION__.logo.flip);
 
     let span = document.createElement("span");
     span.innerHTML = "邮件编辑";
@@ -690,7 +690,7 @@ function getMailComponent(parent) {
 
     span = document.createElement("span");
     span.className = "ui-container-item-name";
-    span.appendChild(__SYS_IMAGES_SVG__.getImage("add", __THEMES__.get().color,"20px", "20px", __THEMES__.get().hover));
+    span.appendChild(__SYS_IMAGES_SVG__.getImage("add", __THEMES__.get().color, "20px", "20px", __THEMES__.get().hover));
     //span.innerHTML = "[➕]";
     span.title = "上传附件";
     span.style.cssText = "width:100%;height:26%;margin:0px;cursor:pointer;text-align:center;color: brown;font-weight: bolder;";
@@ -736,7 +736,7 @@ function getMailComponent(parent) {
     div.appendChild(span);
     span = document.createElement("span");
     span.className = "ui-container-item-name";
-    span.appendChild(__SYS_IMAGES_SVG__.getImage("subtract", __THEMES__.get().color,"20px", "20px", __THEMES__.get().hover));
+    span.appendChild(__SYS_IMAGES_SVG__.getImage("subtract", __THEMES__.get().color, "20px", "20px", __THEMES__.get().hover));
     // span.innerHTML = "[➖]";
     span.title = "删除附件";
     span.style.cssText = "width:100%;height:26%;margin:0px;cursor:pointer;text-align:center;color: brown;font-weight: bolder;";
@@ -753,7 +753,7 @@ function getMailComponent(parent) {
     div.appendChild(span);
     span = document.createElement("span");
     span.className = "ui-container-item-name";
-    span.appendChild(__SYS_IMAGES_SVG__.getImage("del", __THEMES__.get().color,"20px", "20px", __THEMES__.get().hover));
+    span.appendChild(__SYS_IMAGES_SVG__.getImage("del", __THEMES__.get().color, "20px", "20px", __THEMES__.get().hover));
     // span.innerHTML = "[❌]";
     span.title = "清空附件";
     span.style.cssText = "width:100%;height:26%;margin:0px;cursor:pointer;text-align:center;color: brown;font-weight: bolder;";
@@ -903,7 +903,7 @@ function getMailComponent(parent) {
         }
 
         sheets.push(aoa);
-        UI.prompt.show("输入", {"文件名称": {value:"", type:"input"}}, "auto", function (args, values) {
+        UI.prompt.show("输入", {"文件名称": {value: "", type: "input"}}, "auto", function (args, values) {
             let title = fixFileName(values["文件名称"]);
             if (title.trim() != "") {
                 openDownloadDialog(workbook2blob(args.sheets, args.sheetNames), title + ".xlsx");
@@ -941,5 +941,8 @@ function getMailComponent(parent) {
         parent.removeChild($("ui-mail-component"));
     };
     tool.appendChild(cancel);
-    setDialogDrag(title);
+    dragControl.hook(title, content, function (left, top) {
+        content.style.left = left + "px";
+        content.style.top = top + "px"
+    });
 }

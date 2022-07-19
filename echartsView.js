@@ -1968,13 +1968,13 @@ var __ECHARTS__ = {
 
         let title = document.createElement("div");
         title.className = "ui-container-title";
-        title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name,__THEMES__.get().color, "24px", "24px", __VERSION__.logo.flip);
+        title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name, __THEMES__.get().color, "24px", "24px", __VERSION__.logo.flip);
 
         let span = document.createElement("span");
         span.innerHTML = "图形参数";
         title.appendChild(span);
 
-        let close = __SYS_IMAGES_SVG__.getImage("close",__THEMES__.get().color, "24px", "24px", __THEMES__.get().hover);
+        let close = __SYS_IMAGES_SVG__.getImage("close", __THEMES__.get().color, "24px", "24px", __THEMES__.get().hover);
         close.className = "ui-container-close";
         title.appendChild(close);
         content.appendChild(title);
@@ -2058,7 +2058,7 @@ var __ECHARTS__ = {
                     color = "#ffffff";
                 else
                     color = this.configs[name].value;
-                let input = UI.colorChoice(name, color, function(value){
+                let input = UI.colorChoice(name, color, function (value) {
                     __ECHARTS__.configs[name].value = value;
                 });
                 input.id = name;
@@ -2100,7 +2100,7 @@ var __ECHARTS__ = {
                 input.step = __ECHARTS__.configs[name].attribute.step;
                 input.className = "ui-container-item-range";
                 input.title = this.configs[name].value;
-                input.value = Number(this.configs[name].value.replace(new RegExp(this.configs[name].attribute.unit,"g"), ""));
+                input.value = Number(this.configs[name].value.replace(new RegExp(this.configs[name].attribute.unit, "g"), ""));
                 input.onchange = function () {
                     __ECHARTS__.configs[this.id].value = this.title = (this.value + __ECHARTS__.configs[this.id].attribute.unit);
                 };
@@ -2139,7 +2139,7 @@ var __ECHARTS__ = {
                     __ECHARTS__.configs[this.id].value = this.title = this.value;
                 };
                 item.appendChild(input);
-            } else if (this.configs[name].type == "echarts"){
+            } else if (this.configs[name].type == "echarts") {
                 let input = UI.echartsChoice(__ECHARTS__.configs[name].value, function (value) {
                     __ECHARTS__.configs[name].value = value;
                 });
@@ -2209,7 +2209,10 @@ var __ECHARTS__ = {
         };
         c.appendChild(b);
 
-        setDialogDrag(title);
+        dragControl.hook(title, content, function (left, top) {
+            content.style.left = left + "px";
+            content.style.top = top + "px"
+        });
     }
 };
 
@@ -2650,12 +2653,12 @@ var geoCoordMap = {
 
         let title = document.createElement("div");
         title.className = "ui-container-title";
-        title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name,__THEMES__.get().color, "24px", "24px", __VERSION__.logo.flip);
+        title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name, __THEMES__.get().color, "24px", "24px", __VERSION__.logo.flip);
 
         let span = document.createElement("span");
         span.innerHTML = "地图设置";
         title.appendChild(span);
-        let close = __SYS_IMAGES_SVG__.getImage("close",__THEMES__.get().color, "24px", "24px", __THEMES__.get().hover);
+        let close = __SYS_IMAGES_SVG__.getImage("close", __THEMES__.get().color, "24px", "24px", __THEMES__.get().hover);
         close.className = "ui-container-close";
         title.appendChild(close);
         content.appendChild(title);
@@ -2719,7 +2722,7 @@ var geoCoordMap = {
             else
                 console.log(e);
         }
-        localmap.onclick = function() {
+        localmap.onclick = function () {
             let tb = this.parentNode.getElementsByClassName("tabButton");
             for (let i = 0; i < tb.length; i++) {
                 tb[i].style.background = "var(--toolbar-background-color)";
@@ -3039,7 +3042,10 @@ var geoCoordMap = {
             parent.removeChild($("ui_mapConfig"));
         };
         groupbar.appendChild(b);
-        setDialogDrag(title);
+        dragControl.hook(title, content, function (left, top) {
+            content.style.left = left + "px";
+            content.style.top = top + "px"
+        });
     },
 
     addGeoCoord: function (table, coords) {
