@@ -1495,27 +1495,22 @@ function getCss(element, key) {
 //用于处理对话框拖动
 var dragControl = {
     configs: {
-        target: null,
-        left: 0,
-        top: 0,
-        currentX: 0,
-        currentY: 0,
-        flag: false
     },
 
     hook: function (control, target, callback) {
         control.onmousedown = function (event) {
-            dragControl.configs.flag = true;
-            if (dragControl.configs.target != null)
-                dragControl.configs.target.style.zIndex = 9998;
-            dragControl.configs.target = target;
-            dragControl.configs.target.style.zIndex = 9999;
-            if (getCss(dragControl.configs.target, "left") !== "auto") {
-                dragControl.configs.left = getCss(dragControl.configs.target, "left");
-            }
-            if (getCss(dragControl.configs.target, "top") !== "auto") {
-                dragControl.configs.top = getCss(dragControl.configs.target, "top");
-            }
+            let id = target.parentNode.id;
+            dragControl.configs[id] = {
+                control: control,
+                target: target,
+                flag: true,
+                left: getCss(target, "left"),
+                top: getCss(target, "top"),
+                currentX: 0,
+                currentY: 0,
+                callback: callback
+            };
+            target.style.zIndex = 99;
             if (!event) {
                 event = window.event;
                 //防止IE文字选中
@@ -1523,25 +1518,79 @@ var dragControl = {
                     return false;
                 }
             }
-            dragControl.configs.currentX = event.clientX;
-            dragControl.configs.currentY = event.clientY;
+            dragControl.configs[id].currentX = event.clientX;
+            dragControl.configs[id].currentY = event.clientY;
         };
         document.onmouseup = function () {
-            dragControl.configs.flag = false;
-            if (getCss(dragControl.configs.target, "left") !== "auto") {
-                dragControl.configs.left = getCss(dragControl.configs.target, "left");
-            }
-            if (getCss(dragControl.configs.target, "top") !== "auto") {
-                dragControl.configs.top = getCss(dragControl.configs.target, "top");
+            for (let id in dragControl.configs) {
+                if (dragControl.configs[id].flag) {
+                    dragControl.configs[id].flag = false;
+                    if (getCss(dragControl.configs[id].target, "left") !== "auto") {
+                        dragControl.configs[id].left = getCss(dragControl.configs[id].target, "left");
+                    }
+                    if (getCss(dragControl.configs[id].target, "top") !== "auto") {
+                        dragControl.configs[id].top = getCss(dragControl.configs[id].target, "top");
+                    }
+                }
             }
         };
         document.onmousemove = function (event) {
             let e = event ? event : window.event;
-            if (dragControl.configs.flag) {
-                let nowX = e.clientX, nowY = e.clientY;
-                let disX = nowX - dragControl.configs.currentX, disY = nowY - dragControl.configs.currentY;
-                if (typeof callback == "function") {
-                    callback(parseInt(dragControl.configs.left) + disX, parseInt(dragControl.configs.top) + disY);
+            for (let id in dragControl.configs) {
+                if (dragControl.configs[id].flag) {
+                    let nowX = e.clientX, nowY = e.clientY;
+                    let disX = nowX - dragControl.configs[id].currentX;
+                    let disY = nowY - dragControl.configs[id].currentY;
+                    if (typeof dragControl.configs[id].callback == "function") {
+                        dragControl.configs[id].callback(parseInt(dragControl.configs[id].left) + disX, parseInt(dragControl.configs[id].top) + disY);
+                    }
+                }
+            }
+        }
+    }
+};
+
+//用于界面分区上下拖动
+var splitControl = {
+    configs: {
+    },
+    hook: function (control, target, callback) {
+        control.onmousedown = function (event) {
+            splitControl.configs[control.id] = {
+                control: control,
+                target: target,
+                flag: true,
+                height: getAbsolutePosition(target).height,
+                currentY: 0,
+                callback: callback,
+            };
+            if (!event) {
+                event = window.event;
+                control.onselectstart = function () {
+                    return false;
+                }
+            }
+            splitControl.configs[control.id].currentY = event.clientY;
+        };
+
+        document.documentElement.onmouseup = function (event) {
+            for(let key in splitControl.configs) {
+                if (splitControl.configs[key].flag) {
+                    splitControl.configs[key].flag = false;
+                    splitControl.configs.height = getAbsolutePosition(splitControl.configs[key].target).height;
+                }
+            }
+        };
+
+        document.documentElement.onmousemove = function (event) {
+            let e = event ? event : window.event;
+            for(let key in splitControl.configs) {
+                if (splitControl.configs[key].flag) {
+                    let nowY = e.clientY;
+                    let disY = nowY - splitControl.configs[key].currentY;
+                    if (typeof splitControl.configs[key].callback !== "undefined") {
+                        splitControl.configs[key].callback(splitControl.configs[key].height + disY);
+                    }
                 }
             }
         }

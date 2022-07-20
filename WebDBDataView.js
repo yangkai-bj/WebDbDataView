@@ -759,6 +759,7 @@ var __XMLHTTP__ = {
                 element: "script",
                 load: true
             },
+            {name: "固定报表组件", src: "report.js", type: "text/javascript", element: "script", load: true},
         ];
 
         if (byServer) {
@@ -3507,13 +3508,13 @@ function initMenus() {
         getReport.onclick = $("download-html-report").onclick = function () {
             let container = $("tableContainer");
             let myEcharts = echarts.getInstanceByDom(container);
-            if (typeof myEcharts !== "undefined") {
-                if (typeof  __ECHARTS__.history[myEcharts.id] !== "undefined")
+            if (typeof myEcharts !== "undefined" && typeof  __ECHARTS__.history[myEcharts.id] !== "undefined") {
+                if (typeof getEchartsReport === "function")
                     getEchartsReport(container, myEcharts);
                 else
-                    UI.alert.show("提示","请生成数据视图后再下载固定报表.","auto");
+                    UI.alert.show("注意", "固定报表组件未载入!", "auto");
             } else
-                UI.alert.show("提示","请生成数据视图后再下载固定报表.","auto");
+                UI.alert.show("提示", "请生成数据视图后再下载固定报表.", "auto");
         };
         UI.tooltip(getReport, "下载固定报表");
 
@@ -5447,49 +5448,3 @@ function getXMLFile(title, workbook) {
         __LOGS__.viewError(e);
     }
 }
-
-var splitControl = {
-    configs: {
-    },
-    hook: function (control, target, callback) {
-        control.onmousedown = function (event) {
-            splitControl.configs[control.id] = {
-                control: control,
-                target: target,
-                flag: true,
-                height: getAbsolutePosition(target).height,
-                currentY: 0,
-                callback: callback,
-            };
-            if (!event) {
-                event = window.event;
-                control.onselectstart = function () {
-                    return false;
-                }
-            }
-            splitControl.configs[control.id].currentY = event.clientY;
-        };
-
-        document.documentElement.onmouseup = function (event) {
-            for(let key in splitControl.configs) {
-                if (splitControl.configs[key].flag) {
-                    splitControl.configs[key].flag = false;
-                    splitControl.configs.height = getAbsolutePosition(splitControl.configs[key].target).height;
-                }
-            }
-        };
-
-        document.documentElement.onmousemove = function (event) {
-            let e = event ? event : window.event;
-            for(let key in splitControl.configs) {
-                if (splitControl.configs[key].flag) {
-                    let nowY = e.clientY;
-                    let disY = nowY - splitControl.configs[key].currentY;
-                    if (typeof splitControl.configs[key].callback !== "undefined") {
-                        splitControl.configs[key].callback(splitControl.configs[key].height + disY);
-                    }
-                }
-            }
-        }
-    }
-};

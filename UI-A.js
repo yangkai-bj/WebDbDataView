@@ -1462,7 +1462,7 @@ var UI = {
         }, 1000);
     },
 
-    tooltip: function(dom, text) {
+    tooltip: function(dom, text, args) {
         dom.onmouseenter = function () {
             if (typeof $("tooltip-" + this.id) !== "undefined") {
                 let parent = document.body;
@@ -1474,16 +1474,30 @@ var UI = {
                 tip.id = "tooltip-" + dom.id;
                 let posi = getAbsolutePosition(dom);
                 let parentposi = getAbsolutePosition(parent);
-                if ((posi.top - 52) < 0)
-                    tip.style.top = (posi.top + posi.height) + "px";
-                else
-                    tip.style.top = (posi.top - 52) + "px";
-                if ((posi.left + 100) < parentposi.width)
-                    tip.style.left = (posi.left + posi.width) + "px";
-                else
-                    tip.style.left = (posi.left - 100) + "px";
-                tip.style.width = "100px";
-                tip.style.height = "40px";
+                if (typeof args === "undefined") {
+                    tip.style.width = "100px";
+                    tip.style.height = "40px";
+                    if ((posi.top - 52) < 0)
+                        tip.style.top = (posi.top + posi.height) + "px";
+                    else
+                        tip.style.top = (posi.top - 52) + "px";
+                    if ((posi.left + 100) < parentposi.width)
+                        tip.style.left = (posi.left + posi.width) + "px";
+                    else
+                        tip.style.left = (posi.left - 100) + "px";
+                } else {
+                    tip.style.width = args.width + "px";
+                    tip.style.height = args.height + "px";
+                    if (args.position == "bottom") {
+                        tip.style.top = (posi.top + posi.height) + "px";
+                    } else {
+                        tip.style.top = (posi.top - args.height) + "px";
+                    }
+                    if (posi.left + args.width < parentposi.width)
+                        tip.style.left = (posi.left + posi.width) + "px";
+                    else
+                        tip.style.left = (posi.left - args.width) + "px";
+                }
                 tip.style.borderRadius = "5px";
                 tip.style.backgroundImage = "url(" + __SYS_IMAGES_PNG__.mouse.image + ")";
                 tip.style.backgroundRepeat = "no-repeat";
