@@ -2,6 +2,7 @@ function getEchartsReport(container, myChart) {
     function getScript(jsPath, echarts, ui, defaultThemes) {
         let scripts = [
             "FunctionsComponent.js",
+            "StatisticsComponent.js",
             "configs.js",
             "resources.js",
             echarts,

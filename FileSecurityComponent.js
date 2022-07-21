@@ -1084,7 +1084,7 @@ function getFileSecurity(parent) {
     };
     tool.appendChild(cancel);
 
-    dragControl.hook(title, content, function (left, top) {
+    dragControl.hook(title, content, container.id, function (left, top) {
         content.style.left = left + "px";
         content.style.top = top + "px"
     });

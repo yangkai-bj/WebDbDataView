@@ -81,7 +81,7 @@ var UI = {
                             g.style.width = "100%";
                             g.style.height = "100%";
                             g.style.backgroundColor = "rgba(0,0,0,0.4)";
-                            g.style.zIndex = grid.length+1;
+                            g.style.zIndex = grid.length + 1;
                             g.innerHTML = "<span style = ';max-width: 100%; cursor: pointer;position: absolute;top: 50%;left: 50%;transform: translate(-50%, -50%);font-size: 4px; overflow: hidden;text-overflow: ellipsis;white-space: nowrap;color: red;'>[" + grid[i].join("%,") + "%]<br>框架定义错误<br>[left,top,width,height]</span>";
                         }
                         content.appendChild(g);
@@ -180,7 +180,7 @@ var UI = {
             };
             tools.appendChild(button);
 
-            dragControl.hook(title, content, function(left, top){
+            dragControl.hook(title, content, container.id, function (left, top) {
                 content.style.left = left + "px";
                 content.style.top = top + "px"
             });
@@ -635,10 +635,10 @@ var UI = {
                     tr.className = "alt-line";
                 }
                 tr.onclick = function () {
-                if (this.getElementsByClassName("packet-check")[0].checked == true)
-                    this.getElementsByClassName("packet-check")[0].removeAttribute("checked");
-                else
-                    this.getElementsByClassName("packet-check")[0].setAttribute("checked", "checked");
+                    if (this.getElementsByClassName("packet-check")[0].checked == true)
+                        this.getElementsByClassName("packet-check")[0].removeAttribute("checked");
+                    else
+                        this.getElementsByClassName("packet-check")[0].setAttribute("checked", "checked");
                 };
                 table.appendChild(tr);
                 let td = document.createElement("td");
@@ -713,7 +713,7 @@ var UI = {
                                 this.packet.pos = -1;
                             }
                             showPacket(this.id + 1, this.packet);
-                            $("ui_read_file_blob_progress").value ++;
+                            $("ui_read_file_blob_progress").value++;
                         };
                         let secquence = Promise.resolve();
                         secquence.then(
@@ -751,12 +751,12 @@ var UI = {
 
             let title = document.createElement("div");
             title.className = "ui-container-title";
-            title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name,__THEMES__.get().color, "24px", "24px", __VERSION__.logo.flip);
+            title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name, __THEMES__.get().color, "24px", "24px", __VERSION__.logo.flip);
 
             let span = document.createElement("span");
             span.innerHTML = this.title;
             title.appendChild(span);
-            let close = __SYS_IMAGES_SVG__.getImage("close",__THEMES__.get().color, "24px", "24px", __THEMES__.get().hover);
+            let close = __SYS_IMAGES_SVG__.getImage("close", __THEMES__.get().color, "24px", "24px", __THEMES__.get().hover);
             close.className = "ui-container-close";
             title.appendChild(close);
             content.appendChild(title);
@@ -909,7 +909,7 @@ var UI = {
                     };
                     let secquence = Promise.resolve();
                     secquence.then(
-                    reader.readAsText(blob, $("read_file_blob_charset").value)
+                        reader.readAsText(blob, $("read_file_blob_charset").value)
                     );
                     pos = packets[i].pos;
                 }
@@ -964,7 +964,7 @@ var UI = {
                 parent.removeChild($("ui_read_file_blob"));
             };
 
-            dragControl.hook(title, content, function(left, top){
+            dragControl.hook(title, content, container.id, function (left, top) {
                 content.style.left = left + "px";
                 content.style.top = top + "px"
             });
@@ -1314,7 +1314,7 @@ var UI = {
             parent.removeChild($("ui_upload_file"));
         };
         tools.appendChild(button);
-        dragControl.hook(title, content, function (left, top) {
+        dragControl.hook(title, content, container.id, function (left, top) {
             content.style.left = left + "px";
             content.style.top = top + "px"
         });
@@ -1449,7 +1449,7 @@ var UI = {
         close.onclick = function () {
             parent.removeChild($("ui-qrcode-component"));
         };
-        dragControl.hook(title, content, function (left, top) {
+        dragControl.hook(title, content, container.id, function (left, top) {
             content.style.left = left + "px";
             content.style.top = top + "px"
         });
@@ -1592,12 +1592,12 @@ var UI = {
 
             let title = document.createElement("div");
             title.className = "ui-container-title";
-            title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name,__THEMES__.get().color, "24px", "24px", __VERSION__.logo.flip);
+            title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name, __THEMES__.get().color, "24px", "24px", __VERSION__.logo.flip);
 
             let span = document.createElement("span");
             span.innerHTML = this.title;
             title.appendChild(span);
-            let close = __SYS_IMAGES_SVG__.getImage("close",__THEMES__.get().color, "24px", "24px", __THEMES__.get().hover);
+            let close = __SYS_IMAGES_SVG__.getImage("close", __THEMES__.get().color, "24px", "24px", __THEMES__.get().hover);
             close.className = "ui-container-close";
             title.appendChild(close);
             content.appendChild(title);
@@ -1609,7 +1609,7 @@ var UI = {
             let item = document.createElement("div");
             item.style.cssText = "width:100%;";
             let image = document.createElement("img");
-            image.src = __SYS_IMAGES_SVG__.getSrc("alert",__THEMES__.get().color,"100px","100px");
+            image.src = __SYS_IMAGES_SVG__.getSrc("alert", __THEMES__.get().color, "100px", "100px");
             image.size = "25% auto";
             image.attachment = "fixed";
             image.style.cssText = "width:25%;float: left;" +
@@ -1658,7 +1658,7 @@ var UI = {
                 parent.removeChild($("ui_alert"));
             };
             tools.appendChild(button);
-            dragControl.hook(title, content, function(left, top){
+            dragControl.hook(title, content, container.id, function (left, top) {
                 content.style.left = left + "px";
                 content.style.top = top + "px"
             });
@@ -1690,12 +1690,12 @@ var UI = {
 
             let title = document.createElement("div");
             title.className = "ui-container-title";
-            title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name,__THEMES__.get().color, "24px", "24px", __VERSION__.logo.flip);
+            title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name, __THEMES__.get().color, "24px", "24px", __VERSION__.logo.flip);
 
             let span = document.createElement("span");
             span.innerHTML = this.title;
             title.appendChild(span);
-            let close = __SYS_IMAGES_SVG__.getImage("close",__THEMES__.get().color, "24px", "24px", __THEMES__.get().hover);
+            let close = __SYS_IMAGES_SVG__.getImage("close", __THEMES__.get().color, "24px", "24px", __THEMES__.get().hover);
             close.className = "ui-container-close";
             title.appendChild(close);
             content.appendChild(title);
@@ -1707,7 +1707,7 @@ var UI = {
             let item = document.createElement("div");
             item.style.cssText = "width:100%;";
             let image = document.createElement("img");
-            image.src = __SYS_IMAGES_SVG__.getSrc("confirm",__THEMES__.get().color,"100px","100px");
+            image.src = __SYS_IMAGES_SVG__.getSrc("confirm", __THEMES__.get().color, "100px", "100px");
             image.size = "25% auto";
             image.attachment = "fixed";
             image.style.cssText = "width:25%;float: left;" +
@@ -1768,7 +1768,7 @@ var UI = {
                 }
             };
             tools.appendChild(button);
-            dragControl.hook(title, content, function(left, top){
+            dragControl.hook(title, content, container.id, function (left, top) {
                 content.style.left = left + "px";
                 content.style.top = top + "px"
             });
@@ -1795,6 +1795,7 @@ var UI = {
                 else
                     inputs[focus].focus();
             }
+
             this.title = message;
             this.items = items;
             let container = document.createElement("div");
@@ -1815,12 +1816,12 @@ var UI = {
 
             let title = document.createElement("div");
             title.className = "ui-container-title";
-            title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name,__THEMES__.get().color, "24px", "24px", __VERSION__.logo.flip);
+            title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name, __THEMES__.get().color, "24px", "24px", __VERSION__.logo.flip);
 
             let span = document.createElement("span");
             span.innerHTML = this.title;
             title.appendChild(span);
-            let close = __SYS_IMAGES_SVG__.getImage("close",__THEMES__.get().color, "24px", "24px", __THEMES__.get().hover);
+            let close = __SYS_IMAGES_SVG__.getImage("close", __THEMES__.get().color, "24px", "24px", __THEMES__.get().hover);
             close.className = "ui-container-close";
             title.appendChild(close);
             content.appendChild(title);
@@ -1833,7 +1834,7 @@ var UI = {
             itemcontent.style.cssText = "min-height: 100px;width:100%;";
             content.appendChild(itemcontent);
             let image = document.createElement("img");
-            image.src = __SYS_IMAGES_SVG__.getSrc("prompt",__THEMES__.get().color,"100px","100px");
+            image.src = __SYS_IMAGES_SVG__.getSrc("prompt", __THEMES__.get().color, "100px", "100px");
             image.size = "25% auto";
             image.attachment = "fixed";
             image.style.cssText = "width:25%;float: left;" +
@@ -1860,18 +1861,18 @@ var UI = {
                     input.id = "ui_prompt_value_" + key;
                     input.value = it.value;
                 }
-                if (it.type === "color"){
+                if (it.type === "color") {
                     input = UI.colorChoice("ui_prompt_value_" + key, it.value);
                     input.className = "ui-container-item-color";
                     input.id = "ui_prompt_value_" + key;
                 }
-                input.onkeypress = function(event) {
-                let keyCode = event.keyCode ? event.keyCode : event.which ?
-                    event.which : event.charCode;
-                if (keyCode == 13) {
-                    setFocus(this.id);
-                }
-            };
+                input.onkeypress = function (event) {
+                    let keyCode = event.keyCode ? event.keyCode : event.which ?
+                        event.which : event.charCode;
+                    if (keyCode == 13) {
+                        setFocus(this.id);
+                    }
+                };
                 item.appendChild(input);
                 itemcontent.appendChild(item);
             }
@@ -1914,11 +1915,11 @@ var UI = {
                 parent.removeChild($("ui_prompt"));
             };
             tools.appendChild(button);
-            dragControl.hook(title, content, function(left, top){
+            dragControl.hook(title, content, container.id, function (left, top) {
                 content.style.left = left + "px";
                 content.style.top = top + "px"
             });
-            $class("ui-container-item-input",0).focus();
+            $class("ui-container-item-input", 0).focus();
         },
     },
     choise: {
@@ -1947,12 +1948,12 @@ var UI = {
 
             let title = document.createElement("div");
             title.className = "ui-container-title";
-            title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name,__THEMES__.get().color, "24px", "24px", __VERSION__.logo.flip);
+            title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name, __THEMES__.get().color, "24px", "24px", __VERSION__.logo.flip);
 
             let span = document.createElement("span");
             span.innerHTML = this.title;
             title.appendChild(span);
-            let close = __SYS_IMAGES_SVG__.getImage("close",__THEMES__.get().color, "24px", "24px", __THEMES__.get().hover);
+            let close = __SYS_IMAGES_SVG__.getImage("close", __THEMES__.get().color, "24px", "24px", __THEMES__.get().hover);
             close.className = "ui-container-close";
             title.appendChild(close);
             content.appendChild(title);
@@ -1966,7 +1967,7 @@ var UI = {
             content.appendChild(itemcontent);
 
             let image = document.createElement("img");
-            image.src = __SYS_IMAGES_SVG__.getSrc("choice",__THEMES__.get().color,"100px","100px");
+            image.src = __SYS_IMAGES_SVG__.getSrc("choice", __THEMES__.get().color, "100px", "100px");
             image.size = "25% auto";
             image.attachment = "fixed";
             image.style.cssText = "width:25%;float: left;" +
@@ -2047,7 +2048,7 @@ var UI = {
                 parent.removeChild($("ui_choise"));
             };
             tools.appendChild(button);
-            dragControl.hook(title, content, function(left, top){
+            dragControl.hook(title, content, container.id, function (left, top) {
                 content.style.left = left + "px";
                 content.style.top = top + "px"
             });
@@ -2075,11 +2076,11 @@ var UI = {
 
             let title = document.createElement("div");
             title.className = "ui-container-title";
-            title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name,__THEMES__.get().color, "24px", "24px", __VERSION__.logo.flip);
+            title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name, __THEMES__.get().color, "24px", "24px", __VERSION__.logo.flip);
             let span = document.createElement("span");
             span.innerHTML = this.title;
             title.appendChild(span);
-            let close = __SYS_IMAGES_SVG__.getImage("close",__THEMES__.get().color, "24px", "24px", __THEMES__.get().hover);
+            let close = __SYS_IMAGES_SVG__.getImage("close", __THEMES__.get().color, "24px", "24px", __THEMES__.get().hover);
             close.className = "ui-container-close";
             title.appendChild(close);
             content.appendChild(title);
@@ -2092,7 +2093,7 @@ var UI = {
             itemcontent.style.cssText = "min-height: 100px;width:100%;font-size:120%;";
             content.appendChild(itemcontent);
             let image = document.createElement("img");
-            image.src = __SYS_IMAGES_SVG__.getSrc("user",__THEMES__.get().color,"100px","100px");
+            image.src = __SYS_IMAGES_SVG__.getSrc("user", __THEMES__.get().color, "100px", "100px");
             image.size = "25% auto";
             image.attachment = "fixed";
             image.style.cssText = "width:25%;float: left;" +
@@ -2115,12 +2116,12 @@ var UI = {
             input.id = "ui_user_login_value_name";
             input.value = "";
             input.placeholder = "名称";
-            input.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("user",__THEMES__.get().color,"16px","16px");
+            input.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("user", __THEMES__.get().color, "16px", "16px");
             input.style.backgroundRepeat = "no-repeat";
             input.style.backgroundPosition = "right";
             input.style.backgroundSize = "16px 16px";
             item.appendChild(input);
-            input.onkeypress = function(event) {
+            input.onkeypress = function (event) {
                 let keyCode = event.keyCode ? event.keyCode : event.which ?
                     event.which : event.charCode;
                 if (keyCode == 13) {
@@ -2145,11 +2146,11 @@ var UI = {
             input.type = "password";
             input.value = "";
             input.placeholder = "☀☀☀☀☀☀☀☀";
-            input.style.backgroundImage =  __SYS_IMAGES_SVG__.getUrl("key",__THEMES__.get().color,"16px","16px");
+            input.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("key", __THEMES__.get().color, "16px", "16px");
             input.style.backgroundRepeat = "no-repeat";
             input.style.backgroundPosition = "right";
             input.style.backgroundSize = "16px 16px";
-            input.onkeypress = function(event){
+            input.onkeypress = function (event) {
                 let keyCode = event.keyCode ? event.keyCode : event.which ?
                     event.which : event.charCode;
                 if (keyCode == 13) {
@@ -2191,7 +2192,7 @@ var UI = {
                 parent.removeChild($("ui_user_login"));
             };
             tools.appendChild(button);
-            dragControl.hook(title, content, function(left, top){
+            dragControl.hook(title, content, container.id, function (left, top) {
                 content.style.left = left + "px";
                 content.style.top = top + "px"
             });
@@ -2218,6 +2219,7 @@ var UI = {
                 else
                     inputs[focus].focus();
             }
+
             this.title = message;
             this.items = items;
             let container = document.createElement("div");
@@ -2237,11 +2239,11 @@ var UI = {
 
             let title = document.createElement("div");
             title.className = "ui-container-title";
-            title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name,__THEMES__.get().color, "24px", "24px", __VERSION__.logo.flip);
+            title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name, __THEMES__.get().color, "24px", "24px", __VERSION__.logo.flip);
             let span = document.createElement("span");
             span.innerHTML = this.title;
             title.appendChild(span);
-            let close = __SYS_IMAGES_SVG__.getImage("close",__THEMES__.get().color, "24px", "24px", __THEMES__.get().hover);
+            let close = __SYS_IMAGES_SVG__.getImage("close", __THEMES__.get().color, "24px", "24px", __THEMES__.get().hover);
             close.className = "ui-container-close";
             title.appendChild(close);
             content.appendChild(title);
@@ -2254,7 +2256,7 @@ var UI = {
             itemcontent.style.cssText = "min-height: 100px;width:100%;";
             content.appendChild(itemcontent);
             let image = document.createElement("img");
-            image.src = __SYS_IMAGES_SVG__.getSrc("password",__THEMES__.get().color,"100px","100px");
+            image.src = __SYS_IMAGES_SVG__.getSrc("password", __THEMES__.get().color, "100px", "100px");
             image.size = "25% auto";
             image.attachment = "fixed";
             image.style.cssText = "width:25%;float: left;" +
@@ -2280,7 +2282,7 @@ var UI = {
                 input.id = "ui_password_value_" + key;
                 input.placeholder = "☀☀☀☀☀☀☀☀";
                 input.title = placeholder;
-                input.style.backgroundImage =  __SYS_IMAGES_SVG__.getUrl("key",__THEMES__.get().color,"16px","16px");
+                input.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("key", __THEMES__.get().color, "16px", "16px");
                 input.style.backgroundRepeat = "no-repeat";
                 input.style.backgroundPosition = "right";
                 input.style.backgroundSize = "16px 16px";
@@ -2330,7 +2332,7 @@ var UI = {
                 parent.removeChild($("ui_password"));
             };
             tools.appendChild(button);
-            dragControl.hook(title, content, function(left, top){
+            dragControl.hook(title, content, container.id, function (left, top) {
                 content.style.left = left + "px";
                 content.style.top = top + "px"
             });
@@ -2453,11 +2455,11 @@ var UI = {
 
             let title = document.createElement("div");
             title.className = "ui-container-title";
-            title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name,__THEMES__.get().color, "24px", "24px", __VERSION__.logo.flip);
+            title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name, __THEMES__.get().color, "24px", "24px", __VERSION__.logo.flip);
             let span = document.createElement("span");
             span.innerHTML = "脚本管理";
             title.appendChild(span);
-            let close = __SYS_IMAGES_SVG__.getImage("close",__THEMES__.get().color, "24px", "24px", __THEMES__.get().hover);
+            let close = __SYS_IMAGES_SVG__.getImage("close", __THEMES__.get().color, "24px", "24px", __THEMES__.get().hover);
             close.className = "ui-container-close";
             title.appendChild(close);
             content.appendChild(title);
@@ -2637,7 +2639,7 @@ var UI = {
                 rename.innerText = "重命名";
                 rename.onclick = function () {
                     let title = $("sql-Manager-Content-name").value;
-                    UI.prompt.show("输入", {"新的脚本名称": {value: title, type:"input"}}, "auto", function (args, values) {
+                    UI.prompt.show("输入", {"新的脚本名称": {value: title, type: "input"}}, "auto", function (args, values) {
                         let newname = values["新的脚本名称"];
                         let title = args["title"];
                         let storage = window.localStorage;
@@ -2771,7 +2773,7 @@ var UI = {
                 parent.removeChild($("ui_sqlManagerDialog"));
             };
             tool.appendChild(exit);
-            dragControl.hook(title, content, function(left, top){
+            dragControl.hook(title, content, container.id, function (left, top) {
                 content.style.left = left + "px";
                 content.style.top = top + "px"
             });
@@ -3054,7 +3056,7 @@ var UI = {
             parent.removeChild($("ui_subtotal"));
         };
         tool.appendChild(cancel);
-        dragControl.hook(title, content, function (left, top) {
+        dragControl.hook(title, content, container.id, function (left, top) {
             content.style.left = left + "px";
             content.style.top = top + "px"
         });
@@ -3321,7 +3323,7 @@ var UI = {
         };
         tool.appendChild(cancel);
 
-        dragControl.hook(title, content, function (left, top) {
+        dragControl.hook(title, content, container.id, function (left, top) {
             content.style.left = left + "px";
             content.style.top = top + "px"
         });
@@ -3535,7 +3537,7 @@ var UI = {
         };
         tool.appendChild(cancel);
 
-        dragControl.hook(title, content, function (left, top) {
+        dragControl.hook(title, content, container.id, function (left, top) {
             content.style.left = left + "px";
             content.style.top = top + "px"
         });
@@ -3730,7 +3732,7 @@ var UI = {
             parent.removeChild($("ui_columnFormat"));
         };
         tool.appendChild(cancel);
-        dragControl.hook(title, content, function (left, top) {
+        dragControl.hook(title, content, container.id, function (left, top) {
             content.style.left = left + "px";
             content.style.top = top + "px"
         });
@@ -3877,7 +3879,7 @@ var SQLite = {
         };
         tool.appendChild(b);
 
-        dragControl.hook(title, content, function (left, top) {
+        dragControl.hook(title, content, container.id, function (left, top) {
             content.style.left = left + "px";
             content.style.top = top + "px"
         });
@@ -4139,7 +4141,7 @@ var SQLite = {
         };
         tool.appendChild(b);
 
-        dragControl.hook(title, content, function (left, top) {
+        dragControl.hook(title, content, container.id, function (left, top) {
             content.style.left = left + "px";
             content.style.top = top + "px"
         });
@@ -4473,7 +4475,7 @@ var SQLite = {
                 }
             });
         },
-        progress: function() {
+        progress: function () {
             let container = document.createElement("div");
             container.id = "ui-progress";
             let v = document.createElement("div");
@@ -4529,11 +4531,11 @@ var SQLite = {
 
             let title = document.createElement("div");
             title.className = "ui-container-title";
-            title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name,__THEMES__.get().color, "24px", "24px", __VERSION__.logo.flip);
+            title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name, __THEMES__.get().color, "24px", "24px", __VERSION__.logo.flip);
             let span = document.createElement("span");
             span.innerHTML = "导入数据";
             title.appendChild(span);
-            let close = __SYS_IMAGES_SVG__.getImage("close",__THEMES__.get().color, "24px", "24px", __THEMES__.get().hover);
+            let close = __SYS_IMAGES_SVG__.getImage("close", __THEMES__.get().color, "24px", "24px", __THEMES__.get().hover);
             close.className = "ui-container-close";
             title.appendChild(close);
             content.appendChild(title);
@@ -4633,7 +4635,10 @@ var SQLite = {
                 if (__CONFIGS__.CURRENT_TABLE.name == null || __CONFIGS__.CURRENT_TABLE.type == "view") {
                     UI.confirm.show("注意", "您没有选择数据表，是否要根据数据结构创建一个名称为 " + SQLite.import.configs.SourceFile.value.split(".")[0] + " 的新表?", "auto", function () {
                         let title = SQLite.import.configs.SourceFile.value.split(".")[0];
-                        SQLite.createTable("auto", {"title": title, "stru": SQLite.import.dataStruct()}, function(values) {
+                        SQLite.createTable("auto", {
+                            "title": title,
+                            "stru": SQLite.import.dataStruct()
+                        }, function (values) {
                             let sql = values.sql;
                             __CONFIGS__.CURRENT_DATABASE.connect.transaction(function (tx) {
                                 tx.executeSql(sql, [],
@@ -4673,7 +4678,7 @@ var SQLite = {
             };
             tool.appendChild(b);
 
-            dragControl.hook(title, content, function(left, top){
+            dragControl.hook(title, content, container.id, function (left, top) {
                 content.style.left = left + "px";
                 content.style.top = top + "px"
             });

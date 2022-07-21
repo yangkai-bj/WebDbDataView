@@ -1497,9 +1497,8 @@ var dragControl = {
     configs: {
     },
 
-    hook: function (control, target, callback) {
+    hook: function (control, target, id, callback) {
         control.onmousedown = function (event) {
-            let id = target.parentNode.id;
             dragControl.configs[id] = {
                 control: control,
                 target: target,
@@ -1554,9 +1553,9 @@ var dragControl = {
 var splitControl = {
     configs: {
     },
-    hook: function (control, target, callback) {
+    hook: function (control, target, id, callback) {
         control.onmousedown = function (event) {
-            splitControl.configs[control.id] = {
+            splitControl.configs[id] = {
                 control: control,
                 target: target,
                 flag: true,
@@ -1570,7 +1569,7 @@ var splitControl = {
                     return false;
                 }
             }
-            splitControl.configs[control.id].currentY = event.clientY;
+            splitControl.configs[id].currentY = event.clientY;
         };
 
         document.documentElement.onmouseup = function (event) {

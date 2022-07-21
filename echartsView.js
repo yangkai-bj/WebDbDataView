@@ -2209,7 +2209,7 @@ var __ECHARTS__ = {
         };
         c.appendChild(b);
 
-        dragControl.hook(title, content, function (left, top) {
+        dragControl.hook(title, content, container.id, function (left, top) {
             content.style.left = left + "px";
             content.style.top = top + "px"
         });
@@ -3042,7 +3042,7 @@ var geoCoordMap = {
             parent.removeChild($("ui_mapConfig"));
         };
         groupbar.appendChild(b);
-        dragControl.hook(title, content, function (left, top) {
+        dragControl.hook(title, content, container.id, function (left, top) {
             content.style.left = left + "px";
             content.style.top = top + "px"
         });
@@ -12539,7 +12539,10 @@ function getSaveAsReport(configs, container, myChart) {
         title: '导出为报表',
         icon: __SYS_IMAGES_SVG__.getPath("echarts_saveAsReport"),
         onclick: function () {
-            getEchartsReport(container, myChart);
+            if (typeof getEchartsReport === "function")
+                getEchartsReport(container, myChart);
+            else
+                UI.alert.show("注意", "固定报表组件未载入!","auto");
         }
     } : {};
 }

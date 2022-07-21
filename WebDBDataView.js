@@ -330,7 +330,7 @@ var __LOGS__ = {
         };
         c.appendChild(b);
 
-        dragControl.hook(title, content, function (left, top) {
+        dragControl.hook(title, content, container.id, function (left, top) {
             content.style.left = left + "px";
             content.style.top = top + "px"
         });
@@ -473,7 +473,7 @@ var __LOGS__ = {
             window.open(__VERSION__.url);
         };
         tool.appendChild(help);
-        dragControl.hook(title, content, function (left, top) {
+        dragControl.hook(title, content, container.id, function (left, top) {
             content.style.left = left + "px";
             content.style.top = top + "px"
         });
@@ -925,14 +925,29 @@ var __XMLHTTP__ = {
              options: [new Option("MySQL", "text/x-mysql"), new Option("SQLite", "text/x-sqlite"), new Option("HTML", "text/html"), new Option("函数", "text/javascript")],
              type: "select"
          },
-         codeMirrorHeight: {name: "高度", value: "250px", type: "range", attribute: {min: 250, max: 500, step: 10, unit: "px"}},
-         codeMirrorFontSize: {name: "字号", value: "90%", type: "range", attribute: {min: 90, max: 150, step: 10, unit: "%"}},
+         codeMirrorHeight: {
+             name: "高度",
+             value: "250px",
+             type: "range",
+             attribute: {min: 250, max: 500, step: 10, unit: "px"}
+         },
+         codeMirrorFontSize: {
+             name: "字号",
+             value: "90%",
+             type: "range",
+             attribute: {min: 90, max: 150, step: 10, unit: "%"}
+         },
          codeMirrorRulers: {
              name: "标尺数量",
              value: 6,
              type: "number", attribute: {min: 0, max: 10, step: 1}
          },
-         codeMirrorRulerWidth: {name: "标尺宽度", value: "40", type: "range", attribute: {min: 10, max: 100, step: 10, unit: ""}},
+         codeMirrorRulerWidth: {
+             name: "标尺宽度",
+             value: "40",
+             type: "range",
+             attribute: {min: 10, max: 100, step: 10, unit: ""}
+         },
 
          codeMirrorLineNumber: {
              name: "显示行号",
@@ -1330,7 +1345,7 @@ var __XMLHTTP__ = {
          };
          c.appendChild(b);
 
-         dragControl.hook(title, content, function (left, top) {
+         dragControl.hook(title, content, container.id, function (left, top) {
              content.style.left = left + "px";
              content.style.top = top + "px"
          });
@@ -2939,7 +2954,7 @@ function initMenus() {
         let tbstools = $("sidebar-tbs-tools");
         tbstools.innerText = "";
         tbstools.style.cursor = "ns-resize";
-        splitControl.hook(tbstools, $("sidebar-dbs"), function(value) {
+        splitControl.hook(tbstools, $("sidebar-dbs"), tbstools.id, function(value) {
             if (value < getAbsolutePosition($("sidebar")).height - getAbsolutePosition(tbstools).height - getAbsolutePosition($("sidebar-dbs-tools")).height) {
                 $("sidebar-dbs").style.height = value + "px";
                 resize();
@@ -3408,7 +3423,7 @@ function initMenus() {
             requestFullScreen($("main"), style);
         };
         datatools.style.cursor = "ns-resize";
-        splitControl.hook(datatools, $("sqlContainer"), function(value) {
+        splitControl.hook(datatools, $("sqlContainer"), datatools.id, function(value) {
             if (value < getAbsolutePosition($("main")).height - getAbsolutePosition(datatools).height - getAbsolutePosition($("data-page-tools")).height - getAbsolutePosition($("sql-tools")).height) {
                 $("sqlContainer").style.height = value + "px";
                 resize();
@@ -5350,7 +5365,7 @@ function getImageBase64Code(parent, img) {
         parent.removeChild($("ui_imageBase"));
     };
     tool.appendChild(cancel);
-    dragControl.hook(title, content, function (left, top) {
+    dragControl.hook(title, content, container.id, function (left, top) {
         content.style.left = left + "px";
         content.style.top = top + "px"
     });
