@@ -2629,7 +2629,6 @@ function userLogin() {
 function init() {
     if (initConfigs()) {
         setPageThemes();
-        initMenus();
         viewDatabases();
         setDataPageTools(0);
         getEchartsClock();
@@ -2750,6 +2749,7 @@ function init() {
         } catch (e) {
             __LOGS__.viewError("auto", e);
         }
+        initMenus();
         //#########################body init end#######################################
     }
 }
@@ -2902,7 +2902,7 @@ function initMenus() {
         crdb.appendChild(__SYS_IMAGES_SVG__.getHelp("add", crdb, crdb.id, "auto", "white", "16px", "16px"));
         let help_crdb = $("help-create-database");
         crdb.onclick = help_crdb.onclick = function () {
-            SQLite.dbManager("创建数据库", "auto", function(args, values) {
+            SQLite.dbManager("创建数据库", "auto", function (args, values) {
                 let storage = window.localStorage;
                 let dbs = JSON.parse(storage.getItem(__CONFIGS__.STORAGE.DATABASES));
                 if (typeof dbs[values.name] === "undefined") {
@@ -2910,7 +2910,7 @@ function initMenus() {
                     storage.setItem(__CONFIGS__.STORAGE.DATABASES, JSON.stringify(dbs));
                     viewDatabases();
                 } else {
-                    UI.alert.show("注意","数据库 " + values.name + " 已经存在,系统不能创建同名称数据库!","auto");
+                    UI.alert.show("注意", "数据库 " + values.name + " 已经存在,系统不能创建同名称数据库!", "auto");
                 }
             }, {});
         };
@@ -2926,11 +2926,11 @@ function initMenus() {
 
         };
         dbstools.appendChild(dbinfo);
-        UI.tooltip(dbinfo,"auto", dbinfo.id, "调试");
+        UI.tooltip(dbinfo, "auto", dbinfo.id, "调试");
 
         let about = document.createElement("div");
         about.className = "charButton";
-        about.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("help", "white","20px", "20px");
+        about.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("help", "white", "20px", "20px");
         about.id = "about_and_help";
         about.style.cssFloat = "right";
         about.onclick = function () {
@@ -2945,7 +2945,7 @@ function initMenus() {
             resize()
         };
         dbstools.appendChild(about);
-        UI.tooltip(about,"显示或关闭帮助");
+        UI.tooltip(about, "显示或关闭帮助");
 
 
         //#######################################
@@ -2954,7 +2954,7 @@ function initMenus() {
         let tbstools = $("sidebar-tbs-tools");
         tbstools.innerText = "";
         tbstools.style.cursor = "ns-resize";
-        splitControl.hook(tbstools, $("sidebar-dbs"), tbstools.id, function(value) {
+        splitControl.hook(tbstools, $("sidebar-dbs"), tbstools.id, function (value) {
             if (value < getAbsolutePosition($("sidebar")).height - getAbsolutePosition(tbstools).height - getAbsolutePosition($("sidebar-dbs-tools")).height) {
                 $("sidebar-dbs").style.height = value + "px";
                 resize();
@@ -3031,7 +3031,7 @@ function initMenus() {
             let result = __CONFIGS__.CURRENT_TABLE.structure;
             result["eventid"] = getEventIndex();
             result["name"] = __CONFIGS__.CURRENT_TABLE.name,
-            result["title"] = [__CONFIGS__.CURRENT_TABLE.name];
+                result["title"] = [__CONFIGS__.CURRENT_TABLE.name];
             result["sql"] = __CONFIGS__.CURRENT_TABLE.sql;
             result["parameter"] = null;
             result["time"] = getNow();
@@ -3049,8 +3049,8 @@ function initMenus() {
         let sqltools = $("sql-tools");
         sqltools.ondblclick = function () {
             let style = {
-                backgroundImage: getCss(document.body,"background-image"),
-                backgroundColor: getCss(document.body,"background-color"),
+                backgroundImage: getCss(document.body, "background-image"),
+                backgroundColor: getCss(document.body, "background-color"),
             };
             requestFullScreen($("main"), style);
         };
@@ -3135,7 +3135,11 @@ function initMenus() {
                 UI.sqlManagerDialog.show("auto", function (args, values) {
                     __SQLEDITOR__.title = $("sql-title").innerText = $("sql-title").title = values.title;
                     __LOGS__.viewMessage("Save " + __SQLEDITOR__.configs.codeMirrorMode.value + " : " + __SQLEDITOR__.title);
-                }, {type: UI.sqlManagerDialog.type.save, sql: __SQLEDITOR__.codeMirror.getValue(), charset: __SQLEDITOR__.configs.codeMirrorCharset.value});
+                }, {
+                    type: UI.sqlManagerDialog.type.save,
+                    sql: __SQLEDITOR__.codeMirror.getValue(),
+                    charset: __SQLEDITOR__.configs.codeMirrorCharset.value
+                });
             } else {
                 let title = __SQLEDITOR__.title;
                 let sql = __SQLEDITOR__.codeMirror.getValue();
@@ -3249,7 +3253,12 @@ function initMenus() {
                                 if (__SQLEDITOR__.configs.codeMirrorMode.value == "text/javascript")
                                     executeFunction(name)
                             } else {
-                                UI.prompt.show("输入", {"集合名称": {value:"",type:"input"}}, "auto", function (args, values) {
+                                UI.prompt.show("输入", {
+                                    "集合名称": {
+                                        value: "",
+                                        type: "input"
+                                    }
+                                }, "auto", function (args, values) {
                                     let name = __SQLEDITOR__.title = $("sql-title").innerText = $("sql-title").title = values["集合名称"];
                                     if (__SQLEDITOR__.configs.codeMirrorMode.value == "text/x-sqlite")
                                         execute(name);
@@ -3267,7 +3276,7 @@ function initMenus() {
                             if (__SQLEDITOR__.configs.codeMirrorMode.value == "text/javascript")
                                 executeFunction(name)
                         } else {
-                            UI.prompt.show("输入", {"集合名称": {value:"",type:"input"}}, "auto", function (args, values) {
+                            UI.prompt.show("输入", {"集合名称": {value: "", type: "input"}}, "auto", function (args, values) {
                                 let name = __SQLEDITOR__.title = values["集合名称"];
                                 if (__SQLEDITOR__.configs.codeMirrorMode.value == "text/x-sqlite")
                                     execute(name);
@@ -3291,7 +3300,7 @@ function initMenus() {
         let tofull = document.createElement("div");
         sqltools.appendChild(tofull);
         tofull.className = "charButton";
-        tofull.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("fullscreen","white","20px", "20px");
+        tofull.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("fullscreen", "white", "20px", "20px");
         tofull.style.cssFloat = "right";
         tofull.id = "set-editer-to-full";
         tofull.onclick = function () {
@@ -3302,7 +3311,7 @@ function initMenus() {
         let editerSetting = document.createElement("div");
         sqltools.appendChild(editerSetting);
         editerSetting.className = "charButton";
-        editerSetting.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("more","white","24px", "24px");
+        editerSetting.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("more", "white", "24px", "24px");
         editerSetting.style.cssFloat = "right";
         editerSetting.id = "editer-setting";
         editerSetting.onclick = function () {
@@ -3318,15 +3327,15 @@ function initMenus() {
         let detailtools = $("detail-tools");
         detailtools.ondblclick = function () {
             let style = {
-                backgroundImage: getCss(document.body,"background-image"),
-                backgroundColor: getCss(document.body,"background-color"),
+                backgroundImage: getCss(document.body, "background-image"),
+                backgroundColor: getCss(document.body, "background-color"),
             };
             requestFullScreen($("detail"), style);
         };
 
         let toDisplay = document.createElement("div");
         toDisplay.className = "charButton";
-        toDisplay.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("display","white","20px", "20px");
+        toDisplay.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("display", "white", "20px", "20px");
         toDisplay.id = "display-log";
         toDisplay.onclick = function () {
             if ($("detail").style.display != "none") {
@@ -3345,23 +3354,23 @@ function initMenus() {
             }
         };
         detailtools.appendChild(toDisplay);
-        UI.tooltip(toDisplay,"隐藏日志模块");
+        UI.tooltip(toDisplay, "隐藏日志模块");
 
         let clean = document.createElement("div");
         clean.className = "charButton";
-        clean.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("clearLogs","white","18px", "18px");
+        clean.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("clearLogs", "white", "18px", "18px");
         clean.id = "logs-clear";
         clean.onclick = function () {
             let msgbox = $("messageBox");
             msgbox.innerHTML = "";
         };
         detailtools.appendChild(clean);
-        UI.tooltip(clean,　"清除浏览器缓存日志");
+        UI.tooltip(clean, "清除浏览器缓存日志");
 
         let savelogs = document.createElement("div");
         savelogs.className = "charButton";
         savelogs.id = "save-logs";
-        savelogs.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("download","white","20px", "20px");
+        savelogs.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("download", "white", "20px", "20px");
         savelogs.style.cssFloat = "left";
         savelogs.onclick = function () {
             let logslist = {};
@@ -3389,13 +3398,13 @@ function initMenus() {
             }, {});
         };
         detailtools.appendChild(savelogs);
-        UI.tooltip(savelogs,"下载(删除)历史日志");
+        UI.tooltip(savelogs, "下载(删除)历史日志");
 
         let logsets = document.createElement("div");
         logsets.id = "logs-records";
         detailtools.appendChild(logsets);
         logsets.className = "charButton";
-        logsets.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("more","white","24px", "24px");
+        logsets.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("more", "white", "24px", "24px");
         logsets.id = "logs-setting";
         logsets.style.cssFloat = "right";
         logsets.onclick = function () {
@@ -3417,13 +3426,13 @@ function initMenus() {
         let datatools = $("data-tools");
         datatools.ondblclick = function () {
             let style = {
-                backgroundImage: getCss(document.body,"background-image"),
-                backgroundColor: getCss(document.body,"background-color"),
+                backgroundImage: getCss(document.body, "background-image"),
+                backgroundColor: getCss(document.body, "background-color"),
             };
             requestFullScreen($("main"), style);
         };
         datatools.style.cursor = "ns-resize";
-        splitControl.hook(datatools, $("sqlContainer"), datatools.id, function(value) {
+        splitControl.hook(datatools, $("sqlContainer"), datatools.id, function (value) {
             if (value < getAbsolutePosition($("main")).height - getAbsolutePosition(datatools).height - getAbsolutePosition($("data-page-tools")).height - getAbsolutePosition($("sql-tools")).height) {
                 $("sqlContainer").style.height = value + "px";
                 resize();
@@ -3508,17 +3517,17 @@ function initMenus() {
         let openEchartsFile = document.createElement("div");
         datatools.appendChild(openEchartsFile);
         openEchartsFile.className = "charButton";
-        openEchartsFile.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("report","white","20px", "20px");
+        openEchartsFile.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("report", "white", "20px", "20px");
         openEchartsFile.style.cssFloat = "left";
         openEchartsFile.onclick = $("open-html-report").onclick = function () {
             $("open-echarts-file").click();
         };
-        UI.tooltip(openEchartsFile,　"打开固定报表");
+        UI.tooltip(openEchartsFile, "打开固定报表");
 
         let getReport = document.createElement("div");
         datatools.appendChild(getReport);
         getReport.className = "charButton";
-        getReport.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("report_download","white","20px", "20px");
+        getReport.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("report_download", "white", "20px", "20px");
         getReport.style.cssFloat = "left";
         getReport.onclick = $("download-html-report").onclick = function () {
             let container = $("tableContainer");
@@ -3536,21 +3545,24 @@ function initMenus() {
         let dataReader = document.createElement("div");
         datatools.appendChild(dataReader);
         dataReader.className = "charButton";
-        dataReader.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("onload","white","18px", "18px");
+        dataReader.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("onload", "white", "18px", "18px");
         dataReader.style.cssFloat = "left";
         dataReader.id = "data-reader";
         dataReader.onclick = $("read-xls-file").onclick = function () {
-            getDataReader("auto", function (values) {
-                __DATASET__.result.push(values);
-                viewDataset(__DATASET__.result.length - 1, 0, false);
-            });
+            if (typeof getDataReader === "function") {
+                getDataReader("auto", function (values) {
+                    __DATASET__.result.push(values);
+                    viewDataset(__DATASET__.result.length - 1, 0, false);
+                });
+            } else
+                UI.alert.show("提示", "未加载外部数据读取组件.", "auto");
         };
-        UI.tooltip(dataReader,"读取外部数据");
+        UI.tooltip(dataReader, "读取外部数据");
 
         let datatran = document.createElement("div");
         datatools.appendChild(datatran);
         datatran.className = "charButton";
-        datatran.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("datatran","white","18px", "18px");
+        datatran.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("datatran", "white", "18px", "18px");
         datatran.id = "dataset-transpose";
         let help_datasettranspose = $("help-dataset-transpose");
         datatran.onclick = help_datasettranspose.onclick = function () {
@@ -3559,12 +3571,12 @@ function initMenus() {
                 viewDataset(__DATASET__.default.sheet, 0, false);
             }
         };
-        UI.tooltip(datatran,"转置数据");
+        UI.tooltip(datatran, "转置数据");
 
         let dataslice = document.createElement("div");
         datatools.appendChild(dataslice);
         dataslice.className = "charButton";
-        dataslice.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("slice","white","16px", "16px");
+        dataslice.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("slice", "white", "16px", "16px");
         dataslice.id = "dataset-slice";
         let help_datasetslice = $("help-dataset-slice");
         dataslice.onclick = help_datasetslice.onclick = function () {
@@ -3577,12 +3589,12 @@ function initMenus() {
                 })
             }
         };
-        UI.tooltip(dataslice,"数据切片");
+        UI.tooltip(dataslice, "数据切片");
 
         let subtotal = document.createElement("div");
         datatools.appendChild(subtotal);
         subtotal.className = "charButton";
-        subtotal.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("sum","white","20px", "20px");
+        subtotal.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("sum", "white", "20px", "20px");
         subtotal.id = "dataset-subtotal";
         let help_datasetsubtotal = $("help-dataset-subtotal");
         subtotal.onclick = help_datasetsubtotal.onclick = function () {
@@ -3593,12 +3605,12 @@ function initMenus() {
                 });
             }
         };
-        UI.tooltip(subtotal,"分类计算");
+        UI.tooltip(subtotal, "分类计算");
 
         let download = document.createElement("div");
         datatools.appendChild(download);
         download.className = "charButton";
-        download.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("multi_download","white","18px", "18px");
+        download.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("multi_download", "white", "18px", "18px");
         download.id = "dataset-download";
         let help_datasetdownload = $("help-dataset-download");
         download.onclick = help_datasetdownload.onclick = function () {
@@ -3720,7 +3732,12 @@ function initMenus() {
                                         }
                                         sheets.push(comment);
                                         sheetNames = removingRedundant(sheetNames, "Comment");
-                                        UI.prompt.show("输入", {"文件名称": {value:"",type:"input"}}, "auto", function (args, values) {
+                                        UI.prompt.show("输入", {
+                                            "文件名称": {
+                                                value: "",
+                                                type: "input"
+                                            }
+                                        }, "auto", function (args, values) {
                                             let title = fixFileName(values["文件名称"]);
                                             if (title.trim() != "") {
                                                 openDownloadDialog(workbook2blob(args.sheets, args.sheetNames), title + ".xlsx");
@@ -3728,7 +3745,12 @@ function initMenus() {
                                         }, {sheets: sheets, sheetNames: sheetNames});
                                         break;
                                     case "xml":
-                                        UI.prompt.show("输入", {"文件名称": {value:"",type:"input"}}, "auto", function (args, values) {
+                                        UI.prompt.show("输入", {
+                                            "文件名称": {
+                                                value: "",
+                                                type: "input"
+                                            }
+                                        }, "auto", function (args, values) {
                                             let title = fixFileName(values["文件名称"]);
                                             if (title.trim() != "")
                                                 getXMLFile(title, args["dataset"]);
@@ -3804,7 +3826,7 @@ function initMenus() {
         let remove = document.createElement("div");
         datatools.appendChild(remove);
         remove.className = "charButton";
-        remove.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("remove","white","20px", "20px");
+        remove.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("remove", "white", "20px", "20px");
         remove.id = "dataset-remove";
         let help_datasetremove = $("help-dataset-remove");
         remove.onclick = help_datasetremove.onclick = function () {
@@ -3814,7 +3836,7 @@ function initMenus() {
                     __DATASET__.default.sheet = __DATASET__.result.length - 1;
 
                 if (__DATASET__.result.length > 0) {
-                    viewDataset(__DATASET__.default.sheet, 0, false);
+                    viewDataset(__DATASET__.default.sheet, 0, true);
                 } else {
                     $("tableContainer").innerText = "";
                     __DATASET__.default.tab = 0;
@@ -3827,7 +3849,7 @@ function initMenus() {
         let removeall = document.createElement("div");
         datatools.appendChild(removeall);
         removeall.className = "charButton";
-        removeall.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("removeall","white","18px", "18px");
+        removeall.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("removeall", "white", "18px", "18px");
         removeall.id = "dataset-removeall";
         removeall.onclick = function () {
             if (__DATASET__.result.length > 0) {
@@ -3848,37 +3870,46 @@ function initMenus() {
         let fileSecurity = document.createElement("div");
         datatools.appendChild(fileSecurity);
         fileSecurity.className = "charButton";
-        fileSecurity.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("encrypt","white","20px", "20px");
+        fileSecurity.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("encrypt", "white", "20px", "20px");
         fileSecurity.onclick = $("file-security").onclick = function () {
-            getFileSecurity("auto");
+            if (typeof getFileSecurity === "function")
+                getFileSecurity("auto");
+            else
+                UI.alert.show("提示", "未加载文件安全组件.", "auto");
         };
-        UI.tooltip(fileSecurity,　"文件加密解密");
+        UI.tooltip(fileSecurity, "文件加密解密");
 
         let mailto = document.createElement("div");
         datatools.appendChild(mailto);
         mailto.className = "charButton";
-        mailto.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("email","white","18px", "18px");
+        mailto.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("email", "white", "18px", "18px");
         mailto.onclick = function () {
-            getMailComponent("auto");
+            if (typeof getMailComponent === "function")
+                getMailComponent("auto");
+            else
+                UI.alert.show("提示", "未加载批量邮件组件.", "auto");
         };
         UI.tooltip(mailto, "邮件编辑");
 
         let blobsplit = document.createElement("div");
         datatools.appendChild(blobsplit);
         blobsplit.className = "charButton";
-        blobsplit.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("datasplit","white","20px", "20px");
+        blobsplit.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("datasplit", "white", "20px", "20px");
         blobsplit.onclick = function () {
-            UI.splitFileBlob.show("大数据文件分割", "auto", function (args) {
-                let blob = new Blob([str2ab(args.result)], {type: "plain/text"});
-                openDownloadDialog(blob, args.name);
-            });
+            if (typeof splitFileBlob === "object") {
+                splitFileBlob.show("大数据文件分割", "auto", function (args) {
+                    let blob = new Blob([str2ab(args.result)], {type: "plain/text"});
+                    openDownloadDialog(blob, args.name);
+                });
+            } else
+                UI.alert.show("提示", "未加载外部数据读取组件.", "auto");
         };
         UI.tooltip(blobsplit, "大数据文件拆分");
 
         let datasetSetting = document.createElement("div");
         datatools.appendChild(datasetSetting);
         datasetSetting.className = "charButton";
-        datasetSetting.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("more","white","24px", "24px");
+        datasetSetting.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("more", "white", "24px", "24px");
         datasetSetting.id = "dataset-setting";
         datasetSetting.onclick = function () {
             __DATASET__.setConfigs("auto", function () {
@@ -3887,7 +3918,7 @@ function initMenus() {
                 }
             });
         };
-        UI.tooltip(datasetSetting,"报表设置");
+        UI.tooltip(datasetSetting, "报表设置");
 
         let analysis = document.createElement("div");
         analysis.style.display = "none";
@@ -3925,7 +3956,7 @@ function initMenus() {
         let toecharts = document.createElement("div");
         datatools.appendChild(toecharts);
         toecharts.className = "charButton";
-        toecharts.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("fullscreen","white","20px", "20px");
+        toecharts.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("fullscreen", "white", "20px", "20px");
         toecharts.style.cssFloat = "right";
         toecharts.id = "dataset-to-echarts";
         toecharts.onclick = function () {
@@ -3954,7 +3985,7 @@ function initMenus() {
         let toconfigs = document.createElement("div");
         datatools.appendChild(toconfigs);
         toconfigs.className = "charButton";
-        toconfigs.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("more","white","24px", "24px");
+        toconfigs.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("more", "white", "24px", "24px");
         toconfigs.style.cssFloat = "right";
         toconfigs.id = "dataset-to-configs";
         let help_echartsConfigs = $("help-select-echarts-configs");
@@ -3990,7 +4021,7 @@ function initMenus() {
         let toMultiEcharts = document.createElement("div");
         datatools.appendChild(toMultiEcharts);
         toMultiEcharts.className = "charButton";
-        toMultiEcharts.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("multiview","white","20px", "20px");
+        toMultiEcharts.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("multiview", "white", "20px", "20px");
         toMultiEcharts.style.cssFloat = "right";
         toMultiEcharts.id = "dataset-to-multi-echarts";
         toMultiEcharts.onclick = $("help-dataset-to-multi-echarts").onclick = function () {
@@ -4060,7 +4091,7 @@ function initMenus() {
             }
         };
         datatools.appendChild(echartsThemes);
-        UI.tooltip(echartsThemes,  "视图主题");
+        UI.tooltip(echartsThemes, "视图主题");
 
         let echartsType = document.createElement("select");
         echartsType.type = "select";
@@ -4105,7 +4136,7 @@ function initMenus() {
         let getecharts = document.createElement("div");
         datatools.appendChild(getecharts);
         getecharts.className = "charButton";
-        getecharts.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name,"white","22px", "22px", __VERSION__.logo.flip);
+        getecharts.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name, "white", "22px", "22px", __VERSION__.logo.flip);
         getecharts.style.cssFloat = "right";
         getecharts.id = "dataset-to-charts";
         let help_echarts = $("help-dataset-echarts");
@@ -4143,7 +4174,7 @@ function initMenus() {
         };
         //创建系统用户
         $("create-sys-user").onclick = function () {
-            UI.prompt.show("创建用户", {"用户名称": {value:"",type:"input"}}, "auto", function (values) {
+            UI.prompt.show("创建用户", {"用户名称": {value: "", type: "input"}}, "auto", function (values) {
                 let name = values["用户名称"].trim();
                 if (name.length >= 2) {
                     let users = {};
@@ -4181,7 +4212,7 @@ function initMenus() {
             });
         };
 
-        $("change-sys-user-password").onclick = function() {
+        $("change-sys-user-password").onclick = function () {
             if (typeof __LOGS__.user.name !== "undefined") {
                 let name = __LOGS__.user.name;
                 UI.password.show("修改 " + name + " 的登录密码", {

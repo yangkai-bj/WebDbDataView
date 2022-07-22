@@ -13,8 +13,8 @@ var __SYS_LOGO_LINK__ = {
 const __VERSION__ = {
     name: "Web DataView for SQLite Database of browser",
     main: "WebDBDataView.js",
-    version: "3.3.7",
-    date: "2022/07/18",
+    version: "3.3.8",
+    date: "2022/07/22",
     comment: [
         "-- 2021/03/08",
         "优化算法和压缩代码.",
