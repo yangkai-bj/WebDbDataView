@@ -1595,3 +1595,246 @@ var splitControl = {
         }
     }
 };
+
+function getXmlFile(title, dataset, author) {
+    let sheetNames = [];
+
+    function removingRedundant(names, sheetName, index) {
+        sheetName = sheetName.split("*").join("#").split("?").join("#").split("[").join("#").split("]").join("#").split("\\").join("#").split("\/").join("#");
+        let x = (typeof index === "undefined" ? 0 : index);
+        let name = (x == 0 ? sheetName : sheetName + "(" + x + ")");
+        let exist = false;
+        for (let i = 0; i < names.length; i++) {
+            if (names[i].toUpperCase() == name.toUpperCase()) {
+                exist = true;
+                x++;
+                break;
+            }
+        }
+        if (exist) {
+            return removingRedundant(names, sheetName, x);
+        } else {
+            names.push(name);
+            return names
+        }
+    }
+
+    function getBorders(doc, style) {
+        let Borders = doc.createElement('Borders');
+        for (let key in style) {
+            let Border = doc.createElement('Border');
+            Borders.appendChild(Border);
+            Border.setAttribute('ss:Position', key);
+            Border.setAttribute('ss:Weight', style[key].Weight);
+            Border.setAttribute('ss:LineStyle', style[key].LineStyle);
+            Border.setAttribute('ss:Color', style[key].Color);
+        }
+        return Borders;
+    }
+
+    let domparser = new DOMParser();
+    let root = "<?xml version='1.0'?><?mso-application progid='Excel.Sheet'?><Workbook></Workbook>";
+    let xmldoc = domparser.parseFromString(root, 'text/xml');
+    let workbook = xmldoc.documentElement;
+    workbook.setAttribute('xmlns', 'urn:schemas-microsoft-com:office:spreadsheet');
+    workbook.setAttribute('xmlns:o', 'urn:schemas-microsoft-com:office:office');
+    workbook.setAttribute('xmlns:x', 'urn:schemas-microsoft-com:office:excel');
+    workbook.setAttribute('xmlns:ss', 'urn:schemas-microsoft-com:office:spreadsheet');
+    workbook.setAttribute('xmlns:html', 'http://www.w3.org/TR/REC-html40');
+
+    //文档属性定义
+
+    let DocumentProperties = xmldoc.createElement('DocumentProperties');
+    workbook.appendChild(DocumentProperties);
+    DocumentProperties.setAttribute('xmlns', 'urn:schemas-microsoft-com:office:office');
+
+    let Author = xmldoc.createElement('Author');
+    DocumentProperties.appendChild(Author);
+    Author.appendChild(xmldoc.createTextNode(author));
+
+    let LastAuthor = xmldoc.createElement('LastAuthor');
+    DocumentProperties.appendChild(LastAuthor);
+    LastAuthor.appendChild(xmldoc.createTextNode(author));
+
+    let Created = xmldoc.createElement('Created');
+    DocumentProperties.appendChild(Created);
+    Created.appendChild(xmldoc.createTextNode(new Date()));
+
+    let Version = xmldoc.createElement('Version');
+    DocumentProperties.appendChild(Version);
+    Version.appendChild(xmldoc.createTextNode('1.0.0'));
+
+    //文档格式定义
+    //通用格式
+    let Styles = xmldoc.createElement('Styles');
+    workbook.appendChild(Styles);
+    let Style = xmldoc.createElement('Style');
+    Styles.appendChild(Style);
+    Style.setAttribute('ss:ID', 'Default');
+    Style.setAttribute('ss:Name', 'Normal');
+
+    let Alignment = xmldoc.createElement('Alignment');
+    Style.appendChild(Alignment);
+    Alignment.setAttribute('ss:Vertical', 'Center');
+
+    let Font = xmldoc.createElement('Font');
+    Style.appendChild(Font);
+    Font.setAttribute('ss:FontName', '宋体');
+    Font.setAttribute('x:CharSet', '134');
+    Font.setAttribute('ss:Size', '11');
+    Font.setAttribute('ss:Color', '#000000');
+
+    let Interior = xmldoc.createElement('Interior');
+    Style.appendChild(Interior);
+
+    let Protection = xmldoc.createElement('Protection');
+    Style.appendChild(Protection);
+
+    let NumberFormat = xmldoc.createElement('NumberFormat');
+    Style.appendChild(NumberFormat);
+    NumberFormat.setAttribute('ss:Format', '#,##0.00_ ');
+
+    //数据格式-coloumn
+    Style = xmldoc.createElement('Style');
+    Styles.appendChild(Style);
+    Style.setAttribute('ss:ID', 'columns');
+
+    let style = {
+        Top: {Weight: '1', LineStyle: 'Continuous', Color: '#D99795'},
+        Bottom: {Weight: '3', LineStyle: 'Continuous', Color: '#D99795'},
+        Left: {Weight: '1', LineStyle: 'Continuous', Color: '#D99795'},
+        Right: {Weight: '1', LineStyle: 'Continuous', Color: '#D99795'}
+    };
+    Style.appendChild(getBorders(xmldoc, style));
+
+    Alignment = xmldoc.createElement('Alignment');
+    Style.appendChild(Alignment);
+    Alignment.setAttribute('ss:Vertical', 'Center');
+    Alignment.setAttribute('ss:Horizontal', 'Center');
+
+    Font = xmldoc.createElement('Font');
+    Style.appendChild(Font);
+    Font.setAttribute('ss:Size', '12');
+    Font.setAttribute('ss:Bold', '1');
+    Font.setAttribute('ss:Color', '#FDE9D9');
+
+    Interior = xmldoc.createElement('Interior');
+    Style.appendChild(Interior);
+    Interior.setAttribute('ss:Color', '#31849B');
+    Interior.setAttribute('ss:Pattern', 'Solid');
+
+    //数据格式-data
+    Style = xmldoc.createElement('Style');
+    Styles.appendChild(Style);
+    Style.setAttribute('ss:ID', 'data');
+    style = {
+        Top: {Weight: '1', LineStyle: 'Continuous', Color: '#D99795'},
+        Bottom: {Weight: '1', LineStyle: 'Continuous', Color: '#D99795'},
+        Left: {Weight: '1', LineStyle: 'Continuous', Color: '#D99795'},
+        Right: {Weight: '1', LineStyle: 'Continuous', Color: '#D99795'}
+    };
+    Style.appendChild(getBorders(xmldoc, style));
+
+    //数据格式-data-alt
+    Style = xmldoc.createElement('Style');
+    Styles.appendChild(Style);
+    Style.setAttribute('ss:ID', 'data-alt');
+    Style.appendChild(getBorders(xmldoc, style));
+
+    Interior = xmldoc.createElement('Interior');
+    Style.appendChild(Interior);
+    Interior.setAttribute('ss:Color', '#B6DDE8');
+    Interior.setAttribute('ss:Pattern', 'Solid');
+
+    //数据
+    for (let d = 0; d < dataset.length; d++) {
+        let sheet = dataset[d];
+        sheetNames = removingRedundant(sheetNames, sheet.title[sheet.title.length - 1]);
+        let Worksheet = xmldoc.createElement('Worksheet');
+        workbook.appendChild(Worksheet);
+        Worksheet.setAttribute('ss:Name', sheetNames[d]);
+
+        let Table = xmldoc.createElement('Table');
+        Worksheet.appendChild(Table);
+        Table.setAttribute('ss:ExpandedColumnCount', sheet.columns.length);
+        Table.setAttribute('ss:ExpandedRowCount', sheet.data.length + 1);
+        Table.setAttribute('x:FullColumns', '1');
+        Table.setAttribute('x:FullRows', '1');
+        Table.setAttribute('ss:DefaultColumnWidth', '108');
+        Table.setAttribute('ss:DefaultRowHeight', '18');
+
+        let Row = xmldoc.createElement('Row');
+        Table.appendChild(Row);
+        for (let i = 0; i < sheet.columns.length; i++) {
+            let Cell = xmldoc.createElement('Cell');
+            Cell.setAttribute('ss:StyleID', 'columns');
+            Row.appendChild(Cell);
+            let Data = xmldoc.createElement('Data');
+            Cell.appendChild(Data);
+            Data.setAttribute('ss:Type', 'String');
+            Data.appendChild(xmldoc.createTextNode(sheet.columns[i].name));
+        }
+        for (let i = 0; i < sheet.data.length; i++) {
+            let row = sheet.data[i];
+            Row = xmldoc.createElement('Row');
+            Table.appendChild(Row);
+            for (let c = 0; c < sheet.columns.length; c++) {
+                let cell = row[sheet.columns[c].name];
+                let Cell = xmldoc.createElement('Cell');
+                if (i % 2 == 0)
+                    Cell.setAttribute('ss:StyleID', 'data');
+                else
+                    Cell.setAttribute('ss:StyleID', 'data-alt');
+                Row.appendChild(Cell);
+                let Data = xmldoc.createElement('Data');
+                Cell.appendChild(Data);
+                Data.setAttribute('ss:Type', (cell.type == 'number' ? 'Number' : 'String'));
+                Data.appendChild(xmldoc.createTextNode((cell.type == 'number' ? cell.value : (typeof cell.value !== 'undefined' ? cell.value : ''))));
+            }
+        }
+    }
+    let blob = new Blob([str2ab((new XMLSerializer()).serializeToString(xmldoc))], {type: 'text/xml'});
+    openDownloadDialog(blob, title + '.report.xml');
+}
+
+function getSQLParameters(sql, history) {
+    let reg = new RegExp(/\{[\[\]\s\:\,\-\"\'a-zA-Z0-9\u4e00-\u9fa5\(\)]+\}/, "g");
+    let content = sql.match(reg);
+    let style = {};
+    if (content != null) {
+        for (let i = 0; i < content.length; i++) {
+            let param = content[i].replaceAll("'", '"');
+            try {
+                param = JSON.parse(param);
+                let key;
+                for (let k in param) {
+                    key = k;
+                    break;
+                }
+                style[key] = {
+                    value: typeof param[key] !== "object" ? param[key] : param[key][0],
+                    type: typeof param[key] === "object" ? "select" : "input",
+                    options: typeof param[key] === "object" ? param[key] : null,
+                };
+            } catch (e) {
+                console.log({"参数": param, "错误": e});
+            }
+        }
+    }
+    reg = new RegExp(/\{[\s\-a-zA-Z0-9\u4e00-\u9fa5\(\)]+\}/, "g");
+    content = sql.match(reg);
+    let parameter = null;
+    if (content != null) {
+        parameter = {};
+        for (let i = 0; i < content.length; i++) {
+            let key = content[i].substring(content[i].indexOf("{") + 1, content[i].indexOf("}"));
+            parameter[key] = {
+                value: typeof history[key] !== "undefined" ? history[key] : (typeof style[key] !== "undefined" ? style[key].value : ""),
+                type: typeof style[key] !== "undefined" ? style[key].type : "input",
+                options: typeof style[key] !== "undefined" ? style[key].options : null,
+            };
+        }
+    }
+    return parameter;
+}
+

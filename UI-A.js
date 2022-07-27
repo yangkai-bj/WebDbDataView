@@ -1436,7 +1436,7 @@ var UI = {
             itemcontent.appendChild(image);
 
             for (let key in this.items) {
-                let it = items[key];
+                let it = this.items[key];
                 let item = document.createElement("div");
                 item.className = "ui-container-item";
                 item.style.width = "70%";
@@ -1511,7 +1511,8 @@ var UI = {
                 content.style.left = left + "px";
                 content.style.top = top + "px"
             });
-            $class("ui-container-item-input", 0).focus();
+            if (typeof $class("ui-container-item-input", 0) !== "undefined")
+                $class("ui-container-item-input", 0).focus();
         },
     },
     choise: {

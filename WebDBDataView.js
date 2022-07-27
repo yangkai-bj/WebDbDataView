@@ -3229,20 +3229,9 @@ function initMenus() {
                         selection = __SQLEDITOR__.codeMirror.getSelection();
                     else
                         selection = __SQLEDITOR__.codeMirror.getValue();
-                    let reg = new RegExp(/\{[\[\]\:\,\;\-\"\'a-zA-Z0-9\u4e00-\u9fa5]+\}/, "g");
-                    let params = selection.match(reg);
-                    if (params != null) {
-                        //参数去重
-                        let temp = {};
-                        for (let i = 0; i < params.length; i++) {
-                            let key = params[i].substring(params[i].indexOf("{") + 1, params[i].indexOf("}"));
-                            temp[key] = {
-                                value: typeof __SQLEDITOR__.parameter[key] !== "undefined" ? __SQLEDITOR__.parameter[key] : "",
-                                type: "input"
-                            };
-                        }
-                        params = temp;
-                        UI.prompt.show("输入脚本参数", params, "auto", function (args, values) {
+                    let parameter = getSQLParameters(selection, __SQLEDITOR__.parameter);
+                    if (parameter != null) {
+                        UI.prompt.show("输入脚本参数", parameter, "auto", function (args, values) {
                             for (let key in values) {
                                 __SQLEDITOR__.parameter[key] = values[key];
                             }
@@ -3698,8 +3687,10 @@ function initMenus() {
                                 }
                             }, "auto", function (args, values) {
                                 let title = fixFileName(values["文件名称"]);
-                                if (title.trim() != "")
-                                    getXMLFile(title, args.dataset);
+                                if (title.trim() != "") {
+                                    let user = (typeof __LOGS__.user.name !== "undefined" ? __LOGS__.user.name : "");
+                                    getXmlFile(title, args.dataset, user);
+                                }
                             }, {dataset: [dataset]});
                             break;
                     }
@@ -3752,8 +3743,10 @@ function initMenus() {
                                             }
                                         }, "auto", function (args, values) {
                                             let title = fixFileName(values["文件名称"]);
-                                            if (title.trim() != "")
-                                                getXMLFile(title, args["dataset"]);
+                                            if (title.trim() != "") {
+                                                let user = (typeof __LOGS__.user.name !== "undefined" ? __LOGS__.user.name : "");
+                                                getXmlFile(title, args["dataset"], user);
+                                            }
                                         }, {dataset: __DATASET__.result});
                                         break;
                                 }
@@ -3807,7 +3800,8 @@ function initMenus() {
                                         for (let d = 0; d < __DATASET__.result.length; d++) {
                                             dataset = __DATASET__.result[d];
                                             let title = fixFileName(dataset.title.join("_"));
-                                            getXMLFile(title, [dataset]);
+                                            let user = (typeof __LOGS__.user.name !== "undefined" ? __LOGS__.user.name : "");
+                                            getXmlFile(title, [dataset], user);
                                             if (d < (__DATASET__.result.length - 1)) {
                                                 let delay = (dataset["data"].length * dataset["columns"].length) >= 10000 ? (dataset["data"].length * dataset["columns"].length / 10000) : 1;
                                                 sleep(__DATASET__.configs.reportDownloadDelay.value * delay);
@@ -5415,82 +5409,4 @@ function  setClipboardListener(target) {
         event.preventDefault();
     }
     document.addEventListener("copy", handler);   // 增加copy监听
-}
-
-function getXMLFile(title, workbook) {
-    function removingRedundant(names, sheetName, index) {
-        sheetName = sheetName.split("*").join("#").split("?").join("#").split("[").join("#").split("]").join("#").split("\\").join("#").split("\/").join("#");
-        let x = (typeof index === "undefined" ? 0 : index);
-        let name = (x == 0 ? sheetName : sheetName + "(" + x + ")");
-        let exist = false;
-        for (let i = 0; i < names.length; i++) {
-            if (names[i].toUpperCase() == name.toUpperCase()) {
-                exist = true;
-                x++;
-                break;
-            }
-        }
-        if (exist) {
-            return removingRedundant(names, sheetName, x);
-        } else {
-            names.push(name);
-            return names
-        }
-    }
-
-    try {
-        let sheetNames = [];
-        let xml = '<?xml version="1.0"?>' +
-            '<?mso-application progid="Excel.Sheet"?>' +
-            '<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"' +
-            ' xmlns:o="urn:schemas-microsoft-com:office:office"' +
-            ' xmlns:x="urn:schemas-microsoft-com:office:excel"' +
-            ' xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"' +
-            ' xmlns:html="http://www.w3.org/TR/REC-html40">' +
-            '<DocumentProperties xmlns="urn:schemas-microsoft-com:office:office">' +
-            '<Author>' + __VERSION__.name.split("<").join("&lt;").split(">").join("&gt;") + '</Author>' +
-            '<LastAuthor></LastAuthor>' +
-            '<Created>' + new Date() + '</Created>' +
-            '<Version>1.0.0</Version>' +
-            '</DocumentProperties>' +
-            '<Styles>' +
-            '<Style ss:ID="Default" ss:Name="Normal">' +
-            '<Alignment ss:Vertical="Center"/>' +
-            '<Borders/>' +
-            '<Font ss:FontName="宋体" x:CharSet="134" ss:Size="11" ss:Color="#000000"/>' +
-            '<Interior/>' +
-            '<NumberFormat ss:Format="#,##0.00_ "/>' +
-            '<Protection/>' +
-            '</Style>' +
-            '</Styles>';
-        for (let index = 0; index < workbook.length; index++) {
-            let dataset = workbook[index];
-            sheetNames = removingRedundant(sheetNames, dataset.title[dataset.title.length - 1]);
-            xml += '<Worksheet ss:Name="' + sheetNames[index].split("<").join("&lt;").split(">").join("&gt;") + '">\n' +
-                '<Table ss:ExpandedColumnCount="' + dataset["columns"].length + '" ss:ExpandedRowCount="' + dataset["data"].length + 1 + '">';
-            let cols = dataset["columns"].reduce(function (tmp, column) {
-                tmp += '<Cell><Data ss:Type="String">' + column.name.split("<").join("&lt;").split(">").join("&gt;") + '</Data></Cell>';
-                return tmp;
-            }, '<Row>');
-            cols += '</Row>';
-            xml += cols;
-            for (let i = 0; i < dataset["data"].length; i++) {
-                let items = dataset["data"][i];
-                let row = '<Row>';
-                for (let c = 0; c < dataset["columns"].length; c++) {
-                    let item = items[dataset["columns"][c].name];
-                    let cell = '<Cell><Data ss:Type="' + (item.type == 'number' ? 'Number' : 'String') + '">' + (item.type == 'number' ? item.value : (typeof item.value !== "undefined" ? item.value.split("<").join("&lt;").split(">").join("&gt;") : "")) + '</Data></Cell>';
-                    row += cell;
-                }
-                row += '</Row>';
-                xml += row;
-            }
-            xml += '</Table>\n</Worksheet>';
-        }
-        xml += '</Workbook>';
-        let blob = new Blob([str2ab(xml)], {type: 'text/xml'});
-        openDownloadDialog(blob, title + '.xml')
-    } catch (e) {
-        __LOGS__.viewError(e);
-    }
 }

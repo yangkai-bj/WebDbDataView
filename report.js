@@ -1,5 +1,5 @@
 function getEchartsReport(container, myChart) {
-    function getScript(jsPath, echarts, ui, defaultThemes) {
+    function getScript(jsPath, echarts, ui, defaultThemes, user) {
         let scripts = [
             "FunctionsComponent.js",
             "StatisticsComponent.js",
@@ -115,6 +115,7 @@ function getEchartsReport(container, myChart) {
             "</script>",
 
             "<script type='text/javascript'>\n" +
+            "var USER = '" + user + "';\n" +
             "var DATASET = {title: null, columns: null, data: null, configs: null, sql: null};\n" +
             "var REPORT = null;\n" +
             "var __CONFIGS__ = {themes: '" + defaultThemes + "', colors: ['#FF7F50'], FULLSCREEN: {element: null}};\n" +
@@ -693,7 +694,10 @@ function getEchartsReport(container, myChart) {
             "xml.innerHTML = '&#8675';\n" +
             "xml.title = '导出XML';\n" +
             "xml.onclick = function(){\n" +
-            "getXML(DATASET.title, DATASET.columns, DATASET.data);\n" +
+            "if (typeof getXmlFile === 'function')\n" +
+            "getXmlFile(DATASET.title[0], [DATASET], USER);\n" +
+            "else\n" +
+            "getXMLFile(DATASET.title, DATASET.columns, DATASET.data);\n" +
             "}\n" +
             "div.appendChild(xml);\n" +
             "if (index>0){\n" +
@@ -963,7 +967,7 @@ function getEchartsReport(container, myChart) {
             "</script>",
 
             "<script type='text/javascript'>\n" +
-            "function getXML(title, columns, DATASET){\n" +
+            "function getXMLFile(title, columns, DATASET){\n" +
             "try{\n" +
             "let xml = '<?xml version=\"1.0\"?>" +
             "<?mso-application progid=\"Excel.Sheet\"?>" +
@@ -973,7 +977,7 @@ function getEchartsReport(container, myChart) {
             " xmlns:ss=\"urn:schemas-microsoft-com:office:spreadsheet\"" +
             " xmlns:html=\"http://www.w3.org/TR/REC-html40\">" +
             "<DocumentProperties xmlns=\"urn:schemas-microsoft-com:office:office\">" +
-            "<Author>杨凯</Author>" +
+            "<Author>' + USER + '</Author>" +
             "<LastAuthor></LastAuthor>" +
             "<Created>' + new Date() + '</Created>" +
             "<Version>1.0.0</Version>" +
@@ -1134,7 +1138,7 @@ function getEchartsReport(container, myChart) {
         ".ui-tooltip .message {padding: 10px;};\n" +
         "hr {height:1px;border-width:0;color:gray;background-color: brown;width: 100%;position: static;}\n" +
         "</style>\n" +
-        getScript(jsPath, __ECHARTS__.configs.version.value, $("UI").src.split("/")[$("UI").src.split("/").length - 1], __DATASET__.configs.reportThemes.value) +
+        getScript(jsPath, __ECHARTS__.configs.version.value, $("UI").src.split("/")[$("UI").src.split("/").length - 1], __DATASET__.configs.reportThemes.value, (typeof __LOGS__.user.name !== "undefined" ? __LOGS__.user.name : "")) +
         "</head>\n" +
         "<body onload='init()'>\n" +
         "<div id='_TITLE'>\n" +
