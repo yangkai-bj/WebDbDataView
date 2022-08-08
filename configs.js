@@ -13,8 +13,8 @@ var __SYS_LOGO_LINK__ = {
 const __VERSION__ = {
     name: "Web DataView for SQLite Database of browser",
     main: "WebDBDataView.js",
-    version: "3.4.0",
-    date: "2022/07/27",
+    version: "3.4.1",
+    date: "2022/08/08",
     comment: [
         "-- 2021/03/08",
         "优化算法和压缩代码.",
@@ -101,6 +101,8 @@ const __VERSION__ = {
         "ECharts 5.3.3.",
         "-- 2022/06/22",
         "优化固定报表.",
+        "-- 2022/08/01",
+        "规范颜色转换函数.",
     ],
     author: __SYS_LOGO_LINK__.author.decode(),
     url: __SYS_LOGO_LINK__.link.getee.decode(),

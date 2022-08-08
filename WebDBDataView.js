@@ -3297,6 +3297,32 @@ function initMenus() {
         };
         UI.tooltip(tofull, "进入全屏编辑");
 
+        let toDisplay = document.createElement("div");
+        sqltools.appendChild(toDisplay);
+        toDisplay.className = "charButton";
+        toDisplay.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(($("detail").style.display == "none"?"display":"hidden"), "white", "21px", "21px");
+        toDisplay.style.cssFloat = "right";
+        toDisplay.id = "display-log";
+        toDisplay.onclick = function () {
+            if ($("detail").style.display == "none") {
+                $("detail").style.display = "block";
+                setUserConfig("displayLogs", "block");
+                this.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("hidden", "white", "21px", "21px");
+                UI.tooltip(toDisplay, "隐藏日志模块");
+            } else {
+                $("detail").style.display = "none";
+                setUserConfig("displayLogs", "none");
+                this.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("display", "white", "21px", "21px");
+                UI.tooltip(this, "显示日志模块");
+            }
+            resize();
+        };
+        if ($("detail").style.display == "none") {
+            UI.tooltip(toDisplay, "显示日志模块");
+        } else {
+            UI.tooltip(toDisplay, "显示日志模块");
+        }
+
         let editerSetting = document.createElement("div");
         sqltools.appendChild(editerSetting);
         editerSetting.className = "charButton";
@@ -3321,29 +3347,6 @@ function initMenus() {
             };
             requestFullScreen($("detail"), style);
         };
-
-        let toDisplay = document.createElement("div");
-        toDisplay.className = "charButton";
-        toDisplay.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("display", "white", "20px", "20px");
-        toDisplay.id = "display-log";
-        toDisplay.onclick = function () {
-            if ($("detail").style.display != "none") {
-                $("detail").style.display = "none";
-                setUserConfig("displayLogs", "none");
-                resize();
-                $("page").onmousemove = function () {
-                    let active = 3;
-                    if (event.x > getAbsolutePosition($("page")).width - active) {
-                        $("detail").style.display = "block";
-                        setUserConfig("displayLogs", "block");
-                        $("page").onmousemove = null;
-                    }
-                    resize();
-                };
-            }
-        };
-        detailtools.appendChild(toDisplay);
-        UI.tooltip(toDisplay, "隐藏日志模块");
 
         let clean = document.createElement("div");
         clean.className = "charButton";

@@ -1,8 +1,47 @@
+function arraysOrderBy(data, order) {
+    if (order == "asc") {
+        return data.sort(function (a, b) {
+            return a - b;
+        });
+    } else if (order == "desc") {
+        return data.sort(function (a, b) {
+            return b - a;
+        });
+    } else
+        return data;
+}
+
+function itemsOrderBy(data, order) {
+    if (order == "asc") {
+        return data.sort(function (a, b) {
+            return a.value - b.value;
+        });
+    } else if (order == "desc") {
+        return data.sort(function (a, b) {
+            return b.value - a.value;
+        });
+    } else
+        return data;
+}
+
+function valuesOrderBy(data, order) {
+    if (order == "asc") {
+        return data.sort(function (a, b) {
+            return a[1] - b[1];
+        });
+    } else if (order == "desc") {
+        return data.sort(function (a, b) {
+            return b[1] - a[1];
+        });
+    } else
+        return data;
+}
 
 function getSource(dataset) {
     let source = {
         dimensions: [],
         source: [],
+
         getValues: function (key) {
             let data = [];
             if (typeof key !== "undefined") {
@@ -22,9 +61,9 @@ function getSource(dataset) {
                     data.push([row[this.dimensions[0]], values]);
                 }
             }
-            return data;
+            return (typeof order === "undefined" ? data : valuesOrderBy(data, order));
         },
-        getItems: function (key) {
+        getItems: function (key, order) {
             let data = [];
             if (typeof key !== "undefined") {
                 //格式:[{name:value,value:value},{name:value,value:value}...]
@@ -43,7 +82,7 @@ function getSource(dataset) {
                     data.push({name: row[this.dimensions[0]], value: values});
                 }
             }
-            return data;
+            return (typeof order === "undefined" ? data : itemsOrderBy(data, order));
         },
         getArrays: function (key) {
             let data = [];
@@ -64,7 +103,7 @@ function getSource(dataset) {
                     data.push(row[key]);
                 }
             }
-            return data;
+            return (typeof order === "undefined" ? data : arraysOrderBy(data, order));
         },
         getPoints: function (key, columnIndex) {
             let data = [];
@@ -96,7 +135,7 @@ function getSource(dataset) {
         getMinMaxValue: function (key, type) {
             let min = +Infinity;
             let max = -Infinity;
-            if (typeof key === "undefined") {
+            if (typeof key === "undefined" || key === null) {
                 for (let i = 0; i < this.source.length; i++) {
                     let row = this.source[i];
                     for (let c = 1; c < this.dimensions.length; c++) {
@@ -152,9 +191,41 @@ function getSource(dataset) {
     return source;
 }
 
-function percentage(percent) {
-    return Number(percent.split("%")[0]);
+function percentValue(percent) {
+    try {
+        return Number(percent.split("%")[0]);
+    }catch (e) {
+        console.log({percent: percent, error: e});
+    }
 }
+
+function getRowCell(groupWidth, param, colCount) {
+        let tmp = [];
+        let left = 0;
+        for (let i = 0; i < colCount; i++) {
+            tmp.push({left: left, width: groupWidth / colCount});
+            left += (groupWidth / colCount);
+        }
+        if (param !== "auto") {
+            param = param.split(",").reduce(function (array, item) {
+                array.push(percentValue(item));
+                return array;
+            }, []);
+            left = 0;
+            for (let i = 0; i < colCount; i++) {
+                if (typeof param[i] !== "undefined") {
+                    let width = groupWidth * param[i] /100;
+                    tmp[i] = {left: left, width: width};
+                    left += width;
+                } else {
+                    let width = groupWidth / colCount;
+                    tmp[i] = {left: left, width: width};
+                    left += width;
+                }
+            }
+        }
+        return tmp;
+    }
 
 function getLinearColor(x,y,x2,y2,colors) {
     // 线性渐变，前四个参数分别是 x0, y0, x2, y2, 范围从 0 - 1，相当于在图形包围盒中的百分比，如果 globalCoord 为 `true`，则该四个值是绝对的像素位置
@@ -405,7 +476,7 @@ var __ECHARTS__ = {
             contrainer: container,
         });
     },
-    clearHistory: function() {
+    clearHistory: function () {
         this.history = {};
         this.sets.data = [];
     },
@@ -413,7 +484,7 @@ var __ECHARTS__ = {
         data: [],
         add: function (id) {
             let ex = false;
-            for (let i = 0; i <this.data.length; i++) {
+            for (let i = 0; i < this.data.length; i++) {
                 if (this.data[i] == id) {
                     ex = true;
                     break;
@@ -522,17 +593,17 @@ var __ECHARTS__ = {
                 new Option("散点图", "Scatter"),
                 new Option("饼图", "Pie"),
                 new Option("漏斗图", "Funnel"),
+                new Option("常用组合图", "MultiGraph"),
                 new Option("基础动态图", "BarRacing"),
                 new Option("基础滚动图", "Scrolling"),
-                new Option("基础组合图", "MultiGraph"),
+                new Option("日历图", "Calendar"),
+                new Option("词云图", "WordCloud"),
+                new Option("水球图", "Liqiud"),
                 new Option("仪表盘", "Gauge"),
                 new Option("极坐标", "Polar"),
                 new Option("雷达图", "Radar"),
-                new Option("词云图", "WordCloud"),
-                new Option("水球图", "Liqiud"),
                 new Option("全国地图", "GeoOfChina"),
                 new Option("本地地图", "GeoOfLocal"),
-                new Option("日历图", "Calendar"),
                 new Option("单轴散点图", "SingeAxis"),
                 new Option("旭日图", "Sunburst"),
                 new Option("矩形树图", "Treemap"),
@@ -588,18 +659,34 @@ var __ECHARTS__ = {
             type: "boolean"
         },
 
-        hr_grid: {name: "整体布局", value: "", type: "hr"},
+        hr_whole_grid: {name: "整体布局", value: "", type: "hr"},
         gradientType: {
             name: "背景模式",
             value: "transparent",
             options: [new Option("透明", "transparent"), new Option("单色", "single"), new Option("线性", "line"), new Option("径向", "radial")],
             type: "select"
         },
-        backgroundColor: {name: "背景颜色", value: '["transparent"]', type: "input"},
+        backgroundColor: {
+            name: "背景颜色",
+            value: '["transparent"]',
+            type: "input",
+            title: "背景模式为「单色」「线性」「径向」有效"
+        },
         gradientReverse: {
             name: "渐变反转",
             value: "false",
+            type: "boolean",
+            title: "背景模式为「单色」「线性」「径向」有效"
+        },
+        gridsShow: {
+            name: "显示网格",
+            value: "false",
             type: "boolean"
+        },
+        gridsBackgroundColor: {
+            name: "网格颜色",
+            value: "transparent",
+            type: "color"
         },
         gridTop: {name: "上边距(%)", value: "10%", type: "range", attribute: {min: 0, max: 30, step: 1, unit: "%"}},
         gridBottom: {name: "下边距(%)", value: "10%", type: "range", attribute: {min: 0, max: 30, step: 1, unit: "%"}},
@@ -698,7 +785,7 @@ var __ECHARTS__ = {
             type: "boolean"
         },
         toolboxFeatureMultiGraph: {
-            name: "切换至基础组合图",
+            name: "切换至常用组合图",
             value: "true",
             type: "boolean"
         },
@@ -859,7 +946,12 @@ var __ECHARTS__ = {
 
         hr_clock: {name: "时钟", value: "", type: "hr"},
         clockRadius: {name: "表盘半径", value: "75%", type: "range", attribute: {min: 1, max: 100, step: 1, unit: "%"}},
-        clockCenter: {name: "表盘位置", value: "50%,50%", type: "ranges",attribute: {min: 1, max: 100, step: 1, unit: "%"}},
+        clockCenter: {
+            name: "表盘位置",
+            value: "50%,50%",
+            type: "ranges",
+            attribute: {min: 1, max: 100, step: 1, unit: "%"}
+        },
         clockFontSize: {
             name: "字号",
             value: "16",
@@ -877,6 +969,17 @@ var __ECHARTS__ = {
             value: "series",
             options: [new Option("序列", "series"), new Option("数据", "data")],
             type: "select"
+        },
+        barAutoOrder: {
+            name: "自动排序",
+            value: "none",
+            options: [
+                new Option("不排序", "none"),
+                new Option("升序", "asc"),
+                new Option("降序", "desc")
+            ],
+            type: "select",
+            title: "「单一序列」有效"
         },
         barLabelDisplay: {
             name: "显示标签",
@@ -899,12 +1002,64 @@ var __ECHARTS__ = {
             type: "select"
         },
         barLabelRotate: {name: "标签旋转度数", value: 0, type: "number", attribute: {min: -90, max: 90, step: 1}},
-        barStackTimes: {name: "堆叠分组", value: 1, type: "number", attribute: {min: 1, max: 4, step: 1}},
+        barStackTimes: {
+            name: "堆叠分组",
+            value: 1,
+            type: "number",
+            attribute: {min: 1, max: 4, step: 1},
+            title: "「多序列」有效"
+        },
 
         barRegLineDisplay: {
             name: "显示回归曲线",
             value: "false",
             type: "boolean"
+        },
+
+        hr_tranbar: {name: "条形图", value: "", type: "hr"},
+        tranbarColorby: {
+            name: "配色方式",
+            value: "series",
+            options: [new Option("序列", "series"), new Option("数据", "data")],
+            type: "select"
+        },
+        tranbarAutoOrder: {
+            name: "自动排序",
+            value: "none",
+            options: [
+                new Option("不排序", "none"),
+                new Option("升序", "asc"),
+                new Option("降序", "desc")
+            ],
+            type: "select",
+            title: "「单一序列」有效"
+        },
+        tranbarLabelDisplay: {
+            name: "显示标签",
+            value: "false",
+            type: "boolean"
+        },
+        tranbarItemStyleBorderRadius: {name: "圆角半径", value: 0, type: "number", attribute: {min: 0, max: 30, step: 1}},
+        tranbarEmphasisLabelDisplay: {
+            name: "显示热点标签",
+            value: "true",
+            type: "boolean"
+        },
+        tranbarLabelTextColor: {name: "标签颜色", value: "auto", type: "color"},
+        tranbarLabelFontSize: {name: "标签字号", value: 12, type: "number", attribute: {min: 1, max: 30, step: 1}},
+        tranbarLabelPosition: {
+            name: "标签位置",
+            value: "right",
+            options: [new Option("顶部", "top"), new Option("左边", "left"), new Option("右边", "right"), new Option("底部", "bottom"), new Option("内部", "inside"),
+                new Option("内部顶部", "insideTop"), new Option("内部左边", "insideLeft"), new Option("内部右边", "insideRight"), new Option("内部底部", "insideBottom")],
+            type: "select"
+        },
+        tranbarLabelRotate: {name: "标签旋转度数", value: 0, type: "number", attribute: {min: -90, max: 90, step: 1}},
+        tranbarStackTimes: {
+            name: "堆叠分组",
+            value: 1, type: "number",
+            attribute: {min: 1, max: 4, step: 1},
+            title: "「多序列」有效"
         },
 
         hr_line: {name: "线形图", value: "", type: "hr"},
@@ -1012,6 +1167,17 @@ var __ECHARTS__ = {
             options: [new Option("序列", "series"), new Option("数据", "data")],
             type: "select"
         },
+        scatterAutoOrder: {
+            name: "自动排序",
+            value: "none",
+            options: [
+                new Option("不排序", "none"),
+                new Option("升序", "asc"),
+                new Option("降序", "desc")
+            ],
+            type: "select",
+            title: "「单一序列」有效"
+        },
         scatterLabelDisplay: {
             name: "显示标签",
             value: "false",
@@ -1025,7 +1191,12 @@ var __ECHARTS__ = {
             options: [new Option("静态散点", "scatter"), new Option("效应散点", "effectScatter")],
             type: "select"
         },
-        scatterSymbolSize: {name: "节点大小", value: "6,18", type: "ranges", attribute: {min: 1, max: 30, step: 1, unit:""}},
+        scatterSymbolSize: {
+            name: "节点大小",
+            value: "6,18",
+            type: "ranges",
+            attribute: {min: 1, max: 30, step: 1, unit: ""}
+        },
         scatterSymbolShape: {
             name: "节点形状",
             value: "circle",
@@ -1059,6 +1230,16 @@ var __ECHARTS__ = {
             ],
             type: "select"
         },
+        pieAutoOrder: {
+            name: "自动排序",
+            value: "none",
+            options: [
+                new Option("不排序", "none"),
+                new Option("升序", "asc"),
+                new Option("降序", "desc")
+            ],
+            type: "select"
+        },
         pieRoseType: {
             name: "玫瑰图样式",
             value: "radius",
@@ -1066,7 +1247,8 @@ var __ECHARTS__ = {
                 new Option("面积", "area"),
                 new Option("面积&占比", "radius")
             ],
-            type: "select"
+            type: "select",
+            title: "类型为「玫瑰图」有效"
         },
         pieInRadius: {name: "内半径(%)", value: "35%", type: "range", attribute: {min: 1, max: 50, step: 1, unit: "%"}},
         pieOutRadius: {name: "外半径(%)", value: "70%", type: "range", attribute: {min: 30, max: 100, step: 1, unit: "%"}},
@@ -1110,7 +1292,7 @@ var __ECHARTS__ = {
             value: "false",
             type: "boolean"
         },
-        pieGroupWith: {name: "序列分组", value: 2, type: "number", attribute: {min: 1, max: 4, step: 1}},
+        pieGroupWith: {name: "序列分组", value: 2, type: "number", attribute: {min: 1, max: 4, step: 1},title: "「多序列」有效"},
         pieAnimationType: {
             name: "初始动画",
             value: "expansion",
@@ -1157,31 +1339,100 @@ var __ECHARTS__ = {
             options: [new Option("居中", "inside"), new Option("居左", "left"), new Option("居右", "right")],
             type: "select"
         },
-        funnelGroupWith: {name: "序列分组", value: 2, type: "number", attribute: {min: 1, max: 4, step: 1}},
+        funnelGroupWith: {name: "序列分组", value: 2, type: "number", attribute: {min: 1, max: 4, step: 1}, title: "「多序列」有效"},
 
-        hr_dynamicBar: {name: "基础动态图", value: "", type: "hr"},
-        barType: {
-            name: "方向",
-            value: "vertical",
-            options: [new Option("纵向", "vertical"), new Option("横向", "horizontal")],
+        hr_wordCloud: {name: "词云图", value: "", type: "hr"},
+        wordCloudGrids: {
+            name: "布局方式", value: "auto",
+            type: "grids",
+            title: "「多序列」有效"
+        },
+        wordCloudShape: {
+            name: "形状",
+            value: "circle",
+            options: [new Option("圆形", "circle"), new Option("心形", "cardioid"), new Option("菱形", "diamond"), new Option("三角形", "triangle"), new Option("右向三角形", "triangle-forward"), new Option("五边形", "pentagon"), new Option("星形", "star")],
             type: "select"
         },
-        barTimeout: {name: "动态延时(毫秒)", value: 3000, type: "number", attribute: {min: 1000, max: 5000, step: 1000}},
-        barRealtimeSort: {
+        wordCloudSizeRange: {
+            name: "字号区间",
+            value: "16,60",
+            type: "ranges",
+            attribute: {min: 1, max: 100, step: 1, unit: ""}
+        },
+        wordCloudRotationRange: {
+            name: "角度区间",
+            value: "-45,45",
+            type: "ranges",
+            attribute: {min: -360, max: 360, step: 1, unit: ""}
+        },
+        wordCloudGroupWith: {
+            name: "序列分组",
+            value: 2,
+            type: "number",
+            attribute: {min: 1, max: 4, step: 1},
+            title: "「多序列」有效"
+        },
+
+        hr_multiGraph: {name: "常用组合图", value: "", type: "hr"},
+        multiGraphGrids: {
+            name: "布局方式",
+            value: "auto",
+            type: "grids"
+        },
+        multiGraphTypes: {name: "图形组合", value: "bar,line,pie,tranbar,scatter,calendar,funnel,area,wordCloud", type: "echarts"},
+        multiGraphGroup: {name: "序列分组", value: 2, type: "number", attribute: {min: 1, max: 4, step: 1}, title: "布局方式为「自动」有效"},
+
+        hr_barRacing: {name: "基础动态图", value: "", type: "hr"},
+        barRacingType: {
+            name: "类别",
+            value: "vertical",
+            options: [new Option("柱状图", "vertical"), new Option("条形图", "horizontal")],
+            type: "select"
+        },
+        barRacingColorby: {
+            name: "配色方式",
+            value: "series",
+            options: [new Option("序列", "series"), new Option("数据", "data")],
+            type: "select"
+        },
+        barRacingTimeout: {name: "动态延时(毫秒)", value: 3000, type: "number", attribute: {min: 1000, max: 5000, step: 1000}},
+        barRacingRealtimeSort: {
             name: "动态排序",
             value: "true",
             type: "boolean"
         },
-        barValueAnimation: {
+        barRacingValueAnimation: {
             name: "动态标签",
             value: "true",
             type: "boolean"
         },
-        barMax: {name: "动态显示", value: 10, type: "number", attribute: {min: 1, max: 100, step: 1}},
-        barLoop: {
+        barRacingMax: {
+            name: "最大项数",
+            value: 10,
+            type: "number",
+            attribute: {min: 1, max: 100, step: 1}
+            },
+        barRacingLoop: {
             name: "循环",
             value: "false",
             type: "boolean"
+        },
+        barRacingInverse: {
+            name: "反向",
+            value: "false",
+            type: "boolean"
+        },
+        barRacingYAxisLable: {
+            name: "数轴标签",
+            value: "false",
+            type: "boolean"
+        },
+
+        barRacingGraphPosition: {
+            name: "水印位置",
+            value: "center",
+            options: [new Option("中间", "center"), new Option("左上角", "leftTop"), new Option("右上角", "rightTop"), new Option("右下角", "rightBottom")],
+            type: "select"
         },
 
         hr_scrolling: {name: "基础滚动图", value: "", type: "hr"},
@@ -1191,20 +1442,19 @@ var __ECHARTS__ = {
             options: [new Option("柱状图", "bar"), new Option("线型图", "line"), new Option("面积图", "area")],
             type: "select"
         },
-        scrollingTimeout: {name: "动态延时(毫秒)", value: 500, type: "number", attribute: {min: 100, max: 1000, step: 100}},
+        scrollingTimeout: {name: "动态延时(毫秒)", value: 500, type: "number", attribute: {min: 100, max: 3000, step: 100}},
         scrollingMax: {name: "动态显示", value: 10, type: "number", attribute: {min: 1, max: 100, step: 1}},
         scrollingLoop: {
             name: "循环",
             value: "false",
             type: "boolean"
         },
-        hr_multiGraph: {name: "基础组合图", value: "", type: "hr"},
-        multiGraphGrids: {
-            name: "布局方式", value: "auto",
-            type: "grids"
+        scrollingGraphPosition: {
+            name: "水印位置",
+            value: "center",
+            options: [new Option("中间", "center"), new Option("左上角", "leftTop"), new Option("右上角", "rightTop"), new Option("右下角", "rightBottom")],
+            type: "select"
         },
-        multiGraphTypes: {name: "图形组合", value: "bar,line,pie,scatter,calendar,funnel,area", type: "echarts"},
-        multiGraphGroup: {name: "序列分组", value: 2, type: "number", attribute: {min: 1, max: 4, step: 1}},
 
         hr_gauge: {name: "仪表盘", value: "", type: "hr"},
         gaugeGrids: {
@@ -1225,7 +1475,7 @@ var __ECHARTS__ = {
         gaugeAxisLineWidth: {name: "圆轴宽度", value: 10, type: "number", attribute: {min: 1, max: 30, step: 1}},
         gaugeStartAngle: {name: "起始角度", value: 225, type: "number", attribute: {min: 1, max: 360, step: 1}},
         gaugeEndAngle: {name: "结束角度", value: -45, type: "number", attribute: {min: -90, max: 90, step: 1}},
-        gaugeGroupWith: {name: "序列分组", value: 2, type: "number", attribute: {min: 1, max: 4, step: 1}},
+        gaugeGroupWith: {name: "序列分组", value: 2, type: "number", attribute: {min: 1, max: 4, step: 1},title: "「多序列」有效"},
 
         hr_polar: {name: "极坐标", value: "", type: "hr"},
         polarColorby: {
@@ -1241,7 +1491,11 @@ var __ECHARTS__ = {
             type: "select"
         },
         polarStackTimes: {
-            name: "堆叠分组", value: 1, type: "number", attribute: {min: 1, max: 4, step: 1}
+            name: "堆叠分组",
+            value: 1,
+            type: "number",
+            attribute: {min: 1, max: 4, step: 1},
+            title: "「多序列」有效"
         },
         polarRoundCap: {
             name: "圆角",
@@ -1286,21 +1540,6 @@ var __ECHARTS__ = {
             type: "boolean"
         },
 
-        hr_wordCloud: {name: "词云图", value: "", type: "hr"},
-        wordCloudGrids: {
-            name: "布局方式", value: "auto",
-            type: "grids"
-        },
-        wordCloudShape: {
-            name: "形状",
-            value: "circle",
-            options: [new Option("圆形", "circle"), new Option("心形", "cardioid"), new Option("菱形", "diamond"), new Option("三角形", "triangle"), new Option("右向三角形", "triangle-forward"), new Option("五边形", "pentagon"), new Option("星形", "star")],
-            type: "select"
-        },
-        wordCloudSizeRange: {name: "字号区间", value: "16,60", type: "ranges",attribute: {min: 1, max: 100, step: 1, unit: ""}},
-        wordCloudRotationRange: {name: "角度区间", value: "-45,45", type: "ranges",attribute: {min: -360, max: 360, step: 1, unit: ""}},
-        wordCloudGroupWith: {name: "序列分组", value: 2, type: "number", attribute: {min: 1, max: 4, step: 1}},
-
         hr_liqiud: {name: "水球图", value: "", type: "hr"},
         liqiudGrids: {
             name: "布局方式", value: "auto",
@@ -1336,7 +1575,7 @@ var __ECHARTS__ = {
             type: "select"
         },
         liqiudOpacity: {name: "透明度", value: 0.6, type: "number", attribute: {min: 0, max: 1, step: 0.1}},
-        liqiudGroupWith: {name: "序列分组", value: 2, type: "number", attribute: {min: 1, max: 4, step: 1}},
+        liqiudGroupWith: {name: "序列分组", value: 2, type: "number", attribute: {min: 1, max: 4, step: 1}, title: "「多序列」有效"},
 
         hr_sunburst: {name: "旭日图", value: "", type: "hr"},
         sunburstGrids: {
@@ -1389,15 +1628,20 @@ var __ECHARTS__ = {
         treemapLabelPosition: {
             name: "位置",
             value: '5%,5%',
-            type: "ranges",attribute: {min: 1, max: 100, step: 1, unit: "%"}
+            type: "ranges", attribute: {min: 1, max: 100, step: 1, unit: "%"}
         },
         treemapItemStyleBorderRadius: {
             name: "圆角半径", value: 0, type: "number", attribute: {min: 0, max: 30, step: 1}
         },
 
         hr_calendar: {name: "日历图", value: "", type: "hr"},
+        calendarGrids: {
+            name: "布局方式", value: "auto",
+            type: "grids"
+        },
+        calendarGroup: {name: "序列分组", value: 2, type: "number", attribute: {min: 1, max: 4, step: 1}, title: "布局方式为「自动」有效"},
         calendarOrient: {
-            name: "布局方向",
+            name: "日历方向",
             value: "vertical",
             options: [new Option("横向", "horizontal"), new Option("纵向", "vertical")],
             type: "select"
@@ -1411,13 +1655,13 @@ var __ECHARTS__ = {
         calendarLabelColor: {
             value: "auto", name: "标签颜色", type: "color"
         },
-        calendarSplitLineWidth:{
+        calendarSplitLineWidth: {
             name: "分割线宽度", value: 1, type: "number", attribute: {min: 0, max: 5, step: 0.1}
         },
         calendarSplitLineColor: {
             value: "auto", name: "分割线颜色", type: "color"
         },
-        calendarBorderWidth:{
+        calendarBorderWidth: {
             name: "边框宽度", value: 0.5, type: "number", attribute: {min: 0, max: 2.5, step: 0.1}
         },
         calendarBorderColor: {
@@ -1437,7 +1681,12 @@ var __ECHARTS__ = {
             options: [new Option("静态散点", "scatter"), new Option("效应散点", "effectScatter")],
             type: "select"
         },
-        boxplotScatterSymbolSize: {name: "节点大小", value: "6,18", type: "ranges",attribute: {min: 1, max: 50, step: 1, unit: ""}},
+        boxplotScatterSymbolSize: {
+            name: "节点大小",
+            value: "6,18",
+            type: "ranges",
+            attribute: {min: 1, max: 50, step: 1, unit: ""}
+        },
         boxplotScatterSymbolShape: {
             name: "节点形状",
             value: "circle",
@@ -1478,7 +1727,12 @@ var __ECHARTS__ = {
         },
         label3DTextColor: {name: "标签颜色", value: "auto", type: "color"},
         label3DFontSize: {name: "标签字号", value: 12, type: "number", attribute: {min: 1, max: 30, step: 1}},
-        scatterSymbolSizeFor3D: {name: "节点大小", value: "6,18", type: "ranges",attribute: {min: 1, max: 50, step: 1, unit: "%"}},
+        scatterSymbolSizeFor3D: {
+            name: "节点大小",
+            value: "6,18",
+            type: "ranges",
+            attribute: {min: 1, max: 50, step: 1, unit: "%"}
+        },
         scatterSymbolShapeFor3D: {
             name: "节点形状",
             value: "circle",
@@ -1520,7 +1774,12 @@ var __ECHARTS__ = {
             type: "select"
         },
         geoLineSymbolSize: {name: "符号大小", value: 10, type: "number", attribute: {min: 1, max: 30, step: 1}},
-        geoScatterSymbolSize: {name: "节点大小", value: "6,18", type: "ranges",attribute: {min: 1, max: 50, step: 1, unit: ""}},
+        geoScatterSymbolSize: {
+            name: "节点大小",
+            value: "6,18",
+            type: "ranges",
+            attribute: {min: 1, max: 50, step: 1, unit: ""}
+        },
         geoScatterType: {
             name: "节点类型",
             value: "scatter",
@@ -1610,7 +1869,8 @@ var __ECHARTS__ = {
             type: "range",
             attribute: {min: 0, max: 30, step: 1, unit: "%"}
         },
-        scrollingScreenWidth: {name: "宽度", value: 800, type: "number", attribute: {min: 1, max: 1024, step: 1}},
+        scrollingScreenWidth: {name: "宽度", value: "100%", type: "range", attribute: {min: 1, max: 100, step: 1, unit: "%"}},
+        scrollingScreenColumnsWidth: {name: "列宽", value: "auto", type: "input", title: "可输入'auto'或百分数数组'1%,2%,3,%'"},
         scrollingScreenBackColor: {value: "transparent", name: "背景颜色", type: "color"},
         scrollingScreenBorderColor: {value: "transparent", name: "边框颜色", type: "color"},
         scrollingScreenColumnFontFillColor: {value: "auto", name: "表头颜色", type: "color"},
@@ -1630,7 +1890,8 @@ var __ECHARTS__ = {
             type: "range",
             attribute: {min: 0, max: 30, step: 1, unit: "%"}
         },
-        walkingLanternWidth: {name: "宽度", value: 800, type: "number", attribute: {min: 1, max: 2048, step: 1}},
+        walkingLanternWidth: {name: "宽度", value: "100%", type: "range", attribute: {min: 1, max: 100, step: 1, unit: "%"}},
+        walkingLanternColumnsWidth: {name: "列宽", value: "auto", type: "input", title: "可输入'auto'或百分数数组'1%,2%,3,%'"},
         walkingLanternBackColor: {value: "transparent", name: "背景颜色", type: "color"},
         walkingLanternBorderColor: {value: "transparent", name: "边框颜色", type: "color"},
         walkingLanternColumnFontFillColor: {value: "auto", name: "表头颜色", type: "color"},
@@ -1652,7 +1913,8 @@ var __ECHARTS__ = {
             type: "range",
             attribute: {min: 0, max: 30, step: 1, unit: "%"}
         },
-        windowShadesWidth: {name: "宽度", value: 800, type: "number", attribute: {min: 1, max: 2048, step: 1}},
+        windowShadesWidth: {name: "宽度", value: "100%", type: "range", attribute: {min: 1, max: 100, step: 1, unit: "%"}},
+        windowShadesColumnsWidth: {name: "列宽", value: "auto", type: "input", title: "可输入'auto'或百分数数组'1%,2%,3,%'"},
         windowShadesBackColor: {value: "transparent", name: "背景颜色", type: "color"},
         windowShadesBorderColor: {value: "transparent", name: "边框颜色", type: "color"},
         windowShadesColumnFontFillColor: {value: "auto", name: "表头颜色", type: "color"},
@@ -1692,7 +1954,12 @@ var __ECHARTS__ = {
             options: [new Option("柱状图", "bar"), new Option("线型图", "line"), new Option("面积图", "areaStyle"), new Option("饼图", "pie")],
             type: "select"
         },
-        seriesLoopPlayInterval: {name: "间隔(毫秒)", value: 3000, type: "number", attribute: {min: 0, max: 5000, step: 100}},
+        seriesLoopPlayInterval: {
+            name: "间隔(毫秒)",
+            value: 3000,
+            type: "number",
+            attribute: {min: 0, max: 5000, step: 100}
+        },
 
         hr_parallelAxis: {name: "平行坐标", value: "", type: "hr"},
         parallelAxisLineWidth: {name: "线宽", value: 2, type: "number", attribute: {min: 1, max: 30, step: 1}},
@@ -1731,6 +1998,11 @@ var __ECHARTS__ = {
         },
 
         hr_singeAxis: {name: "单轴散点图", value: "", type: "hr"},
+        singeAxisGrids: {
+            name: "布局方式", value: "auto",
+            type: "grids"
+        },
+        singeAxisGroup: {name: "序列分组", value: 2, type: "number", attribute: {min: 1, max: 4, step: 1}, title: "布局方式为「自动」有效"},
         singeAxisType: {
             name: "类别",
             value: "scatter",
@@ -1743,7 +2015,7 @@ var __ECHARTS__ = {
         mathFunctionXRange: {
             name: "X区间",
             value: "-100,100",
-            type: "ranges",attribute: {min: -100, max: 100, step: 1, unit: ""}
+            type: "ranges", attribute: {min: -100, max: 100, step: 1, unit: ""}
         },
         mathFunctionXGrainSize: {
             name: "X粒度",
@@ -1753,13 +2025,24 @@ var __ECHARTS__ = {
         mathFunctionYRange: {
             name: "Y区间",
             value: "-100,100",
-            type: "ranges",attribute: {min: -100, max: 100, step: 1, unit: ""}
+            type: "ranges", attribute: {min: -100, max: 100, step: 1, unit: ""}
         },
 
         hr_regression: {name: "回归参数", value: "", type: "hr"},
         regressionType: {name: "回归类型", value: "直线", options: ["直线", "指数", "对数", "多项式"], type: "select"},
-        regressionPolynomialOrder: {name: "多项式阶数", value: 2, type: "number", attribute: {min: 1, max: 100, step: 1}},
-        regressionForwardPeroids: {name: "前推周期", value: 0, type: "number", attribute: {min: 1, max: 100, step: 1}},
+        regressionPolynomialOrder: {
+            name: "多项式阶数",
+            value: 2,
+            type: "number",
+            attribute: {min: 1, max: 100, step: 1},
+            title: "回归类型为「多项式」有效"
+        },
+        regressionForwardPeroids: {
+            name: "前推周期",
+            value: 0,
+            type: "number",
+            attribute: {min: 1, max: 100, step: 1}
+        },
         regressionExpressionDisplay: {
             name: "显示表达式",
             value: "false",
@@ -1800,22 +2083,22 @@ var __ECHARTS__ = {
             value: "false",
             type: "boolean"
         },
-        visualMap_type: {
-            name: "类型",
-            value: "continuous",
-            options: [new Option("连续", "continuous"), new Option("分段", "piecewise")],
-            type: "select"
-        },
-        visualMap_left: {name: "左边距(%)", value: "1%", type: "range", attribute: {min: 0, max: 30, step: 1, unit: "%"}},
-        visualMap_top: {name: "上边距(%)", value: "10%", type: "range", attribute: {min: 0, max: 30, step: 1, unit: "%"}},
-        visualMap_orient: {
+        visualMapOrient: {
             name: "布局方向",
             value: "horizontal",
             options: [new Option("横向", "horizontal"), new Option("纵向", "vertical")],
             type: "select"
         },
-        visualMap_textColor: {name: "标签颜色", value: "auto", type: "color"},
-        visualMap_piecewise_splitNumber: {name: "分段", value: 5, type: "number", attribute: {min: 1, max: 10, step: 1}},
+        visualMapType: {
+            name: "类型",
+            value: "continuous",
+            options: [new Option("连续", "continuous"), new Option("自动分段", "piecewise-auto"), new Option("区间分段", "piecewise-step")],
+            type: "select"
+        },
+        visualMapSplitNumber: {name: "自动分段", value: 5, type: "number", attribute: {min: 1, max: 10, step: 1}, title: "类型为自动分段时有效"},
+        visualMapPiecesStep: {name: "区间基数", value: "100", type: "input", title: "类型为区间分段时有效,根据实际数据半数递减"},
+        visualMapPrecision: {name: "数据精度", value: 0, type: "number", attribute: {min: 0, max: 6, step: 1}, title: "类型为区间分段时有效"},
+        visualMapTextColor: {name: "标签颜色", value: "auto", type: "color"},
 
         hr_animation: {name: "动画设置", value: "", type: "hr"},
         animation: {
@@ -1915,17 +2198,17 @@ var __ECHARTS__ = {
         },
     },
 
-    getConfigItems: function(){
+    getConfigItems: function () {
         let configs = {};
-        for(let key in this.configs){
-            configs[key]  = this.configs[key].value;
+        for (let key in this.configs) {
+            configs[key] = this.configs[key].value;
         }
         return configs;
     },
 
-    getConfigs: function(){
+    getConfigs: function () {
         let configs = {};
-        for(let key in this.configs) {
+        for (let key in this.configs) {
             let config = this.configs[key];
             configs[key] = {
                 name: config.name,
@@ -2011,10 +2294,14 @@ var __ECHARTS__ = {
         for (let name in this.configs) {
             item = document.createElement("div");
             item.className = "ui-container-item";
+            if (typeof this.configs[name].title != "undefined")
+                item.title = this.configs[name].name + ":" + this.configs[name].title;
+            else
+                item.title = this.configs[name].name;
             itemcontainer.appendChild(item);
             span = document.createElement("span");
             span.className = "ui-container-item-name";
-            span.innerHTML = span.title = this.configs[name].name + ":";
+            span.innerHTML = this.configs[name].name + ":";
             item.appendChild(span);
             if (this.configs[name].type == "input") {
                 let input = document.createElement("input");
@@ -2026,10 +2313,6 @@ var __ECHARTS__ = {
                 input.onchange = function () {
                     __ECHARTS__.configs[this.id].value = this.value;
                 };
-                if (typeof this.configs[name].title != "undefined")
-                    input.title = this.configs[name].title;
-                else
-                    input.title = this.configs[name].name;
                 item.appendChild(input);
             } else if (this.configs[name].type == "select") {
                 let input = document.createElement("select");
@@ -2047,10 +2330,6 @@ var __ECHARTS__ = {
                 input.onchange = function () {
                     __ECHARTS__.configs[this.id].value = this.value;
                 };
-                if (typeof this.configs[name].title != "undefined")
-                    input.title = this.configs[name].title;
-                else
-                    input.title = this.configs[name].name;
                 item.appendChild(input);
             } else if (this.configs[name].type == "color") {
                 let color = null;
@@ -2063,10 +2342,6 @@ var __ECHARTS__ = {
                 });
                 input.id = name;
                 input.className = "ui-container-item-color";
-                if (typeof this.configs[name].title != "undefined")
-                    input.title = this.configs[name].title;
-                else
-                    input.title = this.configs[name].name;
                 item.appendChild(input);
             } else if (this.configs[name].type == "boolean") {
                 let input = UI.booleanChoice(__ECHARTS__.configs[name].value.toBoolean(), function (value) {
@@ -2074,10 +2349,6 @@ var __ECHARTS__ = {
                 });
                 input.id = name;
                 input.className = "ui-container-item-boolean";
-                if (typeof this.configs[name].title != "undefined")
-                    input.title = this.configs[name].title;
-                else
-                    input.title = this.configs[name].name;
                 item.appendChild(input)
             } else if (this.configs[name].type == "grids") {
                 let input = UI.gridsChoice(name, __ECHARTS__.configs[name].value, function (value) {
@@ -2085,10 +2356,6 @@ var __ECHARTS__ = {
                 });
                 input.id = name;
                 input.className = "ui-container-item-grids";
-                if (typeof this.configs[name].title != "undefined")
-                    input.title = this.configs[name].title;
-                else
-                    input.title = this.configs[name].name;
                 item.appendChild(input)
             } else if (this.configs[name].type == "range") {
                 let input = document.createElement("input");
@@ -2100,7 +2367,10 @@ var __ECHARTS__ = {
                 input.step = __ECHARTS__.configs[name].attribute.step;
                 input.className = "ui-container-item-range";
                 input.title = this.configs[name].value;
-                input.value = Number(this.configs[name].value.replace(new RegExp(this.configs[name].attribute.unit, "g"), ""));
+                try {
+                    input.value = Number(this.configs[name].value.replace(new RegExp(this.configs[name].attribute.unit, "g"), ""));
+                }catch (e) {
+                }
                 input.onchange = function () {
                     __ECHARTS__.configs[this.id].value = this.title = (this.value + __ECHARTS__.configs[this.id].attribute.unit);
                 };
@@ -2116,10 +2386,6 @@ var __ECHARTS__ = {
                     });
                 input.id = name;
                 input.className = "ui-container-item-ranges";
-                if (typeof this.configs[name].title != "undefined")
-                    input.title = this.configs[name].title;
-                else
-                    input.title = this.configs[name].name;
                 item.appendChild(input);
             } else if (this.configs[name].type == "number") {
                 let input = document.createElement("input");
@@ -2145,12 +2411,7 @@ var __ECHARTS__ = {
                 });
                 input.id = name;
                 input.className = "ui-container-item-echarts-choice";
-                if (typeof this.configs[name].title != "undefined")
-                    input.title = this.configs[name].title;
-                else
-                    input.title = this.configs[name].name;
                 item.appendChild(input);
-
             } else if (this.configs[name].type == "hr") {
                 span.innerHTML = "[ " + this.configs[name].name + " ]";
                 span.style.color = "var(--main-title-color)";
@@ -3290,10 +3551,10 @@ function getGrids(configs, dimensions, cols, lines, layout) {
     if (typeof dimensions !== "undefined" && typeof cols !== "undefined" && typeof lines !== "undefined" && typeof layout !== "undefined") {
         let grids = [];
         if (layout === "auto") {
-            let leftBorder = percentage(configs.gridLeft.value);
-            let topBorder = percentage(configs.gridTop.value);
-            let rightBorder = percentage(configs.gridRight.value);
-            let bottomBorder = percentage(configs.gridBottom.value);
+            let leftBorder = percentValue(configs.gridLeft.value);
+            let topBorder = percentValue(configs.gridTop.value);
+            let rightBorder = percentValue(configs.gridRight.value);
+            let bottomBorder = percentValue(configs.gridBottom.value);
             let sep = 5;
             let width = (100 - (leftBorder + rightBorder) - sep * (cols - 1)) / cols;
             let height = (100 - (topBorder + bottomBorder) - sep * (lines - 1)) / lines;
@@ -3309,6 +3570,9 @@ function getGrids(configs, dimensions, cols, lines, layout) {
                     y: top + height / 2
                 };
                 let grid = {
+                    show: configs.gridsShow.value.toBoolean(),
+                    borderWidth: 0,
+                    backgroundColor: configs.gridsBackgroundColor.value,
                     left: left + "%",
                     top: top + "%",
                     right: right + "%",
@@ -3316,7 +3580,20 @@ function getGrids(configs, dimensions, cols, lines, layout) {
                     center: [center.x + "%", center.y + "%"],
                     width: width + "%",
                     height: height + "%",
-                    containLabel: true
+                    values: {
+                        top: top,
+                        left: left,
+                        right: right,
+                        bottom: bottom,
+                        center: [center.x, center.y],
+                        width: width,
+                        height: height,
+                    },
+                    shadowBlur: 12,
+                    shadowColor: 'rgba(0, 0, 0, 0.5)',
+                    shadowOffsetX: 2,
+                    shadowOffsetY: 2,
+                    containLabel: configs.gridContainLabel.value.toBoolean(),
                 };
                 grids.push(grid);
             }
@@ -3326,6 +3603,9 @@ function getGrids(configs, dimensions, cols, lines, layout) {
                 for (let i = 0; i < layout.length; i++) {
                     let grid = layout[i];
                     grid = {
+                        show: configs.gridsShow.value.toBoolean(),
+                        borderWidth: 0,
+                        backgroundColor: configs.gridsBackgroundColor.value,
                         left: grid[0] + "%",
                         top: grid[1] + "%",
                         right: (100 - grid[0] - grid[2]) + "%",
@@ -3333,7 +3613,20 @@ function getGrids(configs, dimensions, cols, lines, layout) {
                         center: [(grid[0] + grid[2] / 2) + "%", (grid[1] + grid[3] / 2) + "%"],
                         width: grid[2] + "%",
                         height: grid[3] + "%",
-                        containLabel: true
+                        values: {
+                            top: grid[1],
+                            left: grid[0],
+                            right: (100 - grid[0] - grid[2]),
+                            bottom: (100 - grid[1] - grid[3]),
+                            center: [(grid[0] + grid[2] / 2), (grid[1] + grid[3] / 2)],
+                            width: grid[2],
+                            height: grid[3],
+                        },
+                        shadowBlur: 12,
+                        shadowColor: 'rgba(0, 0, 0, 0.5)',
+                        shadowOffsetX: 2,
+                        shadowOffsetY: 2,
+                        containLabel: configs.gridContainLabel.value.toBoolean(),
                     };
                     grids.push(grid);
                 }
@@ -3348,12 +3641,27 @@ function getGrids(configs, dimensions, cols, lines, layout) {
         return grids;
     } else {
         return {
-            x: configs.gridLeft.value,
-            y: configs.gridTop.value,
-            x2: configs.gridRight.value,
-            y2: configs.gridBottom.value,
+            show: configs.gridsShow.value.toBoolean(),
+            borderWidth: 0,
+            backgroundColor: configs.gridsBackgroundColor.value,
+            left: configs.gridLeft.value,
+            top: configs.gridTop.value,
+            right: configs.gridRight.value,
+            bottom: configs.gridBottom.value,
+            values: {
+                top: percentValue(configs.gridTop.value),
+                left: percentValue(configs.gridLeft.value),
+                right: percentValue(configs.gridRight.value),
+                bottom: percentValue(configs.gridBottom.value),
+                width: 100 - percentValue(configs.gridLeft.value) - percentValue(configs.gridRight.value),
+                height: 100 - percentValue(configs.gridTop.value) - percentValue(configs.gridBottom.value),
+                center: [(percentValue(configs.gridLeft.value)*2 + 100 - percentValue(configs.gridLeft.value) - percentValue(configs.gridRight.value)) / 2, (percentValue(configs.gridTop.value)*2 + 100 - percentValue(configs.gridTop.value) - percentValue(configs.gridBottom.value)) / 2],
+            },
+            shadowBlur: 12,
+            shadowColor: 'rgba(0, 0, 0, 0.5)',
+            shadowOffsetX: 2,
+            shadowOffsetY: 2,
             containLabel: configs.gridContainLabel.value.toBoolean(),
-            backgroundColor: "transparent"
         }
     }
 }
@@ -3526,7 +3834,7 @@ function getBarOption(configs, container, myChart, dataset) {
             coordinateSystem: "cartesian2d",
             colorBy: configs.barColorby.value,
             stack: stack,
-            data: source.getItems(source.dimensions[c]),
+            data: source.dimensions.length - 1 == 1 ? source.getItems(source.dimensions[c], configs.barAutoOrder.value) : source.getItems(source.dimensions[c]),
             label: {
                 show: configs.barLabelDisplay.value.toBoolean(),
                 align: "center",
@@ -3565,9 +3873,18 @@ function getBarOption(configs, container, myChart, dataset) {
             smooth: configs.lineSmooth.value.toBoolean(),
         };
         setSeriesAnimation(serie, configs, c);
+        if (source.dimensions.length - 1 == 1) {
+            xAxis = serie.data.reduce(function (items, item) {
+                items.push(item.name);
+                return items;
+            }, []);
+        }
         series.push(serie);
         if (configs.barRegLineDisplay.value.toBoolean()) {
-            let regLine = getRegLine(configs, source.dimensions[c], source.getPoints(source.dimensions[c]));
+            let regLine = getRegLine(configs, source.dimensions[c], serie.data.reduce(function (items, item) {
+                items.push([items.length, item.value]);
+                return items;
+            }, []));
             series.push(regLine.serie);
             legend.push(regLine.name);
             if (xAxis.length < regLine.serie.data.length) {
@@ -3618,7 +3935,7 @@ function getToolboxFeatureBar(configs, container, myChart, dataset) {
 function getToolboxFeatureMultiGraph(configs, container, myChart, dataset) {
     return configs.toolboxFeatureMultiGraph.value.toBoolean() ? {
         show: configs.toolboxFeatureMultiGraph.value.toBoolean(),
-        title: '基础组合图',
+        title: '常用组合图',
         icon: __SYS_IMAGES_SVG__.getPath("echarts_multiGraph"),
         onclick: function () {
             myChart.setOption(getMultiGraphOption(configs, container, myChart, dataset), true);
@@ -3661,9 +3978,24 @@ function getMultiGraphOption(configs, container, myChart, dataset) {
         let yAxis = [];
         for (let i = 0; i < source.dimensions.length - 1 && i < grids.length; i++) {
             let type = types[i % types.length];
-            if (type == "pie" || type == "funnel" || type == "calendar") {
+            if (type == "pie" || type == "funnel" || type == "calendar" || type == "wordCloud") {
                 xAxis.push(null);
                 yAxis.push(null);
+            } else if (type == "tranbar") {
+                let xA = getXAxis(configs, "value", null);
+                xA.gridIndex = i;
+                xAxis.push(xA);
+                let yA = getYAxis(configs, "category", source.getItems(source.dimensions[0]), "bottom");
+                yA.axisPointer = {
+                    type: configs.axisPointerType.value,
+                };
+                yA.name = source.dimensions[i + 1];
+                yA.nameTextStyle = {
+                    color: configs.axisTextColor.value,
+                    fontSize: Number(configs.axisTextFontSize.value)
+                };
+                yA.gridIndex = i;
+                yAxis.push(yA);
             } else {
                 let xA = getXAxis(configs, "category", source.getItems(source.dimensions[0]));
                 xA.gridIndex = i;
@@ -3708,7 +4040,7 @@ function getMultiGraphOption(configs, container, myChart, dataset) {
                         name: source.dimensions[i + 1],
                         colorBy: configs.pieColorby.value,
                         type: type,
-                        data: source.getItems(source.dimensions[i + 1]),
+                        data: source.getItems(source.dimensions[i + 1], configs.pieAutoOrder.value),
                         radius: (configs.pieType.value == "pie" ? radius.outRadius : [radius.inRadius, radius.outRadius]),
                         roseType: (configs.pieType.value == "pie" || configs.pieType.value == "ring" ? false : configs.pieRoseType.value),
                         selectedMode: configs.pieSelectedMode.value,
@@ -3877,7 +4209,7 @@ function getMultiGraphOption(configs, container, myChart, dataset) {
                         name: source.dimensions[i + 1],
                         colorBy: configs.barColorby.value,
                         type: type,
-                        data: source.getItems(source.dimensions[i + 1]),
+                        data: source.getItems(source.dimensions[i + 1], configs.barAutoOrder.value),
                         xAxisIndex: i,
                         yAxisIndex: i,
                         label: {
@@ -3914,8 +4246,15 @@ function getMultiGraphOption(configs, container, myChart, dataset) {
                             }
                         },
                     };
+                    axis.xAxis[i].data = serie.data.reduce(function (items, item) {
+                        items.push({name: item.name, value: item.name});
+                        return items;
+                    }, []);
                     if (configs.barRegLineDisplay.value.toBoolean()) {
-                        let regLine = getRegLine(configs, source.dimensions[i + 1], source.getPoints(source.dimensions[i + 1]));
+                        let regLine = getRegLine(configs, source.dimensions[i + 1], serie.data.reduce(function (items, item) {
+                            items.push([items.length, item.value]);
+                            return items;
+                        }, []));
                         regLine.serie["xAxisIndex"] = i;
                         regLine.serie["yAxisIndex"] = i;
                         series.push(regLine.serie);
@@ -3930,13 +4269,64 @@ function getMultiGraphOption(configs, container, myChart, dataset) {
                         }
                     }
                     break;
+                case "tranbar":
+                    serie = {
+                        id: source.dimensions[i + 1],
+                        name: source.dimensions[i + 1],
+                        type: "bar",
+                        coordinateSystem: "cartesian2d",
+                        colorBy: configs.tranbarColorby.value,
+                        data: source.getItems(source.dimensions[i + 1], configs.tranbarAutoOrder.value),
+                        xAxisIndex: i,
+                        yAxisIndex: i,
+                        itemStyle: {
+                            borderRadius: Number(configs.tranbarItemStyleBorderRadius.value),
+                        },
+                        label: {
+                            show: configs.tranbarLabelDisplay.value.toBoolean(),
+                            rotate: configs.tranbarLabelRotate.value,
+                            align: "left",
+                            verticalAlign: "middle",
+                            position: configs.tranbarLabelPosition.value,
+                            distance: 10,
+                            formatter: "{value|{c}}",
+                            rich: {
+                                value: {
+                                    color: configs.tranbarLabelTextColor.value,
+                                    fontSize: configs.tranbarLabelFontSize.value,
+                                }
+                            },
+                        },
+                        emphasis: {
+                            label: {
+                                show: configs.tranbarEmphasisLabelDisplay.value.toBoolean(),
+                                align: "left",
+                                verticalAlign: "middle",
+                                position: configs.tranbarLabelPosition.value,
+                                distance: 10,
+                                formatter: "{value|{c}}",
+                                rotate: 0,
+                                rich: {
+                                    value: {
+                                        color: configs.tranbarLabelTextColor.value,
+                                        fontSize: configs.tranbarLabelFontSize.value,
+                                    }
+                                }
+                            }
+                        }
+                    };
+                    axis.yAxis[i].data = serie.data.reduce(function (array, item) {
+                        array.push(item.name);
+                        return array;
+                    }, []);
+                    break;
                 case "scatter":
                     serie = {
                         id: source.dimensions[i + 1],
                         name: source.dimensions[i + 1],
                         colorBy: configs.scatterColorby.value,
                         type: configs.scatterType.value,
-                        data: source.getItems(source.dimensions[i + 1]),
+                        data: source.getItems(source.dimensions[i + 1], configs.scatterAutoOrder.value),
                         xAxisIndex: i,
                         yAxisIndex: i,
                         label: {
@@ -3985,8 +4375,15 @@ function getMultiGraphOption(configs, container, myChart, dataset) {
                             shadowOffsetY: 0,
                         },
                     };
+                    axis.xAxis[i].data = serie.data.reduce(function (items, item) {
+                        items.push({name: item.name, value: item.name});
+                        return items;
+                    }, []);
                     if (configs.scatterRegLineDisplay.value.toBoolean()) {
-                        let regLine = getRegLine(configs, source.dimensions[i + 1], source.getPoints(source.dimensions[i + 1]));
+                        let regLine = getRegLine(configs, source.dimensions[i + 1], serie.data.reduce(function (items, item) {
+                            items.push([items.length, item.value]);
+                            return items;
+                        }, []));
                         regLine.serie["xAxisIndex"] = i;
                         regLine.serie["yAxisIndex"] = i;
                         series.push(regLine.serie);
@@ -4002,27 +4399,29 @@ function getMultiGraphOption(configs, container, myChart, dataset) {
                     }
                     break;
                 case "calendar":
-                    let visualMap = {
-                        show: false,
-                        min: ia.min,
-                        max: ia.max,
-                        seriesIndex: i,
-                        dimension: 1,
-                    };
-                    visualMaps.push(visualMap);
-
-                    let rangeMin = "NaN-NaN-NaN";
-                    let rangeMax = "NaN-NaN-NaN";
-                    let data = source.getValues(source.dimensions[i + 1]);
-                    for (let i = 0; i < data.length; i++) {
-                        if (rangeMin == "NaN-NaN-NaN" || rangeMax == "NaN-NaN-NaN") {
-                            rangeMin = rangeMax = echarts.format.formatTime("yyyy-MM-dd", data[i][0]);
+                    let range = {min: "NaN-NaN-NaN", max: "NaN-NaN-NaN"};
+                    let dateList = source.getItems(source.dimensions[0]);
+                    for (let t = 0; t < dateList.length; t++) {
+                        if (range.min == "NaN-NaN-NaN" || range.max == "NaN-NaN-NaN") {
+                            range.min = range.max = echarts.format.formatTime("yyyy-MM-dd", dateList[t].name);
                         } else {
-                            rangeMin = echarts.format.formatTime("yyyy-MM-dd", data[i][0]) < rangeMin ? echarts.format.formatTime("yyyy-MM-dd", data[i][0]) : rangeMin;
-                            rangeMax = echarts.format.formatTime("yyyy-MM-dd", data[i][0]) > rangeMax ? echarts.format.formatTime("yyyy-MM-dd", data[i][0]) : rangeMax;
+                            range.min = echarts.format.formatTime("yyyy-MM-dd", dateList[t].name) < range.min ? echarts.format.formatTime("yyyy-MM-dd", dateList[t].name) : range.min;
+                            range.max = echarts.format.formatTime("yyyy-MM-dd", dateList[t].name) > range.max ? echarts.format.formatTime("yyyy-MM-dd", dateList[t].name) : range.max;
                         }
                     }
-                    if (rangeMin != "NaN-NaN-NaN" && rangeMax != "NaN-NaN-NaN") {
+                    if (range.min != "NaN-NaN-NaN" && range.max != "NaN-NaN-NaN") {
+                        let position = {};
+                        if (configs.calendarOrient.value == "horizontal") {
+                            position.top = (grids[i].values.top + grids[i].values.height) + "%";
+                            position.right = grids[i].right;
+                            position.orient = configs.calendarOrient.value;
+                        }
+                        if (configs.calendarOrient.value == "vertical") {
+                            position.top = grids[i].top;
+                            position.left = (grids[i].values.left - 5) + "%";
+                            position.orient = configs.calendarOrient.value;
+                        }
+                        visualMaps.push(getVisualMap(configs, ia.min, ia.max, i, 1, position));
                         let calendar = {
                             orient: configs.calendarOrient.value, //"vertical",//"horizontal"
                             top: grids[i].top,
@@ -4040,7 +4439,7 @@ function getMultiGraphOption(configs, container, myChart, dataset) {
                                 borderColor: configs.calendarBorderColor.value,
                                 borderWidth: configs.calendarBorderWidth.value,
                             },
-                            range: [rangeMin, rangeMax],
+                            range: [range.min, range.max],
                             yearLabel: {
                                 show: true,
                                 color: configs.calendarLabelColor.value,
@@ -4063,12 +4462,9 @@ function getMultiGraphOption(configs, container, myChart, dataset) {
                             type: configs.calendarType.value, //["heatmap","scatter","effectScatter"]
                             coordinateSystem: "calendar",
                             calendarIndex: calendars.length - 1,
-                            data: data,
+                            data: source.getValues(source.dimensions[i + 1]),
                         };
-                    } else if (typeof __LOGS__ !== "undefined")
-                        __LOGS__.viewMessage("日期序列( " + source.dimensions[0] + " )异常,无法完成日历视图绘制.", true);
-                    else
-                        UI.alert.show("注意", "日期序列( " + source.dimensions[0] + " )异常,无法完成日历视图绘制.", "auto");
+                    }
                     break;
                 case "area":
                     serie = {
@@ -4125,6 +4521,55 @@ function getMultiGraphOption(configs, container, myChart, dataset) {
                         xAxisIndex: i,
                         yAxisIndex: i,
                     };
+                    break;
+                case "wordCloud":
+                    serie = {
+                        id: source.dimensions[i + 1],
+                        name: source.dimensions[i + 1],
+                        type: "wordCloud",
+                        gridSize: 2,
+                        sizeRange: configs.wordCloudSizeRange.value.toArray([16, 60], ","),//[最小字号,最大字号],
+                        rotationRange: configs.wordCloudRotationRange.value.toArray([-45, 45], ","),//[旋转角度,旋转角度]
+                        shape: configs.wordCloudShape.value,
+                        //"circle", "cardioid", "diamond", "triangle-forward", "triangle", "pentagon", "star"
+                        //maskImage: maskImage,
+                        drawOutOfBound: false,
+                        textStyle: {
+                            color: function () {
+                                return 'rgb(' + [
+                                    Math.round(Math.random() * 160),
+                                    Math.round(Math.random() * 160),
+                                    Math.round(Math.random() * 160)
+                                ].join(',') + ')';
+                            }
+                        },
+                        emphasis: {
+                            focus: 'self',
+                            textStyle: {
+                                shadowBlur: 10,
+                                shadowColor: '#333'
+                            }
+                        },
+                        data: source.getItems(source.dimensions[i + 1], "desc").reduce(function (array, item) {
+                            array.push(
+                                {
+                                    name: item.name,
+                                    value: item.value,
+                                    textStyle: {
+                                        color: colors[array.length % colors.length]
+                                    },
+                                    emphasis: {
+                                        color: colors[array.length % colors.length]
+                                    }
+                                });
+                            return array;
+                        }, []),
+                        top: grids[i].top,
+                        left: grids[i].left,
+                        width: grids[i].width,
+                        height: grids[i].height,
+                    };
+                    setSeriesAnimation(serie, configs, i);
                     break;
                 default:
                     serie = {
@@ -4343,12 +4788,24 @@ function getScatterOption(configs, container, myChart, dataset) {
 
     for (let c = 1; c < source.dimensions.length; c++) {
         let ia = source.getMinMaxValue(source.dimensions[c]);
+        let data = source.getPoints(source.dimensions[c]);
+        if (source.dimensions.length - 1 == 1) {
+            let items = source.getItems(source.dimensions[c], configs.scatterAutoOrder.value);
+            data = items.reduce(function (array, item) {
+                array.push([array.length, item.value]);
+                return array;
+            }, []);
+            xAxis = items.reduce(function (array, item) {
+                array.push(item.name);
+                return array;
+            }, [])
+        }
         let serie = {
             id: source.dimensions[c],
             name: source.dimensions[c],
             type: configs.scatterType.value,
             colorBy: configs.scatterColorby.value,
-            data: source.getPoints(source.dimensions[c]),
+            data: data,
             label: {
                 show: configs.scatterLabelDisplay.value.toBoolean(),
                 align: "center",
@@ -4480,7 +4937,7 @@ function getPieOption(configs, container, myChart, dataset) {
             name: source.dimensions[i + 1],
             colorBy: configs.pieColorby.value,
             type: "pie",
-            data: source.getItems(source.dimensions[i + 1]),
+            data: source.getItems(source.dimensions[i + 1], configs.pieAutoOrder.value),
             radius: (configs.pieType.value == "pie" ? radius.outRadius : [radius.inRadius, radius.outRadius]),
             roseType: (configs.pieType.value == "pie" || configs.pieType.value == "ring" ? false : configs.pieRoseType.value),
             selectedMode: configs.pieSelectedMode.value,
@@ -4530,14 +4987,9 @@ function getPieOption(configs, container, myChart, dataset) {
     }
 
     let option = {
-        aria: getAria(configs),
-        grids: {
-            top:"0%",
-            left:"0%",
-            width:"100%",
-            height: "100%"
-        },
         backgroundColor: getBackgroundColor(configs),
+        aria: getAria(configs),
+        grid: grids,
         title: getTitle(configs, dataset.title),
         legend: getLegend(configs, source.dimensions.slice(1, source.dimensions.length)),
         toolbox: getToolbox(configs, container, dataset, myChart),
@@ -4651,6 +5103,7 @@ function getFunnelOption(configs, container, myChart, dataset) {
     let option = {
         aria: getAria(configs),
         backgroundColor: getBackgroundColor(configs),
+        grid: grids,
         title: getTitle(configs, dataset.title),
         tooltip: getTooltip(configs, "item", function (param) {
             return ["<span style = 'float:left'>" + param.seriesName + "</span>",
@@ -4779,8 +5232,8 @@ function getPolarOption(configs, container, myChart, dataset) {
             z: 10,
         },
         polar: {
-            center: [(percentage(configs.gridLeft.value) + (100 - percentage(configs.gridLeft.value) - percentage(configs.gridRight.value)) / 2) + "%",
-                (percentage(configs.gridTop.value) + (100 - percentage(configs.gridTop.value) - percentage(configs.gridBottom.value)) / 2) + "%"],
+            center: [(percentValue(configs.gridLeft.value) + (100 - percentValue(configs.gridLeft.value) - percentValue(configs.gridRight.value)) / 2) + "%",
+                (percentValue(configs.gridTop.value) + (100 - percentValue(configs.gridTop.value) - percentValue(configs.gridBottom.value)) / 2) + "%"],
         },
         series: series,
         legend: getLegend(configs, source.dimensions.slice(1, source.dimensions.length)),
@@ -4819,8 +5272,9 @@ function getTransversBarOption(configs, container, myChart, dataset) {
         clearInterval(myChart.IntervalId);
     let source = getSource(dataset);
     let series = [];
-    let stacktime = Number(configs.barStackTimes.value);
+    let stacktime = Number(configs.tranbarStackTimes.value);
     let stack = null;
+    let YAxis = getYAxis(configs, "category", source.getItems(source.dimensions[0]), "bottom");
     for (let c = 1; c < source.dimensions.length; c++) {
         if (stacktime > 1 && c % stacktime == 1) {
             stack = source.dimensions[c];
@@ -4830,46 +5284,51 @@ function getTransversBarOption(configs, container, myChart, dataset) {
             name: source.dimensions[c],
             type: "bar",
             coordinateSystem: "cartesian2d",
-            colorBy: configs.barColorby.value,
+            colorBy: configs.tranbarColorby.value,
             stack: stack,
-            data: source.getItems(source.dimensions[c]),
+            data: source.dimensions.length - 1 == 1 ? source.getItems(source.dimensions[c], configs.tranbarAutoOrder.value) : source.getItems(source.dimensions[c]),
             itemStyle: {
-                borderRadius: Number(configs.barItemStyleBorderRadius.value),
+                borderRadius: Number(configs.tranbarItemStyleBorderRadius.value),
             },
-        };
-
-        series.label = {
-            show: configs.barLabelDisplay.value.toBoolean(),
-            rotate: configs.barLabelRotate.value,
-            align: "center",
-            verticalAlign: "middle",
-            position: configs.barLabelPosition.value,
-            distance: 15,
-            formatter: "{value|{c}}",
-            rich: {
-                value: {
-                    color: configs.barLabelTextColor.value,
-                    fontSize: configs.barLabelFontSize.value,
-                }
-            }
-        };
-        series.emphasis = {
             label: {
-                show: configs.barEmphasisLabelDisplay.value.toBoolean(),
-                align: "center",
+                show: configs.tranbarLabelDisplay.value.toBoolean(),
+                rotate: configs.tranbarLabelRotate.value,
+                align: "left",
                 verticalAlign: "middle",
-                position: configs.barLabelPosition.value,
-                distance: 15,
+                position: configs.tranbarLabelPosition.value,
+                distance: 10,
                 formatter: "{value|{c}}",
-                rotate: 0,
                 rich: {
                     value: {
-                        color: configs.barLabelTextColor.value,
-                        fontSize: configs.barLabelFontSize.value,
+                        color: configs.tranbarLabelTextColor.value,
+                        fontSize: configs.tranbarLabelFontSize.value,
+                    }
+                }
+            },
+            emphasis: {
+                label: {
+                    show: configs.tranbarEmphasisLabelDisplay.value.toBoolean(),
+                    align: "left",
+                    verticalAlign: "middle",
+                    position: configs.tranbarLabelPosition.value,
+                    distance: 10,
+                    formatter: "{value|{c}}",
+                    rotate: 0,
+                    rich: {
+                        value: {
+                            color: configs.tranbarLabelTextColor.value,
+                            fontSize: configs.tranbarLabelFontSize.value,
+                        }
                     }
                 }
             }
         };
+        if (source.dimensions.length - 1 == 1) {
+            YAxis.data = serie.data.reduce(function (array, item) {
+                array.push(item.name);
+                return array;
+            }, [])
+        }
 
         setSeriesAnimation(series, configs, c);
         series.push(serie);
@@ -4885,7 +5344,7 @@ function getTransversBarOption(configs, container, myChart, dataset) {
         tooltip: getTooltip(configs, "axis", null),
         legend: getLegend(configs, source.dimensions.slice(1, source.dimensions.length)),
         xAxis: getXAxis(configs, "value", null),
-        yAxis: getYAxis(configs, "category", source.getItems(source.dimensions[0]), "bottom"),
+        yAxis: YAxis,
 
         dataZoom: [
             getDataZoomXAxis(configs, 0, "inside", 0, 100),
@@ -5342,9 +5801,9 @@ function getXAxis(configs, type, data, name) {
     };
 }
 
-function getYAxis(configs,type,data,position, name) {
+function getYAxis(configs, type, data, position, name) {
     return {
-        name: typeof name != "undefined"? name: null,
+        name: typeof name != "undefined" ? name : null,
         type: type,
         data: data,
         position: position,
@@ -5405,10 +5864,10 @@ function getDataZoomXAxis(configs, xAxisIndex, type, start, end) {
             xAxisIndex: xAxisIndex,
             start: start,
             end: end,
-            width: (100 - percentage(configs.gridLeft.value) - percentage(configs.gridRight.value)) + "%",
+            width: (100 - percentValue(configs.gridLeft.value) - percentValue(configs.gridRight.value)) + "%",
             height: configs.dataZoomBarWidth.value,
             left: configs.gridLeft.value,
-            top: (100 - percentage(configs.gridBottom.value)) + "%",
+            top: (100 - percentValue(configs.gridBottom.value)) + "%",
             handleIcon: dataZoomHandleIcon[configs.dataZoomHandleIcon.value],
             handleSize: configs.dataZoomHandleSize.value,
             borderColor: configs.dataZoomBarColor.value,
@@ -5448,9 +5907,9 @@ function getDataZoomYAxis(configs, yAxisIndex, type,start ,end, containerWidth) 
                 start: start,
                 end: end,
                 width: configs.dataZoomBarWidth.value,
-                height: (100 - percentage(configs.gridTop.value) - percentage(configs.gridBottom.value)) + "%",
+                height: (100 - percentValue(configs.gridTop.value) - percentValue(configs.gridBottom.value)) + "%",
                 top: configs.gridTop.value,
-                right: (100 - percentage(configs.gridRight.value)) + "%",
+                right: (100 - percentValue(configs.gridRight.value)) + "%",
                 handleIcon: dataZoomHandleIcon[configs.dataZoomHandleIcon.value],
                 handleSize: configs.dataZoomHandleSize.value,
                 borderColor: configs.dataZoomBarColor.value,
@@ -5470,9 +5929,9 @@ function getDataZoomYAxis(configs, yAxisIndex, type,start ,end, containerWidth) 
                 start: start,
                 end: end,
                 width: configs.dataZoomBarWidth.value,
-                height: (100 - percentage(configs.gridTop.value) - percentage(configs.gridBottom.value)) + "%",
+                height: (100 - percentValue(configs.gridTop.value) - percentValue(configs.gridBottom.value)) + "%",
                 top: configs.gridTop.value,
-                right: (percentage(configs.gridRight.value) - configs.dataZoomBarWidth.value * 100 / containerWidth) + "%",
+                right: (percentValue(configs.gridRight.value) - configs.dataZoomBarWidth.value * 100 / containerWidth) + "%",
                 handleIcon: dataZoomHandleIcon[configs.dataZoomHandleIcon.value],
                 handleSize: configs.dataZoomHandleSize.value,
                 borderColor: configs.dataZoomBarColor.value,
@@ -5501,7 +5960,7 @@ function getDataViewTable(table, dataset, configs, _echarts_instance_id) {
         table = document.createElement("table");
         table.className = "table";
         table.id = "optionToContentTable_" + _echarts_instance_id;
-        table.style.cssText = "width:" + (100 - percentage(configs.gridLeft.value) - percentage(configs.gridRight.value)) + "%;margin: auto";
+        table.style.cssText = "width:" + (100 - percentValue(configs.gridLeft.value) - percentValue(configs.gridRight.value)) + "%;margin: auto";
         if (__DATASET__.configs.reportFontFamily.value != "default")
             table.style.fontFamily = __DATASET__.configs.reportFontFamily.value;
         if (__DATASET__.configs.reportFontWeight.value != "default")
@@ -5778,21 +6237,87 @@ function getTimeline(configs, times) {
     };
 }
 
-function getVisualMap(configs, min, max) {
-    return {
+function getVisualMap(configs, min, max, seriesIndex, dimension, position) {
+    function getPieces(min, max, step, splitNumber) {
+        function getStep(min, max, step, splitNumber) {
+            if ((max - min) / step >= 1 && (max - min) / step <= splitNumber)
+                return step;
+            else if ((max - min) / step < 1)
+                return getStep(min, max, Math.floor(step / splitNumber), splitNumber);
+            else if ((max - min) / step > splitNumber)
+                return getStep(min, max, Math.floor(step * 2), splitNumber);
+        }
+
+        step = getStep(min, max, step, splitNumber);
+        let pieces = [];
+        if (min + step < max && max - step > min) {
+            if (max <= 0) {
+                let ma = 0;
+                while (ma >= min) {
+                    if (ma - step < max)
+                        pieces.push({min: ma - step, max: ma});
+                    ma = ma - step;
+                }
+            }
+            if (min >= 0) {
+                let mi = 0;
+                while (mi <= max) {
+                    if (mi + step > min)
+                        pieces.push({min: mi, max: mi + step});
+                    mi = mi + step;
+                }
+            }
+
+            if (min < 0 && max > 0) {
+                let mi = 0;
+                while (mi <= max) {
+                    pieces.push({min: mi, max: mi + step});
+                    mi = mi + step;
+                }
+                let ma = 0;
+                while (ma >= min) {
+                    pieces.push({min: ma - step, max: ma});
+                    ma = ma - step;
+                }
+            }
+        }
+        return pieces;
+    }
+
+    let step = Number(configs.visualMapPiecesStep.value);
+    let visualmap = {
         show: configs.visualMapDisplay.value.toBoolean(),
         min: min,
         max: max,
-        type: configs.visualMap_type.value,
+        type: configs.visualMapType.value.split("-")[0],
         calculable: true,
-        left: configs.visualMap_left.value,
-        top: configs.visualMap_top.value,
-        orient: configs.visualMap_orient.value,
+        orient: configs.visualMapOrient.value,
         textStyle: {
-            color: configs.visualMap_textColor.value,
+            color: configs.visualMapTextColor.value,
         },
-        splitNumber: configs.visualMap_piecewise_splitNumber.value,
+        splitNumber: Number(configs.visualMapSplitNumber.value),
+        precision: Number(configs.visualMapPrecision.value),
+        pieces: configs.visualMapType.value.split("-")[1] == "auto" ? [] : getPieces(min, max, step, Number(configs.visualMapSplitNumber.value)),
+    };
+    if (typeof seriesIndex !== "undefined")
+        visualmap.seriesIndex = seriesIndex;
+    if (typeof dimension !== "undefined")
+        visualmap.dimension = dimension;
+    if (typeof position !== "undefined") {
+        for (let key in position) {
+            visualmap[key] = position[key];
+        }
+    } else {
+        if (configs.visualMapOrient.value == "horizontal") {
+            visualmap.bottom = configs.gridBottom.value;
+            visualmap.left = configs.gridLeft.value;
+        }
+        if (configs.visualMapOrient.value == "vertical") {
+            visualmap.top = configs.gridTop.value;
+            visualmap.left = configs.gridLeft.value;
+        }
     }
+    return visualmap;
 }
 
 function setSeriesAnimation(series, configs, c) {
@@ -6564,8 +7089,8 @@ function getRadar(container, dataset, configs) {
         tooltip: getTooltip(configs, "item", null),
         toolbox: getToolbox(configs, container, dataset, myChart),
         radar: {
-            center: [(percentage(configs.gridLeft.value) + (100 - percentage(configs.gridLeft.value) - percentage(configs.gridRight.value)) / 2) + "%",
-                (percentage(configs.gridTop.value) + (100 - percentage(configs.gridTop.value) - percentage(configs.gridBottom.value)) / 2) + "%"],
+            center: [(percentValue(configs.gridLeft.value) + (100 - percentValue(configs.gridLeft.value) - percentValue(configs.gridRight.value)) / 2) + "%",
+                (percentValue(configs.gridTop.value) + (100 - percentValue(configs.gridTop.value) - percentValue(configs.gridBottom.value)) / 2) + "%"],
             shape: configs.radarShape.value,
             splitNumber: configs.radarSplitNumber.value,
             name: {
@@ -7117,103 +7642,75 @@ function getCalendar(container, dataset, configs) {
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
     let source = getSource(dataset);
-
-    let containerWidth = myChart.getWidth();//Number(width.replace(/px/i, ""));
-    let containerHeight = myChart.getHeight();//Number(height.replace(/px/i, ""));
+    let cols = configs.calendarGroup.value;
+    let lines = Math.ceil((source.dimensions.length - 1) / cols);
+    let grids = getGrids(configs, source.dimensions.length, cols, lines, configs.calendarGrids.value);
     let series = [];
     let visualMaps = [];
     let calendars = [];
-    let rangeMin;
-    let rangeMax;
+     let range = {min: "NaN-NaN-NaN", max: "NaN-NaN-NaN"};
 
     function init() {
         for (let c = 0; c < source.dimensions.length; c++) {
             if (c == 0) {
-                let data = source.getItems(source.dimensions[0]);
-                for (let i = 0; i < data.length; i++) {
-                    if (i == 0) {
-                        rangeMin = echarts.format.formatTime("yyyy-MM-dd", data[i].value);
-                        rangeMax = echarts.format.formatTime("yyyy-MM-dd", data[i].value);
+                let dateList = source.getItems(source.dimensions[0]);
+                for (let i = 0; i < dateList.length; i++) {
+                    if (range.min == "NaN-NaN-NaN" || range.max == "NaN-NaN-NaN") {
+                        range.min = range.max = echarts.format.formatTime("yyyy-MM-dd", dateList[i].value);
                     } else {
-                        rangeMin = echarts.format.formatTime("yyyy-MM-dd", data[i].value) < rangeMin ? echarts.format.formatTime("yyyy-MM-dd", data[i].value) : rangeMin;
-                        rangeMax = echarts.format.formatTime("yyyy-MM-dd", data[i].value) > rangeMax ? echarts.format.formatTime("yyyy-MM-dd", data[i].value) : rangeMax;
+                        range.min = echarts.format.formatTime("yyyy-MM-dd", dateList[i].value) < range.min ? echarts.format.formatTime("yyyy-MM-dd", dateList[i].value) : range.min;
+                        range.max = echarts.format.formatTime("yyyy-MM-dd", dateList[i].value) > range.max ? echarts.format.formatTime("yyyy-MM-dd", dateList[i].value) : range.max;
                     }
                 }
             } else {
-                let serie = {
-                    id: source.dimensions[c],
-                    name: source.dimensions[c],
-                    type: configs.calendarType.value, //["heatmap","scatter","effectScatter"]
-                    coordinateSystem: "calendar",
-                    calendarIndex: c - 1,
-                    data: source.getValues(source.dimensions[c]),
-                };
-                setSeriesAnimation(serie, configs, c);
-                let visualMap = {
-                    //type: "piecewise",
-                    show: configs.visualMapDisplay.value.toBoolean(),
-                    calculable: true,
-                    //orient: "vertical",//"horizontal"
-                    //left: 10,
-                    //top: 10,
-                    seriesIndex: c - 1,//影射数据系列
-                    dimension: 1,//影射数据纬度
-                    textStyle: {
-                        color: "gray"
+                if (range.min !== "NaN-NaN-NaN" || range.max !== "NaN-NaN-NaN") {
+                    let ia = source.getMinMaxValue(source.dimensions[c], "number");
+                    let position = {};
+                    if (configs.calendarOrient.value == "horizontal") {
+                        position.top = (grids[c - 1].values.top + grids[c - 1].values.height) + "%";
+                        position.right = grids[c - 1].right;
+                        position.orient = configs.calendarOrient.value;
                     }
-                };
-                let calendar = {
-                    orient: configs.calendarOrient.value, //"vertical",//"horizontal"
-                    left: "10%",
-                    right: "10%",
-                    cellSize: ["auto", "auto"],
-                    splitLine:{
-                        lineStyle:{
-                            color: configs.calendarSplitLineColor.value,
-                            width: configs.calendarSplitLineWidth.value
-                        }
-                    },
-                    itemStyle: {
-                        borderColor: configs.calendarBorderColor.value,
-                        borderWidth: configs.calendarBorderWidth.value,
-                    },
-                    yearLabel: {show: true, color: configs.calendarLabelColor.value, margin: 20},
-                    dayLabel: {nameMap: "cn", color: configs.calendarLabelColor.value, margin: 5},
-                    monthLabel: {nameMap: "cn", color: configs.calendarLabelColor.value},
-                };
-                let ia = source.getMinMaxValue(source.dimensions[c], "number");
-                visualMap.min = ia.min;
-                visualMap.max = ia.max;
-                visualMap.show = configs.visualMapDisplay.value.toBoolean();
-                calendar.range = [rangeMin, rangeMax];
-                calendars.push(calendar);
-                series.push(serie);
-                visualMaps.push(visualMap);
-            }
-        }
-        if (configs.calendarOrient.value == "vertical") {
-            let width = (80 - 15 * calendars.length) / calendars.length;
-            for (let i = 0; i < calendars.length; i++) {
-                calendars[i].top = "15%";
-                calendars[i].left = (15 * (i + 1) + width * i) + "%";
-                visualMaps[i].left = containerWidth * (15 * (i + 1) + width * i) / 100 - 40;
-                calendars[i].width = width + "%";
-                visualMaps[i].itemHeight = containerWidth * width / 100;
-                calendars[i].bottom = "10%";
-                visualMaps[i].top = "90%";
-                visualMaps[i].orient = "horizontal";
-            }
-        } else {
-            let height = (95 - 10 * calendars.length) / calendars.length;
-            for (let i = 0; i < calendars.length; i++) {
-                calendars[i].top = (10 * (i + 1) + height * i) + "%";
-                visualMaps[i].top = containerHeight * (10 * (i + 1) + height * i) / 100 - 10;
-                calendars[i].left = "10%";
-                visualMaps[i].left = "1%";
-                calendars[i].width = "80%";
-                calendars[i].height = (height + "%");
-                visualMaps[i].itemHeight = containerHeight * height / 100;
-                visualMaps[i].orient = "vertical";
+                    if (configs.calendarOrient.value == "vertical") {
+                        position.top = grids[c - 1].top;
+                        position.left = (grids[c - 1].values.left - 5) + "%";
+                        position.orient = configs.calendarOrient.value;
+                    }
+                    visualMaps.push(getVisualMap(configs, ia.min, ia.max, c - 1, 1, position));
+                    let serie = {
+                        id: source.dimensions[c],
+                        name: source.dimensions[c],
+                        type: configs.calendarType.value, //["heatmap","scatter","effectScatter"]
+                        coordinateSystem: "calendar",
+                        calendarIndex: c - 1,
+                        data: source.getValues(source.dimensions[c]),
+                    };
+                    setSeriesAnimation(serie, configs, c);
+                    series.push(serie);
+                    let calendar = {
+                        orient: configs.calendarOrient.value, //"vertical",//"horizontal"
+                        cellSize: ["auto", "auto"],
+                        range: [range.min, range.max],
+                        splitLine: {
+                            lineStyle: {
+                                color: configs.calendarSplitLineColor.value,
+                                width: configs.calendarSplitLineWidth.value
+                            }
+                        },
+                        itemStyle: {
+                            borderColor: configs.calendarBorderColor.value,
+                            borderWidth: configs.calendarBorderWidth.value,
+                        },
+                        yearLabel: {show: true, color: configs.calendarLabelColor.value, margin: 20},
+                        dayLabel: {nameMap: "cn", color: configs.calendarLabelColor.value, margin: 5},
+                        monthLabel: {nameMap: "cn", color: configs.calendarLabelColor.value},
+                        top: grids[c - 1].top,
+                        left: grids[c - 1].left,
+                        width: grids[c - 1].width,
+                        height: grids[c - 1].height
+                    };
+                    calendars.push(calendar);
+                }
             }
         }
     }
@@ -7222,7 +7719,7 @@ function getCalendar(container, dataset, configs) {
     let option = {
         aria: getAria(configs),
         backgroundColor: getBackgroundColor(configs),
-        grid: getGrids(configs),
+        grid: grids,
         title: getTitle(configs, dataset.title),
         tooltip: getTooltip(configs, "item", function (param) {
             let date = echarts.format.formatTime("yyyy-MM-dd", param.value[0]);
@@ -7233,7 +7730,7 @@ function getCalendar(container, dataset, configs) {
         visualMap: visualMaps,
         calendar: calendars,
         series: series,
-        graphic: getWaterGraphic(configs,__VERSION__),
+        graphic: getWaterGraphic(configs, __VERSION__),
     };
 
     setTimeout(() => {
@@ -8920,6 +9417,7 @@ function getCategoryLineForGauge(container, dataset, configs) {
         baseOption: {
             aria: getAria(configs),
             backgroundColor: getBackgroundColor(configs),
+            grid: grids,
             title: getTitle(configs, dataset.title),
             timeline: getTimeline(configs, times),
             tooltip: getTooltip(configs, "item", function (param) {
@@ -9200,6 +9698,7 @@ function getCategoryLineForLiqiud(container, dataset, configs) {
         baseOption: {
             aria: getAria(configs),
             backgroundColor: getBackgroundColor(configs),
+            grid: grids,
             title: getTitle(configs, dataset.title),
             timeline: getTimeline(configs, times),
             tooltip: {
@@ -9269,7 +9768,10 @@ function getScrollingScreen(container, dataset, configs) {
         container.id = "echarts-container";
     }
 
-    let myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value,renderer:configs.renderer.value});
+    let myChart = echarts.init(container, configs.echartsTheme.value, {
+        locale: configs.local.value,
+        renderer: configs.renderer.value
+    });
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
     let colors = ['#c23531', '#2f4554', '#61a0a8', '#d48265', '#91c7ae', '#749f83', '#ca8622', '#bda29a', '#6e7074', '#546570', '#c4ccd3'];
@@ -9279,27 +9781,28 @@ function getScrollingScreen(container, dataset, configs) {
     } catch (e) {
     }
 
+    let source = getSource(dataset);
     let containerWidth = myChart.getWidth();//Number(width.replace(/px/i, ""));
     let containerHeight = myChart.getHeight();//Number(height.replace(/px/i, ""));
-    let columns = [];
+    let grids = getGrids(configs);
+    let columns = source.dimensions;
     let cols = [];
     let data = [];
     let txtOffset = 8;
-    let scrollingScreenGraphic = getWaterGraphic(configs,__VERSION__);
+    let scrollingScreenGraphic = getWaterGraphic(configs, __VERSION__);
     let lineHeight = Number(configs.scrollingScreenFontSize.value) + txtOffset;
     let groupHeight = lineHeight;
     let timeout = false;
-    let colWidth = Number(configs.scrollingScreenWidth.value) / dataset["columns"].length;
+    let cell = getRowCell(containerWidth * percentValue(configs.scrollingScreenWidth.value) / 100, configs.scrollingScreenColumnsWidth.value, columns.length);
 
-    for (let i = 0; i < dataset["columns"].length; i++) {
-        columns.push(dataset["columns"][i].name);
+    for (let i = 0; i < columns.length; i++) {
         cols.push({
             type: 'rect',
-            left: colWidth * (i + 1),
+            left: cell[i].left,
             top: 0,
             z: 2,
             shape: {
-                width: colWidth,
+                width: cell[i].width,
                 height: lineHeight,
             },
             style: {
@@ -9311,28 +9814,32 @@ function getScrollingScreen(container, dataset, configs) {
         }, {
             type: 'text',
             id: 'columns' + i,
-            left: colWidth * (i + 1) + txtOffset,
+            left: cell[i].left + txtOffset,
             top: txtOffset,
             z: 2,
             bounding: 'raw',
             style: {
-                text: dataset["columns"][i].name,
+                text: columns[i],
                 font: configs.scrollingScreenFontSize.value + 'px "Microsoft YaHei", sans-serif',
                 fill: configs.scrollingScreenColumnFontFillColor.value,
+                textAlign: "center",
+                overflow: 'break',
+                textVerticalAlign: 'middle'
             }
         });
     }
 
-    for (let i = 0; i < dataset["data"].length; i++) {
-        let r = dataset["data"][i];
+    let table = source.getArrays();
+    for (let i = 0; i < table.length; i++) {
+        let row = table[i];
         for (let c = 0; c < columns.length; c++) {
             data.push({
                 type: 'rect',
-                left: colWidth * (c + 1),
+                left: cell[c].left,
                 top: lineHeight * (i + 1),
                 z: 1,
                 shape: {
-                    width: colWidth,
+                    width: cell[c].width,
                     height: lineHeight,
                 },
                 style: {
@@ -9344,14 +9851,17 @@ function getScrollingScreen(container, dataset, configs) {
             }, {
                 type: 'text',
                 id: i + "-" + c,
-                left: colWidth * (c + 1) + txtOffset,
+                left: cell[c].left + txtOffset,
                 top: lineHeight * (i + 1) + txtOffset,
                 z: 1,
                 bounding: 'raw',
                 style: {
-                    text: r[columns[c]].value,
+                    text: row[c],
                     font: configs.scrollingScreenFontSize.value + 'px "Microsoft YaHei", sans-serif',
                     fill: colors[i % colors.length],
+                    textAlign: c == 0 ? "left" : "right",
+                    overflow: 'break',
+                    textVerticalAlign: 'middle'
                 },
             });
         }
@@ -9385,7 +9895,7 @@ function getScrollingScreen(container, dataset, configs) {
 
     let option = {
         aria: getAria(configs),
-        grid: getGrids(configs),
+        grid: grids,
         backgroundColor: getBackgroundColor(configs),
         title: getTitle(configs, dataset.title),
         toolbox: getToolbox(configs, container, dataset, myChart),
@@ -9448,10 +9958,12 @@ function getWalkingLantern(container, dataset, configs) {
     } catch (e) {
     }
 
+    let source = getSource(dataset);
     let containerWidth = myChart.getWidth();//Number(width.replace(/px/i, ""));
     let containerHeight = myChart.getHeight();//Number(height.replace(/px/i, ""));
+    let grids = getGrids(configs);
     let top = containerHeight * Number(configs.walkingLanternTop.value.replaceAll("%", "")) / 100;
-    let columns = [];
+    let columns = source.dimensions;
     let lines = configs.walkingLanternLines.value;
     let groups = 0;
     let index = 0;
@@ -9459,8 +9971,9 @@ function getWalkingLantern(container, dataset, configs) {
     let txtOffset = 8;
     let lineHeight = Number(configs.walkingLanternFontSize.value) + txtOffset;
     let timeout = false;
-    let colWidth = Number(configs.walkingLanternWidth.value) / dataset["columns"].length;
     let dire = configs.walkingLanternDirection.value;
+
+    let cell = getRowCell(containerWidth * percentValue(configs.walkingLanternWidth.value) / 100, configs.walkingLanternColumnsWidth.value, dataset["columns"].length);
 
     let title = {
         type: 'group',
@@ -9476,15 +9989,14 @@ function getWalkingLantern(container, dataset, configs) {
         }
     };
 
-    for (let i = 0; i < dataset["columns"].length; i++) {
-        columns.push(dataset["columns"][i].name);
+    for (let i = 0; i < columns.length; i++) {
         title.children.push({
             type: 'rect',
-            left: colWidth * (i + 1),
+            left: cell[i].left,
             top: 0,
             //z: 100,
             shape: {
-                width: colWidth,
+                width: cell[i].width,
                 height: lineHeight,
             },
             style: {
@@ -9497,12 +10009,12 @@ function getWalkingLantern(container, dataset, configs) {
         title.children.push({
             type: 'text',
             id: 'columns' + i,
-            left: colWidth * (i + 1) + txtOffset,
+            left: cell[i].left + txtOffset,
             top: txtOffset,
             //z: 100,
             bounding: 'raw',
             style: {
-                text: dataset["columns"][i].name,
+                text: columns[i],
                 font: configs.walkingLanternFontSize.value + 'px "Microsoft YaHei", sans-serif',
                 fill: configs.walkingLanternColumnFontFillColor.value,
             }
@@ -9512,7 +10024,7 @@ function getWalkingLantern(container, dataset, configs) {
 
     let option = {
         aria: getAria(configs),
-        grid: getGrids(configs),
+        grid: grids,
         backgroundColor: getBackgroundColor(configs),
         title: getTitle(configs, dataset.title),
         toolbox: getToolbox(configs, container, dataset, myChart),
@@ -9521,8 +10033,9 @@ function getWalkingLantern(container, dataset, configs) {
     let pool = [];
     let children = [];
     let count = 0;
-    for (let i = 0; i < dataset["data"].length; i++) {
-        let r = dataset["data"][i];
+    let table = source.getArrays();
+    for (let i = 0; i < table.length; i++) {
+        let r = table[i];
         let row = {
             type: 'group',
             id: 'scrollingData-' + count,
@@ -9539,10 +10052,10 @@ function getWalkingLantern(container, dataset, configs) {
         for (let c = 0; c < columns.length; c++) {
             row.children.push({
                 type: 'rect',
-                left: colWidth * (c + 1),
+                left: cell[c].left,
                 //z: 99,
                 shape: {
-                    width: colWidth,
+                    width: cell[c].width,
                     height: lineHeight,
                 },
                 style: {
@@ -9554,12 +10067,12 @@ function getWalkingLantern(container, dataset, configs) {
             });
             row.children.push({
                 type: 'text',
-                left: colWidth * (c + 1) + txtOffset,
+                left: cell[c].left + txtOffset,
                 top: txtOffset,
                 //z: 99,
                 bounding: 'raw',
                 style: {
-                    text: r[columns[c]].value,
+                    text: r[c],
                     font: configs.walkingLanternFontSize.value + 'px "Microsoft YaHei", sans-serif',
                     fill: colors[i % colors.length],
                 },
@@ -9585,11 +10098,11 @@ function getWalkingLantern(container, dataset, configs) {
         let left = dire == "LR" ? 0 : containerWidth;
         myChart["IntervalId"] = setInterval(function () {
             if (!timeout) {
-                if ((dire == "LR" && left <= containerWidth) || (dire == "RL" && left >= (Number(configs.walkingLanternWidth.value) * (-1)))) {
+                if ((dire == "LR" && left <= containerWidth) || (dire == "RL" && left >= (containerWidth * percentValue(configs.walkingLanternWidth.value) / 100 * (-1)))) {
                     left = left + (dire == "LR" ? 2 : -2);
                 } else {
                     index += 1;
-                    left = dire == "LR" ? Number(configs.walkingLanternWidth.value) * (-1) : containerWidth;
+                    left = dire == "LR" ? containerWidth * percentValue(configs.walkingLanternWidth.value) / 100 * (-1) : containerWidth;
                     if (index == groups) {
                         index = 0;
                     }
@@ -9630,9 +10143,11 @@ function getWindowShades(container, dataset, configs) {
 
     let containerWidth = myChart.getWidth();//Number(width.replace(/px/i, ""));
     let containerHeight = myChart.getHeight();//Number(height.replace(/px/i, ""));
+    let source = getSource(dataset);
+    let grids = getGrids(configs);
     let top = containerHeight * Number(configs.windowShadesTop.value.replaceAll("%", "")) / 100;
     let left = containerWidth * Number(configs.windowShadesLeft.value.replaceAll("%", "")) / 100;
-    let columns = [];
+    let columns = source.dimensions;
     let lines = configs.windowShadesLines.value;
     let pageIndex = 0;
     let lineIndex = 0;
@@ -9641,7 +10156,7 @@ function getWindowShades(container, dataset, configs) {
     let txtOffset = 8;
     let lineHeight = Number(configs.windowShadesFontSize.value) + txtOffset;
     let timeout = false;
-    let colWidth = Number(configs.windowShadesWidth.value) / dataset["columns"].length;
+    let cell = getRowCell(containerWidth * percentValue(configs.windowShadesWidth.value) / 100, configs.windowShadesColumnsWidth.value, dataset["columns"].length);
 
     let title = {
         type: 'group',
@@ -9657,15 +10172,14 @@ function getWindowShades(container, dataset, configs) {
         }
     };
 
-    for (let i = 0; i < dataset["columns"].length; i++) {
-        columns.push(dataset["columns"][i].name);
+    for (let i = 0; i < columns.length; i++) {
         title.children.push({
             type: 'rect',
-            left: colWidth * (i + 1),
+            left: cell[i].left,
             top: 0,
             //z: 100,
             shape: {
-                width: colWidth,
+                width: cell[i].width,
                 height: lineHeight,
             },
             style: {
@@ -9678,12 +10192,12 @@ function getWindowShades(container, dataset, configs) {
         title.children.push({
             type: 'text',
             id: 'columns' + i,
-            left: colWidth * (i + 1) + txtOffset,
+            left: cell[i].left + txtOffset,
             top: txtOffset,
             //z: 100,
             bounding: 'raw',
             style: {
-                text: dataset["columns"][i].name,
+                text: columns[i],
                 font: configs.windowShadesFontSize.value + 'px "Microsoft YaHei", sans-serif',
                 fill: configs.windowShadesColumnFontFillColor.value,
             }
@@ -9693,7 +10207,7 @@ function getWindowShades(container, dataset, configs) {
 
     let option = {
         aria: getAria(configs),
-        grid: getGrids(configs),
+        grid: grids,
         backgroundColor: getBackgroundColor(configs),
         title: getTitle(configs, dataset.title),
         toolbox: getToolbox(configs, container, dataset, myChart),
@@ -9702,8 +10216,9 @@ function getWindowShades(container, dataset, configs) {
     let pool = [];
     let children = [];
     let count = 0;
-    for (let i = 0; i < dataset["data"].length; i++) {
-        let r = dataset["data"][i];
+    let table = source.getArrays();
+    for (let i = 0; i < table.length; i++) {
+        let r = table[i];
         let row = {
             invisible: false,
             ignore: true,
@@ -9722,10 +10237,10 @@ function getWindowShades(container, dataset, configs) {
         for (let c = 0; c < columns.length; c++) {
             row.children.push({
                 type: 'rect',
-                left: colWidth * (c + 1),
+                left: cell[c].left,
                 //z: 99,
                 shape: {
-                    width: colWidth,
+                    width: cell[c].width,
                     height: lineHeight,
                 },
                 style: {
@@ -9737,12 +10252,12 @@ function getWindowShades(container, dataset, configs) {
             });
             row.children.push({
                 type: 'text',
-                left: colWidth * (c + 1) + txtOffset,
+                left: cell[c].left + txtOffset,
                 top: txtOffset,
                 //z: 99,
                 bounding: 'raw',
                 style: {
-                    text: r[columns[c]].value,
+                    text: r[c],
                     font: configs.windowShadesFontSize.value + 'px "Microsoft YaHei", sans-serif',
                     fill: colors[i % colors.length],
                 },
@@ -10758,7 +11273,7 @@ function getWordCloud(container, dataset, configs) {
 
     let option = {
         backgroundColor: getLinearColor(0, 0, 0, 1, configs.backgroundColor.value.toArray(["transparent"], ",")),
-        grid: getGrids(configs),
+        grid: grids,
         title: getTitle(configs, dataset.title),
         tooltip: getTooltip(configs, "item", function (param) {
             return ["<span style = 'float:left'>" + param.seriesName + "</span>", "<hr style='background-color:" + param.color + "'>" +
@@ -10893,7 +11408,7 @@ function getSunburst(container, dataset, configs) {
     let option = {
         aria: getAria(configs),
         backgroundColor: getBackgroundColor(configs),
-        // grid: getGrids(configs),
+        grid: grids,
         title: getTitle(configs, dataset.title),
         tooltip: getTooltip(configs, "item", function (param) {
             return ["<span style = 'float:left'>" + param.seriesName + "</span>", "<hr style='background-color:" + param.color + "'>" +
@@ -11500,7 +12015,7 @@ function getPie3D(container, dataset, configs) {
             }
         }
         if (c > 0) {
-            series = series.concat(getSeries(da, percentage(configs.ringInRadiusFor3D.value) / 100, c - 1));
+            series = series.concat(getSeries(da, percentValue(configs.ringInRadiusFor3D.value) / 100, c - 1));
         }
     }
 
@@ -11813,6 +12328,9 @@ function getSingeAxis(container, dataset, configs) {
 
     let source = getSource(dataset);
     let columns = source.dimensions.slice(1,source.dimensions.length);
+    let cols = configs.singeAxisGroup.value;
+    let lines = Math.ceil((source.dimensions.length - 1) / cols);
+    let grids = getGrids(configs, source.dimensions.length, cols, lines, configs.singeAxisGrids.value);
     let headers = source.getArrays(source.dimensions[0]);
     let data = source.getPoints();
     let section = [];
@@ -11824,10 +12342,8 @@ function getSingeAxis(container, dataset, configs) {
     let option = {
         aria: getAria(configs),
         backgroundColor: getBackgroundColor(configs),
-        grid: getGrids(configs),
-        title: [
-            getTitle(configs, dataset.title)
-        ],
+        grid: grids,
+        title:getTitle(configs, dataset.title),
         brush: getBrush(configs),
         toolbox: getToolbox(configs, container, dataset, myChart),
         legend: getLegend(configs, columns),
@@ -11836,22 +12352,23 @@ function getSingeAxis(container, dataset, configs) {
         }),
         singleAxis: [],
         series: [],
-        graphic: getWaterGraphic(configs,__VERSION__)
+        graphic: getWaterGraphic(configs, __VERSION__)
     };
 
     columns.forEach(function (column, idx) {
-        option.title.push({
-            textBaseline: 'middle',
-            top: (idx + 0.5) * 100 / columns.length + '%',
-            text: column
-        });
         option.singleAxis.push({
-            left: 150,
             type: 'category',
             boundaryGap: false,
+            name: column,
+            nameLocation: "start",//end//middle//center
+            nameTextStyle:{
+                color: configs.titleTextColor.value,
+            },
             data: headers,
-            top: (idx * 100 / columns.length + 5) + '%',
-            height: (100 / columns.length - 10) + '%',
+            left: grids[idx].left,
+            bottom: grids[idx].bottom,
+            height: 100,//grids[idx].height,
+            width: grids[idx].width,
 
             inverse: configs.xAxisInverse.value.toBoolean(),
             axisLine: {
@@ -12080,37 +12597,174 @@ function getBarRacing(container, dataset, configs) {
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
     let source = getSource(dataset);
+    let grids = getGrids(configs);
     let data = source.getArrays();
+    let ia = source.getMinMaxValue(null, "number");
     let index = 0;
+    let timeout = false;
+
+    let serie = {
+        name: data[index][0],
+        realtimeSort: configs.barRacingRealtimeSort.value.toBoolean(),
+        colorBy: configs.barRacingColorby.value,
+        type: 'bar',
+        data: data[index].slice(1),
+        label: {
+            show: true,
+            position: configs.barRacingType.value == "vertical" ? "top" : "right",
+            precision: 1,
+            distance: 15,
+            rotate: configs.barLabelRotate.value,
+            valueAnimation: configs.barRacingValueAnimation.value.toBoolean(),
+            formatter: "{value|{c}}",
+            rich: {
+                value: {
+                    color: configs.barLabelTextColor.value,
+                    fontSize: configs.barLabelFontSize.value,
+                }
+            }
+        },
+        itemStyle: {
+            borderRadius: Number(configs.barItemStyleBorderRadius.value),
+        },
+    };
+
+    function getGraphPosition(position) {
+        if (position == "center")
+            return {
+                right: grids.values.center[0] + "%",
+                bottom: grids.values.center[1] + "%"
+            };
+        if (position == "leftTop")
+            return {
+                left: grids.values.left + "%",
+                top: grids.values.top + "%"
+            }
+        if (position == "rightTop")
+            return {
+                right: grids.values.right + "%",
+                top: grids.values.top + "%"
+            }
+        if (position == "rightBottom")
+            return {
+                right: grids.values.right + "%",
+                bottom: grids.values.bottom + "%"
+            }
+    };
 
     let option = {
         aria: getAria(configs),
         backgroundColor: getBackgroundColor(configs),
-        grid: getGrids(configs),
+        grid: grids,
         brush: getBrush(configs),
         toolbox: getToolbox(configs, container, dataset, myChart),
         title: getTitle(configs, dataset.title),
-        legend: getLegend(configs, source.dimensions.slice(1, source.dimensions.length)),
-        tooltip: getTooltip(configs, "axis", null),
-        yAxis: configs.barType.value == "vertical"?{
-            max: 'dataMax',
-        }:{
+        legend: null, //getLegend(configs, source.dimensions.slice(1, source.dimensions.length)),
+        tooltip: null,
+        yAxis: configs.barRacingType.value == "vertical" ? {
+            max: ia.max,
+            min: ia.min,
+            position: configs.barRacingInverse.value.toBoolean() ? "right" : "left",
+            axisLine: {
+                show: false,
+            },
+            axisTick: {
+                show: false,
+            },
+            axisLabel: {
+                show: configs.barRacingYAxisLable.value.toBoolean(),
+            },
+            splitLine: {
+                show: false,
+            },
+            splitArea: {
+                show: false,
+            },
+        } : {
             type: 'category',
             data: source.dimensions.slice(1),
-            inverse: false,
+            inverse: configs.barRacingInverse.value.toBoolean(),
+            axisLine: {
+                show: true,
+                lineStyle: {
+                    color: configs.axisColor.value
+                },
+            },
+            axisTick: {
+                show: false,
+            },
+            axisLabel: {
+                show: true,
+                rotate: Number(configs.yAxisLabelRotate.value),
+                textStyle: {
+                    color: configs.axisTextColor.value,
+                    fontSize: Number(configs.axisTextFontSize.value)
+                }
+            },
+            splitLine: {
+                show: configs.splitYLineDisplay.value.toBoolean(),
+                lineStyle: {
+                    color: [
+                        configs.axisColor.value
+                    ]
+                },
+            },
+            splitArea: {
+                show: configs.splitYAreaDisplay.value.toBoolean(),
+            },
             animationDuration: 300,
             animationDurationUpdate: 300,
-            max: Number(configs.barMax.value) - 1 // only the largest 3 bars will be displayed
+            max: Number(configs.barRacingMax.value) - 1
         },
-        xAxis: configs.barType.value == "vertical"?{
+        xAxis: configs.barRacingType.value == "vertical" ? {
             type: 'category',
             data: source.dimensions.slice(1),
-            inverse: false,
+            inverse: configs.barRacingInverse.value.toBoolean(),
+            axisLine: {
+                show: true,
+                lineStyle: {
+                    color: configs.axisColor.value
+                },
+            },
+            axisTick: {
+                show: false,
+            },
+            axisLabel: {
+                show: true,
+                rotate: Number(configs.xAxisLabelRotate.value),
+                textStyle: {
+                    color: configs.axisTextColor.value,
+                    fontSize: Number(configs.axisTextFontSize.value)
+                }
+            },
+            splitLine: {
+                show: false
+            },
+            splitArea: {
+                show: false,
+            },
             animationDuration: 300,
             animationDurationUpdate: 300,
-            max: Number(configs.barMax.value) - 1 // only the largest 3 bars will be displayed
-        }:{
-            max: 'dataMax',
+            max: Number(configs.barRacingMax.value) - 1
+        } : {
+            max: ia.max,
+            min: ia.min,
+            position: configs.barRacingInverse.value.toBoolean() ? "top" : "bottom",
+            axisLine: {
+                show: false,
+            },
+            axisTick: {
+                show: false,
+            },
+            axisLabel: {
+                show: configs.barRacingYAxisLable.value.toBoolean(),
+            },
+            splitLine: {
+                show: false,
+            },
+            splitArea: {
+                show: false,
+            },
         },
         dataZoom: [
             getDataZoomXAxis(configs, 0, "inside", 0, 100),
@@ -12118,62 +12772,90 @@ function getBarRacing(container, dataset, configs) {
             getDataZoomYAxis(configs, 0, "inside", 0, 100, myChart.getWidth()),
             getDataZoomYAxis(configs, 0, "slider", 0, 100, myChart.getWidth())
         ],
-        series: [{
-            name: data[index][0],
-            realtimeSort: configs.barRealtimeSort.value.toBoolean(),
-            type: 'bar',
-            data: data[index].slice(1),
-            label: {
-                show: configs.barLabelDisplay.value.toBoolean(),
-                // align: "center",
-                // verticalAlign: "middle",
-                position: configs.barLabelPosition.value,
-                precision: 1,
-                distance: 15,
-                rotate: configs.barLabelRotate.value,
-                valueAnimation: configs.barValueAnimation.value.toBoolean(),
-                formatter: "{value|{c}}",
-                rich: {
-                    value: {
-                        color: configs.barLabelTextColor.value,
-                        fontSize: configs.barLabelFontSize.value,
-                    }
-                }
-            },
-            itemStyle: {
-                borderRadius: Number(configs.barItemStyleBorderRadius.value),
-            },
-        }],
+        series: [],
         animationDuration: 0,
-        animationDurationUpdate: Number(configs.barTimeout.value),
+        animationDurationUpdate: Number(configs.barRacingTimeout.value),
         animationEasing: 'linear',
         animationEasingUpdate: 'linear',
         graphic: {
             elements: [{
                 type: 'text',
-                right: 180,
-                bottom: 60,
                 style: {
                     text: data[index][0],
-                    font: 'bolder 60px monospace',
-                    fill: 'gray'
+                    fontSize: configs.waterGraphTextFontSize.value == "auto" ? 20 : Number(configs.waterGraphTextFontSize.value),
+                    fontWeight: 'normal',
+                    lineDash: [0, 200],
+                    lineDashOffset: 0,
+                    fill: 'transparent',
+                    stroke: configs.waterGraphColor.value == 'auto' ? '#fff' : configs.waterGraphColor.value,
+                    lineWidth: 1,
+                    opacity: Number(configs.waterGraphOpacity.value),
+                },
+                onmouseover: function () {
+                    timeout = true;
+                },
+                onmouseout: function () {
+                    timeout = false;
+                },
+                keyframeAnimation: {
+                    duration: Number(configs.barRacingTimeout.value) / 2,
+                    loop: false,
+                    keyframes: [
+                        {
+                            percent: 0.7,
+                            style: {
+                                fill: 'transparent',
+                                lineDashOffset: 200,
+                                lineDash: [200, 0],
+                                opacity: Number(configs.waterGraphOpacity.value),
+                            }
+                        },
+                        {
+                            // Stop for a while.
+                            percent: 0.8,
+                            style: {
+                                fill: 'transparent',
+                                opacity: Number(configs.waterGraphOpacity.value),
+                            }
+                        },
+                        {
+                            percent: 1,
+                            style: {
+                                fill: configs.waterGraphColor.value == 'auto' ? '#fff' : configs.waterGraphColor.value,
+                                opacity: Number(configs.waterGraphOpacity.value),
+                            }
+                        }
+                    ]
                 },
                 z: 100
-            }].concat(getWaterGraphic(configs,__VERSION__))
+            }]
         }
     };
 
+    option.series.push(serie);
+    let position = getGraphPosition(configs.barRacingGraphPosition.value);
+    for (let key in position) {
+        option.graphic.elements[0][key] = position[key];
+    }
+
     function run() {
-        if (index == data.length)
-            if (configs.barLoop.value.toBoolean())
-                index = 0;
+        if (!timeout) {
+            if (index == data.length)
+                if (configs.barRacingLoop.value.toBoolean())
+                    index = 0;
+                else
+                    return;
             else
-                return;
-        else
-            index++;
-        option.series[0].name = option.graphic.elements[0].style.text = data[index][0];
-        option.series[0].data = data[index].slice(1);
-        myChart.setOption(option);
+                index++;
+            serie.name = option.graphic.elements[0].style.text = data[index][0];
+            let position = getGraphPosition(configs.barRacingGraphPosition.value);
+            for (let key in position) {
+                option.graphic.elements[0][key] = position[key];
+            }
+            serie.data = data[index].slice(1);
+            // option.tooltip = getTooltip(configs, "axis", null);
+            myChart.setOption(option);
+        }
     }
 
     setTimeout(() => {
@@ -12185,7 +12867,7 @@ function getBarRacing(container, dataset, configs) {
         run();
         if (myChart._disposed)
             clearInterval(myChart["IntervalId"]);
-    }, Number(configs.barTimeout.value));
+    }, Number(configs.barRacingTimeout.value));
 
     __ECHARTS__.addHistory(container, configs, dataset);
     return container;
@@ -12205,9 +12887,11 @@ function getScrolling(container, dataset, configs) {
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
     let source = getSource(dataset);
+    let timeout = false;
+    let grids = getGrids(configs);
     let start = 0;
     let max = Number(configs.scrollingMax.value);
-
+    let ia = source.getMinMaxValue(null, "number");
     let stacktime = Number(configs.barStackTimes.value);
     let stack = null;
     let series = [];
@@ -12249,9 +12933,9 @@ function getScrolling(container, dataset, configs) {
                 },
                 rotate: configs.lineLabelRotate.value,
             },
-            areaStyle: configs.scrollingType.value == "area" ?{
+            areaStyle: configs.scrollingType.value == "area" ? {
                 normal: {}
-            }:null,
+            } : null,
             //面积图
             sampling: configs.scrollingType.value == "area" ? "average" : null,
             itemStyle: {
@@ -12277,9 +12961,32 @@ function getScrolling(container, dataset, configs) {
         series.push(serie);
     }
 
+    function getGraphPosition(position) {
+        if (position == "center")
+            return {
+                right: grids.values.center[0] + "%",
+                bottom: grids.values.center[1] + "%"
+            };
+        if (position == "leftTop")
+            return {
+                left: grids.values.left + "%",
+                top: grids.values.top + "%"
+            }
+        if (position == "rightTop")
+            return {
+                right: grids.values.right + "%",
+                top: grids.values.top + "%"
+            }
+        if (position == "rightBottom")
+            return {
+                right: grids.values.right + "%",
+                bottom: grids.values.bottom + "%"
+            }
+    };
+
     let option = {
         backgroundColor: getBackgroundColor(configs),
-        grid: getGrids(configs),
+        grid: grids,
         brush: getBrush(configs),
         toolbox: getToolbox(configs, container, dataset, myChart),
         title: getTitle(configs, dataset.title),
@@ -12293,9 +13000,68 @@ function getScrolling(container, dataset, configs) {
             getDataZoomYAxis(configs, 0, "inside", 0, 100, myChart.getWidth()),
             getDataZoomYAxis(configs, 0, "slider", 0, 100, myChart.getWidth())
         ],
-        graphic: getWaterGraphic(configs,__VERSION__),
+        graphic: {
+            elements: [{
+                type: 'text',
+                style: {
+                    text: source.getItems(source.dimensions[0]).slice(start)[0].value + " - " + source.getItems(source.dimensions[0]).slice(start + max)[0].value,
+                    fontSize: configs.waterGraphTextFontSize.value == "auto" ? 20 : Number(configs.waterGraphTextFontSize.value),
+                    fontWeight: 'normal',
+                    lineDash: [0, 200],
+                    lineDashOffset: 0,
+                    fill: 'transparent',
+                    stroke: configs.waterGraphColor.value == 'auto' ? '#fff' : configs.waterGraphColor.value,
+                    lineWidth: 1,
+                    opacity: Number(configs.waterGraphOpacity.value),
+                },
+                onmouseover: function () {
+                    timeout = true;
+                },
+                onmouseout: function () {
+                    timeout = false;
+                },
+                keyframeAnimation: {
+                    duration: Number(configs.scrollingTimeout.value) / 2,
+                    loop: false,
+                    keyframes: [
+                        {
+                            percent: 0.7,
+                            style: {
+                                fill: 'transparent',
+                                lineDashOffset: 200,
+                                lineDash: [200, 0],
+                                opacity: Number(configs.waterGraphOpacity.value),
+                            }
+                        },
+                        {
+                            // Stop for a while.
+                            percent: 0.8,
+                            style: {
+                                fill: 'transparent',
+                                opacity: Number(configs.waterGraphOpacity.value),
+                            }
+                        },
+                        {
+                            percent: 1,
+                            style: {
+                                fill: configs.waterGraphColor.value == 'auto' ? '#fff' : configs.waterGraphColor.value,
+                                opacity: Number(configs.waterGraphOpacity.value),
+                            }
+                        }
+                    ]
+                },
+                z: 100
+            }]
+        },
         series: series,
     };
+    option.yAxis.max = ia.max;
+    option.yAxis.min = ia.min;
+
+    let position = getGraphPosition(configs.scrollingGraphPosition.value);
+    for (let key in position) {
+        option.graphic.elements[0][key] = position[key];
+    }
 
     setTimeout(() => {
         myChart.hideLoading();
@@ -12303,20 +13069,23 @@ function getScrolling(container, dataset, configs) {
     }, Number(configs.loadingTimes.value));
 
     myChart["IntervalId"] = setInterval(function () {
-        if (start + max > source.getItems(source.dimensions[0]).length)
-            if (configs.scrollingLoop.value.toBoolean())
-                start = 0;
+        if (!timeout) {
+            if (start + max > source.getItems(source.dimensions[0]).length)
+                if (configs.scrollingLoop.value.toBoolean())
+                    start = 0;
+                else
+                    return;
             else
-                return;
-        else
-            start++;
-        option.xAxis = getXAxis(configs, "category", source.getItems(source.dimensions[0]).slice(start, start + max));
-        for (let i = 0; i < series.length; i++) {
-            series[i].data = source.getItems(series[i].name).slice(start, start + max);
+                start++;
+            option.xAxis = getXAxis(configs, "category", source.getItems(source.dimensions[0]).slice(start, start + max));
+            for (let i = 0; i < series.length; i++) {
+                series[i].data = source.getItems(series[i].name).slice(start, start + max);
+            }
+            option.graphic.elements[0].style.text = source.getItems(source.dimensions[0]).slice(start)[0].value + " - " + source.getItems(source.dimensions[0]).slice(start + max)[0].value;
+            myChart.setOption(option, true);
+            if (myChart._disposed)
+                clearInterval(myChart["IntervalId"]);
         }
-        myChart.setOption(option, true);
-        if (myChart._disposed)
-            clearInterval(myChart["IntervalId"]);
     }, Number(configs.scrollingTimeout.value));
 
     __ECHARTS__.addHistory(container, configs, dataset);
@@ -12519,7 +13288,7 @@ function getDatasetImage(container, dataset, configs) {
         ],
         xAxis: getAxis(source, types, cols).xAxis,
         yAxis: getAxis(source, types, cols).yAxis,
-        graphic: getWaterGraphic(configs,__VERSION__),
+        graphic: getWaterGraphic(configs, __VERSION__),
         series: getSeries(source, types, 1),
     };
 
@@ -12542,7 +13311,7 @@ function getSaveAsReport(configs, container, myChart) {
             if (typeof getEchartsReport === "function")
                 getEchartsReport(container, myChart);
             else
-                UI.alert.show("注意", "固定报表组件未载入!","auto");
+                UI.alert.show("注意", "固定报表组件未载入!", "auto");
         }
     } : {};
 }

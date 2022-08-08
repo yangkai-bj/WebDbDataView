@@ -235,11 +235,13 @@ var UI = {
         let items = {
             "线形图": {value: "line", checked: false},
             "柱状图": {value: "bar", checked: false},
+            "条形图": {value: "tranbar", checked: false},
             "散点图": {value: "scatter", checked: false},
             "面积图": {value: "area", checked: false},
             "饼图": {value: "pie", checked: false},
             "日历图": {value: "calendar", checked: false},
-            "漏斗图": {value: "funnel", checked: false}
+            "漏斗图": {value: "funnel", checked: false},
+            "词云图": {value: "wordCloud", checked: false}
         };
         let container = document.createElement("div");
         container.setAttribute("value", values.join(","));
@@ -467,15 +469,14 @@ var UI = {
 
     colorChoice: function(id, value, callback, color) {
         let container = document.createElement("div");
-        container.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("opencolor", (typeof color === 'undefined' ? __THEMES__.get().color : color), "18px", "18px");
-        container.style.backgroundRepeat = "no-repeat";
-        container.style.backgroundPosition = "left bottom";
-        container.style.backgroundSize = "18px 18px";
-        container.setAttribute("value", color === "#000000"? "transparent": value);
-        container.onclick = function () {
-            if (event.target == this)
-                $("colorChoice-" + id).click();
+        container.setAttribute("value", value);
+        let choise = __SYS_IMAGES_SVG__.getImage("opencolor", (typeof color === 'undefined' ? __THEMES__.get().color : color), "18px", "18px", __THEMES__.get().hover);
+        choise.style.cssFloat = "left";
+        choise.onclick = function () {
+            $("colorChoice-" + id).click();
         };
+        container.appendChild(choise);
+
         let colors = document.createElement("input");
         colors.type = "color";
         colors.id = "colorChoice-" + id;
@@ -483,34 +484,67 @@ var UI = {
         colors.style.visibility = "hidden";
         colors.style.width = "0px";
         colors.style.height = "0px";
-        colors.value = value;
+        colors.value = sRGBitem(value).hex;
         colors.onchange = function () {
-            container.setAttribute("value", this.value);
-            $("colorChoice-span-color-" + id).style.backgroundColor = $("colorChoice-span-color-" + id).innerText = (this.value === "#000000" ? "transparent" : this.value);
+            let color = colorTosRGB(this.value, $("colorChoice-opacity-" + id).value);
+            container.setAttribute("value", color);
+            $("colorChoice-span-color-" + id).style.backgroundColor = $("colorChoice-span-color-" + id).innerText = this.value;
+            $("colorChoice-opacity-" + id).style.backgroundColor = color;
             if (typeof callback !== "undefined")
-                callback(this.value);
+                callback(color);
         };
         container.appendChild(colors);
+
         let span = document.createElement("span");
         span.id = "colorChoice-span-color-" + id;
-        span.style.width = "80%";
+        span.style.width = "60%";
         span.style.height = "18px";
         span.style.cssFloat = "left";
+        span.title = "HEX";
         span.style.color = (typeof color === 'undefined' ? __THEMES__.get().color : color);
-        span.style.backgroundColor = span.innerText = (value === "#000000"? "transparent": value);
+        span.style.backgroundColor = span.innerText = sRGBitem(value).hex;
         span.style.textAlign = "center";
-        span.style.marginLeft = "20px";
-        span.style.borderRadius = "10px";
         span.style.outlineStyle = "none";
+        span.style.overflow = "hidden";
         span.style.textShadow = "-1px 1px 0 gray, 1px 1px 0 gray";
+        span.style.borderRadius = "10px";
         span.style.borderLeft = span.style.borderRight = "1px solid gray";
         container.appendChild(span);
+
+        let opacity = document.createElement("input");
+        opacity.id = "colorChoice-opacity-" + id;
+        opacity.type = "number";
+        container.appendChild(opacity);
+        opacity.style.cssFloat = "left";
+        opacity.style.width = "18%";
+        opacity.style.borderWidth = "0px";
+        opacity.style.borderRadius = "10px";
+        opacity.style.textAlign = "center";
+        opacity.style.textShadow = "-1px 1px 0 gray, 1px 1px 0 gray";
+        opacity.style.backgroundColor = value;
+        opacity.style.borderLeft = opacity.style.borderRight = "1px solid gray";
+        opacity.min = 0;
+        opacity.max = 1;
+        opacity.step = 0.1;
+        opacity.value = sRGBitem(value).opacity;
+        opacity.title = "Opacity";
+        opacity.onkeypress = function () {
+            return false;
+        };
+        opacity.onchange = function () {
+            let color = colorTosRGB($("colorChoice-" + id).value, this.value);
+            container.setAttribute("value", color);
+            this.style.backgroundColor = color;
+            if (typeof callback !== "undefined")
+                callback(color);
+        };
 
         let restore = __SYS_IMAGES_SVG__.getImage("restore", (typeof color === 'undefined' ? __THEMES__.get().color : color), "18px", "18px", __THEMES__.get().hover);
         restore.style.cssFloat = "right";
         restore.onclick = function () {
-            container.setAttribute("value","transparent");
+            container.setAttribute("value", "transparent");
             $("colorChoice-span-color-" + id).style.backgroundColor = $("colorChoice-span-color-" + id).innerText = $("colorChoice-" + id).value = "transparent";
+            $("colorChoice-opacity-" + id).style.backgroundColor = "transparent";
             if (typeof callback !== "undefined")
                 callback("transparent");
         };
@@ -521,16 +555,14 @@ var UI = {
     fileChoice: function(id, width, cssfloat, accept, multiple, callback, color) {
         let container = document.createElement("div");
         container.style.width = width;
-        container.style.cssFloat = cssfloat;
-        container.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl("openfile", (typeof color === 'undefined' ? __THEMES__.get().color : color), "18px", "18px");
-        container.style.backgroundRepeat = "no-repeat";
-        container.style.backgroundPosition = "left bottom";
-        container.style.backgroundSize = "18px 18px";
-        container.style.cursor = "pointer";
-        container.onclick = function () {
-            if (event.target == this)
-                $(id).click();
+        container.className = "ui-container-item-files";
+
+        let choise = __SYS_IMAGES_SVG__.getImage("openfile", (typeof color === 'undefined' ? __THEMES__.get().color : color), "18px", "18px", __THEMES__.get().hover);
+        choise.style.cssFloat = "left";
+        choise.onclick = function () {
+            $(id).click();
         };
+        container.appendChild(choise);
         let files = document.createElement("input");
         files.type = "file";
         files.id = id;
@@ -555,9 +587,8 @@ var UI = {
             "overflow: hidden;" +
             "text-overflow: ellipsis;" +
             "white-space: nowrap;";
-        list.style.cssFloat = "left";
         list.style.cssFloat = "right";
-        list.style.marginLeft = "22px";
+        list.style.borderWidth = "0px";
         list.style.width = "90%";
         container.appendChild(list);
         return container;

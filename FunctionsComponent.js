@@ -1838,3 +1838,68 @@ function getSQLParameters(sql, history) {
     return parameter;
 }
 
+function colorTosRGB(color, opacity) {
+    //
+    //将颜色(HEX\GBR)转换为sGBR
+    //
+    let reg = new RegExp(/rgb\((\d{1,3}\,){2}\d{1,3}\)$/, "g");
+    if (reg.test(color)) {
+        let rgb = [];
+        color.replace(/\d{1,3}/g, function (value) {
+            rgb.push(parseInt(value));
+        });
+        rgb.push(typeof opacity === "undefined" ? 1 : opacity);
+        return "rgba(" + rgb.join(",") + ")";
+    } else {
+        reg = new RegExp(/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}}[0-9a-fA-F]{8})/, "g");
+        let content = color.match(reg);
+        if (content !== null) {
+            return "rgba(" + [
+                parseInt("0x" + color.slice(1, 3)),
+                parseInt("0x" + color.slice(3, 5)),
+                parseInt("0x" + color.slice(5, 7)),
+                typeof opacity === "undefined" ? 1 : opacity
+            ].join(",") + ")";
+        } else {
+            reg = new RegExp(/rgba\((\d{1,3}\,){3}([01]+\.\d{1}|1|0)\)$/, "g");
+            if (reg.test(color)) {
+                let rgb = [];
+                color.replace(/\d{1,3}/g, function (r) {
+                    rgb.push(parseInt(r));
+                });
+                rgb = rgb.slice(0, 3);
+                rgb.push(typeof opacity === "undefined" ? 1 : opacity);
+                return "rgba(" + rgb.join(",") + ")";
+            } else
+                return "transparent";
+        }
+    }
+}
+
+function sRGBitem(sRGB) {
+    //
+    //获取sRGB颜色中HEX值和透明度
+    //
+    let reg = new RegExp(/rgba\((\d{1,3}\,){3}([01]+\.\d{1}|1|0)\)$/, "g");
+    if (reg.test(sRGB)) {
+        let rgb = [];
+        sRGB.replace(/\d{1,3}/g, function (r) {
+            rgb.push(parseInt(r));
+        });
+        let r = rgb[0];
+        let g = rgb[1];
+        let b = rgb[2];
+
+        let opacity = 1;
+        sRGB.replace(/([01]+\.\d{1}|1|0)/g, function (r) {
+            opacity = Number(r);
+        });
+        return {
+            color: sRGB,
+            hex: "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1),
+            rgb: "rgb(" + [r, g, b].join(",") + ")",
+            opacity: opacity
+        };
+    } else
+        return {color: sRGB, hex: sRGB, rgb: sRGB, opacity: 1};
+}

@@ -294,6 +294,8 @@ function getEchartsReport(container, myChart) {
             "configsvalue.innerText = configs[name].value;\n" +
             "dd.appendChild(configsvalue);\n" +
             "} else {\n" +
+            "if (typeof __configs__[name].title !== 'undefined')\n" +
+            "dd.title = __configs__[name].title;\n" +
             "if (__configs__[name].type == 'input') {\n" +
             "let input = document.createElement('input');\n" +
             "input.style.cssFloat = 'right';\n" +
@@ -366,7 +368,9 @@ function getEchartsReport(container, myChart) {
             "input.step = __configs__[name].attribute.step;\n" +
             "input.className = 'ui-container-item-range';\n" +
             "input.title = configs[name].value;\n" +
+            "try{\n" +
             "input.value = Number(configs[name].value.replace(new RegExp(__configs__[name].attribute.unit,'g'), ''));\n" +
+            "}catch(e){}\n" +
             "input.onchange = function () {\n" +
             "configs[this.id].value = this.title = (this.value + __configs__[this.id].attribute.unit);\n" +
             "reset(type);\n" +
@@ -543,10 +547,10 @@ function getEchartsReport(container, myChart) {
             "if (typeof UI !== 'undefined'){\n" +
             "let args = {position:'bottom', width:250, height:170};\n" +
             "UI.tooltip($('ECHARTS'), '<li>默认情况下,报表展示的是初始数据的「静态图像」；</li><li>如果报表检测到「组件服务器」，将自动切换至「动态视图」；</li><li>在动态视图提供的工具中，您可以尝试导出图像、局部放大、快速切换等功能。</li>', args);\n" +
-            "UI.tooltip($('TABLE'), '<li>您可以将报表中的数据导出为「XML」文件；</li><li>如果您「转置」报表或对报表重新「排序」操作，将触发视图的「重绘」。</li>', args);\n" +
-            "UI.tooltip($('SCRIPT'), '<li>数据脚本可以帮助您理解报表的计算方法和统计口径，是报表「复用」的重要组成部分。</li>', args);\n" +
-            "UI.tooltip($('CONFIGS'), '<li>在组件服务器支持下，您可通过调整「参数」，以呈现丰富的数据视图；</li><li>任何参数的变更都将触发视图的重绘。</li>', args);\n" +
-            "UI.tooltip($('report-system'), '<li>您可以进入系统创建属于自己的「数据仓库」和独特报表；</li><li>进入系统后，使用「打开报表」功能可编辑此报表。</li>', args);\n" +
+            "UI.tooltip($('TABLE'), '<li>您可以将数据报表导出为「XML」文件；</li><li>在组件服务器支持下，如果您「转置」数据报表或对报表重新「排序」，数据视图将同步「重绘」。</li>', args);\n" +
+            "UI.tooltip($('SCRIPT'), '<li>数据脚本可以帮助您理解报表的「计算方法」和「统计口径」；</li><li>是报表「复用」的重要组成部分。</li>', args);\n" +
+            "UI.tooltip($('CONFIGS'), '<li>在组件服务器支持下，您可通过调整「参数」，以呈现丰富的数据视图；</li><li>任何参数的变更都将触发数据视图「重绘」。</li>', args);\n" +
+            "UI.tooltip($('report-system'), '<li>您可以进入系统创建属于自己的「数据仓库」和「独特报表」；</li><li>进入系统后，可「打开报表」,并编辑此固定报表。</li>', args);\n" +
             "$('report-system').title = '';\n" +
             "}" +
             "}\n" +
