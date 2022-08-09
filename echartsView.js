@@ -1869,8 +1869,9 @@ var __ECHARTS__ = {
             type: "range",
             attribute: {min: 0, max: 30, step: 1, unit: "%"}
         },
-        scrollingScreenWidth: {name: "宽度", value: "100%", type: "range", attribute: {min: 1, max: 100, step: 1, unit: "%"}},
-        scrollingScreenColumnsWidth: {name: "列宽", value: "auto", type: "input", title: "可输入'auto'或百分数数组'1%,2%,3,%'"},
+        scrollingScreenWidth: {name: "整体宽度", value: "100%", type: "range", attribute: {min: 1, max: 100, step: 1, unit: "%"}},
+        scrollingScreenMaxColumns: {name: "最大列数", value: 6, type: "number", attribute: {min: 1, max: 15, step: 1}},
+        scrollingScreenColumnsWidth: {name: "每列宽度", value: "auto", type: "input", title: "可输入'auto'或百分数数组如'10%,20%,30%'"},
         scrollingScreenBackColor: {value: "transparent", name: "背景颜色", type: "color"},
         scrollingScreenBorderColor: {value: "transparent", name: "边框颜色", type: "color"},
         scrollingScreenColumnFontFillColor: {value: "auto", name: "表头颜色", type: "color"},
@@ -1890,8 +1891,9 @@ var __ECHARTS__ = {
             type: "range",
             attribute: {min: 0, max: 30, step: 1, unit: "%"}
         },
-        walkingLanternWidth: {name: "宽度", value: "100%", type: "range", attribute: {min: 1, max: 100, step: 1, unit: "%"}},
-        walkingLanternColumnsWidth: {name: "列宽", value: "auto", type: "input", title: "可输入'auto'或百分数数组'1%,2%,3,%'"},
+        walkingLanternWidth: {name: "整体宽度", value: "100%", type: "range", attribute: {min: 1, max: 100, step: 1, unit: "%"}},
+        walkingLanternMaxColumns: {name: "最大列数", value: 6, type: "number", attribute: {min: 1, max: 15, step: 1}},
+        walkingLanternColumnsWidth: {name: "每列宽度", value: "auto", type: "input", title: "可输入'auto'或百分数数组如'10%,20%,30%'"},
         walkingLanternBackColor: {value: "transparent", name: "背景颜色", type: "color"},
         walkingLanternBorderColor: {value: "transparent", name: "边框颜色", type: "color"},
         walkingLanternColumnFontFillColor: {value: "auto", name: "表头颜色", type: "color"},
@@ -1913,8 +1915,9 @@ var __ECHARTS__ = {
             type: "range",
             attribute: {min: 0, max: 30, step: 1, unit: "%"}
         },
-        windowShadesWidth: {name: "宽度", value: "100%", type: "range", attribute: {min: 1, max: 100, step: 1, unit: "%"}},
-        windowShadesColumnsWidth: {name: "列宽", value: "auto", type: "input", title: "可输入'auto'或百分数数组'1%,2%,3,%'"},
+        windowShadesWidth: {name: "整体宽度", value: "100%", type: "range", attribute: {min: 1, max: 100, step: 1, unit: "%"}},
+        windowShadesMaxColumns: {name: "最大列数", value: 6, type: "number", attribute: {min: 1, max: 15, step: 1}},
+        windowShadesColumnsWidth: {name: "每列宽度", value: "auto", type: "input", title: "可输入'auto'或百分数数组如'10%,20%,30%'"},
         windowShadesBackColor: {value: "transparent", name: "背景颜色", type: "color"},
         windowShadesBorderColor: {value: "transparent", name: "边框颜色", type: "color"},
         windowShadesColumnFontFillColor: {value: "auto", name: "表头颜色", type: "color"},
@@ -9785,7 +9788,7 @@ function getScrollingScreen(container, dataset, configs) {
     let containerWidth = myChart.getWidth();//Number(width.replace(/px/i, ""));
     let containerHeight = myChart.getHeight();//Number(height.replace(/px/i, ""));
     let grids = getGrids(configs);
-    let columns = source.dimensions;
+    let columns = (Number(configs.scrollingScreenMaxColumns.value) >= source.dimensions.length ? source.dimensions : source.dimensions.slice(0, Number(configs.scrollingScreenMaxColumns.value)));
     let cols = [];
     let data = [];
     let txtOffset = 8;
@@ -9963,7 +9966,7 @@ function getWalkingLantern(container, dataset, configs) {
     let containerHeight = myChart.getHeight();//Number(height.replace(/px/i, ""));
     let grids = getGrids(configs);
     let top = containerHeight * Number(configs.walkingLanternTop.value.replaceAll("%", "")) / 100;
-    let columns = source.dimensions;
+    let columns = (Number(configs.walkingLanternMaxColumns.value) >= source.dimensions.length ? source.dimensions : source.dimensions.slice(0, Number(configs.walkingLanternMaxColumns.value)));
     let lines = configs.walkingLanternLines.value;
     let groups = 0;
     let index = 0;
@@ -9973,7 +9976,7 @@ function getWalkingLantern(container, dataset, configs) {
     let timeout = false;
     let dire = configs.walkingLanternDirection.value;
 
-    let cell = getRowCell(containerWidth * percentValue(configs.walkingLanternWidth.value) / 100, configs.walkingLanternColumnsWidth.value, dataset["columns"].length);
+    let cell = getRowCell(containerWidth * percentValue(configs.walkingLanternWidth.value) / 100, configs.walkingLanternColumnsWidth.value, columns.length);
 
     let title = {
         type: 'group',
@@ -10147,7 +10150,7 @@ function getWindowShades(container, dataset, configs) {
     let grids = getGrids(configs);
     let top = containerHeight * Number(configs.windowShadesTop.value.replaceAll("%", "")) / 100;
     let left = containerWidth * Number(configs.windowShadesLeft.value.replaceAll("%", "")) / 100;
-    let columns = source.dimensions;
+    let columns = (Number(configs.windowShadesMaxColumns.value) >= source.dimensions.length ? source.dimensions : source.dimensions.slice(0, Number(configs.windowShadesMaxColumns.value)));
     let lines = configs.windowShadesLines.value;
     let pageIndex = 0;
     let lineIndex = 0;
@@ -10156,7 +10159,7 @@ function getWindowShades(container, dataset, configs) {
     let txtOffset = 8;
     let lineHeight = Number(configs.windowShadesFontSize.value) + txtOffset;
     let timeout = false;
-    let cell = getRowCell(containerWidth * percentValue(configs.windowShadesWidth.value) / 100, configs.windowShadesColumnsWidth.value, dataset["columns"].length);
+    let cell = getRowCell(containerWidth * percentValue(configs.windowShadesWidth.value) / 100, configs.windowShadesColumnsWidth.value, columns.length);
 
     let title = {
         type: 'group',
