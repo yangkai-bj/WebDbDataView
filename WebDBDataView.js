@@ -639,7 +639,7 @@ var __XMLHTTP__ = {
             {name: "主程序", src: "WebDBDataView.js", type: "text/javascript", element: "script", load: false},
             {name: "主程序", src: "themes/default.css", type: "text/css", element: "link", load: false},
             {name: "主程序", src: "WebDBDataView.css", type: "text/css", element: "link", load: false},
-            {name: "主程序", src: "UI-A.js", type: "text/javascript", element: "script", load: false},
+            {name: "主程序", src: "UI.js", type: "text/javascript", element: "script", load: false},
             {name: "资源库", src: "resources.js", type: "text/javascript", element: "script", load: false},
             {name: "公共函数", src: "FunctionsComponent.js", type: "text/javascript", element: "script", load: false},
             {
@@ -889,468 +889,1515 @@ var __XMLHTTP__ = {
     }
 };
 
- var __SQLEDITOR__ = {
-     title: null,
-     codeMirror: null,
-     parameter: {},
-     configs: {
-         codeMirrorTheme: {
-             name: "主题",
-             value: JSON.stringify({name: "default", href: "codemirror/theme/default.css"}),
-             options: [
-                 new Option("默认", JSON.stringify({name: "default", href: "codemirror/theme/default.css"})),
-                 new Option("黑色", JSON.stringify({name: "black", href: "codemirror/theme/black.css"})),
-                 new Option("粉色", JSON.stringify({name: "pink", href: "codemirror/theme/pink.css"})),
-                 new Option("墨绿", JSON.stringify({
-                     name: "blackish-green",
-                     href: "codemirror/theme/blackish-green.css"
-                 })),
-                 new Option("蓝色", JSON.stringify({name: "cobalt", href: "codemirror/theme/cobalt.css"})),
-                 new Option("深蓝", JSON.stringify({name: "duotone-light", href: "codemirror/theme/duotone-light.css"})),
-                 new Option("幻想", JSON.stringify({name: "rubyblue", href: "codemirror/theme/rubyblue.css"})),
-                 new Option("初心", JSON.stringify({name: "solarized light", href: "codemirror/theme/solarized.css"})),
-                 new Option("宁静", JSON.stringify({name: "darcula", href: "codemirror/theme/darcula.css"})),
-                 new Option("优雅", JSON.stringify({name: "elegant", href: "codemirror/theme/elegant.css"})),
-                 new Option("矩阵", JSON.stringify({name: "the-matrix", href: "codemirror/theme/the-matrix.css"})),
-                 new Option("锐利", JSON.stringify({name: "yonce", href: "codemirror/theme/yonce.css"})),
-                 new Option("黄昏", JSON.stringify({name: "zenburn", href: "codemirror/theme/zenburn.css"})),
-                 new Option("黯然", JSON.stringify({name: "eclipse", href: "codemirror/theme/eclipse.css"})),
-                 new Option("透明", JSON.stringify({name: "transparent", href: "codemirror/theme/transparent.css"})),
-             ],
-             type: "select"
-         },
-         codeMirrorMode: {
-             name: "模式",
-             value: "text/x-mysql",
-             options: [new Option("MySQL", "text/x-mysql"), new Option("SQLite", "text/x-sqlite"), new Option("HTML", "text/html"), new Option("函数", "text/javascript")],
-             type: "select"
-         },
-         codeMirrorHeight: {
-             name: "高度",
-             value: "250px",
-             type: "range",
-             attribute: {min: 250, max: 500, step: 10, unit: "px"}
-         },
-         codeMirrorFontSize: {
-             name: "字号",
-             value: "90%",
-             type: "range",
-             attribute: {min: 90, max: 150, step: 10, unit: "%"}
-         },
-         codeMirrorRulers: {
-             name: "标尺数量",
-             value: 6,
-             type: "number", attribute: {min: 0, max: 10, step: 1}
-         },
-         codeMirrorRulerWidth: {
-             name: "标尺宽度",
-             value: "40",
-             type: "range",
-             attribute: {min: 10, max: 100, step: 10, unit: ""}
-         },
+var __SQLEDITOR__ = {
+    title: null,
+    codeMirror: null,
+    parameter: {},
+    configs: {
+        codeMirrorTheme: {
+            name: "主题",
+            value: JSON.stringify({name: "default", href: "codemirror/theme/default.css"}),
+            options: [
+                new Option("默认", JSON.stringify({name: "default", href: "codemirror/theme/default.css"})),
+                new Option("黑色", JSON.stringify({name: "black", href: "codemirror/theme/black.css"})),
+                new Option("粉色", JSON.stringify({name: "pink", href: "codemirror/theme/pink.css"})),
+                new Option("墨绿", JSON.stringify({
+                    name: "blackish-green",
+                    href: "codemirror/theme/blackish-green.css"
+                })),
+                new Option("蓝色", JSON.stringify({name: "cobalt", href: "codemirror/theme/cobalt.css"})),
+                new Option("深蓝", JSON.stringify({name: "duotone-light", href: "codemirror/theme/duotone-light.css"})),
+                new Option("幻想", JSON.stringify({name: "rubyblue", href: "codemirror/theme/rubyblue.css"})),
+                new Option("初心", JSON.stringify({name: "solarized light", href: "codemirror/theme/solarized.css"})),
+                new Option("宁静", JSON.stringify({name: "darcula", href: "codemirror/theme/darcula.css"})),
+                new Option("优雅", JSON.stringify({name: "elegant", href: "codemirror/theme/elegant.css"})),
+                new Option("矩阵", JSON.stringify({name: "the-matrix", href: "codemirror/theme/the-matrix.css"})),
+                new Option("锐利", JSON.stringify({name: "yonce", href: "codemirror/theme/yonce.css"})),
+                new Option("黄昏", JSON.stringify({name: "zenburn", href: "codemirror/theme/zenburn.css"})),
+                new Option("黯然", JSON.stringify({name: "eclipse", href: "codemirror/theme/eclipse.css"})),
+                new Option("透明", JSON.stringify({name: "transparent", href: "codemirror/theme/transparent.css"})),
+            ],
+            type: "select"
+        },
+        codeMirrorMode: {
+            name: "模式",
+            value: "text/x-mysql",
+            options: [new Option("MySQL", "text/x-mysql"), new Option("SQLite", "text/x-sqlite"), new Option("HTML", "text/html"), new Option("函数", "text/javascript")],
+            type: "select"
+        },
+        codeMirrorHeight: {
+            name: "高度",
+            value: "250px",
+            type: "range",
+            attribute: {min: 250, max: 500, step: 10, unit: "px"}
+        },
+        codeMirrorFontSize: {
+            name: "字号",
+            value: "90%",
+            type: "range",
+            attribute: {min: 90, max: 150, step: 10, unit: "%"}
+        },
+        codeMirrorRulers: {
+            name: "标尺数量",
+            value: 6,
+            type: "number", attribute: {min: 0, max: 10, step: 1}
+        },
+        codeMirrorRulerWidth: {
+            name: "标尺宽度",
+            value: "40",
+            type: "range",
+            attribute: {min: 10, max: 100, step: 10, unit: ""}
+        },
 
-         codeMirrorLineNumber: {
-             name: "显示行号",
-             value: "true",
-             type: "boolean"
-         },
-         codeMirrorSmartIndent: {
-             name: "智能缩进",
-             value: "true",
-             type: "boolean"
-         },
-         codeMirrorMatchBrackets: {
-             name: "匹配括号",
-             value: "true",
-             type: "boolean"
-         },
-         codeMirrorAutofocus: {
-             name: "自动焦点",
-             value: "true",
-             type: "boolean"
-         },
-         codeMirrorBreakpoints: {
-             name: "显示断点",
-             value: "false",
-             type: "boolean"
-         },
-         codeMirrorCharset: {
-             name: "字符集",
-             value: "UTF-8",
-             options: [new Option("UTF-8", "UTF-8"), new Option("GBK", "GBK")],
-             type: "select"
-         },
-     },
+        codeMirrorLineNumber: {
+            name: "显示行号",
+            value: "true",
+            type: "boolean"
+        },
+        codeMirrorSmartIndent: {
+            name: "智能缩进",
+            value: "true",
+            type: "boolean"
+        },
+        codeMirrorMatchBrackets: {
+            name: "匹配括号",
+            value: "true",
+            type: "boolean"
+        },
+        codeMirrorAutofocus: {
+            name: "自动焦点",
+            value: "true",
+            type: "boolean"
+        },
+        codeMirrorBreakpoints: {
+            name: "显示断点",
+            value: "false",
+            type: "boolean"
+        },
+        codeMirrorCharset: {
+            name: "字符集",
+            value: "UTF-8",
+            options: [new Option("UTF-8", "UTF-8"), new Option("GBK", "GBK")],
+            type: "select"
+        },
+    },
 
-     getConfigItems: function () {
-         let configs = {};
-         for (let key in this.configs) {
-             configs[key] = this.configs[key].value;
-         }
-         return configs;
-     },
+    getConfigItems: function () {
+        let configs = {};
+        for (let key in this.configs) {
+            configs[key] = this.configs[key].value;
+        }
+        return configs;
+    },
 
-     getConfigs: function () {
-         let configs = {};
-         for (let key in this.configs) {
-             let config = this.configs[key];
-             configs[key] = {
-                 name: config.name,
-                 type: config.type,
-                 value: config.value
-             };
-         }
-         return configs;
-     },
+    getConfigs: function () {
+        let configs = {};
+        for (let key in this.configs) {
+            let config = this.configs[key];
+            configs[key] = {
+                name: config.name,
+                type: config.type,
+                value: config.value
+            };
+        }
+        return configs;
+    },
 
-     reset: function () {
-         try {
-             if (this.codeMirror != null) {
-                 this.codeMirror.setOption("mode", (this.configs.codeMirrorMode.value == "text/html" ? "text/javascript" : this.configs.codeMirrorMode.value));
-                 let theme = JSON.parse(this.configs.codeMirrorTheme.value);
-                 $("sqlediterTheme").href = theme.href;
-                 this.codeMirror.setOption("theme", theme.name);
-                 let colors = ["#fcc", "#ccf", "#fcf", "#aff", "#cfc", "#f5f577"];
-                 let rulers = [];
-                 if (Number(this.configs.codeMirrorRulers.value) >= 1) {
-                     for (let i = 1; i <= Number(this.configs.codeMirrorRulers.value); i++) {
-                         rulers.push({
-                             color: colors[i % colors.length],
-                             column: i * Number(this.configs.codeMirrorRulerWidth.value),
-                             lineStyle: "dotted"
-                         });
-                         //solid//dashed//dash-dot//dotted
-                     }
-                 }
-                 this.codeMirror.setOption("rulers", rulers);
-                 this.codeMirror.setOption("lineNumbers", this.configs.codeMirrorLineNumber.value.toBoolean());
-                 this.codeMirror.setOption("smartIndent", this.configs.codeMirrorSmartIndent.value.toBoolean());
-                 this.codeMirror.setOption("matchBrackets", this.configs.codeMirrorMatchBrackets.value.toBoolean());
-                 this.codeMirror.setOption("autofocus", this.configs.codeMirrorAutofocus.value.toBoolean());
-                 this.codeMirror.setOption("gutters", [
-                     this.configs.codeMirrorLineNumber.value.toBoolean() ? "CodeMirror-linenumbers" : "",
-                     this.configs.codeMirrorBreakpoints.value.toBoolean() ? "breakpoints" : ""
-                 ]);
-                 let mirr = $("sqlContainer").getElementsByTagName("div");
-                 for (let i = 0; i < mirr.length; i++) {
-                     if (mirr[i].className.split(" ")[0] == "CodeMirror") {
-                         mirr[i].style.fontSize = this.configs.codeMirrorFontSize.value;
-                         mirr[i].style.height = "100%";
-                     }
-                 }
-             }
-         } catch (e) {
-             __LOGS__.viewError("auto", e);
-         }
-     },
+    reset: function () {
+        try {
+            if (this.codeMirror != null) {
+                this.codeMirror.setOption("mode", (this.configs.codeMirrorMode.value == "text/html" ? "text/javascript" : this.configs.codeMirrorMode.value));
+                let theme = JSON.parse(this.configs.codeMirrorTheme.value);
+                $("sqlediterTheme").href = theme.href;
+                this.codeMirror.setOption("theme", theme.name);
+                let colors = ["#fcc", "#ccf", "#fcf", "#aff", "#cfc", "#f5f577"];
+                let rulers = [];
+                if (Number(this.configs.codeMirrorRulers.value) >= 1) {
+                    for (let i = 1; i <= Number(this.configs.codeMirrorRulers.value); i++) {
+                        rulers.push({
+                            color: colors[i % colors.length],
+                            column: i * Number(this.configs.codeMirrorRulerWidth.value),
+                            lineStyle: "dotted"
+                        });
+                        //solid//dashed//dash-dot//dotted
+                    }
+                }
+                this.codeMirror.setOption("rulers", rulers);
+                this.codeMirror.setOption("lineNumbers", this.configs.codeMirrorLineNumber.value.toBoolean());
+                this.codeMirror.setOption("smartIndent", this.configs.codeMirrorSmartIndent.value.toBoolean());
+                this.codeMirror.setOption("matchBrackets", this.configs.codeMirrorMatchBrackets.value.toBoolean());
+                this.codeMirror.setOption("autofocus", this.configs.codeMirrorAutofocus.value.toBoolean());
+                this.codeMirror.setOption("gutters", [
+                    this.configs.codeMirrorLineNumber.value.toBoolean() ? "CodeMirror-linenumbers" : "",
+                    this.configs.codeMirrorBreakpoints.value.toBoolean() ? "breakpoints" : ""
+                ]);
+                let mirr = $("sqlContainer").getElementsByTagName("div");
+                for (let i = 0; i < mirr.length; i++) {
+                    if (mirr[i].className.split(" ")[0] == "CodeMirror") {
+                        mirr[i].style.fontSize = this.configs.codeMirrorFontSize.value;
+                        mirr[i].style.height = "100%";
+                    }
+                }
+            }
+        } catch (e) {
+            __LOGS__.viewError("auto", e);
+        }
+    },
 
-     init: function (textarea) {
-         let messasge = __LOGS__.viewMessage("初始化脚本编辑器...");
-         try {
-             let theme = JSON.parse(this.configs.codeMirrorTheme.value);
-             $("sqlediterTheme").href = theme.href;
-             let colors = ["#fcc", "#ccf", "#fcf", "#aff", "#cfc", "#f5f577"];
-             let rulers = [];
-             if (Number(this.configs.codeMirrorRulers.value) >= 1) {
-                 for (let i = 1; i <= Number(this.configs.codeMirrorRulers.value); i++) {
-                     rulers.push({
-                         color: colors[i % colors.length],
-                         column: i * Number(this.configs.codeMirrorRulerWidth.value),
-                         lineStyle: "dotted"
-                     });
-                     //solid//dashed//dash-dot//dotted
-                 }
-             }
-             let options = {
-                 mode: (this.configs.codeMirrorMode.value == "text/html" ? "text/javascript" : this.configs.codeMirrorMode.value),
-                 theme: theme.name,
-                 indentWithTabs: true,
-                 smartIndent: this.configs.codeMirrorSmartIndent.value.toBoolean(),
-                 lineNumbers: this.configs.codeMirrorLineNumber.value.toBoolean(),
-                 matchBrackets: this.configs.codeMirrorMatchBrackets.value.toBoolean(),
-                 autofocus: this.configs.codeMirrorAutofocus.value.toBoolean(),
-                 rulers: rulers,
-                 gutters: [
-                     this.configs.codeMirrorLineNumber.value.toBoolean() ? "CodeMirror-linenumbers" : "",
-                     this.configs.codeMirrorBreakpoints.value.toBoolean() ? "breakpoints" : ""
-                 ],
-                 extraKeys: {
-                     "F10": "autocomplete",
-                     "F11": function (cm) {
-                         cm.setOption("fullScreen", !cm.getOption("fullScreen"));
-                     },
-                     "Esc": function (cm) {
-                         if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
-                     },
-                     "Shift-F":
-                         "findPersistent"
-                 },
-                 hintOptions: {
-                     tables: {}
-                 }
-             };
+    init: function (textarea) {
+        let messasge = __LOGS__.viewMessage("初始化脚本编辑器...");
+        try {
+            let theme = JSON.parse(this.configs.codeMirrorTheme.value);
+            $("sqlediterTheme").href = theme.href;
+            let colors = ["#fcc", "#ccf", "#fcf", "#aff", "#cfc", "#f5f577"];
+            let rulers = [];
+            if (Number(this.configs.codeMirrorRulers.value) >= 1) {
+                for (let i = 1; i <= Number(this.configs.codeMirrorRulers.value); i++) {
+                    rulers.push({
+                        color: colors[i % colors.length],
+                        column: i * Number(this.configs.codeMirrorRulerWidth.value),
+                        lineStyle: "dotted"
+                    });
+                    //solid//dashed//dash-dot//dotted
+                }
+            }
+            let options = {
+                mode: (this.configs.codeMirrorMode.value == "text/html" ? "text/javascript" : this.configs.codeMirrorMode.value),
+                theme: theme.name,
+                indentWithTabs: true,
+                smartIndent: this.configs.codeMirrorSmartIndent.value.toBoolean(),
+                lineNumbers: this.configs.codeMirrorLineNumber.value.toBoolean(),
+                matchBrackets: this.configs.codeMirrorMatchBrackets.value.toBoolean(),
+                autofocus: this.configs.codeMirrorAutofocus.value.toBoolean(),
+                rulers: rulers,
+                gutters: [
+                    this.configs.codeMirrorLineNumber.value.toBoolean() ? "CodeMirror-linenumbers" : "",
+                    this.configs.codeMirrorBreakpoints.value.toBoolean() ? "breakpoints" : ""
+                ],
+                extraKeys: {
+                    "F10": "autocomplete",
+                    "F11": function (cm) {
+                        cm.setOption("fullScreen", !cm.getOption("fullScreen"));
+                    },
+                    "Esc": function (cm) {
+                        if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
+                    },
+                    "Shift-F":
+                        "findPersistent"
+                },
+                hintOptions: {
+                    tables: {}
+                }
+            };
 
-             textarea.placeholder = "\n" +
-                 "F10 自动完成\n" +
-                 "F11 全屏编辑切换;Esc 取消全屏\n" +
-                 "Ctrl-Z 撤销键入\n" +
-                 "Ctrl-Y 恢复键入\n" +
-                 "Shift-F 查找\n" +
-                 "Shift-Ctrl-F 查找替换\n" +
-                 "Shift-Ctrl-R 查找全部并替换\n";
-             this.codeMirror = CodeMirror.fromTextArea(textarea, options);
-             this.codeMirror.on("gutterClick", function (cm, n) {
-                 function marker() {
-                     let marker = document.createElement("div");
-                     marker.style.color = __THEMES__.get().color;
-                     marker.innerHTML = "●";
-                     return marker;
-                 }
+            textarea.placeholder = "\n" +
+                "F10 自动完成\n" +
+                "F11 全屏编辑切换;Esc 取消全屏\n" +
+                "Ctrl-Z 撤销键入\n" +
+                "Ctrl-Y 恢复键入\n" +
+                "Shift-F 查找\n" +
+                "Shift-Ctrl-F 查找替换\n" +
+                "Shift-Ctrl-R 查找全部并替换\n";
+            this.codeMirror = CodeMirror.fromTextArea(textarea, options);
+            this.codeMirror.on("gutterClick", function (cm, n) {
+                function marker() {
+                    let marker = document.createElement("div");
+                    marker.style.color = __THEMES__.get().color;
+                    marker.innerHTML = "●";
+                    return marker;
+                }
 
-                 let info = cm.lineInfo(n);
-                 cm.setGutterMarker(n, "breakpoints", info.gutterMarkers ? null : marker());
-             });
-             let mirr = $("sqlContainer").getElementsByTagName("div");
-             for (let i = 0; i < mirr.length; i++) {
-                 if (mirr[i].className.split(" ")[0] == "CodeMirror") {
-                     mirr[i].style.fontSize = this.configs.codeMirrorFontSize.value;
-                     mirr[i].style.height = "100%";
-                 }
-             }
-             messasge.innerText += "OK.";
-         } catch (e) {
-             messasge.innerText += ("fails.<br>" + e);
-             __LOGS__.viewError("auto", e);
-         }
-     },
-     setConfigs: function (parent, callback) {
-         let config = getUserConfig("codeMirrorConfig");
-         if (config != null) {
-             config = JSON.parse(config);
-             for (let key in config) {
-                 try {
-                     this.configs[key].value = config[key];
-                 } catch (e) {
-                 }
-             }
-         }
+                let info = cm.lineInfo(n);
+                cm.setGutterMarker(n, "breakpoints", info.gutterMarkers ? null : marker());
+            });
+            let mirr = $("sqlContainer").getElementsByTagName("div");
+            for (let i = 0; i < mirr.length; i++) {
+                if (mirr[i].className.split(" ")[0] == "CodeMirror") {
+                    mirr[i].style.fontSize = this.configs.codeMirrorFontSize.value;
+                    mirr[i].style.height = "100%";
+                }
+            }
+            messasge.innerText += "OK.";
+        } catch (e) {
+            messasge.innerText += ("fails.<br>" + e);
+            __LOGS__.viewError("auto", e);
+        }
+    },
+    setConfigs: function (parent, callback) {
+        let config = getUserConfig("codeMirrorConfig");
+        if (config != null) {
+            config = JSON.parse(config);
+            for (let key in config) {
+                try {
+                    this.configs[key].value = config[key];
+                } catch (e) {
+                }
+            }
+        }
 
-         if (parent == "auto" || parent == null) {
-             if (document.fullscreen && typeof __CONFIGS__.FULLSCREEN.element == "object") {
-                 parent = __CONFIGS__.FULLSCREEN.element;
-             } else {
-                 parent = document.body;
-             }
-         }
+        if (parent == "auto" || parent == null) {
+            if (document.fullscreen && typeof __CONFIGS__.FULLSCREEN.element == "object") {
+                parent = __CONFIGS__.FULLSCREEN.element;
+            } else {
+                parent = document.body;
+            }
+        }
 
-         let container = document.createElement("div");
-         container.id = "ui_codeMirrorConfigs";
-         container.className = "ui-container-background";
-         parent.appendChild(container);
+        let container = document.createElement("div");
+        container.id = "ui_codeMirrorConfigs";
+        container.className = "ui-container-background";
+        parent.appendChild(container);
 
-         let content = document.createElement("div");
-         content.className = "ui-container-body";
-         content.id = "codeMirror-configs-Content";
-         container.appendChild(content);
+        let content = document.createElement("div");
+        content.className = "ui-container-body";
+        content.id = "codeMirror-configs-Content";
+        container.appendChild(content);
 
-         let title = document.createElement("div");
-         title.className = "ui-container-title";
-         title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name, __THEMES__.get().color, "24px", "24px", __VERSION__.logo.flip);
-         let span = document.createElement("span");
-         span.innerHTML = "编辑器设置";
-         title.appendChild(span);
-         let close = __SYS_IMAGES_SVG__.getImage("close", __THEMES__.get().color, "24px", "24px", __THEMES__.get().hover);
-         close.className = "ui-container-close";
-         title.appendChild(close);
-         content.appendChild(title);
+        let title = document.createElement("div");
+        title.className = "ui-container-title";
+        title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name, __THEMES__.get().color, "24px", "24px", __VERSION__.logo.flip);
+        let span = document.createElement("span");
+        span.innerHTML = "编辑器设置";
+        title.appendChild(span);
+        let close = __SYS_IMAGES_SVG__.getImage("close", __THEMES__.get().color, "24px", "24px", __THEMES__.get().hover);
+        close.className = "ui-container-close";
+        title.appendChild(close);
+        content.appendChild(title);
 
-         let hr = document.createElement("hr");
-         hr.className = "ui-container-hr";
-         content.appendChild(hr);
+        let hr = document.createElement("hr");
+        hr.className = "ui-container-hr";
+        content.appendChild(hr);
 
-         let itemcontainer = document.createElement("div");
-         itemcontainer.id = itemcontainer.className = "ui-container-scroll-div";
-         content.appendChild(itemcontainer);
+        let itemcontainer = document.createElement("div");
+        itemcontainer.id = itemcontainer.className = "ui-container-scroll-div";
+        content.appendChild(itemcontainer);
 
-         for (let name in this.configs) {
-             let item = document.createElement("div");
-             item.className = "ui-container-item";
-             itemcontainer.appendChild(item);
-             let span = document.createElement("span");
-             span.className = "ui-container-item-name";
-             span.innerHTML = this.configs[name].name + ":";
-             item.appendChild(span);
-             if (this.configs[name].type == "input") {
-                 let input = document.createElement("input");
-                 input.style.cssFloat = "right";
-                 input.id = name;
-                 input.type = "input";
-                 input.className = "ui-container-item-input";
-                 input.value = this.configs[name].value;
-                 input.onchange = function () {
-                     __SQLEDITOR__.configs[this.id].value = this.value;
-                 };
-                 if (typeof this.configs[name].title != "undefined")
-                     input.title = this.configs[name].title;
-                 else
-                     input.title = this.configs[name].name;
-                 item.appendChild(input);
-             } else if (this.configs[name].type == "select") {
-                 let input = document.createElement("select");
-                 input.style.cssFloat = "right";
-                 input.id = name;
-                 input.type = "select";
-                 input.className = "ui-container-item-input";
-                 for (let i = 0; i < this.configs[name].options.length; i++) {
-                     if (typeof this.configs[name].options[i] === "object")
-                         input.options.add(this.configs[name].options[i]);
-                     else
-                         input.options.add(new Option(this.configs[name].options[i]));
-                 }
-                 input.value = this.configs[name].value;
-                 input.onchange = function () {
-                     __SQLEDITOR__.configs[this.id].value = this.value;
-                 };
-                 if (typeof this.configs[name].title != "undefined")
-                     input.title = this.configs[name].title;
-                 else
-                     input.title = this.configs[name].name;
-                 item.appendChild(input);
-             } else if (this.configs[name].type == "color") {
-                 let input = UI.colorChoice(name, this.configs[name].value, function (value) {
-                     __SQLEDITOR__.configs[name].value = value;
-                 });
-                 input.id = name;
-                 input.className = "ui-container-item-color";
-                 if (typeof this.configs[name].title != "undefined")
-                     input.title = this.configs[name].title;
-                 else
-                     input.title = this.configs[name].name;
-                 item.appendChild(input);
-             } else if (this.configs[name].type == "boolean") {
-                 let input = UI.booleanChoice(this.configs[name].value.toBoolean(), function (value) {
-                     __SQLEDITOR__.configs[name].value = (value ? "true" : "false");
-                 });
-                 input.id = name;
-                 input.className = "ui-container-item-boolean";
-                 if (typeof this.configs[name].title != "undefined")
-                     input.title = this.configs[name].title;
-                 else
-                     input.title = this.configs[name].name;
-                 item.appendChild(input);
-             } else if (this.configs[name].type == "range") {
-                 let input = document.createElement("input");
-                 input.style.cssFloat = "right";
-                 input.id = name;
-                 input.type = "range";
-                 input.min = __SQLEDITOR__.configs[name].attribute.min;
-                 input.max = __SQLEDITOR__.configs[name].attribute.max;
-                 input.step = __SQLEDITOR__.configs[name].attribute.step;
-                 input.className = "ui-container-item-range";
-                 input.title = __SQLEDITOR__.configs[name].value;
-                 input.value = Number(__SQLEDITOR__.configs[name].value.replace(new RegExp(__SQLEDITOR__.configs[name].attribute.unit, "g"), ""));
-                 input.onchange = function () {
-                     __SQLEDITOR__.configs[this.id].value = this.title = (this.value + __SQLEDITOR__.configs[this.id].attribute.unit);
-                 };
-                 item.appendChild(input);
-             } else if (this.configs[name].type == "ranges") {
-                 let input = UI.rangesChoice(
-                     __SQLEDITOR__.configs[name].attribute.min,
-                     __SQLEDITOR__.configs[name].attribute.max,
-                     __SQLEDITOR__.configs[name].attribute.unit,
-                     __SQLEDITOR__.configs[name].value,
-                     function (value) {
-                         __SQLEDITOR__.configs[name].value = value;
-                     });
-                 input.id = name;
-                 input.className = "ui-container-item-ranges";
-                 if (typeof this.configs[name].title != "undefined")
-                     input.title = this.configs[name].title;
-                 else
-                     input.title = this.configs[name].name;
-                 item.appendChild(input);
-             } else if (this.configs[name].type == "number") {
-                 let input = document.createElement("input");
-                 input.style.cssFloat = "right";
-                 input.id = name;
-                 input.type = "number";
-                 input.min = __SQLEDITOR__.configs[name].attribute.min;
-                 input.max = __SQLEDITOR__.configs[name].attribute.max;
-                 input.step = __SQLEDITOR__.configs[name].attribute.step;
-                 input.className = "ui-container-item-number";
-                 input.title = __SQLEDITOR__.configs[name].value;
-                 input.value = __SQLEDITOR__.configs[name].value;
-                 input.onkeypress = function () {
-                     return false;
-                 };
-                 input.onchange = function () {
-                     __SQLEDITOR__.configs[this.id].value = this.title = this.value;
-                 };
-                 item.appendChild(input);
-             } else if (this.configs[name].type == "hr") {
-                 span.innerHTML = "[ " + this.configs[name].name + " ]";
-                 span.style.fontWeight = "bolder";
-                 span.style.color = "var(--main-title-color)";
-                 let c = document.createElement("div");
-                 c.style.width = "70%";
-                 c.style.cssFloat = "right";
-                 item.appendChild(c);
-                 item.id = name;
-                 let h = document.createElement("hr");
-                 h.style.marginTop = "10px";
-                 c.appendChild(h)
-                 //d.innerHTML = "";
-                 //d.appendChild(h);
-             }
-         }
+        for (let name in this.configs) {
+            let item = document.createElement("div");
+            item.className = "ui-container-item";
+            itemcontainer.appendChild(item);
+            let span = document.createElement("span");
+            span.className = "ui-container-item-name";
+            span.innerHTML = this.configs[name].name + ":";
+            item.appendChild(span);
+            if (this.configs[name].type == "input") {
+                let input = document.createElement("input");
+                input.style.cssFloat = "right";
+                input.id = name;
+                input.type = "input";
+                input.className = "ui-container-item-input";
+                input.value = this.configs[name].value;
+                input.onchange = function () {
+                    __SQLEDITOR__.configs[this.id].value = this.value;
+                };
+                if (typeof this.configs[name].title != "undefined")
+                    input.title = this.configs[name].title;
+                else
+                    input.title = this.configs[name].name;
+                item.appendChild(input);
+            } else if (this.configs[name].type == "select") {
+                let input = document.createElement("select");
+                input.style.cssFloat = "right";
+                input.id = name;
+                input.type = "select";
+                input.className = "ui-container-item-input";
+                for (let i = 0; i < this.configs[name].options.length; i++) {
+                    if (typeof this.configs[name].options[i] === "object")
+                        input.options.add(this.configs[name].options[i]);
+                    else
+                        input.options.add(new Option(this.configs[name].options[i]));
+                }
+                input.value = this.configs[name].value;
+                input.onchange = function () {
+                    __SQLEDITOR__.configs[this.id].value = this.value;
+                };
+                if (typeof this.configs[name].title != "undefined")
+                    input.title = this.configs[name].title;
+                else
+                    input.title = this.configs[name].name;
+                item.appendChild(input);
+            } else if (this.configs[name].type == "color") {
+                let input = UI.colorChoice(name, this.configs[name].value, function (value) {
+                    __SQLEDITOR__.configs[name].value = value;
+                });
+                input.id = name;
+                input.className = "ui-container-item-color";
+                if (typeof this.configs[name].title != "undefined")
+                    input.title = this.configs[name].title;
+                else
+                    input.title = this.configs[name].name;
+                item.appendChild(input);
+            } else if (this.configs[name].type == "boolean") {
+                let input = UI.booleanChoice(this.configs[name].value.toBoolean(), function (value) {
+                    __SQLEDITOR__.configs[name].value = (value ? "true" : "false");
+                });
+                input.id = name;
+                input.className = "ui-container-item-boolean";
+                if (typeof this.configs[name].title != "undefined")
+                    input.title = this.configs[name].title;
+                else
+                    input.title = this.configs[name].name;
+                item.appendChild(input);
+            } else if (this.configs[name].type == "range") {
+                let input = document.createElement("input");
+                input.style.cssFloat = "right";
+                input.id = name;
+                input.type = "range";
+                input.min = __SQLEDITOR__.configs[name].attribute.min;
+                input.max = __SQLEDITOR__.configs[name].attribute.max;
+                input.step = __SQLEDITOR__.configs[name].attribute.step;
+                input.className = "ui-container-item-range";
+                input.title = __SQLEDITOR__.configs[name].value;
+                input.value = Number(__SQLEDITOR__.configs[name].value.replace(new RegExp(__SQLEDITOR__.configs[name].attribute.unit, "g"), ""));
+                input.onchange = function () {
+                    __SQLEDITOR__.configs[this.id].value = this.title = (this.value + __SQLEDITOR__.configs[this.id].attribute.unit);
+                };
+                item.appendChild(input);
+            } else if (this.configs[name].type == "ranges") {
+                let input = UI.rangesChoice(
+                    __SQLEDITOR__.configs[name].attribute.min,
+                    __SQLEDITOR__.configs[name].attribute.max,
+                    __SQLEDITOR__.configs[name].attribute.unit,
+                    __SQLEDITOR__.configs[name].value,
+                    function (value) {
+                        __SQLEDITOR__.configs[name].value = value;
+                    });
+                input.id = name;
+                input.className = "ui-container-item-ranges";
+                if (typeof this.configs[name].title != "undefined")
+                    input.title = this.configs[name].title;
+                else
+                    input.title = this.configs[name].name;
+                item.appendChild(input);
+            } else if (this.configs[name].type == "number") {
+                let input = document.createElement("input");
+                input.style.cssFloat = "right";
+                input.id = name;
+                input.type = "number";
+                input.min = __SQLEDITOR__.configs[name].attribute.min;
+                input.max = __SQLEDITOR__.configs[name].attribute.max;
+                input.step = __SQLEDITOR__.configs[name].attribute.step;
+                input.className = "ui-container-item-number";
+                input.title = __SQLEDITOR__.configs[name].value;
+                input.value = __SQLEDITOR__.configs[name].value;
+                input.onkeypress = function () {
+                    return false;
+                };
+                input.onchange = function () {
+                    __SQLEDITOR__.configs[this.id].value = this.title = this.value;
+                };
+                item.appendChild(input);
+            } else if (this.configs[name].type == "hr") {
+                span.innerHTML = "[ " + this.configs[name].name + " ]";
+                span.style.fontWeight = "bolder";
+                span.style.color = "var(--main-title-color)";
+                let c = document.createElement("div");
+                c.style.width = "70%";
+                c.style.cssFloat = "right";
+                item.appendChild(c);
+                item.id = name;
+                let h = document.createElement("hr");
+                h.style.marginTop = "10px";
+                c.appendChild(h)
+                //d.innerHTML = "";
+                //d.appendChild(h);
+            }
+        }
 
-         hr = document.createElement("hr");
-         hr.className = "ui-container-hr";
-         content.appendChild(hr);
+        hr = document.createElement("hr");
+        hr.className = "ui-container-hr";
+        content.appendChild(hr);
 
-         let c = document.createElement("div");
-         c.className = "groupbar";
-         content.appendChild(c);
+        let c = document.createElement("div");
+        c.className = "groupbar";
+        content.appendChild(c);
 
-         let b = document.createElement("button");
-         b.className = "button";
-         b.innerHTML = "确定";
-         b.onclick = function () {
-             setUserConfig("codeMirrorConfig", JSON.stringify(__SQLEDITOR__.getConfigItems()));
-             $("sqlContainer").style.height = __SQLEDITOR__.configs.codeMirrorHeight.value;
-             callback();
-             parent.removeChild($("ui_codeMirrorConfigs"));
-             resize();
-         };
-         c.appendChild(b);
+        let b = document.createElement("button");
+        b.className = "button";
+        b.innerHTML = "确定";
+        b.onclick = function () {
+            setUserConfig("codeMirrorConfig", JSON.stringify(__SQLEDITOR__.getConfigItems()));
+            $("sqlContainer").style.height = __SQLEDITOR__.configs.codeMirrorHeight.value;
+            callback();
+            parent.removeChild($("ui_codeMirrorConfigs"));
+            resize();
+        };
+        c.appendChild(b);
 
-         b = document.createElement("button");
-         b.className = "button";
-         b.innerHTML = "重置";
-         b.onclick = close.onclick = function () {
-             UI.confirm.show("注意", "您确定要重置全部编辑器参数吗?", "auto", function () {
-                 setUserConfig("codeMirrorConfig", JSON.stringify({}));
-                 parent.removeChild($("ui_codeMirrorConfigs"));
-                 UI.alert.show("提示", "编辑器参数已恢复为系统初始值,系统将重新载入页面...");
-                 location.reload();
-             });
-         };
-         c.appendChild(b);
+        b = document.createElement("button");
+        b.className = "button";
+        b.innerHTML = "重置";
+        b.onclick = close.onclick = function () {
+            UI.confirm.show("注意", "您确定要重置全部编辑器参数吗?", "auto", function () {
+                setUserConfig("codeMirrorConfig", JSON.stringify({}));
+                parent.removeChild($("ui_codeMirrorConfigs"));
+                UI.alert.show("提示", "编辑器参数已恢复为系统初始值,系统将重新载入页面...");
+                location.reload();
+            });
+        };
+        c.appendChild(b);
 
-         b = document.createElement("button");
-         b.className = "button";
-         b.innerHTML = "退出";
-         b.onclick = close.onclick = function () {
-             parent.removeChild($("ui_codeMirrorConfigs"));
-         };
-         c.appendChild(b);
+        b = document.createElement("button");
+        b.className = "button";
+        b.innerHTML = "退出";
+        b.onclick = close.onclick = function () {
+            parent.removeChild($("ui_codeMirrorConfigs"));
+        };
+        c.appendChild(b);
 
-         dragControl.hook(title, content, container.id, function (left, top) {
-             content.style.left = left + "px";
-             content.style.top = top + "px"
-         });
-     },
- };
+        dragControl.hook(title, content, container.id, function (left, top) {
+            content.style.left = left + "px";
+            content.style.top = top + "px"
+        });
+    },
+};
+
+var SQLite = {
+    columnStruct: {
+        check: {value: false, name: "选择", type: "checkbox", width: "50px"},
+        name: {value: "", name: "名称", type: "input", width: "100px"},
+        type: {
+            value: 0,
+            name: "类型",
+            type: "select",
+            "options": ["int", "varchar", "nvarchar", "decimal", "float", "date", "datetime", "boolean", "blob"],
+            width: "75px"
+        },
+        length: {value: 0, name: "长度", type: "input", width: "25px"},
+        scale: {value: 0, name: "小数位数", type: "input", width: "50px"},
+        allowNull: {value: true, name: "允许空值", type: "select", "options": ["Y", "N"], width: "50px"},
+        index: {value: false, name: "索引", type: "checkbox", width: "50px"},
+        auto_increment: {value: false, name: "自增", type: "checkbox", width: "50px"},
+        column_default: {value: null, name: "默认值", type: "input", width: "50px"},
+        comment: {value: "", name: "注释", type: "input", width: "50px"},
+    },
+    dbManager: function (message, parent, callback, args) {
+        let __DATABASE__ = {
+            Name: {
+                value: "",
+                name: "库名称",
+                type: "text",
+                image: __SYS_IMAGES_SVG__.getUrl("database", __THEMES__.get().color, "16px", "16px")
+            },
+            Database: {value: null, name: "库文件", type: "text"},
+            Version: {value: 1.0, name: "版本号", type: "text"},
+            Description: {value: "", name: "库描述", type: "text"},
+            Size: {value: "1024*1024*1024", name: "库容量", type: "text"}
+        };
+        if (typeof args.index !== "undefined" && typeof args.db !== "undefined") {
+            __DATABASE__.Name.value = args.index;
+            __DATABASE__.Database = args.db.Database;
+            __DATABASE__.Version.value = args.db.Version;
+            __DATABASE__.Description.value = args.db.Description;
+            __DATABASE__.Size.value = args.db.Size;
+        }
+        if (parent == "auto" || parent == null) {
+            if (document.fullscreen && typeof __CONFIGS__.FULLSCREEN.element == "object") {
+                parent = __CONFIGS__.FULLSCREEN.element;
+            } else {
+                parent = document.body;
+            }
+        }
+
+        let container = document.createElement("div");
+        container.id = "ui_createDatabase";
+        container.className = "ui-container-background";
+        parent.appendChild(container);
+
+        let content = document.createElement("div");
+        content.className = "ui-container-body";
+        content.id = "create-database-Content";
+        container.appendChild(content);
+
+        let title = document.createElement("div");
+        title.className = "ui-container-title";
+        title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name, __THEMES__.get().color, "24px", "24px", __VERSION__.logo.flip);
+        let span = document.createElement("span");
+        span.innerHTML = message + " ";
+        title.appendChild(span);
+        let close = __SYS_IMAGES_SVG__.getImage("close", __THEMES__.get().color, "24px", "24px", __THEMES__.get().hover);
+        close.className = "ui-container-close";
+        title.appendChild(close);
+        content.appendChild(title);
+
+        let hr = document.createElement("hr");
+        hr.className = "ui-container-hr";
+        content.appendChild(hr);
+
+        for (let name in __DATABASE__) {
+            if (name !== "Database") {
+                let item = document.createElement("div");
+                item.className = "ui-container-item";
+                content.appendChild(item);
+                let span = document.createElement("span");
+                span.className = "ui-container-item-name";
+                span.innerHTML = __DATABASE__[name].name + ":";
+                item.appendChild(span);
+                if (__DATABASE__[name].type == "text") {
+                    let input = document.createElement("input");
+                    input.className = "ui-container-item-input";
+                    input.id = name;
+                    input.type = "text";
+                    input.value = __DATABASE__[name].value;
+                    if (typeof __DATABASE__[name].image !== "undefined") {
+                        input.style.backgroundImage = __DATABASE__[name].image;
+                        input.style.backgroundRepeat = "no-repeat";
+                        input.style.backgroundPosition = "right";
+                        input.style.backgroundSize = "16px 16px";
+                    }
+                    input.onchange = function () {
+                        __DATABASE__[this.id].value = this.value;
+                    };
+                    item.appendChild(input);
+                }
+            }
+        }
+
+        hr = document.createElement("hr");
+        hr.className = "ui-container-hr";
+        content.appendChild(hr);
+
+        let tool = document.createElement("div");
+        tool.className = "groupbar";
+        tool.style.cssFloat = "left";
+        content.appendChild(tool);
+
+        let b = document.createElement("button");
+        b.className = "button";
+        b.innerHTML = "保存";
+        b.onclick = function () {
+            if (checkStorage()) {
+                if (__DATABASE__.Name.value.trim() != "") {
+                    let db = {
+                        name: __DATABASE__.Name.value,
+                        db: {
+                            Database: __DATABASE__.Database.value == null ? getEventIndex() : __DATABASE__.Database.value,
+                            Version: __DATABASE__.Version.value,
+                            Description: __DATABASE__.Description.value,
+                            Size: __DATABASE__.Size.value
+                        }
+                    };
+                    callback(args, db);
+                    parent.removeChild($("ui_createDatabase"));
+                } else
+                    UI.alert.show("提示", "请输入数据库名称.");
+            }
+        };
+        tool.appendChild(b);
+        b = document.createElement("button");
+        b.className = "button";
+        b.innerHTML = "退出";
+        b.onclick = close.onclick = function () {
+            parent.removeChild($("ui_createDatabase"));
+        };
+        tool.appendChild(b);
+
+        dragControl.hook(title, content, container.id, function (left, top) {
+            content.style.left = left + "px";
+            content.style.top = top + "px"
+        });
+    },
+
+    createTable: function (parent, structure, callback) {
+        if (parent == "auto" || parent == null) {
+            if (document.fullscreen && typeof __CONFIGS__.FULLSCREEN.element == "object") {
+                parent = __CONFIGS__.FULLSCREEN.element;
+            } else {
+                parent = document.body;
+            }
+        }
+
+        let container = document.createElement("div");
+        container.id = "ui_createTable";
+        container.className = "ui-container-background";
+        parent.appendChild(container);
+
+        let content = document.createElement("div");
+        content.className = "ui-container-body";
+        content.style.width = "550px";
+        content.id = "create-table-Content";
+        container.appendChild(content);
+
+        let title = document.createElement("div");
+        title.className = "ui-container-title";
+        title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name, __THEMES__.get().color, "24px", "24px", __VERSION__.logo.flip);
+        let span = document.createElement("span");
+        span.innerHTML = "创建数据表 ";
+        title.appendChild(span);
+        let close = __SYS_IMAGES_SVG__.getImage("close", __THEMES__.get().color, "24px", "24px", __THEMES__.get().hover);
+        close.className = "ui-container-close";
+        title.appendChild(close);
+        content.appendChild(title);
+
+        let hr = document.createElement("hr");
+        hr.className = "ui-container-hr";
+        content.appendChild(hr);
+
+        let tableTitle = document.createElement("input");
+        tableTitle.id = "table-Title";
+        tableTitle.placeholder = "请输入数据表名称.";
+        if (structure != null)
+            tableTitle.value = structure["title"];
+        tableTitle.style.width = "99.2%";
+        content.appendChild(tableTitle);
+
+        let tablecontainer = document.createElement("div");
+        tablecontainer.className = "ui-container-scroll-div";
+        content.appendChild(tablecontainer);
+
+        let tb = document.createElement("table");
+        tablecontainer.appendChild(tb);
+        tb.className = "table";
+        tb.style.width = "100%";
+        tb.id = "table-Content";
+        let tr = document.createElement("tr");
+        tb.appendChild(tr);
+        for (let index in SQLite.columnStruct) {
+            let th = document.createElement("th");
+            tr.appendChild(th);
+            if (index != "check")
+                th.innerText = SQLite.columnStruct[index].name;
+            else {
+                let check = document.createElement("input");
+                check.type = "checkbox";
+                check.className = "columns-checkall";
+                check.style.width = "18px";
+                check.onclick = function () {
+                    let columns = $("table-Content").getElementsByClassName("check");
+                    for (let i = 0; i < columns.length; i++) {
+                        columns[i].checked = this.checked;
+                        this.checked ? columns[i].setAttribute("checked", "checked") : columns[i].removeAttribute("checked");
+                    }
+                };
+                th.style.textAlign = "center";
+                th.appendChild(check);
+            }
+        }
+        let cols = 3;
+        if (structure != null)
+            cols = structure["stru"].length;
+
+        for (let rows = 0; rows < cols; rows++) {
+            tr = document.createElement("tr");
+            if (rows % 2 > 0) {
+                tr.className = "alt-line";
+                //单数行
+            }
+            tb.appendChild(tr);
+            for (let index in SQLite.columnStruct) {
+                let td = document.createElement("td");
+                tr.appendChild(td);
+                let attri;
+                if (SQLite.columnStruct[index].type == "select") {
+                    attri = document.createElement("select");
+                    attri.className = index;
+                    attri.type = SQLite.columnStruct[index].type;
+                    for (let i = 0; i < SQLite.columnStruct[index].options.length; i++) {
+                        attri.options.add(new Option(SQLite.columnStruct[index].options[i], SQLite.columnStruct[index].options[i]));
+                    }
+                    if (structure != null)
+                        for (let s = 0; s < attri.options.length; s++) {
+                            if (attri.options[s].value == structure["stru"][rows][index]) {
+                                attri.selectedIndex = s;
+                                break;
+                            }
+                        }
+                } else {
+                    attri = document.createElement("input");
+                    attri.className = index;
+                    attri.type = SQLite.columnStruct[index].type;
+
+                    if (attri.type == "checkbox") {
+                        if (structure == null) {
+                            if (SQLite.columnStruct[index].value == true) {
+                                attri.setAttribute("checked", "checked");
+                            }
+                        } else if (structure["stru"][rows][index] == true) {
+                            attri.setAttribute("checked", "checked");
+                        }
+                        attri.onclick = function () {
+                            if (this.checked == false) {
+                                this.removeAttribute("checked");
+                            } else {
+                                this.setAttribute("checked", "checked");
+                            }
+                        }
+                    } else {
+                        if (structure == null)
+                            attri.value = SQLite.columnStruct[index].value;
+                        else
+                            attri.value = structure["stru"][rows][index];
+                    }
+                }
+                attri.style.width = SQLite.columnStruct[index].width;
+                td.appendChild(attri);
+            }
+        }
+
+        hr = document.createElement("hr");
+        hr.className = "ui-container-hr";
+        content.appendChild(hr);
+
+        let tool = document.createElement("div");
+        tool.className = "groupbar";
+        tool.style.cssFloat = "left";
+        content.appendChild(tool);
+
+        let add = document.createElement("button");
+        add.className = "button";
+        add.innerHTML = "增加";
+        add.setAttribute("tb", tb.id);
+        add.onclick = function () {
+            let table = $("table-Content");
+            let tr = document.createElement("tr");
+            if ((table.getElementsByTagName("tr").length - 1) % 2 > 0) {
+                tr.className = "alt-line";
+                //单数行
+            }
+            table.appendChild(tr);
+            for (let index in SQLite.columnStruct) {
+                let td = document.createElement("td");
+                tr.appendChild(td);
+                let attri;
+                if (SQLite.columnStruct[index].type == "select") {
+                    attri = document.createElement("select");
+                    attri.className = index;
+                    attri.type = SQLite.columnStruct[index].type;
+                    for (let i = 0; i < SQLite.columnStruct[index].options.length; i++) {
+                        attri.options.add(new Option(SQLite.columnStruct[index].options[i], SQLite.columnStruct[index].options[i]));
+                    }
+                } else {
+                    attri = document.createElement("input");
+                    attri.className = index;
+                    attri.type = SQLite.columnStruct[index].type;
+
+                    if (attri.type == "checkbox") {
+                        if (SQLite.columnStruct[index].value == true) {
+                            attri.setAttribute("checked", "checked");
+                        }
+                        attri.onclick = function () {
+                            if (this.checked == false) {
+                                this.removeAttribute("checked");
+                            } else {
+                                this.setAttribute("checked", "checked");
+                            }
+                        }
+                    } else {
+                        attri.value = SQLite.columnStruct[index].value;
+                    }
+                }
+                attri.style.width = SQLite.columnStruct[index].width;
+                td.appendChild(attri);
+            }
+        };
+        tool.appendChild(add);
+
+        let del = document.createElement("button");
+        del.className = "button";
+        del.innerHTML = "删除";
+        del.onclick = function () {
+            let table = $("table-Content");
+            let columns = table.getElementsByTagName("tr");
+            if (columns.length > 2) {
+                for (let i = columns.length - 1; i > 1; i--) {
+                    let checks = columns[i].getElementsByClassName("check");
+                    if (checks[0].checked == true) {
+                        table.removeChild(columns[i]);
+                    }
+                }
+            } else {
+                UI.alert.show("提示", "至少保留一个字段.");
+            }
+        };
+        tool.appendChild(del);
+
+        let b = document.createElement("button");
+        b.className = "button";
+        b.innerHTML = "创建";
+        b.onclick = function () {
+            if (__CONFIGS__.CURRENT_DATABASE.connect == null) {
+                UI.alert.show("提示", "请选择数据库.");
+                return;
+            }
+            if (checkStorage()) {
+                let table = $("table-Content");
+                let rows = table.getElementsByTagName("tr");
+                let stru = [];
+                for (let i = 1; i < rows.length; i++) {
+                    let col = {};
+                    for (let index in SQLite.columnStruct) {
+                        let column = rows[i].getElementsByClassName(index)[0];
+                        if (column.type == "checkbox") {
+                            col[index] = column.checked;
+                        } else {
+                            col[index] = column.value;
+                        }
+                    }
+                    stru.push(col);
+                }
+                let title = $("table-Title");
+                if (title.value != "") {
+                    let sql = SQLite.getTableSQL(title.value, stru);
+                    __LOGS__.viewMessage(sql);
+                    callback({title: title.value, sql: sql});
+                } else
+                    UI.alert.show("提示", "请输入数据表名称.");
+            }
+        };
+        tool.appendChild(b);
+
+        b = document.createElement("button");
+        b.className = "button";
+        b.innerHTML = "退出";
+        b.onclick = close.onclick = function () {
+            parent.removeChild($("ui_createTable"));
+        };
+        tool.appendChild(b);
+
+        dragControl.hook(title, content, container.id, function (left, top) {
+            content.style.left = left + "px";
+            content.style.top = top + "px"
+        });
+    },
+    import: {
+        configs: {
+            Table: {value: "", name: "数据表", type: "view"},
+            Charset: {value: 0, name: "字符集", type: "select", options: ["GBK", "UTF-8"]},
+            Separator: {value: ",", name: "分隔符", type: "select", options: [["逗号", ","], ["竖线", "|"], ["Tab", "\t"]]},
+            SourceFile: {
+                value: null,
+                name: "源文件",
+                type: "file",
+                data: [],
+                total: 0,
+                count: 0,
+                imported: 0,
+                failed: 0,
+                sql: null,
+                error: [],
+                progress: null
+            },
+            SelectedDataSet: {value: -1, name: "数据集", type: "select", options: []},
+        },
+        dataStruct: function () {
+            let sep = SQLite.import.configs.Separator.value;
+            let lines = SQLite.import.configs.SourceFile.data[SQLite.import.configs.SelectedDataSet.value].split("\r\n");
+            if (lines.length == 1)
+                lines = SQLite.import.configs.SourceFile.data[SQLite.import.configs.SelectedDataSet.value].split("\n");
+
+            let start = SQLite.structInspect(lines.slice(0, lines.length > 1000 ? 1000 : lines.length), sep);
+            //检测样本为前1000条数据
+            let columns = start.lines[0];
+            let data = start.lines[1];
+
+            let stru = [];
+            for (let i = 0; i < columns.length; i++) {
+                let col = {};
+                for (let index in SQLite.columnStruct) {
+                    switch (index) {
+                        case "check":
+                            col[index] = true;
+                            break;
+                        case "name":
+                            col[index] = columns[i];
+                            break;
+                        case "type":
+                            col[index] = data[i].toString().getStringDataType();
+                            break;
+                        case "length":
+                            switch (col["type"]) {
+                                case "int":
+                                    col[index] = 6;
+                                    break;
+                                case "date":
+                                    col[index] = 10;
+                                    break;
+                                case "datetime":
+                                    col[index] = 25;
+                                    break;
+                                case "float":
+                                    col[index] = 19;
+                                    break;
+                                default:
+                                    col[index] = 125;
+
+                            }
+                            break;
+                        case "scale":
+                            switch (col["type"]) {
+                                case "float":
+                                    col[index] = 6;
+                                    break;
+                                default:
+                                    col[index] = 0;
+                            }
+                            break;
+                        case "allowNull":
+                            col[index] = "Y";
+                            break;
+                        case "index":
+                            col[index] = false;
+                            break;
+                        case "auto_increment":
+                            col[index] = false;
+                            break;
+                        case "column_default":
+                            col[index] = null;
+                            break;
+                    }
+                }
+                stru.push(col);
+            }
+            return stru;
+        },
+        readExcelFile: function (file, sheets) {
+            function getData(result, sep) {
+                let data = [];
+                let lines = result.split("\n");
+                for (let i = 0; i < lines.length; i++) {
+                    data.push(lines[i].split(sep));
+                }
+                return data;
+            }
+
+            function fixData(data) {
+                //文件流转BinaryString
+                let tmp = "";
+                let l = 0;
+                let w = 10240;
+                for (; l < data.byteLength / w; ++l) tmp += String.fromCharCode.apply(null, new Uint8Array(data.slice(l * w, l * w + w)));
+                tmp += String.fromCharCode.apply(null, new Uint8Array(data.slice(l * w)));
+                return tmp;
+            }
+
+            let reader = new FileReader();
+            let rABS = true;
+            reader.onload = function (e) {
+                let data = e.target.result;
+                let workbook;
+                if (rABS) {
+                    workbook = XLSX.read(data, {type: "binary"});
+                } else {
+                    workbook = XLSX.read(btoa(fixData(data)), {type: "base64"});
+                }
+                let sheetNames = workbook.SheetNames;
+                for (let i = 0; i < sheetNames.length; i++) {
+                    let worksheet = workbook.Sheets[sheetNames[i]];
+                    let csv = XLSX.utils.sheet_to_csv(worksheet);
+                    SQLite.import.configs.SourceFile.data.push(csv);
+                    sheets.options.add(new Option(sheetNames[i], i));
+                    //return csv;
+                }
+                SQLite.import.configs.SelectedDataSet.value = sheets.selectedIndex = 0;
+            };
+            try {
+                reader.readAsBinaryString(file);
+            } catch (e) {
+                reader.readAsArrayBuffer(file);
+                rABS = false;
+            }
+        },
+        run: function () {
+            //#######################################
+            //默认行分隔符:\r\n
+            //数据分隔符:支持|,\t
+            //#######################################
+
+            function getByteLength(val) {
+                let len = 0;
+                for (let i = 0; i < val.length; i++) {
+                    //（unicode:汉字的编码大于255）
+                    if (val.charCodeAt(i) < 0 || val.charCodeAt(i) > 255)
+                        len = len + 2;
+                    else
+                        len = len + 1;
+                }
+                return len;
+            }
+
+            function getSubString(val, start, length) {
+                let value = "";
+                let len = 0;
+                for (let i = 0; i < val.length; i++) {
+                    if (i >= start) {
+                        if (val.charCodeAt(i) < 0 || val.charCodeAt(i) > 255)
+                            len = len + 2;
+                        else
+                            len = len + 1;
+                        value += val.charAt(i);
+                    }
+                    if (len == length)
+                        break;
+                }
+                return value;
+            }
+
+            function viewPacket(packet) {
+                let container = $("ui-progress-detail");
+                let item = document.createElement("div");
+                item.className = "ui-progress-detail-item";
+                item.id = "ui-progress-detail-item-" + packet.index;
+                container.appendChild(item);
+
+                let d_index = document.createElement("span");
+                d_index.className = "ui-progress-detail-item-index";
+                d_index.innerText = packet.index;
+                d_index.setAttribute("index", packet.index);
+                d_index.title = packet.sql;
+                item.appendChild(d_index);
+                let d_size = document.createElement("span");
+                d_size.className = "ui-progress-detail-item-size";
+                d_size.innerHTML = Math.round(getByteLength(packet.data.toString()) * 100 / 1024) / 100 + "Kb";
+                d_size.title = packet.data.toString();
+                item.appendChild(d_size);
+                let d_error = document.createElement("span");
+                d_error.className = "ui-progress-detail-item-error";
+                d_error.innerHTML = (packet.error == null ? "&ensp;" : getSubString(packet.error, 0, 30) + "...");
+                d_error.title = packet.error;
+                item.appendChild(d_error);
+                return item;
+            }
+
+            function scrollto(item) {
+                let element = null;
+                if (typeof item === "undefined") {
+                    let items = $("ui-progress-detail").getElementsByClassName("ui-progress-detail-item");
+                    element = items[items.length - 1]
+                } else
+                    element = item;
+                element.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start",
+                    inline: "nearest"
+                });
+            }
+
+            __CONFIGS__.CURRENT_DATABASE.connect.transaction(function (tx) {
+                try {
+                    let sep = SQLite.import.configs.Separator.value;
+                    let lines = SQLite.import.configs.SourceFile.data[SQLite.import.configs.SelectedDataSet.value].split("\r\n");
+                    if (lines.length == 1)
+                        lines = SQLite.import.configs.SourceFile.data[SQLite.import.configs.SelectedDataSet.value].split("\n");
+                    let table = __CONFIGS__.CURRENT_TABLE.name;
+                    SQLite.import.configs.SourceFile.total = lines.length - 1;
+                    //不含表头
+                    SQLite.import.configs.SourceFile.count = 0;
+                    SQLite.import.configs.SourceFile.imported = 0;
+                    SQLite.import.configs.SourceFile.failed = 0;
+                    SQLite.import.configs.SourceFile.error = [];
+                    SQLite.import.configs.SourceFile.row = null;
+                    let pres = {
+                        10: false,
+                        20: false,
+                        30: false,
+                        40: false,
+                        50: false,
+                        60: false,
+                        70: false,
+                        80: false,
+                        90: false,
+                        100: false
+                    };
+                    let sql = "insert into " + table + " values ({VALUES})";
+                    //不要加字段列表，否则仅能导入两列数据.
+                    for (let i = 0; i < lines.length; i++) {
+                        let data = transferData(__CONFIGS__.CURRENT_TABLE.structure, lines[i].trim().split(sep));
+                        try {
+                            if (i == 0) {
+                                let values = "?";
+                                for (let c = 1; c < data.length; c++) {
+                                    values += ",?";
+                                }
+                                SQLite.import.configs.SourceFile.sql = sql = sql.replace("{VALUES}", values);
+                                __LOGS__.viewMessage(sql);
+                            } else if (data.length >= __CONFIGS__.CURRENT_TABLE.structure.data.length) {
+                                let row = data.slice(0, __CONFIGS__.CURRENT_TABLE.structure.data.length);
+                                tx.executeSql(sql, row, function (tx, results) {
+                                        SQLite.import.configs.SourceFile.count += 1;
+                                        SQLite.import.configs.SourceFile.imported += results.rowsAffected;
+                                        let pre = Math.floor(SQLite.import.configs.SourceFile.count * 100 / SQLite.import.configs.SourceFile.total);
+                                        if (typeof pres[pre] !== "undefined") {
+                                            if ((pre % 10 == 0 && pres[pre] == false) || SQLite.import.configs.SourceFile.count == SQLite.import.configs.SourceFile.total) {
+                                                pres[pre] = true;
+                                                let packet = {
+                                                    index: SQLite.import.configs.SourceFile.count,
+                                                    sql: SQLite.import.configs.SourceFile.sql,
+                                                    data: row,
+                                                    error: SQLite.import.configs.SourceFile.imported + " / " + SQLite.import.configs.SourceFile.count + "(" + pre + "%)",
+                                                    beginTime: null,
+                                                    endTime: getNow()
+                                                };
+                                                SQLite.import.configs.SourceFile.error.push(packet);
+                                                scrollto(viewPacket(packet));
+                                                __LOGS__.viewMessage("Imported : " + SQLite.import.configs.SourceFile.imported + " / " + SQLite.import.configs.SourceFile.count + "(" + pre + "%)")
+                                            }
+                                        }
+                                    },
+                                    function (tx, error) {
+                                        SQLite.import.configs.SourceFile.count += 1;
+                                        SQLite.import.configs.SourceFile.failed += 1;
+                                        let pre = Math.floor(SQLite.import.configs.SourceFile.count * 100 / SQLite.import.configs.SourceFile.total);
+                                        let packet = {
+                                            index: SQLite.import.configs.SourceFile.count,
+                                            sql: SQLite.import.configs.SourceFile.sql,
+                                            data: row,
+                                            error: SQLite.import.configs.SourceFile.imported + " / " + SQLite.import.configs.SourceFile.count + "(" + pre + "%),\n" + error.message,
+                                            beginTime: null,
+                                            endTime: getNow()
+                                        };
+                                        SQLite.import.configs.SourceFile.error.push(packet);
+                                        scrollto(viewPacket(packet));
+                                        __LOGS__.viewMessage("Imported : " + SQLite.import.configs.SourceFile.imported + " / " + SQLite.import.configs.SourceFile.count + "(" + pre + "%),\n" + error.message)
+                                    });
+                            } else {
+                                SQLite.import.configs.SourceFile.count += 1;
+                                SQLite.import.configs.SourceFile.failed += 1;
+                                let pre = Math.floor(SQLite.import.configs.SourceFile.count * 100 / SQLite.import.configs.SourceFile.total);
+                                let packet = {
+                                    index: SQLite.import.configs.SourceFile.count,
+                                    sql: SQLite.import.configs.SourceFile.sql,
+                                    data: data,
+                                    error: SQLite.import.configs.SourceFile.imported + " / " + SQLite.import.configs.SourceFile.count + "(" + pre + "%),\n" + "数据解析后长度小于数据库结构.",
+                                    beginTime: null,
+                                    endTime: getNow()
+                                };
+                                SQLite.import.configs.SourceFile.error.push(packet);
+                                scrollto(viewPacket(packet));
+                                __LOGS__.viewMessage("Imported : " + SQLite.import.configs.SourceFile.imported + " / " + SQLite.import.configs.SourceFile.count + "(" + pre + "%),\n" + "数据解析后长度小于数据库结构.")
+                            }
+                        } catch (e) {
+                            SQLite.import.configs.SourceFile.count += 1;
+                            SQLite.import.configs.SourceFile.failed += 1;
+                            let pre = Math.floor(SQLite.import.configs.SourceFile.count * 100 / SQLite.import.configs.SourceFile.total);
+                            let packet = {
+                                index: SQLite.import.configs.SourceFile.count,
+                                sql: SQLite.import.configs.SourceFile.sql,
+                                data: data,
+                                error: SQLite.import.configs.SourceFile.imported + " / " + SQLite.import.configs.SourceFile.count + "(" + pre + "%)" + e,
+                                beginTime: null,
+                                endTime: getNow()
+                            };
+                            SQLite.import.configs.SourceFile.error.push(packet);
+                            scrollto(viewPacket(packet));
+                            __LOGS__.viewMessage("Imported : " + SQLite.import.configs.SourceFile.imported + " / " + SQLite.import.configs.SourceFile.count + "(" + pre + "%),\n" + e)
+                        }
+                    }
+                    //由于tx.executeSql异步执行，连续事务执行时间不可预计，不能添加事后统计，只能事中统计.
+                } catch (e) {
+                    UI.alert.show("提示", e);
+                }
+            });
+        },
+        progress: function () {
+            let container = document.createElement("div");
+            container.id = "ui-progress";
+            let v = document.createElement("div");
+            container.appendChild(v);
+            v.id = "ui-progress-value";
+            let detail = document.createElement("div");
+            detail.id = "ui-progress-detail";
+            container.appendChild(detail);
+
+            SQLite.import.configs.SourceFile.progress = setInterval(function () {
+                Timer()
+            }, 50);
+
+            function Timer() {
+                try {
+                    let value = SQLite.import.configs.SourceFile.count / SQLite.import.configs.SourceFile.total;
+                    let v = $("ui-progress-value");
+                    v.style.width = (value * 100) + "%";
+                    v.innerText = SQLite.import.configs.SourceFile.count + " / " + SQLite.import.configs.SourceFile.total;
+                    if (value == 1)
+                        Stop(SQLite.import.configs.SourceFile.progress);
+                } catch (e) {
+                }
+            }
+
+            function Stop(progress) {
+                clearInterval(progress);
+            }
+
+            return container;
+        },
+        start: function (parent) {
+            SQLite.import.configs.SourceFile.count = 0;
+            SQLite.import.configs.SourceFile.total = 0;
+
+            if (parent == "auto" || parent == null) {
+                if (document.fullscreen && typeof __CONFIGS__.FULLSCREEN.element == "object") {
+                    parent = __CONFIGS__.FULLSCREEN.element;
+                } else {
+                    parent = document.body;
+                }
+            }
+
+            let container = document.createElement("div");
+            container.id = "ui_importData";
+            container.className = "ui-container-background";
+            parent.appendChild(container);
+
+            let content = document.createElement("div");
+            content.className = "ui-container-body";
+            content.id = "import-configs-content";
+            container.appendChild(content);
+
+            let title = document.createElement("div");
+            title.className = "ui-container-title";
+            title.style.backgroundImage = __SYS_IMAGES_SVG__.getUrl(__VERSION__.logo.name, __THEMES__.get().color, "24px", "24px", __VERSION__.logo.flip);
+            let span = document.createElement("span");
+            span.innerHTML = "导入数据";
+            title.appendChild(span);
+            let close = __SYS_IMAGES_SVG__.getImage("close", __THEMES__.get().color, "24px", "24px", __THEMES__.get().hover);
+            close.className = "ui-container-close";
+            title.appendChild(close);
+            content.appendChild(title);
+
+            let hr = document.createElement("hr");
+            hr.className = "ui-container-hr";
+            content.appendChild(hr);
+
+            for (let name in SQLite.import.configs) {
+                let item = document.createElement("div");
+                item.className = "ui-container-item";
+                content.appendChild(item);
+                let itemname = document.createElement("span");
+                itemname.className = "ui-container-item-name";
+                itemname.innerHTML = SQLite.import.configs[name].name + " : ";
+                item.appendChild(itemname);
+                let itemvalue = null;
+                if (name == "Table") {
+                    itemvalue = document.createElement("input");
+                    itemvalue.className = "ui-container-item-input";
+                    itemvalue.id = name;
+                    itemvalue.readOnly = true;
+                    itemvalue.value = __CONFIGS__.CURRENT_TABLE.name;
+                } else if (name == "Charset" || name == "Separator" || name == "SelectedDataSet") {
+                    itemvalue = document.createElement("select");
+                    itemvalue.className = "ui-container-item-input";
+                    itemvalue.id = name;
+                    for (let i = 0; i < SQLite.import.configs[name].options.length; i++) {
+                        if (isArray(SQLite.import.configs[name].options[i]))
+                            itemvalue.options.add(new Option(SQLite.import.configs[name].options[i][0], SQLite.import.configs[name].options[i][1]));
+                        else
+                            itemvalue.options.add(new Option(SQLite.import.configs[name].options[i], i));
+                    }
+                    itemvalue.value = SQLite.import.configs[name].value;
+                    itemvalue.onchange = function () {
+                        SQLite.import.configs[this.id].value = this.value;
+                    };
+                } else if (name == "SourceFile") {
+                    itemvalue = UI.fileChoice(
+                        name,
+                        "70%",
+                        "left",
+                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,text/plain,.csv",
+                        false,
+                        function (files) {
+                            try {
+                                let file = files[0];
+                                let filetype = file.name.split(".")[1];
+                                SQLite.import.configs.SourceFile.value = file.name;
+                                SQLite.import.configs.SourceFile.data = [];
+                                let selectDataSet = $("SelectedDataSet");
+                                for (let i = selectDataSet.length - 1; i >= 0; i--) {
+                                    selectDataSet.remove(i);
+                                }
+                                if (filetype.toUpperCase() == "TXT" || filetype.toUpperCase() == "CSV") {
+                                    let reader = new FileReader();
+                                    reader.onload = function () {
+                                        SQLite.import.configs.SourceFile.data.push(this.result);
+                                        selectDataSet.options.add(new Option("默认", 0));
+                                        SQLite.import.configs.SelectedDataSet.value = selectDataSet.selectedIndex = 0;
+                                    };
+                                    reader.readAsText(file, SQLite.import.configs.Charset.options[SQLite.import.configs.Charset.value]);
+                                } else if (filetype.toUpperCase() == "XLS" || filetype.toUpperCase() == "XLSX") {
+                                    SQLite.import.readExcelFile(file, selectDataSet);
+                                } else {
+                                    UI.alert.show("提示", "仅适用于XLSX、XLS、TXT和CSV文件。");
+                                    return;
+                                }
+                            } catch (e) {
+                                UI.alert.show("提示", "请选择需要导入的文件.")
+                            }
+                            $("ui-progress-container").innerText = "";
+                        });
+                }
+                item.appendChild(itemvalue);
+            }
+
+            let progress = document.createElement("div");
+            progress.id = "ui-progress-container";
+            content.appendChild(progress);
+
+            hr = document.createElement("hr");
+            hr.className = "ui-container-hr";
+            content.appendChild(hr);
+
+            let tool = document.createElement("div");
+            tool.className = "groupbar";
+            tool.style.cssFloat = "left";
+            tool.style.width = "100%";
+            content.appendChild(tool);
+
+            let b = document.createElement("button");
+            b.className = "button";
+            b.id = "import-button";
+            b.innerHTML = "导入";
+            b.onclick = function () {
+                if (__CONFIGS__.CURRENT_TABLE.name == null || __CONFIGS__.CURRENT_TABLE.type == "view") {
+                    UI.confirm.show("注意", "您没有选择数据表，是否要根据数据结构创建一个名称为 " + SQLite.import.configs.SourceFile.value.split(".")[0] + " 的新表?", "auto", function () {
+                        let title = SQLite.import.configs.SourceFile.value.split(".")[0];
+                        SQLite.createTable("auto", {
+                            "title": title,
+                            "stru": SQLite.import.dataStruct()
+                        }, function (values) {
+                            let sql = values.sql;
+                            __CONFIGS__.CURRENT_DATABASE.connect.transaction(function (tx) {
+                                tx.executeSql(sql, [],
+                                    function (tx, results) {
+                                        let aff = results.rowsAffected;
+                                        let len = results.rows.length;
+                                        if (aff > 0) {
+                                            __LOGS__.viewMessage(aff + " 条记录被修改.")
+                                        }
+                                        if (aff == 0 && len == 0) {
+                                            __LOGS__.viewMessage("数据库没有返回数据和消息.")
+                                        }
+                                        viewTables(__CONFIGS__.CURRENT_DATABASE.index);
+                                    },
+                                    function (tx, e) {
+                                        __LOGS__.viewError(e);
+                                    });
+                            });
+                        });
+                        parent.removeChild($("ui_importData"));
+                    });
+                } else {
+                    $("ui-progress-container").appendChild(SQLite.import.progress());
+                    if ($("SelectedDataSet").length > 0) {
+                        SQLite.import.run();
+                    } else
+                        UI.alert.show("提示", "请选择需要导入的文件及数据集合.");
+                }
+            };
+            tool.appendChild(b);
+
+            b = document.createElement("button");
+            b.className = "button";
+            b.innerHTML = "退出";
+            b.onclick = close.onclick = function () {
+                parent.removeChild($("ui_importData"));
+            };
+            tool.appendChild(b);
+
+            dragControl.hook(title, content, container.id, function (left, top) {
+                content.style.left = left + "px";
+                content.style.top = top + "px"
+            });
+        },
+    },
+    structInspect: function (data, sep) {
+        // 数据结构检测
+        // 获取可导入数据
+        // 即数据分割后相同宽度最多的行.
+        let addup = [];
+
+        function washData(d) {
+            let row = [];
+            for (let i = 0; i < d.length; i++) {
+                if (d[i].trim() != "" && d[i] != null)
+                    row.push(d[i]);
+            }
+            return row;
+        }
+
+        function addUp(row, id) {
+            let index = null;
+            for (let i = 0; i < addup.length; i++) {
+                if (addup[i].columns == row.length) {
+                    index = i;
+                    break;
+                }
+            }
+            if (index == null)
+                addup.push({columns: row.length, start: id, count: 1, lines: [row]});
+            else {
+                addup[index].count += 1;
+                addup[index].lines.push(row);
+            }
+        }
+
+        function getStart() {
+            let index = 0;
+            let max = 0;
+            for (let i = 0; i < addup.length; i++) {
+                if (addup[i].count > max) {
+                    index = i;
+                    max = addup[i].count;
+                }
+            }
+            return addup[index];
+        }
+
+        for (let i = 0; i < data.length; i++) {
+            addUp(washData(data[i].trim().split(sep)), i);
+        }
+
+        return getStart();
+    },
+    getTableSQL: function (title, stru) {
+        //根据选项生成建表SQL
+        let cols = " (";
+        let key = "";
+        let key_count = 0;
+        let auto_increment = null;
+        for (let i = 0; i < stru.length; i++) {
+            if (stru[i].index == true) {
+                key += stru[i].name + ",";
+                key_count += 1;
+                if (auto_increment == null && stru[i].auto_increment && stru[i].type == "integer")
+                    auto_increment = stru[i].name;
+            }
+        }
+
+        for (let i = 0; i < stru.length; i++) {
+            if (stru[i].check == true && stru[i].name != "") {
+                cols += stru[i].name + " " + stru[i].type;
+                if (stru[i].type == "decimal" || stru[i].type == "float") {
+                    cols += "(" + stru[i].length + "," + stru[i].scale + ")";
+                }
+                if (stru[i].type == "nvarchar" || stru[i].type == "varchar") {
+                    cols += "(" + stru[i].length + ")";
+                }
+                if (stru[i].allowNull == "N" || stru[i].index == true || (stru[i].column_default != null && stru[i].column_default.trim() != "")) {
+                    cols += " NOT NULL";
+                } else {
+                    cols += " NULL";
+                }
+                if (key_count == 1 && stru[i].index == true) {
+                    cols += " PRIMARY KEY";
+                    if (stru[i].name == auto_increment) {
+                        cols += " autoincrement,";
+                    } else {
+                        cols += ",";
+                    }
+                } else if (stru[i].column_default != null && stru[i].column_default.trim() != "") {
+                    cols += " DEFAULT " + stru[i].column_default + ",";
+                } else {
+                    cols += ",";
+                }
+            }
+        }
+        let sql = "CREATE TABLE " + title + cols.substring(0, cols.length - 1);
+        if (key_count > 1) {
+            sql += ",PRIMARY KEY (" + key.substring(0, key.lastIndexOf(",")) + "))"
+        } else {
+            sql += ")"
+        }
+        return sql;
+    },
+};
 
 function transferData(structure,row) {
     //####################################
@@ -1405,7 +2452,6 @@ function checkStorage() {
         return false;
     }
 }
-
 
 function viewDatabases() {
     let message = __LOGS__.viewMessage("读取数据库列表...");
@@ -2754,7 +3800,6 @@ function init() {
     }
 }
 
-
 function initConfigs() {
     let checked = false;
     if (checkStorage()) {
@@ -2812,17 +3857,6 @@ function initConfigs() {
             __SQLEDITOR__.init($("sqlediter"));
 
             $("detail").style.display = getUserConfig("displayLogs");
-            if ($("detail").style.display == "none") {
-                $("page").onmousemove = function () {
-                    let active = 3;
-                    if (event.x > getAbsolutePosition($("page")).width - active) {
-                        $("detail").style.display = "block";
-                        setUserConfig("displayLogs", "block");
-                        $("page").onmousemove = null;
-                    }
-                    resize();
-                };
-            }
             resize();
 
             config = getUserConfig("echartsconfig");
@@ -3239,8 +4273,10 @@ function initMenus() {
                                 let name = __SQLEDITOR__.title;
                                 if (__SQLEDITOR__.configs.codeMirrorMode.value == "text/x-sqlite")
                                     execute(name);
-                                if (__SQLEDITOR__.configs.codeMirrorMode.value == "text/javascript")
-                                    executeFunction(name)
+                                else if (__SQLEDITOR__.configs.codeMirrorMode.value == "text/javascript")
+                                    executeFunction(name);
+                                else
+                                    UI.alert.show("注意","请选择正确的脚本模式","auto");
                             } else {
                                 UI.prompt.show("输入", {
                                     "集合名称": {
@@ -3251,8 +4287,10 @@ function initMenus() {
                                     let name = __SQLEDITOR__.title = $("sql-title").innerText = $("sql-title").title = values["集合名称"];
                                     if (__SQLEDITOR__.configs.codeMirrorMode.value == "text/x-sqlite")
                                         execute(name);
-                                    if (__SQLEDITOR__.configs.codeMirrorMode.value == "text/javascript")
+                                    else if (__SQLEDITOR__.configs.codeMirrorMode.value == "text/javascript")
                                         executeFunction(name);
+                                    else
+                                    UI.alert.show("注意","请选择正确的脚本模式","auto");
                                 }, {})
                             }
 
@@ -3262,15 +4300,19 @@ function initMenus() {
                             let name = __SQLEDITOR__.title;
                             if (__SQLEDITOR__.configs.codeMirrorMode.value == "text/x-sqlite")
                                 execute(name);
-                            if (__SQLEDITOR__.configs.codeMirrorMode.value == "text/javascript")
-                                executeFunction(name)
+                            else if (__SQLEDITOR__.configs.codeMirrorMode.value == "text/javascript")
+                                executeFunction(name);
+                            else
+                                UI.alert.show("注意", "请选择正确的脚本模式", "auto");
                         } else {
                             UI.prompt.show("输入", {"集合名称": {value: "", type: "input"}}, "auto", function (args, values) {
                                 let name = __SQLEDITOR__.title = values["集合名称"];
                                 if (__SQLEDITOR__.configs.codeMirrorMode.value == "text/x-sqlite")
                                     execute(name);
-                                if (__SQLEDITOR__.configs.codeMirrorMode.value == "text/javascript")
+                                else if (__SQLEDITOR__.configs.codeMirrorMode.value == "text/javascript")
                                     executeFunction(name);
+                                else
+                                    UI.alert.show("注意","请选择正确的脚本模式","auto");
                             }, {})
                         }
                     }
@@ -4399,7 +5441,6 @@ function isScroll(el) {
     };
  }
 
-
 function getColumnMenu(colid) {
     let ul = document.createElement("ul");
     ul.id = "table-column-menu-" + colid;
@@ -4447,6 +5488,7 @@ function getColumnMenu(colid) {
 
     return ul;
 }
+
 function setPageThemes() {
     let message = __LOGS__.viewMessage("设置应用页面主题...");
     try {
@@ -4504,7 +5546,6 @@ function setPageThemes() {
         __LOGS__.viewError("auto", e);
     }
 }
-
 
 function setCenterPosition(parent, obj) {
     parent.appendChild(obj);
@@ -5127,7 +6168,6 @@ function setDataPageTools(index) {
     }
     main.appendChild(toup);
 }
-
 
 function getImageBase64Code(parent, img) {
     function getImage(src) {

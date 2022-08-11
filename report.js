@@ -1,5 +1,5 @@
 function getEchartsReport(container, myChart) {
-    function getScript(jsPath, echarts, ui, defaultThemes, user) {
+    function getScript(jsPath, echarts, defaultThemes, user) {
         let scripts = [
             "FunctionsComponent.js",
             "StatisticsComponent.js",
@@ -7,7 +7,7 @@ function getEchartsReport(container, myChart) {
             "resources.js",
             echarts,
             "echartsThemes.js",
-            ui,
+            "UI.js",
             "echarts/echarts-gl.min.js",
             "echarts/echarts-wordcloud.min.js",
             "echarts/ecStat.js",
@@ -1142,7 +1142,7 @@ function getEchartsReport(container, myChart) {
         ".ui-tooltip .message {padding: 10px;};\n" +
         "hr {height:1px;border-width:0;color:gray;background-color: brown;width: 100%;position: static;}\n" +
         "</style>\n" +
-        getScript(jsPath, __ECHARTS__.configs.version.value, $("UI").src.split("/")[$("UI").src.split("/").length - 1], __DATASET__.configs.reportThemes.value, (typeof __LOGS__.user.name !== "undefined" ? __LOGS__.user.name : "")) +
+        getScript(jsPath, __ECHARTS__.configs.version.value, __DATASET__.configs.reportThemes.value, (typeof __LOGS__.user.name !== "undefined" ? __LOGS__.user.name : "")) +
         "</head>\n" +
         "<body onload='init()'>\n" +
         "<div id='_TITLE'>\n" +

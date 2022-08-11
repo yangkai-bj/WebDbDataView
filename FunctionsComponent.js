@@ -1367,15 +1367,13 @@ function getEventIndex(index) {
     return new Date().format("yyyyMMddhhmmssS") + "-" + index;
 }
 
-function getAbsolutePosition(obj)
 //获取控件绝对位置
-{
-    let position = {"left":0,"top":0,"width":0,"height":0};
-    let w=0,h=0;
+function getAbsolutePosition(obj) {
+    let position = {"left": 0, "top": 0, "width": 0, "height": 0};
+    let w = 0, h = 0;
     position.width = obj.offsetWidth;
     position.height = obj.offsetHeight;
-    while(obj.offsetParent)
-    {
+    while (obj.offsetParent) {
         w += obj.offsetLeft;
         h += obj.offsetTop;
         obj = obj.offsetParent;
@@ -1453,7 +1451,7 @@ function getBrowserSize(){
         width: winWidth,
         height: winHeight
     };
-};
+}
 
 function jsonParse(message) {
     try {
@@ -1547,7 +1545,7 @@ var dragControl = {
             }
         }
     }
-};
+}
 
 //用于界面分区上下拖动
 var splitControl = {

@@ -194,8 +194,9 @@ function getSource(dataset) {
 function percentValue(percent) {
     try {
         return Number(percent.split("%")[0]);
-    }catch (e) {
+    } catch (e) {
         console.log({percent: percent, error: e});
+        return null;
     }
 }
 
@@ -218,7 +219,7 @@ function getRowCell(groupWidth, param, colCount) {
                     tmp[i] = {left: left, width: width};
                     left += width;
                 } else {
-                    let width = groupWidth / colCount;
+                    let width = (groupWidth - left) / (colCount - i);
                     tmp[i] = {left: left, width: width};
                     left += width;
                 }
