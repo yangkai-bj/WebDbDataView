@@ -1,3 +1,7 @@
+/*
+通用模块
+*/
+
 function arraysOrderBy(data, order) {
     if (order == "asc") {
         return data.sort(function (a, b) {
@@ -1293,7 +1297,7 @@ var __ECHARTS__ = {
             value: "false",
             type: "boolean"
         },
-        pieGroupWith: {name: "序列分组", value: 2, type: "number", attribute: {min: 1, max: 4, step: 1},title: "「多序列」有效"},
+        pieGroupWith: {name: "序列分组", value: 2, type: "number", attribute: {min: 1, max: 4, step: 1}, title: "「多序列」有效"},
         pieAnimationType: {
             name: "初始动画",
             value: "expansion",
@@ -1340,7 +1344,13 @@ var __ECHARTS__ = {
             options: [new Option("居中", "inside"), new Option("居左", "left"), new Option("居右", "right")],
             type: "select"
         },
-        funnelGroupWith: {name: "序列分组", value: 2, type: "number", attribute: {min: 1, max: 4, step: 1}, title: "「多序列」有效"},
+        funnelGroupWith: {
+            name: "序列分组",
+            value: 2,
+            type: "number",
+            attribute: {min: 1, max: 4, step: 1},
+            title: "「多序列」有效"
+        },
 
         hr_wordCloud: {name: "词云图", value: "", type: "hr"},
         wordCloudGrids: {
@@ -1380,8 +1390,18 @@ var __ECHARTS__ = {
             value: "auto",
             type: "grids"
         },
-        multiGraphTypes: {name: "图形组合", value: "bar,line,pie,tranbar,scatter,calendar,funnel,area,wordCloud", type: "echarts"},
-        multiGraphGroup: {name: "序列分组", value: 2, type: "number", attribute: {min: 1, max: 4, step: 1}, title: "布局方式为「自动」有效"},
+        multiGraphTypes: {
+            name: "图形组合",
+            value: "bar,line,pie,tranbar,scatter,calendar,funnel,area,wordCloud",
+            type: "echarts"
+        },
+        multiGraphGroup: {
+            name: "序列分组",
+            value: 2,
+            type: "number",
+            attribute: {min: 1, max: 4, step: 1},
+            title: "布局方式为「自动」有效"
+        },
 
         hr_barRacing: {name: "基础动态图", value: "", type: "hr"},
         barRacingType: {
@@ -1396,7 +1416,12 @@ var __ECHARTS__ = {
             options: [new Option("序列", "series"), new Option("数据", "data")],
             type: "select"
         },
-        barRacingTimeout: {name: "动态延时(毫秒)", value: 3000, type: "number", attribute: {min: 1000, max: 5000, step: 1000}},
+        barRacingTimeout: {
+            name: "动态延时(毫秒)",
+            value: 3000,
+            type: "number",
+            attribute: {min: 1000, max: 5000, step: 1000}
+        },
         barRacingRealtimeSort: {
             name: "动态排序",
             value: "true",
@@ -1412,7 +1437,7 @@ var __ECHARTS__ = {
             value: 10,
             type: "number",
             attribute: {min: 1, max: 100, step: 1}
-            },
+        },
         barRacingLoop: {
             name: "循环",
             value: "false",
@@ -1476,7 +1501,13 @@ var __ECHARTS__ = {
         gaugeAxisLineWidth: {name: "圆轴宽度", value: 10, type: "number", attribute: {min: 1, max: 30, step: 1}},
         gaugeStartAngle: {name: "起始角度", value: 225, type: "number", attribute: {min: 1, max: 360, step: 1}},
         gaugeEndAngle: {name: "结束角度", value: -45, type: "number", attribute: {min: -90, max: 90, step: 1}},
-        gaugeGroupWith: {name: "序列分组", value: 2, type: "number", attribute: {min: 1, max: 4, step: 1},title: "「多序列」有效"},
+        gaugeGroupWith: {
+            name: "序列分组",
+            value: 2,
+            type: "number",
+            attribute: {min: 1, max: 4, step: 1},
+            title: "「多序列」有效"
+        },
 
         hr_polar: {name: "极坐标", value: "", type: "hr"},
         polarColorby: {
@@ -1576,7 +1607,13 @@ var __ECHARTS__ = {
             type: "select"
         },
         liqiudOpacity: {name: "透明度", value: 0.6, type: "number", attribute: {min: 0, max: 1, step: 0.1}},
-        liqiudGroupWith: {name: "序列分组", value: 2, type: "number", attribute: {min: 1, max: 4, step: 1}, title: "「多序列」有效"},
+        liqiudGroupWith: {
+            name: "序列分组",
+            value: 2,
+            type: "number",
+            attribute: {min: 1, max: 4, step: 1},
+            title: "「多序列」有效"
+        },
 
         hr_sunburst: {name: "旭日图", value: "", type: "hr"},
         sunburstGrids: {
@@ -1640,7 +1677,13 @@ var __ECHARTS__ = {
             name: "布局方式", value: "auto",
             type: "grids"
         },
-        calendarGroup: {name: "序列分组", value: 2, type: "number", attribute: {min: 1, max: 4, step: 1}, title: "布局方式为「自动」有效"},
+        calendarGroup: {
+            name: "序列分组",
+            value: 2,
+            type: "number",
+            attribute: {min: 1, max: 4, step: 1},
+            title: "布局方式为「自动」有效"
+        },
         calendarOrient: {
             name: "日历方向",
             value: "vertical",
@@ -1870,9 +1913,19 @@ var __ECHARTS__ = {
             type: "range",
             attribute: {min: 0, max: 30, step: 1, unit: "%"}
         },
-        scrollingScreenWidth: {name: "整体宽度", value: "100%", type: "range", attribute: {min: 1, max: 100, step: 1, unit: "%"}},
+        scrollingScreenWidth: {
+            name: "整体宽度",
+            value: "100%",
+            type: "range",
+            attribute: {min: 1, max: 100, step: 1, unit: "%"}
+        },
         scrollingScreenMaxColumns: {name: "最大列数", value: 6, type: "number", attribute: {min: 1, max: 15, step: 1}},
-        scrollingScreenColumnsWidth: {name: "每列宽度", value: "auto", type: "input", title: "可输入'auto'或百分数数组如'10%,20%,30%'"},
+        scrollingScreenColumnsWidth: {
+            name: "每列宽度",
+            value: "auto",
+            type: "input",
+            title: "可输入'auto'或百分数数组如'10%,20%,30%'"
+        },
         scrollingScreenBackColor: {value: "transparent", name: "背景颜色", type: "color"},
         scrollingScreenBorderColor: {value: "transparent", name: "边框颜色", type: "color"},
         scrollingScreenColumnFontFillColor: {value: "auto", name: "表头颜色", type: "color"},
@@ -1892,9 +1945,19 @@ var __ECHARTS__ = {
             type: "range",
             attribute: {min: 0, max: 30, step: 1, unit: "%"}
         },
-        walkingLanternWidth: {name: "整体宽度", value: "100%", type: "range", attribute: {min: 1, max: 100, step: 1, unit: "%"}},
+        walkingLanternWidth: {
+            name: "整体宽度",
+            value: "100%",
+            type: "range",
+            attribute: {min: 1, max: 100, step: 1, unit: "%"}
+        },
         walkingLanternMaxColumns: {name: "最大列数", value: 6, type: "number", attribute: {min: 1, max: 15, step: 1}},
-        walkingLanternColumnsWidth: {name: "每列宽度", value: "auto", type: "input", title: "可输入'auto'或百分数数组如'10%,20%,30%'"},
+        walkingLanternColumnsWidth: {
+            name: "每列宽度",
+            value: "auto",
+            type: "input",
+            title: "可输入'auto'或百分数数组如'10%,20%,30%'"
+        },
         walkingLanternBackColor: {value: "transparent", name: "背景颜色", type: "color"},
         walkingLanternBorderColor: {value: "transparent", name: "边框颜色", type: "color"},
         walkingLanternColumnFontFillColor: {value: "auto", name: "表头颜色", type: "color"},
@@ -1916,7 +1979,12 @@ var __ECHARTS__ = {
             type: "range",
             attribute: {min: 0, max: 30, step: 1, unit: "%"}
         },
-        windowShadesWidth: {name: "整体宽度", value: "100%", type: "range", attribute: {min: 1, max: 100, step: 1, unit: "%"}},
+        windowShadesWidth: {
+            name: "整体宽度",
+            value: "100%",
+            type: "range",
+            attribute: {min: 1, max: 100, step: 1, unit: "%"}
+        },
         windowShadesMaxColumns: {name: "最大列数", value: 6, type: "number", attribute: {min: 1, max: 15, step: 1}},
         windowShadesColumnsWidth: {name: "每列宽度", value: "auto", type: "input", title: "可输入'auto'或百分数数组如'10%,20%,30%'"},
         windowShadesBackColor: {value: "transparent", name: "背景颜色", type: "color"},
@@ -2006,7 +2074,13 @@ var __ECHARTS__ = {
             name: "布局方式", value: "auto",
             type: "grids"
         },
-        singeAxisGroup: {name: "序列分组", value: 2, type: "number", attribute: {min: 1, max: 4, step: 1}, title: "布局方式为「自动」有效"},
+        singeAxisGroup: {
+            name: "序列分组",
+            value: 2,
+            type: "number",
+            attribute: {min: 1, max: 4, step: 1},
+            title: "布局方式为「自动」有效"
+        },
         singeAxisType: {
             name: "类别",
             value: "scatter",
@@ -2099,10 +2173,28 @@ var __ECHARTS__ = {
             options: [new Option("连续", "continuous"), new Option("自动分段", "piecewise-auto"), new Option("区间分段", "piecewise-step")],
             type: "select"
         },
-        visualMapSplitNumber: {name: "自动分段", value: 5, type: "number", attribute: {min: 1, max: 10, step: 1}, title: "类型为自动分段时有效"},
-        visualMapPiecesStep: {name: "区间基数", value: "100", type: "input", title: "类型为区间分段时有效,根据实际数据半数递减"},
-        visualMapPrecision: {name: "数据精度", value: 0, type: "number", attribute: {min: 0, max: 6, step: 1}, title: "类型为区间分段时有效"},
+        visualMapSplitNumber: {
+            name: "最大分段",
+            value: 5,
+            type: "number",
+            attribute: {min: 1, max: 10, step: 1},
+            title: ""
+        },
+        visualMapPrecision: {
+            name: "数据精度",
+            value: 0,
+            type: "number",
+            attribute: {min: 0, max: 6, step: 1},
+            title: "类型为区间分段时有效"
+        },
         visualMapTextColor: {name: "标签颜色", value: "auto", type: "color"},
+        visualMapTextFontSize: {
+            name: "标签字号",
+            value: 9,
+            type: "number",
+            attribute: {min: 1, max: 16, step: 1},
+            title: ""
+        },
 
         hr_animation: {name: "动画设置", value: "", type: "hr"},
         animation: {
@@ -6242,66 +6334,125 @@ function getTimeline(configs, times) {
 }
 
 function getVisualMap(configs, min, max, seriesIndex, dimension, position) {
-    function getPieces(min, max, step, splitNumber) {
-        function getStep(min, max, step, splitNumber) {
-            if ((max - min) / step >= 1 && (max - min) / step <= splitNumber)
-                return step;
-            else if ((max - min) / step < 1)
-                return getStep(min, max, Math.floor(step / splitNumber), splitNumber);
-            else if ((max - min) / step > splitNumber)
-                return getStep(min, max, Math.floor(step * 2), splitNumber);
+    function getSpacing(min, max) {
+        let tmp = {target: [min, max], min: null, max: null};
+        let log10 = Math.floor(Math.log10(Math.abs(min)));
+        let pow10 = Math.pow(10, log10);
+        tmp.min = Math.floor(min / pow10) * pow10;
+        let a = min - tmp.min;
+        log10 = Math.floor(Math.log10(Math.abs(a)));
+        pow10 = Math.pow(10, log10);
+        tmp.min += Math.floor(a / pow10) * pow10;
+
+        log10 = Math.floor(Math.log10(Math.abs(max)));
+        pow10 = Math.pow(10, log10);
+        tmp.max = Math.floor(max / pow10) * pow10;
+        a = max - tmp.max;
+        log10 = Math.floor(Math.log10(Math.abs(a)));
+        pow10 = Math.pow(10, log10);
+        tmp.max += Math.ceil(a / pow10) * pow10;
+        return tmp;
+    }
+
+    function getStep(min, max, splitNumber) {
+        let spacing = getSpacing(min, max);
+        let step0 = (spacing.max - spacing.min) / splitNumber;
+        let log10 = Math.floor(Math.log10(Math.abs(step0)));
+        let pow10 = Math.pow(10, log10);
+        let step = Math.ceil(step0 / pow10) * pow10;
+        return {
+            min: spacing.min,
+            max: spacing.max,
+            splitNumber: splitNumber,
+            spacing: spacing,
+            step0: step0,
+            log10: log10,
+            pow10: pow10,
+            step1: step0,
+            step: step
+        };
+    }
+
+    function getPieces(step) {
+        function test(min, max, step) {
+            let pieces = [];
+            if (min + step < max && max - step > min) {
+                if (max < 0) {
+                    //如果数组小于0
+                    let ma = max;
+                    while (ma > min) {
+                        if (ma - step <= max)
+                            pieces.push({min: ma - step, max: ma});
+                        ma = ma - step;
+                    }
+                }
+                if (min >= 0) {
+                    //如果数组大于等于0
+                    let mi = min;
+                    while (mi < max) {
+                        if (mi + step >= min)
+                            pieces.push({min: mi, max: mi + step});
+                        mi = mi + step;
+                    }
+                }
+
+                if (min < 0 && max > 0) {
+                    //对于min小于0,max大于0的,需要以0为分界线分段计算
+                    let mi = 0;
+                    while (mi < max) {
+                        pieces.push({min: mi, max: mi + step});
+                        mi = mi + step;
+                    }
+                    let ma = 0;
+                    while (ma > min) {
+                        pieces.push({min: ma - step, max: ma});
+                        ma = ma - step;
+                    }
+                }
+            }
+            return pieces;
         }
 
-        step = getStep(min, max, step, splitNumber);
-        let pieces = [];
-        if (min + step < max && max - step > min) {
-            if (max <= 0) {
-                let ma = 0;
-                while (ma >= min) {
-                    if (ma - step < max)
-                        pieces.push({min: ma - step, max: ma});
-                    ma = ma - step;
-                }
-            }
-            if (min >= 0) {
-                let mi = 0;
-                while (mi <= max) {
-                    if (mi + step > min)
-                        pieces.push({min: mi, max: mi + step});
-                    mi = mi + step;
-                }
-            }
-
-            if (min < 0 && max > 0) {
-                let mi = 0;
-                while (mi <= max) {
-                    pieces.push({min: mi, max: mi + step});
-                    mi = mi + step;
-                }
-                let ma = 0;
-                while (ma >= min) {
-                    pieces.push({min: ma - step, max: ma});
-                    ma = ma - step;
-                }
-            }
+        let pieces = test(step.min, step.max, step.step);
+        while (pieces.length != step.splitNumber) {
+            //因需要保留0作为分界线,造成实际分段数与期望值不符,
+            // 如果分组大于预期,则强制扩大组距(1/10).造成分组可能小于预期
+            if (pieces.length > step.splitNumber)
+                step.step1 += (step.step / 10);
+            if (pieces.length < step.splitNumber)
+                step.step1 -= (step.step / 10);
+            pieces = test(step.min, step.max, step.step1);
+            if (Math.abs(step.step - step.step1) > step.step)
+                break;
         }
         return pieces;
     }
 
-    let step = Number(configs.visualMapPiecesStep.value);
+    let step = getStep(min, max, Number(configs.visualMapSplitNumber.value));
+
     let visualmap = {
         show: configs.visualMapDisplay.value.toBoolean(),
         min: min,
         max: max,
         type: configs.visualMapType.value.split("-")[0],
+        selectedMode: "multiple",//single
         calculable: true,
         orient: configs.visualMapOrient.value,
         textStyle: {
             color: configs.visualMapTextColor.value,
+            fontSize: Number(configs.visualMapTextFontSize.value),
         },
+        itemWidth: Number(configs.visualMapTextFontSize.value),
+        itemHeight: Number(configs.visualMapTextFontSize.value),
+        padding: [
+            5,  // 上
+            0, // 右
+            5,  // 下
+            0, // 左
+        ],
         splitNumber: Number(configs.visualMapSplitNumber.value),
         precision: Number(configs.visualMapPrecision.value),
-        pieces: configs.visualMapType.value.split("-")[1] == "auto" ? [] : getPieces(min, max, step, Number(configs.visualMapSplitNumber.value)),
+        pieces: configs.visualMapType.value.split("-")[1] == "auto" ? [] : getPieces(step),
     };
     if (typeof seriesIndex !== "undefined")
         visualmap.seriesIndex = seriesIndex;

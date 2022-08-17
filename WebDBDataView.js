@@ -2682,13 +2682,12 @@ function viewTables(index) {
                         let del = __SYS_IMAGES_SVG__.getImage("del", __THEMES__.get().color, "18px", "18px", __THEMES__.get().hover);
                         del.setAttribute("type", results.rows.item(i).type);
                         del.setAttribute("name", results.rows.item(i).tablename);
-
                         del.style.cssFloat = "right";
                         del.title = "删除";
                         del.onclick = function () {
                             UI.confirm.show("注意", "确定要删除数据表(视图) " + this.getAttribute("name") + " 吗?", "auto", function (args) {
                                 __CONFIGS__.CURRENT_DATABASE.connect.transaction(function (tx) {
-                                    let sql = "drop " + args.type + " " + args.name;
+                                    let sql = "DROP " + args.type + " " + args.name;
                                     __LOGS__.viewMessage(sql);
                                     tx.executeSql(sql, [],
                                         function (tx, results) {
@@ -2715,6 +2714,42 @@ function viewTables(index) {
                             }, {name: this.getAttribute("name"), type: this.getAttribute("type")});
                         };
                         li.appendChild(del);
+
+                        let rename = __SYS_IMAGES_SVG__.getImage("edit", __THEMES__.get().color, "18px", "18px", __THEMES__.get().hover);
+                        rename.setAttribute("type", results.rows.item(i).type);
+                        rename.setAttribute("name", results.rows.item(i).tablename);
+                        rename.style.cssFloat = "right";
+                        rename.title = "重命名";
+                        rename.onclick = function () {
+                            UI.prompt.show("请输入新的表(视图)名称", {"名称":{value:this.getAttribute("name"), type:"input"}}, "auto", function (args, values) {
+                                __CONFIGS__.CURRENT_DATABASE.connect.transaction(function (tx) {
+                                    let sql = "ALTER " + args.type  + " " + args.name + " RENAME TO " + values["名称"];
+                                    __LOGS__.viewMessage(sql);
+                                    tx.executeSql(sql, [],
+                                        function (tx, results) {
+                                            let aff = results.rowsAffected;
+                                            let len = results.rows.length;
+                                            if (aff > 0) {
+                                                __LOGS__.viewMessage(aff + " 条记录被修改.")
+                                            }
+                                            if (aff == 0 && len == 0) {
+                                                __LOGS__.viewMessage("数据库没有返回数据和消息.")
+                                            }
+                                            viewTables(__CONFIGS__.CURRENT_DATABASE.index);
+                                            if (__CONFIGS__.CURRENT_TABLE.name === args.name) {
+                                                __CONFIGS__.CURRENT_TABLE.name = null;
+                                                __CONFIGS__.CURRENT_TABLE.sql = "";
+                                                __CONFIGS__.CURRENT_TABLE.structure = [];
+                                                __CONFIGS__.CURRENT_TABLE.type = "";
+                                            }
+                                        },
+                                        function (tx, error) {
+                                            __LOGS__.viewMessage(error.message);
+                                        });
+                                })
+                            }, {name: this.getAttribute("name"), type: this.getAttribute("type")});
+                        };
+                        li.appendChild(rename);
 
                         let colul = document.createElement("ul");
                         colul.id = "ul-tb-" + results.rows.item(i).tablename;
