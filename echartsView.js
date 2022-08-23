@@ -136,6 +136,19 @@ function getSource(dataset) {
             return data;
         },
 
+        getScatterValues: function (title, x, y) {
+            let titles = [];
+            let data = [];
+            for (let i = 0; i < this.source.length; i++) {
+                let row = this.source[i];
+                if (typeof this.dimensions[title] !== "undefined")
+                    titles.push(row[this.dimensions[title]]);
+                if (typeof this.dimensions[x] !== "undefined" && typeof this.dimensions[y] !== "undefined")
+                    data.push([row[this.dimensions[x]], row[this.dimensions[y]]]);
+            }
+            return {title: titles, data: data};
+        },
+
         getMinMaxValue: function (key, type) {
             let min = +Infinity;
             let max = -Infinity;
@@ -366,8 +379,8 @@ function getEcharts(container, dataset, configs) {
             case "WebkitDep":
                 return getWebkitDep(container, dataset, configs);
                 break;
-            case "Scatter":
-                return getScatter(container, dataset, configs);
+            case "LineScatter":
+                return getLineScatter(container, dataset, configs);
                 break;
             case "Funnel":
                 return getFunnel(container, dataset, configs);
@@ -460,6 +473,9 @@ function getEcharts(container, dataset, configs) {
                 return getMultiGraph(container, dataset, configs);
             case "DatasetImage":
                 return getDatasetImage(container, dataset, configs);
+                break;
+            case "ClusterScatter":
+                return getClusterScatter(container, dataset, configs);
                 break;
         }
     } catch (e) {
@@ -595,7 +611,9 @@ var __ECHARTS__ = {
                 new Option("盒须图", "Boxplot"),
                 new Option("柱状&线型", "BarAndLine"),
                 new Option("面积图", "AreaStyle"),
-                new Option("散点图", "Scatter"),
+                new Option("线形散点", "LineScatter"),
+                new Option("聚合散点","ClusterScatter"),
+                new Option("单轴散点", "SingeAxis"),
                 new Option("饼图", "Pie"),
                 new Option("漏斗图", "Funnel"),
                 new Option("常用组合图", "MultiGraph"),
@@ -609,10 +627,10 @@ var __ECHARTS__ = {
                 new Option("雷达图", "Radar"),
                 new Option("全国地图", "GeoOfChina"),
                 new Option("本地地图", "GeoOfLocal"),
-                new Option("单轴散点图", "SingeAxis"),
                 new Option("旭日图", "Sunburst"),
                 new Option("矩形树图", "Treemap"),
                 new Option("树形结构", "Tree"),
+                new Option("散点聚合","Cluster"),
                 new Option("关系图", "Relation"),
                 new Option("分类集中", "WebkitDep"),
                 new Option("类目轴", "CategoryLine"),
@@ -1211,7 +1229,22 @@ var __ECHARTS__ = {
         scatterRegLineDisplay: {
             name: "显示回归曲线",
             value: "false",
-            type: "boolean"
+            type: "boolean",
+            title: "适用线形散点图"
+        },
+
+        scatterClustes: {
+            name: "聚合数量",
+            value: "5",
+            type: "number", attribute: {min: 1, max: 36, step: 1},
+            title: "适用聚合散点图"
+        },
+
+        scatterClusteTool: {
+            name: "聚合工具",
+            value: "visualMap",
+            options: [new Option("映射", "visualMap"), new Option("步骤", "timeline")],
+            type: "select"
         },
 
         hr_pie: {name: "饼图", value: "", type: "hr"},
@@ -1695,6 +1728,11 @@ var __ECHARTS__ = {
             value: "heatmap",
             options: [new Option("热图", "heatmap"), new Option("散点", "scatter"), new Option("效应散点", "effectScatter")],
             type: "select"
+        },
+        calendarVisualMap:{
+            name: "显示映射",
+            value: "false",
+            type: "boolean"
         },
         calendarLabelColor: {
             value: "auto", name: "标签颜色", type: "color"
@@ -4517,7 +4555,7 @@ function getMultiGraphOption(configs, container, myChart, dataset) {
                             position.left = (grids[i].values.left - 5) + "%";
                             position.orient = configs.calendarOrient.value;
                         }
-                        visualMaps.push(getVisualMap(configs, ia.min, ia.max, i, 1, position));
+                        visualMaps.push(getVisualMap(configs, ia.min, ia.max, configs.calendarVisualMap.value.toBoolean(), i, 1, position));
                         let calendar = {
                             orient: configs.calendarOrient.value, //"vertical",//"horizontal"
                             top: grids[i].top,
@@ -4865,7 +4903,7 @@ function getRegLine(configs, column, source) {
     return {serie: regline, name: name};
 }
 
-function getScatterOption(configs, container, myChart, dataset) {
+function getLineScatterOption(configs, container, myChart, dataset) {
     if (typeof myChart.IntervalId !== "undefined")
         clearInterval(myChart.IntervalId);
     let source = getSource(dataset);
@@ -4994,7 +5032,7 @@ function getToolboxFeatureScatter(configs, container, myChart, dataset) {
         title: '散点图',
         icon: __SYS_IMAGES_SVG__.getPath("echarts_scatter"),
         onclick: function () {
-            myChart.setOption(getScatterOption(configs, container, myChart, dataset), true);
+            myChart.setOption(getLineScatterOption(configs, container, myChart, dataset), true);
         }
     } : {};
 }
@@ -5856,6 +5894,11 @@ function getToolboxFeatureGeoOfLocal(configs, container, myChart, dataset) {
 }
 
 function getXAxis(configs, type, data, name) {
+    //type
+    // 'value' 数值轴，适用于连续数据。
+    // 'category' 类目轴，适用于离散的类目数据。为该类型时类目数据可自动从 series.data 或 dataset.source 中取，或者可通过 xAxis.data 设置类目数据。
+    // 'time' 时间轴，适用于连续的时序数据，与数值轴相比时间轴带有时间的格式化，在刻度计算上也有所不同，例如会根据跨度的范围来决定使用月，星期，日还是小时范围的刻度。
+    // 'log' 对数轴。适用于对数数据。
     return {
         name: typeof name != "undefined"? name: null,
         type: type,
@@ -5898,6 +5941,11 @@ function getXAxis(configs, type, data, name) {
 }
 
 function getYAxis(configs, type, data, position, name) {
+    //type
+    // 'value' 数值轴，适用于连续数据。
+    // 'category' 类目轴，适用于离散的类目数据。为该类型时类目数据可自动从 series.data 或 dataset.source 中取，或者可通过 xAxis.data 设置类目数据。
+    // 'time' 时间轴，适用于连续的时序数据，与数值轴相比时间轴带有时间的格式化，在刻度计算上也有所不同，例如会根据跨度的范围来决定使用月，星期，日还是小时范围的刻度。
+    // 'log' 对数轴。适用于对数数据。
     return {
         name: typeof name != "undefined" ? name : null,
         type: type,
@@ -6333,7 +6381,7 @@ function getTimeline(configs, times) {
     };
 }
 
-function getVisualMap(configs, min, max, seriesIndex, dimension, position) {
+function getVisualMap(configs, min, max, display, seriesIndex, dimension, position) {
     function getSpacing(min, max) {
         let tmp = {target: [min, max], min: null, max: null};
         let log10 = Math.floor(Math.log10(Math.abs(min)));
@@ -6431,7 +6479,7 @@ function getVisualMap(configs, min, max, seriesIndex, dimension, position) {
     let step = getStep(min, max, Number(configs.visualMapSplitNumber.value));
 
     let visualmap = {
-        show: configs.visualMapDisplay.value.toBoolean(),
+        show: typeof display === "undefined" ? configs.visualMapDisplay.value.toBoolean() : display,
         min: min,
         max: max,
         type: configs.visualMapType.value.split("-")[0],
@@ -7743,7 +7791,7 @@ function getWebkitDep(container, dataset, configs) {
     return container;
 }
 
-function getScatter(container, dataset, configs) {
+function getLineScatter(container, dataset, configs) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
@@ -7756,7 +7804,7 @@ function getScatter(container, dataset, configs) {
 
     setTimeout(() => {
         myChart.hideLoading();
-        myChart.setOption(getScatterOption(configs, container, myChart, dataset), true);
+        myChart.setOption(getLineScatterOption(configs, container, myChart, dataset), true);
     }, Number(configs.loadingTimes.value));
 
     __ECHARTS__.addHistory(container, configs, dataset);
@@ -7831,7 +7879,7 @@ function getCalendar(container, dataset, configs) {
                         position.left = (grids[c - 1].values.left - 5) + "%";
                         position.orient = configs.calendarOrient.value;
                     }
-                    visualMaps.push(getVisualMap(configs, ia.min, ia.max, c - 1, 1, position));
+                    visualMaps.push(getVisualMap(configs, ia.min, ia.max, configs.calendarVisualMap.value.toBoolean(), c - 1, 1, position));
                     let serie = {
                         id: source.dimensions[c],
                         name: source.dimensions[c],
@@ -13469,6 +13517,524 @@ function getSaveAsReport(configs, container, myChart) {
                 UI.alert.show("注意", "固定报表组件未载入!", "auto");
         }
     } : {};
+}
+
+function getClusterScatter(container, dataset, configs) {
+    if (container == null) {
+        container = document.createElement("div");
+        container.className = "echarts-container";
+        container.id = "echarts-container";
+    }
+
+    var myChart = echarts.init(container, configs.echartsTheme.value, {
+        locale: configs.local.value,
+        renderer: configs.renderer.value
+    });
+    myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
+
+    let grids = getGrids(configs);
+    let source = getSource(dataset);
+    let scatters = source.getScatterValues(0, 1, 2);
+
+    if (scatters.data.length == 0)
+        UI.alert.show("提示", "聚合散点数据结构:<br>[名称, X, Y]," +
+            "<br>[名称, X, Y]," +
+            "<br>[...],");
+
+    let ia = source.getMinMaxValue(source.dimensions[2], "number");
+    let option;
+    let targetRenderProgress = 0;
+    let CLUSTER_COUNT = Number(configs.scatterClustes.value);
+    let DIM_CLUSTER_INDEX = 2;
+    let DATA_DIM_IDX = [0, 1];
+    let CENTER_DIM_IDX = [3, 4];
+    let colorAll = ['#c23531', '#2f4554', '#61a0a8', '#d48265', '#91c7ae', '#749f83', '#ca8622', '#bda29a', '#6e7074', '#546570', '#c4ccd3'];
+    try {
+        if (typeof myChart._theme !== "undefined" && typeof myChart._theme.color !== "undefined")
+            colorAll = myChart._theme.color;
+    } catch (e) {
+    }
+
+    let pieces = [];
+    for (let i = 0; i < CLUSTER_COUNT; i++) {
+        pieces.push({
+            value: i,
+            label: (i + 1),
+            color: colorAll[i % colorAll.length]
+        });
+    }
+
+    // See https://github.com/ecomfe/echarts-stat
+    let step = ecStat.clustering.hierarchicalKMeans(scatters.data, {
+        clusterCount: CLUSTER_COUNT,
+        outputType: 'single',
+        outputClusterIndexDimension: DIM_CLUSTER_INDEX,
+        outputCentroidDimensions: CENTER_DIM_IDX,
+        stepByStep: true
+    });
+
+
+    let ANIMATION_DURATION_UPDATE = 1500;
+
+    function renderItemPoint(params, api) {
+        let coord = api.coord([api.value(0), api.value(1)]);
+        let clusterIdx = api.value(2);
+        if (clusterIdx == null || isNaN(clusterIdx)) {
+            clusterIdx = 0;
+        }
+        let isNewCluster = clusterIdx === api.value(3);
+        let extra = {
+            transition: []
+        };
+        let contentColor = colorAll[clusterIdx % colorAll.length];
+        return {
+            type: 'circle',
+            x: coord[0],
+            y: coord[1],
+            shape: {
+                cx: 0,
+                cy: 0,
+                r: 10
+            },
+            extra: extra,
+            style: {
+                fill: contentColor,
+                stroke: '#333',
+                lineWidth: 1,
+                shadowColor: contentColor,
+                shadowBlur: isNewCluster ? 12 : 0,
+                transition: ['shadowBlur', 'fill']
+            }
+        };
+    }
+
+    function renderBoundary(params, api) {
+        let xVal = api.value(0);
+        let yVal = api.value(1);
+        let maxDist = api.value(2);
+        let center = api.coord([xVal, yVal]);
+        let size = api.size([maxDist, maxDist]);
+        return {
+            type: 'ellipse',
+            shape: {
+                cx: isNaN(center[0]) ? 0 : center[0],
+                cy: isNaN(center[1]) ? 0 : center[1],
+                rx: isNaN(size[0]) ? 0 : size[0] + 15,
+                ry: isNaN(size[1]) ? 0 : size[1] + 15
+            },
+            extra: {
+                renderProgress: ++targetRenderProgress,
+                enterFrom: {
+                    renderProgress: 0
+                },
+                transition: 'renderProgress'
+            },
+            style: {
+                fill: colorTosRGB(colorAll.slice(-1)[0], 0.1),
+                stroke: colorTosRGB(colorAll.slice(-1)[0], 0.2),
+                lineDash: [4, 4],
+                lineWidth: 4
+            }
+        };
+    }
+
+    function makeStepOption(option, data, centroids) {
+        let newCluIdx = centroids ? centroids.length - 1 : -1;
+        let maxDist = 0;
+        for (let i = 0; i < data.length; i++) {
+            let line = data[i];
+            if (line[DIM_CLUSTER_INDEX] === newCluIdx) {
+                let dist0 = Math.pow(line[DATA_DIM_IDX[0]] - line[CENTER_DIM_IDX[0]], 2);
+                let dist1 = Math.pow(line[DATA_DIM_IDX[1]] - line[CENTER_DIM_IDX[1]], 2);
+                maxDist = Math.max(maxDist, dist0 + dist1);
+            }
+        }
+        let boundaryData = centroids
+            ? [[centroids[newCluIdx][0], centroids[newCluIdx][1], Math.sqrt(maxDist)]]
+            : [];
+        option.options.push({
+            series: [
+                {
+                    type: 'custom',
+                    encode: {
+                        tooltip: [0, 1]
+                    },
+                    renderItem: renderItemPoint,
+                    data: data
+                },
+                {
+                    type: 'custom',
+                    renderItem: renderBoundary,
+                    animationDuration: 3000,
+                    silent: true,
+                    data: boundaryData
+                }
+            ]
+        });
+    }
+
+    if (configs.scatterClusteTool.value == 'visualMap') {
+        echarts.registerTransform(ecStat.transform.clustering);
+        option = {
+            backgroundColor: getBackgroundColor(configs),
+            grid: grids,
+            brush: getBrush(configs),
+            toolbox: getToolbox(configs, container, dataset, myChart),
+            title: getTitle(configs, dataset.title),
+            dataset: [
+                {
+                    source: scatters.data,
+                },
+                {
+                    transform: {
+                        type: 'ecStat:clustering',
+                        print: true,
+                        config: {
+                            clusterCount: CLUSTER_COUNT,
+                            outputType: 'single',
+                            outputClusterIndexDimension: DIM_CLUSTER_INDEX
+                        }
+                    }
+                }],
+            tooltip: getTooltip(configs, "item", function (param) {
+                return "<span style = 'float:left'>" + param.marker + scatters.title[param.dataIndex] + "</span><br>" +
+                    "<hr style='background-color:" + param.color + "'>" +
+                    "<span style='min-width:180px'>" + source.dimensions[1] + ":&emsp;</span> " +
+                    "<span style='display:inline-block;min-width:100px;text-align:right;font-weight:bold'>" + param.data[0] + "</span><br>" +
+                    "<span style='min-width:180px'>" + source.dimensions[2] + ":&emsp;</span> " +
+                    "<span style='display:inline-block;min-width:100px;text-align:right;font-weight:bold'>" + param.data[1] + "</span><br>";
+            }),
+            visualMap: {
+                type: 'piecewise',
+                top: 'middle',
+                left: (grids.values.left + grids.values.width) + "%",
+                min: 0,
+                max: CLUSTER_COUNT,
+                splitNumber: CLUSTER_COUNT,
+                dimension: DIM_CLUSTER_INDEX,
+                pieces: pieces,
+                textStyle: {
+                    color: configs.visualMapTextColor.value,
+                    fontSize: Number(configs.visualMapTextFontSize.value),
+                },
+            },
+
+            xAxis: getXAxis(configs, "value", null, source.dimensions[1]),
+            yAxis: getYAxis(configs, "value", null, "left", source.dimensions[2]),
+            graphic: getWaterGraphic(configs, __VERSION__),
+            series: {
+                type: configs.scatterType.value,
+                encode: {tooltip: [0, 1]},
+                datasetIndex: 1,
+                label: {
+                    show: configs.scatterLabelDisplay.value.toBoolean(),
+                    align: "center",
+                    position: "top",
+                    verticalAlign: "middle",
+                    distance: 15,
+                    formatter: function (param) {
+                        return scatters.title[param.dataIndex];
+                    },
+                    rich: {
+                        value: {
+                            color: configs.scatterLabelTextColor.value,
+                            fontSize: configs.scatterLabelFontSize.value,
+                        }
+                    }
+                },
+                emphasis: {
+                    label: {
+                        show: true,
+                        formatter: function (param) {
+                            return scatters.title[param.dataIndex];
+                        },
+                        rich: {
+                            value: {
+                                fontWeight: "bold",
+                            }
+                        }
+                    }
+                },
+                symbol: configs.scatterSymbolShape.value,
+                symbolSize: function (data) {
+                    let size = configs.scatterSymbolSize.value.toArray([6, 18], ",");
+                    if (size[0] > size[1]) {
+                        let tmp = size[1];
+                        size[1] = size[0];
+                        size[0] = tmp;
+                    }
+                    return (size[0] == size[1] || ia.max == ia.min) ? size[0] : (data[1] - ia.min) * (size[1] - size[0]) / (ia.max - ia.min) + size[0];
+                },
+                itemStyle: {
+                    opacity: 0.8,
+                    shadowBlur: 5,
+                    shadowOffsetX: 0,
+                    shadowOffsetY: 0,
+                },
+            }
+        };
+    }
+    if (configs.scatterClusteTool.value == 'timeline') {
+        option = {
+            timeline: {
+                top: 'center',
+                left: (grids.values.left + grids.values.width) + "%",
+                height: 300,
+                width: 10,
+                inverse: true,
+                autoPlay: false,
+                playInterval: 2500,
+                symbol: 'none',
+                orient: 'vertical',
+                axisType: 'category',
+                label: {
+                    formatter: '{value}',
+                    position: 10
+                },
+                checkpointStyle: {
+                    animationDuration: ANIMATION_DURATION_UPDATE
+                },
+                data: []
+            },
+            baseOption: {
+                backgroundColor: getBackgroundColor(configs),
+                grid: grids,
+                brush: getBrush(configs),
+                toolbox: getToolbox(configs, container, dataset, myChart),
+                title: getTitle(configs, dataset.title),
+                animationDurationUpdate: ANIMATION_DURATION_UPDATE,
+                transition: ['shape'],
+                tooltip: getTooltip(configs, "item", function (param) {
+                    return "<span style = 'float:left'>" + param.marker + scatters.title[param.dataIndex] + "</span><br>" +
+                        "<hr style='background-color:" + param.color + "'>" +
+                        "<span style='min-width:180px'>" + source.dimensions[1] + ":&emsp;</span> " +
+                        "<span style='display:inline-block;min-width:100px;text-align:right;font-weight:bold'>" + param.data[0] + "</span><br>" +
+                        "<span style='min-width:180px'>" + source.dimensions[2] + ":&emsp;</span> " +
+                        "<span style='display:inline-block;min-width:100px;text-align:right;font-weight:bold'>" + param.data[1] + "</span><br>";
+                }),
+                xAxis: getXAxis(configs, "value", null, source.dimensions[1]),
+                yAxis: getYAxis(configs, "value", null, "left", source.dimensions[2]),
+                series: [
+                    {
+                        type: configs.scatterType.value,
+                        label: {
+                            show: configs.scatterLabelDisplay.value.toBoolean(),
+                            align: "center",
+                            position: "top",
+                            verticalAlign: "middle",
+                            distance: 15,
+                            formatter: function (param) {
+                                return scatters.title[param.dataIndex];
+                            },
+                            rich: {
+                                value: {
+                                    color: configs.scatterLabelTextColor.value,
+                                    fontSize: configs.scatterLabelFontSize.value,
+                                }
+                            }
+                        },
+                        emphasis: {
+                            label: {
+                                show: true,
+                                formatter: function (param) {
+                                    return scatters.title[param.dataIndex];
+                                },
+                                rich: {
+                                    value: {
+                                        fontWeight: "bold",
+                                    }
+                                }
+                            }
+                        },
+                        symbol: configs.scatterSymbolShape.value,
+                        symbolSize: function (data) {
+                            let size = configs.scatterSymbolSize.value.toArray([6, 18], ",");
+                            if (size[0] > size[1]) {
+                                let tmp = size[1];
+                                size[1] = size[0];
+                                size[0] = tmp;
+                            }
+                            return (size[0] == size[1] || ia.max == ia.min) ? size[0] : (data[1] - ia.min) * (size[1] - size[0]) / (ia.max - ia.min) + size[0];
+                        },
+                        itemStyle: {
+                            opacity: 0.8,
+                            shadowBlur: 5,
+                            shadowOffsetX: 0,
+                            shadowOffsetY: 0,
+                        },
+                    }
+                ],
+                graphic: getWaterGraphic(configs, __VERSION__),
+            },
+            options: []
+        };
+        makeStepOption(option, scatters.data);
+        option.timeline.data.push('0');
+        for (let i = 1, stepResult; !(stepResult = step.next()).isEnd; i++) {
+            makeStepOption(
+                option,
+                echarts.util.clone(stepResult.data),
+                echarts.util.clone(stepResult.centroids)
+            );
+            option.timeline.data.push(i + '');
+        }
+    }
+
+    setTimeout(function () {
+        myChart.hideLoading();
+        myChart.setOption(option);
+    }, Number(configs.loadingTimes.value));
+    __ECHARTS__.addHistory(container, configs, dataset);
+
+    return container;
+}
+
+function getClusterScatter2(container, dataset, configs) {
+    //未使用
+    if (container == null) {
+        container = document.createElement("div");
+        container.className = "echarts-container";
+        container.id = "echarts-container";
+    }
+
+    var myChart = echarts.init(container, configs.echartsTheme.value, {
+        locale: configs.local.value,
+        renderer: configs.renderer.value
+    });
+    myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
+
+    let source = getSource(dataset);
+    let scatters = source.getScatterValues(0, 1, 2);
+
+    if (scatters.data.length == 0)
+        UI.alert.show("提示", "聚合散点数据结构:<br>[名称, X, Y].");
+
+
+    echarts.registerTransform(ecStat.transform.clustering);
+    let CLUSTER_COUNT = Number(configs.scatterClustes.value);
+    let DIENSIION_CLUSTER_INDEX = 2;
+    let COLOR_ALL = ['#c23531', '#2f4554', '#61a0a8', '#d48265', '#91c7ae', '#749f83', '#ca8622', '#bda29a', '#6e7074', '#546570', '#c4ccd3'];
+    try {
+        if (typeof myChart._theme !== "undefined" && typeof myChart._theme.color !== "undefined")
+            COLOR_ALL = myChart._theme.color;
+    } catch (e) {
+    }
+    let pieces = [];
+    for (let i = 0; i < CLUSTER_COUNT; i++) {
+        pieces.push({
+            value: i,
+            label: (i + 1),
+            color: COLOR_ALL[i]
+        });
+    }
+
+    let ia = source.getMinMaxValue(source.dimensions[2], "number");
+
+    let option = {
+        backgroundColor: getBackgroundColor(configs),
+        grid: getGrids(configs),
+        brush: getBrush(configs),
+        toolbox: getToolbox(configs, container, dataset, myChart),
+        title: getTitle(configs, dataset.title),
+        dataset: [
+            {
+                source: scatters.data,
+            },
+            {
+                transform: {
+                    type: 'ecStat:clustering',
+                    print: true,
+                    config: {
+                        clusterCount: CLUSTER_COUNT,
+                        outputType: 'single',
+                        outputClusterIndexDimension: DIENSIION_CLUSTER_INDEX
+                    }
+                }
+            }],
+        tooltip: getTooltip(configs, "item", function (param) {
+            return "<span style = 'float:left'>" + param.marker + scatters.title[param.dataIndex] + "</span><br>" +
+                "<hr style='background-color:" + param.color + "'>" +
+                "<span style='min-width:180px'>" + source.dimensions[1] + ":&emsp;</span> " +
+                "<span style='display:inline-block;min-width:100px;text-align:right;font-weight:bold'>" + param.data[0] + "</span><br>" +
+                "<span style='min-width:180px'>" + source.dimensions[2] + ":&emsp;</span> " +
+                "<span style='display:inline-block;min-width:100px;text-align:right;font-weight:bold'>" + param.data[1] + "</span><br>";
+        }),
+        visualMap: {
+            type: 'piecewise',
+            top: 'middle',
+            min: 0,
+            max: CLUSTER_COUNT,
+            left: 10,
+            splitNumber: CLUSTER_COUNT,
+            dimension: DIENSIION_CLUSTER_INDEX,
+            pieces: pieces,
+            textStyle: {
+                color: configs.visualMapTextColor.value,
+                fontSize: Number(configs.visualMapTextFontSize.value),
+            },
+        },
+
+        xAxis: getXAxis(configs, "value", null, source.dimensions[1]),
+        yAxis: getYAxis(configs, "value", null, "left", source.dimensions[2]),
+        graphic: getWaterGraphic(configs, __VERSION__),
+        series: {
+            type: configs.scatterType.value,
+            encode: {tooltip: [0, 1]},
+            datasetIndex: 1,
+            label: {
+                show: configs.scatterLabelDisplay.value.toBoolean(),
+                align: "center",
+                position: "top",
+                verticalAlign: "middle",
+                distance: 15,
+                formatter: function (param) {
+                    return scatters.title[param.dataIndex];
+                },
+                rich: {
+                    value: {
+                        color: configs.scatterLabelTextColor.value,
+                        fontSize: configs.scatterLabelFontSize.value,
+                    }
+                }
+            },
+            emphasis: {
+                label: {
+                    show: true,
+                    formatter: function (param) {
+                        return scatters.title[param.dataIndex];
+                    },
+                    rich: {
+                        value: {
+                            fontWeight: "bold",
+                        }
+                    }
+                }
+            },
+            symbol: configs.scatterSymbolShape.value,
+            symbolSize: function (data) {
+                let size = configs.scatterSymbolSize.value.toArray([6, 18], ",");
+                if (size[0] > size[1]) {
+                    let tmp = size[1];
+                    size[1] = size[0];
+                    size[0] = tmp;
+                }
+                return (size[0] == size[1] || ia.max == ia.min) ? size[0] : (data[1] - ia.min) * (size[1] - size[0]) / (ia.max - ia.min) + size[0];
+            },
+            itemStyle: {
+                opacity: 0.8,
+                shadowBlur: 5,
+                shadowOffsetX: 0,
+                shadowOffsetY: 0,
+            },
+        }
+    };
+    setTimeout(function () {
+        myChart.hideLoading();
+        myChart.setOption(option);
+    }, Number(configs.loadingTimes.value));
+    __ECHARTS__.addHistory(container, configs, dataset);
+
+    return container;
 }
 
 

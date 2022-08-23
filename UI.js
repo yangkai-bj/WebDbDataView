@@ -1,4 +1,6 @@
-
+/*
+通用模块
+*/
 function getStorageSql(key) {
     try {
         let storage = window.localStorage;
@@ -1482,25 +1484,34 @@ var UI = {
                 span.innerText = key + " : ";
                 item.appendChild(span);
                 let input = null;
-                if (it.type === 'input') {
-                    input = document.createElement("input");
-                    input.className = "ui-container-item-input";
-                    input.id = "ui_prompt_value_" + key;
-                    input.value = it.value;
-                }
                 if (it.type === "color") {
                     input = UI.colorChoice("ui_prompt_value_" + key, it.value);
                     input.className = "ui-container-item-color";
                     input.id = "ui_prompt_value_" + key;
-                }
-                if (it.type === "select") {
+                } else if (it.type === "select") {
                     input = document.createElement("select");
                     input.className = "ui-container-item-input";
                     input.id = "ui_prompt_value_" + key;
                     for (let i = 0; i < it.options.length; i++) {
                         input.options.add(new Option(it.options[i]));
                     }
+                    input.value = it.value;
+                } else if (it.type === "date") {
+                    input = document.createElement("input");
+                    input.type = "date";
+                    input.className = "ui-container-item-input";
+                    input.id = "ui_prompt_value_" + key;
+                    input.value = it.value;
+                } else {
+                    input = document.createElement("input");
+                    input.className = "ui-container-item-input";
+                    input.id = "ui_prompt_value_" + key;
+                    input.value = it.value;
                 }
+                if (typeof it.notes !== "undefined")
+                    input.title = it.notes;
+                else if (typeof it.title !== "undefined")
+                    input.title = it.title;
                 input.onkeypress = function (event) {
                     let keyCode = event.keyCode ? event.keyCode : event.which ?
                         event.which : event.charCode;
@@ -1536,12 +1547,11 @@ var UI = {
             button.style.cssText = "float: right;margin-left:10px";
             button.onclick = function () {
                 for (let key in UI.prompt.items) {
-                    if (UI.prompt.items[key].type === "input")
-                        UI.prompt.items[key] = document.getElementById("ui_prompt_value_" + key).value;
-                    if (UI.prompt.items[key].type === "select")
-                        UI.prompt.items[key] = document.getElementById("ui_prompt_value_" + key).value;
                     if (UI.prompt.items[key].type === "color")
                         UI.prompt.items[key] = document.getElementById("ui_prompt_value_" + key).getAttribute("value");
+                    else {
+                        UI.prompt.items[key] = document.getElementById("ui_prompt_value_" + key).value;
+                    }
                 }
                 if (typeof callback === "function") {
                     if (typeof args === "undefined")

@@ -1,3 +1,7 @@
+/*
+通用模块
+*/
+
 function getEchartsReport(container, myChart) {
     function getScript(jsPath, echarts, defaultThemes, user) {
         let scripts = [
@@ -10,7 +14,7 @@ function getEchartsReport(container, myChart) {
             "UI.js",
             "echarts/echarts-gl.min.js",
             "echarts/echarts-wordcloud.min.js",
-            "echarts/ecStat.js",
+            "echarts/ecStat.min.js",
             "echarts/echarts-liquidfill.min.js",
             "echarts/map/world.js",
             "echarts/map/china-and-region.js",

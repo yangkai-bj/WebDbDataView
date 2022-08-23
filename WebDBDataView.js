@@ -478,12 +478,13 @@ var __LOGS__ = {
             content.style.top = top + "px"
         });
     },
-    viewMessage: function (msg, warning, copyto) {
+    viewMessage: function (msg, warning, copyto, type) {
         let log = {
             time: new Date(),
             message: msg,
             warning: typeof warning == "undefined" ? false : warning,
-            copyto: typeof copyto === 'undefined' ? false : ((typeof warning == "undefined" ? false : warning) ? true : copyto)
+            copyto: typeof copyto === 'undefined' ? false : ((typeof warning == "undefined" ? false : warning) ? true : copyto),
+            type: typeof type === 'undefined' ? 'text' : type,
         };
 
         let msgbox = $("messageBox");
@@ -492,7 +493,7 @@ var __LOGS__ = {
         dt.className = "dt";
         dt.id = dt.innerText = log.time.format("yyyy-MM-dd hh:mm:ss S");
         if (log.copyto) {
-            let copyto = __SYS_IMAGES_SVG__.getImage("copy", __THEMES__.get().color, "18px", '18px', null, __THEMES__.get().hover);
+            let copyto = __SYS_IMAGES_SVG__.getImage("copy", __THEMES__.get().color, "18px", '18px', __THEMES__.get().hover);
             copyto.title = "复制";
             copyto.style.cssFloat = "right";
             copyto.onclick = function () {
@@ -518,7 +519,10 @@ var __LOGS__ = {
         let message = document.createElement("dd");
         message.type = "dd";
         message.className = "message";
-        message.innerText = log.message;
+        if (log.type == "text")
+             message.innerText = log.message;
+        else
+            message.innerHTML = log.message;
         if (warning)
             message.style.color = "red";
         dt.appendChild(message);
@@ -750,7 +754,7 @@ var __XMLHTTP__ = {
                 element: "script",
                 load: true
             },
-            {name: "回归函数组件", src: "echarts/ecStat.js", type: "text/javascript", element: "script", load: true},
+            {name: "ecStat", src: "echarts/ecStat.min.js", type: "text/javascript", element: "script", load: true},
             {name: "世界地图组件", src: "echarts/map/world.js", type: "text/javascript", element: "script", load: true},
             {
                 name: "中国地图组件",
@@ -2637,12 +2641,12 @@ function viewTables(index) {
                                             if ($("ul-tb-" + __CONFIGS__.CURRENT_TABLE.name).getAttribute("isOpen") == "false") {
                                                 let columns = [];
                                                 for (let m = 0; m < __CONFIGS__.CURRENT_TABLE.structure.data.length; m++) {
+                                                    columns.push(__CONFIGS__.CURRENT_TABLE.structure.data[m]["Name"].value);
                                                     let l = document.createElement("li");
                                                     $("ul-tb-" + __CONFIGS__.CURRENT_TABLE.name).appendChild(l);
                                                     let col = document.createElement("div");
                                                     col.className = "column-name";
                                                     col.id = __CONFIGS__.CURRENT_TABLE.name + "." + __CONFIGS__.CURRENT_TABLE.structure.data[m]["Name"].value;
-                                                    columns.push(__CONFIGS__.CURRENT_TABLE.structure.data[m]["Name"].value);
                                                     col.innerText = col.title = __CONFIGS__.CURRENT_TABLE.structure.data[m]["Name"].value;
                                                     col.draggable = "true";
                                                     col.ondragstart = function (event) {

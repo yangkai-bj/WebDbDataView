@@ -1,3 +1,7 @@
+/*
+通用模块
+*/
+
 function $(id) {
     return document.getElementById(id);
 }
@@ -1367,13 +1371,15 @@ function getEventIndex(index) {
     return new Date().format("yyyyMMddhhmmssS") + "-" + index;
 }
 
+function getAbsolutePosition(obj)
 //获取控件绝对位置
-function getAbsolutePosition(obj) {
-    let position = {"left": 0, "top": 0, "width": 0, "height": 0};
-    let w = 0, h = 0;
+{
+    let position = {"left":0,"top":0,"width":0,"height":0};
+    let w=0,h=0;
     position.width = obj.offsetWidth;
     position.height = obj.offsetHeight;
-    while (obj.offsetParent) {
+    while(obj.offsetParent)
+    {
         w += obj.offsetLeft;
         h += obj.offsetTop;
         obj = obj.offsetParent;
@@ -1451,7 +1457,7 @@ function getBrowserSize(){
         width: winWidth,
         height: winHeight
     };
-}
+};
 
 function jsonParse(message) {
     try {
@@ -1545,7 +1551,7 @@ var dragControl = {
             }
         }
     }
-}
+};
 
 //用于界面分区上下拖动
 var splitControl = {
@@ -1796,12 +1802,13 @@ function getXmlFile(title, dataset, author) {
 }
 
 function getSQLParameters(sql, history) {
-    let reg = new RegExp(/\{[\[\]\s\:\,\-\"\'a-zA-Z0-9\u4e00-\u9fa5\(\)]+\}/, "g");
+    //参数必须以?开始的json格式{参数:{type:[input|select|date|color],value:'',options:[]}}
+    let reg = new RegExp(/\?\{[\{\}\[\]\s\:\,\-\_\"\'a-zA-Z0-9\u4e00-\u9fa5\(\)]+\}/, "gm");
     let content = sql.match(reg);
     let style = {};
     if (content != null) {
         for (let i = 0; i < content.length; i++) {
-            let param = content[i].replaceAll("'", '"');
+            let param = content[i].slice(1).replaceAll("'", '"');
             try {
                 param = JSON.parse(param);
                 let key;
@@ -1809,17 +1816,16 @@ function getSQLParameters(sql, history) {
                     key = k;
                     break;
                 }
-                style[key] = {
-                    value: typeof param[key] !== "object" ? param[key] : param[key][0],
-                    type: typeof param[key] === "object" ? "select" : "input",
-                    options: typeof param[key] === "object" ? param[key] : null,
-                };
+                style[key] = param[key];
             } catch (e) {
-                console.log({"参数": param, "错误": e});
+                __LOGS__.viewMessage("参数定义错误:<br>?" + param + "<br>" + e + "<br>" +
+                    "<hr>参数格式:<br>?{'参数名称':<br>&emsp;&emsp;{<br>&emsp;&emsp;&emsp;'type':'input|select|date|color',<br>&emsp;&emsp;&emsp;'value':'',<br>&emsp;&emsp;&emsp;'options':['','']<br>&emsp;&emsp;&emsp;'notes':''<br>&emsp;&emsp;}<br>&emsp;}",
+                    true, true, "html");
             }
         }
     }
-    reg = new RegExp(/\{[\s\-a-zA-Z0-9\u4e00-\u9fa5\(\)]+\}/, "g");
+
+    reg = new RegExp(/\{[\s\_\-a-zA-Z0-9\u4e00-\u9fa5\(\)]+\}/, "g");
     content = sql.match(reg);
     let parameter = null;
     if (content != null) {
@@ -1830,6 +1836,7 @@ function getSQLParameters(sql, history) {
                 value: typeof history[key] !== "undefined" ? history[key] : (typeof style[key] !== "undefined" ? style[key].value : ""),
                 type: typeof style[key] !== "undefined" ? style[key].type : "input",
                 options: typeof style[key] !== "undefined" ? style[key].options : null,
+                notes: typeof style[key] !== "undefined" ? style[key].notes : "",
             };
         }
     }
