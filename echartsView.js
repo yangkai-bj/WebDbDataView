@@ -337,6 +337,49 @@ function getBackgroundColor(configs) {
     }
 }
 
+function getAxis(configs, source, types, grids) {
+    let xAxis = [];
+    let yAxis = [];
+    for (let i = 0; i < source.dimensions.length - 1 && i < grids.length; i++) {
+        let type = types[i % types.length];
+        if (type == "pie" || type == "funnel" || type == "calendar" || type == "wordCloud") {
+            xAxis.push(null);
+            yAxis.push(null);
+        } else if (type == "tranbar") {
+            let xA = getXAxis(configs, "value", null);
+            xA.gridIndex = i;
+            xAxis.push(xA);
+            let yA = getYAxis(configs, "category", source.getItems(source.dimensions[0]), "bottom");
+            yA.axisPointer = {
+                type: configs.axisPointerType.value,
+            };
+            yA.name = source.dimensions[i + 1];
+            yA.nameTextStyle = {
+                color: configs.axisTextColor.value,
+                fontSize: Number(configs.axisTextFontSize.value)
+            };
+            yA.gridIndex = i;
+            yAxis.push(yA);
+        } else {
+            let xA = getXAxis(configs, "category", source.getItems(source.dimensions[0]));
+            xA.gridIndex = i;
+            xA.axisPointer = {
+                type: configs.axisPointerType.value,
+            };
+            xAxis.push(xA);
+            let yA = getYAxis(configs, "value", null, "left");
+            yA.name = source.dimensions[i + 1];
+            yA.nameTextStyle = {
+                color: configs.axisTextColor.value,
+                fontSize: Number(configs.axisTextFontSize.value)
+            };
+            yA.gridIndex = i;
+            yAxis.push(yA);
+        }
+    }
+    return {xAxis: xAxis, yAxis: yAxis};
+}
+
 function getEcharts(container, dataset, configs) {
     try {
         switch (configs.echartsType.value) {
@@ -477,6 +520,9 @@ function getEcharts(container, dataset, configs) {
             case "ClusterScatter":
                 return getClusterScatter(container, dataset, configs);
                 break;
+            case "PictorialBar":
+                return getPictorialBar(container, dataset, configs);
+                break;
         }
     } catch (e) {
         if (typeof __LOGS__ !== "undefined")
@@ -606,13 +652,14 @@ var __ECHARTS__ = {
             options: [
                 new Option("时钟", "Clock"),
                 new Option("柱状图", "Bar"),
+                new Option("象形柱", "PictorialBar"),
                 new Option("条形图", "TransversBar"),
                 new Option("线型图", "Line"),
                 new Option("盒须图", "Boxplot"),
                 new Option("柱状&线型", "BarAndLine"),
                 new Option("面积图", "AreaStyle"),
                 new Option("线形散点", "LineScatter"),
-                new Option("聚合散点","ClusterScatter"),
+                new Option("聚合散点", "ClusterScatter"),
                 new Option("单轴散点", "SingeAxis"),
                 new Option("饼图", "Pie"),
                 new Option("漏斗图", "Funnel"),
@@ -630,7 +677,7 @@ var __ECHARTS__ = {
                 new Option("旭日图", "Sunburst"),
                 new Option("矩形树图", "Treemap"),
                 new Option("树形结构", "Tree"),
-                new Option("散点聚合","Cluster"),
+                new Option("散点聚合", "Cluster"),
                 new Option("关系图", "Relation"),
                 new Option("分类集中", "WebkitDep"),
                 new Option("类目轴", "CategoryLine"),
@@ -1017,13 +1064,6 @@ var __ECHARTS__ = {
         },
         barLabelTextColor: {name: "标签颜色", value: "auto", type: "color"},
         barLabelFontSize: {name: "标签字号", value: 12, type: "number", attribute: {min: 1, max: 30, step: 1}},
-        barLabelPosition: {
-            name: "标签位置",
-            value: "top",
-            options: [new Option("顶部", "top"), new Option("左边", "left"), new Option("右边", "right"), new Option("底部", "bottom"), new Option("内部", "inside"),
-                new Option("内部顶部", "insideTop"), new Option("内部左边", "insideLeft"), new Option("内部右边", "insideRight"), new Option("内部底部", "insideBottom")],
-            type: "select"
-        },
         barLabelRotate: {name: "标签旋转度数", value: 0, type: "number", attribute: {min: -90, max: 90, step: 1}},
         barStackTimes: {
             name: "堆叠分组",
@@ -1038,6 +1078,94 @@ var __ECHARTS__ = {
             value: "false",
             type: "boolean"
         },
+        barOpacity: {name: "透明度", value: 1, type: "number", attribute: {min: 0, max: 1, step: 0.1}},
+
+        hr_PictorialBar:{name: "象形柱", value: "", type: "hr"},
+        pictorialBarGrids: {
+            name: "布局方式", value: "auto",
+            type: "grids"
+        },
+        pictorialBarGroupWith:{
+            name: "序列分组", value: 2, type: "number", attribute: {min: 1, max: 4, step: 1}, title: "「多序列」有效"
+        },
+        pictorialBarColorby: {
+            name: "配色方式",
+            value: "series",
+            options: [new Option("序列", "series"), new Option("数据", "data")],
+            type: "select"
+        },
+        pictorialBarAutoOrder: {
+            name: "自动排序",
+            value: "none",
+            options: [
+                new Option("不排序", "none"),
+                new Option("升序", "asc"),
+                new Option("降序", "desc")
+            ],
+            type: "select",
+            title: "「单一序列」有效"
+        },
+        pictorialBarSymbol: {
+            name: "柱体图形",
+            value: "rect",
+            options: [
+                new Option("默认", "rect"),
+                new Option("正方形", __SYS_IMAGES_SVG__.getPath("pictorial_square")),
+                new Option("曲边三角形", __SYS_IMAGES_SVG__.getPath("pictorial_CurvedTriangle")),
+                new Option("直边三角形", __SYS_IMAGES_SVG__.getPath("pictorial_Triangle")),
+            ],
+            type: "select"
+        },
+        pictorialBarCategoryGap: {
+            name: "柱间距离", value: "20%", type: "range", attribute: {min: -150, max: 50, step: 1, unit: "%"}
+        },
+        pictorialBarSymbolSize: {
+            name: "柱体图形大小",
+            value: "50%,50%",
+            type: "ranges",
+            attribute: {min: 1, max: 100, step: 1, unit: "%"}
+        },
+        pictorialBarSymbolClip: {
+            name: "剪裁图形",
+            value: "false",
+            type: "boolean"
+        },
+        pictorialBarSymbolRepeat: {
+            name: "图形重复",
+            value: "false",
+            type: "boolean"
+        },
+        pictorialBarOpacity: {name: "透明度", value: 1, type: "number", attribute: {min: 0, max: 1, step: 0.1}},
+        pictorialBarLabelDisplay: {
+            name: "显示标签",
+            value: "false",
+            type: "boolean"
+        },
+        pictorialBarEmphasisLabelDisplay: {
+            name: "显示热点标签",
+            value: "true",
+            type: "boolean"
+        },
+        pictorialBarLabelTextColor: {name: "标签颜色", value: "auto", type: "color"},
+        pictorialBarLabelFontSize: {name: "标签字号", value: 12, type: "number", attribute: {min: 1, max: 30, step: 1}},
+        pictorialBarLabelRotate: {name: "标签旋转度数", value: 0, type: "number", attribute: {min: -90, max: 90, step: 1}},
+        pictorialBarSymbolMark: {
+            name: "标签图形",
+            value: "",
+            options: [
+                new Option("默认", ""),
+                new Option("rocket", __SYS_IMAGES_SVG__.getPath("pictorial_Rocket")),
+                new Option("tiger", __SYS_IMAGES_SVG__.getPath("tiger")),
+                new Option("dog", __SYS_IMAGES_SVG__.getPath("dog")),
+                new Option("mouse", __SYS_IMAGES_SVG__.getPath("mouse")),
+                new Option("CCB", __SYS_IMAGES_SVG__.getPath("CCB_logo")),
+                new Option("echarts", __SYS_IMAGES_SVG__.getPath("echarts")),
+                new Option("sqlite", __SYS_IMAGES_SVG__.getPath("sqlite")),
+                new Option("mysql", __SYS_IMAGES_SVG__.getPath("mysql")),
+            ],
+            type: "select"
+        },
+        pictorialBarSymbolMarkSize:{name: "标签图形大小", value: 12, type: "number", attribute: {min: 1, max: 36, step: 1}},
 
         hr_tranbar: {name: "条形图", value: "", type: "hr"},
         tranbarColorby: {
@@ -1070,13 +1198,6 @@ var __ECHARTS__ = {
         },
         tranbarLabelTextColor: {name: "标签颜色", value: "auto", type: "color"},
         tranbarLabelFontSize: {name: "标签字号", value: 12, type: "number", attribute: {min: 1, max: 30, step: 1}},
-        tranbarLabelPosition: {
-            name: "标签位置",
-            value: "right",
-            options: [new Option("顶部", "top"), new Option("左边", "left"), new Option("右边", "right"), new Option("底部", "bottom"), new Option("内部", "inside"),
-                new Option("内部顶部", "insideTop"), new Option("内部左边", "insideLeft"), new Option("内部右边", "insideRight"), new Option("内部底部", "insideBottom")],
-            type: "select"
-        },
         tranbarLabelRotate: {name: "标签旋转度数", value: 0, type: "number", attribute: {min: -90, max: 90, step: 1}},
         tranbarStackTimes: {
             name: "堆叠分组",
@@ -1217,7 +1338,7 @@ var __ECHARTS__ = {
         scatterSymbolSize: {
             name: "节点大小",
             value: "6,18",
-            type: "ranges",
+            type: "minmax",
             attribute: {min: 1, max: 30, step: 1, unit: ""}
         },
         scatterSymbolShape: {
@@ -1400,13 +1521,13 @@ var __ECHARTS__ = {
         wordCloudSizeRange: {
             name: "字号区间",
             value: "16,60",
-            type: "ranges",
+            type: "minmax",
             attribute: {min: 1, max: 100, step: 1, unit: ""}
         },
         wordCloudRotationRange: {
             name: "角度区间",
             value: "-45,45",
-            type: "ranges",
+            type: "minmax",
             attribute: {min: -360, max: 360, step: 1, unit: ""}
         },
         wordCloudGroupWith: {
@@ -1729,7 +1850,7 @@ var __ECHARTS__ = {
             options: [new Option("热图", "heatmap"), new Option("散点", "scatter"), new Option("效应散点", "effectScatter")],
             type: "select"
         },
-        calendarVisualMap:{
+        calendarVisualMap: {
             name: "显示映射",
             value: "false",
             type: "boolean"
@@ -1766,7 +1887,7 @@ var __ECHARTS__ = {
         boxplotScatterSymbolSize: {
             name: "节点大小",
             value: "6,18",
-            type: "ranges",
+            type: "minmax",
             attribute: {min: 1, max: 50, step: 1, unit: ""}
         },
         boxplotScatterSymbolShape: {
@@ -1812,7 +1933,7 @@ var __ECHARTS__ = {
         scatterSymbolSizeFor3D: {
             name: "节点大小",
             value: "6,18",
-            type: "ranges",
+            type: "minmax",
             attribute: {min: 1, max: 50, step: 1, unit: "%"}
         },
         scatterSymbolShapeFor3D: {
@@ -1859,7 +1980,7 @@ var __ECHARTS__ = {
         geoScatterSymbolSize: {
             name: "节点大小",
             value: "6,18",
-            type: "ranges",
+            type: "minmax",
             attribute: {min: 1, max: 50, step: 1, unit: ""}
         },
         geoScatterType: {
@@ -2131,7 +2252,7 @@ var __ECHARTS__ = {
         mathFunctionXRange: {
             name: "X区间",
             value: "-100,100",
-            type: "ranges", attribute: {min: -100, max: 100, step: 1, unit: ""}
+            type: "minmax", attribute: {min: -100, max: 100, step: 1, unit: ""}
         },
         mathFunctionXGrainSize: {
             name: "X粒度",
@@ -2141,7 +2262,7 @@ var __ECHARTS__ = {
         mathFunctionYRange: {
             name: "Y区间",
             value: "-100,100",
-            type: "ranges", attribute: {min: -100, max: 100, step: 1, unit: ""}
+            type: "minmax", attribute: {min: -100, max: 100, step: 1, unit: ""}
         },
 
         hr_regression: {name: "回归参数", value: "", type: "hr"},
@@ -2508,6 +2629,18 @@ var __ECHARTS__ = {
                 input.onchange = function () {
                     __ECHARTS__.configs[this.id].value = this.title = (this.value + __ECHARTS__.configs[this.id].attribute.unit);
                 };
+                item.appendChild(input);
+            } else if (this.configs[name].type == "minmax") {
+                let input = UI.MinMaxChoice(
+                    __ECHARTS__.configs[name].attribute.min,
+                    __ECHARTS__.configs[name].attribute.max,
+                    __ECHARTS__.configs[name].attribute.unit,
+                    __ECHARTS__.configs[name].value,
+                    function (value) {
+                        __ECHARTS__.configs[name].value = value;
+                    });
+                input.id = name;
+                input.className = "ui-container-item-ranges";
                 item.appendChild(input);
             } else if (this.configs[name].type == "ranges") {
                 let input = UI.rangesChoice(
@@ -3961,6 +4094,7 @@ function getBarOption(configs, container, myChart, dataset) {
         if (stacktime > 1 && c % stacktime == 1) {
             stack = source.dimensions[c];
         }
+        let data = source.dimensions.length - 1 == 1 ? source.getItems(source.dimensions[c], configs.barAutoOrder.value) : source.getItems(source.dimensions[c]);
         let serie = {
             id: source.dimensions[c],
             name: source.dimensions[c],
@@ -3968,12 +4102,18 @@ function getBarOption(configs, container, myChart, dataset) {
             coordinateSystem: "cartesian2d",
             colorBy: configs.barColorby.value,
             stack: stack,
-            data: source.dimensions.length - 1 == 1 ? source.getItems(source.dimensions[c], configs.barAutoOrder.value) : source.getItems(source.dimensions[c]),
+            data: data.reduce(function (array, item) {
+                item["label"] = {
+                    position: item.value < 0 ? "bottom" : "top",
+                };
+                array.push(item);
+                return array;
+            }, []),
             label: {
                 show: configs.barLabelDisplay.value.toBoolean(),
                 align: "center",
                 verticalAlign: "middle",
-                position: configs.barLabelPosition.value,
+                position: "top",
                 distance: 15,
                 formatter: "{value|{c}}",
                 rotate: configs.barLabelRotate.value,
@@ -3986,6 +4126,7 @@ function getBarOption(configs, container, myChart, dataset) {
             },
             itemStyle: {
                 borderRadius: Number(configs.barItemStyleBorderRadius.value),
+                opacity: Number(configs.barOpacity.value)
             },
             emphasis: {
                 label: {
@@ -3999,6 +4140,7 @@ function getBarOption(configs, container, myChart, dataset) {
                     }
                 },
                 itemStyle: {
+                    opacity: 1,
                     shadowBlur: 10,
                     shadowOffsetX: 0,
                     shadowColor: 'rgba(0, 0, 0, 0.5)'
@@ -4049,7 +4191,7 @@ function getBarOption(configs, container, myChart, dataset) {
             getDataZoomYAxis(configs, 0, "inside", 0, 100, myChart.getWidth()),
             getDataZoomYAxis(configs, 0, "slider", 0, 100, myChart.getWidth())
         ],
-        graphic:  getWaterGraphic(configs,__VERSION__),
+        graphic: getWaterGraphic(configs, __VERSION__),
         series: series,
     };
     return option;
@@ -4106,58 +4248,14 @@ function getMultiGraphOption(configs, container, myChart, dataset) {
         }
     };
 
-
-    function getAxis(source, types, grids) {
-        let xAxis = [];
-        let yAxis = [];
-        for (let i = 0; i < source.dimensions.length - 1 && i < grids.length; i++) {
-            let type = types[i % types.length];
-            if (type == "pie" || type == "funnel" || type == "calendar" || type == "wordCloud") {
-                xAxis.push(null);
-                yAxis.push(null);
-            } else if (type == "tranbar") {
-                let xA = getXAxis(configs, "value", null);
-                xA.gridIndex = i;
-                xAxis.push(xA);
-                let yA = getYAxis(configs, "category", source.getItems(source.dimensions[0]), "bottom");
-                yA.axisPointer = {
-                    type: configs.axisPointerType.value,
-                };
-                yA.name = source.dimensions[i + 1];
-                yA.nameTextStyle = {
-                    color: configs.axisTextColor.value,
-                    fontSize: Number(configs.axisTextFontSize.value)
-                };
-                yA.gridIndex = i;
-                yAxis.push(yA);
-            } else {
-                let xA = getXAxis(configs, "category", source.getItems(source.dimensions[0]));
-                xA.gridIndex = i;
-                xA.axisPointer = {
-                    type: configs.axisPointerType.value,
-                };
-                xAxis.push(xA);
-                let yA = getYAxis(configs, "value", null, "left");
-                yA.name = source.dimensions[i + 1];
-                yA.nameTextStyle = {
-                    color: configs.axisTextColor.value,
-                    fontSize: Number(configs.axisTextFontSize.value)
-                };
-                yA.gridIndex = i;
-                yAxis.push(yA);
-            }
-        }
-        return {xAxis: xAxis, yAxis: yAxis};
-    }
-
-    let axis = getAxis(source, types, grids);
+    let axis = getAxis(configs, source, types, grids);
     let dataZoom = [];
-    for (let i = 0;i<axis.xAxis.length;i++) {
+    for (let i = 0; i < axis.xAxis.length; i++) {
         dataZoom.push(getDataZoomXAxis(configs, i, "inside", 0, 100));
         dataZoom.push(getDataZoomXAxis(configs, i, "slider", 0, 100));
         dataZoom.push(getDataZoomYAxis(configs, i, "inside", 0, 100, myChart.getWidth() / axis.xAxis.length));
         dataZoom.push(getDataZoomYAxis(configs, i, "slider", 0, 100, myChart.getWidth() / axis.xAxis.length));
-    };
+    }
 
     function getSeries(source, types, grids) {
         let series = [];
@@ -4330,7 +4428,6 @@ function getMultiGraphOption(configs, container, myChart, dataset) {
                         if (axis.xAxis[i].data.length < regLine.serie.data.length) {
                             for (let x = axis.xAxis[i].data.length; x < regLine.serie.data.length; x++) {
                                 axis.xAxis[i].data.push({
-                                    name: "P" + regLine.serie.data[x][0],
                                     value: "P" + regLine.serie.data[x][0]
                                 });
                             }
@@ -4342,15 +4439,21 @@ function getMultiGraphOption(configs, container, myChart, dataset) {
                         id: source.dimensions[i + 1],
                         name: source.dimensions[i + 1],
                         colorBy: configs.barColorby.value,
-                        type: type,
-                        data: source.getItems(source.dimensions[i + 1], configs.barAutoOrder.value),
+                        type: "bar",
+                        data: source.getItems(source.dimensions[i + 1], configs.barAutoOrder.value).reduce(function (array, item) {
+                            item["label"] = {
+                                position: item.value < 0 ? "bottom" : "top",
+                            };
+                            array.push(item);
+                            return array;
+                        }, []),
                         xAxisIndex: i,
                         yAxisIndex: i,
                         label: {
                             show: configs.barLabelDisplay.value.toBoolean(),
                             align: "center",
                             verticalAlign: "middle",
-                            position: configs.barLabelPosition.value,
+                            position: "top",
                             distance: 15,
                             formatter: "{value|{c}}",
                             rotate: configs.barLabelRotate.value,
@@ -4363,6 +4466,7 @@ function getMultiGraphOption(configs, container, myChart, dataset) {
                         },
                         itemStyle: {
                             borderRadius: Number(configs.barItemStyleBorderRadius.value),
+                            opacity: Number(configs.barOpacity.value)
                         },
                         emphasis: {
                             label: {
@@ -4374,6 +4478,7 @@ function getMultiGraphOption(configs, container, myChart, dataset) {
                                 }
                             },
                             itemStyle: {
+                                opacity: 1,
                                 shadowBlur: 10,
                                 shadowOffsetX: 0,
                                 shadowColor: 'rgba(0, 0, 0, 0.5)'
@@ -4381,7 +4486,7 @@ function getMultiGraphOption(configs, container, myChart, dataset) {
                         },
                     };
                     axis.xAxis[i].data = serie.data.reduce(function (items, item) {
-                        items.push({name: item.name, value: item.name});
+                        items.push({value: item.name});
                         return items;
                     }, []);
                     if (configs.barRegLineDisplay.value.toBoolean()) {
@@ -4396,12 +4501,112 @@ function getMultiGraphOption(configs, container, myChart, dataset) {
                         if (axis.xAxis[i].data.length < regLine.serie.data.length) {
                             for (let x = axis.xAxis[i].data.length; x < regLine.serie.data.length; x++) {
                                 axis.xAxis[i].data.push({
-                                    name: "P" + regLine.serie.data[x][0],
                                     value: "P" + regLine.serie.data[x][0]
                                 });
                             }
                         }
                     }
+                    break;
+                case "pictorialBar":
+                    serie = {
+                        id: source.dimensions[i + 1],
+                        name: source.dimensions[i + 1],
+                        colorBy: configs.barColorby.value,
+                        type: (configs.pictorialBarSymbol.value != "rect" ? "pictorialBar" : "bar"),
+                        colorBy: configs.pictorialBarColorby.value,
+                        barCategoryGap: configs.pictorialBarCategoryGap.value,
+                        symbol: configs.pictorialBarSymbol.value,
+                        symbolSize: configs.pictorialBarSymbolSize.value.split(","),
+                        symbolClip: configs.pictorialBarSymbolClip.value.toBoolean(),
+                        symbolRepeat: configs.pictorialBarSymbolRepeat.value.toBoolean(),
+                        data: source.getItems(source.dimensions[i + 1], configs.pictorialBarAutoOrder.value),
+                        xAxisIndex: i,
+                        yAxisIndex: i,
+                        label: {
+                            show: false
+                        },
+                        itemStyle: {
+                            borderRadius: Number(configs.barItemStyleBorderRadius.value),
+                            opacity: Number(configs.pictorialBarOpacity.value)
+                        },
+                        emphasis: {
+                            label: {
+                                show: false
+                            },
+                            itemStyle: {
+                                opacity: 1,
+                                shadowBlur: 10,
+                                shadowOffsetX: 0,
+                                shadowColor: 'rgba(0, 0, 0, 0.5)'
+                            }
+                        },
+                    };
+                    setSeriesAnimation(serie, configs, 1);
+                    axis.xAxis[i].data = serie.data.reduce(function (items, item) {
+                        items.push({value: item.name});
+                        return items;
+                    }, []);
+
+                    let pictorialSerie = {
+                        id: "pictorial-" + source.dimensions[i + 1],
+                        name: source.dimensions[i + 1],
+                        type: "pictorialBar",
+                        colorBy: configs.pictorialBarColorby.value,
+                        symbolSize: Number(configs.pictorialBarSymbolMarkSize.value),
+                        symbolPosition: 'end',
+                        data: serie.data.reduce(function (array, item) {
+                            array.push(
+                                {
+                                    name: item.name,
+                                    value: item.value,
+                                    symbol: configs.pictorialBarSymbolMark.value,
+                                    symbolOffset: item.value >= 0 ? ['0%', '-100%'] : ['0%', '100%'],
+                                    label: {
+                                        position: item.value < 0 ? "bottom" : "top",
+                                    }
+                                }
+                            );
+                            return array;
+                        }, []),
+                        xAxisIndex: i,
+                        yAxisIndex: i,
+                        label: {
+                            show: configs.pictorialBarLabelDisplay.value.toBoolean(),
+                            align: "center",
+                            verticalAlign: "middle",
+                            distance: 15,
+                            formatter: "{value|{c}}",
+                            rotate: configs.pictorialBarLabelRotate.value,
+                            rich: {
+                                value: {
+                                    color: configs.pictorialBarLabelTextColor.value,
+                                    fontSize: configs.pictorialBarLabelFontSize.value,
+                                }
+                            }
+                        },
+                        itemStyle: {
+                            opacity: Number(configs.pictorialBarOpacity.value)
+                        },
+                        emphasis: {
+                            label: {
+                                show: configs.pictorialBarEmphasisLabelDisplay.value.toBoolean(),
+                                rich: {
+                                    value: {
+                                        fontWeight: "bold",
+                                    }
+                                }
+                            },
+                            itemStyle: {
+                                opacity: 1,
+                                shadowBlur: 10,
+                                shadowOffsetX: 0,
+                                shadowColor: 'rgba(0, 0, 0, 0.5)'
+                            }
+                        },
+                    };
+
+                    setSeriesAnimation(pictorialSerie, configs, 1);
+                    series.push(pictorialSerie);
                     break;
                 case "tranbar":
                     serie = {
@@ -4410,7 +4615,13 @@ function getMultiGraphOption(configs, container, myChart, dataset) {
                         type: "bar",
                         coordinateSystem: "cartesian2d",
                         colorBy: configs.tranbarColorby.value,
-                        data: source.getItems(source.dimensions[i + 1], configs.tranbarAutoOrder.value),
+                        data: source.getItems(source.dimensions[i + 1], configs.tranbarAutoOrder.value).reduce(function (array, item) {
+                            item["label"] = {
+                                position: item.value < 0 ? "left" : "right",
+                            };
+                            array.push(item);
+                            return array;
+                        }, []),
                         xAxisIndex: i,
                         yAxisIndex: i,
                         itemStyle: {
@@ -4421,7 +4632,6 @@ function getMultiGraphOption(configs, container, myChart, dataset) {
                             rotate: configs.tranbarLabelRotate.value,
                             align: "left",
                             verticalAlign: "middle",
-                            position: configs.tranbarLabelPosition.value,
                             distance: 10,
                             formatter: "{value|{c}}",
                             rich: {
@@ -4436,7 +4646,6 @@ function getMultiGraphOption(configs, container, myChart, dataset) {
                                 show: configs.tranbarEmphasisLabelDisplay.value.toBoolean(),
                                 align: "left",
                                 verticalAlign: "middle",
-                                position: configs.tranbarLabelPosition.value,
                                 distance: 10,
                                 formatter: "{value|{c}}",
                                 rotate: 0,
@@ -4510,7 +4719,7 @@ function getMultiGraphOption(configs, container, myChart, dataset) {
                         },
                     };
                     axis.xAxis[i].data = serie.data.reduce(function (items, item) {
-                        items.push({name: item.name, value: item.name});
+                        items.push({value: item.name});
                         return items;
                     }, []);
                     if (configs.scatterRegLineDisplay.value.toBoolean()) {
@@ -4525,7 +4734,6 @@ function getMultiGraphOption(configs, container, myChart, dataset) {
                         if (axis.xAxis[i].data.length < regLine.serie.data.length) {
                             for (let x = axis.xAxis[i].data.length; x < regLine.serie.data.length; x++) {
                                 axis.xAxis[i].data.push({
-                                    name: "P" + regLine.serie.data[x][0],
                                     value: "P" + regLine.serie.data[x][0]
                                 });
                             }
@@ -4795,7 +5003,7 @@ function getMultiGraphOption(configs, container, myChart, dataset) {
         calendar: calendars,
         series: getSeries(source, types, grids),
         dataZoom: dataZoom,
-        graphic:  getWaterGraphic(configs,__VERSION__)
+        graphic: getWaterGraphic(configs, __VERSION__)
     };
     return option;
 }
@@ -4873,7 +5081,7 @@ function getRegLine(configs, column, source) {
     let data = appendData(myRegression.points, myRegression.parameter, regressionType[type]);
     let regline = {
         id: name,
-        name: name,
+        name: column,
         type: "line",
         smooth: configs.lineSmooth.value.toBoolean(),
         showSymbol: false,
@@ -5413,6 +5621,7 @@ function getTransversBarOption(configs, container, myChart, dataset) {
         if (stacktime > 1 && c % stacktime == 1) {
             stack = source.dimensions[c];
         }
+        let data = source.dimensions.length - 1 == 1 ? source.getItems(source.dimensions[c], configs.tranbarAutoOrder.value) : source.getItems(source.dimensions[c]);
         let serie = {
             id: source.dimensions[c],
             name: source.dimensions[c],
@@ -5420,7 +5629,13 @@ function getTransversBarOption(configs, container, myChart, dataset) {
             coordinateSystem: "cartesian2d",
             colorBy: configs.tranbarColorby.value,
             stack: stack,
-            data: source.dimensions.length - 1 == 1 ? source.getItems(source.dimensions[c], configs.tranbarAutoOrder.value) : source.getItems(source.dimensions[c]),
+            data: data.reduce(function (array, item) {
+                item["label"] = {
+                    position: item.value < 0 ? "left" : "right",
+                };
+                array.push(item);
+                return array;
+            }, []),
             itemStyle: {
                 borderRadius: Number(configs.tranbarItemStyleBorderRadius.value),
             },
@@ -5429,7 +5644,6 @@ function getTransversBarOption(configs, container, myChart, dataset) {
                 rotate: configs.tranbarLabelRotate.value,
                 align: "left",
                 verticalAlign: "middle",
-                position: configs.tranbarLabelPosition.value,
                 distance: 10,
                 formatter: "{value|{c}}",
                 rich: {
@@ -5444,7 +5658,6 @@ function getTransversBarOption(configs, container, myChart, dataset) {
                     show: configs.tranbarEmphasisLabelDisplay.value.toBoolean(),
                     align: "left",
                     verticalAlign: "middle",
-                    position: configs.tranbarLabelPosition.value,
                     distance: 10,
                     formatter: "{value|{c}}",
                     rotate: 0,
@@ -5486,7 +5699,7 @@ function getTransversBarOption(configs, container, myChart, dataset) {
             getDataZoomYAxis(configs, 0, "inside", 0, 100, myChart.getWidth()),
             getDataZoomYAxis(configs, 0, "slider", 0, 100, myChart.getWidth())
         ],
-        graphic: getWaterGraphic(configs,__VERSION__),
+        graphic: getWaterGraphic(configs, __VERSION__),
         series: series,
     };
     return option;
@@ -6761,12 +6974,17 @@ function getBarAndLine(container, dataset, configs) {
                 type: "bar",
                 colorBy: configs.barColorby.value,
                 yAxisIndex: (c - 1) % 2,
-                data: source.getItems(source.dimensions[c]),
+                data: source.getItems(source.dimensions[c]).reduce(function (array, item) {
+                    item["label"] = {
+                        position: item.value < 0 ? "bottom" : "top",
+                    };
+                    array.push(item);
+                    return array;
+                }, []),
                 label: {
                     show: configs.barLabelDisplay.value.toBoolean(),
                     align: "center",
                     verticalAlign: "middle",
-                    position: configs.barLabelPosition.value,
                     distance: 15,
                     formatter: "{value|{c}}",
                     rotate: configs.barLabelRotate.value,
@@ -6779,13 +6997,13 @@ function getBarAndLine(container, dataset, configs) {
                 },
                 itemStyle: {
                     borderRadius: Number(configs.barItemStyleBorderRadius.value),
+                    opacity: Number(configs.barOpacity.value)
                 },
                 emphasis: {
                     label: {
                         show: configs.barEmphasisLabelDisplay.value.toBoolean(),
                         align: "center",
                         verticalAlign: "middle",
-                        position: configs.barLabelPosition.value,
                         distance: 15,
                         formatter: "{value|{c}}",
                         rotate: 0,
@@ -6795,7 +7013,10 @@ function getBarAndLine(container, dataset, configs) {
                                 fontSize: configs.barLabelFontSize.value,
                             }
                         }
-                    }
+                    },
+                    itemStyle: {
+                        opacity: Number(configs.barOpacity.value)
+                    },
                 },
             }
         }
@@ -8912,7 +9133,10 @@ function getCategoryLine(container, dataset, configs) {
         container.id = "echarts-container";
     }
 
-    let myChart = echarts.init(container, configs.echartsTheme.value, {locale: configs.local.value,renderer:configs.renderer.value});
+    let myChart = echarts.init(container, configs.echartsTheme.value, {
+        locale: configs.local.value,
+        renderer: configs.renderer.value
+    });
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
     let colors = ['#c23531', '#2f4554', '#61a0a8', '#d48265', '#91c7ae', '#749f83', '#ca8622', '#bda29a', '#6e7074', '#546570', '#c4ccd3'];
     try {
@@ -8947,16 +9171,21 @@ function getCategoryLine(container, dataset, configs) {
         }
         let serie = {
             name: row[columns[0]].value,
-            data: data,
         };
         setSeriesAnimation(serie, configs, 0);
         if (configs.categoryLineType.value == "bar") {
             serie.label = {
                 show: configs.barLabelDisplay.value.toBoolean(),
+                data: data.reduce(function (array, item) {
+                    item["label"] = {
+                        position: item.value < 0 ? "bottom" : "top",
+                    };
+                    array.push(item);
+                    return array;
+                }, []),
                 rotate: configs.barLabelRotate.value,
                 align: "center",
                 verticalAlign: "middle",
-                position: configs.barLabelPosition.value,
                 distance: 15,
                 formatter: "{value|{c}}",
                 rich: {
@@ -8974,7 +9203,6 @@ function getCategoryLine(container, dataset, configs) {
                     show: configs.barEmphasisLabelDisplay.value.toBoolean(),
                     align: "center",
                     verticalAlign: "middle",
-                    position: configs.barLabelPosition.value,
                     distance: 15,
                     formatter: "{value|{c}}",
                     rotate: 0,
@@ -8988,9 +9216,10 @@ function getCategoryLine(container, dataset, configs) {
             };
         }
         if (configs.categoryLineType.value == "pie") {
+            serie.data = data;
             serie.radius = configs.pieOutRadius.value;
             colorBy: configs.pieColorby.value,
-            serie.selectedMode = configs.pieSelectedMode.value;
+                serie.selectedMode = configs.pieSelectedMode.value;
             serie.label = {
                 show: true,
                 alignTo: configs.pieLabelAlignTo.value,
@@ -9011,6 +9240,7 @@ function getCategoryLine(container, dataset, configs) {
             };
         }
         if (configs.categoryLineType.value == "line" || configs.categoryLineType.value == "areaStyle") {
+            serie.data = data;
             serie.smooth = configs.lineSmooth.value.toBoolean();
             serie.lineStyle = {
                 width: Number(configs.lineStyleWidth.value),
@@ -9132,7 +9362,7 @@ function getCategoryLine(container, dataset, configs) {
             series: {
                 type: configs.categoryLineType.value == "areaStyle" ? "line" : configs.categoryLineType.value,
             },
-            graphic: getWaterGraphic(configs,__VERSION__),
+            graphic: getWaterGraphic(configs, __VERSION__),
         },
         options: options
     };
@@ -13587,6 +13817,7 @@ function getClusterScatter(container, dataset, configs) {
             transition: []
         };
         let contentColor = colorAll[clusterIdx % colorAll.length];
+        let size = configs.scatterSymbolSize.value.toArray([6, 18], ",");
         return {
             type: 'circle',
             x: coord[0],
@@ -13594,12 +13825,12 @@ function getClusterScatter(container, dataset, configs) {
             shape: {
                 cx: 0,
                 cy: 0,
-                r: 10
+                r: size[0]/2
             },
             extra: extra,
             style: {
                 fill: contentColor,
-                stroke: '#333',
+                // stroke: '#333',
                 lineWidth: 1,
                 shadowColor: contentColor,
                 shadowBlur: isNewCluster ? 12 : 0,
@@ -13652,15 +13883,54 @@ function getClusterScatter(container, dataset, configs) {
         let boundaryData = centroids
             ? [[centroids[newCluIdx][0], centroids[newCluIdx][1], Math.sqrt(maxDist)]]
             : [];
+
         option.options.push({
             series: [
+                {
+                    type: configs.scatterType.value,
+                    encode: {
+                        tooltip: [0, 1]
+                    },
+                    data: data,
+                    label: {
+                        show: configs.scatterLabelDisplay.value.toBoolean(),
+                        align: "center",
+                        position: "top",
+                        verticalAlign: "middle",
+                        distance: 15,
+                        formatter: function (param) {
+                            return scatters.title[param.dataIndex];
+                        },
+                        rich: {
+                            value: {
+                                color: configs.scatterLabelTextColor.value,
+                                fontSize: configs.scatterLabelFontSize.value,
+                            }
+                        }
+                    },
+                    emphasis: {
+                        label: {
+                            show: true,
+                            formatter: function (param) {
+                                return scatters.title[param.dataIndex];
+                            },
+                            rich: {
+                                value: {
+                                    fontWeight: "bold",
+                                }
+                            }
+                        }
+                    },
+                    symbol: configs.scatterSymbolShape.value,
+                },
                 {
                     type: 'custom',
                     encode: {
                         tooltip: [0, 1]
                     },
                     renderItem: renderItemPoint,
-                    data: data
+                    data: data,
+                    z: 10
                 },
                 {
                     type: 'custom',
@@ -13713,6 +13983,9 @@ function getClusterScatter(container, dataset, configs) {
                 splitNumber: CLUSTER_COUNT,
                 dimension: DIM_CLUSTER_INDEX,
                 pieces: pieces,
+                align: "left",
+                itemWidth: Number(configs.visualMapTextFontSize.value),
+                itemHeight: Number(configs.visualMapTextFontSize.value),
                 textStyle: {
                     color: configs.visualMapTextColor.value,
                     fontSize: Number(configs.visualMapTextFontSize.value),
@@ -13758,12 +14031,7 @@ function getClusterScatter(container, dataset, configs) {
                 symbol: configs.scatterSymbolShape.value,
                 symbolSize: function (data) {
                     let size = configs.scatterSymbolSize.value.toArray([6, 18], ",");
-                    if (size[0] > size[1]) {
-                        let tmp = size[1];
-                        size[1] = size[0];
-                        size[0] = tmp;
-                    }
-                    return (size[0] == size[1] || ia.max == ia.min) ? size[0] : (data[1] - ia.min) * (size[1] - size[0]) / (ia.max - ia.min) + size[0];
+                    return size[0];
                 },
                 itemStyle: {
                     opacity: 0.8,
@@ -13784,11 +14052,14 @@ function getClusterScatter(container, dataset, configs) {
                 inverse: true,
                 autoPlay: false,
                 playInterval: 2500,
-                symbol: 'none',
+                symbol: "emptyCircle",
+                symbolSize: 5,
                 orient: 'vertical',
                 axisType: 'category',
                 label: {
-                    formatter: '{value}',
+                    formatter: function (value, index) {
+                        return value;
+                    },
                     position: 10
                 },
                 checkpointStyle: {
@@ -13805,78 +14076,33 @@ function getClusterScatter(container, dataset, configs) {
                 animationDurationUpdate: ANIMATION_DURATION_UPDATE,
                 transition: ['shape'],
                 tooltip: getTooltip(configs, "item", function (param) {
-                    return "<span style = 'float:left'>" + param.marker + scatters.title[param.dataIndex] + "</span><br>" +
-                        "<hr style='background-color:" + param.color + "'>" +
-                        "<span style='min-width:180px'>" + source.dimensions[1] + ":&emsp;</span> " +
-                        "<span style='display:inline-block;min-width:100px;text-align:right;font-weight:bold'>" + param.data[0] + "</span><br>" +
-                        "<span style='min-width:180px'>" + source.dimensions[2] + ":&emsp;</span> " +
-                        "<span style='display:inline-block;min-width:100px;text-align:right;font-weight:bold'>" + param.data[1] + "</span><br>";
+                    if (typeof param.data[0] !== "undefined" && typeof param.data[1] !== "undefined") {
+                        return "<span style = 'float:left'>" + param.marker + scatters.title[param.dataIndex] + "</span><br>" +
+                            "<hr style='background-color:" + param.color + "'>" +
+                            "<span style='min-width:180px'>" + source.dimensions[1] + ":&emsp;</span> " +
+                            "<span style='display:inline-block;min-width:100px;text-align:right;font-weight:bold'>" + param.data[0] + "</span><br>" +
+                            "<span style='min-width:180px'>" + source.dimensions[2] + ":&emsp;</span> " +
+                            "<span style='display:inline-block;min-width:100px;text-align:right;font-weight:bold'>" + param.data[1] + "</span><br>";
+                    } else
+                        return;
                 }),
                 xAxis: getXAxis(configs, "value", null, source.dimensions[1]),
                 yAxis: getYAxis(configs, "value", null, "left", source.dimensions[2]),
                 series: [
-                    {
-                        type: configs.scatterType.value,
-                        label: {
-                            show: configs.scatterLabelDisplay.value.toBoolean(),
-                            align: "center",
-                            position: "top",
-                            verticalAlign: "middle",
-                            distance: 15,
-                            formatter: function (param) {
-                                return scatters.title[param.dataIndex];
-                            },
-                            rich: {
-                                value: {
-                                    color: configs.scatterLabelTextColor.value,
-                                    fontSize: configs.scatterLabelFontSize.value,
-                                }
-                            }
-                        },
-                        emphasis: {
-                            label: {
-                                show: true,
-                                formatter: function (param) {
-                                    return scatters.title[param.dataIndex];
-                                },
-                                rich: {
-                                    value: {
-                                        fontWeight: "bold",
-                                    }
-                                }
-                            }
-                        },
-                        symbol: configs.scatterSymbolShape.value,
-                        symbolSize: function (data) {
-                            let size = configs.scatterSymbolSize.value.toArray([6, 18], ",");
-                            if (size[0] > size[1]) {
-                                let tmp = size[1];
-                                size[1] = size[0];
-                                size[0] = tmp;
-                            }
-                            return (size[0] == size[1] || ia.max == ia.min) ? size[0] : (data[1] - ia.min) * (size[1] - size[0]) / (ia.max - ia.min) + size[0];
-                        },
-                        itemStyle: {
-                            opacity: 0.8,
-                            shadowBlur: 5,
-                            shadowOffsetX: 0,
-                            shadowOffsetY: 0,
-                        },
-                    }
                 ],
                 graphic: getWaterGraphic(configs, __VERSION__),
             },
             options: []
         };
         makeStepOption(option, scatters.data);
-        option.timeline.data.push('0');
+        option.timeline.data.push(1);
         for (let i = 1, stepResult; !(stepResult = step.next()).isEnd; i++) {
             makeStepOption(
                 option,
                 echarts.util.clone(stepResult.data),
                 echarts.util.clone(stepResult.centroids)
             );
-            option.timeline.data.push(i + '');
+            option.timeline.data.push(i + 1);
         }
     }
 
@@ -13889,152 +14115,161 @@ function getClusterScatter(container, dataset, configs) {
     return container;
 }
 
-function getClusterScatter2(container, dataset, configs) {
-    //未使用
+function getPictorialBar(container, dataset, configs) {
     if (container == null) {
         container = document.createElement("div");
         container.className = "echarts-container";
         container.id = "echarts-container";
     }
 
-    var myChart = echarts.init(container, configs.echartsTheme.value, {
+    let myChart = echarts.init(container, configs.echartsTheme.value, {
         locale: configs.local.value,
         renderer: configs.renderer.value
     });
     myChart.showLoading(getLoading("正在加载数据 ( " + dataset["data"].length + " ) ... "));
 
     let source = getSource(dataset);
-    let scatters = source.getScatterValues(0, 1, 2);
-
-    if (scatters.data.length == 0)
-        UI.alert.show("提示", "聚合散点数据结构:<br>[名称, X, Y].");
-
-
-    echarts.registerTransform(ecStat.transform.clustering);
-    let CLUSTER_COUNT = Number(configs.scatterClustes.value);
-    let DIENSIION_CLUSTER_INDEX = 2;
-    let COLOR_ALL = ['#c23531', '#2f4554', '#61a0a8', '#d48265', '#91c7ae', '#749f83', '#ca8622', '#bda29a', '#6e7074', '#546570', '#c4ccd3'];
-    try {
-        if (typeof myChart._theme !== "undefined" && typeof myChart._theme.color !== "undefined")
-            COLOR_ALL = myChart._theme.color;
-    } catch (e) {
-    }
-    let pieces = [];
-    for (let i = 0; i < CLUSTER_COUNT; i++) {
-        pieces.push({
-            value: i,
-            label: (i + 1),
-            color: COLOR_ALL[i]
-        });
-    }
-
-    let ia = source.getMinMaxValue(source.dimensions[2], "number");
-
-    let option = {
-        backgroundColor: getBackgroundColor(configs),
-        grid: getGrids(configs),
-        brush: getBrush(configs),
-        toolbox: getToolbox(configs, container, dataset, myChart),
-        title: getTitle(configs, dataset.title),
-        dataset: [
-            {
-                source: scatters.data,
-            },
-            {
-                transform: {
-                    type: 'ecStat:clustering',
-                    print: true,
-                    config: {
-                        clusterCount: CLUSTER_COUNT,
-                        outputType: 'single',
-                        outputClusterIndexDimension: DIENSIION_CLUSTER_INDEX
-                    }
-                }
-            }],
-        tooltip: getTooltip(configs, "item", function (param) {
-            return "<span style = 'float:left'>" + param.marker + scatters.title[param.dataIndex] + "</span><br>" +
-                "<hr style='background-color:" + param.color + "'>" +
-                "<span style='min-width:180px'>" + source.dimensions[1] + ":&emsp;</span> " +
-                "<span style='display:inline-block;min-width:100px;text-align:right;font-weight:bold'>" + param.data[0] + "</span><br>" +
-                "<span style='min-width:180px'>" + source.dimensions[2] + ":&emsp;</span> " +
-                "<span style='display:inline-block;min-width:100px;text-align:right;font-weight:bold'>" + param.data[1] + "</span><br>";
-        }),
-        visualMap: {
-            type: 'piecewise',
-            top: 'middle',
-            min: 0,
-            max: CLUSTER_COUNT,
-            left: 10,
-            splitNumber: CLUSTER_COUNT,
-            dimension: DIENSIION_CLUSTER_INDEX,
-            pieces: pieces,
-            textStyle: {
-                color: configs.visualMapTextColor.value,
-                fontSize: Number(configs.visualMapTextFontSize.value),
-            },
-        },
-
-        xAxis: getXAxis(configs, "value", null, source.dimensions[1]),
-        yAxis: getYAxis(configs, "value", null, "left", source.dimensions[2]),
-        graphic: getWaterGraphic(configs, __VERSION__),
-        series: {
-            type: configs.scatterType.value,
-            encode: {tooltip: [0, 1]},
-            datasetIndex: 1,
+    let cols = configs.pictorialBarGroupWith.value;
+    let lines = Math.ceil((source.dimensions.length - 1) / cols);
+    let grids = getGrids(configs, source.dimensions.length, cols, lines, configs.pictorialBarGrids.value);
+    let axis = getAxis(configs, source, ["bar"], grids);
+    let series = [];
+    for (let i = 0; i < source.dimensions.length - 1 && i < grids.length; i++) {
+        let barSerie = {
+            id: source.dimensions[i + 1],
+            name: source.dimensions[i + 1],
+            type: (configs.pictorialBarSymbol.value != "rect" ? "pictorialBar" : "bar"),
+            colorBy: configs.pictorialBarColorby.value,
+            barCategoryGap: configs.pictorialBarCategoryGap.value,
+            symbol: configs.pictorialBarSymbol.value,
+            symbolSize: configs.pictorialBarSymbolSize.value.split(","),
+            symbolClip: configs.pictorialBarSymbolClip.value.toBoolean(),
+            symbolRepeat: configs.pictorialBarSymbolRepeat.value.toBoolean(),
+            data: source.getItems(source.dimensions[i + 1], configs.pictorialBarAutoOrder.value),
+            xAxisIndex: i,
+            yAxisIndex: i,
             label: {
-                show: configs.scatterLabelDisplay.value.toBoolean(),
+                show: false,
+            },
+            itemStyle: {
+                borderRadius: Number(configs.barItemStyleBorderRadius.value),
+                opacity: Number(configs.pictorialBarOpacity.value)
+            },
+            emphasis: {
+                label: {
+                    show: false
+                },
+                itemStyle: {
+                    opacity: 1,
+                    shadowBlur: 10,
+                    shadowOffsetX: 0,
+                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+                },
+            },
+        };
+        setSeriesAnimation(barSerie, configs, 1);
+        series.push(barSerie);
+        axis.xAxis[i].data = barSerie.data.reduce(function (items, item) {
+            items.push({value: item.name});
+            return items;
+        }, []);
+        let pictorialSerie = {
+            id: "pictorial-" + source.dimensions[i + 1],
+            name: source.dimensions[i + 1],
+            type: "pictorialBar",
+            colorBy: configs.pictorialBarColorby.value,
+            symbolSize: Number(configs.pictorialBarSymbolMarkSize.value),
+            symbolPosition: 'end',
+            data: barSerie.data.reduce(function (array, item) {
+                array.push(
+                    {
+                        value: item.value,
+                        symbol: configs.pictorialBarSymbolMark.value,
+                        symbolOffset: item.value >= 0 ? ['0%', '-100%'] : ['0%', '100%'],
+                        label: {
+                            position: item.value < 0 ? "bottom" : "top",
+                        }
+                    }
+                );
+                return array;
+            }, []),
+            xAxisIndex: i,
+            yAxisIndex: i,
+            label: {
+                show: configs.pictorialBarLabelDisplay.value.toBoolean(),
                 align: "center",
-                position: "top",
                 verticalAlign: "middle",
                 distance: 15,
-                formatter: function (param) {
-                    return scatters.title[param.dataIndex];
-                },
+                formatter: "{value|{c}}",
+                rotate: configs.pictorialBarLabelRotate.value,
                 rich: {
                     value: {
-                        color: configs.scatterLabelTextColor.value,
-                        fontSize: configs.scatterLabelFontSize.value,
+                        color: configs.pictorialBarLabelTextColor.value,
+                        fontSize: configs.pictorialBarLabelFontSize.value,
                     }
                 }
             },
             emphasis: {
                 label: {
-                    show: true,
-                    formatter: function (param) {
-                        return scatters.title[param.dataIndex];
-                    },
+                    show: configs.pictorialBarEmphasisLabelDisplay.value.toBoolean(),
+                    align: "center",
+                    verticalAlign: "middle",
+                    distance: 15,
+                    formatter: "{value|{c}}",
+                    rotate: 0,
                     rich: {
                         value: {
-                            fontWeight: "bold",
+                            color: configs.pictorialBarLabelTextColor.value,
+                            fontSize: configs.pictorialBarLabelFontSize.value,
                         }
                     }
-                }
+                },
+                itemStyle: {
+                    opacity: 1,
+                    shadowBlur: 10,
+                    shadowOffsetX: 0,
+                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+                },
             },
-            symbol: configs.scatterSymbolShape.value,
-            symbolSize: function (data) {
-                let size = configs.scatterSymbolSize.value.toArray([6, 18], ",");
-                if (size[0] > size[1]) {
-                    let tmp = size[1];
-                    size[1] = size[0];
-                    size[0] = tmp;
-                }
-                return (size[0] == size[1] || ia.max == ia.min) ? size[0] : (data[1] - ia.min) * (size[1] - size[0]) / (ia.max - ia.min) + size[0];
-            },
-            itemStyle: {
-                opacity: 0.8,
-                shadowBlur: 5,
-                shadowOffsetX: 0,
-                shadowOffsetY: 0,
-            },
-        }
+        };
+
+        setSeriesAnimation(pictorialSerie, configs, 2);
+        series.push(pictorialSerie);
+    }
+
+    let option = {
+        aria: getAria(configs),
+        backgroundColor: getBackgroundColor(configs),
+        grid: grids,
+        brush: getBrush(configs),
+        toolbox: getToolbox(configs, container, dataset, myChart),
+        title: getTitle(configs, dataset.title),
+        tooltip: getTooltip(configs, "axis", function (param) {
+            return "<span style = 'float:left'>" + param[0].marker + param[0].data.name + "</span><br>" +
+                "<hr style='background-color:" + param[0].color + "'>" +
+                "<span style='min-width:180px'>" + param[0].seriesName + ":&emsp;</span> " +
+                "<span style='display:inline-block;min-width:100px;text-align:right;font-weight:bold'>" + param[0].data.value + "</span><br>";
+        }),
+        legend: {show: false},
+        xAxis: axis.xAxis,
+        yAxis: axis.yAxis,
+        dataZoom: [
+            getDataZoomXAxis(configs, 0, "inside", 0, 100),
+            getDataZoomXAxis(configs, 0, "slider", 0, 100),
+            getDataZoomYAxis(configs, 0, "inside", 0, 100, myChart.getWidth()),
+            getDataZoomYAxis(configs, 0, "slider", 0, 100, myChart.getWidth()),
+            getDataZoomYAxis(configs, 1, "inside", 0, 100, myChart.getWidth()),
+            getDataZoomYAxis(configs, 1, "slider", 0, 100, myChart.getWidth())
+        ],
+        graphic: getWaterGraphic(configs, __VERSION__),
+        series: series,
     };
-    setTimeout(function () {
+
+    setTimeout(() => {
         myChart.hideLoading();
         myChart.setOption(option);
     }, Number(configs.loadingTimes.value));
-    __ECHARTS__.addHistory(container, configs, dataset);
 
+    __ECHARTS__.addHistory(container, configs, dataset);
     return container;
 }
-
-

@@ -393,6 +393,19 @@ function getEchartsReport(container, myChart) {
             "input.id = name;\n" +
             "input.className = 'ui-container-item-ranges';\n" +
             "dd.appendChild(input);\n" +
+            "} else if (__configs__[name].type == 'minmax') {\n" +
+            "let input = UI.MinMaxChoice(\n" +
+            "__configs__[name].attribute.min,\n" +
+            "__configs__[name].attribute.max,\n" +
+            "__configs__[name].attribute.unit,\n" +
+            "__configs__[name].value,\n" +
+            "function (value) {\n" +
+            "configs[name].value = value;\n" +
+            "reset(type);\n" +
+            "});\n" +
+            "input.id = name;\n" +
+            "input.className = 'ui-container-item-ranges';\n" +
+            "dd.appendChild(input);\n" +
             "} else if (configs[name].type == 'number') {\n" +
             "let input = document.createElement('input');\n" +
             "input.style.cssFloat = 'right';\n" +

@@ -729,10 +729,7 @@ var __XMLHTTP__ = {
             {name: "codemirror", src: "codemirror/show-hint.css", type: "text/css", element: "link", load: false},
             {name: "codemirror", src: "codemirror/dialog.css", type: "text/css", element: "link", load: false},
             {name: "Excel组件", src: "sheetjs/xlsx.full.min.js", type: "text/javascript", element: "script", load: true},
-            {name: "常用统计函数", src: "StatisticsComponent.js", type: "text/javascript", element: "script", load: true},
-            {name: "文件加密组件", src: "FileSecurityComponent.js", type: "text/javascript", element: "script", load: true},
-            {name: "数据读取组件", src: "DataReaderComponent.js", type: "text/javascript", element: "script", load: true},
-            {name: "批量邮件组件", src: "MailComponent.js", type: "text/javascript", element: "script", load: true},
+            {name: "ecStat", src: "echarts/ecStat.min.js", type: "text/javascript", element: "script", load: true},
             {
                 name: "Echarts",
                 src: "echarts/echarts-gl.min.js",
@@ -754,7 +751,6 @@ var __XMLHTTP__ = {
                 element: "script",
                 load: true
             },
-            {name: "ecStat", src: "echarts/ecStat.min.js", type: "text/javascript", element: "script", load: true},
             {name: "世界地图组件", src: "echarts/map/world.js", type: "text/javascript", element: "script", load: true},
             {
                 name: "中国地图组件",
@@ -763,7 +759,11 @@ var __XMLHTTP__ = {
                 element: "script",
                 load: true
             },
+            {name: "常用统计函数", src: "StatisticsComponent.js", type: "text/javascript", element: "script", load: true},
             {name: "固定报表组件", src: "report.js", type: "text/javascript", element: "script", load: true},
+            {name: "文件加密组件", src: "FileSecurityComponent.js", type: "text/javascript", element: "script", load: true},
+            {name: "数据读取组件", src: "DataReaderComponent.js", type: "text/javascript", element: "script", load: true},
+            {name: "批量邮件组件", src: "MailComponent.js", type: "text/javascript", element: "script", load: true},
         ];
 
         if (byServer) {

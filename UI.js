@@ -237,6 +237,7 @@ var UI = {
         let items = {
             "线形图": {value: "line", checked: false},
             "柱状图": {value: "bar", checked: false},
+            "象形柱": {value: "pictorialBar", checked: false},
             "条形图": {value: "tranbar", checked: false},
             "散点图": {value: "scatter", checked: false},
             "面积图": {value: "area", checked: false},
@@ -383,7 +384,7 @@ var UI = {
         return container;
     },
 
-    rangesChoice: function(min, max, unit, range, callback) {
+    MinMaxChoice: function(min, max, unit, range, callback) {
         let rmin, rmax;
         try {
             range = range.replace(new RegExp(unit, "g"), "").toArray([min, max], ",");
@@ -444,6 +445,65 @@ var UI = {
                 rmin.value = range[0] = this.value;
                 rmin.title = (this.value + unit);
             }
+            if (typeof callback !== "undefined")
+                callback(getString(range, unit));
+        };
+        return container;
+    },
+
+    rangesChoice: function(min, max, unit, range, callback) {
+        let rmin, rmax;
+        try {
+            range = range.replace(new RegExp(unit, "g"), "").toArray([min, max], ",");
+        } catch (e) {
+            range = [min, max];
+        }
+
+        function getString(range, unit) {
+            return range.reduce(function (tmp, item) {
+                tmp.push(item + unit);
+                return tmp;
+            }, []).join(",");
+        }
+
+        let container = document.createElement("div");
+        container.className = "ui-container-item-ranges";
+        container.setAttribute("value", getString(range, unit));
+        rmin = document.createElement("input");
+        rmin.type = "range";
+        container.appendChild(rmin);
+        rmin.style.cssFloat = "left";
+        rmin.style.width = "45%";
+        rmin.style.borderWidth = "0px";
+        rmin.style.borderRadius = "10px";
+        rmin.style.borderLeft = rmin.style.borderRight = "1px solid gray";
+        rmin.min = min;
+        rmin.max = max;
+        rmin.value = range[0];
+        rmin.title = (range[0] + unit);
+        rmin.onchange = function () {
+            range[0] = this.value;
+            this.title = (this.value + unit);
+            container.setAttribute("value", getString(range, unit));
+            if (typeof callback !== "undefined")
+                callback(getString(range, unit));
+        };
+        rmax = document.createElement("input");
+        rmax.type = "range";
+        container.appendChild(rmax);
+        rmax.style.cssFloat = "right";
+        rmax.style.width = "45%";
+        rmax.style.borderWidth = "0px";
+        rmax.style.borderRadius = "10px";
+        rmax.style.borderLeft = rmax.style.borderRight = "1px solid gray";
+        rmax.min = min;
+        rmax.max = max;
+        rmax.value = range[1];
+        rmax.title = (range[1] + unit);
+        rmax.onchange = function () {
+            range[1] = this.value;
+            this.title = (this.value + unit);
+            container.setAttribute("value", getString(range, unit));
             if (typeof callback !== "undefined")
                 callback(getString(range, unit));
         };
