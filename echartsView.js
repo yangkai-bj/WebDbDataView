@@ -13564,70 +13564,8 @@ function getDatasetImage(container, dataset, configs) {
     let cols = types.length;
     let source = getSource(dataset);
     let lines = Math.ceil((source.dimensions.length - 1) / cols);
-
-    function getGrids(source, types, cols) {
-        let grids = [];
-        let lines = Math.ceil((source.dimensions.length - 1) / cols);
-        let border = 7;
-        let width = (100 - border * 2) / cols;
-        let height = (100 - border * 2) / lines;
-        for (let i = 1; i < source.dimensions.length; i++) {
-            let line = Math.ceil(i / cols) - 1;
-            let col = (i - 1) % cols;
-            let grid = {};
-            if (types[col] == "line" || types[col] == "bar" || types[col] == "scatter") {
-                grid = {
-                    left: (border + width * col) + "%",
-                    top: (border + height * line) + "%",
-                    width: width + "%",
-                    height: height + "%",
-                    containLabel: true
-                };
-            } else {
-                grid = {
-                    left: (border + width * col + width / 2) + "%",
-                    top: (border + height * line + height / 2) + "%",
-                    width: width + "%",
-                    height: height + "%",
-                    containLabel: true
-                };
-            }
-            grids.push(grid);
-        }
-        return grids;
-    }
-
     let grids = getGrids(source, types, cols);
-
-    function getAxis(source, types, cols) {
-        let xAxis = [];
-        let yAxis = [];
-        for (let i = 1; i < source.dimensions.length; i++) {
-            if (types[(i - 1) % cols] == "line" || types[(i - 1) % cols] == "bar" || types[(i - 1) % cols] == "scatter") {
-                let xA = {
-                    type: 'category',
-                    axisLabel: {interval: 0, rotate: -45},
-                    gridIndex: i - 1,
-                };
-                xAxis.push(xA);
-                let yA = getYAxis(configs, "value", null, "left");
-                yA.gridIndex = i - 1;
-                yAxis.push(yA);
-            } else {
-                let xA = {
-                    show: false,
-                    gridIndex: i - 1,
-                };
-                xAxis.push(xA);
-                let yA = {
-                    show: false,
-                    gridIndex: i - 1
-                };
-                yAxis.push(yA);
-            }
-        }
-        return {xAxis: xAxis, yAxis: yAxis};
-    }
+    let axis = getAxis(configs, source, types, grids);
 
     function getSeries(source, types, datasetIndex) {
         let series = [];
@@ -13719,8 +13657,8 @@ function getDatasetImage(container, dataset, configs) {
                 }
             }
         ],
-        xAxis: getAxis(source, types, cols).xAxis,
-        yAxis: getAxis(source, types, cols).yAxis,
+        xAxis: axis.xAxis,
+        yAxis: axis.yAxis,
         graphic: getWaterGraphic(configs, __VERSION__),
         series: getSeries(source, types, 1),
     };
